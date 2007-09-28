@@ -16,7 +16,7 @@
 		observeFontSizeChange(resizeContent);
 	</script>
 </head>
-<body>
+<body id="<%= controller_name %>_controller">
 	<%= render :partial => 'layouts/account_controls' %>
 	<div id="page_title"><%= @title or "Winnow" %></div>
 	<%= render :partial => 'layouts/navbar' %>
@@ -38,5 +38,8 @@
 		<div id="sidebar"><%= sidebar_content %></div>
 	<% end -%>
 	<div id="content"><%= yield %></div>
+	<% if footer_content = yield(:footer) -%>
+		<div id="footer"><%= footer_content %></div>
+	<% end -%>
 </body>
 </html>

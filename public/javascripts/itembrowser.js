@@ -267,7 +267,7 @@ ItemBrowser.prototype = {
 		// Flag for loading item - so we don't load them more than once at a time.
 		this.loading = false;		
 		this.feed_items_container = $(feed_item_container);
-		this.feed_items_scrollable = $(feed_item_container + '_scrollable');
+		this.feed_items_scrollable = $('content');
 
 		this.initializeItemList();
 		this.updateFeedItemCount();
@@ -275,6 +275,9 @@ ItemBrowser.prototype = {
 		if (this.options.total_items) {
 			this.setTotalItems(this.options.total_items);
 		}
+		
+		var self = this;
+		Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });	
 	},
 	
 	/** Called to initialize the internal list of items from the items loaded into the feed_item_container.
@@ -343,26 +346,6 @@ ItemBrowser.prototype = {
 		}
 		
 		spacer.setStyle({height: '' + height + 'px'});		
-	},
-	
-	/** Handles the resizing of the item browser when the window is resized.
-	 *
-	 *  This ensures that the item viewport always takes up the maximum available
-	 *  vertical space.
-	 *
-	 *  This should be registered as a handler for the window.onresize event.
-	 */
-	resizeFeedItemView: function() {
-		var body_height = $(document.body).getDimensions().height;
-		var nav_bar_height = $('nav_bar').getDimensions().height;
-		var page_title_height = $('page_title').getDimensions().height;
-		var flash_height = $('flash').getDimensions().height;
-		var footer_height = $('footer').getDimensions().height;
-		var text_filter_height = $('header_controls').getHeight();
-		var feed_item_height = body_height - nav_bar_height - page_title_height - flash_height - footer_height - text_filter_height - 6;
-		
-		this.feed_items_scrollable.style.height = feed_item_height + 'px';
-		$('sidebar').style.height = feed_item_height + 'px';
 	},
 	
 	/** Responds to scrolling events on the feed_item_scrollable.
@@ -773,7 +756,7 @@ ItemBrowser.prototype = {
 	},
 	
 	scrollToItem: function(item, position) {
-		new Effect.ScrollToInDiv('feed_items_scrollable', $(item).getAttribute('id'), position, {duration: 0.3});
+		new Effect.ScrollToInDiv(this.feed_items_scrollable, $(item).getAttribute('id'), position, {duration: 0.3});
 	},
 	
 	loadItemDescription: function(item) {

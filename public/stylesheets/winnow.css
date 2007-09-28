@@ -129,7 +129,13 @@ optgroup {
 }
 
 #content {
+	background-color: #fff;
 	overflow-y: auto;
+	padding: 10px;
+}
+
+#feed_items_controller #content {
+	padding: 0;
 }
 
 #sidebar {
@@ -137,6 +143,7 @@ optgroup {
 	height: auto;
 	float: left;
 	padding: 0px 3px;
+	border-right: 1px solid #999;
 }
 
 #header_controls {
@@ -453,13 +460,6 @@ div.auto_complete ul li .highlight {
 	padding: 8px;
 }
 
-#feed_items_scrollable {
-	background-color: #fff;
-	overflow: auto;
-	border-bottom: 1px solid #999;
-	border-left: 1px solid #999;
-}
-
 /* =item */
 
 .item {
@@ -657,7 +657,7 @@ div.auto_complete ul li .highlight {
 /* =footer */
 #footer {
 	position: relative;
-	height: 20px;
+	height: 25px;
 	padding: 5px 5px;
 	text-align: right;
 }

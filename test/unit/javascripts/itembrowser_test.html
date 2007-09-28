@@ -33,7 +33,7 @@
 	#feed_items {
 		height: 512px;
 	}
-	#feed_items_scrollable {
+	#content {
 		border: 1px solid grey;
 		height: 64px;
 		overflow: auto;
@@ -50,7 +50,7 @@
 
 <h2>Test Elements</h2>
 <!-- here go any elements you do the testing on -->
-<div id="feed_items_scrollable">
+<div id="content">
 	<div id="feed_item_loading_indicator"></div>
 	<div id ="feed_items"></div>
 </div>
@@ -88,7 +88,7 @@ new Test.Unit.Runner({
   testItemBrowserGetFeedItemsContainer: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
 	assertEqual($('feed_items'), ib.feed_items_container);
-	assertEqual($('feed_items_scrollable'), ib.feed_items_scrollable);
+	assertEqual($('content'), ib.feed_items_scrollable);
 	assertEqual(32, ib.total_items);
   }},
 
