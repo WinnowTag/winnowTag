@@ -43,11 +43,11 @@
 </div>
 
 <div id="footer">	
+	<span id="previous-next-buttons">
+		<%= image_submit_tag "previous.png", :id => "previous_button", :onclick => "itemBrowser.openPreviousItem();" %>
+		<%= image_submit_tag "next.png", :id => "next_button", :onclick => "itemBrowser.openNextItem();" %>
+	</span>
 	<div id="error_message" style="display: none;"></div>
 	<span id="feed_item_count">About <%= @feed_items.size %> items</span>
 	<span id="feed_item_loading_indicator" style="display: none;">Loading more items</span>
-	<span id="previous-next-buttons">
-	<%= image_submit_tag "previous.png", :id => "previous_button", :onclick => "itemBrowser.openPreviousItem();" %>
-	<%= image_submit_tag "next.png", :id => "next_button", :onclick => "itemBrowser.openNextItem();" %>
-	</span>
 </div>

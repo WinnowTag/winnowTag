@@ -663,9 +663,7 @@ div.auto_complete ul li .highlight {
 }
 
 #footer #previous-next-buttons {
-	position: absolute;
-	top: 2px;
-	left: 180px;
+	float: left;
 }
 
 #footer #error_message {
