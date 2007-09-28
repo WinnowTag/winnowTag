@@ -528,7 +528,7 @@ div.auto_complete ul li .highlight {
 .item .closed .title_and_tags { 
 	position: absolute;
 	left: 21%;
-	right: 4em;
+	right: 5em;
 	overflow: hidden;
 	text-align: right;
 }
