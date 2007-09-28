@@ -1,0 +1,56 @@
+# == Schema Information
+# Schema version: 57
+#
+# Table name: users
+#
+#  id                        :integer(11)   not null, primary key
+#  login                     :string(80)    default(""), not null
+#  crypted_password          :string(40)    
+#  email                     :string(60)    default(""), not null
+#  firstname                 :string(40)    
+#  lastname                  :string(40)    
+#  salt                      :string(40)    default(""), not null
+#  activation_code           :string(40)    
+#  created_at                :datetime      
+#  updated_at                :datetime      
+#  logged_in_at              :datetime      
+#  deleted_at                :datetime      
+#  activated_at              :datetime      
+#  remember_token            :string(255)   
+#  remember_token_expires_at :datetime      
+#  last_accessed_at          :datetime      
+#  last_session_ended_at     :datetime      
+#
+
+quentin:
+  id: 1
+  login: quentin
+  firstname: Quentin
+  lastname: Doe
+  email: quentin@example.com
+  salt: 7e3041ebc2fc05a40c60028e2c4901a81035d3cd
+  crypted_password: 9add8c20fe9f470366fc0f9d1228041c25de5c59 # test
+  #crypted_password: "ce2/iFrNtQ8=\n" # quentin, use only if you're using 2-way encryption
+  created_at: <%= 5.days.ago.to_s :db %>
+  activated_at: <%= 5.days.ago.to_s :db %> # only if you're activating new signups
+  time_zone: Australia/Adelaide
+aaron:
+  id: 2
+  login: aaron
+  firstname: Aaron
+  lastname: Doe
+  email: aaron@example.com
+  salt: 7e3041ebc2fc05a40c60028e2c4901a81035d3cd
+  crypted_password: 9add8c20fe9f470366fc0f9d1228041c25de5c59 # test
+  activation_code: aaronscode # only if you're activating new signups
+  created_at: <%= 1.days.ago.to_s :db %>
+admin:
+  id: 3
+  login: admin
+  firstname: Admin
+  lastname: Istrator
+  email: admin@example.com
+  salt: 7e3041ebc2fc05a40c60028e2c4901a81035d3cd
+  crypted_password: 9add8c20fe9f470366fc0f9d1228041c25de5c59 # test
+  created_at: <%= 5.days.ago.to_s :db %>
+  activated_at: <%= 5.days.ago.to_s :db %>

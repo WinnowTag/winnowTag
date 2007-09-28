@@ -1,0 +1,12 @@
+<%= error_messages_for 'feed'%>
+<% labeled_form_for :feed, @feed, :url => feeds_path do |f| %>
+	<fieldset>
+		<legend>Enter a new Feed URL</legend>
+		<p>Only items with enough text for the classifier to use will be collected from the feed.</p>
+		<%= f.text_field :url, :size => 70,  :text => "Feed URL" %>
+		<p><label>&nbsp;</label>
+			<%= submit_tag "Create Feed" %> 
+			<%= link_to "Cancel", feeds_url %>
+		</p>
+	</fieldset>
+<% end %>

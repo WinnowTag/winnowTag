@@ -1,0 +1,51 @@
+/* Styles for the bias slider */
+
+div.slider_track {
+	z-index: 11;
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	height: 5px;
+	background-color: #aaa;
+	cursor: pointer;
+	position: relative;
+}
+
+div.slider_handle {
+	z-index: 12;
+	top: -4px;
+	width: 7px;
+	height: 13px;
+	background-color: #2c50e8;
+	opacity: 0.6;
+	-moz-opacity: 0.6;
+	filter:alpha(opacity=6);
+	cursor: pointer;
+}
+
+div.bias_marker {
+	z-index: 5;
+	width: 1px;
+	height: 11px;
+	background-color: #555;
+	position: absolute;
+	top: -3px;
+	cursor: pointer;
+	margin-left: 3px;
+}
+
+div.bias_marker.neutral {
+	width: 3px;
+	height: 13px;
+	top: -4px;
+	margin-left: 2px;
+}
+
+div.slider_track.disabled div.slider_handle {
+	background-color:  #555;
+	cursor: default;
+}
+
+div.slider_track.disabled, div.slider_track.disabled div.bias_marker {
+	cursor: default;
+}

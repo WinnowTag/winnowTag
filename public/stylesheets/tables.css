@@ -1,0 +1,115 @@
+/* Table Styles */
+table.data_table, table.property_table {
+	width: 98%;
+	background: white;
+	border-bottom: 2px solid #ddd;
+	margin-top: 10px;
+	border-spacing: 0px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+table.data_table {
+  clear: both;
+}
+
+table.property_table {
+	width: 40%;
+	border-bottom: none;
+}
+
+th {
+	text-align: left;
+}
+
+th.indented {
+	padding-left: 15px;
+}
+
+table.data_table th, table.property_table th {
+	color: #444;
+	font-size: 90%;
+	font-weight: 650;
+	text-transform: uppercase;
+	border-bottom: 2px solid #ddd;
+}
+
+table.data_table td.indented {
+	padding-left: 20px;
+}
+
+table.data_table td {
+	background: white;
+	padding: 5px;
+	vertical-align: top;
+}
+
+table.property_table td {
+  padding: 5px;
+  border-bottom: 2px solid #ddd;
+  text-align: right;
+}
+
+th.control_icons, td.control_icons {
+	text-align: right;
+	width: 64px;
+}
+
+td.number, th.number, 
+td.date, th.date {
+	text-align: right;
+  width: 10em;
+}
+
+table.data_table th.table_break {
+	padding-top: 10px;
+	font-size: 100%;
+}
+
+tr.inactive_feed td, table.inactive_feed {
+	background-color: pink;
+}
+
+tr.bad_feed td, tr.existing_feed td {
+	background-color: yellow;
+}
+
+tr.even td {
+	background: #ddd;
+}
+
+tr.odd td {
+	border-top: 1px solid #ddd;
+}
+
+table td.even {
+	background: #ddd;
+}
+
+table.bias_table {
+	background: #D0EEFF;
+	border: 1px solid #EEE;
+	margin: 10px;
+	width: 40%;
+}
+
+
+table.bias_table td {
+	background: white;
+	padding: 0px 2px 0px 2px;
+	width: 10%;
+}
+
+table.bias_table td.slider {
+	width: 200px;
+}
+
+table.bias_table td.reset {
+	width: 1em;
+}
+
+table.bias_table th {
+	text-align: left;
+	padding-right: 10px;
+	font-weight: normal;
+}

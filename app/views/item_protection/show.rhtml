@@ -1,0 +1,29 @@
+<div class="explanation">
+	<p>Item Protection involves Winnow marking a feed item as protected  
+		from the archival process. This happens when a user tags an item so that
+		manually tagged items are never archived.</p>
+	<p>Here you can view status of item protection and rebuild the list of protected
+	    items.  Protector name is the name by which Winnow identifies itself to the
+	    collector, typically the instance URL.</p>
+	<p>All item protection information is stored in the collector application.</p>
+</div>
+<div class="control_bar">
+	<%= link_to "Return to Admin", :controller => 'admin' %>
+	<%= link_to "Rebuild", rebuild_item_protection_path, :method => :post %>
+</div>
+<table class="property_table">
+	<tr>
+		<th>Protector Name</th>
+		<td><%= @protector.name %></td>
+	</tr>
+	<tr>
+		<th>Number of Items</th>
+		<td><%= @protector.protected_items_count %></td>
+	</tr>
+	<tr>
+		<th>Created On</th>
+		<td><%= @protector.created_on %></td>
+	</tr>
+</table>
+
+

@@ -1,0 +1,7 @@
+# page.replace_html 'tag_filters', tag_filter_options  
+page.replace @taggable.dom_id("open_tags"), display_tags_for(@taggable)
+
+page << "if ($('classification_button')) {"
+  page['classification_button'].disabled = false
+  page.replace_html 'progress_title', classifier_progress_title
+page << "}"

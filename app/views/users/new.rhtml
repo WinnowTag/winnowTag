@@ -1,0 +1,17 @@
+<% labeled_form_for :user, @user, :url => users_url, :method => :post do |f| %>
+	<%= error_messages_for 'user' %>
+	<fieldset>
+		<legend>Create User</legend>
+		<%= f.text_field :login %>
+		<%= f.text_field :firstname %>
+		<%= f.text_field :lastname %>
+		<%= f.text_field :email %>
+		<%= f.password_field :password %>
+		<%= f.password_field :password_confirmation %>
+		<p>
+			<label>&nbsp;</label>
+			<%= submit_tag 'Save changes', :name => 'save'%>
+			<%= link_to 'Cancel', :action => '' %>
+		</p>
+	</fieldset>
+<%  end -%>

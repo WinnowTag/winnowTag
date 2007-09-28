@@ -1,0 +1,7 @@
+<p>This is build "<%= @revision %>" of Winnow deployed from "<%= @repos %>".</p>
+
+<p><%= link_to_function "Click for more", "$('details').show();" %></p>
+
+<pre style="display:none" id="details">
+<%= @about %>
+</pre>

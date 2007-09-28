@@ -1,0 +1,21 @@
+# == Schema Information
+# Schema version: 57
+#
+# Table name: feed_xml_datas
+#
+#  id         :integer(11)   not null, primary key
+#  xml_data   :text          
+#  created_on :datetime      
+#  updated_on :datetime      
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+1:
+  id: 1
+  xml_data: XXXXX
+2:
+  id: 2
+  xml_data: XXXXX
+3:
+  id: 3
+  xml_data: XXXXX

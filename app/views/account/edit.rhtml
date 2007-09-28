@@ -1,0 +1,31 @@
+<%= error_messages_for 'current_user' %>
+<% labeled_form_for :current_user do |f| %>
+<fieldset>
+	<legend>Account Details</legend>
+	<%= f.text_field 'login', :readonly => true %>
+	<%= f.text_field 'firstname' %>
+	<%= f.text_field 'lastname' %>
+	<%= f.text_field 'email' %>
+	<p>
+	    <label for="">Time Zone</label>
+	    <%= time_zone_select 'current_user', 'time_zone', TZInfo::Timezone.all.sort, :model => TZInfo::Timezone %>
+	</p>
+	<p><label>&nbsp;</label><%= submit_tag 'Save' %></p>
+</fieldset>
+<% end%>
+
+<% form_tag '/account/change_password' do -%>
+<fieldset>
+	<legend>Change Password</legend>
+	<p><label for="old_password">Old Password</label>
+	<%= password_field_tag 'old_password', @old_password %></p>
+
+	<p><label for="password">Password</label>
+	<%= password_field_tag 'password', '' %></p>
+
+	<p><label for="password_confirmation">Confirm Password</label>
+	<%= password_field_tag 'password_confirmation', '' %></p>
+
+	<p><label>&nbsp;</label><%= submit_tag 'Change password' %></p>
+</fieldset>
+<% end -%>

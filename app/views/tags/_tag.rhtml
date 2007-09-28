@@ -1,0 +1,42 @@
+<tr id="<%= @tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
+	<td class="tag">
+		<%= in_place_completing_editor_field(:tag, :name, {:id => @tag.dom_id('editor')}, 
+							{:param_name => '"tag[name]"', :url => "/tags/update/#{@tag.name}", :form_submit => true,
+							 :submit => %Q('validate_tag_edit(#{@tag.name.to_json}, $$(".editor_field").first().value)'),
+							 :click_to_edit_text => "Click to edit tag name"},
+							:skip_style => true, :update => @tag.dom_id('auto_complete'),
+							:url => url_for(:action => 'auto_complete_for_tag_name', :id => @tag)) %>
+	</td>
+	<td nowrap="nowrap">
+		<%= radio_button_tag "tag_#{@tag.id}", :include, @view.tag_filter[:include].include?(@tag), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{@tag.name}&tag_state=include', {evalScripts:true});" %>
+		<%= radio_button_tag "tag_#{@tag.id}", :exclude, @view.tag_filter[:exclude].include?(@tag), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{@tag.name}&tag_state=exclude', {evalScripts:true});" %>
+		<%= radio_button_tag "tag_#{@tag.id}", :ignore, !(@view.tag_filter[:include] + @view.tag_filter[:exclude]).include?(@tag), :onclick => "new Ajax.Request('/views/#{@view.id};remove_tag?tag_id=#{@tag.name}', {evalScripts:true});" %>
+	</td>
+	<td class="control_icons">		
+		<%= link_to_remote image_tag('globe.gif'), {:url => hash_for_user_new_tag_publication_path(:user_id => current_user, 'tag_publication[tag]' => @tag),
+		 							  :method => 'get', 
+									  :update => {:success => @tag.dom_id('form_cell'),
+												  :failure => 'flash'}, 
+ 										   	  :complete => visual_effect(:blind_down, @tag.dom_id('form'), :duration => 0.3)},
+										  :title => "Publish #{@tag.name}"%>
+		<%= link_to image_tag('show.gif'), {:controller => 'feed_items', :tag_filter => @tag.name, :mode => 'tag_inspect', :view_id => :new}, 
+									:class => 'tag_name', :title => "Inspect #{@tag.name}" %>
+		<%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => @tag), :method => 'post', :title => "Copy #{@tag.name}" %>
+		<%= link_to image_tag('trash.gif'), {:action => 'destroy', :id => @tag}, 
+					:method => 'delete', :title => "Destroy #{@tag.name}",
+					:confirm => "Do you really want to delete #{@tag.name}?\n\nThis can't be undone." %>
+	</td>
+	<td class="number"><%= @tag.count %> / <%= @tag.negative_count %></td>
+	<td class="number"><%= @classifier_counts[@tag.name] ? @classifier_counts[@tag.name].count : 0 %></td>
+	<td class="date"><%= format_date(@tag.last_used_by(current_user)) %></td>	
+	<td class="indented"><%= current_user.display_name %></td>
+	<td>
+		<%= bias_slider(:tag => @tag, :global => "sliders[#{@tag.name.to_json}]", 
+						:prefix => @tag.dom_id('slider'),
+						:change => "if (slider.event) {$('#{@tag.dom_id('bias_for')}').value = value;" +
+									   "slider.options.isDefault = false;}") %>
+	</td>
+</tr>
+<tr id="<%= @tag.dom_id('form_row') %>" class="form_row">
+	<td id="<%= @tag.dom_id('form_cell') %>" colspan="7"></td>
+</tr>

@@ -1,0 +1,5 @@
+token_atomizer:
+  :class: :token_atomizer_worker
+  :job_key: 'token_atomizer'
+  :trigger_args:
+    :start: <%= Time.now + 5.seconds %>

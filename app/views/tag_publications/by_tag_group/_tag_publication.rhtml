@@ -1,0 +1,25 @@
+<tr class="<%= cycle('odd', 'even', :name => 'tag_pub') %>">
+	<td>
+		<%= content_tag('span', tag_publication.tag, :title => tag_publication.comment) %><br/>
+		<%= content_tag('span', tag_publication.comment, :class => 'tag_publication_comment') %>
+	</td>
+	<td class="control_icons">	
+		<%= link_to image_tag('show.gif'), {:controller => 'feed_items', :tag_filter => tag_publication.filter_value, :mode => 'tag_inspect'}, 
+									:class => 'tag_name', :title => "Inspect #{tag_publication.name}" %>		
+		<%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => tag_publication.filter_value), 
+										:method => 'post', :title => "Copy #{tag_publication.name}" %>
+		<%= control_link(image_tag('trash.gif'), 
+				user_tag_publication_path(tag_publication.publisher, tag_publication), 
+				:method => :delete, :requires => (current_user == tag_publication.publisher),
+				:alternate => image_tag('blank.gif', :class => 'blank'),
+				:confirm => "Really delete published tag?",
+				:title => "Delete published '#{tag_publication.tag.name}' tag.") %>
+	</td>
+	<td class="number"><%= tag_publication.positive_count %> / <%= tag_publication.negative_count %></td>
+	<td class="number"><%= tag_publication.classifier_count %></td>
+	<td class="date"><%= format_date(tag_publication.created_on) %></td>
+	<td class="indented"><%= tag_publication.tag_group.name %></td>
+	<td>
+		<%= bias_slider(:tag => tag_publication, :prefix => tag_publication.dom_id('slider'), :disabled => true) %>
+	</td>
+</tr>

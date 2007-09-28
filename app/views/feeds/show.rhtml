@@ -1,0 +1,36 @@
+<div class="control_bar">
+	<%= control_link 'Return to list', {:action => ''} %>
+	| <%= control_link 'Show Items', {:controller => 'feed_items', :action => nil, :feed_filter => @feed.id} %>
+</div>
+
+<table id="<%= "feed_#{@feed.id}" %>" class="property_table <%= "inactive_feed" unless @feed.active? %>">
+	<tr>
+		<th>Title</th>
+		<td><%= feed_link @feed %></td>
+	</tr>
+	<tr>
+		<th>URL</th>
+		<td><%= link_to @feed.url, @feed.url %></td>
+	</tr>
+	<tr>
+		<th>Last Retrieved</th>
+		<td><%= @feed.updated_on.to_formatted_s :short if @feed.updated_on %></td>
+	</tr>
+	<tr>
+		<th>Number of Feed Items</th>
+		<td><%= @feed.feed_items.size %></td>
+	</tr>
+	<tr>
+		<th>Active</th>
+		<td><%= activate_feed_control @feed%></td>
+	</tr>
+</table>
+
+<p>
+	<strong>Headers</strong><br/>
+	<pre><%=h @feed.last_http_headers %></pre>
+</p>
+<p>
+	<strong>XML Data</strong><br/>
+	<pre><%=h @feed.last_xml_data %></pre>
+</p>

@@ -1,0 +1,8 @@
+	<p class="filter_group_heading">tag sensitivity</p>
+	<div id="bias_slider" style="padding: 5px 0px 10px 0px;">
+		<%= bias_slider(:tag => session[:view].tag_filter[:include].first, :var => 'bias_slider') %>
+	</div>
+
+
+	<p class="filter_group_heading">classification</p>
+	<%= render :partial => 'classification_controls' %>

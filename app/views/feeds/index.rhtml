@@ -1,0 +1,38 @@
+<% content_for :header_controls do -%>
+	<% form_tag(feeds_path, :method => :get) do -%>
+		<%= hidden_field_tag :view_id, @view.id %>
+		<%= text_field_tag :search_term, @search_term, :size => 40, :id => 'feed_search_term' %>
+		<%= submit_tag 'Search' %>
+		<%= link_to "Clear", feeds_path(:view_id => @view) %>
+	<% end -%>
+<% end -%>
+
+<%= render :partial => 'feed_list_header' %>
+
+<table class="data_table">
+  <tr>
+		<th><%= link_to "Title", sort_param('feeds', :alias => 'title') %></th>
+		<th>View State (Include, Exclude, Ignore)</th>
+		<th class="number"><%= link_to "Items", sort_param('feeds', :alias => 'item_count')%></th>
+		<th class="date"><%= link_to "Last Updated", sort_param('feeds', :alias => 'updated_on')%></th>
+		<th></th>
+  </tr>
+  
+<% for feed in @feeds %>
+  <tr id="<%= "feed_#{feed.id}" %>" class="<%= cycle("odd", "even") %>">
+		<td><%= feed_link(feed) %></td>
+		<td nowrap="nowrap">
+			<%= radio_button_tag "feed_#{feed.id}", :always_include, @view.feed_filter[:always_include].include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=always_include', {evalScripts:true});" %>
+			<%#= radio_button_tag "feed_#{feed.id}", :include, @view.feed_filter[:include].include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=include', {evalScripts:true});" %>
+			<%= radio_button_tag "feed_#{feed.id}", :exclude, @view.feed_filter[:exclude].include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=exclude', {evalScripts:true});" %>
+			<%= radio_button_tag "feed_#{feed.id}", :ignore, !(@view.feed_filter[:always_include] + @view.feed_filter[:include] + @view.feed_filter[:exclude]).include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};remove_feed?feed_id=#{feed.id}', {evalScripts:true});" %>
+		</td>
+		<td class="number"><%= feed.feed_items_count %></td>
+		<td class="date"><%= format_date(feed.updated_on) %></td>
+		<td class="controls">
+			<%= control_link 'Show Items', {:controller => 'feed_items', :feed_filter => feed.id, :view_id => :new}%> |
+			<%= control_link 'Destroy', feed_path(feed), :method => :delete, :requires => is_admin?, :confirm => "Do you really want to delete #{feed.title}?" %>
+		</td>
+  </tr>
+<% end %>
+</table>

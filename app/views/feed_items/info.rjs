@@ -1,0 +1,1 @@
+page.replace_html @feed_item.dom_id('tag_information'), :partial => 'info', :locals => { :feed_item => @feed_item }

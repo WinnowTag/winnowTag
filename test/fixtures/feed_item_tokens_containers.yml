@@ -1,0 +1,22 @@
+# == Schema Information
+# Schema version: 57
+#
+# Table name: feed_item_tokens_containers
+#
+#  id                   :integer(11)   not null, primary key
+#  feed_item_id         :integer(11)   
+#  created_on           :datetime      
+#  tokens_with_counts   :text          
+#  tokenizer_version    :integer(11)   
+#  distinct_token_count :integer(11)   
+#  total_token_count    :integer(11)   
+#  tokens               :text          
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+tokens_for_first:
+    id: 1
+    feed_item_id: 1
+    tokenizer_version: 0
+    tokens: <%= Marshal.dump(%w(a b c)) %>
+    tokens_with_counts: <%= Marshal.dump({'a' => 1, 'b' => 2, 'c' => 3}) %>

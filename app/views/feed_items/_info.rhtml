@@ -1,0 +1,29 @@
+<% classifications = current_user.classifier.guess(feed_item, current_user.classifier.classification_options.merge({:include_evidence => true})) -%>
+<% user_tags_on_item = feed_item.taggings.find_by_tagger(current_user).map(&:tag) %>
+
+<h3>Classifier Taggings</h3>
+	
+<p>
+	This section shows how your current classifier will classify this item. Tags with 
+	<span style="color: red">red</span> text have also been applied by you on the item.
+</p>
+
+<% sorted_classifications = classifications.sort_by{|tag, cls| cls.first}.reverse -%>
+<% sorted_classifications.each_with_index do |(tag, cls), i| -%>
+	<h4 style="<%= "color: red;" if user_tags_on_item.include?(Tag(tag)) %>" onclick="$('<%= feed_item.dom_id("tokens_for_#{tag}")%>').toggle();">
+		<%= tag %> - <%= '%.4f' % cls.first %>
+	</h4>
+	<table id="<%= feed_item.dom_id("tokens_for_#{tag}")%>" class="tokens<%= sorted_classifications.size == i + 1 ? " last" : "" %>" style="display: none">
+		<% Bayes::TokenAtomizer.get_atomizer.globalize(cls.last.sort).in_groups_of(3) do |tokens| -%>
+			<tr>
+			<% tokens.each do |token| -%>
+				<td>
+					<% if token -%>
+						<%= token.last + " = " + ('%.4f' % token.first) %>
+					<% end -%>
+				</td>
+			<% end -%>
+			</tr>
+		<% end -%>
+	</table>
+<% end -%>

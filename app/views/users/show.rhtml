@@ -1,0 +1,31 @@
+<table class="property_table" style="float:left;">
+	<tr>
+		<th>Email</th>
+		<td><%= link_to @user.email, "mailto:#{@user.email}" %></td>
+	</tr>
+	<tr>
+		<th>Registered</th>
+		<td class="date"><%= format_date(@user.created_at) %></td>
+	</tr>
+	<tr>
+		<th>Last Logged In</th>
+		<td class="date"><%= format_date(@user.logged_in_at) %></td>
+	</tr>
+	<tr>
+		<th>Last Tagged</th>
+		<td class="date"><%= format_date(@user.last_tagging_on) %></td>
+	</tr>
+	<tr>
+		<th>Number of Tags</th>
+		<td class="number"><%= @user.tags.size %></td>
+	</tr>
+	<tr>
+		<th>Average Tags per Item</th>
+		<td class="number"><%= @user.average_taggings_per_item %></td>
+	</tr>
+	<tr>
+		<th>Percentage Tagged</th>
+		<td class="number"><%=number_to_percentage @user.tagging_percentage %></td>
+	</tr>
+</table>
+

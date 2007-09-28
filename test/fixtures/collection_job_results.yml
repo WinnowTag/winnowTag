@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one:
+  id: 1
+  feed_id: 1
+  user_id: 1
+  message: MyText
+  failed: false
+  created_on: 2007-08-22 18:33:28
+  user_notified: 1
+two:
+  id: 2
+  feed_id: 1
+  user_id: 2
+  message: MyText
+  failed: false
+  created_on: 2007-08-22 18:33:28
+  user_notified: 1

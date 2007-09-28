@@ -1,0 +1,63 @@
+# == Schema Information
+# Schema version: 57
+#
+# Table name: feed_items
+#
+#  id             :integer(11)   not null, primary key
+#  feed_id        :integer(11)   
+#  sort_title     :string(255)   
+#  time           :datetime      
+#  created_on     :datetime      
+#  unique_id      :string(255)   default("")
+#  time_source    :string(255)   default("unknown")
+#  xml_data_size  :integer(11)   
+#  link           :string(255)   
+#  content_length :integer(11)   
+#  position       :integer(11)   
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+first:
+  id: 1
+  feed_id: 1
+  time_source: <%= FeedItem::FeedItemTime %>
+  time: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
+  unique_id: first
+  xml_data_size: 10
+  link: http://first
+  content_length: 5
+  position: 1
+  created_on: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
+another:
+  id: 2
+  feed_id: 1
+  time_source: <%= FeedItem::FeedItemTime %>
+  time: <%= Time.now.to_formatted_s(:db)%>
+  unique_id: second
+  xml_data_size: 15
+  content_length: 11
+  link: http://second
+  position: 2
+  created_on: <%= Time.now.to_formatted_s(:db)%>
+third:
+  id: 3
+  feed_id: 1
+  time_source: <%= FeedItem::FeedItemTime %>
+  time: <%= Time.now.to_formatted_s(:db)%>
+  unique_id: third
+  xml_data_size: 5
+  content_length: 5
+  link: http://third
+  position: 3
+  created_on: <%= Time.now.to_formatted_s(:db)%>
+forth:
+  id: 4
+  feed_id: 2
+  time_source: <%= FeedItem::FeedCollectionTime %>
+  time: <%= Time.now.to_formatted_s(:db)%>
+  unique_id: forth
+  xml_data_size: 20
+  content_length: 10
+  link: http://forth
+  position: 4
+  created_on: <%= Time.now.tomorrow.to_formatted_s(:db)%>

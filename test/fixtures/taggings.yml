@@ -1,0 +1,21 @@
+# == Schema Information
+# Schema version: 57
+#
+# Table name: taggings
+#
+#  id            :integer(11)   not null, primary key
+#  taggable_type :string(255)   
+#  taggable_id   :integer(11)   
+#  tagger_type   :string(255)   
+#  tagger_id     :integer(11)   
+#  created_on    :datetime      
+#  tag_id        :integer(11)   
+#  strength      :float         default(1.0)
+#  deleted_at    :datetime      
+#  metadata_type :string(255)   
+#  metadata_id   :integer(11)   
+#  user_id       :integer(11)   
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+

@@ -1,0 +1,14 @@
+class AddedFeedsSortTitle < ActiveRecord::Migration
+  def self.up
+    add_column :feeds, :sort_title, :string
+    
+    execute "update feeds set sort_title = TRIM(LEADING 'an ' from TRIM(LEADING 'a ' from TRIM(LEADING 'the ' from LCASE(title))));"
+    
+    add_index :feeds, :sort_title
+  end
+
+  def self.down
+    remove_column :feeds, :sort_title
+    remove_index :feeds, :sort_title
+  end
+end

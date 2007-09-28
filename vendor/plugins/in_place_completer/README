@@ -1,0 +1,31 @@
+= InPlaceEditor with Autocompletion
+
+This plugin provides two new Ajax-controls that makes it possible
+to have In-Place-Editing fields with either Local or Remote autocompletion.
+
+If you want to use this in your view, first make sure you have something
+like this in your <head> tag:
+
+    <%= javascript_include_tag :defaults %>
+    <%= in_place_completer_include %>
+
+If you want to use the remote completer, all you need to do is the same 
+as for a regular autocompleting field, or inplaceeditor:
+
+    <%= in_place_completing_editor_field :object, :field %>
+
+This will generate a field that autocompletes with the action
+auto_complete_for_object_field.
+
+If you want local completions, you can add it in this way:
+
+    <%= in_place_local_completing_editor_field :object, :field, %w(value1 value2 value3 value4) %>
+
+For more information, check the RDoc for these methods, and 
+in_place_editor_completer and in_place_editor_local_completer.
+
+
+
+Author: Ola Bini <ola.bini@ki.se>
+Distribution: http://opensource.ki.se/inplacecompleter.html
+Subversion: http://svn.ki.se/rails/plugins/in_place_completer

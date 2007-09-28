@@ -1,0 +1,20 @@
+<div class="page_title">today's collect logs</div>
+
+<%
+  open(WINNOW_COLLECT_LOG) { |f| 
+    if @match.nil?
+%>
+      <pre>
+      <%= f.read %>
+      </pre>
+<%
+    else
+      f.each_line { |line|
+%>
+        <%= line + "<br>" if line.match(@match) %>
+<%
+      }
+    end
+  }
+%>
+</font>

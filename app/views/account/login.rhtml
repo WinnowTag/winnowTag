@@ -1,0 +1,22 @@
+<% form_tag '', :id=> 'login_form' do -%>
+<fieldset>
+	<p><label for="login">Login</label>
+	<%= text_field_tag 'login' %></p>
+
+	<p><label for="password">Password</label>
+	<%= password_field_tag 'password' %></p>
+
+
+	<p><label for="remember_me">Remember me</label>
+	<%= check_box_tag 'remember_me', "1", true %></p>
+
+
+	<p><label>&nbsp;</label><%= submit_tag 'Log in' %></p>
+</fieldset>
+<% end -%>
+<h3>Welcome to Winnow</h3>
+<p>Winnow is the demonstration environment for the auto-tagging classifier built by
+	<a href="http://www.peerworks.org">Peerworks</a>.</p>
+<p>This version of Winnow is only tested in the 
+	<a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser,
+	as such things may not work correctly in other browsers.</p>

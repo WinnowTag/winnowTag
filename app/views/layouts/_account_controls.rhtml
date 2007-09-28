@@ -1,0 +1,13 @@
+<div id="login_box">
+	<% if current_user.nil? -%>
+		<%= link_to "login", login_path %>
+		<% unless AccountController.signup_disabled %>
+			| <%= link_to "create account", signup_path %>
+		<% end %>
+	<% else %>
+  	<strong><%= current_user.display_name %></strong>
+		<%= link_to "logout", logout_path %> |
+  	<%= link_to 'my info', edit_account_path(:id => current_user, :view_id => @view) %>
+	<% end %>
+	| <%= link_to 'help', help_path, :popup => ['help', 'width=500,height=400'] %>
+</div>

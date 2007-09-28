@@ -1,0 +1,42 @@
+<div style="float: right;"><%= render :partial => 'bias_form' %></div>
+<div>For Private Tags, click on a tag name to rename it or merge it into an existing tag. Existing tag names will appear in a drop down list as you type.</div>
+<%= javascript_tag("var sliders = {};") %>
+<div id="tags">
+	<table class="data_table">		
+		<tr><th colspan="8" class="table_break">My Private Tags</th></tr>
+		<tbody>
+			<tr>
+				<th class="tag">Tag</th>
+				<th>View State (Include, Exclude, Ignore)</th>
+				<th></th>
+				<th class="usage number">Usage (+/-)</th>
+				<th class="classifier_usage number">Classifier</th>
+				<th class="date">Modified</th>
+				<th class="indented">Tag Group</th>
+				<th class="center">Sensitivity</th>
+			</tr>
+			<tr class="<%= cycle('odd', 'even') %>">
+				<td>Default</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td style="width: 80px;">
+					<%= bias_slider(:tag => :default, :var => 'default_slider',
+						:change => "$('default_bias').value = value;",
+						:slide =>"$H(sliders).values().each(function(s){" +
+								"if (s.options.isDefault) s.setValue(value);});") %>
+				</td>
+			</tr>		
+		<% for @tag in @tags -%>
+			<%= render :partial => 'tag' %>
+		<% end -%>
+		</tbody>
+		<tr><th colspan="8" class="table_break">My Published Tags</th></tr>
+		<%= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => current_user.tag_publications %>
+		<tr><th colspan="8" class="table_break">Other Users' Published Tags</th></tr>
+		<%= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => TagPublication.find_by_other_publisher(current_user) %>
+	</table>
+</div>

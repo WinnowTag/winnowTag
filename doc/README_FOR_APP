@@ -1,0 +1,18 @@
+:title:Winnow Documentation
+
+= Winnow Documentation
+
+Copyright (c) 2007 The Kaphan Foundation
+
+Possession of a copy of this file grants no permission or license
+to use, modify, or create derivate works.
+
+Please contact info@peerworks.org for further information.
+
+See these sections for further information:
+
+FeedItem:: For information on the structure, collection and database storage and retrieval of items from RSS/Atom feeds.
+BayesClassifier:: For information on the way the Bayes classifier is integrated into Winnow.
+Bayes:: For information on the Bayes classifier itself.
+FeedItemTokenizer:: For information on how a FeedItem is broken up into tokens for use by the classifier.
+Tagging:: For information on the tagging model used by Winnow.

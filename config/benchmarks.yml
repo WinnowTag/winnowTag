@@ -1,0 +1,17 @@
+default:
+   fi_index, fi_ajax_offset0_limit40, fi_ajax_offset1000_limit40, users_index
+
+feed_items:
+    fi_index, fi_ajax_offset0_limit40, fi_ajax_offset1000_limit40
+    
+fi_index:
+   uri: /feed_items
+   
+fi_ajax_offset0_limit40:
+    uri: /feed_items/index/0.js?feed_filter=all&tag_filter=all
+    
+fi_ajax_offset1000_limit40:
+    uri: /feed_items/index/0.js?feed_filter=all&tag_filter=all&offset=1000
+        
+users_index:
+   uri: /users

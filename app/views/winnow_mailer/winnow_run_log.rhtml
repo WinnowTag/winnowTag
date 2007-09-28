@@ -1,0 +1,12 @@
+<%= render(:text => @message) %>
+
+<%
+  open(WINNOW_COLLECT_LOG) { |f| 
+      f.each_line { |line|
+%>
+        <%= render(:text => line) if line.match('ERROR') %>
+<%
+      }
+  }
+%>
+

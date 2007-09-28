@@ -1,0 +1,54 @@
+<% content_for :head do -%>
+	<script type="text/javascript" charset="utf-8">
+		var itemBrowser;
+		
+		Event.observe(window, 'load', function() {
+			itemBrowser = new ItemBrowser('feed_items', {view_id: <%= @view.id %>});
+			itemBrowser.resizeFeedItemView();
+			itemBrowser.setTotalItems(<%= @feed_item_count %>);
+			itemBrowser.feed_items_scrollable.scrollTop = 0;
+		
+			Event.observe(window, 'resize', function() { itemBrowser.resizeFeedItemView(); });
+			Event.observe('feed_items_scrollable', 'scroll', function() { itemBrowser.scrollFeedItemView(); });
+			
+			// observeFontSizeChange(function() { itemBrowser.resizeFeedItemView(); });
+		});
+	</script>
+<% end -%>
+
+<noscript>Winnow requires Javascript to be enabled.  Please enable Javascript in your browser and refresh.</noscript>
+
+<% content_for :header_controls do -%>
+	<%= render :partial => "text_filter_controls" %>
+<% end -%>
+
+<div id="tag_controls">
+	<%#= render :partial => 'controls' %>
+	<%= render :partial => "classification_controls" %>
+</div>
+
+<div id="feed_items_scrollable">
+	<div id="feed_items_indicator" style="text-align: center; margin-top: 50px; display:none; ">
+		<%= image_tag 'indicator_medium.gif', :style => 'margin-bottom: 10px;' %><br/>
+		Waiting for Classifier...
+	</div>
+	<div id="feed_items">
+	<% if @feed_items.empty? -%>
+		<p>No items match these criteria.</p>
+	<% end -%>
+	<% for feed_item in @feed_items do -%>	
+		<%= render :partial => 'feed_item', :locals => {:feed_item => feed_item} -%>
+	<% end -%>
+		<div id="initial_spacer" class="item_spacer"></div>
+	</div>
+</div>
+
+<div id="footer">	
+	<div id="error_message" style="display: none;"></div>
+	<span id="feed_item_count">About <%= @feed_items.size %> items</span>
+	<span id="feed_item_loading_indicator" style="display: none;">Loading more items</span>
+	<span id="previous-next-buttons">
+	<%= image_submit_tag "previous.png", :id => "previous_button", :onclick => "itemBrowser.openPreviousItem();" %>
+	<%= image_submit_tag "next.png", :id => "next_button", :onclick => "itemBrowser.openNextItem();" %>
+	</span>
+</div>

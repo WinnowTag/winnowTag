@@ -1,0 +1,19 @@
+--- 
+javascripts: 
+- base: 
+  - prototype
+  - scriptaculous
+  - effects
+  - controls
+  - slider
+  - builder
+  - application
+  - tagging
+  - itembrowser
+  - in_place_completer
+stylesheets: 
+- base: 
+  - winnow
+  - tables
+  - slider
+  - scaffold

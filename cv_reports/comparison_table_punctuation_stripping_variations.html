@@ -1,0 +1,687 @@
+
+    <html>
+      <head>
+        <title>Cross Validation Result for Runs 1J773B8D6, 5E5K68IKF, HC168C7L5, BD3DAFD00, 3IMD1K576, 5IDIK7A80</title>
+        <style>
+        body {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+        	font-size: 12px;
+        }
+        
+        table {
+        	width: 100%;
+        	background: #D0EEFF;
+        	border: 1px solid #EEE;
+        	margin-top: 10px;
+        	clear:  both;
+        }
+
+        table th {
+        	font-size: 12px;
+        	text-align: left;
+        	text-transform: capitalize;
+        	vertical-align: top;
+        	border-bottom: 1px solid white;
+        }
+        
+        table th.number, table td.number {
+          text-align: right;
+        }
+        table td {
+        	background: white;
+        	font-size: 12px;
+        	padding-left: 2px;
+        	padding-right: 5px;
+        	vertical-align: top;
+        }
+        
+        div.bar {
+          overflow: visible;
+          white-space: nowrap;
+          border: 1px solid #999;
+          margin: 2px 0px;
+          padding: 2px -20px 2px 2px;
+        }
+        
+        p.explanation {
+          font-weight: normal;
+          font-size: 90%;
+          font-style: italics;
+          width: 150px;
+        }
+        
+        </style>
+      </head>
+      <body>
+        <h1>Cross Validation Result for Runs 1J773B8D6, 5E5K68IKF, HC168C7L5, BD3DAFD00, 3IMD1K576, 5IDIK7A80</h1>
+        <p>Generated at Tue Jan 09 17:03:25 +1030 2007</p>
+        <h2>Cross Validation Executions</p>
+        <table>
+          <tr>
+            <th>Run Number</th>
+            <th>Comment</th>
+            <th>Total Classifications</th>
+            <th>+ve cutoff</th>
+            <th>-ve cutoff</th>
+            <th>Folds</th>
+          <tr>
+        
+          <tr>
+            <td width="100px" style="background-color: #FFEC8B">1J773B8D6</td>
+            <td>Hpricot Based Tokenizer: strip html and split on whitespace. (fixed top level text 2)</td>
+            <td>151851</td>
+            <td>0.9</td>
+            <td>0.9</td>
+            <td>10</td>
+          </tr>
+        
+          <tr>
+            <td width="100px" style="background-color: salmon">5E5K68IKF</td>
+            <td>Hpricot Based Tokenizer: strip html tags, punctuation and split on whitespace. (punctuation becomes ' ')</td>
+            <td>151851</td>
+            <td>0.9</td>
+            <td>0.9</td>
+            <td>10</td>
+          </tr>
+        
+          <tr>
+            <td width="100px" style="background-color: #AAFF77">HC168C7L5</td>
+            <td>Hpricot Based Tokenizer: strip html tags, punctuation and split on whitespace. (punctuation becomes empty string)</td>
+            <td>151851</td>
+            <td>0.9</td>
+            <td>0.9</td>
+            <td>10</td>
+          </tr>
+        
+          <tr>
+            <td width="100px" style="background-color: #FF99FF">BD3DAFD00</td>
+            <td>Hpricot Based Tokenizer: strip html tags, punctuation, including leading dashes, and split on whitespace. (punctuation becomes empty string)</td>
+            <td>151851</td>
+            <td>0.9</td>
+            <td>0.9</td>
+            <td>10</td>
+          </tr>
+        
+          <tr>
+            <td width="100px" style="background-color: #FFFFDD">3IMD1K576</td>
+            <td>Hpricot Based Tokenizer: strip html tags, punctuation, including leading dashes and HTML entities, and split on whitespace. (punctuation becomes empty string)</td>
+            <td>151851</td>
+            <td>0.9</td>
+            <td>0.9</td>
+            <td>10</td>
+          </tr>
+        
+          <tr>
+            <td width="100px" style="background-color: #CCFFCC">5IDIK7A80</td>
+            <td>Hpricot Based Tokenizer: strip html tags, punctuation, including leading dashes and HTML entities, and split on whitespace. (punctuation becomes empty string). Adds both the raw token and the processed token to the token list.</td>
+            <td>151851</td>
+            <td>0.9</td>
+            <td>0.9</td>
+            <td>10</td>
+          </tr>
+        
+        </table>
+        
+        <h2>Execution Results</h2>
+        <table>
+          <tr>
+            <th colspan="2">Unwanted Tags - 3%</th>
+          </tr>
+          
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True positive rate</th>
+            <td>
+              
+                <div class="bar" style="width: 85%; background-color: #FFEC8B;">
+                  Run 1J773B8D6: 0.845
+                </div>
+              
+                <div class="bar" style="width: 81%; background-color: salmon;">
+                  Run 5E5K68IKF: 0.810
+                </div>
+              
+                <div class="bar" style="width: 81%; background-color: #AAFF77;">
+                  Run HC168C7L5: 0.814
+                </div>
+              
+                <div class="bar" style="width: 81%; background-color: #FF99FF;">
+                  Run BD3DAFD00: 0.814
+                </div>
+              
+                <div class="bar" style="width: 81%; background-color: #FFFFDD;">
+                  Run 3IMD1K576: 0.815
+                </div>
+              
+                <div class="bar" style="width: 84%; background-color: #CCFFCC;">
+                  Run 5IDIK7A80: 0.838
+                </div>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True negative rate</th>
+            <td>
+              
+                <div class="bar" style="width: 84%; background-color: #FFEC8B;">
+                  Run 1J773B8D6: 0.841
+                </div>
+              
+                <div class="bar" style="width: 86%; background-color: salmon;">
+                  Run 5E5K68IKF: 0.865
+                </div>
+              
+                <div class="bar" style="width: 86%; background-color: #AAFF77;">
+                  Run HC168C7L5: 0.864
+                </div>
+              
+                <div class="bar" style="width: 86%; background-color: #FF99FF;">
+                  Run BD3DAFD00: 0.865
+                </div>
+              
+                <div class="bar" style="width: 86%; background-color: #FFFFDD;">
+                  Run 3IMD1K576: 0.862
+                </div>
+              
+                <div class="bar" style="width: 85%; background-color: #CCFFCC;">
+                  Run 5IDIK7A80: 0.852
+                </div>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <th colspan="2">Normal Tags - 97%</th>
+          </tr>
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True positive rate</td>
+            <td>
+              
+                <div class="bar" style="width: 81%; background-color: #FFEC8B;">
+                  Run 1J773B8D6: 0.814
+                </div>
+              
+                <div class="bar" style="width: 79%; background-color: salmon;">
+                  Run 5E5K68IKF: 0.791
+                </div>
+              
+                <div class="bar" style="width: 80%; background-color: #AAFF77;">
+                  Run HC168C7L5: 0.801
+                </div>
+              
+                <div class="bar" style="width: 80%; background-color: #FF99FF;">
+                  Run BD3DAFD00: 0.803
+                </div>
+              
+                <div class="bar" style="width: 80%; background-color: #FFFFDD;">
+                  Run 3IMD1K576: 0.795
+                </div>
+              
+                <div class="bar" style="width: 82%; background-color: #CCFFCC;">
+                  Run 5IDIK7A80: 0.815
+                </div>
+              
+            </td>
+          </tr>          
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True negative rate</td>
+            <td>
+              
+                <div class="bar" style="width: 88%; background-color: #FFEC8B;">
+                  Run 1J773B8D6: 0.880
+                </div>
+              
+                <div class="bar" style="width: 87%; background-color: salmon;">
+                  Run 5E5K68IKF: 0.871
+                </div>
+              
+                <div class="bar" style="width: 87%; background-color: #AAFF77;">
+                  Run HC168C7L5: 0.869
+                </div>
+              
+                <div class="bar" style="width: 87%; background-color: #FF99FF;">
+                  Run BD3DAFD00: 0.869
+                </div>
+              
+                <div class="bar" style="width: 87%; background-color: #FFFFDD;">
+                  Run 3IMD1K576: 0.869
+                </div>
+              
+                <div class="bar" style="width: 87%; background-color: #CCFFCC;">
+                  Run 5IDIK7A80: 0.865
+                </div>
+              
+            </td>
+          </tr>
+        </table>
+        
+                
+         <table>
+          <tr><th colspan="2">Summary comparisons with baseline of execution 1J773B8D6</th></tr>
+          <tr>
+            <th>&nbsp;</th>
+          
+            <th class="number">5E5K68IKF</th>
+          
+            <th class="number">HC168C7L5</th>
+          
+            <th class="number">BD3DAFD00</th>
+          
+            <th class="number">3IMD1K576</th>
+          
+            <th class="number">5IDIK7A80</th>
+          
+          </tr>
+          
+            <tr>
+              <th width="150px">true_positive_rate</th>
+              
+              <td class="number">-3.8%</td>
+              
+              <td class="number">-3.2%</td>
+              
+              <td class="number">-3.1%</td>
+              
+              <td class="number">-3.3%</td>
+              
+              <td class="number">-0.6%</td>
+              
+            </tr>
+          
+            <tr>
+              <th width="150px">false_positive_rate</th>
+              
+              <td class="number">+6.7%</td>
+              
+              <td class="number">+8.4%</td>
+              
+              <td class="number">+8.8%</td>
+              
+              <td class="number">+8.9%</td>
+              
+              <td class="number">+12.0%</td>
+              
+            </tr>
+          
+            <tr>
+              <th width="150px">true_negative_rate</th>
+              
+              <td class="number">-0.9%</td>
+              
+              <td class="number">-1.2%</td>
+              
+              <td class="number">-1.2%</td>
+              
+              <td class="number">-1.2%</td>
+              
+              <td class="number">-1.6%</td>
+              
+            </tr>
+          
+            <tr>
+              <th width="150px">false_negative_rate</th>
+              
+              <td class="number">+19.5%</td>
+              
+              <td class="number">+16.2%</td>
+              
+              <td class="number">+15.9%</td>
+              
+              <td class="number">+16.8%</td>
+              
+              <td class="number">+3.2%</td>
+              
+            </tr>
+          
+            <tr>
+              <th width="150px">precision</th>
+              
+              <td class="number">-8.3%</td>
+              
+              <td class="number">-9.0%</td>
+              
+              <td class="number">-9.2%</td>
+              
+              <td class="number">-9.4%</td>
+              
+              <td class="number">-9.5%</td>
+              
+            </tr>
+          
+            <tr>
+              <th width="150px">accuracy</th>
+              
+              <td class="number">-1.0%</td>
+              
+              <td class="number">-1.2%</td>
+              
+              <td class="number">-1.3%</td>
+              
+              <td class="number">-1.3%</td>
+              
+              <td class="number">-1.6%</td>
+              
+            </tr>
+          
+        </table>
+        
+        
+      <table>
+        <tr>
+          <th colspan="2">Details</th>
+        </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True positive rate</td>
+            <td>
+            
+              <div class="bar" style="width: 83%; background-color: #FFEC8B">
+                Run 1J773B8D6: 0.837
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: salmon">
+                Run 5E5K68IKF: 0.805
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: #AAFF77">
+                Run HC168C7L5: 0.811
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: #FF99FF">
+                Run BD3DAFD00: 0.811
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: #FFFFDD">
+                Run 3IMD1K576: 0.809
+              </div>
+            
+              <div class="bar" style="width: 82%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 0.832
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True negative rate</td>
+            <td>
+            
+              <div class="bar" style="width: 87%; background-color: #FFEC8B">
+                Run 1J773B8D6: 0.879
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: salmon">
+                Run 5E5K68IKF: 0.871
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #AAFF77">
+                Run HC168C7L5: 0.869
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #FF99FF">
+                Run BD3DAFD00: 0.869
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #FFFFDD">
+                Run 3IMD1K576: 0.869
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 0.865
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;False positive</td>
+            <td>
+            
+              <div class="bar" style="width: 12%; background-color: #FFEC8B">
+                Run 1J773B8D6: 17762
+              </div>
+            
+              <div class="bar" style="width: 12%; background-color: salmon">
+                Run 5E5K68IKF: 18960
+              </div>
+            
+              <div class="bar" style="width: 13%; background-color: #AAFF77">
+                Run HC168C7L5: 19257
+              </div>
+            
+              <div class="bar" style="width: 13%; background-color: #FF99FF">
+                Run BD3DAFD00: 19325
+              </div>
+            
+              <div class="bar" style="width: 13%; background-color: #FFFFDD">
+                Run 3IMD1K576: 19341
+              </div>
+            
+              <div class="bar" style="width: 13%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 19897
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True positive</td>
+            <td>
+            
+              <div class="bar" style="width: 2%; background-color: #FFEC8B">
+                Run 1J773B8D6: 3808
+              </div>
+            
+              <div class="bar" style="width: 2%; background-color: salmon">
+                Run 5E5K68IKF: 3663
+              </div>
+            
+              <div class="bar" style="width: 2%; background-color: #AAFF77">
+                Run HC168C7L5: 3688
+              </div>
+            
+              <div class="bar" style="width: 2%; background-color: #FF99FF">
+                Run BD3DAFD00: 3690
+              </div>
+            
+              <div class="bar" style="width: 2%; background-color: #FFFFDD">
+                Run 3IMD1K576: 3683
+              </div>
+            
+              <div class="bar" style="width: 2%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 3784
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;False negative</td>
+            <td>
+            
+              <div class="bar" style="width: 0%; background-color: #FFEC8B">
+                Run 1J773B8D6: 742
+              </div>
+            
+              <div class="bar" style="width: 1%; background-color: salmon">
+                Run 5E5K68IKF: 887
+              </div>
+            
+              <div class="bar" style="width: 1%; background-color: #AAFF77">
+                Run HC168C7L5: 862
+              </div>
+            
+              <div class="bar" style="width: 1%; background-color: #FF99FF">
+                Run BD3DAFD00: 860
+              </div>
+            
+              <div class="bar" style="width: 1%; background-color: #FFFFDD">
+                Run 3IMD1K576: 867
+              </div>
+            
+              <div class="bar" style="width: 0%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 766
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;True negative</td>
+            <td>
+            
+              <div class="bar" style="width: 84%; background-color: #FFEC8B">
+                Run 1J773B8D6: 129539
+              </div>
+            
+              <div class="bar" style="width: 84%; background-color: salmon">
+                Run 5E5K68IKF: 128341
+              </div>
+            
+              <div class="bar" style="width: 83%; background-color: #AAFF77">
+                Run HC168C7L5: 128044
+              </div>
+            
+              <div class="bar" style="width: 83%; background-color: #FF99FF">
+                Run BD3DAFD00: 127976
+              </div>
+            
+              <div class="bar" style="width: 83%; background-color: #FFFFDD">
+                Run 3IMD1K576: 127960
+              </div>
+            
+              <div class="bar" style="width: 83%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 127404
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;Precision</td>
+            <td>
+            
+              <div class="bar" style="width: 17%; background-color: #FFEC8B">
+                Run 1J773B8D6: 0.177
+              </div>
+            
+              <div class="bar" style="width: 16%; background-color: salmon">
+                Run 5E5K68IKF: 0.162
+              </div>
+            
+              <div class="bar" style="width: 16%; background-color: #AAFF77">
+                Run HC168C7L5: 0.161
+              </div>
+            
+              <div class="bar" style="width: 16%; background-color: #FF99FF">
+                Run BD3DAFD00: 0.160
+              </div>
+            
+              <div class="bar" style="width: 16%; background-color: #FFFFDD">
+                Run 3IMD1K576: 0.160
+              </div>
+            
+              <div class="bar" style="width: 16%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 0.160
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;Accuracy</td>
+            <td>
+            
+              <div class="bar" style="width: 87%; background-color: #FFEC8B">
+                Run 1J773B8D6: 0.878
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: salmon">
+                Run 5E5K68IKF: 0.869
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #AAFF77">
+                Run HC168C7L5: 0.868
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #FF99FF">
+                Run BD3DAFD00: 0.867
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #FFFFDD">
+                Run 3IMD1K576: 0.867
+              </div>
+            
+              <div class="bar" style="width: 86%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 0.864
+              </div>
+            
+            </td>
+          </tr>
+        
+          <tr>
+            <td width="150px">&nbsp;&nbsp;Recall</td>
+            <td>
+            
+              <div class="bar" style="width: 83%; background-color: #FFEC8B">
+                Run 1J773B8D6: 0.837
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: salmon">
+                Run 5E5K68IKF: 0.805
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: #AAFF77">
+                Run HC168C7L5: 0.811
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: #FF99FF">
+                Run BD3DAFD00: 0.811
+              </div>
+            
+              <div class="bar" style="width: 80%; background-color: #FFFFDD">
+                Run 3IMD1K576: 0.809
+              </div>
+            
+              <div class="bar" style="width: 82%; background-color: #CCFFCC">
+                Run 5IDIK7A80: 0.832
+              </div>
+            
+            </td>
+          </tr>
+        
+      </table>
+        <h2>Statistic Definitions</h2>
+        <dl>
+          <dt>true_positive (TP)</dt>
+          <dd>The number of times a classifier applied a tag positively that coincided 
+          with the human applied tag.</dd>
+          <dt>true_negative (TN)</dt>
+          <dd>The number of times a classifier applied a tag negatively that coincided 
+          with the human applied tag.</dd>
+          <dt>false_positive (FP)</dt>
+          <dd>The number of times a classifier applied a tag positively when the human 
+          applied it negatively.</dd>
+          <dt>false_negative (FN)</dt>
+          <dd>The number of times a classifier applied a tag negatively whern the human 
+          applied it positively.</dd>
+        </dl>
+        <h3>Summary statistics</h3>
+        <dl>
+          <dt>total positives (P)</dt>
+          <dd>FP + TN</dd>
+          <dt>total negatives (N)</dt>
+            <dd>TN + FP</dd>
+          <dt>false positive rate</dt>
+            <dd>FP / N (Lower is better)</dd>
+          <dt>true positive rate</dt>
+            <dd>TP / P (Higher is better)</dd>
+          <dt>accuracy </dt>
+            <dd>(TP + TN)/ (P + N)  (Higher is better, should approach 1)</dd>
+          <dt>precision</dt>
+            <dd>TP / (TP + FP) (Higher is better, should approach 1)</dd>
+          <dt>recall</dt>
+            <dd>TP/P (Same as true positive rate, why do we have this?)</dd>
+        </dl>
+      </body>
+    </html>

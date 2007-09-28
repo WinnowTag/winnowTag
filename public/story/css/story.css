@@ -1,0 +1,49 @@
+/* CSS Document */
+
+body,td,th {
+	font-family: Georgia, Times New Roman, Times, serif;
+	font-size: 11pt;
+	margin-right: 20px;
+	margin-left: 20px;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+h1 {
+	font-size: 16pt;
+}
+h2 {
+	font-size: 13pt;
+}
+h3 {
+	font-size: 10pt;
+}
+h4 {
+	font-size: 8pt;
+}
+h5 {
+	font-size: 7pt;
+}
+h6 {
+	font-size: 6pt;
+}
+
+.nav_links {
+	float: left;
+}
+.single_nav_link {
+	padding-right: 10px;
+	text-align: left;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	font-variant: normal;
+	font-weight: normal;
+}
+
+.trac_portal {
+	height: 75px;
+	width: 75px;
+	margin-top: -20px;
+	margin-right: -10px;
+	float: right;
+}

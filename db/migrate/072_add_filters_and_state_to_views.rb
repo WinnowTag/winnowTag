@@ -1,0 +1,15 @@
+class AddFiltersAndStateToViews < ActiveRecord::Migration
+  def self.up
+    add_column :views, :text_filter, :text
+    add_column :views, :tag_filter, :text
+    add_column :views, :feed_filter, :text
+    add_column :views, :state, :string
+  end
+
+  def self.down
+    remove_column :views, :text_filter
+    remove_column :views, :tag_filter
+    remove_column :views, :feed_filter
+    remove_column :views, :state
+  end
+end

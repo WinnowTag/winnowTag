@@ -1,0 +1,12 @@
+HpricotTestHelper
+=================
+
+Author: Luke Redpath
+Email: contact @nospam@ lukeredpath.co.uk
+Web: www.lukeredpath.co.uk / opensource.agileevolved.com
+
+HpricotTestHelper is a small extension to Test::Unit that lets you use
+whytheluckystiff's Hpricot HTML parser to test your Rails views.
+
+Usage instructions can be found at:
+http://www.lukeredpath.co.uk/index.php/2006/07/07/testing-your-rails-views-with-hpricot/#comments

@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Peerworks - Collaborative moderation</title>
+<link href="css/story.css" rel="stylesheet" type="text/css" />
+</head>
+<body><!-- #BeginLibraryItem "/Library/Peerworks navigation bar.lbi" -->
+<link href="css/story.css" rel="stylesheet" type="text/css" />
+<a href="/winnow/trac/login"><div class="trac_portal"></div>
+</a>
+<a href="index.html"><img src="images/peerworks_logo.gif" width="484" height="73" border="0" /></a>
+<hr />
+<div class="nav_links">
+<a class="single_nav_link" href="index.html">home</a> | 
+<a class="single_nav_link" href="online_collaboration.html">online collaboration</a> | 
+<a class="single_nav_link" href="online_content_production.html">online content production</a> | 
+<a class="single_nav_link" href="collaborative_moderation.html">collaborative moderation</a>
+</div>
+<div align="right"><a href="job.html" class="single_nav_link"><strong>contract
+      position </strong></a></div>
+<!-- #EndLibraryItem --><h1>Collaborative moderation</h1>
+<p>Collaborative moderation is a proposed &ldquo;pliant&rdquo; way to encourage emergent social structure and coordination in loosely coupled groups.&nbsp; </p> 
+
+<p>The examples of successful open online content production show that computer technology of the right sort can contribute immensely to coordinating such communities in some circumstances.&nbsp; On the other hand the many failures show that open communities online are often subject to horrible problems. </p> 
+
+<p>Our goal is to develop computer infrastructure that would help such self-organizing communities form and help them to be more intelligent than they would otherwise be.&nbsp; </p> 
+
+<h2>Motivating problem</h2>
+
+<p>Comparison of the internal communication mechanisms of open source projects and broader community sites like Slashdot brings to light a problem which is the focus of the remainder of this white paper.&nbsp; In open source project communication environments, the mechanisms are more focused and structured, because the goals and relevant issues are fairly well defined by the context of the project.&nbsp; In contrast, maintaining the focus of a site like Slashdot is a constant struggle, and the community is too diffuse and unstructured to do any intensive or sustained work.&nbsp; </p> 
+
+<p>This suggests that community sites face a tradeoff between focus and scope.&nbsp; A community site has to keep its focus narrow enough so that a high proportion of the top level items are relevant to the community interest.&nbsp; Inevitably this forces it to exclude some (possibly many) items not of &ldquo;general&rdquo; interest.&nbsp; Any community site with a sufficiently narrow focus is likely to cover only a fraction of the interests of most of its members&ndash; but the interests omitted will be those that <b>differ</b> among the members.&nbsp; </p> 
+
+<p>Such sites (and many others) also face a closely related tradeoff between community size and quality of participation.&nbsp; Increasing size tends to increase scope, depth and timeliness, because some member is more likely to contribute relevant news or be able to answer a question or solve a problem.&nbsp; However, at the same time, increasing size increases the amount of irrelevant or pernicious commentary, making it harder to find any worthwhile commentary, and less likely that knowledgeable members will notice questions they could answer, or even be willing to participate at all.&nbsp; </p> 
+
+<p>In the discussion that follows I will focus on generic community discussion
+  mechanisms, because these have the broadest application in helping to generate
+  self-organizing communities.&nbsp; However, as in the open source or network
+  of companies examples, additional mechanisms are certainly needed &mdash; source
+  management, bug tracking, contracting between companies, etc. etc.&nbsp; Furthermore
+  the discussion below doesn&rsquo;t deal directly with the emergence of explicit
+  social structure, such as identified mentors or leaders, or sub-group boundaries
+  that help to justify a higher level of trust between people inside the boundary.&nbsp; These
+  are also important issues and will be taken up at another time.&nbsp; </p> 
+
+<h2>State of the art</h2>
+
+<p>Community sites have a range of mechanisms for handling the tradeoff between focus and comprehensiveness.&nbsp; Large sites have the special problem that the volume of postings by members is too great for the site managers to moderate, so these sites have evolved mechanisms that enlist the community members in moderation.&nbsp; These sites include Slashdot (which was an early implementer of community moderation), Kuro5hin (which was partly a reaction to perceived limitations of the Slashdot mechanism, and DailyKOS (which is now one of the largest political sites on the web, and which originally ran on the Kuro5hin code base, called Scoop).&nbsp; </p> 
+
+<p>Slashdot is a useful example of these broad based community sites.&nbsp; Top level items are selected by &ldquo;the staff&rdquo; based on user submissions.&nbsp; Comments are hierarchically threaded.&nbsp; All submitted comments are posted, but comments are rated from +5 to &ndash;1.&nbsp; The web viewer allows you filter out comments below a given threshold, and also to sort by rating.&nbsp; Furthermore, headlines of the highest rated comments across all items are shown in box on the front page.&nbsp; </p> 
+
+<p>The mechanisms actually used to generate these ratings vary from site to site, but they tend to be complex, because they are gamed by the community members.&nbsp; Furthermore, essentially every site has ongoing disagreement and resentment about the moderation process; some significant number of community members feel that others are &ldquo;mis-moderating&rdquo; in one way or another.&nbsp; </p> 
+
+<p>None the less, moderation is essential and usually works well enough, but there are two problems which seem fairly intractable.&nbsp; </p> 
+
+<p style='margin-left:.25in;text-indent:-.25in'>1)&nbsp;&nbsp;&nbsp; Most seriously,
+  the moderation represents &ldquo;average opinion&rdquo;.&nbsp; To the extent
+  that one systematically disagrees with the moderation, one has no alternative
+  but to join another community.&nbsp; However because of the network effects
+  &mdash; other communities are too small to offer the same levels of comprehensiveness,
+  depth and timeliness, and are unlikely to grow in competition with this one
+  if they are similar &mdash; finding another community is not usually an attractive
+  option.&nbsp; </p> 
+
+<p style='margin-left:.25in;text-indent:-.25in'>2)&nbsp;&nbsp;&nbsp; Furthermore, in spite of the fairly large pool of randomly selected moderators, moderation resources are inadequate, or at least not distributed adequately.&nbsp; Comments made late in a discussion, or deeply nested in the reply structure, are slow to get moderation attention.&nbsp; One symptom of this is replies saying &ldquo;Hey, moderate the preceding comment up, it&rsquo;s good.&rdquo;&nbsp; Such comments are fairly frequent and also often obviously correct.&nbsp; </p> 
+
+<p>Possibly the second problem could be addressed by increasing the proportion of time people have moderation power, but moderation is actually somewhat burdensome, since one has to try to take the &ldquo;community member&rdquo; perspective: &ldquo;This isn&rsquo;t just my opinion, it is a valid moderation decision.&rdquo;&nbsp; </p> 
+
+<h2>What would we like?</h2>
+
+<p>Ideally, each person could have a site that showed them all and only the items they are interested in, as soon as they appeared anywhere on the web, and that elicited commentary from the most informed, intelligent and articulate web denizens interested in the same items.&nbsp; The ratings of the comments should reflect their own level of interest in or entertainment by the comments.&nbsp; Based on the implicit relationships defined by our shared interests, users could develop broader relationships and more community structure with people who have shared interests, but the structure would always remain fluid and would change as users&rsquo; interests and judgments evolve. </p> 
+
+<p>Of course the problem here is that if this site fit any one user&rsquo;s interests perfectly, it would be a site with a community size of 1.&nbsp; Conversely, if all the people necessary to find these items and provide this commentary were in the community, it would be too big to have adequate focus and most users would be deluged with items and comments they didn&rsquo;t want.&nbsp; Furthermore the averaging effect of moderation would guarantee that no one would find the ratings all that useful.&nbsp; </p> 
+
+<p>Probably most users wouldn&rsquo;t mind continuously moderating the site, as long as they could give their opinion only on the items they care about.&nbsp; Users would also be more likely to post comments if they felt they would be seen by other users who were interested, and any replies would only be presented to the poster if they in turn seemed relevant.&nbsp; </p> 
+
+<h2>A possible solution</h2>
+
+<p>The solution to this conflict seems to be to switch from the current norm of &ldquo;universal&rdquo; moderation, where each moderator is asked to make a judgment for the entire community, to &ldquo;individual&rdquo; moderation, where each person moderates just for themselves, and the system finds ways to cluster individual judgments so that useful aggregation is possible.&nbsp; </p> 
+
+<p>In this approach, each user would always have moderation power, but their decisions would only affect their view and the views of others who the collaborative profiling had decided had similar tastes with respect to that type of material.&nbsp; No meta-moderation would be necessary; in some sense the profile matching does the meta-moderation.&nbsp; </p> 
+
+<p>Since people would be moderating just for themselves, they have no incentive to &ldquo;game the system&rdquo;, and so their moderation can be taken as a valid &ldquo;revealed preference&rdquo;.&nbsp; Furthermore, since their moderation directly contributes to their benefit from the site, they have much more incentive to moderate adequately than in a large community site, where their moderation is likely to be &ldquo;lost in the noise&rdquo;.&nbsp; </p> 
+
+<p>Furthermore, this approach has the potential to make censorship, banning, etc. unnecessary (except perhaps to prevent spam).&nbsp; To the extent that items are uninteresting or actively unpleasant to a given user, they will simply not see them.&nbsp; The trolls can continue to post but they will be talking only to each other.&nbsp; </p> 
+
+<h2>Handling unmoderated comments</h2>
+
+<p>If we adopt collaborative moderation as the primary mechanism for structuring users&rsquo; views of a very large pool of comments, then unmoderated comments pose a key problem.&nbsp; Bootstrapping the moderation process requires that people gain benefit from their moderation fairly quickly.&nbsp; However, unless the moderating population is very large, many items potentially interesting to a given user are likely to go unseen by any &ldquo;similar&rdquo; user, and so they will never get a moderation value.&nbsp; </p> 
+
+<p>Happily, Bayesian spam filtering offers a potential solution to this problem.&nbsp; As a user moderates it is easy to build up a Bayesian filter that reflects their choices.&nbsp; Of course such a filter will be imprecise, but based on the evidence from spam filtering it is likely to do a good enough job to bootstrap the process.&nbsp; Furthermore our job is likely to be easier than spam filtering, since for the most part, the community filtering process will not be subject to the same level of aggressive content faking attacks as the spam filtering process.&nbsp; </p> 
+
+<p>The adoption of Bayesian filtering provides another potential benefit.&nbsp; Rather than trying to correlate each user&rsquo;s moderation choices with those of other users, we can look for correlations between their Bayesian classifiers.&nbsp; This should work even in cases where two users have never moderated the same item.&nbsp; So far this is a speculative idea; actually trying it will raise interesting problems.&nbsp; </p> 
+
+<h2>Tagging </h2>
+
+<p>Users moderating items need not be limited to simply rating them &ldquo;good&rdquo; or &ldquo;bad&rdquo;.&nbsp; We can just as easily allow users to attach tags to items (including &ldquo;Good&rdquo; and &ldquo;Bad&rdquo; if they wish).&nbsp; And recent work with Bayesian filtering indicates that it can learn tagging as well as simply &ldquo;good&rdquo; and &ldquo;bad&rdquo; classification.&nbsp; </p> 
+
+<p>By filtering for specific tags, users can create tailored views that reflect specific interests or moods.&nbsp; Furthermore, tag classifiers can be correlated across users, just as &ldquo;good&rdquo; or &ldquo;bad&rdquo; classifiers can.&nbsp; Finally, tagging provides more information about a user&rsquo;s interests, and so correlation with other users can be finer grained.&nbsp; </p> 
+
+
+<!-- #BeginLibraryItem "/Library/wtl_primary.lbi" -->
+<!-- START OF SDC Advanced Tracking Code -->
+<!-- Copyright (c) 1996-2005 WebTrends Inc.  All rights reserved. -->
+<!-- $DateTime: 2005/12/15 15:37:36 $ -->
+<script type="text/javascript"><!--
+var gTimeZone = 0;
+// Code section for Enable First-Party Cookie Tracking
+function dcsGetCookie(name){
+	var pos=document.cookie.indexOf(name+"=");
+	if (pos!=-1){
+		var start=pos+name.length+1;
+		var end=document.cookie.indexOf(";",start);
+		if (end==-1){
+			end=document.cookie.length;
+		}
+		return unescape(document.cookie.substring(start,end));
+	}
+	return null;
+}
+function dcsGetCrumb(name,crumb){
+	var aCookie=dcsGetCookie(name).split(":");
+	for (var i=0;i<aCookie.length;i++){
+		var aCrumb=aCookie[i].split("=");
+		if (crumb==aCrumb[0]){
+			return aCrumb[1];
+		}
+	}
+	return null;
+}
+function dcsGetIdCrumb(name,crumb){
+	var cookie=dcsGetCookie(name);
+	var id=cookie.substring(0,cookie.indexOf(":lv="));
+	var aCrumb=id.split("=");
+	for (var i=0;i<aCrumb.length;i++){
+		if (crumb==aCrumb[0]){
+			return aCrumb[1];
+		}
+	}
+	return null;
+}
+function dcsFPC(offset){
+	if (typeof(offset)=="undefined"){
+		return;
+	}
+	if (document.cookie.indexOf("WTLOPTOUT=")!=-1){
+		return;
+	}
+	var name=gFpc;
+	var dCur=new Date();
+	var adj=(dCur.getTimezoneOffset()*60000)+(offset*3600000);
+	dCur.setTime(dCur.getTime()+adj);
+	var dExp=new Date(dCur.getTime()+315360000000);
+	var dSes=new Date(dCur.getTime());
+	if (document.cookie.indexOf(name+"=")==-1){
+		if ((typeof(gWtId)!="undefined")&&(gWtId!="")){
+			WT.co_f=gWtId;
+		}
+		else if ((typeof(gTempWtId)!="undefined")&&(gTempWtId!="")){
+			WT.co_f=gTempWtId;
+			WT.vt_f="1";
+		}
+		else{
+			WT.co_f="2";
+			var cur=dCur.getTime().toString();
+			for (var i=2;i<=(32-cur.length);i++){
+				WT.co_f+=Math.floor(Math.random()*16.0).toString(16);
+			}
+			WT.co_f+=cur;
+			WT.vt_f="1";
+		}
+		if (typeof(gWtAccountRollup)=="undefined"){
+			WT.vt_f_a="1";
+		}
+		WT.vt_f_s="1";
+		WT.vt_f_d="1";
+	}
+	else{
+		var id=dcsGetIdCrumb(name,"id");
+		var lv=parseInt(dcsGetCrumb(name,"lv"));
+		var ss=parseInt(dcsGetCrumb(name,"ss"));
+		if ((id==null)||(id=="null")||isNaN(lv)||isNaN(ss)){
+			return;
+		}
+		WT.co_f=id;
+		var dLst=new Date(lv);
+		dSes.setTime(ss);
+		if ((dCur.getTime()>(dLst.getTime()+1800000))||(dCur.getTime()>(dSes.getTime()+28800000))){
+			dSes.setTime(dCur.getTime());
+			WT.vt_f_s="1";
+		}
+		if ((dCur.getDay()!=dLst.getDay())||(dCur.getMonth()!=dLst.getMonth())||(dCur.getYear()!=dLst.getYear())){
+			WT.vt_f_d="1";
+		}
+	}
+	WT.co_f=escape(WT.co_f);
+	WT.vt_sid=WT.co_f+"."+(dSes.getTime()-adj);
+	var expiry="; expires="+dExp.toGMTString();
+	document.cookie=name+"="+"id="+WT.co_f+":lv="+dCur.getTime().toString()+":ss="+dSes.getTime().toString()+expiry+"; path=/"+(((typeof(gFpcDom)!="undefined")&&(gFpcDom!=""))?("; domain="+gFpcDom):(""));
+	if (document.cookie.indexOf(name+"=")==-1){
+		WT.co_f=WT.vt_sid=WT.vt_f_s=WT.vt_f_d="";
+		WT.vt_f=WT.vt_f_a="2";
+	}
+}
+
+// Code section for Use the new first-party cookie generated with this tag.
+var gFpc="WT_FPC";
+var gConvert=true;
+
+// Code section for Enable SmartView Transition Page tracking
+function dcsTP(){
+	if (document.cookie.indexOf("WTLOPTOUT=")!=-1){
+		return;
+	}
+	var name="WT_DC";
+	var expiry="; expires=Thu, 31-Dec-2020 08:00:00 GMT";
+	var path="; path=/";
+	var domain="";
+	if ((document.cookie.indexOf(name+"=")!=-1)&&(dcsGetCrumb(name,"tsp")=="1")){
+		WT.ttp="1";
+	}
+	if (dcsGetMeta("SmartView_Page")=="1"){
+		WT.tsp="1";
+		document.cookie=name+"=tsp=1"+expiry+path+domain;
+	}
+	else{
+		document.cookie=name+"=; expires=Sun, 1-Jan-1995 00:00:00 GMT;"+path+domain;
+	}
+}
+function dcsGetMeta(name){
+	var elems;
+	if (document.all){
+		elems=document.all.tags("meta");
+	}
+	else if (document.documentElement){
+		elems=document.getElementsByTagName("meta");
+	}
+	if (typeof(elems)!="undefined"){
+		for (var i=1;i<=elems.length;i++){
+			var meta=elems.item(i-1);
+			if (meta.name&&(meta.name.indexOf(name)==0)){
+				return meta.content;
+				break;
+			}
+		}
+	}
+	return null;
+}
+//-->
+</script>
+<!-- END OF SDC Advanced Tracking Code -->
+<!-- START OF SmartSource Data Collector TAG -->
+<!-- Copyright (c) 1996-2005 WebTrends Inc. All rights reserved. -->
+<!-- $DateTime: 2005/12/15 15:37:36 $ -->
+<script type="text/javascript"><!--
+var gDomain="statse.webtrendslive.com";
+var gDcsId="dcs0u6tvxf9xjyc86xhfhhzse_3j1b";
+
+if ((typeof(gConvert)!="undefined")&&gConvert&&(document.cookie.indexOf(gFpc+"=")==-1)&&(document.cookie.indexOf("WTLOPTOUT=")==-1)){
+	document.write("<SCR"+"IPT TYPE='text/javascript' SRC='"+"http"+(window.location.protocol.indexOf('https:')==0?'s':'')+"://"+gDomain+"/"+gDcsId+"/wtid.js"+"'><\/SCR"+"IPT>");
+}
+//-->
+</script>
+<script type="text/javascript"><!--
+var gImages=new Array;
+var gIndex=0;
+var DCS=new Object();
+var WT=new Object();
+var DCSext=new Object();
+var gI18n=false;
+if (window.RegExp){
+	var RE={"%09":/\t/g,"%20":/ /g,"%23":/\#/g,"%26":/\&/g,"%2B":/\+/g,"%3F":/\?/g,"%5C":/\\/g};
+	var I18NRE={"%25":/\%/g};
+}
+
+function dcsVar(){
+	var dCurrent=new Date();
+	WT.tz=dCurrent.getTimezoneOffset()/60*-1;
+	if (WT.tz==0){
+		WT.tz="0";
+	}
+	WT.bh=dCurrent.getHours();
+	WT.ul=navigator.appName=="Netscape"?navigator.language:navigator.userLanguage;
+	if (typeof(screen)=="object"){
+		WT.cd=navigator.appName=="Netscape"?screen.pixelDepth:screen.colorDepth;
+		WT.sr=screen.width+"x"+screen.height;
+	}
+	if (typeof(navigator.javaEnabled())=="boolean"){
+		WT.jo=navigator.javaEnabled()?"Yes":"No";
+	}
+	if (document.title){
+		WT.ti=gI18n?dcsEscape(dcsEncode(document.title),I18NRE):document.title;
+	}
+	WT.js="Yes";
+	WT.jv=dcsJV();
+	if (gI18n){
+		WT.em=(typeof(encodeURIComponent)=="function")?"uri":"esc";
+		if (typeof(document.defaultCharset)=="string"){
+			WT.le=document.defaultCharset;
+		} 
+		else if (typeof(document.characterSet)=="string"){
+			WT.le=document.characterSet;
+		}
+	}
+	WT.sp="65238";
+	DCS.dcsdat=dCurrent.getTime();
+	DCS.dcssip=window.location.hostname;
+	DCS.dcsuri=window.location.pathname;
+	if (window.location.search){
+		DCS.dcsqry=window.location.search;
+	}
+	if ((window.document.referrer!="")&&(window.document.referrer!="-")){
+		if (!(navigator.appName=="Microsoft Internet Explorer"&&parseInt(navigator.appVersion)<4)){
+			DCS.dcsref=gI18n?dcsEscape(window.document.referrer, I18NRE):window.document.referrer;
+		}
+	}
+}
+
+function A(N,V){
+	return "&"+N+"="+dcsEscape(V, RE);
+}
+
+function dcsEscape(S, REL){
+	if (typeof(REL)!="undefined"){
+		var retStr = new String(S);
+		for (R in REL){
+			retStr = retStr.replace(REL[R],R);
+		}
+		return retStr;
+	}
+	else{
+		return escape(S);
+	}
+}
+
+function dcsEncode(S){
+	return (typeof(encodeURIComponent)=="function")?encodeURIComponent(S):escape(S);
+}
+
+function dcsCreateImage(dcsSrc){
+	if (document.images){
+		gImages[gIndex]=new Image;
+		gImages[gIndex].src=dcsSrc;
+		gIndex++;
+	}
+	else{
+		document.write('<IMG ALT="" BORDER="0" NAME="DCSIMG" WIDTH="1" HEIGHT="1" SRC="'+dcsSrc+'">');
+	}
+}
+
+function dcsMeta(){
+	var elems;
+	if (document.all){
+		elems=document.all.tags("meta");
+	}
+	else if (document.documentElement){
+		elems=document.getElementsByTagName("meta");
+	}
+	if (typeof(elems)!="undefined"){
+		for (var i=1;i<=elems.length;i++){
+			var meta=elems.item(i-1);
+			if (meta.name){
+				if (meta.name.indexOf('WT.')==0){
+					WT[meta.name.substring(3)]=(gI18n&&(meta.name.indexOf('WT.ti')==0))?dcsEscape(dcsEncode(meta.content),I18NRE):meta.content;
+				}
+				else if (meta.name.indexOf('DCSext.')==0){
+					DCSext[meta.name.substring(7)]=meta.content;
+				}
+				else if (meta.name.indexOf('DCS.')==0){
+					DCS[meta.name.substring(4)]=(gI18n&&(meta.name.indexOf('DCS.dcsref')==0))?dcsEscape(meta.content,I18NRE):meta.content;
+				}
+			}
+		}
+	}
+}
+
+function dcsTag(){
+	if (document.cookie.indexOf("WTLOPTOUT=")!=-1){
+		return;
+	}
+	var P="http"+(window.location.protocol.indexOf('https:')==0?'s':'')+"://"+gDomain+(gDcsId==""?'':'/'+gDcsId)+"/dcs.gif?";
+	for (N in DCS){
+		if (DCS[N]) {
+			P+=A(N,DCS[N]);
+		}
+	}
+	for (N in WT){
+		if (WT[N]) {
+
+			P+=A("WT."+N,WT[N]);
+		}
+	}
+	for (N in DCSext){
+		if (DCSext[N]) {
+			P+=A(N,DCSext[N]);
+		}
+	}
+	if (P.length>2048&&navigator.userAgent.indexOf('MSIE')>=0){
+		P=P.substring(0,2040)+"&WT.tu=1";
+	}
+	dcsCreateImage(P);
+}
+
+function dcsJV(){
+	var agt=navigator.userAgent.toLowerCase();
+	var major=parseInt(navigator.appVersion);
+	var mac=(agt.indexOf("mac")!=-1);
+	var nn=((agt.indexOf("mozilla")!=-1)&&(agt.indexOf("compatible")==-1));
+	var nn4=(nn&&(major==4));
+	var nn6up=(nn&&(major>=5));
+	var ie=((agt.indexOf("msie")!=-1)&&(agt.indexOf("opera")==-1));
+	var ie4=(ie&&(major==4)&&(agt.indexOf("msie 4")!=-1));
+	var ie5up=(ie&&!ie4);
+	var op=(agt.indexOf("opera")!=-1);
+	var op5=(agt.indexOf("opera 5")!=-1||agt.indexOf("opera/5")!=-1);
+	var op6=(agt.indexOf("opera 6")!=-1||agt.indexOf("opera/6")!=-1);
+	var op7up=(op&&!op5&&!op6);
+	var jv="1.1";
+	if (nn6up||op7up){
+		jv="1.5";
+	}
+	else if ((mac&&ie5up)||op6){
+		jv="1.4";
+	}
+	else if (ie5up||nn4||op5){
+		jv="1.3";
+	}
+	else if (ie4){
+		jv="1.2";
+	}
+	return jv;
+}
+
+dcsVar();
+dcsMeta();
+dcsFPC(gTimeZone);
+dcsTP();
+dcsTag();
+//-->
+</script>
+<noscript>
+<img src="http://statse.webtrendslive.com/dcs0u6tvxf9xjyc86xhfhhzse_3j1b/njs.gif?dcsuri=/nojavascript&amp;WT.js=No" alt="" name="DCSIMG" width="1" height="1" border="0" id="DCSIMG" />
+</noscript>
+<!-- END OF SmartSource Data Collector  TAG -->
+<!-- #EndLibraryItem -->
+</body>
+</html>

@@ -1,0 +1,31 @@
+<div id="tag_groups"> 
+	<div class="control_bar" id="tag_groups_controls">
+		<%= link_to 'Create', new_global_tag_group_path %>
+	</div>
+	<p>This is the list of Global Tag Groups. Any user is able to publish Tags to these Tag Groups.</p>
+	<p><%= link_to "Markdown", "http://daringfireball.net/projects/markdown/syntax", :target => '_blank' %>
+		 syntax is also supported in descriptions.</p>
+<% for @tag_group in @global_tag_groups -%>
+	<div class="tag_group">
+		<h2 class="name">
+			<%= in_place_editor_field(:tag_group, 'name', {:id => @tag_group.dom_id('name')}, :script => true) %>
+		</h2>
+		<div class="tag_group_controls">
+			<%= link_to(image_tag('trash.gif'), global_tag_group_path(@tag_group), :title => "Destroy #{@tag_group.name}", :method => :delete) %>
+		</div>
+		<p class="date">Created on <%= format_date(@tag_group.created_on) %> 
+		  and last updated on <%= format_date(@tag_group.updated_on) %>.</p>
+	
+		<div class="description" id="<%= @tag_group.dom_id('description') %>">
+			<%=markdown (@tag_group.description) %>
+		</div>
+		<%= in_place_editor(@tag_group.dom_id('description'),
+		 		:url => {:action => 'set_tag_group_description', :id => @tag_group},
+				:load_text_url => {:action => 'description', :id => @tag_group},
+				:rows => 10) %>
+		<p class="tag_publications_heading"><%= pluralize(@tag_group.tag_publications.count, 'Published Tag') %></p>
+		<%= render :partial => 'tag_publications/tag_publications_with_publisher', :locals => {:tag_publications => @tag_group.tag_publications} %>
+	</div>
+<% end -%>
+</div>
+	

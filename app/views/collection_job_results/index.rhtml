@@ -1,0 +1,17 @@
+<h1>Listing collection_job_results</h1>
+
+<table class="data_table">
+  <tr>
+    <th>Feed</th>
+    <th>Message</th>
+    <th>Date</th>
+  </tr>
+  
+<% for collection_job_result in @collection_job_results %>
+  <tr>
+    <td><%=feed_link collection_job_result.feed %></td>
+    <td><%=h collection_job_result.message %></td>
+    <td class="date"><%=format_date collection_job_result.created_on %></td>
+  </tr>
+<% end %>
+</table>

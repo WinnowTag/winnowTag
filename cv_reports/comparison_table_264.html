@@ -1,0 +1,559 @@
+
+    <html>
+      <head>
+        <title>Cross Validation Result for Runs 47HH1LFA0, I8L8L0G0I</title>
+        <style>
+        body {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+        	font-size: 12px;
+        }
+        
+        table {
+        	width: 100%;
+        	background: #D0EEFF;
+        	border: 1px solid #EEE;
+        	margin-top: 10px;
+        	clear:  both;
+        }
+
+        table th {
+        	font-size: 12px;
+        	text-align: left;
+        	text-transform: capitalize;
+        	vertical-align: top;
+        	border-bottom: 1px solid white;
+        }
+        
+        table th.number, table td.number {
+          text-align: right;
+        }
+        table td {
+        	background: white;
+        	font-size: 12px;
+        	padding-left: 2px;
+        	padding-right: 5px;
+        	vertical-align: top;
+        }
+        
+        div.bar {
+          overflow: visible;
+          white-space: nowrap;
+          border: 1px solid #999;
+          margin: 2px 0px;
+          padding: 2px -20px 2px 2px;
+        }
+        
+        p.explanation {
+          font-weight: normal;
+          font-size: 90%;
+          font-style: italics;
+          width: 150px;
+        }
+        
+        </style>
+      </head>
+      <body>
+        <h1>Cross Validation Result for Runs 47HH1LFA0, I8L8L0G0I</h1>
+        <p>Generated at Fri Dec 15 17:29:43 CST 2006</p>
+        <h2>Cross Validation Executions</p>
+        <table>
+          <tr>
+            <th>Run Number</th>
+            <th>Comment</th>
+            <th>Total Classifications</th>
+          <tr>
+        
+          <tr>
+            <td width="100px">47HH1LFA0</td>
+            <td>Baseline CV for ticket #264</td>
+            <td>119512</td>
+          </tr>
+        
+          <tr>
+            <td width="100px">I8L8L0G0I</td>
+            <td>Changed to single classifier per user. This classifier is trained on all taggings a user generates.  The main aim was to improve the speed over the previous version which has a single classifier per User,Tag pair that copied the background corpus between them. The cross validation report should verify that there is no signficant difference in classification results.</td>
+            <td>119512</td>
+          </tr>
+        
+        </table>
+        
+        <h2>Execution Results</h2>
+        <table>          
+          
+            <tr>
+              <th width="150px">precision</th>
+              <td>
+              
+                <div class="bar" style="width: 83.4012605042017%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0.842437
+                </div>
+              
+                <div class="bar" style="width: 83.5351578947369%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0.843789
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">accuracy</th>
+              <td>
+              
+                <div class="bar" style="width: 97.5825753165478%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0.985683
+                </div>
+              
+                <div class="bar" style="width: 97.465039601802%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0.984495
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">recall</th>
+              <td>
+              
+                <div class="bar" style="width: 61.9522471910112%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0.62578
+                </div>
+              
+                <div class="bar" style="width: 59.4%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0.6
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">true_positive_rate</th>
+              <td>
+              
+                <div class="bar" style="width: 61.9522471910112%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0.62578
+                </div>
+              
+                <div class="bar" style="width: 59.4%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0.6
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">false_positive_rate</th>
+              <td>
+              
+                <div class="bar" style="width: 0.347833826781096%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0.00351347
+                </div>
+              
+                <div class="bar" style="width: 0.344046236277118%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0.00347521
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">true_negative_rate</th>
+              <td>
+              
+                <div class="bar" style="width: 98.6521661732189%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0.996487
+                </div>
+              
+                <div class="bar" style="width: 98.6559537637228%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0.996525
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">false_negative_rate</th>
+              <td>
+              
+                <div class="bar" style="width: 37.0477528089888%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0.37422
+                </div>
+              
+                <div class="bar" style="width: 39.6%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0.4
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">total_positives</th>
+              <td>
+              
+                <div class="bar" style="width: 2.65409331280541%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 3204
+                </div>
+              
+                <div class="bar" style="width: 2.76675145592074%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 3340
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">total_negatives</th>
+              <td>
+              
+                <div class="bar" style="width: 88.413448021956%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 106732
+                </div>
+              
+                <div class="bar" style="width: 88.433328870741%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 106756
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">false_positive</th>
+              <td>
+              
+                <div class="bar" style="width: 0.310638262266551%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 375
+                </div>
+              
+                <div class="bar" style="width: 0.307324787469041%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 371
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">true_positive</th>
+              <td>
+              
+                <div class="bar" style="width: 1.66087924225182%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 2005
+                </div>
+              
+                <div class="bar" style="width: 1.66005087355245%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 2004
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">false_negative</th>
+              <td>
+              
+                <div class="bar" style="width: 0.993214070553585%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 1199
+                </div>
+              
+                <div class="bar" style="width: 1.1067005823683%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 1336
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">true_negative</th>
+              <td>
+              
+                <div class="bar" style="width: 88.1028097596894%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 106357
+                </div>
+              
+                <div class="bar" style="width: 88.126004083272%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 106385
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">unknown</th>
+              <td>
+              
+                <div class="bar" style="width: 7.93245866523864%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 9576
+                </div>
+              
+                <div class="bar" style="width: 7.79991967333824%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 9416
+                </div>
+              
+              </td>
+            </tr>
+          
+            <tr>
+              <th width="150px">true_unknown</th>
+              <td>
+              
+                <div class="bar" style="width: 0.0%; background-color: #FFEC8B">
+                  Run 47HH1LFA0: 0
+                </div>
+              
+                <div class="bar" style="width: 0.0%; background-color: #BBFFFF">
+                  Run I8L8L0G0I: 0
+                </div>
+              
+              </td>
+            </tr>
+          
+          
+          <tr>
+            <th>% of true_positive<br/> that were<br/>'unwanted' tags<br/>
+            </th>
+            <td>
+              
+                <div class="bar" style="width: 99.8004987531172%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 99.8005%
+                </div>
+              
+                <div class="bar" style="width: 99.8502994011976%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 99.8503%
+                </div>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <th>% of false_positive<br/> that were<br/>'unwanted' tags<br/>
+            </th>
+            <td>
+              
+                <div class="bar" style="width: 98.9333333333333%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 98.9333%
+                </div>
+              
+                <div class="bar" style="width: 99.7304582210243%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 99.7305%
+                </div>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <th>% of true_negative<br/> that were<br/>'unwanted' tags<br/>
+            </th>
+            <td>
+              
+                <div class="bar" style="width: 0.592344650563668%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 0.592345%
+                </div>
+              
+                <div class="bar" style="width: 0.59218874841378%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 0.592189%
+                </div>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <th>% of false_negative<br/> that were<br/>'unwanted' tags<br/>
+            </th>
+            <td>
+              
+                <div class="bar" style="width: 13.4278565471226%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 13.4279%
+                </div>
+              
+                <div class="bar" style="width: 12.5%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 12.5%
+                </div>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <th>True Pos rate<br/>for normal tags</th>
+            <td>
+              
+                <div class="bar" style="width: 0.383877159309021%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 0.00383877
+                </div>
+              
+                <div class="bar" style="width: 0.255972696245734%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 0.00255973
+                </div>
+              
+            </td>
+          </tr>
+          <tr>
+            <th>False Pos rate<br/>for normal tags</th>
+            <td>
+              
+                <div class="bar" style="width: 0.00378318563146097%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 3.78319e-05
+                </div>
+              
+                <div class="bar" style="width: 0.000945572828019214%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 9.45573e-06
+                </div>
+              
+            </td>
+          </tr>
+          <tr>
+            <th>True Neg rate<br/>for normal tags</th>
+            <td>
+              
+                <div class="bar" style="width: 99.9962168143685%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 0.999962
+                </div>
+              
+                <div class="bar" style="width: 99.999054427172%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 0.999991
+                </div>
+              
+            </td>
+          </tr>
+          <tr>
+            <th>False Neg rate<br/>for normal tags</th>
+            <td>
+              
+                <div class="bar" style="width: 99.616122840691%; background-color: #FFEC8B;">
+                  Run 47HH1LFA0: 0.996161
+                </div>
+              
+                <div class="bar" style="width: 99.7440273037543%; background-color: #BBFFFF;">
+                  Run I8L8L0G0I: 0.99744
+                </div>
+              
+            </td>
+          </tr>
+        </table>
+        
+        <h2>Summary comparisons with baseline of execution 47HH1LFA0</h2>
+         <table>
+            <tr>
+              <th>&nbsp;</th>
+            
+              <th class="number">I8L8L0G0I</th>
+            
+            </tr>
+            
+              <tr>
+                <th width="150px">precision</th>
+                
+                <td class="number">+0.16055%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">accuracy</th>
+                
+                <td class="number">-0.12045%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">true_positive_rate</th>
+                
+                <td class="number">-4.1197%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">false_positive_rate</th>
+                
+                <td class="number">-1.0889%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">true_negative_rate</th>
+                
+                <td class="number">+0.0038393%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">false_negative_rate</th>
+                
+                <td class="number">+6.8891%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">total_positives</th>
+                
+                <td class="number">+4.2447%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">total_negatives</th>
+                
+                <td class="number">+0.022486%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">false_positive</th>
+                
+                <td class="number">-1.0667%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">true_positive</th>
+                
+                <td class="number">-0.049875%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">false_negative</th>
+                
+                <td class="number">+11.426%</td>
+                
+              </tr>
+            
+              <tr>
+                <th width="150px">true_negative</th>
+                
+                <td class="number">+0.026326%</td>
+                
+              </tr>
+            
+          </table>
+          
+          <h2>Statistic Definitions</h2>
+          <dl>
+            <dt>true_positive (TP)</dt>
+            <dd>The number of times a classifier applied a tag positively that coincided 
+            with the human applied tag.</dd>
+            <dt>true_negative (TN)</dt>
+            <dd>The number of times a classifier applied a tag negatively that coincided 
+            with the human applied tag.</dd>
+            <dt>false_positive (FP)</dt>
+            <dd>The number of times a classifier applied a tag positively when the human 
+            applied it negatively.</dd>
+            <dt>false_negative (FN)</dt>
+            <dd>The number of times a classifier applied a tag negatively whern the human 
+            applied it positively.</dd>
+          </dl>
+          <h3>Summary statistics</h3>
+          <dl>
+            <dt>total positives (P)</dt>
+            <dd>FP + TN</dd>
+            <dt>total negatives (N)</dt>
+              <dd>TN + FP</dd>
+            <dt>false positive rate</dt>
+              <dd>FP / N (Lower is better)</dd>
+            <dt>true positive rate</dt>
+              <dd>TP / P (Higher is better)</dd>
+            <dt>accuracy </dt>
+              <dd>(TP + TN)/ (P + N)  (Higher is better, should approach 1)</dd>
+            <dt>precision</dt>
+              <dd>TP / (TP + FN) (Higher is better, should approach 1)</dd>
+            <dt>recall</dt>
+              <dd>TP/P (Same as true positive rate, why do we have this?)</dd>
+          </dl>
+      </body>
+    </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Winnow <%= "(#{current_user.display_name})" unless current_user.nil? %>: <%= controller.controller_name %> <% controller.action_name %></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ 	<%= javascript_include_merged :base %>
+	<%= stylesheet_link_merged :base %>
+	<!--[if lt IE 7]>
+	<%= javascript_include_tag('taconite_for_prototype.js') %>
+	<![endif]-->
+	<%= yield(:head) %>
+	
+	<script type="text/javascript" charset="utf-8">
+		Event.observe(window, 'load', resizeContent);
+		Event.observe(window, 'resize', resizeContent);
+		observeFontSizeChange(resizeContent);
+	</script>
+</head>
+<body>
+	<%= render :partial => 'layouts/account_controls' %>
+	<div id="page_title"><%= @title or "Winnow" %></div>
+	<%= render :partial => 'layouts/navbar' %>
+	<div id="flash">
+		<div id="error_message" style="display: none;"></div>
+		<%= show_flash %>
+	</div>
+	<div id="header_controls" class="clearfix">
+		<%= render :partial => "layouts/view_controls" %>
+		<div class="custom_controls">
+			<%= yield(:header_controls) %>
+		</div>
+	</div>
+	<div id="content">
+		<%= yield %>
+	</div>
+</body>
+</html>

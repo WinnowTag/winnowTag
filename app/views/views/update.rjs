@@ -1,0 +1,12 @@
+if @redirect
+  page.redirect_to feed_items_path(:view_id => @view)
+else
+  page[:view_form].replace_html ""
+  page[:view_selector].replace_html options_for_view_select
+  
+  page[:view_duplicate].show
+  page[:view_edit].show
+  page[:view_destroy].show
+  
+  page[:view_save].hide
+end

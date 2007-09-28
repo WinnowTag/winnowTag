@@ -1,0 +1,27 @@
+<h2>User Taggings</h2>
+<p>
+	You tagged this item with: <%=h @user_tags_on_item.join(',') %>
+</p>
+
+<h2>Content</h2>
+<%= clean_html(@feed_item.content.encoded_content) %>
+
+<h2>Classifier Taggings</h2>
+	
+<p>This section shows how your current classifier will classify this item. Tags with 
+	<span style="color: red">red</span> text have also been applied by you on the item.</p>
+
+<% @classifications.sort_by{|tag, cls| cls.first}.reverse.each do |tag, cls| -%>
+	<h3 style="<%= "color: red;" if @user_tags_on_item.include?(Tag(tag)) %>">
+		<%= tag %> - <%= '%.4f' % cls.first %>
+	</h3>	
+	<table>
+		<tr>
+			<% Bayes::TokenAtomizer.get_atomizer.globalize(cls.last.sort).each_with_index do |token, index| %>
+				<td><%= token.last.to_s + " = " + ('%.4f' % token.first) %></td>
+				<% if (index + 1) % 3 == 0 %>
+					</tr><tr>					
+				<% end %>
+			<% end %>
+	</table>
+<% end -%>

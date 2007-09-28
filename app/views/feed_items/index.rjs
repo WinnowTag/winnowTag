@@ -1,0 +1,22 @@
+page.hide('feed_items_indicator')
+
+if params[:incremental]
+  # page.replace_html 'tag_filters', tag_filter_options
+  
+  if params[:only_tagger] == 'classifier'
+    page << "if (classification) classification.classifier_items_loaded += #{@feed_items.size};" 
+  end
+  page << "itemBrowser.setTotalItems(#{@feed_item_count})"
+  
+  unless params[:count_only]
+    @feed_items.each_with_index do |feed_item, index|
+      page.call 'itemBrowser.insertInOrder', feed_item.dom_id, feed_item.time.to_i, 
+                    render_to_string(:partial => 'feed_item', :locals => {:feed_item => feed_item})
+    end
+  end
+else
+  @feed_items.each_with_index do |feed_item, index|
+    page.call 'itemBrowser.insertItem', feed_item.dom_id, params[:offset].to_i + index, 
+                  render_to_string(:partial => 'feed_item', :locals => {:feed_item => feed_item})
+  end
+end

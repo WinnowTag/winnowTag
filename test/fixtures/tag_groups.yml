@@ -1,0 +1,29 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+global1:
+  id: 1
+  name: Global 1
+  description: MyText
+  global: true
+  publically_readable: true
+  publically_writeable: true
+  created_on: 2007-07-06 15:47:15
+  updated_on: 2007-07-06 15:47:15
+global2:
+  id: 2
+  name: Global 2
+  description: MyText
+  global: true
+  publically_readable: true
+  publically_writeable: true
+  created_on: 2007-07-06 15:47:15
+  updated_on: 2007-07-06 15:47:15
+quentins:
+  id: 3
+  name: Quentin's Tag Group
+  description: MyText
+  owner_id: 1
+  global: false
+  publically_readable: false
+  publically_writeable: false
+  created_on: 2007-07-06 15:47:15
+  updated_on: 2007-07-06 15:47:15
