@@ -25,13 +25,18 @@
 		<%= show_flash %>
 	</div>
 	<div id="header_controls" class="clearfix">
+		<% if sidebar_content = yield(:sidebar) -%>
+			<%= link_to_function "Hide Sidebar", "$('sidebar').toggle(); this.update(this.innerHTML.match(/hide/i) ? 'Show Sidebar' : 'Hide Sidebar')", :class => "sidebar_control" %>
+		<% end -%>
+		
 		<%= render :partial => "layouts/view_controls" %>
 		<div class="custom_controls">
 			<%= yield(:header_controls) %>
 		</div>
 	</div>
-	<div id="content">
-		<%= yield %>
-	</div>
+	<% if sidebar_content -%>
+		<div id="sidebar"><%= sidebar_content %></div>
+	<% end -%>
+	<div id="content"><%= yield %></div>
 </body>
 </html>

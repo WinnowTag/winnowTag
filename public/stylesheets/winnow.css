@@ -101,7 +101,6 @@ img.flash_icon {
 }
 
 #nav_bar {
-	margin-bottom: 5px;
 	padding-bottom: 5px;
 	border-bottom: 1px solid #000;
 }
@@ -124,38 +123,20 @@ img.flash_icon {
 	color: white;
 }
 
-#tag_controls {
-	width:  170px;
-	height: auto;
-	float: left;
-	padding: 0px 3px;
-}
-
-#tag_controls p {
-	margin-top: 0;
-}
-
-#tag_controls form {
-	text-align: center;
-	margin-bottom: 5px;
-}
-
 optgroup {
 	margin-top: 10px;
 	border-top: 1px solid #ddd;
 }
 
-#tag_controls optgroup option{
-	padding-left: 10px;
-	text-transform: none;
-}
-
-#tag_controls ul a.selected {
-	color: red;
-}
-
 #content {
 	overflow-y: auto;
+}
+
+#sidebar {
+	width:  170px;
+	height: auto;
+	float: left;
+	padding: 0px 3px;
 }
 
 #header_controls {
@@ -175,8 +156,17 @@ optgroup {
 	display: inline;
 }
 
+#header_controls .sidebar_control {
+	float: left;
+	margin: .3em 1em 0 0;
+}
+
 #header_controls .view_controls {
 	float: left;
+}
+
+#header_controls .view_controls img {
+	vertical-align: middle;
 }
 
 #header_controls .view_controls #view_form {

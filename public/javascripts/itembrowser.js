@@ -362,7 +362,7 @@ ItemBrowser.prototype = {
 		var feed_item_height = body_height - nav_bar_height - page_title_height - flash_height - footer_height - text_filter_height - 6;
 		
 		this.feed_items_scrollable.style.height = feed_item_height + 'px';
-		$('tag_controls').style.height = feed_item_height + 'px';
+		$('sidebar').style.height = feed_item_height + 'px';
 	},
 	
 	/** Responds to scrolling events on the feed_item_scrollable.

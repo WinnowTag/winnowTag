@@ -22,10 +22,9 @@
 	<%= render :partial => "text_filter_controls" %>
 <% end -%>
 
-<div id="tag_controls">
-	<%#= render :partial => 'controls' %>
+<% content_for :sidebar do -%>
 	<%= render :partial => "classification_controls" %>
-</div>
+<% end -%>
 
 <div id="feed_items_scrollable">
 	<div id="feed_items_indicator" style="text-align: center; margin-top: 50px; display:none; ">

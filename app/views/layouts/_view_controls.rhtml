@@ -1,7 +1,5 @@
 <% if current_user -%>
 	<div class="view_controls">
-		<h4>Views</h4>
-
 		<%= select_tag :views, options_for_view_select, :id => "view_selector",
 									 :onchange => "window.location = '#{url_for(params.merge(:view_id => nil, :mode => nil, :tag_filter => nil, :feed_filter => nil, :text_filter => nil, :commit => nil))}?view_id=' + selected_value_of(this);" %>
 
