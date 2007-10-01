@@ -130,7 +130,7 @@ optgroup {
 
 #content {
 	background-color: #fff;
-	overflow-y: auto;
+	overflow: auto;
 	padding: 10px;
 }
 

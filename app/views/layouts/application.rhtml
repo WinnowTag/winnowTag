@@ -26,7 +26,17 @@
 	</div>
 	<div id="header_controls" class="clearfix">
 		<% if sidebar_content = yield(:sidebar) -%>
-			<%= link_to_function "Hide Sidebar", "$('sidebar').toggle(); this.update(this.innerHTML.match(/hide/i) ? 'Show Sidebar' : 'Hide Sidebar')", :class => "sidebar_control" %>
+		    <%# This is a hack for Safari's refusal to redraw the content div when %>
+		    <%# the side bar is hidden.  We force a redraw by changing the style. %>
+			<%= link_to_function "Hide Sidebar", %Q[
+			    $('sidebar').toggle();
+			    if (this.innerHTML.match(/hide/i)) {
+			        this.update('Show Sidebar');
+			        $('content').setStyle({width: '100%'});
+			    } else {
+			        this.update('Hide Sidebar');
+			        $('content').setStyle({width: 'auto'});
+			    }], :class => "sidebar_control" %>
 		<% end -%>
 		
 		<%= render :partial => "layouts/view_controls" %>
