@@ -54,6 +54,11 @@ class TagPublicationsControllerTest < Test::Unit::TestCase
     assert_select("entry", 2, @response.body)
   end
   
+  def test_atom_feed_with_missing_tag_returns_404
+    get :show, :id => 'blah', :user_id => users(:quentin).login
+    assert_response(404)
+  end
+  
   def test_anyone_can_access_feeds
     login_as(nil)
     get :show, :id => users(:quentin).tag_publications.first.tag.name, :user_id => users(:quentin).login

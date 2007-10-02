@@ -26,11 +26,14 @@ class TagPublicationsController < ApplicationController
   end
   
   def show
-    @tag_publication = @base.tag_publications.find_by_tag_id(Tag.find_or_create_by_name(params[:id]).id)
-    @feed_items = @tag_publication.find_feed_items(:limit => 20, :order => 'time desc')
+    if @tag_publication = @base.tag_publications.find_by_tag_id(Tag.find_or_create_by_name(params[:id]).id)
+      @feed_items = @tag_publication.find_feed_items(:limit => 20, :order => 'time desc')
     
-    respond_to do |format|
-      format.atom {render :action => 'show.rxml', :layout => false}
+      respond_to do |format|
+        format.atom {render :action => 'show.rxml', :layout => false}
+      end
+    else
+      render :text => "#{params[:id]} has not been published by #{@base.login}", :status => 404
     end
   end
   
