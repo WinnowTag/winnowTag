@@ -53,7 +53,7 @@ class TagPublication < ActiveRecord::Base
   def name
     "#{publisher.login}:#{tag.name}"
   end
-  
+    
   alias_method :classification_label, :name
   
   def find_feed_items(options = {})

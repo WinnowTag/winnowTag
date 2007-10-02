@@ -1,5 +1,8 @@
 <tr class="<%= cycle('odd', 'even', :name => 'tag_pub') %>">
 	<td>
+	    <%# TODO: Remove this when routes with period on the end are fixed, Rails 2.0? %>
+	    <%= link_to image_tag('feed_icon.png', :class => 'feed_icon', :size => "14x14"), 
+	            "/users/#{tag_publication.publisher.to_param}/public/tags/#{tag_publication.tag.to_param}" %>
 		<%= content_tag('span', tag_publication.tag, :title => tag_publication.comment) %><br/>
 		<%= content_tag('span', tag_publication.comment, :class => 'tag_publication_comment') %>
 	</td>
