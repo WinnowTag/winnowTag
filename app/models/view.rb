@@ -22,20 +22,20 @@ class View < ActiveRecord::Base
     self.tag_filter = { :include => [], :exclude => [] }
   end
   
-  def add_feed feed_state, feed_id
+  def add_feed(feed_state, feed_id)
     feed_state, feed_id = feed_state.to_sym, feed_id.to_i
 
     other_feed_states(feed_state).each { |other_feed_state| feed_filter[other_feed_state].delete(feed_id) }
     feed_filter[feed_state] << feed_id unless feed_filter[feed_state].include?(feed_id)
   end
   
-  def remove_feed feed_id
+  def remove_feed(feed_id)
     feed_filter[:always_include].delete(feed_id.to_i)
     feed_filter[:include].delete(feed_id.to_i)
     feed_filter[:exclude].delete(feed_id.to_i)
   end
   
-  def add_tag tag_state, tag
+  def add_tag(tag_state, tag)
     tag_state, tag = tag_state.to_sym, arg_to_tag(tag)
     
     if tag and !tag_filter[tag_state].include?(tag)
@@ -44,14 +44,14 @@ class View < ActiveRecord::Base
     end
   end
   
-  def remove_tag tag
+  def remove_tag(tag)
     tag = arg_to_tag(tag)
     
     tag_filter[:include].delete(tag)
     tag_filter[:exclude].delete(tag)
   end
     
-  def update_filters params = {}
+  def update_filters(params = {})
     if params[:mode] == 'tag_inspect'
       self.tag_inspect_mode = true
      elsif params[:mode] == 'normal'
@@ -112,7 +112,7 @@ class View < ActiveRecord::Base
   end
   
 private
-  def arg_to_tag arg
+  def arg_to_tag(arg)
     if arg.is_a?(Tag) or arg.is_a?(TagPublication)
       arg
     elsif arg.is_a?(String)
