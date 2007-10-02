@@ -13,7 +13,7 @@
 		<%= radio_button_tag "tag_#{@tag.id}", :ignore, !(@view.tag_filter[:include] + @view.tag_filter[:exclude]).include?(@tag), :onclick => "new Ajax.Request('/views/#{@view.id};remove_tag?tag_id=#{@tag.name}', {evalScripts:true});" %>
 	</td>
 	<td class="control_icons">		
-		<%= link_to_remote image_tag('globe.gif'), {:url => hash_for_user_new_tag_publication_path(:user_id => current_user, 'tag_publication[tag]' => @tag),
+		<%= link_to_remote image_tag('globe.gif'), {:url => hash_for_user_new_tag_publication_path(:user_id => current_user, 'tag_publication[tag]' => @tag, :view_id => @view),
 		 							  :method => 'get', 
 									  :update => {:success => @tag.dom_id('form_cell'),
 												  :failure => 'flash'}, 
