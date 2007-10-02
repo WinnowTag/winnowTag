@@ -44,6 +44,22 @@ class TagPublicationsControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_atom_feed_contains_items_in_tag
+    users(:quentin).taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'))
+    users(:quentin).taggings.create(:taggable => FeedItem.find(2), :tag => Tag('tag'))
+    tp = users(:quentin).tag_publications.create(:tag => Tag('tag'), :tag_group => TagGroup.find(1))
+
+    get :show, :id => tp.tag.name, :user_id => users(:quentin).login
+    assert_response(:success)
+    assert_select("entry", 2, @response.body)
+  end
+  
+  def test_anyone_can_access_feeds
+    login_as(nil)
+    get :show, :id => users(:quentin).tag_publications.first.tag.name, :user_id => users(:quentin).login
+    assert_response :success
+  end
+  
   def test_destroy_tag_publication_from_tag_group
     login_as(:admin)
     tag_group = TagGroup.find(1)

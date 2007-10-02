@@ -56,6 +56,16 @@ class TagPublication < ActiveRecord::Base
   
   alias_method :classification_label, :name
   
+  def find_feed_items(options = {})
+    FeedItem.find(:all, 
+            :select => 'distinct feed_items.*',
+
+            :include => [:taggings, :feed_item_content, :feed],
+            :conditions => ["(#{self.tagging_sql} or #{self.classifier.tagging_sql}) and tag_id = ?", self.tag_id],
+            :order => options[:order],
+            :limit => options[:limit])
+  end
+  
   protected
   def remove_previous_version
     if prev = self.publisher.tag_publications.find(:first, 

@@ -10,7 +10,26 @@ require File.dirname(__FILE__) + '/../test_helper'
 class TagPublicationTest < Test::Unit::TestCase
   fixtures :tag_publications, :users, :tags, :bayes_classifiers
 
-  # Replace this with your real tests.
+  def test_find_feed_items_returns_item_with_tag
+    tp = TagPublication.find(1)
+    tp.taggings.create(:tag => tp.tag, :taggable => FeedItem.find(1))
+    assert_equal([FeedItem.find(1)], tp.find_feed_items)
+  end
+  
+  def test_find_feed_items_returns_items_with_tag
+    tp = TagPublication.find(1)
+    tp.taggings.create(:tag => tp.tag, :taggable => FeedItem.find(1))
+    tp.taggings.create(:tag => tp.tag, :taggable => FeedItem.find(2))
+    assert_equal([FeedItem.find(1), FeedItem.find(2)], tp.find_feed_items)
+  end
+  
+  def test_find_feed_items_returns_items_with_classifier_tag
+    tp = TagPublication.find(1)
+    tp.taggings.create(:tag => tp.tag, :taggable => FeedItem.find(1))
+    tp.classifier.taggings.create(:tag => tp.tag, :taggable => FeedItem.find(3))
+    assert_equal([FeedItem.find(1), FeedItem.find(3)], tp.find_feed_items)
+  end
+  
   def test_tag_publication_creation_copies_existing_taggings
     u = users(:quentin)
     u.taggings.create(:tag => Tag('tag1'), :taggable => FeedItem.find(1))
