@@ -46,6 +46,13 @@ class TagPublicationTest < Test::Unit::TestCase
     assert_instance_of(BayesClassifier, tag_pub.classifier)
   end
   
+  def test_tag_publications_classifiers_changed_tags_are_all_tags_on_initialization
+    u = users(:quentin)
+    u.taggings.create(:tag => Tag('tag1'), :taggable => FeedItem.find(1))
+    tag_pub = u.tag_publications.create(:tag => Tag('tag1'), :tag_group => TagGroup.find(:first))
+    assert_equal([Tag('tag1')], tag_pub.classifier.changed_tags)
+  end
+  
   def test_tag_publications_copy_bias_from_publisher
     u = users(:quentin)
     u.classifier.bias = {'tag1' => 1.2}

@@ -145,14 +145,18 @@ class BayesClassifier < ActiveRecord::Base
   # Returns a list of tags that were changed since the last time
   # this classifier was executed.
   def changed_tags
-    self.tagger.taggings.find_with_deleted(:all, 
-            :conditions => [
-              '(taggings.created_on > ? and taggings.deleted_at is null) ' +
-              'or (taggings.created_on <= ? and taggings.deleted_at > ?)', 
-                last_executed, last_executed, last_executed],
-            :include => :tag,
-            :group   => 'tag_id').
-        map(&:tag)
+    if last_executed
+      self.tagger.taggings.find_with_deleted(:all, 
+              :conditions => [
+                '(taggings.created_on > ? and taggings.deleted_at is null) ' +
+                'or (taggings.created_on <= ? and taggings.deleted_at > ?)', 
+                  last_executed, last_executed, last_executed],
+              :include => :tag,
+              :group   => 'tag_id').
+            map(&:tag)
+    else
+      self.tagger.tags
+    end
   end
   
   # ---------------------------------------------  

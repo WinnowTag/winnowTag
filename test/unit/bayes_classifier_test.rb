@@ -553,4 +553,12 @@ class BayesClassifierTest < Test::Unit::TestCase
                          :created_on => Time.now.ago(10.minutes).utc).destroy
     assert_equal([Tag('tag1')], user.classifier.changed_tags)
   end
+  
+  def test_changed_tags_should_return_all_tags_for_new_classifier
+    user = users(:quentin)
+    user.classifier.last_executed = nil
+    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag1'))
+    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag2'))
+    assert_equal([Tag('tag1'), Tag('tag2')], user.classifier.changed_tags)    
+  end
 end
