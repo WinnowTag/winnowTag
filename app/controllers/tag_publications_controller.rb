@@ -25,12 +25,21 @@ class TagPublicationsController < ApplicationController
     end
   end
   
-  def show
+  def show    
     if @tag_publication = @base.tag_publications.find_by_tag_id(Tag.find_or_create_by_name(params[:id]).id)
-      @feed_items = @tag_publication.find_feed_items(:limit => 20, :order => 'time desc')
-    
       respond_to do |format|
-        format.atom {render :action => 'show.rxml', :layout => false}
+        format.atom do
+          last_modified = @tag_publication.classifier.last_executed
+          since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
+
+          if since && last_modified && since >= last_modified
+            head :not_modified
+          else
+            @feed_items = @tag_publication.find_feed_items(:limit => 100, :order => 'time desc')    
+            response.headers['Last-Modified'] = last_modified.httpdate if last_modified         
+            render :action => 'show.rxml', :layout => false
+          end
+        end
       end
     else
       render :text => "#{params[:id]} has not been published by #{@base.login}", :status => 404
