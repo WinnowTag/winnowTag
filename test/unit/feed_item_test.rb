@@ -227,45 +227,42 @@ class FeedItemTest < Test::Unit::TestCase
     assert_equal(expected, FeedItem.find_with_filters(:view => view, :only_tagger => 'user', :include_negative => true, :order => 'feed_items.id asc'))
   end
   
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_find_with_tag_publication_tag_filter
-  #   user = users(:quentin)
-  #   tag_pub = TagPublication.find(1)
-  #   tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
-  #   
-  #   view = View.new :user => user
-  #   view.add_tag :include, tag_pub
-  #   
-  #   expected = [FeedItem.find(1)]
-  #   assert_equal(expected, FeedItem.find_with_filters(:view => view))
-  # end
+  def test_find_with_tag_publication_tag_filter
+    user = users(:quentin)
+    tag_pub = TagPublication.find(1)
+    tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
+    
+    view = View.new :user => user
+    view.add_tag :include, tag_pub
+     
+    expected = [FeedItem.find(1)]
+    assert_equal(expected, FeedItem.find_with_filters(:view => view))
+  end
   
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_find_with_tag_publication_tag_filter_includes_publications_classifier_tags
-  #   user = users(:quentin)
-  #   tag_pub = TagPublication.find(1)
-  #   tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
-  #   
-  #   view = View.new :user => user
-  #   view.add_tag :include, tag_pub
-  #   
-  #   expected = [FeedItem.find(1)]
-  #   assert_equal(expected, FeedItem.find_with_filters(:view => view))
-  # end
+  def test_find_with_tag_publication_tag_filter_includes_publications_classifier_tags
+    user = users(:quentin)
+    tag_pub = TagPublication.find(1)
+    tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
+    
+    view = View.new :user => user
+    view.add_tag :include, tag_pub
+    
+    expected = [FeedItem.find(1)]
+    assert_equal(expected, FeedItem.find_with_filters(:view => view))
+  end
 
-  # TODO: Remove if we are not using this, else update it to work with new filters  
-  # def test_find_with_tag_publication_tag_filter_excludes_publications_classifier_tags_when_overriden_by_negative
-  #   user = users(:quentin)
-  #   tag_pub = TagPublication.find(1)
-  #   tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1), :strength => 0)
-  #   tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
-  #   
-  #   view = View.new :user => user
-  #   view.add_tag :include, tag_pub
-  #   
-  #   expected = []
-  #   assert_equal(expected, FeedItem.find_with_filters(:view => view))
-  # end
+  def test_find_with_tag_publication_tag_filter_excludes_publications_classifier_tags_when_overriden_by_negative
+    user = users(:quentin)
+    tag_pub = TagPublication.find(1)
+    tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1), :strength => 0)
+    tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
+     
+    view = View.new :user => user
+    view.add_tag :include, tag_pub
+     
+    expected = []
+    assert_equal(expected, FeedItem.find_with_filters(:view => view))
+  end
   
   def test_options_for_filters_creates_text_filter
     view = View.new
