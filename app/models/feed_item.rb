@@ -153,30 +153,14 @@ class FeedItem < ActiveRecord::Base
     options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}    
     feed_filter = filters[:view].feed_filter
     tag_filter = filters[:view].tag_filter
-    # TODO: Remove this if there are no problems. The passed in view takes care of this for us.
-    # tag_filter = tag_filter.is_a?(String) ? Tag(tag_filter) : tag_filter
     current_user = filters[:view].user
-    joins = ''
+    joins = []
     conditions = []
     
-    # First turn the feed_filter into a where condition that contrains the value of feed_id.
-    #
-    if feed_filter and !feed_filter[:include].empty?
-      conditions << "feed_items.feed_id IN (#{feed_filter[:include].join(",")})"
-    end
-    
-    if feed_filter and !feed_filter[:exclude].empty?
-      conditions << "feed_items.feed_id NOT IN (#{feed_filter[:exclude].join(",")})"
-    end
-    
-    # Add any text_filter. This is done using a inner join on feed_item_contents with an
-    # additional join condition that applies the text filter using the full text index.
-    #
-    # TODO: Update to remove condition from the join
-    if text_filter = filters[:view].text_filter
-      joins += text_filter_join(text_filter)
-    end
-    
+    add_feed_filter_conditions!(feed_filter, conditions)
+    add_text_filter_joins!(filters[:view].text_filter, joins)
+    add_text_filter_conditions!(filters[:view].text_filter, conditions)
+      
     # Only apply tag filtering if both the tag filter and current user are provided
     if current_user and (!tag_filter[:include].blank? or !tag_filter[:exclude].blank?)
       tagger = current_user
@@ -186,97 +170,19 @@ class FeedItem < ActiveRecord::Base
         tag_filter = tag_filter[:include].first.tag
       end
       
-      # First we need to build up the tagger condition.
-      # 
-      # Start by creating a condition using the tagger types for User and the Classifier.  
-      # If :include_negative is false the  strength column is also constrained to be only 
-      # positive taggings.
-      #
-      # Then if :only_tagger is set to either user or classifier, the condition for the tagger
-      # we don't need is set to false.
-      #
-      # Finally combine the user and classifier tagger conditions with a condition that constrains
-      # all taggings to have the user_id equal to the id of the user. This is the tagger_condition.
-      #
-      classifier_tagger_condition = tagger.classifier.tagging_sql(filters[:include_negative])
-      base_tagger_condition = tagger.tagging_sql(filters[:include_negative])
+      tagger_condition = tagger_condition_for(tagger, filters[:include_negative], filters[:only_tagger])
 
-      # "False out" excluded tagger types
-      if filters[:only_tagger] == 'user'
-        classifier_tagger_condition = "1 = 0"
-      elsif filters[:only_tagger] == 'classifier'
-        base_tagger_condition = '1 = 0'
-      end
-      
-      tagger_condition = "(#{classifier_tagger_condition} or #{base_tagger_condition})"
-                    
-      # Now combine the tagger_condition in a left outer join that links the feed_items table to
-      # the taggings table. This will join the feed items to all the taggings for current_user.
-      #        
-      joins += "LEFT OUTER JOIN taggings ON" +
-              " taggings.taggable_id = feed_items.id AND"+
-              " taggings.taggable_type = 'FeedItem' AND" +
-              " taggings.deleted_at IS NULL AND " +
-              tagger_condition
-         
-      # Now apply the tag filter to the joined taggings table.
-      #
-      # The tag filter can result in one of three things (in order here):
-      #
-      #  1. A tag name starting with !. This has the effect of saying all items not tagged with this tag.
-      #     This is done by contraining the taggings to be taggings with that tag and then in the where
-      #     clause ensuring that the tagging doesn't exist.
-      #
-      #  2. When tag_filter equals Tag::TAGGED this just finds all items tagged with any tag.
-      #
-      #  3. When tag_filter is any other tag we make sure a tagging with the given tag exists for each item.
-      #
-      if !tag_filter[:exclude].blank?
-        conditions << ("feed_items.id NOT IN(" <<
-                        "SELECT taggable_id FROM taggings WHERE " <<
-                        "taggable_type = 'FeedItem' AND " <<
-                        "deleted_at is NULL AND " <<
-                        "#{tagger_condition} AND " <<
-                        "taggings.tag_id IN (#{tag_filter[:exclude].map(&:id).join(",")})" <<
-                      ")")
-      end
-      
-      if !tag_filter[:include].blank?
-        tag_conditions = ["taggings.id IS NOT NULL"]
-        if !tag_filter[:include].map(&:name).include?(Tag::TAGGED)
-          tag_conditions << "taggings.tag_id IN (#{tag_filter[:include].map(&:id).join(",")}) "
-        end
-        conditions += tag_conditions
-        
-        # Finally, when applying normal tag filters if :include_negative is false
-        # add another condition overrides classifier assigned tags with any negative
-        # tagging by the user.  This ensures that when a user removes a classifier 
-        # assigned tag, which has the effect of adding a negative user tag, the classifier
-        # assigned tags don't cause the item to be included.
-        #
-        unless filters[:include_negative]
-          conditions << "feed_items.id NOT IN (" +
-                  "SELECT taggable_id " +
-                    "FROM taggings " +
-                    "WHERE " + 
-                      "tagger_id = #{tagger.id} AND " + 
-                      "tagger_type = '#{tagger.class.name}' AND " +
-                      "deleted_at is NULL AND " + 
-                      "taggable_type = 'FeedItem' AND " +
-                      "strength = 0 AND " + 
-                      "#{tag_conditions.join(" AND ").gsub(/t1\./, '')}" +
-                ")"
-        end
-      end
+      add_tag_filter_joins!(tagger_condition, joins)
+      add_tag_exclusion_conditions!(tag_filter[:exclude], tagger_condition, conditions)
+      add_tag_inclusion_conditions!(tagger, tag_filter[:include], filters[:include_negative], conditions)
     end
     
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
     
-    if options[:conditions] and !feed_filter[:always_include].blank?
-      options[:conditions] = "feed_items.feed_id IN (#{feed_filter[:always_include].join(",")}) OR (#{options[:conditions]})"
-    end
+    add_always_include_feed_filter_conditions!(feed_filter[:always_include], options[:conditions])
     
-    options[:joins] = joins
+    options[:joins] = joins.join(" ")
+    
     options
   end
   private_class_method :options_for_filters
@@ -286,9 +192,121 @@ class FeedItem < ActiveRecord::Base
   # Currently uses the a MySQL full text index on the feed_item_contents_full_text table.
   #
   def self.text_filter_join(query)
-    "join feed_item_contents_full_text on " +
-        "feed_items.id = feed_item_contents_full_text.id and " +
-        "MATCH(content) AGAINST(#{connection.quote(query)} in boolean mode) "
+    "JOIN feed_item_contents_full_text ON " +
+        "feed_items.id = feed_item_contents_full_text.id AND " +
+        "MATCH(content) AGAINST(#{connection.quote(query)} IN BOOLEAN MODE) "
+  end
+  
+  def self.add_feed_filter_conditions!(feed_filter, conditions)
+    if feed_filter
+      if !feed_filter[:include].empty?
+        conditions << "feed_items.feed_id IN (#{feed_filter[:include].join(",")})"
+      end
+    
+      if !feed_filter[:exclude].empty?
+        conditions << "feed_items.feed_id NOT IN (#{feed_filter[:exclude].join(",")})"
+      end
+    end
+  end
+  
+  # Add any text_filter. This is done using a inner join on feed_item_contents with an
+  # additional join condition that applies the text filter using the full text index.
+  def self.add_text_filter_joins!(text_filter, joins)
+    if text_filter
+      joins << "LEFT JOIN feed_item_contents_full_text ON feed_items.id = feed_item_contents_full_text.id"
+    end
+  end
+  
+  def self.add_text_filter_conditions!(text_filter, conditions)
+    if text_filter
+      conditions << "MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+    end
+  end
+  
+  
+  # First we need to build up the tagger condition.
+  # 
+  # Start by creating a condition using the tagger types for User and the Classifier.  
+  # If :include_negative is false the  strength column is also constrained to be only 
+  # positive taggings.
+  #
+  # Then if :only_tagger is set to either user or classifier, the condition for the tagger
+  # we don't need is set to false.
+  #
+  # Finally combine the user and classifier tagger conditions with a condition that constrains
+  # all taggings to have the user_id equal to the id of the user. This is the tagger_condition.
+  def self.tagger_condition_for(tagger, include_negative, only_tagger)
+    conditions = []
+    
+    if only_tagger == "user"
+      conditions << tagger.tagging_sql(include_negative)
+    elsif only_tagger == "classifier"
+      conditions << tagger.classifier.tagging_sql(include_negative)
+    else
+      conditions << tagger.tagging_sql(include_negative)
+      conditions << tagger.classifier.tagging_sql(include_negative)
+    end
+    
+    "(#{conditions.join(" OR ")})"
+  end
+  
+  def self.add_tag_filter_joins!(tagger_condition, joins)
+    joins << "LEFT OUTER JOIN taggings ON " <<
+             "taggings.taggable_id = feed_items.id AND " <<
+             "taggings.taggable_type = 'FeedItem' AND " <<
+             "taggings.deleted_at IS NULL AND " <<
+             tagger_condition
+  end
+  
+  def self.add_tag_exclusion_conditions!(tag_filter, tagger_condition, conditions)
+    unless tag_filter.blank?
+      tag_ids = tag_filter.map(&:id).join(",")
+      conditions << <<-EOSQL
+        feed_items.id NOT IN(
+          SELECT taggable_id FROM taggings 
+          WHERE taggable_type = 'FeedItem' 
+            AND deleted_at is NULL 
+            AND #{tagger_condition} 
+            AND taggings.tag_id IN (#{tag_ids})
+        )
+      EOSQL
+    end
+  end
+  
+  def self.add_tag_inclusion_conditions!(tagger, tag_filter, include_negative, conditions)
+    unless tag_filter.blank?
+      tag_conditions = ["taggings.id IS NOT NULL"]
+      unless tag_filter.map(&:name).include?(Tag::TAGGED)
+        tag_conditions << "taggings.tag_id IN (#{tag_filter.map(&:id).join(",")}) "
+      end
+      conditions << tag_conditions
+      
+      # Finally, when applying normal tag filters if :include_negative is false
+      # add another condition overrides classifier assigned tags with any negative
+      # tagging by the user.  This ensures that when a user removes a classifier 
+      # assigned tag, which has the effect of adding a negative user tag, the classifier
+      # assigned tags don't cause the item to be included.
+      #
+      unless include_negative
+        conditions << <<-EOSQL
+          feed_items.id NOT IN(
+            SELECT taggable_id FROM taggings 
+            WHERE taggable_type = 'FeedItem' 
+              AND deleted_at is NULL 
+              AND tagger_id = #{tagger.id}
+              AND tagger_type = '#{tagger.class.name}'
+              AND strength = 0
+              AND #{tag_conditions.join(" AND ").gsub(/t1\./, '')}
+          )
+        EOSQL
+      end
+    end
+  end
+  
+  def self.add_always_include_feed_filter_conditions!(feed_filter, conditions)
+    if conditions and !feed_filter.blank?
+      conditions.replace "feed_items.feed_id IN (#{feed_filter.join(",")}) OR (#{conditions})"
+    end
   end
   
   # Gets the tokens with frequency counts for the feed_item.

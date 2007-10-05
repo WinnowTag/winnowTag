@@ -52,7 +52,7 @@ class FeedTest < Test::Unit::TestCase
   
   def test_find_with_item_counts_uses_text_filter
     Feed.expects(:find).with do |type, opts|
-      opts[:joins] =~ /MATCH\(content\) AGAINST\('foo' in boolean mode\)/
+      opts[:joins] =~ /MATCH\(content\) AGAINST\('foo' IN BOOLEAN MODE\)/i
     end
     Feed.find_with_item_counts(:text_filter => 'foo')
   end
