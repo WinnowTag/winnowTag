@@ -11,8 +11,8 @@
 		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag_publication.filter_value), "/views/#{@view.id};add_tag?tag_id=#{tag_publication.filter_value}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag_publication.filter_value}" %>
 	</td>
 	<td class="control_icons">	
-		<%= link_to image_tag('show.gif'), {:controller => 'feed_items', :tag_filter => tag_publication.filter_value, :mode => 'tag_inspect'}, 
-									:class => 'tag_name', :title => "Inspect #{tag_publication.name}" %>		
+		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => tag_publication.filter_value, :view_id => :new), 
+									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag_publication.name}" %>		
 		<%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => tag_publication.filter_value), 
 										:method => 'post', :title => "Copy #{tag_publication.name}" %>
 		<%= control_link(image_tag('trash.gif'), 
@@ -22,7 +22,11 @@
 				:confirm => "Really delete published tag?",
 				:title => "Delete published '#{tag_publication.tag.name}' tag.") %>
 	</td>
-	<td class="number"><%= tag_publication.positive_count %> / <%= tag_publication.negative_count %></td>
+	<td class="number">
+	  <%= link_to "#{tag_publication.positive_count} / #{tag_publication.negative_count}", 
+	              feed_items_path(:tag_filter => tag_publication.filter_value, :mode => 'tag_inspect', :view_id => :new), 
+								:title => "Inspect #{tag_publication.name}" %>
+  </td>
 	<td class="number"><%= tag_publication.classifier_count %></td>
 	<td class="date"><%= format_date(tag_publication.created_on) %></td>
 	<td class="indented"><%= tag_publication.tag_group.name %></td>

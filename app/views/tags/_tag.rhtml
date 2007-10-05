@@ -18,14 +18,17 @@
 												  :failure => 'flash'}, 
  										   	  :complete => visual_effect(:blind_down, @tag.dom_id('form'), :duration => 0.3)},
 										  :title => "Publish #{@tag.name}"%>
-		<%= link_to image_tag('show.gif'), {:controller => 'feed_items', :tag_filter => @tag.name, :mode => 'tag_inspect', :view_id => :new}, 
-									:class => 'tag_name', :title => "Inspect #{@tag.name}" %>
+		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => @tag.id, :view_id => :new), 
+									:class => 'tag_name', :title => "Show Only Items Tagged With #{@tag.name}" %>
 		<%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => @tag), :method => 'post', :title => "Copy #{@tag.name}" %>
 		<%= link_to image_tag('trash.gif'), {:action => 'destroy', :id => @tag}, 
 					:method => 'delete', :title => "Destroy #{@tag.name}",
 					:confirm => "Do you really want to delete #{@tag.name}?\n\nThis can't be undone." %>
 	</td>
-	<td class="number"><%= @tag.count %> / <%= @tag.negative_count %></td>
+	<td class="number">
+    <%= link_to "#{@tag.count} / #{@tag.negative_count}", feed_items_path(:tag_filter => @tag.id, :mode => 'tag_inspect', :view_id => :new), 
+                :title => "Inspect #{@tag.name}" %>
+	</td>
 	<td class="number"><%= @classifier_counts[@tag.name] ? @classifier_counts[@tag.name].count : 0 %></td>
 	<td class="date"><%= format_date(@tag.last_used_by(current_user)) %></td>	
 	<td class="indented"><%= current_user.display_name %></td>
