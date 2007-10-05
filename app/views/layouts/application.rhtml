@@ -20,10 +20,6 @@
 	<%= render :partial => 'layouts/account_controls' %>
 	<div id="page_title"><%= @title or "Winnow" %></div>
 	<%= render :partial => 'layouts/navbar' %>
-	<div id="flash">
-		<div id="error_message" style="display: none;"></div>
-		<%= show_flash %>
-	</div>
 	<div id="header_controls" class="clearfix">
 		<% if sidebar_content = yield(:sidebar) -%>
 		    <%# This is a hack for Safari's refusal to redraw the content div when %>
@@ -44,6 +40,12 @@
 			<%= yield(:header_controls) %>
 		</div>
 	</div>
+	
+	<div id="flash">
+		<div id="error_message" style="display: none;"></div>
+		<%= show_flash %>
+	</div>
+
 	<% if sidebar_content -%>
 		<div id="sidebar"><%= sidebar_content %></div>
 	<% end -%>
