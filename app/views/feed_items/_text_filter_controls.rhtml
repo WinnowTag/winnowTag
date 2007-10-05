@@ -1,6 +1,6 @@
 <% form_tag feed_items_path, :method => :get do -%>
 	<%= hidden_field_tag :view_id, @view.id %>
-	<%= text_field_tag 'text_filter', @view.text_filter, :size => 40 %>
+	<%= text_field_tag 'text_filter', @view.text_filter, :size => 30 %>
 	<%= submit_tag "Search" %>
 	<%= link_to "Clear", feed_items_path(:view_id => @view, :text_filter => "") %>
 <% end -%>
