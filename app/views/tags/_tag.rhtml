@@ -8,9 +8,9 @@
 							:url => url_for(:action => 'auto_complete_for_tag_name', :id => @tag)) %>
 	</td>
 	<td nowrap="nowrap">
-		<%= radio_button_tag "tag_#{@tag.id}", :include, @view.tag_filter[:include].include?(@tag), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{@tag.name}&tag_state=include', {evalScripts:true});" %>
-		<%= radio_button_tag "tag_#{@tag.id}", :exclude, @view.tag_filter[:exclude].include?(@tag), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{@tag.name}&tag_state=exclude', {evalScripts:true});" %>
-		<%= radio_button_tag "tag_#{@tag.id}", :ignore, !(@view.tag_filter[:include] + @view.tag_filter[:exclude]).include?(@tag), :onclick => "new Ajax.Request('/views/#{@view.id};remove_tag?tag_id=#{@tag.name}', {evalScripts:true});" %>
+		<%= radio_button_tag "tag_#{@tag.id}", :include, @view.tag_filter[:include].include?(@tag.id.to_s), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{@tag.id}&tag_state=include', {evalScripts:true});" %>
+		<%= radio_button_tag "tag_#{@tag.id}", :exclude, @view.tag_filter[:exclude].include?(@tag.id.to_s), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{@tag.id}&tag_state=exclude', {evalScripts:true});" %>
+		<%= radio_button_tag "tag_#{@tag.id}", :ignore, !(@view.tag_filter[:include] + @view.tag_filter[:exclude]).include?(@tag.id.to_s), :onclick => "new Ajax.Request('/views/#{@view.id};remove_tag?tag_id=#{@tag.id}', {evalScripts:true});" %>
 	</td>
 	<td class="control_icons">		
 		<%= link_to_remote image_tag('globe.gif'), {:url => hash_for_user_new_tag_publication_path(:user_id => current_user, 'tag_publication[tag]' => @tag, :view_id => @view),

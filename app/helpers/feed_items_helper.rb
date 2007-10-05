@@ -155,21 +155,22 @@ module FeedItemsHelper
       end
     end.compact
 
-    # TODO: Update this to work published tags
-    # session[:view].tag_filter[:include].each do |tag_filter|
-    #   if tag_filter.is_a?(TagPublication)
-    #     taggers = [tag_filter, tag_filter.classifier]
-    #     more_tags = taggable.taggings_by_taggers(taggers, :all_taggings => false)
-    #     tags += more_tags
-    #     tag_display += more_tags.collect do |tag, taggings|
-    #       if tagging = Array(taggings).first
-    #         content_tag('span', 
-    #           h("#{tag_filter.publisher.login}:#{tagging.tag.name}"), 
-    #           :class => classes_for_taggings(tagging).join(" "))
-    #       end
-    #     end.compact
-    #   end
-    # end
+    # TODO: Update it to work with new filters
+    @view.tag_filter[:include].each do |tag_filter|
+      if tag_filter =~ /^pub_tag:(\d+)$/
+        tag_filter = TagPublication.find($1)
+        taggers = [tag_filter, tag_filter.classifier]
+        more_tags = taggable.taggings_by_taggers(taggers, :all_taggings => false)
+        tags += more_tags
+        tag_display += more_tags.collect do |tag, taggings|
+          if tagging = Array(taggings).first
+            content_tag('span', 
+              h("#{tag_filter.publisher.login}:#{tagging.tag.name}"), 
+              :class => classes_for_taggings(tagging).join(" "))
+          end
+        end.compact
+      end
+    end
     
     html = if tag_display.empty?
       "<i>no tags</i>"

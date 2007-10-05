@@ -150,36 +150,37 @@ class FeedItem < ActiveRecord::Base
   # 
   def self.options_for_filters(filters) # :doc:
     filters.assert_valid_keys(:limit, :order, :offset, :view, :only_tagger, :include_negative)
-    options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}    
-    feed_filter = filters[:view].feed_filter
-    tag_filter = filters[:view].tag_filter
-    current_user = filters[:view].user
+    options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}
+    view = filters[:view]
+
     joins = []
     conditions = []
     
-    add_feed_filter_conditions!(feed_filter, conditions)
-    add_text_filter_joins!(filters[:view].text_filter, joins)
-    add_text_filter_conditions!(filters[:view].text_filter, conditions)
+    add_feed_filter_conditions!(view.feed_filter, conditions)
+    add_text_filter_joins!(view.text_filter, joins)
+    add_text_filter_conditions!(view.text_filter, conditions)
       
     # Only apply tag filtering if both the tag filter and current user are provided
-    if current_user and (!tag_filter[:include].blank? or !tag_filter[:exclude].blank?)
-      tagger = current_user
+    if view.user and (!view.tag_filter[:include].blank? or !view.tag_filter[:exclude].blank?)
+      tagger = view.user
+      tag_inclusion_filter = view.tag_filter[:include]
+      
       # TODO: Update to support multiple tags
-      if tag_filter[:include].first.is_a?(TagPublication)
-        tagger = tag_filter[:include].first
-        tag_filter = tag_filter[:include].first.tag
+      if tag_inclusion_filter.first =~ /^pub_tag:(\d+)$/
+        tagger = TagPublication.find($1)
+        tag_inclusion_filter = [tagger.tag_id]
       end
       
       tagger_condition = tagger_condition_for(tagger, filters[:include_negative], filters[:only_tagger])
 
       add_tag_filter_joins!(tagger_condition, joins)
-      add_tag_exclusion_conditions!(tag_filter[:exclude], tagger_condition, conditions)
-      add_tag_inclusion_conditions!(tagger, tag_filter[:include], filters[:include_negative], conditions)
+      add_tag_exclusion_conditions!(view.tag_filter[:exclude], tagger_condition, conditions)
+      add_tag_inclusion_conditions!(tagger, tag_inclusion_filter, filters[:include_negative], conditions)
     end
     
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
     
-    add_always_include_feed_filter_conditions!(feed_filter[:always_include], options[:conditions])
+    add_always_include_feed_filter_conditions!(view.feed_filter[:always_include], options[:conditions])
     
     options[:joins] = joins.join(" ")
     
@@ -222,8 +223,7 @@ class FeedItem < ActiveRecord::Base
       conditions << "MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
     end
   end
-  
-  
+
   # First we need to build up the tagger condition.
   # 
   # Start by creating a condition using the tagger types for User and the Classifier.  
@@ -260,7 +260,10 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_tag_exclusion_conditions!(tag_filter, tagger_condition, conditions)
     unless tag_filter.blank?
-      tag_ids = tag_filter.map(&:id).join(",")
+      tag_ids = tag_filter.map do |tag|
+        tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
+      end.join(",")
+      
       conditions << <<-EOSQL
         feed_items.id NOT IN(
           SELECT taggable_id FROM taggings 
@@ -273,13 +276,18 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  def self.add_tag_inclusion_conditions!(tagger, tag_filter, include_negative, conditions)
+  def self.add_tag_inclusion_conditions!(tagger, tag_filter, include_negative, conditions)    
     unless tag_filter.blank?
       tag_conditions = ["taggings.id IS NOT NULL"]
-      unless tag_filter.map(&:name).include?(Tag::TAGGED)
-        tag_conditions << "taggings.tag_id IN (#{tag_filter.map(&:id).join(",")}) "
+      unless tag_filter.include?(Tag::TAGGED)
+        tag_ids = tag_filter.map do |tag|
+          tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
+        end.join(",")
+        
+        tag_conditions << "taggings.tag_id IN (#{tag_ids}) "
       end
-      conditions << tag_conditions
+      
+      conditions.concat(tag_conditions)
       
       # Finally, when applying normal tag filters if :include_negative is false
       # add another condition overrides classifier assigned tags with any negative

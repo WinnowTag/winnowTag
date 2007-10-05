@@ -55,14 +55,18 @@ class Feed < ActiveRecord::Base
     end
     
     if options[:tag_filter] and !options[:tag_filter][:include].blank? and options[:user]
-      if options[:tag_filter][:include].map(&:name).include?(Tag::TAGGED)
+      if options[:tag_filter][:include].include?(Tag::TAGGED)
       
       else
+        tag_ids = options[:tag_filter][:include].map do |tag|
+          tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
+        end.join(",")
+        
         tag_filter_joins = "INNER JOIN taggings ON feed_items.id = taggings.taggable_id " <<
                            "AND taggings.taggable_type = 'FeedItem' " <<
                            "AND (#{options[:user].tagging_sql} OR #{options[:user].classifier.tagging_sql}) " <<
                            "AND taggings.deleted_at IS NULL " <<
-                           "AND taggings.tag_id IN (#{options[:tag_filter][:include].map(&:id).join(",")})"
+                           "AND taggings.tag_id IN (#{tag_ids})"
       end
       # if options[:tag_filter].tagged_filter?
       #   tag_filter_joins += " and taggings.tag_id = #{options[:tag_filter].id} "

@@ -21,7 +21,7 @@ class FeedTest < Test::Unit::TestCase
   def test_find_with_item_counts_with_tag_and_tagger_uses_tagged_items_as_counts
     tag = Tag.find_or_create_by_name('peerworks')
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
-    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag] })
+    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag.id] })
     assert_equal 1, feeds.size
     assert_equal 'Ruby Language', feeds[0].title
     assert_equal 1, feeds[0].item_count.to_i
@@ -32,7 +32,7 @@ class FeedTest < Test::Unit::TestCase
     tag = Tag.find_or_create_by_name('peerworks')
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
     Tagging.create(:tag => tag, :tagger => users(:aaron), :taggable => FeedItem.find(4))
-    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag] })
+    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag.id] })
     assert_equal 1, feeds.size
     assert_equal 'Ruby Language', feeds[0].title
     assert_equal 1, feeds[0].item_count.to_i
@@ -44,7 +44,7 @@ class FeedTest < Test::Unit::TestCase
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
     tagging.destroy
     Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
-    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag] })
+    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag.id] })
     assert_equal 1, feeds.size
     assert_equal 'Ruby Language', feeds[0].title
     assert_equal 1, feeds[0].item_count.to_i

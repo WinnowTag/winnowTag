@@ -42,22 +42,22 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     Tagging.create(:tag => Tag.find_or_create_by_name('other'), :tagger => user, :taggable => FeedItem.find(3), :strength => 1)
 
     login_as :quentin
-    get :index, :tag_filter => 'peerworks', :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
     assert_template 'index'
     assert_not_nil assigns(:feed_items)
-    assert assigns(:view).tag_filter[:include].include?(tag)
+    assert assigns(:view).tag_filter[:include].include?(tag.id.to_s)
     
     # tag filter only work over positive taggings for M2
     assert_equal 1, assigns(:feed_items).size
     assert_equal 2, assigns(:feed_items)[0].id
     
     # Check reversed
-    get :index, :tag_filter => 'peerworks', :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
     assert_template 'index'
     assert_not_nil assigns(:feed_items)
-    assert assigns(:view).tag_filter[:include].include?(tag)
+    assert assigns(:view).tag_filter[:include].include?(tag.id.to_s)
     assert_equal 1, assigns(:feed_items).size
     assert_equal 2, assigns(:feed_items).first.id
         
@@ -69,7 +69,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     
     # make sure deleted tags don't appear
     to_delete.destroy
-    get :index, :tag_filter => 'peerworks', :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
     assert_equal 0, assigns(:feed_items).size    
   end
@@ -100,7 +100,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     other_classifier = users(:aaron).classifier
     Tagging.create(:tag => tag, :tagger => other_classifier, :taggable => FeedItem.find(1), :strength => 0.91)
     
-    get :index, :tag_filter => 'peerworks', :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
     assert_not_nil assigns(:feed_items)
     assert_equal 2, assigns(:feed_items).size
@@ -109,7 +109,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     # now the classifier that tags 1 and 2 below the threshold, it should be ignored  
     Tagging.create(:tag => tag, :tagger => classifier, :taggable => FeedItem.find(1), :strength => 0.4)
     Tagging.create(:tag => tag, :tagger => classifier, :taggable => FeedItem.find(2), :strength => 0.6)
-    get :index, :tag_filter => 'peerworks', :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
     assert_not_nil assigns(:feed_items)
     assert_equal 2, assigns(:feed_items).size
@@ -128,7 +128,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     Tagging.create(:tag => tag, :tagger => classifier, :taggable => fi2, :strength => 0.95)
     Tagging.create(:tag => tag, :tagger => user, :taggable => fi2, :strength => 0)
     
-    get :index, :tag_filter => 'tag1', :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
     assert_not_nil assigns(:feed_items)
     assert_equal 1, assigns(:feed_items).size
@@ -187,7 +187,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     tag = Tag.find_or_create_by_name('peerworks')
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
-    get :index, :tag_filter => tag.name, :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_not_nil assigns(:feed_list)
     assert_equal 1, assigns(:feed_list).size
     assert_equal 'Ruby Language', assigns(:feed_list)[0].title
@@ -200,7 +200,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
     # make sure other users tags aren't detected
     Tagging.create(:tag => tag, :tagger => users(:aaron), :taggable => FeedItem.find(4))
-    get :index, :tag_filter => tag.name, :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_not_nil assigns(:feed_list)
     assert_equal 1, assigns(:feed_list).size
     assert_equal 'Ruby Language', assigns(:feed_list)[0].title
@@ -215,7 +215,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(4))    
     tagging.destroy
     
-    get :index, :tag_filter => tag.name, :view_id => users(:quentin).views.create
+    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_not_nil assigns(:feed_list)
     assert_equal 1, assigns(:feed_list).size
     assert_equal 'Ruby Documentation', assigns(:feed_list)[0].title
@@ -256,8 +256,11 @@ class FeedItemsControllerTest < Test::Unit::TestCase
   
   def test_setting_tag_filter_to_published_tag
     login_as(:quentin)
-    get :index, :tag_filter => 'pub_tag:1', :view_id => users(:quentin).views.create
-    assert assigns(:view).tag_filter[:include].include?(TagPublication.find(1))
+    
+    tag_filter = 'pub_tag:1'
+    
+    get :index, :tag_filter => tag_filter, :view_id => users(:quentin).views.create
+    assert assigns(:view).tag_filter[:include].include?(tag_filter)
   end
   
   def test_setting_tag_filter_to_nonexistant_published_tag_resets_to_all

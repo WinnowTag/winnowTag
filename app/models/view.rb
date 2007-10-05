@@ -113,16 +113,20 @@ class View < ActiveRecord::Base
   
 private
   def arg_to_tag(arg)
-    if arg.is_a?(Tag) or arg.is_a?(TagPublication)
-      arg
-    elsif arg.is_a?(String)
-      if arg =~ /^pub_tag:(\d+)/
-        TagPublication.find_by_id($1)
+    if arg.is_a?(Tag)
+      if arg.name == Tag::TAGGED
+        Tag::TAGGED
       else
-        Tag(arg)
+        arg.id.to_s
       end
+    elsif arg.is_a?(TagPublication)
+      arg.filter_value
+    elsif arg =~ /^(?:pub_tag:)?\d+$/
+      arg
+    elsif arg == Tag::TAGGED
+      Tag::TAGGED
     else
-      nil
+      raise ArgumentError.new("Argument must be a tag, tag publication, tag id, or tag name")
     end
   end
 

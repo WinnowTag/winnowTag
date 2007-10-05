@@ -6,6 +6,11 @@
 		<%= content_tag('span', tag_publication.tag, :title => tag_publication.comment) %><br/>
 		<%= content_tag('span', tag_publication.comment, :class => 'tag_publication_comment') %>
 	</td>
+	<td nowrap="nowrap">
+		<%= radio_button_tag tag_publication.dom_id, :include, @view.tag_filter[:include].include?(tag_publication.filter_value), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{tag_publication.filter_value}&tag_state=include', {evalScripts:true});" %>
+		<%= radio_button_tag tag_publication.dom_id, :exclude, @view.tag_filter[:exclude].include?(tag_publication.filter_value), :onclick => "new Ajax.Request('/views/#{@view.id};add_tag?tag_id=#{tag_publication.filter_value}&tag_state=exclude', {evalScripts:true});" %>
+		<%= radio_button_tag tag_publication.dom_id, :ignore, !(@view.tag_filter[:include] + @view.tag_filter[:exclude]).include?(tag_publication.filter_value), :onclick => "new Ajax.Request('/views/#{@view.id};remove_tag?tag_id=#{tag_publication.filter_value}', {evalScripts:true});" %>
+	</td>
 	<td class="control_icons">	
 		<%= link_to image_tag('show.gif'), {:controller => 'feed_items', :tag_filter => tag_publication.filter_value, :mode => 'tag_inspect'}, 
 									:class => 'tag_name', :title => "Inspect #{tag_publication.name}" %>		

@@ -83,59 +83,59 @@ class TagViewTest < Test::Unit::TestCase
   def test_add_tag_to_include_list_when_list_is_empty
     assert @view.tag_filter[:include].empty?
     
-    @view.add_tag :include, @tag.name
-    assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag)
+    @view.add_tag :include, @tag
+    assert_equal 1, @view.tag_filter[:include].size    
+    assert @view.tag_filter[:include].include?(@tag.id.to_s)
   end
 
   def test_add_tag_to_include_list_when_list_is_not_empty
     @tag2 = Tag('tag2')
     @user.taggings.create(:tag => @tag2, :taggable => FeedItem.find(1))
 
-    @view.add_tag :include, @tag2.name
+    @view.add_tag :include, @tag2
     assert_equal 1, @view.tag_filter[:include].size
         
-    @view.add_tag :include, @tag.name
+    @view.add_tag :include, @tag
     assert_equal 2, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag)
-    assert @view.tag_filter[:include].include?(@tag2)
+    assert @view.tag_filter[:include].include?(@tag.id.to_s)
+    assert @view.tag_filter[:include].include?(@tag2.id.to_s)
   end
   
   def test_add_tag_to_include_when_tag_is_already_in_exclude
-    @view.add_tag :exclude, @tag.name
+    @view.add_tag :exclude, @tag
     assert_equal 1, @view.tag_filter[:exclude].size
     
-    @view.add_tag :include, @tag.name
+    @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag)
+    assert @view.tag_filter[:include].include?(@tag.id.to_s)
     assert @view.tag_filter[:exclude].empty?
   end
   
   def test_add_tag_to_include_when_tag_is_already_in_include
-    @view.add_tag :include, @tag.name
+    @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag)
+    assert @view.tag_filter[:include].include?(@tag.id.to_s)
     
-    @view.add_tag :include, @tag.name
+    @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag)
+    assert @view.tag_filter[:include].include?(@tag.id.to_s)
   end
   
   def test_remove_tag_from_include
-    @view.add_tag :include, @tag.name
+    @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag)
+    assert @view.tag_filter[:include].include?(@tag.id.to_s)
     
-    @view.remove_tag @tag.name
+    @view.remove_tag @tag
     assert @view.tag_filter[:include].empty?
   end
   
   def test_remove_tag_from_exclude
-    @view.add_tag :exclude, @tag.name
+    @view.add_tag :exclude, @tag
     assert_equal 1, @view.tag_filter[:exclude].size
-    assert @view.tag_filter[:exclude].include?(@tag)
+    assert @view.tag_filter[:exclude].include?(@tag.id.to_s)
     
-    @view.remove_tag @tag.name
+    @view.remove_tag @tag
     assert @view.tag_filter[:exclude].empty?
   end
 end
