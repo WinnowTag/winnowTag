@@ -5,6 +5,8 @@
 # Please contact info@peerworks.org for further information.
 #
 class ViewsController < ApplicationController
+  skip_before_filter :load_view, :only => :create
+  
   def add_feed
     @view.add_feed params[:feed_state], params[:feed_id]
     @view.save!
@@ -39,6 +41,11 @@ class ViewsController < ApplicationController
   
   def destroy
     @view.destroy
+  end
+  
+  def create
+    @new_view = current_user.views.create!
+    @redirect = true
   end
   
   def duplicate
