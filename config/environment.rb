@@ -25,22 +25,28 @@ end
 AUTHORIZATION_MIXIN = 'object roles'
 STORE_LOCATION_METHOD = :store_location
 
+# Specifies gem version of Rails to use when vendor/rails is not present
+RAILS_GEM_VERSION = '1.2.3' unless defined? RAILS_GEM_VERSION
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 ENV['INLINEDIR'] = File.join(RAILS_ROOT, '.ruby_inline')
 
 Rails::Initializer.run do |config|
-  # Settings in config/environments/* take precedence those specified here
+  # Settings in config/environments/* take precedence over those specified here
   
-  # Skip frameworks you're not going to use
+  # Skip frameworks you're not going to use (only works if using vendor/rails)
   # config.frameworks -= [ :action_web_service, :action_mailer ]
+
+  # Only load the plugins named here, by default all plugins in vendor/plugins are loaded
+  # config.plugins = %W( exception_notification ssl_requirement )
 
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Force all environments to use the same logger level 
   # (by default production uses :info, the others :debug)
-  # config.log_level = :info
+  # config.log_level = :debug
 
   # Use the database for sessions instead of the file system
   # (create the session table with 'rake db:sessions:create')

@@ -1,5 +1,4 @@
 ENV["RAILS_ENV"] = "test"
-require 'test/unit'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require File.expand_path(File.dirname(__FILE__) + '/helper_testcase')
@@ -32,6 +31,8 @@ class Test::Unit::TestCase
   # instantiated fixtures translates to a database query per test method),
   # then set this back to true.
   self.use_instantiated_fixtures  = false
+
+  # Add more helper methods to be used by all tests here...
   
   def assert_association(source, macro, name, options = {})
     options[:class_name] ||= case macro
@@ -50,7 +51,6 @@ class Test::Unit::TestCase
     # assert_equal options, reflection.options, 'incorrect association options'
   end
 
-  # Add more helper methods to be used by all tests here...
   def assert_valid(o, msg = "The object should be valid")
     assert o.valid?, msg + ': ' + o.errors.to_s
   end
