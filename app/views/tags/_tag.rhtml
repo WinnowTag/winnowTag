@@ -1,5 +1,7 @@
 <tr id="<%= @tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
 	<td class="tag">
+		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => @tag.id, :view_id => :new), 
+									:class => 'tag_name', :title => "Show Only Items Tagged With #{@tag.name}" %>
 		<%= in_place_completing_editor_field(:tag, :name, {:id => @tag.dom_id('editor')}, 
 							{:param_name => '"tag[name]"', :url => "/tags/update/#{@tag.name}", :form_submit => true,
 							 :submit => %Q('validate_tag_edit(#{@tag.name.to_json}, $$(".editor_field").first().value)'),
@@ -18,8 +20,6 @@
 												  :failure => 'flash'}, 
  										   	  :complete => visual_effect(:blind_down, @tag.dom_id('form'), :duration => 0.3)},
 										  :title => "Publish #{@tag.name}"%>
-		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => @tag.id, :view_id => :new), 
-									:class => 'tag_name', :title => "Show Only Items Tagged With #{@tag.name}" %>
 		<%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => @tag), :method => 'post', :title => "Copy #{@tag.name}" %>
 		<%= link_to image_tag('trash.gif'), {:action => 'destroy', :id => @tag}, 
 					:method => 'delete', :title => "Destroy #{@tag.name}",

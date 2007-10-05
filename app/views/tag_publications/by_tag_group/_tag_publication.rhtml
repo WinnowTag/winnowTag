@@ -3,6 +3,9 @@
 	    <%# TODO: Remove this when routes with period on the end are fixed, Rails 2.0? %>
 	    <%= link_to image_tag('feed_icon.png', :class => 'feed_icon', :size => "14x14"), 
 	            "/users/#{tag_publication.publisher.to_param}/public/tags/#{tag_publication.tag.to_param}" %>
+		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => tag_publication.filter_value, :view_id => :new), 
+									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag_publication.name}" %>		
+
 		<%= content_tag('span', tag_publication.tag) %> (<%= tag_publication.publisher.login %>)<br/>
 		<%= content_tag('span', tag_publication.comment, :class => 'tag_publication_comment') %>
 	</td>
@@ -11,8 +14,6 @@
 		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag_publication.filter_value), "/views/#{@view.id};add_tag?tag_id=#{tag_publication.filter_value}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag_publication.filter_value}" %>
 	</td>
 	<td class="control_icons">	
-		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => tag_publication.filter_value, :view_id => :new), 
-									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag_publication.name}" %>		
 		<%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => tag_publication.filter_value), 
 										:method => 'post', :title => "Copy #{tag_publication.name}" %>
 		<%= control_link(image_tag('trash.gif'), 
