@@ -182,6 +182,7 @@ optgroup {
 
 #header_controls .custom_controls {
 	float: right;
+	margin-right: .5em;
 }
 
 a { color: #2c50e8; text-decoration: none; }
@@ -226,18 +227,21 @@ ul.tabs li a:hover {
 ul.tabs li a.active {
 	background-color:#ddd;
 }
-	
-.control_bar span.current_page, .control_bar a {
-	padding: 1px 5px;
-	border: 1px solid #9aafe5;
+
+ul.control_bar {
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
-.control_bar {
-  margin: 15px 15px;
+ul.control_bar li {
+	display: inline;
+	margin: 0 0 0 2em;
+	padding: 0;
 }
-.control_bar span.current_page {
-	background-color: #2c50e8;
-	color:  white;
+	
+.current_page {
+	font-weight: bold;
 }
 
 .explanation {
@@ -793,4 +797,9 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 
 .filter_control.exclude.selected {
 	background: url(../images/remove.png) 0 center no-repeat;
+}
+
+.add {
+	padding-left: 20px;
+	background: url(../images/add.png) 0 center no-repeat;
 }
