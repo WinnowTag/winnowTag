@@ -68,18 +68,14 @@ Object.extend(Object, {
 Function.prototype.bind = function() {
   var __method = this, args = $A(arguments), object = args.shift();
   return function() {
-	if(typeof $A === 'function'){                  // <-- Added Firefox Fix
-    	return __method.apply(object, args.concat($A(arguments)));
-	}
+    return __method.apply(object, args.concat($A(arguments)));
   }
 }
 
 Function.prototype.bindAsEventListener = function(object) {
   var __method = this, args = $A(arguments), object = args.shift();
   return function(event) {
-	if(typeof $A === 'function') {                  // <-- Added Firefox Fix
-    	return __method.apply(object, [( event || window.event)].concat(args).concat($A(arguments)));
-	}
+    return __method.apply(object, [( event || window.event)].concat(args).concat($A(arguments)));
   }
 }
 
@@ -847,7 +843,7 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     }
 
     params = Hash.toQueryString(params);
-    if (params && /Konqueror|Safari|KHTML/.test(navigator.userAgent)) params += '&_=';
+    if (params && /Konqueror|Safari|KHTML/.test(navigator.userAgent)) params += '&_='
 
     // when GET, append parameters to URL
     if (this.method == 'get' && params)
