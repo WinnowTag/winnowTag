@@ -30,7 +30,7 @@
   </td>
 	<td class="number"><%= tag_publication.classifier_count %></td>
 	<td class="date"><%= format_date(tag_publication.created_on) %></td>
-	<td class="indented"><%= tag_publication.tag_group.name %></td>
+	<td class="indented" nowrap="nowrap"><%= tag_publication.tag_group.name %></td>
 	<td>
 		<%= bias_slider(:tag => tag_publication, :prefix => tag_publication.dom_id('slider'), :disabled => true) %>
 	</td>

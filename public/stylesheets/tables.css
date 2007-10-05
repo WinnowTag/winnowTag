@@ -57,6 +57,7 @@ th.control_icons, td.control_icons {
 
 td.view_state {
 	text-align: left;
+	white-space: nowrap;
 }
 
 td.number, th.number, 
