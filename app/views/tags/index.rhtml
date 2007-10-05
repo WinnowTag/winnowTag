@@ -1,6 +1,11 @@
-<div style="float: right;"><%= render :partial => 'bias_form' %></div>
-<div>For Private Tags, click on a tag name to rename it or merge it into an existing tag. Existing tag names will appear in a drop down list as you type.</div>
+<% content_for :header_controls do -%>
+	<%= render :partial => 'bias_form' %>
+<% end -%>
+
+For Private Tags, click on a tag name to rename it or merge it into an existing tag. Existing tag names will appear in a drop down list as you type.
+
 <%= javascript_tag("var sliders = {};") %>
+
 <div id="tags">
 	<table class="data_table">		
 		<tr><th colspan="8" class="table_break">My Private Tags</th></tr>
