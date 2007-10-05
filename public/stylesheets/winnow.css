@@ -773,3 +773,24 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 .cursor {
 	cursor: pointer;
 }
+
+.filter_control {
+	cursor: pointer;
+	padding: 8px;
+}
+
+.filter_control.include {
+	background: url(../images/add_disabled.png) 0 center no-repeat;
+}
+
+.filter_control.exclude {
+	background: url(../images/remove_disabled.png) 0 center no-repeat;
+}
+
+.filter_control.include.selected {
+	background: url(../images/add.png) 0 center no-repeat;
+}
+
+.filter_control.exclude.selected {
+	background: url(../images/remove.png) 0 center no-repeat;
+}

@@ -12,7 +12,7 @@
 <table class="data_table">
   <tr>
 		<th><%= link_to "Title", sort_param('feeds', :alias => 'title') %></th>
-		<th>View State (Include, Exclude, Ignore)</th>
+		<th class="view_state">View State</th>
 		<th class="number"><%= link_to "Items", sort_param('feeds', :alias => 'item_count')%></th>
 		<th class="date"><%= link_to "Last Updated", sort_param('feeds', :alias => 'updated_on')%></th>
 		<th></th>
@@ -21,11 +21,9 @@
 <% for feed in @feeds %>
   <tr id="<%= "feed_#{feed.id}" %>" class="<%= cycle("odd", "even") %>">
 		<td><%= feed_link(feed) %></td>
-		<td nowrap="nowrap">
-			<%= radio_button_tag "feed_#{feed.id}", :always_include, @view.feed_filter[:always_include].include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=always_include', {evalScripts:true});" %>
-			<%#= radio_button_tag "feed_#{feed.id}", :include, @view.feed_filter[:include].include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=include', {evalScripts:true});" %>
-			<%= radio_button_tag "feed_#{feed.id}", :exclude, @view.feed_filter[:exclude].include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=exclude', {evalScripts:true});" %>
-			<%= radio_button_tag "feed_#{feed.id}", :ignore, !(@view.feed_filter[:always_include] + @view.feed_filter[:include] + @view.feed_filter[:exclude]).include?(feed.id), :onclick => "new Ajax.Request('/views/#{@view.id};remove_feed?feed_id=#{feed.id}', {evalScripts:true});" %>
+		<td class="view_state">
+			<%= filter_control "Always Include This Feed", :include, @view.feed_filter[:always_include].include?(feed.id), "/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=always_include", "/views/#{@view.id};remove_feed?feed_id=#{feed.id}" %>
+			<%= filter_control "Always Exclude This Feed", :exclude, @view.feed_filter[:exclude].include?(feed.id), "/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=exclude", "/views/#{@view.id};remove_feed?feed_id=#{feed.id}" %>
 		</td>
 		<td class="number"><%= feed.feed_items_count %></td>
 		<td class="date"><%= format_date(feed.updated_on) %></td>

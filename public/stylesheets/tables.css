@@ -55,6 +55,10 @@ th.control_icons, td.control_icons {
 	width: 64px;
 }
 
+td.view_state {
+	text-align: left;
+}
+
 td.number, th.number, 
 td.date, th.date {
 	text-align: right;

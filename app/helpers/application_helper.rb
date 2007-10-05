@@ -163,4 +163,11 @@ module ApplicationHelper
     views.unshift(["Unsaved View", @view.id]) if @view.unsaved?
     options_for_select(views, @view.id)
   end
+  
+  def filter_control tooltip, clazz, selected, add_url, remove_url
+    classes = ["filter_control", clazz]
+    classes << "selected" if selected
+    
+    content_tag :span, nil, :title => tooltip, :class => classes.join(" "), :onclick => "updateFilterControl(this, '#{add_url}', '#{remove_url}');"
+  end
 end
