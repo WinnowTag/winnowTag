@@ -162,20 +162,41 @@ class FeedItem < ActiveRecord::Base
       
     # Only apply tag filtering if both the tag filter and current user are provided
     if view.user and (!view.tag_filter[:include].blank? or !view.tag_filter[:exclude].blank?)
-      tagger = view.user
-      tag_inclusion_filter = view.tag_filter[:include]
+      tag_inclusion_filter_by_user = {}
+      tag_exclusion_filter_by_user = {}
       
-      # TODO: Update to support multiple tags
-      if tag_inclusion_filter.first =~ /^pub_tag:(\d+)$/
-        tagger = TagPublication.find($1)
-        tag_inclusion_filter = [tagger.tag_id]
+      view.tag_filter[:include].each do |tag_filter|
+        if tag_filter =~ /^pub_tag:(\d+)$/
+          tagger = TagPublication.find($1)
+          
+          tag_inclusion_filter_by_user[tagger] ||= []
+          tag_inclusion_filter_by_user[tagger] << tagger.tag_id
+        else
+          tag_inclusion_filter_by_user[view.user] ||= []
+          tag_inclusion_filter_by_user[view.user] << tag_filter
+        end
       end
       
-      tagger_condition = tagger_condition_for(tagger, filters[:include_negative], filters[:only_tagger])
+      view.tag_filter[:exclude].each do |tag_filter|
+        if tag_filter =~ /^pub_tag:(\d+)$/
+          tagger = TagPublication.find($1)
+          
+          tag_exclusion_filter_by_user[tagger] ||= []
+          tag_exclusion_filter_by_user[tagger] << tagger.tag_id
+        else
+          tag_exclusion_filter_by_user[view.user] ||= []
+          tag_exclusion_filter_by_user[view.user] << tag_filter
+        end
+      end
+      
+      
+      (tag_inclusion_filter_by_user.keys + tag_exclusion_filter_by_user.keys).uniq.each do |tagger|        
+        tagger_condition = tagger_condition_for(tagger, filters[:include_negative], filters[:only_tagger])
 
-      add_tag_filter_joins!(tagger_condition, joins)
-      add_tag_exclusion_conditions!(view.tag_filter[:exclude], tagger_condition, conditions)
-      add_tag_inclusion_conditions!(tagger, tag_inclusion_filter, filters[:include_negative], conditions)
+        add_tag_filter_joins!(tagger, tagger_condition, joins)
+        add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], tagger_condition, conditions)
+        add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], filters[:include_negative], conditions)        
+      end
     end
     
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
@@ -250,43 +271,46 @@ class FeedItem < ActiveRecord::Base
     "(#{conditions.join(" OR ")})"
   end
   
-  def self.add_tag_filter_joins!(tagger_condition, joins)
-    joins << "LEFT OUTER JOIN taggings ON " <<
-             "taggings.taggable_id = feed_items.id AND " <<
-             "taggings.taggable_type = 'FeedItem' AND " <<
-             "taggings.deleted_at IS NULL AND " <<
-             tagger_condition
+  def self.taggings_alias_for(tagger)
+    "#{tagger.class.name.downcase}_#{tagger.id}_taggings"
   end
   
-  def self.add_tag_exclusion_conditions!(tag_filter, tagger_condition, conditions)
+  def self.add_tag_filter_joins!(tagger, tagger_condition, joins)
+    taggings_alias = taggings_alias_for(tagger)
+    
+    joins << "LEFT OUTER JOIN taggings #{taggings_alias} ON " <<
+             "#{taggings_alias}.taggable_id = feed_items.id AND " <<
+             "#{taggings_alias}.taggable_type = 'FeedItem' AND " <<
+             "#{taggings_alias}.deleted_at IS NULL AND " <<
+             tagger_condition.gsub(/taggings\./, "#{taggings_alias}.")
+  end
+  
+  def self.add_tag_exclusion_conditions!(tagger, tag_filter, tagger_condition, conditions)
+    taggings_alias = taggings_alias_for(tagger) + "_excluded"
+    
     unless tag_filter.blank?
-      tag_ids = tag_filter.map do |tag|
-        tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
-      end.join(",")
       
       conditions << <<-EOSQL
         feed_items.id NOT IN(
-          SELECT taggable_id FROM taggings 
-          WHERE taggable_type = 'FeedItem' 
-            AND deleted_at is NULL 
-            AND #{tagger_condition} 
-            AND taggings.tag_id IN (#{tag_ids})
+          SELECT taggable_id FROM taggings #{taggings_alias}
+          WHERE #{taggings_alias}.taggable_type = 'FeedItem' 
+            AND #{taggings_alias}.deleted_at is NULL 
+            AND #{tagger_condition.gsub(/taggings\./, "#{taggings_alias}.")} 
+            AND #{taggings_alias}.tag_id IN (#{tag_filter.join(",")})
         )
       EOSQL
     end
   end
   
-  def self.add_tag_inclusion_conditions!(tagger, tag_filter, include_negative, conditions)    
+  def self.add_tag_inclusion_conditions!(tagger, tag_filter, include_negative, conditions)
+    taggings_alias = taggings_alias_for(tagger)
+    taggings_alias_for_include_negative = taggings_alias_for(tagger) + "_negative"
+    
     unless tag_filter.blank?
-      tag_conditions = ["taggings.id IS NOT NULL"]
-      unless tag_filter.include?(Tag::TAGGED)
-        tag_ids = tag_filter.map do |tag|
-          tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
-        end.join(",")
-        
-        tag_conditions << "taggings.tag_id IN (#{tag_ids}) "
+      tag_conditions = ["#{taggings_alias}.id IS NOT NULL"]
+      unless tag_filter.include?(Tag::TAGGED)        
+         tag_conditions << "#{taggings_alias}.tag_id IN (#{tag_filter.join(",")})"
       end
-      
       conditions.concat(tag_conditions)
       
       # Finally, when applying normal tag filters if :include_negative is false
@@ -298,13 +322,13 @@ class FeedItem < ActiveRecord::Base
       unless include_negative
         conditions << <<-EOSQL
           feed_items.id NOT IN(
-            SELECT taggable_id FROM taggings 
-            WHERE taggable_type = 'FeedItem' 
-              AND deleted_at is NULL 
-              AND tagger_id = #{tagger.id}
-              AND tagger_type = '#{tagger.class.name}'
-              AND strength = 0
-              AND #{tag_conditions.join(" AND ").gsub(/t1\./, '')}
+            SELECT taggable_id FROM taggings #{taggings_alias_for_include_negative}
+            WHERE #{taggings_alias_for_include_negative}.taggable_type = 'FeedItem' 
+              AND #{taggings_alias_for_include_negative}.deleted_at is NULL 
+              AND #{taggings_alias_for_include_negative}.tagger_id = #{tagger.id}
+              AND #{taggings_alias_for_include_negative}.tagger_type = '#{tagger.class.name}'
+              AND #{taggings_alias_for_include_negative}.strength = 0
+              AND #{tag_conditions.join(" AND ").gsub(taggings_alias, taggings_alias_for_include_negative)}
           )
         EOSQL
       end
