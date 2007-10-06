@@ -27,7 +27,7 @@ class ClassifierControllerTest < Test::Unit::TestCase
   
   def test_tag_publication_scoped_routes
     assert_routing('/tag_publications/1/classifier', :controller => 'classifier', :action => "show", :tag_publication_id => '1')
-    assert_routing('/tag_publications/3/classifier;status', :controller => 'classifier', :action => "status", :tag_publication_id => '3')
+    assert_routing('/tag_publications/3/classifier/status', :controller => 'classifier', :action => "status", :tag_publication_id => '3')
   end
   
   def test_classifier_tag_publications_when_tag_publication_id_is_set

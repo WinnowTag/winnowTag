@@ -42,6 +42,7 @@ class RenameTagging < ActiveRecord::Base
   validates_presence_of :old_tag, :new_tag, :tagger_id, :tagger_type, :on => :create
   validates_associated :old_tag, :new_tag, :on => :create
   validates_difference_between :old_tag, :new_tag
+  after_create :rename_tags
   
   # Gets a message describing how many taggings were renamed or merged by this operation
   def message
@@ -55,7 +56,7 @@ class RenameTagging < ActiveRecord::Base
   end
   
   protected
-  def before_create # :nodoc:
+  def rename_tags # :nodoc:
     tagger.taggings.find_by_tag(old_tag).each do |tagging_to_rename|
       existing_tagging = tagger.taggings.find_by_tag(new_tag, :first, 
                               :conditions => ['taggings.taggable_id = ? and taggings.taggable_type = ?', 
