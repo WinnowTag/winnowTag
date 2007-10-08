@@ -157,7 +157,7 @@ class FeedItemsHelperTest < HelperTestCase
     assert_select('li#tag_control_for_tag1_on_feed_item_1.bayes_classifier_tagging.tagged.borderline', true, @response.body)
   end
   
-  def test_tag_controls_should_not_display_item_below_threshold
+  def test_assigned_tag_controls_should_not_display_item_below_threshold
     feed_item = FeedItem.find(1)
     t1 = Tagging.new(:taggable => feed_item, :tag => Tag('tag1'), :tagger => current_user.classifier, :strength => 0.85)
     
@@ -188,6 +188,26 @@ class FeedItemsHelperTest < HelperTestCase
     @response.body = display_tags_for(fi)
 
     assert_select("span.bayes_classifier_tagging.borderline", "tag")
+  end
+  
+  def test_item_tagged_below_threshold_gets_no_displayed_tag_but_the_tag_is_in_the_list_of_tags_to_add
+    @current_user.taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(2))
+    fi = FeedItem.find(1)
+    Tagging.create(:tagger => @current_user.classifier, :taggable => fi, :tag => Tag('tag'), :strength => 0.81)
+    
+    @response.body = display_tags_for(fi)
+    @response.body += unused_tag_controls(fi)
+    assert_select("span.bayes_classifier_tagging", false)    
+    assert_select('li#unused_tag_control_for_tag_on_feed_item_1', true, @response.body)
+  end
+  
+  def test_ununsed_tag_control_not_added_for_negative_tag
+    @current_user.taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(2))
+    fi = FeedItem.find(1)
+    Tagging.create(:tagger => @current_user, :taggable => fi, :tag => Tag('tag'), :strength => 0)
+    
+    @response.body = unused_tag_controls(fi)
+    assert_select('li#unused_tag_control_for_tag_on_feed_item_1', false, @response.body)
   end
   
   def test_dont_display_tags_below_threshold

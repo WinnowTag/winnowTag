@@ -217,11 +217,24 @@ module FeedItemsHelper
 
     unused_tags = []
     current_user.tags.each do |tag|      
-      unused_tags << [tag, nil] unless tags.assoc(tag)
+      if taggings = tags.assoc(tag)
+        # If it isn't a user tagging or a classifier tagging 
+        # over 0.9 it hasn't been applied to the item.
+        #
+        # TODO: In Rails 2.0, Query caching will make this possible
+        #       to do using the model objects without hitting the 
+        #       database.
+        #
+        unless taggings.last.any? {|tagging| tagging.tagger_type == 'User' || tagging.strength > 0.9}
+          unused_tags << tag
+        end
+      else
+        unused_tags << tag
+      end
     end
     
     html = ""
-    unused_tags.each do |tag, taggings|
+    unused_tags.each do |tag|
       html << content_tag('li', content_tag("span", h(tag.name), :class => "name"),
         :id => feed_item.dom_id("unused_tag_control_for_#{tag.name}_on"), :class => "cursor", 
         :style => options[:hide].include?(tag.name) ? "display: none;" : nil,
