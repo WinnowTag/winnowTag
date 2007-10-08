@@ -10,9 +10,9 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
 
   @feed_items.each do |feed_item|
     xml.entry do
-      xml.title  { xml << feed_item.content.title }
+      xml.title feed_item.content.title
       xml.author  do
-        xml.name { xml << feed_item.feed.title }
+        xml.name feed_item.feed.title
         xml.uri  feed_item.feed.link
       end
       xml.link    "href" => feed_item.link, "rel" => "alternate"
