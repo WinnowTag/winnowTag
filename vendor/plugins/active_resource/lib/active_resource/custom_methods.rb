@@ -68,7 +68,7 @@ module ActiveResource
     module ClassMethods
       def custom_method_collection_url(method_name, options = {})
         prefix_options, query_options = split_options(options)
-        "#{prefix(prefix_options)}#{collection_name};#{method_name}.xml#{query_string(query_options)}"
+        "#{prefix(prefix_options)}#{collection_name}/#{method_name}.xml#{query_string(query_options)}"
       end
     end
     
