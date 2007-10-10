@@ -6,6 +6,26 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
+class ViewTest < Test::Unit::TestCase
+  def test_show_tagged_items
+    view = View.new :tagged_state => "tagged"
+    assert view.show_tagged?
+    view.tagged_state = "untagged"
+    assert !view.show_tagged?
+    view.tagged_state = "both"
+    assert !view.show_tagged?
+  end
+  
+  def test_show_untagged_items
+    view = View.new :tagged_state => "untagged"
+    assert view.show_untagged?
+    view.tagged_state = "tagged"
+    assert !view.show_untagged?
+    view.tagged_state = "both"
+    assert !view.show_untagged?
+  end
+end
+
 class FeedViewTest < Test::Unit::TestCase
   def test_add_feed_to_include_list_when_list_is_empty
     view = View.new

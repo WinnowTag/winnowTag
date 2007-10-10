@@ -47,29 +47,27 @@ class Feed < ActiveRecord::Base
   # <tt>:user</tt>:: The user of the taggings to use with the tag_filter.
   # <tt>text_filter</tt>:: A substring to limit the items to count.
   #
-  def self.find_with_item_counts(options = {})
-    options.assert_valid_keys(:tag_filter, :user, :text_filter)
+  def self.find_with_item_counts(view = nil)
     
-    if options[:text_filter]
-      text_filter_joins = FeedItem.text_filter_join(options[:text_filter])
+    if view and view.text_filter
+      text_filter_joins = FeedItem.text_filter_join(view.text_filter)
     end
     
-    if options[:tag_filter] and !options[:tag_filter][:include].blank? and options[:user]
-      if options[:tag_filter][:include].include?(Tag::TAGGED)
-      
-      else
-        tag_ids = options[:tag_filter][:include].map do |tag|
+    if view and view.tag_filter and !view.tag_filter[:include].blank? and view.user
+      # if view.tag_filter[:include].include?(Tag::TAGGED)
+      if !view.show_tagged?
+        tag_ids = view.tag_filter[:include].map do |tag|
           tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
         end.join(",")
         
         tag_filter_joins = "INNER JOIN taggings ON feed_items.id = taggings.taggable_id " <<
                            "AND taggings.taggable_type = 'FeedItem' " <<
-                           "AND (#{options[:user].tagging_sql} OR #{options[:user].classifier.tagging_sql}) " <<
+                           "AND (#{view.user.tagging_sql} OR #{view.user.classifier.tagging_sql}) " <<
                            "AND taggings.deleted_at IS NULL " <<
                            "AND taggings.tag_id IN (#{tag_ids})"
       end
-      # if options[:tag_filter].tagged_filter?
-      #   tag_filter_joins += " and taggings.tag_id = #{options[:tag_filter].id} "
+      # if view.tag_filter.tagged_filter?
+      #   tag_filter_joins += " and taggings.tag_id = #{view.tag_filter.id} "
       # end
     end
     

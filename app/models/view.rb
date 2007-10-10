@@ -84,6 +84,10 @@ class View < ActiveRecord::Base
     elsif new_text_filter
       self.text_filter = new_text_filter
     end
+    
+    if params[:tagged_state]
+      self.tagged_state = params[:tagged_state]
+    end
   end
   
   def dup
@@ -105,6 +109,14 @@ class View < ActiveRecord::Base
     update_attribute :default, true
   end
   
+  def show_tagged?
+    tagged_state == "tagged"
+  end
+  
+  def show_untagged?
+    tagged_state == "untagged"
+  end
+  
   class << self
     def saved
       find_in_state(:all, :saved)
@@ -114,17 +126,11 @@ class View < ActiveRecord::Base
 private
   def arg_to_tag(arg)
     if arg.is_a?(Tag)
-      if arg.name == Tag::TAGGED
-        Tag::TAGGED
-      else
-        arg.id.to_s
-      end
+      arg.id.to_s
     elsif arg.is_a?(TagPublication)
       arg.filter_value
     elsif arg =~ /^(?:pub_tag:)?\d+$/
       arg
-    elsif arg == Tag::TAGGED
-      Tag::TAGGED
     else
       raise ArgumentError.new("Argument must be a tag, tag publication, tag id, or tag name")
     end

@@ -103,7 +103,7 @@ class FeedItemTest < Test::Unit::TestCase
     
     view = View.new :user => users(:quentin)
     view.add_feed :include, 1
-    view.add_tag :include, Tag(Tag::TAGGED)
+    view.tagged_state = "tagged"
     
     feed_items = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal [FeedItem.find(1)], feed_items
@@ -229,7 +229,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:tagger => user, :taggable => FeedItem.find(3), :tag => tag2)
     
     view = View.new :user => user
-    view.add_tag :include, Tag(Tag::TAGGED)
+    view.tagged_state = "tagged"
     
     expected = [FeedItem.find(2), FeedItem.find(3)]
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
@@ -243,7 +243,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:tagger => user.classifier, :taggable => FeedItem.find(3), :tag => tag2)
 
     view = View.new :user => user
-    view.add_tag :include, Tag(Tag::TAGGED)
+    view.tagged_state = "tagged"
     
     expected = [FeedItem.find(2), FeedItem.find(3)]
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
@@ -304,7 +304,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:tagger => user.classifier, :taggable => FeedItem.find(4), :tag => tag2, :strength => 0.89)
     
     view = View.new :user => user
-    view.add_tag :include, Tag(Tag::TAGGED)
+    view.tagged_state = "tagged"
     
     expected = [FeedItem.find(2), FeedItem.find(3), FeedItem.find(4)]
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')    

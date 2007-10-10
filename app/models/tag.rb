@@ -22,40 +22,19 @@ end
 
 class Tag < ActiveRecord::Base
   include ActionView::Helpers::TextHelper
-  # Reserved as a special tag name that acts as a tag wildcard.
-  TAGGED = '__tagged__' unless const_defined?(:TAGGED)
-  # Contains a list of reserved tag names
-  MAGIC_TAGS = [TAGGED] unless const_defined?(:MAGIC_TAGS)
+  
   has_many :taggings
   validates_uniqueness_of :name
   validates_presence_of :name
-    
-  # Returns true if the name of this tag is TAGGED.
-  #
-  # This means that this tag can be interpreted as any tag used by the user.
-  def tagged_filter?
-    self.name == TAGGED
-  end
   
   # Returns a suitable label for the classification UI display.
-  #
   def classification_label
-    if self.name == TAGGED
-      "all"
-    else
-      truncate(self.name, 15)
-    end
+    truncate(self.name, 15)
   end
   
   # Returns JSON representation of the tag.
-  #
-  # If the tag is TAGGED, it is interpreted as nil.
   def to_json
-    if self.name == TAGGED
-      nil.to_json
-    else
-      self.name.to_json
-    end
+    self.name.to_json
   end
   
   # Gets a string representation of the tag.

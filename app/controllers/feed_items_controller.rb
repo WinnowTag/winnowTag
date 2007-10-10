@@ -67,7 +67,7 @@ class FeedItemsController < ApplicationController
     
     respond_to do |wants|
       wants.html do
-        @feed_list = Feed.find_with_item_counts(:tag_filter => @view.tag_filter, :user => @view.user, :text_filter => @view.text_filter)
+        @feed_list = Feed.find_with_item_counts(@view)
       end
       wants.js 
     end

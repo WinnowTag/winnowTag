@@ -14,7 +14,7 @@ module BiasSliderHelper
   # <tt>:var</tt>:: A javascript variable to assign the slider to.
   # <tt>:prefix</tt>:: A prefix for all dom ids for created HTML elements (see +bias_slider_html+).
   #
-  # When tag is nil or Tag::TAGGED, a disabled slider is shown with the default
+  # When tag is nil, a disabled slider is shown with the default
   # bias. When tag is :default the default bias will be show, but it will be editable.
   # When tag is a user tag the bias for that tag will be shown and it will be editable.
   #
@@ -38,7 +38,7 @@ module BiasSliderHelper
     max_bias_value = [bias, 1.3].max 
     
     # The silder will be disabled unless tag is :default or a valid user tag
-    slider_disabled = (options[:disabled] or (tag.nil? or (tag != :default and tag.is_a?(Tag) and tag.tagged_filter?)))
+    slider_disabled = options[:disabled] || tag.nil?
     
     onChange = options[:change] ? "onChange: function(value, slider){\n#{options[:change]}\n}," : ""
     onSlide = options[:slide] ? "onSlide: function(value, slider){\n#{options[:slide]}\n}," : ""

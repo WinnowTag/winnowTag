@@ -197,6 +197,11 @@ class FeedItem < ActiveRecord::Base
         add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], tagger_condition, conditions)
         add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], filters[:include_negative], conditions)        
       end
+    elsif view.user and view.show_tagged?
+      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
+
+      add_tag_filter_joins!(view.user, tagger_condition, joins)
+      add_tagged_state_conditions!(view.user, filters[:include_negative], conditions)
     end
     
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
@@ -307,10 +312,7 @@ class FeedItem < ActiveRecord::Base
     taggings_alias_for_include_negative = taggings_alias_for(tagger) + "_negative"
     
     unless tag_filter.blank?
-      tag_conditions = ["#{taggings_alias}.id IS NOT NULL"]
-      unless tag_filter.include?(Tag::TAGGED)        
-         tag_conditions << "#{taggings_alias}.tag_id IN (#{tag_filter.join(",")})"
-      end
+      tag_conditions = ["#{taggings_alias}.id IS NOT NULL", "#{taggings_alias}.tag_id IN (#{tag_filter.join(",")})"]
       conditions.concat(tag_conditions)
       
       # Finally, when applying normal tag filters if :include_negative is false
@@ -334,6 +336,34 @@ class FeedItem < ActiveRecord::Base
       end
     end
   end
+  
+  def self.add_tagged_state_conditions!(tagger, include_negative, conditions)
+    taggings_alias = taggings_alias_for(tagger)
+    taggings_alias_for_include_negative = taggings_alias_for(tagger) + "_negative"
+    
+    tag_conditions = ["#{taggings_alias}.id IS NOT NULL"]
+    conditions.concat(tag_conditions)
+    
+    # Finally, when applying normal tag filters if :include_negative is false
+    # add another condition overrides classifier assigned tags with any negative
+    # tagging by the user.  This ensures that when a user removes a classifier 
+    # assigned tag, which has the effect of adding a negative user tag, the classifier
+    # assigned tags don't cause the item to be included.
+    #
+    unless include_negative
+      conditions << <<-EOSQL
+        feed_items.id NOT IN(
+          SELECT taggable_id FROM taggings #{taggings_alias_for_include_negative}
+          WHERE #{taggings_alias_for_include_negative}.taggable_type = 'FeedItem' 
+            AND #{taggings_alias_for_include_negative}.deleted_at is NULL 
+            AND #{taggings_alias_for_include_negative}.tagger_id = #{tagger.id}
+            AND #{taggings_alias_for_include_negative}.tagger_type = '#{tagger.class.name}'
+            AND #{taggings_alias_for_include_negative}.strength = 0
+            AND #{tag_conditions.join(" AND ").gsub(taggings_alias, taggings_alias_for_include_negative)}
+        )
+      EOSQL
+    end
+end
   
   def self.add_always_include_feed_filter_conditions!(feed_filter, conditions)
     if conditions and !feed_filter.blank?

@@ -21,7 +21,9 @@ class FeedTest < Test::Unit::TestCase
   def test_find_with_item_counts_with_tag_and_tagger_uses_tagged_items_as_counts
     tag = Tag.find_or_create_by_name('peerworks')
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
-    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag.id] })
+    view = users(:quentin).views.build
+    view.add_tag :include, tag
+    feeds = Feed.find_with_item_counts(view)
     assert_equal 1, feeds.size
     assert_equal 'Ruby Language', feeds[0].title
     assert_equal 1, feeds[0].item_count.to_i
@@ -32,7 +34,9 @@ class FeedTest < Test::Unit::TestCase
     tag = Tag.find_or_create_by_name('peerworks')
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
     Tagging.create(:tag => tag, :tagger => users(:aaron), :taggable => FeedItem.find(4))
-    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag.id] })
+    view = users(:quentin).views.build
+    view.add_tag :include, tag
+    feeds = Feed.find_with_item_counts(view)
     assert_equal 1, feeds.size
     assert_equal 'Ruby Language', feeds[0].title
     assert_equal 1, feeds[0].item_count.to_i
@@ -44,7 +48,9 @@ class FeedTest < Test::Unit::TestCase
     tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
     tagging.destroy
     Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
-    feeds = Feed.find_with_item_counts(:user => users(:quentin), :tag_filter => { :include => [tag.id] })
+    view = users(:quentin).views.build
+    view.add_tag :include, tag
+    feeds = Feed.find_with_item_counts(view)
     assert_equal 1, feeds.size
     assert_equal 'Ruby Language', feeds[0].title
     assert_equal 1, feeds[0].item_count.to_i
@@ -54,6 +60,7 @@ class FeedTest < Test::Unit::TestCase
     Feed.expects(:find).with do |type, opts|
       opts[:joins] =~ /MATCH\(content\) AGAINST\('foo' IN BOOLEAN MODE\)/i
     end
-    Feed.find_with_item_counts(:text_filter => 'foo')
+    view = users(:quentin).views.build(:text_filter => 'foo')
+    Feed.find_with_item_counts(view)
   end
 end

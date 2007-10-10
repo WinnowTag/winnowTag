@@ -56,12 +56,6 @@ class BiasSliderHelperTest < HelperTestCase
     assert_no_match(/\('bias_slider_track'\)\.addClassName\('disabled'\)/, @response.body)
   end
   
-  def test_bias_slider_disabled_when_tag_is_tagged
-    @response.body = bias_slider(:tag => Tag.find_or_create_by_name(Tag::TAGGED))
-    assert_match(/disabled: true/, @response.body)
-    assert_match(/\('bias_slider_track'\)\.addClassName\('disabled'\)/, @response.body)
-  end
-  
   def test_bias_slider_sets_position_of_markers
     @response.body = bias_slider(:prefix => 'test', :var => 'test_slider')
     exp = Regexp.new(Regexp.escape("$('test_0_9').setStyle({left: test_slider.translateToPx(0.9)})"))

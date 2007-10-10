@@ -62,7 +62,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_equal 2, assigns(:feed_items).first.id
         
     # Check with tag_filter as tagged, should return all tagged items
-    get :index, :tag_filter => Tag::TAGGED, :view_id => users(:quentin).views.create
+    get :index, :tagged_state => "tagged", :view_id => users(:quentin).views.create
     assert_response :success
     assert_equal 2, assigns(:feed_items).size
     assert_equal [2, 3], assigns(:feed_items).map(&:id).sort
