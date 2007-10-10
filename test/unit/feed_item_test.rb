@@ -120,6 +120,20 @@ class FeedItemTest < Test::Unit::TestCase
     assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
   end
   
+  def test_find_with_multiple_tag_filters_should_only_return_items_with_those_tags
+    user = users(:quentin)
+    tag = Tag.find_or_create_by_name('tag1')
+    tag2 = Tag.find_or_create_by_name('tag2')
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(2), :tag => tag)
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(3), :tag => tag2)
+    
+    view = View.new :user => user
+    view.add_tag :include, tag
+    view.add_tag :include, tag2
+    
+    assert_equal [FeedItem.find(2), FeedItem.find(3)], FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
+  
   def test_find_with_tag_filter_and_always_include_feed_filter_should_only_return_items_with_that_tag_or_in_that_feed
     user = users(:quentin)
     tag = Tag.find_or_create_by_name('tag1')
@@ -248,7 +262,38 @@ class FeedItemTest < Test::Unit::TestCase
     
     expected = [FeedItem.find(1), FeedItem.find(4)]
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-  end 
+  end
+  
+  def test_find_with_included_and_excluded_tags_should_return_items_tagged_with_included_tag_and_not_the_excluded_tag
+    user = users(:quentin)
+    tag1 = Tag.find_or_create_by_name('tag1')
+    tag2 = Tag.find_or_create_by_name('tag2')
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(3), :tag => tag1)
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(3), :tag => tag2)
+
+    view = View.new :user => user
+    view.add_tag :include, Tag('tag1')
+    view.add_tag :exclude, Tag('tag2')
+    
+    expected = [FeedItem.find(2)]
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
+  
+  def test_find_with_multiple_excluded_tags_should_return_items_not_tagged_with_those_tags
+    user = users(:quentin)
+    tag1 = Tag.find_or_create_by_name('tag1')
+    tag2 = Tag.find_or_create_by_name('tag2')
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(3), :tag => tag2)
+
+    view = View.new :user => user
+    view.add_tag :exclude, Tag('tag1')
+    view.add_tag :exclude, Tag('tag2')
+    
+    expected = [FeedItem.find(1), FeedItem.find(4)]
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
   
   def test_find_includes_borderline_items
     user = users(:quentin)
