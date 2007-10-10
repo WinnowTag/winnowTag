@@ -1,6 +1,6 @@
 <div class="item<%= is_item_unread?(feed_item) ? " unread" : " read" %>" id="<%= feed_item.dom_id %>">
 	<div class="closed clearfix">
-		<span id="<%= feed_item.dom_id('status') %>" class="status"><%= display_new_item_status(feed_item) %></span>
+		<span id="<%= feed_item.dom_id('status') %>" class="status"><%= display_new_item_status(feed_item.id) %></span>
 		<div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= feed_item.dom_id %>');">
 			<span class="feed_title"><%= feed_item.feed.title %></span>
 			<div class="title_and_tags clearfix">

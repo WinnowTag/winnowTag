@@ -1,5 +1,14 @@
-@feed_items.each do |feed_item|
-  page.replace_html feed_item.dom_id('status'), display_new_item_status(feed_item)
-  page[feed_item.dom_id].addClassName('read')
-  page[feed_item.dom_id].removeClassName('unread')
+if @feed_item_id
+  dom_id = "feed_item_#{@feed_item_id}"
+  page.replace_html "status_#{dom_id}", display_new_item_status(@feed_item_id)
+  page[dom_id].addClassName('read')
+  page[dom_id].removeClassName('unread')
+else
+  page.select(".item").each do |item|
+    item.addClassName('read')
+    item.removeClassName('unread')
+  end
+  page.select(".item .status").each do |status|
+    status.replace_html display_new_item_status(-1)
+  end
 end

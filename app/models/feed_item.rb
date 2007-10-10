@@ -212,7 +212,6 @@ class FeedItem < ActiveRecord::Base
     
     options
   end
-  private_class_method :options_for_filters
   
   # Returns an SQL join statement that restricts feed items to those that match a query string
   #

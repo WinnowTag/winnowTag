@@ -367,8 +367,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
       login_as(:quentin)
       put :mark_read, :view_id => view.id
       assert_response :success
-      assert_rjs :replace_html, 'status_feed_item_1'
-      assert_rjs :replace_html, 'status_feed_item_2'
     end
   end
   

@@ -32,20 +32,20 @@ module FeedItemsHelper
     end
   end
   
-  def is_item_unread?(feed_item)
-    !current_user.has_read_item?(feed_item)
+  def is_item_unread?(feed_item_id)
+    !current_user.has_read_item?(feed_item_id)
   end
   
-  def display_new_item_status(feed_item)
-    if is_item_unread?(feed_item)
+  def display_new_item_status(feed_item_id)
+    if is_item_unread?(feed_item_id)
       link_to_remote "", 
-        { :url => mark_read_feed_item_path(feed_item), :method => :put, 
-          :before => "$('#{feed_item.dom_id}').addClassName('read'); $('#{feed_item.dom_id}').removeClassName('unread');" }, 
+        { :url => mark_read_feed_item_path(feed_item_id), :method => :put, 
+          :before => "$('feed_item_#{feed_item_id}').addClassName('read'); $('feed_item_#{feed_item_id}').removeClassName('unread');" }, 
         { :title => "Click to mark as read" }
     else
       link_to_remote "", 
-        { :url => mark_unread_feed_item_path(feed_item), :method => :put, 
-          :before => "$('#{feed_item.dom_id}').addClassName('unread'); $('#{feed_item.dom_id}').removeClassName('read');" }, 
+        { :url => mark_unread_feed_item_path(feed_item_id), :method => :put, 
+          :before => "$('feed_item_#{feed_item_id}').addClassName('unread'); $('feed_item_#{feed_item_id}').removeClassName('read');" }, 
         { :title => "Click to mark as unread" }
     end
   end
