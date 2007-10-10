@@ -779,11 +779,15 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 }
 
 .filter_control {
+  float: left;
 	cursor: pointer;
-	padding: 8px;
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 .filter_control.include {
+  margin-right: 5px;
 	background: url(../images/add_disabled.png) 0 center no-repeat;
 }
 
