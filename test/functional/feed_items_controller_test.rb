@@ -358,6 +358,20 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     end
   end
   
+  def test_mark_many_read
+    users(:quentin).unread_items.create(:feed_item_id => 1)
+    users(:quentin).unread_items.create(:feed_item_id => 2)
+    view = users(:quentin).views.create
+    assert_difference(UnreadItem, :count, -2) do
+      accept('text/javascript')
+      login_as(:quentin)
+      put :mark_read, :view_id => view.id
+      assert_response :success
+      assert_rjs :replace_html, 'status_feed_item_1'
+      assert_rjs :replace_html, 'status_feed_item_2'
+    end
+  end
+  
   def test_mark_unread
     assert_difference(UnreadItem, :count, 1) do
       accept('text/javascript')

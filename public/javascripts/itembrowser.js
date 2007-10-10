@@ -755,6 +755,10 @@ ItemBrowser.prototype = {
 		}
 	},
 	
+	markAllItemsRead: function() {
+		new Ajax.Request('/feed_items/mark_read?view_id=' + this.options.view_id, {method: 'put'});
+	},
+	
 	scrollToItem: function(item, position) {
 		new Effect.ScrollToInDiv(this.feed_items_scrollable, $(item).getAttribute('id'), position, {duration: 0.3});
 	},

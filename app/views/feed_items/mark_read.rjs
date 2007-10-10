@@ -1,1 +1,5 @@
-page.replace_html @feed_item.dom_id('status'), display_new_item_status(@feed_item)
+@feed_items.each do |feed_item|
+  page.replace_html feed_item.dom_id('status'), display_new_item_status(feed_item)
+  page[feed_item.dom_id].addClassName('read')
+  page[feed_item.dom_id].removeClassName('unread')
+end

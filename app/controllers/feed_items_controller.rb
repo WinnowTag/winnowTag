@@ -89,11 +89,20 @@ class FeedItemsController < ApplicationController
     @classifications = current_user.classifier.guess(@feed_item, options)    
   end
   
-  def mark_read    
-    @feed_item = FeedItem.find(params[:id])
-    if unread_item = current_user.unread_items.find(:first, :conditions => ['feed_item_id = ?', @feed_item])
-      current_user.unread_items.delete(unread_item)
+  def mark_read
+    if params[:id]
+      @feed_items = [FeedItem.find(params[:id])]
+    else
+      filters = { :view => @view, :only_tagger => params[:only_tagger] }
+
+      if @view.tag_inspect_mode?
+        filters[:only_tagger] = 'user'
+        filters[:include_negative] = true
+      end
+
+      @feed_items = FeedItem.find_with_filters(filters)
     end
+    UnreadItem.delete_all(:user_id => current_user.id, :feed_item_id => @feed_items.map(&:id))
   end
   
   def mark_unread

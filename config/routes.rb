@@ -31,7 +31,8 @@ ActionController::Routing::Routes.draw do |map|
                   :mark_unread => :put,
                   :info => :get,
                   :description => :get
-                }
+                },
+                :collection => {:mark_read => :put}
   map.resources :tags, :requirements => {:id => /.*/}
   
   map.resource :classifier, 
