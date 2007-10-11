@@ -235,6 +235,20 @@ class FeedItemTest < Test::Unit::TestCase
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
+  def test_find_with_untagged_filter_should_only_return_untagged_items
+    user = users(:quentin)
+    tag1 = Tag.find_or_create_by_name('tag1')
+    tag2 = Tag.find_or_create_by_name('tag2')
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:tagger => user, :taggable => FeedItem.find(3), :tag => tag2)
+    
+    view = View.new :user => user
+    view.tagged_state = "untagged"
+    
+    expected = [FeedItem.find(1), FeedItem.find(4)]
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
+  
   def test_find_with_tagged_filter_should_include_classifier_tags
     user = users(:quentin)
     tag1 = Tag.find_or_create_by_name('tag1')

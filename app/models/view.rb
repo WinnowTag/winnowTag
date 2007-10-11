@@ -117,6 +117,10 @@ class View < ActiveRecord::Base
     tagged_state == "untagged"
   end
   
+  def show_all?
+    !show_tagged? && !show_untagged?
+  end
+  
   class << self
     def saved
       find_in_state(:all, :saved)

@@ -24,6 +24,15 @@ class ViewTest < Test::Unit::TestCase
     view.tagged_state = "both"
     assert !view.show_untagged?
   end
+
+  def test_show_all_items
+    view = View.new :tagged_state => "both"
+    assert view.show_all?
+    view.tagged_state = "tagged"
+    assert !view.show_all?
+    view.tagged_state = "untagged"
+    assert !view.show_all?
+  end
 end
 
 class FeedViewTest < Test::Unit::TestCase

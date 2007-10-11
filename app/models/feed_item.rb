@@ -202,6 +202,11 @@ class FeedItem < ActiveRecord::Base
 
       add_tag_filter_joins!(view.user, tagger_condition, joins)
       add_tagged_state_conditions!(view.user, filters[:include_negative], conditions)
+    elsif view.user and view.show_untagged?
+      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
+
+      add_tag_filter_joins!(view.user, tagger_condition, joins)
+      add_untagged_state_conditions!(view.user, filters[:include_negative], conditions)
     end
     
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
@@ -307,10 +312,8 @@ class FeedItem < ActiveRecord::Base
   end
   
   def self.add_tag_inclusion_conditions!(tagger, tag_filter, include_negative, conditions)
-    taggings_alias = taggings_alias_for(tagger)
-    taggings_alias_for_include_negative = taggings_alias_for(tagger) + "_negative"
-    
     unless tag_filter.blank?
+      taggings_alias = taggings_alias_for(tagger)
       tag_conditions = ["#{taggings_alias}.id IS NOT NULL", "#{taggings_alias}.tag_id IN (#{tag_filter.join(",")})"]
       conditions.concat(tag_conditions)
       
@@ -321,6 +324,8 @@ class FeedItem < ActiveRecord::Base
       # assigned tags don't cause the item to be included.
       #
       unless include_negative
+        taggings_alias_for_include_negative = taggings_alias_for(tagger) + "_negative"
+        
         conditions << <<-EOSQL
           feed_items.id NOT IN(
             SELECT taggable_id FROM taggings #{taggings_alias_for_include_negative}
@@ -338,8 +343,7 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_tagged_state_conditions!(tagger, include_negative, conditions)
     taggings_alias = taggings_alias_for(tagger)
-    taggings_alias_for_include_negative = taggings_alias_for(tagger) + "_negative"
-    
+  
     tag_conditions = ["#{taggings_alias}.id IS NOT NULL"]
     conditions.concat(tag_conditions)
     
@@ -350,6 +354,7 @@ class FeedItem < ActiveRecord::Base
     # assigned tags don't cause the item to be included.
     #
     unless include_negative
+      taggings_alias_for_include_negative = taggings_alias_for(tagger) + "_negative"
       conditions << <<-EOSQL
         feed_items.id NOT IN(
           SELECT taggable_id FROM taggings #{taggings_alias_for_include_negative}
@@ -362,7 +367,12 @@ class FeedItem < ActiveRecord::Base
         )
       EOSQL
     end
-end
+  end
+  
+  def self.add_untagged_state_conditions!(tagger, include_negative, conditions)
+    taggings_alias = taggings_alias_for(tagger)    
+    conditions << "#{taggings_alias}.id IS NULL"
+  end
   
   def self.add_always_include_feed_filter_conditions!(feed_filter, conditions)
     if conditions and !feed_filter.blank?
