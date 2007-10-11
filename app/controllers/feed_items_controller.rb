@@ -66,9 +66,7 @@ class FeedItemsController < ApplicationController
     end
     
     respond_to do |wants|
-      wants.html do
-        @feed_list = Feed.find_with_item_counts(@view)
-      end
+      wants.html
       wants.js 
     end
   end

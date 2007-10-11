@@ -171,56 +171,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_equal 3, assigns(:feed_items).size
     assert assigns(:view).feed_filter[:include].include?(1)
   end
-  
-  def test_feed_list
-    login_as(:quentin)
-    get :index, :view_id => users(:quentin).views.create
-    assert_not_nil assigns(:feed_list)
-    assert_equal 2, assigns(:feed_list).size
-    assert_equal 'Ruby Documentation', assigns(:feed_list)[0].title
-    assert_equal '1', assigns(:feed_list)[0].item_count
-    assert_equal 'Ruby Language', assigns(:feed_list)[1].title
-    assert_equal '3', assigns(:feed_list)[1].item_count
-  end
-  
-  def test_feed_list_with_tag_filter
-    login_as(:quentin)
-    tag = Tag.find_or_create_by_name('peerworks')
-    tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
-    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
-    assert_not_nil assigns(:feed_list)
-    assert_equal 1, assigns(:feed_list).size
-    assert_equal 'Ruby Language', assigns(:feed_list)[0].title
-    assert_equal '1', assigns(:feed_list)[0].item_count
-  end
-  
-  def test_feed_list_with_tag_filter_and_other_users_tags
-    login_as(:quentin)
-    tag = Tag.find_or_create_by_name('peerworks')
-    tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1))
-    # make sure other users tags aren't detected
-    Tagging.create(:tag => tag, :tagger => users(:aaron), :taggable => FeedItem.find(4))
-    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
-    assert_not_nil assigns(:feed_list)
-    assert_equal 1, assigns(:feed_list).size
-    assert_equal 'Ruby Language', assigns(:feed_list)[0].title
-    assert_equal '1', assigns(:feed_list)[0].item_count
-  end
-  
-  def test_feed_list_after_deleted_tag
-    # make sure deleted taggings don't get counted
-    login_as(:quentin)
-    tag = Tag.find_or_create_by_name('peerworks')
-    tagging = Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(1)) 
-    Tagging.create(:tag => tag, :tagger => users(:quentin), :taggable => FeedItem.find(4))    
-    tagging.destroy
-    
-    get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
-    assert_not_nil assigns(:feed_list)
-    assert_equal 1, assigns(:feed_list).size
-    assert_equal 'Ruby Documentation', assigns(:feed_list)[0].title
-    assert_equal '1', assigns(:feed_list)[0].item_count
-  end
 
   def test_session_storage_of_text_filter
     login_as(:quentin)
@@ -268,63 +218,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     get :index, :tag_filter => 'pub_tag:1000'
     assert assigns(:view).tag_filter[:include].blank?
   end
-  
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_session_storage_of_filtering_options
-  #   login_as(:quentin)
-  #   Tagging.create(:tag => Tag.find_or_create_by_name('peerworks'), :tagger => users(:quentin), :taggable => FeedItem.find(1))
-  #   
-  #   get :index
-  #   assert assigns(:view).tag_filter[:include].blank?
-  #   assert assigns(:view).feed_filter[:include].empty?
-  #   assert assigns(:view).feed_filter[:exclude].empty?
-  # 
-  #   get :index, :tag_filter => 'peerworks', :feed_filter => "1"
-  #   assert assigns(:view).tag_filter[:include].include?(Tag('peerworks'))
-  #   assert assigns(:view).feed_filter[:include].include?(1)
-  #   
-  #   # check session retrieval
-  #   get :index
-  #   assert assigns(:view).tag_filter[:include].include?(Tag('peerworks'))
-  #   assert assigns(:view).feed_filter[:include].include?(1)
-  #   
-  #   get :index, :feed_filter => 'all', :tag_filter => 'all'
-  #   
-  #   get :index, :feed_filter => "1"
-  #   assert assigns(:view).tag_filter[:include].blank?
-  #   assert assigns(:view).feed_filter[:include].include?(1)
-  #   
-  #   get :index, :tag_filter => 'peerworks', :feed_filter => 'all'
-  #   assert assigns(:view).tag_filter[:include].include?(Tag('peerworks'))
-  #   assert assigns(:view).feed_filter[:include].empty?
-  #   assert assigns(:view).feed_filter[:exclude].empty?
-  #   assert_nil session[:strength_threshold]
-  #   
-  #   get :index, :tag_filter => 'peerworks'
-  #   assert assigns(:view).tag_filter[:include].include?(Tag('peerworks'))
-  #   assert assigns(:view).feed_filter[:include].empty?
-  #   assert assigns(:view).feed_filter[:exclude].empty?
-  #   
-  #   get :index, :tag_filter => 'all'
-  #   assert assigns(:view).tag_filter[:include].blank?
-  #   assert assigns(:view).feed_filter[:include].empty?
-  #   assert assigns(:view).feed_filter[:exclude].empty?
-  #   
-  #   get :index, :tag_filter => 'peerworks'
-  #   assert assigns(:view).tag_filter[:include].include?(Tag('peerworks'))
-  #   assert assigns(:view).feed_filter[:include].empty?
-  #   assert assigns(:view).feed_filter[:exclude].empty?
-  #   
-  #   get :index, :tag_filter => 'all'
-  #   assert assigns(:view).tag_filter[:include].blank?
-  #   assert assigns(:view).feed_filter[:include].empty?
-  #   assert assigns(:view).feed_filter[:exclude].empty?
-  #   
-  #   # setting the tag filter to a tag the user doesn't use should reset it to all
-  #   get :index, :tag_filter => 'unused'
-  #   assert assigns(:view).feed_filter[:include].empty?
-  #   assert assigns(:view).feed_filter[:exclude].empty?
-  # end
   
   def test_sets_last_accessed_time_on_each_request
     login_as(:quentin)
