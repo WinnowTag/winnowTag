@@ -125,6 +125,20 @@ class FeedItem < ActiveRecord::Base
     feed_items
   end
   
+  def self.mark_read(filters)
+    options_for_find = options_for_filters(filters)   
+
+    feed_item_ids_sql = "SELECT DISTINCT feed_items.id FROM feed_items"
+    feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
+    feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
+
+    UnreadItem.delete_all(["user_id = ? AND feed_item_id IN (#{feed_item_ids_sql})", filters[:view].user])
+  end
+  
+  def self.mark_read_for(user_id, feed_item_id)
+    UnreadItem.delete_all(["user_id = ? AND feed_item_id = ?", user_id, feed_item_id])
+  end
+  
   # This builds the SQL to use for the find_with_filters and count_with_filters methods.
   #
   # The SQL is pretty complex, I had a go at trying to find a nicer way to generate it, as opposed

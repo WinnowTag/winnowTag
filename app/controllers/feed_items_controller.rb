@@ -90,7 +90,7 @@ class FeedItemsController < ApplicationController
   def mark_read
     if params[:id]
       @feed_item_id = params[:id]
-      feed_item_ids_sql = params[:id].to_i
+      FeedItem.mark_read_for(current_user.id, @feed_item_id)
     else
       filters = { :view => @view, :only_tagger => params[:only_tagger] }
 
@@ -98,14 +98,9 @@ class FeedItemsController < ApplicationController
         filters[:only_tagger] = 'user'
         filters[:include_negative] = true
       end
-
-      options_for_find = FeedItem.options_for_filters(filters)    
-
-      feed_item_ids_sql = "SELECT DISTINCT feed_items.id FROM feed_items"
-      feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
-      feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
+      
+      FeedItem.mark_read(filters)
     end
-    UnreadItem.delete_all(["user_id = ? AND feed_item_id IN (#{feed_item_ids_sql})", current_user.id])
   end
   
   def mark_unread
