@@ -39,9 +39,6 @@ For Private Tags, click on a tag name to rename it or merge it into an existing 
 			<%= render :partial => 'tag' %>
 		<% end -%>
 		</tbody>
-		<tr><th colspan="8" class="table_break">My Published Tags</th></tr>
-		<%# TODO: Update for new tag publication feature %>
-		<%#= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => current_user.tag_publications %>
 		<tr><th colspan="8" class="table_break">Other Users' Published Tags</th></tr>
 		<%# TODO: Update for new tag publication feature %>
 		<%#= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => TagPublication.find_by_other_publisher(current_user) %>

@@ -17,7 +17,7 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public]
   
   # Show a table of the users tags
   def index
@@ -101,6 +101,9 @@ class TagsController < ApplicationController
           :conditions => ['lower(name) LIKE lower(?)', "%#{@q}%"])
     @tags -= Array(@tag)
     render :inline => '<%= auto_complete_result(@tags, :name, @q) %>'
+  end
+  
+  def public
   end
   
   private

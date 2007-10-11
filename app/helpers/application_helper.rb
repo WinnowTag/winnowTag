@@ -28,7 +28,8 @@ module ApplicationHelper
     tabs = ''
     tabs << link_to('Feeds', feeds_path(:view_id => @view), :class => tab_selected('feeds')) 
   	tabs << link_to('Feed Items', feed_items_path(:view_id => @view), :class => tab_selected('feed_items')) 
-  	tabs << link_to('Tags', tags_path(:view_id => @view), :class => tab_selected('tags'))
+  	tabs << link_to('My Tags', tags_path(:view_id => @view), :class => tab_selected('tags', 'index'))
+  	tabs << link_to('Public Tags', public_tags_path(:view_id => @view), :class => tab_selected('tags', 'public'))
   	       
   	if current_user and is_admin?
   	  tabs << link_to('Admin', admin_path(:view_id => @view), :class => tab_selected('admin'))
