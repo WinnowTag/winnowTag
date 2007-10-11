@@ -1,11 +1,10 @@
-<% labeled_form_for 'tag_publication', @tag_publication, :url => user_tag_publications_path(@base), 
+<% labeled_form_for 'tag_publication', @tag_publication, :url => user_tag_publications_path(@user), 
 	 :html => {:id => @tag_publication.tag.dom_id('form'), :style => 'width: 750px; display: none'} do |f| -%>
 	<fieldset>
 		<legend>Publish "<%= @tag_publication.tag %>"</legend>
 		<p>Publishing a Tag will copy it into a public space were everyone can use it.
 			You will still have a copy of the tag that you can modify in private, everyone
 			else will get to use a snapshot of your tag taken when you publish.</p>
-		<%= f.select(:tag_group_id, TagGroup.find_globals) %>	
 		<%= f.text_area :comment, :rows => 3, :cols => 35 %>
 		<%= f.hidden_field :tag_id %>
 		<p><label>&nbsp;</label>

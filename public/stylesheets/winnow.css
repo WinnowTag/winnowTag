@@ -346,59 +346,6 @@ p.filter_group_heading {
 	filter:alpha(opacity=25);
 }
 
-div#tag_groups {
-	background-color: #ddd;
-	margin-right: 25%;
-	margin-left: 10px;
-	padding: 10px;
-	padding-top: 1px; 
-}
-
-div.tag_group {
-	margin-top: 10px;
-	padding: 5px;
-	border: 3px solid #eee;
-	border-bottom: 3px solid #ccc;
-	border-right: 3px solid #ccc;
-	background-color: white;
-	position: relative;
-}
-
-div.tag_group .name {
-	margin-top: 0px;
-	margin-bottom: 4px;
-}
-
-div.tag_group p.date {
-	font-style: italic;
-	margin-top: 0px;
-	color: #999;
-}
-div.tag_group .description {
-	margin-left: 15px;
-}
-
-div#tag_groups_controls {
-	float: right;
-}
-
-div.tag_group_controls {
-	position: absolute;
-	top: 13px;
-	right: 13px;
-}
-
-div#tag_groups_controls a {
-	background-color: white;
-}
-
-div.tag_group p.tag_publications_heading {
-	color: #444;
-	font-size: 90%;
-	margin-top: 20px;
-	margin-bottom: 5px;
-	line-height: 16px;
-}
 
 p.tag_publications_heading {
 	text-decoration: underline;

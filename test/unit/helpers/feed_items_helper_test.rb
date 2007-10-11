@@ -8,7 +8,7 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class FeedItemsHelperTest < HelperTestCase
-  fixtures :users, :bayes_classifiers, :roles, :roles_users, :tag_publications, :tag_groups, :feed_items
+  fixtures :users, :bayes_classifiers, :roles, :roles_users, :tag_publications, :feed_items
   include FeedItemsHelper
   attr_reader :current_user, :session
   self.use_transactional_fixtures = true
@@ -38,65 +38,7 @@ class FeedItemsHelperTest < HelperTestCase
   def test_clean_html_should_strip_meta
     assert_equal("<h1>header</h1><p>content</p>", clean_html('<meta http-equiv="foo"><h1>header</h1><p>content</p>'))
   end
-    
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_tag_filters_uses_feed_item_count
-  #   FeedItem.stubs(:count_with_filters).returns(50)
-  #   @response.body = tag_filter_options
-  #   assert_select("option[value = 'all']", "All Items (50)")
-  # end
-  
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_tag_filters_uses_feed_item_count_instance_var_if_it_exists
-  #   @feed_item_count = 100
-  #   @response.body = tag_filter_options
-  #   assert_select("option[value = 'all']", "All Items (100)")
-  # end
-  
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_tag_filters
-  #   tag = Tag.find_or_create_by_name('tag')
-  #   tag.stubs(:count).returns(1)
-  #   unwanted = Tag.find_or_create_by_name('unwanted')
-  #   unwanted.stubs(:count).returns(10)
-  #   @current_user.expects(:tags_with_count).with(:feed_filter => {:exclude => [], :include => [], :always_include => []}, :text_filter => nil).returns([tag, unwanted])
-  #   @output = tag_filter_options
-  #   assert_not_nil @output
-  #   @output = HpricotTestHelper::DocumentOutput.new(@output)
-  #   
-  #   assert element("option[@value = 'tag']")
-  #   assert element("option[@value = 'tag']").should_contain('tag (1)')
-  # end
 
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_tag_filters_with_classifier_tags
-  #   tag = Tag.find_or_create_by_name('tag')
-  #   tag.stubs(:count).returns(1)
-  #   unwanted = Tag.find_or_create_by_name('unwanted')
-  #   unwanted.stubs(:count).returns(10)
-  #   @current_user.expects(:tags_with_count).with(:feed_filter => {:exclude => [], :include => [], :always_include => []}, :text_filter => nil).returns([tag, unwanted])
-  #   @current_user.classifier.expects(:tags_with_count).with(:feed_filter => {:exclude => [], :include => [], :always_include => []}, :text_filter => nil).returns([tag, unwanted])
-  #   
-  #   @output = tag_filter_options
-  #   assert_not_nil @output
-  #   @output = HpricotTestHelper::DocumentOutput.new(@output)
-  #   
-  #   assert element("option[@value = 'tag']")
-  #   assert element("option[@value = 'tag']").should_contain('tag (1/1)'), "tag text was #{element("option[@value = 'tag']").inner_text}"
-  # end
-    
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def test_tag_filters_should_show_published_tags
-  #   @response.body = tag_filter_options
-  #   TagGroup.find_globals.each do |tg|
-  #     assert_select("optgroup[label = '#{tg.name}']", 1, @response.body) do |elements|
-  #       tg.tag_publications.each do |pub|
-  #         assert_select(elements.first, "option[value = 'pub_tag:#{pub.id}']", "#{pub.publisher.login}:#{pub.tag} (0)", @response.body)
-  #       end
-  #     end
-  #   end
-  # end
-  
   def test_tag_controls_helper_when_untagged
     @current_user.stubs(:tags).returns([Tag.find_or_create_by_name('tag1'), Tag.find_or_create_by_name('tag2'), Tag.find_or_create_by_name('tag3')])
     fi = FeedItem.find(1)

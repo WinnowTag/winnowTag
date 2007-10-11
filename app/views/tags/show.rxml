@@ -1,0 +1,29 @@
+xml.instruct!
+
+xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
+
+  xml.title   @tag_publication.name
+  xml.link    "rel" => "self", "href" => user_tag_publication_url(@tag_publication.publisher, @tag_publication)
+  xml.id      user_tag_publication_url(@tag_publication.publisher, @tag_publication)
+  xml.updated @feed_items.first.time.strftime("%Y-%m-%dT%H:%M:%SZ") if @feed_items.any?
+  
+
+  @feed_items.each do |feed_item|
+    xml.entry do
+      xml.title feed_item.content.title
+      xml.author  do
+        xml.name feed_item.feed.title
+        xml.uri  feed_item.feed.link
+      end
+      xml.link    "href" => feed_item.link, "rel" => "alternate"
+      xml.id      feed_item.unique_id
+      xml.updated feed_item.time.strftime("%Y-%m-%dT%H:%M:%SZ")
+      if feed_item.content.encoded_content
+        xml.content "type" => "html" do
+          xml.text! %Q(<strong>Sourced from: <a href="#{feed_item.feed.link}">#{feed_item.feed_title}</a></strong><br/><br/>)
+          xml.text! feed_item.content.encoded_content
+        end
+      end
+    end
+  end
+end

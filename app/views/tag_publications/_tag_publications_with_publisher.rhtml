@@ -16,7 +16,7 @@
 		<td class="date"><%= format_date(tag_publication.classifier.last_executed) %></td>
 		<td class="control_icons">
 			<%= control_link(image_tag('trash.gif'), 
-					tag_group_tag_publication_path(tag_publication.tag_group, tag_publication), 
+					user_tag_publication_path(tag_publication.publisher, tag_publication), 
 					:method => :delete, :requires => 'admin',
 					:confirm => "Really delete published tag?",
 					:title => "Delete published '#{tag_publication.tag.name}' tag.") %>

@@ -5,10 +5,9 @@
 # Please contact info@peerworks.org for further information.
 #
 
-# The TagPublication Controller provides two scoping
-# methods using REST style path prefixes that allow
-# a caller to scope the tag_publications to a user or
-# a tag_group.
+# The TagPublication Controller scoping
+# using REST style path prefixes that allow
+# a caller to scope the tag_publications to a user
 #
 class TagPublicationsController < ApplicationController
   skip_before_filter :login_required, :only => :show
@@ -17,7 +16,7 @@ class TagPublicationsController < ApplicationController
   before_filter :convert_tag
   
   def index
-    @tag_publications = @base.tag_publications
+    @tag_publications = @user.tag_publications
     
     respond_to do |wants|
       wants.html { render :action => 'index'}
@@ -26,7 +25,7 @@ class TagPublicationsController < ApplicationController
   end
   
   def show    
-    if @tag_publication = @base.tag_publications.find_by_tag_id(Tag.find_or_create_by_name(params[:id]).id)
+    if @tag_publication = @user.tag_publications.find_by_tag_id(Tag.find_or_create_by_name(params[:id]).id)
       respond_to do |format|
         format.atom do
           last_modified = @tag_publication.classifier.last_executed
@@ -42,32 +41,26 @@ class TagPublicationsController < ApplicationController
         end
       end
     else
-      render :text => "#{params[:id]} has not been published by #{@base.login}", :status => 404
+      render :text => "#{params[:id]} has not been published by #{@user.login}", :status => 404
     end
   end
   
   def new
-    @tag_publication = @base.tag_publications.build(params[:tag_publication])
+    @tag_publication = @user.tag_publications.build(params[:tag_publication])
     
     respond_to do |wants|
-      if TagGroup.count.zero?
-        flash[:error] = "No Tag Groups exist so you can't publish a tag."
-        wants.html { redirect_to :back }
-        wants.js   { headers['Content-Type'] = 'text/html'; render :inline => '<%= show_flash %>', :status => 500; flash.discard }
-      else
-        wants.html
-        wants.js   { headers['Content-Type'] = 'text/html'; render :partial => 'form' }
-      end
+      wants.html
+      wants.js   { headers['Content-Type'] = 'text/html'; render :partial => 'form' }
     end
   end
   
   def create
-    @tag_publication = @base.tag_publications.build(params[:tag_publication])
+    @tag_publication = @user.tag_publications.build(params[:tag_publication])
     
     respond_to do |wants|
       if @tag_publication.save
         @tag_publication.classifier.start_background_classification rescue logger.warn($!)
-        flash[:notice] = "#{@tag_publication.tag} successfully published to #{@tag_publication.tag_group.name}"
+        flash[:notice] = "#{@tag_publication.tag} successfully published"
       else
         flash[:error] = "Could not publish tag: #{@tag_publication.errors.full_messages.join(', ')}."
       end
@@ -76,21 +69,13 @@ class TagPublicationsController < ApplicationController
   end
   
   def destroy
-    publication = @base.tag_publications.find(params[:id])
+    publication = @user.tag_publications.find(params[:id])
     
-    case @base
-    when TagGroup
-      if @base.global? and current_user.has_role?('admin')
-        publication.destroy if publication
-        flash[:notice] = "Tag Publication Deleted"
-      end
-    when User
-      if publication and current_user == @base
-        publication.destroy 
-        flash[:notice] = "Published Tag Deleted"
-      else
-        flash[:warning] = "You aren't allow to delete another users tag"
-      end
+    if publication and current_user == @user
+      publication.destroy 
+      flash[:notice] = "Published Tag Deleted"
+    else
+      flash[:warning] = "You aren't allow to delete another users tag"
     end
     
     redirect_to :back
@@ -98,11 +83,7 @@ class TagPublicationsController < ApplicationController
   
   private
   def find_base
-    if params[:tag_group_id]
-      @base = @tag_group = TagGroup.find(params[:tag_group_id])
-    elsif params[:user_id]
-      @base = @user = User.find_by_login(params[:user_id])
-    end
+    @user = User.find_by_login(params[:user_id])
   end
   
   def convert_tag

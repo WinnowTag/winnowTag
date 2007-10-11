@@ -10,8 +10,6 @@ ActionController::Routing::Routes.draw do |map|
   # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
   # This route can be invoked with purchase_url(:id => product.id)
   
-  map.resources :global_tag_groups
-  map.resources :tag_publications, :path_prefix => '/tag_groups/:tag_group_id', :name_prefix => 'tag_group_'
   map.resources :tag_publications, :path_prefix => '/users/:user_id', :name_prefix => 'user_'
   map.resources :tags, :path_prefix => '/users/:user_id/public', 
                        :controller => 'tag_publications', 

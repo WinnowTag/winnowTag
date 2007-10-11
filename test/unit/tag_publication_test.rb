@@ -33,7 +33,7 @@ class TagPublicationTest < Test::Unit::TestCase
   def test_tag_publication_creation_copies_existing_taggings
     u = users(:quentin)
     u.taggings.create(:tag => Tag('tag1'), :taggable => FeedItem.find(1))
-    tag_pub = u.tag_publications.create(:tag => Tag('tag1'), :tag_group => TagGroup.find(:first))
+    tag_pub = u.tag_publications.create(:tag => Tag('tag1'))
     assert_equal(FeedItem.find(1), tag_pub.taggings.first.taggable)
     assert_equal(Tag('tag1'), tag_pub.taggings.first.tag)
     assert_equal(tag_pub, tag_pub.taggings.first.tagger)
@@ -42,14 +42,14 @@ class TagPublicationTest < Test::Unit::TestCase
   def test_tag_publications_get_their_own_classifier
     u = users(:quentin)
     u.taggings.create(:tag => Tag('tag1'), :taggable => FeedItem.find(1))
-    tag_pub = u.tag_publications.create(:tag => Tag('tag1'), :tag_group => TagGroup.find(:first))
+    tag_pub = u.tag_publications.create(:tag => Tag('tag1'))
     assert_instance_of(BayesClassifier, tag_pub.classifier)
   end
   
   def test_tag_publications_classifiers_changed_tags_are_all_tags_on_initialization
     u = users(:quentin)
     u.taggings.create(:tag => Tag('tag1'), :taggable => FeedItem.find(1))
-    tag_pub = u.tag_publications.create(:tag => Tag('tag1'), :tag_group => TagGroup.find(:first))
+    tag_pub = u.tag_publications.create(:tag => Tag('tag1'))
     assert_equal([Tag('tag1')], tag_pub.classifier.changed_tags)
   end
   
@@ -58,7 +58,7 @@ class TagPublicationTest < Test::Unit::TestCase
     u.classifier.bias = {'tag1' => 1.2}
     u.classifier.save
     u.taggings.create(:tag => Tag('tag1'), :taggable => FeedItem.find(1))
-    tag_pub = u.tag_publications.create(:tag => Tag('tag1'), :tag_group => TagGroup.find(:first))
+    tag_pub = u.tag_publications.create(:tag => Tag('tag1'))
     assert_equal(1.2, tag_pub.classifier.bias['tag1'])
   end
   
@@ -82,7 +82,7 @@ class TagPublicationTest < Test::Unit::TestCase
     
     tp_dup = nil
     assert_difference(TagPublication, :count, 0) do
-      tp_dup = TagPublication.create(:tag => tp.tag, :tag_group => tp.tag_group, :publisher => tp.publisher)
+      tp_dup = TagPublication.create(:tag => tp.tag, :publisher => tp.publisher)
     end
     
     assert_nothing_raised(ActiveRecord::RecordNotFound) { TagPublication.find(tp_dup.id) }
@@ -90,15 +90,11 @@ class TagPublicationTest < Test::Unit::TestCase
   end
   
   def test_tag_publication_requires_publisher
-    assert_invalid(TagPublication.new(:tag => Tag('tag'), :tag_group => TagGroup.find(:first)))
+    assert_invalid(TagPublication.new(:tag => Tag('tag')))
   end
-  
-  def test_tag_publications_requires_tag_group
-    assert_invalid(TagPublication.new(:tag => Tag('tag'), :publisher => users(:quentin)))
-  end
-  
+    
   def test_tag_publications_requires_tag
-    assert_invalid(TagPublication.new(:tag_group => TagGroup.find(:first), :publisher => users(:quentin)))
+    assert_invalid(TagPublication.new(:publisher => users(:quentin)))
   end
   
   def test_find_by_other_publisher

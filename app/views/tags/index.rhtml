@@ -17,7 +17,7 @@ For Private Tags, click on a tag name to rename it or merge it into an existing 
 				<th class="usage number">Usage (+/-)</th>
 				<th class="classifier_usage number">Classifier</th>
 				<th class="date">Modified</th>
-				<th class="indented">Tag Group</th>
+				<th class="indented">User</th>
 				<th class="center">Sensitivity</th>
 			</tr>
 			<tr class="<%= cycle('odd', 'even') %>">
@@ -40,8 +40,8 @@ For Private Tags, click on a tag name to rename it or merge it into an existing 
 		<% end -%>
 		</tbody>
 		<tr><th colspan="8" class="table_break">My Published Tags</th></tr>
-		<%= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => current_user.tag_publications %>
+		<%#= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => current_user.tag_publications %>
 		<tr><th colspan="8" class="table_break">Other Users' Published Tags</th></tr>
-		<%= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => TagPublication.find_by_other_publisher(current_user) %>
+		<%#= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => TagPublication.find_by_other_publisher(current_user) %>
 	</table>
 </div>

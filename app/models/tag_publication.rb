@@ -5,11 +5,10 @@
 # Please contact info@peerworks.org for further information.
 #
 
-# Tag publications are created when a user publishes a tag to 
-# TagGroup for other users to use. When the TagPublication is 
+# Tag publications are created when a user publishes a tag
+# for other users to use. When the TagPublication is 
 # created, the current state of the publishers tag is copied
-# to the TagPublication and the publication is associated
-# with the target TagGroup.
+# to the TagPublication.
 #
 class TagPublication < ActiveRecord::Base
   before_create :create_classifier
@@ -19,9 +18,8 @@ class TagPublication < ActiveRecord::Base
   acts_as_tagger
   belongs_to :publisher, :class_name => "User", :foreign_key => "publisher_id"
   belongs_to :tag
-  belongs_to :tag_group
   has_one :classifier, :class_name => "BayesClassifier", :as => :tagger, :dependent => :destroy
-  validates_presence_of :tag, :publisher, :tag_group, :on => :create
+  validates_presence_of :tag, :publisher, :on => :create
   
   # Finds all TagPublications published by publishers other that publisher
   #
@@ -69,8 +67,8 @@ class TagPublication < ActiveRecord::Base
   protected
   def remove_previous_version
     if prev = self.publisher.tag_publications.find(:first, 
-                  :conditions => ['tag_id = ? and tag_group_id = ? and id <> ?', 
-                                  self.tag_id, self.tag_group_id, self.id])
+                  :conditions => ['tag_id = ? and id <> ?', 
+                                  self.tag_id, self.id])
       prev.destroy
     end
     

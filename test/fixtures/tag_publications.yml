@@ -3,13 +3,11 @@ one:
   id: 1
   publisher_id: 1
   tag_id: 1
-  tag_group_id: 1
   comment: MyText
   created_on: 2007-07-09 11:11:53
 two:
   id: 2
   publisher_id: 2
   tag_id: 1
-  tag_group_id: 1
   comment: MyText
   created_on: 2007-07-09 11:11:53

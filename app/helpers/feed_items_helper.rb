@@ -275,61 +275,6 @@ module FeedItemsHelper
     
     classes.uniq
   end
-    
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  # def user_tag_filters
-  #   tag_counts = current_user.tags_with_count(:feed_filter => session[:view].feed_filter, :text_filter => session[:view].text_filter)
-  #   classifier_tag_counts = current_user.classifier.tags_with_count(:feed_filter => session[:view].feed_filter, :text_filter => session[:view].text_filter)
-  # 
-  #   # Index classifier tags by name
-  #   classifier_tag_counts = classifier_tag_counts.inject({}) do |h, tag_count|
-  #     h[tag_count.name] = tag_count
-  #     h
-  #   end
-  # 
-  #   # Collect all the option data for each tag
-  #   tag_counts.map do |tag|
-  #     [h(tag_filter_title(tag, classifier_tag_counts[tag.name])), tag.name]
-  #   end
-  # end
-  # 
-  # def global_tag_filters
-  #   TagGroup.find_globals.inject({}) do |options,tg|
-  #     options[tg.name] = tg.tag_publications.map do |tag_pub|
-  #       [h("#{tag_pub.name} (#{tag_pub.positive_count + tag_pub.classifier_count})"), tag_pub.filter_value]
-  #     end
-  #     options
-  #   end
-  # end
-  # 
-  # def misc_filters
-  #   view = session[:view].dup
-  #   view.tag_filter[:include] = [Tag(Tag::TAGGED)]
-  #   tagged_count = FeedItem.count_with_filters(:view => view)
-  #             
-  #   if session[:view].tag_filter[:include].blank? and session[:view].tag_filter[:exclude].blank? and @feed_item_count
-  #     all_count = @feed_item_count
-  #   else
-  #     view = session[:view].dup
-  #     view.user = nil
-  #     view.tag_filter[:include] = []
-  #     view.tag_filter[:exclude] = []
-  #     all_count = FeedItem.count_with_filters(:view => view)
-  #   end
-  #   
-  #   [["All Items (#{all_count})", 'all'], ["Tagged Items (#{tagged_count})", Tag::TAGGED]]
-  # end
-  # 
-  # def tag_filter_options
-  #   selected = session[:view].tag_filter[:include].first ? session[:view].tag_filter[:include].first.name : nil
-  #   
-  #   html = options_for_select(misc_filters + user_tag_filters, selected)
-  #   global_tag_filters.each do |group, options|
-  #     html << content_tag(:optgroup, options_for_select(options, selected), :label => group)
-  #   end
-  #   
-  #   html
-  # end
 
   def tag_filter_title(tag, classifier_tag)
     if classifier_tag
