@@ -213,21 +213,25 @@ class FeedItem < ActiveRecord::Base
         add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], tagger_condition, conditions)
         add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], filters[:include_negative], conditions)        
       end
-    elsif view.user and view.show_tagged?
+    elsif view.user and !view.show_untagged?
       tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
 
       add_tag_filter_joins!(view.user, tagger_condition, joins)
       add_tagged_state_conditions!(view.user, filters[:include_negative], conditions)
-    elsif view.user and view.show_untagged?
-      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
-
-      add_tag_filter_joins!(view.user, tagger_condition, joins)
-      add_untagged_state_conditions!(view.user, filters[:include_negative], conditions)
     end
     
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
     
     add_always_include_feed_filter_conditions!(view.feed_filter[:always_include], options[:conditions])
+    
+    if view.user and view.show_untagged?
+      if tag_exclusion_filter_by_user.nil? or (!tag_inclusion_filter_by_user.keys.include?(view.user) and !tag_exclusion_filter_by_user.keys.include?(view.user))
+        tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
+        add_tag_filter_joins!(view.user, tagger_condition, joins)
+      end
+      
+      add_untagged_state_conditions!(view.user, filters[:include_negative], options[:conditions])
+    end
     
     options[:joins] = joins.join(" ")
     
@@ -386,12 +390,14 @@ class FeedItem < ActiveRecord::Base
   end
   
   def self.add_untagged_state_conditions!(tagger, include_negative, conditions)
-    taggings_alias = taggings_alias_for(tagger)    
-    conditions << "#{taggings_alias}.id IS NULL"
+    if !conditions.blank?
+      taggings_alias = taggings_alias_for(tagger)
+      conditions.replace "#{taggings_alias}.id IS NULL OR (#{conditions})"
+    end
   end
   
   def self.add_always_include_feed_filter_conditions!(feed_filter, conditions)
-    if conditions and !feed_filter.blank?
+    if !conditions.blank? and !feed_filter.blank?
       conditions.replace "feed_items.feed_id IN (#{feed_filter.join(",")}) OR (#{conditions})"
     end
   end

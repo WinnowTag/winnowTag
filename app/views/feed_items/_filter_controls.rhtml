@@ -1,4 +1,3 @@
 <p class="filter_group_heading">Filters</p>
-<%= radio_button_tag "tagged_state", "tagged", @view.show_tagged?, :onclick => "window.location = '" + feed_items_url(:view_id => @view, :tagged_state => "tagged") + "'" %> <label for="tagged_state_tagged">Tagged</label>
-<%= radio_button_tag "tagged_state", "untagged", @view.show_untagged?, :onclick => "window.location = '" + feed_items_url(:view_id => @view, :tagged_state => "untagged") + "'" %> <label for="tagged_state_untagged">Untagged</label>
-<%= radio_button_tag "tagged_state", "both", @view.show_all?, :onclick => "window.location = '" + feed_items_url(:view_id => @view, :tagged_state => "both") + "'" %> <label for="tagged_state_both">Both</label>
+<%= check_box_tag "tagged_state", "untagged", @view.show_untagged?, :onclick => "window.location = '" + feed_items_url(:view_id => @view) + "&show_untagged=' + this.checked" %> <label for="tagged_state_tagged">Show Untagged</label>
+

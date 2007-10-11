@@ -34,45 +34,5 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 #  sort_title        :string(255)   
 #
 
-class Feed < ActiveRecord::Base  
-  # Returns a list of feeds with the number of items in each feed.
-  # An additional attribute 'item_count' will be provided that has a count of all feed items for
-  # each feed which are tagged by the tagger with that tag.  If tagger and tag are not passed in
-  # all feeds with items will be returned and item count will be the total count of the items.
-  #
-  # If the feed item count for a given fieed is 0 zero it is not returned.
-  # === Parameters
-  #
-  # <tt>:tag_filter</tt>:: Limits the count of items to those that are tagged with the tag_filter. Must be provided with :user.
-  # <tt>:user</tt>:: The user of the taggings to use with the tag_filter.
-  # <tt>text_filter</tt>:: A substring to limit the items to count.
-  #
-  def self.find_with_item_counts(view = nil)
-    
-    if view and view.text_filter
-      text_filter_joins = FeedItem.text_filter_join(view.text_filter)
-    end
-    
-    if view and view.tag_filter and !view.tag_filter[:include].blank? and view.user
-      if !view.show_tagged?
-        tag_ids = view.tag_filter[:include].map do |tag|
-          #TODO: Update to work w/ new publish tags feature.
-          tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
-        end.join(",")
-        
-        tag_filter_joins = "INNER JOIN taggings ON feed_items.id = taggings.taggable_id " <<
-                           "AND taggings.taggable_type = 'FeedItem' " <<
-                           "AND (#{view.user.tagging_sql} OR #{view.user.classifier.tagging_sql}) " <<
-                           "AND taggings.deleted_at IS NULL " <<
-                           "AND taggings.tag_id IN (#{tag_ids})"
-      end
-    end
-    
-    self.find(:all, 
-               :select => "feeds.*, count(distinct feed_items.id) as item_count",
-               :joins => "inner join feed_items on feed_items.feed_id = feeds.id #{tag_filter_joins} #{text_filter_joins}",
-               :conditions => ("active = 1 and feeds.title is not null"), 
-               :group => 'feeds.id',
-               :order => 'feeds.sort_title')
-  end
+class Feed < ActiveRecord::Base
 end

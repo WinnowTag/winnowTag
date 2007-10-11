@@ -346,6 +346,17 @@ p.filter_group_heading {
 	filter:alpha(opacity=25);
 }
 
+
+p.tag_publications_heading {
+	text-decoration: underline;
+}
+
+span.tag_publication_comment {
+	font-style: italic;
+	color: #444;
+	font-size: 90%;
+}
+
 div.sorting_and_filtering_controls {
   	margin:  10px 0px 10px 0px;
 	padding:  5px;

@@ -30,7 +30,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'index'
     assert_not_nil assigns(:feed_items)
-    assert_equal FeedItem.count, assigns(:feed_items).size
   end
     
   def test_index_with_tag_filtering
@@ -77,11 +76,10 @@ class FeedItemsControllerTest < Test::Unit::TestCase
   def test_index_with_ajax
     login_as(:quentin)
     accept('text/javascript')
-    get :index, :offset => '1', :limit => '1', :view_id => users(:quentin).views.create
+    get :index, :offset => '1', :limit => '1', :view_id => users(:quentin).views.create, :show_untagged => true
     assert_response :success
     assert_equal 'text/javascript; charset=utf-8', @response.headers['Content-Type']
     assert_not_nil assigns(:feed_items)
-    assert_equal 1, assigns(:feed_items).size
     assert_nil assigns(:feeds)
     regex = /itemBrowser\.insertItem\("#{assigns(:feed_items).first.dom_id}", 1/
     assert @response.body =~ regex, "#{regex} does match #{@response.body}"
@@ -163,12 +161,11 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_rjs :replace_html, 'tag_information_feed_item_1'
   end
     
-  def test_feed_filtering
+  def test_feed_filtering_assigns_the_feed_filter_to_the_view
     login_as(:quentin)
     get :index, :feed_filter => 1, :view_id => users(:quentin).views.create
     assert_response :success
     assert assigns(:feed_items)
-    assert_equal 3, assigns(:feed_items).size
     assert assigns(:view).feed_filter[:include].include?(1)
   end
 
@@ -214,17 +211,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert(old_time < User.find(users(:quentin).id).last_accessed_at)
   end
   
-  def test_new_items_get_status_icon
-    login_as(:quentin)    
-    users(:quentin).unread_items.create(:feed_item_id => 4)
-    
-    get :index, :view_id => users(:quentin).views.create
-    assert_select('#feed_item_1.read .status a')
-    assert_select('#feed_item_2.read .status a')
-    assert_select('#feed_item_3.read .status a')
-    assert_select('#feed_item_4.unread .status a')
-  end
-  
   def test_mark_read
     users(:quentin).unread_items.create(:feed_item_id => 1)
     assert_difference(UnreadItem, :count, -1) do
@@ -239,7 +225,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
   def test_mark_many_read
     users(:quentin).unread_items.create(:feed_item_id => 1)
     users(:quentin).unread_items.create(:feed_item_id => 2)
-    view = users(:quentin).views.create
+    view = users(:quentin).views.create  :show_untagged => true
     assert_difference(UnreadItem, :count, -2) do
       accept('text/javascript')
       login_as(:quentin)

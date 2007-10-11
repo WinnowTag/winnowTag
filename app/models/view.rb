@@ -85,8 +85,8 @@ class View < ActiveRecord::Base
       self.text_filter = new_text_filter
     end
     
-    if params[:tagged_state]
-      self.tagged_state = params[:tagged_state]
+    if params[:show_untagged]
+      self.show_untagged = params[:show_untagged]
     end
   end
   
@@ -107,18 +107,6 @@ class View < ActiveRecord::Base
   def set_as_default!
     user.views.update_all(["`default` = ?", false])
     update_attribute :default, true
-  end
-  
-  def show_tagged?
-    tagged_state == "tagged"
-  end
-  
-  def show_untagged?
-    tagged_state == "untagged"
-  end
-  
-  def show_all?
-    !show_tagged? && !show_untagged?
   end
   
   class << self
