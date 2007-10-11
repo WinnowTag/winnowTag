@@ -223,12 +223,22 @@ class FeedItem < ActiveRecord::Base
 
       add_tagged_state_conditions!(view.user, filters[:include_negative], conditions)
     end
-    
+
+    if view.user and view.show_untagged? && !view.feed_filter[:include].blank? && !view.feed_filter[:exclude].blank?
+      if tag_exclusion_filter_by_user.nil? or (!tag_inclusion_filter_by_user.keys.include?(view.user) and !tag_exclusion_filter_by_user.keys.include?(view.user))
+        tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
+        add_tag_filter_joins!(view.user, tagger_condition, joins)
+      end
+      
+      taggings_alias = taggings_alias_for(view.user)
+      conditions << "#{taggings_alias}.id IS NULL"
+    end
+        
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
     
     add_always_include_feed_filter_conditions!(view.feed_filter[:always_include], options[:conditions])
     
-    if view.user and view.show_untagged?
+    if view.user and view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank?
       if tag_exclusion_filter_by_user.nil? or (!tag_inclusion_filter_by_user.keys.include?(view.user) and !tag_exclusion_filter_by_user.keys.include?(view.user))
         tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
         add_tag_filter_joins!(view.user, tagger_condition, joins)
