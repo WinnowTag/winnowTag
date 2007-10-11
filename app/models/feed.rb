@@ -54,9 +54,9 @@ class Feed < ActiveRecord::Base
     end
     
     if view and view.tag_filter and !view.tag_filter[:include].blank? and view.user
-      # if view.tag_filter[:include].include?(Tag::TAGGED)
       if !view.show_tagged?
         tag_ids = view.tag_filter[:include].map do |tag|
+          #TODO: Update to work w/ new publish tags feature.
           tag =~ /^pub_tag:(\d+)$/ ? $1 : tag
         end.join(",")
         
@@ -66,9 +66,6 @@ class Feed < ActiveRecord::Base
                            "AND taggings.deleted_at IS NULL " <<
                            "AND taggings.tag_id IN (#{tag_ids})"
       end
-      # if view.tag_filter.tagged_filter?
-      #   tag_filter_joins += " and taggings.tag_id = #{view.tag_filter.id} "
-      # end
     end
     
     self.find(:all, 

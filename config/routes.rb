@@ -9,13 +9,7 @@ ActionController::Routing::Routes.draw do |map|
   # Sample of named route:
   # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
   # This route can be invoked with purchase_url(:id => product.id)
-  
-  map.resources :tag_publications, :path_prefix => '/users/:user_id', :name_prefix => 'user_'
-  map.resources :tags, :path_prefix => '/users/:user_id/public', 
-                       :controller => 'tag_publications', 
-                       :name_prefix => 'public_',
-                       :requirements => {:id => /.*/}
-  
+    
   map.resources :users, 
                 :member => {
                   :login_as => :post
@@ -39,14 +33,6 @@ ActionController::Routing::Routes.draw do |map|
                  :cancel => :post,
                  :classify => :post
                }
-  map.resource :classifier, 
-              :path_prefix => '/tag_publications/:tag_publication_id',
-              :name_prefix => 'tag_pub_',
-              :member => {
-                :status => :any,
-                :cancel => :post,
-                :classify => :post
-              }
               
   map.resources :collection_job_results, :path_prefix => '/users/:user_id'
   map.resource :item_protection, 

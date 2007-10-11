@@ -8,7 +8,7 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class FeedItemsHelperTest < HelperTestCase
-  fixtures :users, :bayes_classifiers, :roles, :roles_users, :tag_publications, :feed_items
+  fixtures :users, :bayes_classifiers, :roles, :roles_users, :feed_items
   include FeedItemsHelper
   attr_reader :current_user, :session
   self.use_transactional_fixtures = true

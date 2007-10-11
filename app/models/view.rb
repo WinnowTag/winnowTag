@@ -131,12 +131,10 @@ private
   def arg_to_tag(arg)
     if arg.is_a?(Tag)
       arg.id.to_s
-    elsif arg.is_a?(TagPublication)
-      arg.filter_value
-    elsif arg =~ /^(?:pub_tag:)?\d+$/
+    elsif arg =~ /^\d+$/
       arg
     else
-      raise ArgumentError.new("Argument must be a tag, tag publication, tag id, or tag name")
+      raise ArgumentError.new("Argument must be a tag or tag id")
     end
   end
 

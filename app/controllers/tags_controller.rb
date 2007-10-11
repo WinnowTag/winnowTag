@@ -37,15 +37,9 @@ class TagsController < ApplicationController
   def create
     begin
       if params[:copy]
-        if params[:copy] =~ /pub_tag:(\d+)/
-          source = TagPublication.find($1)
-          from = source.tag
-          to = Tag("Copy of #{source.name}")
-        else
-          source = current_user
-          from = current_user.tags.find_by_name(params[:copy])
-          to = Tag("Copy of #{params[:copy]}")
-        end
+        source = current_user
+        from = current_user.tags.find_by_name(params[:copy])
+        to = Tag("Copy of #{params[:copy]}")
         
         source.copy_tag(from, to, current_user)
         flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"        

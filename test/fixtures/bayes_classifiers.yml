@@ -40,11 +40,3 @@ admin_classifier:
   id: 3
   tagger_id: 3
   tagger_type: User
-tag_pub_1_classifier:
-  id: 4
-  tagger_id: 1
-  tagger_type: TagPublication
-tag_pub_2_classifier:
-  id: 5
-  tagger_id: 2
-  tagger_type: TagPublication

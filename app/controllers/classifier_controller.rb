@@ -85,10 +85,6 @@ class ClassifierController < ApplicationController
 
   private
   def setup_classifier
-    if params[:tag_publication_id]
-      @classifier = TagPublication.find(params[:tag_publication_id]).classifier
-    else
-      @classifier = current_user.classifier
-    end
+    @classifier = current_user.classifier
   end
 end

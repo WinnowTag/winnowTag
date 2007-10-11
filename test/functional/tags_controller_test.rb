@@ -5,7 +5,7 @@ require 'tags_controller'
 class TagsController; def rescue_action(e) raise e end; end
 
 class TagsControllerTest < Test::Unit::TestCase
-  fixtures :users, :tags, :feed_items, :tag_publications
+  fixtures :users, :tags, :feed_items
   def setup
     @controller = TagsController.new
     @request    = ActionController::TestRequest.new
@@ -29,18 +29,6 @@ class TagsControllerTest < Test::Unit::TestCase
       assert_redirected_to "/tags"
     end
     assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'Copy of tag'])
-  end
-  
-  def test_create_should_copy_public_tag
-    tp = TagPublication.find(:first)
-    tp.taggings.create(:tag => tp.tag, :taggable => FeedItem.find(1))
-    
-    assert_difference(users(:quentin).tags, :count) do
-      post :create, :copy => tp.filter_value
-      assert_nil flash[:error]
-    end
-    
-    assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', "Copy of #{tp.name}"])
   end
   
   def test_index

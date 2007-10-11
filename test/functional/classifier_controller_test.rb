@@ -5,7 +5,7 @@ require 'classifier_controller'
 class ClassifierController; def rescue_action(e) raise e end; end
 
 class ClassifierControllerTest < Test::Unit::TestCase
-  fixtures :users, :bayes_classifiers, :roles, :roles_users, :tag_publications
+  fixtures :users, :bayes_classifiers, :roles, :roles_users
   
   def setup
     @controller = ClassifierController.new
@@ -23,17 +23,6 @@ class ClassifierControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     get :show, :view_id => users(:quentin).views.create
     assert_equal User.find_by_login('quentin').classifier, assigns(:classifier)
-  end
-  
-  def test_tag_publication_scoped_routes
-    assert_routing('/tag_publications/1/classifier', :controller => 'classifier', :action => "show", :tag_publication_id => '1')
-    assert_routing('/tag_publications/3/classifier/status', :controller => 'classifier', :action => "status", :tag_publication_id => '3')
-  end
-  
-  def test_classifier_tag_publications_when_tag_publication_id_is_set
-    login_as(:admin)
-    get :show, :tag_publication_id => 1, :view_id => users(:admin).views.create
-    assert_equal(TagPublication.find(1).classifier, assigns(:classifier))
   end
   
   def test_classify_starts_background_process

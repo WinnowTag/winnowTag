@@ -14,7 +14,8 @@
 		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(@tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{@tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{@tag.id}" %>
 	</td>
 	<td class="control_icons">		
-		<%= link_to_remote image_tag('globe.gif'), {:url => hash_for_user_new_tag_publication_path(:user_id => current_user, 'tag_publication[tag]' => @tag, :view_id => @view),
+		<%# TODO: Update to work w/ new publish tags feature. %>
+		<%#= link_to_remote image_tag('globe.gif'), {:url => hash_for_user_new_tag_publication_path(:user_id => current_user, 'tag_publication[tag]' => @tag, :view_id => @view),
 		 							  :method => 'get', 
 									  :update => {:success => @tag.dom_id('form_cell'),
 												  :failure => 'flash'}, 

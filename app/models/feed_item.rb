@@ -181,10 +181,11 @@ class FeedItem < ActiveRecord::Base
       
       view.tag_filter[:include].each do |tag_filter|
         if tag_filter =~ /^pub_tag:(\d+)$/
-          tagger = TagPublication.find($1)
-          
-          tag_inclusion_filter_by_user[tagger] ||= []
-          tag_inclusion_filter_by_user[tagger] << tagger.tag_id
+          # TODO: Update with new publish tags feature.
+          # tagger = TagPublication.find($1)
+          # 
+          # tag_inclusion_filter_by_user[tagger] ||= []
+          # tag_inclusion_filter_by_user[tagger] << tagger.tag_id
         else
           tag_inclusion_filter_by_user[view.user] ||= []
           tag_inclusion_filter_by_user[view.user] << tag_filter
@@ -192,11 +193,12 @@ class FeedItem < ActiveRecord::Base
       end
       
       view.tag_filter[:exclude].each do |tag_filter|
+        # TODO: Update with new publish tags feature.
         if tag_filter =~ /^pub_tag:(\d+)$/
-          tagger = TagPublication.find($1)
-          
-          tag_exclusion_filter_by_user[tagger] ||= []
-          tag_exclusion_filter_by_user[tagger] << tagger.tag_id
+          # tagger = TagPublication.find($1)
+          # 
+          # tag_exclusion_filter_by_user[tagger] ||= []
+          # tag_exclusion_filter_by_user[tagger] << tagger.tag_id
         else
           tag_exclusion_filter_by_user[view.user] ||= []
           tag_exclusion_filter_by_user[view.user] << tag_filter

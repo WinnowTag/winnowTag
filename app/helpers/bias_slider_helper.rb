@@ -23,13 +23,8 @@ module BiasSliderHelper
     variable = (options[:var] or options[:global] or 'bias_slider')
     var_dec = 'var ' unless options[:global]
     
-    if options[:tag].is_a?(TagPublication)
-      tag = options[:tag].tag
-      tagger = options[:tag]
-    else
-      tag = options[:tag]
-      tagger = current_user
-    end
+    tag = options[:tag]
+    tagger = current_user
     
     bias = tagger.classifier.bias[tag.to_s]
     is_default = !tagger.classifier.bias.has_key?(tag.to_s)

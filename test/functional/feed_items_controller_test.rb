@@ -6,7 +6,7 @@ class FeedItemsController; def rescue_action(e) raise e end; end
 
 class FeedItemsControllerTest < Test::Unit::TestCase
   fixtures :users, :feeds, :feed_items, :feed_item_contents, :tags, 
-           :bayes_classifiers, :roles, :roles_users, :tag_publications
+           :bayes_classifiers, :roles, :roles_users
   def setup
     @controller = FeedItemsController.new
     @request    = ActionController::TestRequest.new
@@ -202,21 +202,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     get :index, :text_filter => "text", :view_id => view
     get :index, :text_filter => nil, :view_id => view
     assert_nil(assigns(:view).text_filter)
-  end
-  
-  def test_setting_tag_filter_to_published_tag
-    login_as(:quentin)
-    
-    tag_filter = 'pub_tag:1'
-    
-    get :index, :tag_filter => tag_filter, :view_id => users(:quentin).views.create
-    assert assigns(:view).tag_filter[:include].include?(tag_filter)
-  end
-  
-  def test_setting_tag_filter_to_nonexistant_published_tag_resets_to_all
-    login_as(:quentin)
-    get :index, :tag_filter => 'pub_tag:1000'
-    assert assigns(:view).tag_filter[:include].blank?
   end
   
   def test_sets_last_accessed_time_on_each_request
