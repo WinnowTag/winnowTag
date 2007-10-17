@@ -48,7 +48,7 @@ table.property_table td {
 }
 
 th.control_icons, td.control_icons {
-	text-align: right;
+	text-align: left;
 	width: 64px;
 }
 

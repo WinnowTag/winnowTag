@@ -26,7 +26,8 @@ ActionController::Routing::Routes.draw do |map|
                 },
                 :collection => {:mark_read => :put}
   map.resources :tags, :requirements => {:id => /.*/},
-                :collection => { :public => :get }
+                :collection => { :public => :get },
+                :member => { :publicize => :put }
   
   map.resource :classifier, 
                :member => {

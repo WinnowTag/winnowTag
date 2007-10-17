@@ -13,18 +13,8 @@
 		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(@tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{@tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{@tag.id}" %>
 		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(@tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{@tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{@tag.id}" %>
 	</td>
-	<td class="control_icons">		
-		<%# TODO: Update to work w/ new publish tags feature. %>
-		<%#= link_to_remote image_tag('globe.gif'), {:url => hash_for_user_new_tag_publication_path(:user_id => current_user, 'tag_publication[tag]' => @tag, :view_id => @view),
-		 							  :method => 'get', 
-									  :update => {:success => @tag.dom_id('form_cell'),
-												  :failure => 'flash'}, 
- 										   	  :complete => visual_effect(:blind_down, @tag.dom_id('form'), :duration => 0.3)},
-										  :title => "Publish #{@tag.name}"%>
-		<%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => @tag), :method => 'post', :title => "Copy #{@tag.name}" %>
-		<%= link_to image_tag('trash.gif'), {:action => 'destroy', :id => @tag}, 
-					:method => 'delete', :title => "Destroy #{@tag.name}",
-					:confirm => "Do you really want to delete #{@tag.name}?\n\nThis can't be undone." %>
+	<td class="control_icons" id="<%= @tag.dom_id("controls") %>">
+    <%= render :partial => "controls", :locals => { :tag => @tag } %>
 	</td>
 	<td class="number">
     <%= link_to "#{@tag.count} / #{@tag.negative_count}", feed_items_path(:tag_filter => @tag.id, :mode => 'tag_inspect', :view_id => :new), 

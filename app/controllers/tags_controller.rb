@@ -114,6 +114,10 @@ class TagsController < ApplicationController
     render :inline => '<%= auto_complete_result(@tags, :name, @q) %>'
   end
   
+  def publicize
+    @tag.update_attribute(:public, true)
+  end
+  
   def public
   end
   
