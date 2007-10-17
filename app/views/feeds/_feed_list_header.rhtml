@@ -1,6 +1,6 @@
 <ul class="control_bar">
   	<li><%= link_to "Add Feed", new_feed_url, :class => "add" %></li>
- 	<li>Page: <%= pagination_links(@feed_pages, :window_size => 4) %></li>
+ 	<li>Page: <%= pagination_links(@feed_pages, :window_size => 4, :params => { :search_term => params[:search_term] }) %></li>
   <li>
     <% form_tag(feeds_path, :method => :get) do -%>
     	<%= hidden_field_tag :view_id, @view.id %>

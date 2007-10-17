@@ -19,8 +19,8 @@ class FeedsController < ApplicationController
         add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
         add_to_sortable_columns('feeds', :field => 'updated_on', :alias => 'updated_on')
         
-        @title = 'winnow feeds'    
-        @feed_pages = Paginator.new(self, Feed.count, 40, params[:page])
+        @title = 'winnow feeds'
+        @feed_pages = Paginator.new(self, Feed.count(:conditions => @conditions), 40, params[:page])
         @feeds = Feed.find(:all,
                             :conditions => @conditions,
                             :limit => @feed_pages.items_per_page, 
