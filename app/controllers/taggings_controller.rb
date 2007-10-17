@@ -29,18 +29,16 @@ class TaggingsController < ApplicationController
   #
   #  Accepted Parameters:
   #    - tagging: 
-  #         taggable_type/taggable_id: The type and id of a taggable to destroy a tagging on.
+  #         feed_item_id: The type and id of a taggable to destroy a tagging on.
   #         tag: The name of the tag to destroy the tagging on the taggable.
   #
   def destroy
-    respond_to do |wants|
-      tagging = params[:tagging]
-      @feed_item = FeedItem.find(tagging[:feed_item_id])
-      
-      current_user.taggings.find_by_feed_item(@feed_item, :all, 
-                                            :conditions => {:tag_id => Tag(current_user, tagging[:tag]).id}).
-                                            each(&:destroy)
+    @feed_item = FeedItem.find(params[:tagging][:feed_item_id])
     
+    current_user.taggings.find_by_feed_item(@feed_item, :all, 
+      :conditions => { :classifier_tagging => false, :tag_id => Tag(current_user, params[:tagging][:tag]).id }).each(&:destroy)            
+
+    respond_to do |wants|
       wants.js
     end
   end

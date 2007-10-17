@@ -91,5 +91,22 @@ class TaggingsControllerTest < Test::Unit::TestCase
     post :destroy, :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
     assert_template 'destroy.rjs'
     assert_raise (ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
-  end  
+  end
+  
+  def test_destroy_does_not_destroy_classifier_taggings
+    login_as(:quentin)
+
+    user = User.find(1)
+    tag = Tag(user, 'peerworks')
+    feed_item = FeedItem.find(1)
+    tagging = Tagging.create!(:feed_item => feed_item, :user => user, :tag => tag)
+    tagging = Tagging.create!(:feed_item => feed_item, :user => user, :tag => tag, :classifier_tagging => true)
+
+    assert_equal 2, Tagging.count
+    
+    accept('text/javascript')
+    post :destroy, :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
+
+    assert_equal 1, Tagging.count
+  end
 end
