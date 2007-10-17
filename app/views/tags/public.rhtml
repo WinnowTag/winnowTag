@@ -12,8 +12,8 @@
       	<td class="tag"><%= tag.name -%></td>
       	<td class="number"><%= tag.count %> / <%= tag.negative_count %></td>
   	    <td class="number"><%= tag.classifier_count %></td>
-  	    <td class="date"><%= format_date(tag.last_used_by(current_user)) %></td>	
-  	    <td class="indented" nowrap="nowrap"><%= current_user.display_name %></td>
+  	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
+  	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
       </tr>
 		<% end -%>
 	</table>

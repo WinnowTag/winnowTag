@@ -67,8 +67,8 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  def last_used_by(tagger)
-    if tagging = tagger.taggings.find(:first, :conditions => ['tag_id = ?', self.id], :order => 'created_on DESC')
+  def last_used_by
+    if tagging = taggings.find(:first, :order => 'created_on DESC')
       tagging.created_on
     end
   end
