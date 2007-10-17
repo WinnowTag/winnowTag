@@ -25,7 +25,6 @@ class TagsController < ApplicationController
       @title = 'My Tags'
       @tags = current_user.tags_with_count
       @classifier = current_user.classifier
-      @classifier_counts = @classifier.tags_with_count.hash_by(:name)
       wants.html
       wants.xml {render :xml => @tags.to_xml}
     end
@@ -39,9 +38,9 @@ class TagsController < ApplicationController
       if params[:copy]
         source = current_user
         from = current_user.tags.find_by_name(params[:copy])
-        to = Tag("Copy of #{params[:copy]}")
+        to = Tag(current_user, "Copy of #{params[:copy]}")        
+        from.copy(to)
         
-        source.copy_tag(from, to, current_user)
         flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"        
       else
         flash[:error] = "Provide a tag to copy"
@@ -67,13 +66,26 @@ class TagsController < ApplicationController
   # current_user's instances of old_tag will be changed to instances of new_tag.
   #
   def update
-    new_tag = Tag.find_or_create_by_name(params[:tag][:name])
-    rename_tagging = RenameTagging.create(:old_tag => @tag, :new_tag => new_tag, :tagger => current_user)
-    if rename_tagging.valid?       
-      flash[:notice] = rename_tagging.message        
+    if (merge_to = current_user.tags.find_by_name(params[:tag][:name])) && (merge_to != @tag)
+      initial_size = @tag.manual_taggings.size
+      number_merged = @tag.merge(merge_to)
+      
+      if number_merged == initial_size
+        flash[:notice] = "#{pluralize(number_merged, 'tag')} merged from '#{@tag}' to '#{merge_to}'"
+      else
+        flash[:warning] = "#{pluralize(number_merged, 'tag')} merged from '#{@tag}' to '#{merge_to}' " +
+                            "with #{pluralize(initial_size - number_merged, 'conflict')}"
+      end
     else
-      flash[:error] = rename_tagging.errors.full_messages.join('<br/>')
+      @tag.name = params[:tag][:name]
+      
+      if @tag.save       
+        flash[:notice] = "Tag renamed"        
+      else
+        flash[:error] = @tag.errors.full_messages.join('<br/>')
+      end
     end
+    
     redirect_to :back
   end
 
@@ -85,9 +97,8 @@ class TagsController < ApplicationController
   # in untraining during the next classification run.
   # 
   def destroy
-    taggings = current_user.taggings.find_by_tag(@tag).each(&:destroy)
-    current_user.classifier.taggings.delete_all!("tag_id = #{@tag.id}")
-    flash[:notice] = "Deleted #{pluralize(taggings.size, 'use')} of #{@tag.name}."
+    @tag.destroy
+    flash[:notice] = "Deleted #{@tag.name}."
     redirect_to :back
   end
   

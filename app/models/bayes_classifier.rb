@@ -12,21 +12,19 @@ require 'feed_item_tokenizer'
 # Provides the hook between Winnow and the Bayes classifier.
 #
 # The BayesClassifier class sets up and manages an instance of the Bayes classifier
-# that can be trained with another tagger's taggings and will classify FeedItem instances
-# into the Tag categories defined by a tagger.
+# that can be trained with a user's taggings and will classify FeedItem instances
+# into the Tag categories defined by a user.
 #
-# A BayesClassifier has a one-to-one relationship with another tagger of any type (using
-# the polymorphic tagger association).
 #
 # == Training
 #
-# The BayesClassifier will train the classifier on taggings created by it's tagger. Taggings
+# The BayesClassifier will train the classifier on taggings created by it's user. Taggings
 # with a strength of 1 are treated as positive examples and taggings with a strength of
-# 0 are treated as negative examples. When a tagging is delete by the tagger, the classifier
+# 0 are treated as negative examples. When a tagging is delete by the user, the classifier
 # is untrained on that tagging.
 #
 # For the most part, training is achieved by calling the update_training method which will
-# update the training data to be consistent with the current state of the tagger's taggings.
+# update the training data to be consistent with the current state of the user's taggings.
 #
 # Training Methods are:
 #
@@ -73,7 +71,7 @@ require 'feed_item_tokenizer'
 #
 # The Bayes classifier supports bias settings on a per tag basis. To capture this BayesClassifier
 # stores a default_bias as a float and a Hash of bias values with tag names as keys. This allows
-# a tagger to set a overall default bias and to override that default per tag.
+# a user to set a overall default bias and to override that default per tag.
 #
 # The methods to support this functionality are:
 #
@@ -82,7 +80,6 @@ require 'feed_item_tokenizer'
 # * default_bias=
 # * bias_without_defaults
 #
-# See also Tagger
 #
 # == Schema Information
 # Schema version: 57
@@ -123,15 +120,15 @@ class BayesClassifier < ActiveRecord::Base
   NON_CLASSIFIED_TAGS = ['seen', 'duplicate', 'missing entry', RANDOM_BACKGROUND, 'SHORT', /^\*.*/, /^_!not_.*/] unless const_defined?(:NON_CLASSIFIED_TAGS)
    
   acts_as_paranoid
-  acts_as_authorizable  
-  acts_as_tagger :positive_condition => 'taggings.strength >= #{self.positive_cutoff - self.borderline_threshold}'
-  belongs_to :tagger, :polymorphic => true
+  acts_as_authorizable
+  belongs_to :user
   has_one :classifier_data, :order => 'updated_on DESC', :dependent => :destroy
   has_one :classifier_execution, :order => 'created_on DESC', :dependent => :destroy
   has_one :classifier_job, :dependent => :nullify
   serialize :bias
   validates_numericality_of :random_background_size, :only_integer => true, :message => "is not an integer"
   validates_numericality_of :default_bias, :positive_cutoff, :insertion_cutoff, :borderline_threshold
+  after_destroy {|classifier| classifier.user.classifier_taggings.clear }
   
   # Deletes any classifier taggings which have been orphaned.  
   #
@@ -139,23 +136,26 @@ class BayesClassifier < ActiveRecord::Base
   # archived.  We can just delete these taggings.
   #
   def self.delete_orphaned_taggings
-    Tagging.delete_all!(["tagger_type = ? and taggable_id not in (select id from feed_items)", self.name])
+    Tagging.delete_all(["classifier_tagging = 1 and feed_item_id not in (select id from feed_items)"])
   end
   
   # Returns a list of tags that were changed since the last time
   # this classifier was executed.
   def changed_tags
     if last_executed
-      self.tagger.taggings.find_with_deleted(:all, 
-              :conditions => [
-                '(taggings.created_on > ? and taggings.deleted_at is null) ' +
-                'or (taggings.created_on <= ? and taggings.deleted_at > ?)', 
-                  last_executed, last_executed, last_executed],
+      tags = self.user.taggings.find(:all, 
+              :conditions => ['taggings.created_on > ? ', last_executed],
               :include => :tag,
               :group   => 'tag_id').
+            map(&:tag) +
+      self.user.deleted_taggings.find(:all,
+              :conditions => ['deleted_taggings.deleted_at > ?', last_executed],
+              :include => :tag,
+              :group => 'tag_id').
             map(&:tag)
+      tags.uniq
     else
-      self.tagger.tags
+      self.user.tags
     end
   end
   
@@ -174,16 +174,14 @@ class BayesClassifier < ActiveRecord::Base
     self.classifier # Make sure the classifier is loaded
     if self.random_background_uptodate?
       self.class.benchmark("Training new taggings", Logger::DEBUG, false) do
-        self.tagger.taggings.find_with_deleted(:all, 
-                                  :conditions => [
-                                    'created_on <= ? and deleted_at > ?', 
-                                    self.classifier_data.updated_on,
+        self.user.deleted_taggings.find(:all, 
+                                  :conditions => ['deleted_at >= ?',
                                     self.classifier_data.updated_on]). each do |tagging|
           self.untrain(tagging)
         end
       
         conditions = ['created_on > ?', self.classifier_data.updated_on] unless self.classifier_data.data.nil?
-        self.tagger.taggings.find(:all, :conditions => conditions).each do |tagging|
+        self.user.taggings.find(:all, :conditions => conditions).each do |tagging|
           self.train(tagging)
         end
       end
@@ -202,8 +200,8 @@ class BayesClassifier < ActiveRecord::Base
     logger.info "Starting Retraining..."
     self.clear_training_data
     
-    self.class.benchmark("Training on #{self.tagger}'s taggings", Logger::DEBUG, false) do
-      tagger.taggings.each do |tagging|
+    self.class.benchmark("Training on #{self.user}'s taggings", Logger::DEBUG, false) do
+      user.taggings.each do |tagging|
         self.train(tagging)
       end
     end
@@ -261,17 +259,17 @@ class BayesClassifier < ActiveRecord::Base
   
   # Trains the classifier with a tagging
   #
-  # Taggings are only trained if they are tagger's taggings.
+  # Taggings are only trained if they are user's taggings.
   #
   # If the strength of the tagging is 0 it is treated as 
   # a negative tagging and the pool produced by passing
   # the tag name through the NEGATIVE_POOL_PATTERN is trained.
   #
-  def train(tagging, taggable = tagging.taggable)
+  def train(tagging, feed_item = tagging.feed_item)
     begin
-      if taggable
-        logger.debug { "Training #{tagging.tag.name} with #{tagging.taggable.uid}" }
-        self.classifier.train(get_pool_name(tagging), taggable, taggable.uid)
+      if feed_item
+        logger.debug { "Training #{tagging.tag.name} with #{tagging.feed_item.uid}" }
+        self.classifier.train(get_pool_name(tagging), feed_item, feed_item.uid)
       end
     rescue ArgumentError => ae
       logger.warn ae.message
@@ -288,8 +286,8 @@ class BayesClassifier < ActiveRecord::Base
   #
   def untrain(tagging)
     begin
-      logger.debug { "Untraining #{tagging.tag.name} with #{tagging.taggable.uid}" }
-      self.classifier.untrain(get_pool_name(tagging), tagging.taggable, tagging.taggable.uid)
+      logger.debug { "Untraining #{tagging.tag.name} with #{tagging.feed_item.uid}" }
+      self.classifier.untrain(get_pool_name(tagging), tagging.feed_item, tagging.feed_item.uid)
     rescue ArgumentError => ae
       logger.warn ae.message
     end
@@ -320,15 +318,15 @@ class BayesClassifier < ActiveRecord::Base
   #
   def self.classify_new_items
     self.find(:all).each do |c|
-      if c.tagger.nil?
+      if c.user.nil?
         c.destroy
       else
         begin          
-          benchmark("Classified new items for tagger:#{c.tagger.to_s}", Logger::DEBUG, false) do
+          benchmark("Classified new items for user:#{c.user.to_s}", Logger::DEBUG, false) do
             c.classify_new_items
           end
         rescue
-          logger.warn "Classification failed for #{c.tagger.to_s}: #{$!.message}"
+          logger.warn "Classification failed for #{c.user.to_s}: #{$!.message}"
         end
       end
     end
@@ -337,7 +335,7 @@ class BayesClassifier < ActiveRecord::Base
   # Classifys each item that has been added since this classifier was last run.
   #
   def classify_new_items
-    return 0 if tagger.tags.empty? # bail out if there are no tags
+    return 0 if user.tags.empty? # bail out if there are no tags
     conditions = ['feed_items.created_on >= ?', self.last_executed] unless self.last_executed.nil?
     options = self.create_classifier_execution
     total = 0
@@ -417,7 +415,7 @@ class BayesClassifier < ActiveRecord::Base
   #
   # === Parameters
   #
-  # <tt>taggable</tt>:: The item to classify.
+  # <tt>feed_item</tt>:: The item to classify.
   # <tt>classifier_execution</tt>:: 
   #    The metadata for the classifier execution process. This will be attached
   #    to each saved Tagging via its Tagging#metadata attribute.
@@ -427,34 +425,36 @@ class BayesClassifier < ActiveRecord::Base
   # <tt>+classifier+</tt>:: 
   #    The Bayes classifier to use. This is primarly provided to support the Bayes#guess_with_options optimization.
   #
-  def classify(taggable, classifier_execution = self.create_classifier_execution, options = :from_metadata, classifier = self.classifier)
+  def classify(feed_item, classifier_execution = self.create_classifier_execution, options = :from_metadata, classifier = self.classifier)
     options = classifier_execution.classification_options if options == :from_metadata
-    classifications = classifier.guess(taggable, options)
+    classifications = classifier.guess(feed_item, options)
     
     # collect the classifications which match the users tags and are above the cutoff
     tagging_rows = classification_tags.map do |(tag_id, tag_name)|
       if score = classifications[tag_name] and score >= classifier_execution.insertion_cutoff        
-        logger.info("Score on #{taggable.dom_id} for #{tag_name}, strength = #{score}")
+        logger.info("Score on #{feed_item.dom_id} for #{tag_name}, strength = #{score}")
         
-          "(NOW(),NULL," +                                          # created_on and delete_at
-          "'BayesClassifier', #{self.id}," +                        # The tagger (self)
-          "'#{taggable.class.base_class.name}', #{taggable.id}," +  # The Taggable item
+          "(UTC_TIMESTAMP()," +                                          # created_on 
+          " #{self.user_id}," +                                      # The user
+          " #{feed_item.id}," +                                     # The feed item
           " #{tag_id},"  +                                          # The tag id
           " #{score},"   +                                          # The probability score
           "'#{classifier_execution.class.name}'," +                 # Store the execution details as metadata
-          " #{classifier_execution.id})"
+          " #{classifier_execution.id}," +
+          " 1)"
       end
     end.compact
               
     # do the insertion directly for performance - this might be a bit MySQL specific with the NOW()
     unless tagging_rows.empty?
       sql = "INSERT INTO taggings ("            +
-              "`created_on`, `deleted_at`,"     +
-              "`tagger_type`,`tagger_id`,"      +
-              "`taggable_type`, `taggable_id`," +
+              "`created_on`,"                   +
+              "`user_id`,"                      +
+              "`feed_item_id`,"                 +
               "`tag_id`,"                       +
               "`strength`,"                     +
-              "`metadata_type`, `metadata_id`) VALUES " +
+              "`metadata_type`, `metadata_id`," +
+              "`classifier_tagging`) VALUES " +
               "#{tagging_rows.join(',')}"    
       self.class.silence{connection.insert(sql)}
     end
@@ -471,9 +471,9 @@ class BayesClassifier < ActiveRecord::Base
   # If the RMSE is greater than the error_limit a RegressTestFailure error is thrown.
   #
   def regression_test(error_limit = 0.000001)
-    taggings_by_id = taggings.find(:all, :include => :tag).inject({}) do |h,t|
-      h[t.taggable_id] ||= []
-      h[t.taggable_id] = (h[t.taggable_id] << t)
+    taggings_by_id = user.classifier_taggings.find(:all, :include => :tag).inject({}) do |h,t|
+      h[t.feed_item_id] ||= []
+      h[t.feed_item_id] = (h[t.feed_item_id] << t)
       h
     end
     
@@ -568,11 +568,10 @@ class BayesClassifier < ActiveRecord::Base
   #   A list of tags to delete taggings for.
   #
   def clear_existing_taggings(tag_list)
-    if tag_list and not(tag_list.empty?)
-      tag_conditions = Array(tag_list).map do |tag|
-        "tag_id = #{Tag(tag).id}"
-      end.join(' or ')
-      self.taggings.delete_all!(tag_conditions)
+    tags = Array(tag_list).compact
+    unless tags.empty?
+      Tagging.delete_all(["user_id = ? and classifier_tagging = ? and tag_id in (?)",
+                          self.user, true, tags.map {|tag| Tag(self.user, tag).id }])
     end
   end
   
@@ -590,32 +589,6 @@ class BayesClassifier < ActiveRecord::Base
       if options[:bias]
         options[:bias].default = self.default_bias
       end
-    end
-  end
-  
-  # Determines if a given tagging is a positive tagging according to
-  # current settings of the classifier, 
-  # i.e. is tagging.strength >= self.positive_cutoff.
-  #
-  # This does not check that the tagging was actually created by this classifier.
-  #
-  def positive_tagging?(tagging)
-    tagging.strength >= self.positive_cutoff    
-  end
-  
-  # Determines if a given tagging is within the borderline threshold according
-  # to the current settings of the classifier, i.e. is 
-  # taggings.strength within positive_cutoff +/- borderline_threshold.
-  #
-  # This does not check that the tagging was actually created by this classifier.
-  #
-  def borderline_tagging?(tagging)
-    unless self.borderline_threshold.zero?
-      range = Range.new(self.positive_cutoff - self.borderline_threshold, 
-              self.positive_cutoff + self.borderline_threshold)
-      range.include?(tagging.strength)
-    else
-      false
     end
   end
   
@@ -785,7 +758,7 @@ class BayesClassifier < ActiveRecord::Base
   # Cache the user's tags for classifier execution speed
   def classification_tags
     unless @classification_tags
-      @classification_tags = tagger.tags.map {|tag| [tag.id, tag.name]}
+      @classification_tags = user.tags.map {|tag| [tag.id, tag.name]}
     end
 
     @classification_tags

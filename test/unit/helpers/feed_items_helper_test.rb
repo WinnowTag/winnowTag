@@ -40,7 +40,7 @@ class FeedItemsHelperTest < HelperTestCase
   end
 
   def test_tag_controls_helper_when_untagged
-    @current_user.stubs(:tags).returns([Tag.find_or_create_by_name('tag1'), Tag.find_or_create_by_name('tag2'), Tag.find_or_create_by_name('tag3')])
+    @current_user.stubs(:tags).returns([Tag(current_user, 'tag1'), Tag(current_user, 'tag2'), Tag(current_user, 'tag3')])
     fi = FeedItem.find(1)
     @response.body = tag_controls(fi)
     
@@ -48,8 +48,8 @@ class FeedItemsHelperTest < HelperTestCase
   end
   
   def test_tag_controls_with_classifier_tags
-    Tagging.create(:taggable => FeedItem.find(1), :tagger => @current_user, :tag => Tag.find_or_create_by_name('tag1'))
-    Tagging.create(:taggable => FeedItem.find(1), :tagger => @current_user.classifier, :tag => Tag.find_or_create_by_name('tag2'))
+    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'))
+    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag2'), :classifier_tagging => true)
     @response.body = tag_controls(FeedItem.find(1))
     
     assert_select('li#tag_control_for_tag1_on_feed_item_1.user_tagging.tagged', true)
@@ -57,16 +57,16 @@ class FeedItemsHelperTest < HelperTestCase
   end
   
   def test_tag_controls_when_negative_tagging_exists
-    Tagging.create(:taggable => FeedItem.find(1), :tagger => @current_user, :tag => Tag.find_or_create_by_name('tag1'), :strength => 0)
-    Tagging.create(:taggable => FeedItem.find(1), :tagger => @current_user.classifier, :tag => Tag.find_or_create_by_name('tag1'))
+    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :strength => 0)
+    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :classifier_tagging => true)
     @response.body = tag_controls(FeedItem.find(1))
     
     assert_select('li#tag_control_for_tag1_on_feed_item_1.bayes_classifier_tagging.user_tagging.negative_tagging', true, @response.body)
   end
   
   def test_tag_controls_when_positive_tagging_overrides_classifier_tagging
-    Tagging.create(:taggable => FeedItem.find(1), :tagger => @current_user, :tag => Tag.find_or_create_by_name('tag1'))
-    Tagging.create(:taggable => FeedItem.find(1), :tagger => @current_user.classifier, :tag => Tag.find_or_create_by_name('tag1'))
+    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'))
+    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :classifier_tagging => true)
     @response.body = tag_controls(FeedItem.find(1))
     
     assert_select('li#tag_control_for_tag1_on_feed_item_1.tagged.user_tagging.bayes_classifier_tagging', true, @response.body)
@@ -74,12 +74,8 @@ class FeedItemsHelperTest < HelperTestCase
   
   def test_tag_controls_when_duplicate_tagging_exists
     feed_item = FeedItem.find(1)
-    t1 = Tagging.new(:taggable => feed_item, :tag => Tag('tag1'), :tagger => current_user.classifier)
-    t2 = Tagging.new(:taggable => feed_item, :tag => Tag('tag1'), :tagger => current_user.classifier)
-    
-    feed_item.expects(:taggings_by_taggers).with([current_user, current_user.classifier], :all_taggings => true).returns(
-      [[Tag('tag1'), [t1, t2]]]
-    )
+    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :classifier_tagging => true)
+    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :classifier_tagging => true)
     
     @response.body = tag_controls(feed_item)
     
@@ -88,12 +84,8 @@ class FeedItemsHelperTest < HelperTestCase
   
   def test_tag_controls_with_borderline_item
     feed_item = FeedItem.find(1)
-    t1 = Tagging.new(:taggable => feed_item, :tag => Tag('tag1'), :tagger => current_user.classifier, :strength => 0.89)
-    
-    feed_item.expects(:taggings_by_taggers).with([current_user, current_user.classifier], :all_taggings => true).returns(
-      [[Tag('tag1'), [t1]]]
-    )
-    
+    t1 = Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.89, :classifier_tagging => true)
+
     @response.body = tag_controls(feed_item)
     
     assert_select('li#tag_control_for_tag1_on_feed_item_1.bayes_classifier_tagging.tagged.borderline', true, @response.body)
@@ -101,12 +93,7 @@ class FeedItemsHelperTest < HelperTestCase
   
   def test_assigned_tag_controls_should_not_display_item_below_threshold
     feed_item = FeedItem.find(1)
-    t1 = Tagging.new(:taggable => feed_item, :tag => Tag('tag1'), :tagger => current_user.classifier, :strength => 0.85)
-    
-    feed_item.expects(:taggings_by_taggers).with([current_user, current_user.classifier], :all_taggings => true).returns(
-      [[Tag('tag1'), [t1]]]
-    )
-    
+    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
     @response.body = tag_controls(feed_item)
     
     assert_select('li#tag_control_for_tag1_on_feed_item_1', false, @response.body)
@@ -114,9 +101,9 @@ class FeedItemsHelperTest < HelperTestCase
   
   def test_display_tags_for_feed_item
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => current_user, :taggable => fi, :tag => Tag.find_or_create_by_name('tag1'))
-    Tagging.create(:tagger => current_user, :taggable => fi, :tag => Tag.find_or_create_by_name('tag2'))
-    Tagging.create(:tagger => current_user.classifier, :taggable => fi, :tag => Tag.find_or_create_by_name('tag3'))
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag1'))
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag2'))
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag3'), :classifier_tagging => true)
     @response.body = display_tags_for(fi)
     
     assert_select("span.user_tagging.tagged", "tag1", @response.body)
@@ -126,16 +113,16 @@ class FeedItemsHelperTest < HelperTestCase
   
   def test_display_borderline_tags
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => @current_user.classifier, :taggable => fi, :tag => Tag('tag'), :strength => 0.89)
+    Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0.89, :classifier_tagging => true)
     @response.body = display_tags_for(fi)
 
-    assert_select("span.bayes_classifier_tagging.borderline", "tag")
+    assert_select("span.bayes_classifier_tagging.borderline", "tag", @response.body)
   end
   
   def test_item_tagged_below_threshold_gets_no_displayed_tag_but_the_tag_is_in_the_list_of_tags_to_add
-    @current_user.taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(2))
+    @current_user.taggings.create(:tag => Tag(current_user, 'tag'), :feed_item => FeedItem.find(2))
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => @current_user.classifier, :taggable => fi, :tag => Tag('tag'), :strength => 0.81)
+    Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0.81, :classifier_tagging => true)
     
     @response.body = display_tags_for(fi)
     @response.body += unused_tag_controls(fi)
@@ -144,9 +131,9 @@ class FeedItemsHelperTest < HelperTestCase
   end
   
   def test_ununsed_tag_control_not_added_for_negative_tag
-    @current_user.taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(2))
+    @current_user.taggings.create(:tag => Tag(current_user, 'tag'), :feed_item => FeedItem.find(2))
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => @current_user, :taggable => fi, :tag => Tag('tag'), :strength => 0)
+    Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0)
     
     @response.body = unused_tag_controls(fi)
     assert_select('li#unused_tag_control_for_tag_on_feed_item_1', false, @response.body)
@@ -154,7 +141,7 @@ class FeedItemsHelperTest < HelperTestCase
   
   def test_dont_display_tags_below_threshold
     feed_item = FeedItem.find(1)
-    t1 = Tagging.create(:taggable => feed_item, :tag => Tag('tag1'), :tagger => current_user.classifier, :strength => 0.85)
+    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
 
     @response.body = display_tags_for(feed_item)
     
@@ -187,7 +174,7 @@ class FeedItemsHelperTest < HelperTestCase
   # def test_display_published_tags_when_tag_filter_is_a_published_tag
   #   tag_filter = TagPublication.find(1)
   #   fi = FeedItem.find(1)
-  #   tag_filter.taggings.create(:tag => tag_filter.tag, :taggable => fi)
+  #   tag_filter.taggings.create(:tag => tag_filter.tag, :feed_item => fi)
   #   
   #   @view.add_tag :include, tag_filter
   #   @response.body = display_tags_for(fi)

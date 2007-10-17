@@ -1,5 +1,5 @@
 # page.replace_html 'tag_filters', tag_filter_options  
-page.replace @taggable.dom_id("open_tags"), display_tags_for(@taggable)
+page.replace @feed_item.dom_id("open_tags"), display_tags_for(@feed_item)
 
 page << "if ($('classification_button')) {"
   page['classification_button'].disabled = false

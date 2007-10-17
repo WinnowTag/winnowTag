@@ -30,7 +30,7 @@
     <%= link_to "#{@tag.count} / #{@tag.negative_count}", feed_items_path(:tag_filter => @tag.id, :mode => 'tag_inspect', :view_id => :new), 
                 :title => "Inspect #{@tag.name}" %>
 	</td>
-	<td class="number"><%= @classifier_counts[@tag.name] ? @classifier_counts[@tag.name].count : 0 %></td>
+	<td class="number"><%= @tag.classifier_count %></td>
 	<td class="date"><%= format_date(@tag.last_used_by(current_user)) %></td>	
 	<td class="indented" nowrap="nowrap"><%= current_user.display_name %></td>
 	<td>

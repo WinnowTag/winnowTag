@@ -81,7 +81,7 @@ class FeedItemsController < ApplicationController
   def inspect
     @title = "Classifer Inspector for '#{truncate(@feed_item.display_title)}'"
     @feed_item = FeedItem.find(params[:id])
-    @user_tags_on_item = @feed_item.taggings.find_by_tagger(current_user).map(&:tag)
+    @user_tags_on_item = @feed_item.taggings.find_by_user(current_user).map(&:tag)
     
     options = current_user.classifier.classification_options.merge({:include_evidence => true})        
     @classifications = current_user.classifier.guess(@feed_item, options)    

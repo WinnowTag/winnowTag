@@ -26,7 +26,7 @@ class ClassifierControllerTest < Test::Unit::TestCase
   end
   
   def test_classify_starts_background_process
-    BayesClassifier.any_instance.stubs(:changed_tags).returns([Tag('tag')])
+    BayesClassifier.any_instance.stubs(:changed_tags).returns([Tag(users(:quentin), 'tag')])
     MiddleMan.expects(:new_worker).with {|args|
                     args[:class] == :classification_worker and
                       args[:args] == {
@@ -42,7 +42,7 @@ class ClassifierControllerTest < Test::Unit::TestCase
   end
   
   def test_classify_prevents_two_process_from_running
-    BayesClassifier.any_instance.stubs(:changed_tags).returns([Tag('tag')])
+    BayesClassifier.any_instance.stubs(:changed_tags).returns([Tag(users(:quentin), 'tag')])
     MiddleMan.expects(:new_worker).returns("jobkey").once
     MiddleMan.expects(:[]).with("jobkey").returns(mock)
     
@@ -68,7 +68,7 @@ class ClassifierControllerTest < Test::Unit::TestCase
   end
   
   def test_classify_with_stale_jobkey  
-    BayesClassifier.any_instance.stubs(:changed_tags).returns([Tag('tag')])  
+    BayesClassifier.any_instance.stubs(:changed_tags).returns([Tag(users(:quentin), 'tag')])  
     MiddleMan.expects(:[]).with("stale_jobkey").raises
     MiddleMan.expects(:new_worker).returns('stale_jobkey','jobkey').times(2)
                     

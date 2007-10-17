@@ -63,7 +63,7 @@ class BiasSliderHelperTest < HelperTestCase
   end
   
   def test_bias_slider_observes_clicks_on_markers
-    @response.body = bias_slider(:prefix => 'test', :var => 'test_slider', :tag => Tag('tag'))
+    @response.body = bias_slider(:prefix => 'test', :var => 'test_slider', :tag => Tag(current_user, 'tag'))
     exp = Regexp.new(Regexp.escape("Event.observe($('test_0_9'), 'mousedown',"))
     assert_match(exp, @response.body)
   end

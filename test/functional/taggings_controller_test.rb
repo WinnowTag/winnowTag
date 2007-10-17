@@ -42,80 +42,54 @@ class TaggingsControllerTest < Test::Unit::TestCase
   def test_create_without_tag_doesnt_create_tagging
     login_as(:quentin)
     assert_no_difference(Tagging, :count) do
-      post :create, :tagging => {:taggable_type => 'Feed', :taggable_id => '1'}
+      post :create, :tagging => {:feed_item_id => '1'}
     end
   end
   
   def test_create_with_blank_tag_doesnt_create_tagging
     login_as(:quentin)
     assert_no_difference(Tagging, :count) do
-      post :create, :tagging => {:taggable_type => 'Feed', :taggable_id => '1', :tag => ''}
+      post :create, :tagging => {:feed_item_id => '1', :tag => ''}
     end
   end
   
   def test_create_with_other_user_fails
     login_as(:aaron)
-    Tag.create(:name => 'peerworks')
-    accept('text/html')
-    post :create, {:tagging => {:tagger_id => 1, :tagger_type => 'User', 
-                              :taggable_id => 1, :taggable_type => 'FeedItem', :tag => 'peerworks'}}
+    tag = Tag(users(:aaron), 'peerworks')
+    accept('text/javascript')
+    post :create, {:tagging => {:feed_item_id => 1, :tag => 'peerworks'}}
                 
-    assert_nil Tagging.find(:first, :conditions => ["tagger_id = 1 and tagger_type = 'User' and taggable_id = 1 and " + 
-                                                        "taggable_type = 'FeedItem' and tag_id = ?", Tag.find_by_name('peerworks').id])
-  end
-  
-  def test_create_tagging_accept_html_redirects_to_referrer
-    accept('text/html')
-    login_as(:quentin)
-    assert_nil Tagging.find(:first, :conditions => ["tagger_id = 1 and tagger_type = 'User' and taggable_id = 1 and strength = 1 and " + 
-                                                        "taggable_type = 'FeedItem' and tag_id = ?", Tag.find_by_name('peerworks').id])
-    post :create, {:tagging => {:tagger_id => 1, :tagger_type => 'User', :strength => '1',
-                              :taggable_id => 1, :taggable_type => 'FeedItem', :tag => 'peerworks'}}
-    assert_redirected_to '/feed_items'
-    assert_not_nil Tagging.find(:first, :conditions => ["tagger_id = 1 and tagger_type = 'User' and taggable_id = 1 and strength = 1 and " + 
-                                                        "taggable_type = 'FeedItem' and tag_id = ?", Tag.find_by_name('peerworks').id])
+    assert_nil Tagging.find(:first, :conditions => ["user_id = 1 and feed_item_id = 1 and tag_id = ?", tag.id])
   end
   
   def test_create_tagging_with_strength_zero
-    accept('text/html')
+    accept('text/javascript')
     login_as(:quentin)
-    assert_nil Tagging.find(:first, :conditions => ["tagger_id = 1 and tagger_type = 'User' and taggable_id = 1 and strength = 0 and " + 
-                                                        "taggable_type = 'FeedItem' and tag_id = ?", Tag.find_by_name('peerworks').id])
-    post :create, {:tagging => {:tagger_id => 1, :tagger_type => 'User', :strength => '0',
-                              :taggable_id => 1, :taggable_type => 'FeedItem', :tag => 'peerworks'}}
-    assert_redirected_to '/feed_items'
-    assert_not_nil Tagging.find(:first, :conditions => ["tagger_id = 1 and tagger_type = 'User' and taggable_id = 1 and strength = 0 and " + 
-                                                        "taggable_type = 'FeedItem' and tag_id = ?", Tag.find_by_name('peerworks').id])
+    tag = Tag(users(:quentin), 'peerworks')
+    
+    assert_nil Tagging.find(:first, :conditions => 
+                                        ["user_id = 1 and feed_item_id = 1 and strength = 0 and " + 
+                                          "tag_id = ?", tag.id])
+                                          
+    assert_difference(users(:quentin).taggings, :count) do                                                    
+      post :create, {:tagging => {:strength => '0', :feed_item_id => 1, :tag => 'peerworks'}}
+    end
+    
+    assert_not_nil Tagging.find(:first, :conditions => 
+                                          ["user_id = 1 and feed_item_id = 1 and strength = 0 and " + 
+                                            "tag_id = ?", tag.id])
   end
       
-  def test_destroy_tagging_specified_by_taggable_and_tag_name
-    tagger = User.find(1)
-    tag = Tag.find_or_create_by_name('peerworks')
-    taggable = FeedItem.find(1)
-    tagging = Tagging.create(:taggable => taggable, :tagger => tagger, :tag => tag)
-    accept('text/html')
-    login_as(:quentin)
-    post :destroy, :tagging => {:taggable_type => 'FeedItem', :taggable_id => '1', :tag => 'peerworks'}
-    assert_redirected_to '/feed_items'
-    assert_raise (ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
-  end
-  
   def test_destroy_tagging_specified_by_taggable_and_tag_name_with_ajax
     tagger = User.find(1)
-    tag = Tag.find_or_create_by_name('peerworks')
+    tag = Tag(tagger, 'peerworks')
     taggable = FeedItem.find(1)
-    tagging = Tagging.create(:taggable => taggable, :tagger => tagger, :tag => tag)
+    tagging = Tagging.create(:feed_item => taggable, :user => tagger, :tag => tag)
 
     accept('text/javascript')
     login_as(:quentin)
-    post :destroy, :tagging => {:taggable_type => 'FeedItem', :taggable_id => '1', :tag => 'peerworks'}
-    assert_template 'feed_items/tags_updated.rjs'
+    post :destroy, :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
+    assert_template 'destroy.rjs'
     assert_raise (ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
-  end
-  
-  private
-  def load_tagging(tag)
-    Tagging.find(:first, :conditions => ["tagger_id = 1 and tagger_type = 'User' and taggable_id = 1 and " + 
-                                          "taggable_type = 'FeedItem' and tag_id = ?", Tag.find_by_name(tag).id])
-  end
+  end  
 end

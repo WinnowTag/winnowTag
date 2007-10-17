@@ -12,8 +12,8 @@ class TagsControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     
     login_as(:quentin)
-    @tag = Tag('tag')
-    Tagging.create(:tagger => users(:quentin), :tag => @tag, :taggable => FeedItem.find(1))
+    @tag = Tag(users(:quentin), 'tag')
+    @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))
   end
 
   def test_routing
@@ -23,12 +23,14 @@ class TagsControllerTest < Test::Unit::TestCase
   end
   
   def test_create_should_copy_named_tag
-    users(:quentin).taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(1))
+    users(:quentin).taggings.create(:tag => @tag, :feed_item => FeedItem.find(1))
     assert_difference(users(:quentin).tags, :count) do
       post :create, :copy => 'tag'
       assert_redirected_to "/tags"
+      assert_equal("'tag' successfully copied to 'Copy of tag'", flash[:notice])
     end
     assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'Copy of tag'])
+    assert_equal(2, users(:quentin).taggings.size)
   end
   
   def test_index
@@ -36,7 +38,6 @@ class TagsControllerTest < Test::Unit::TestCase
     assert assigns(:tags)
     assert_equal(@tag, assigns(:tags).first)
     assert assigns(:classifier)
-    assert assigns(:classifier_counts)
     assert_select "tr##{@tag.dom_id}", 1
     assert_select "tr##{@tag.dom_id} td:nth-child(1)", /tag.*/
     assert_select "tr##{@tag.dom_id} td:nth-child(4)", "1 / 0"
@@ -45,13 +46,13 @@ class TagsControllerTest < Test::Unit::TestCase
   
   # TODO - Tags with periods on the end break routing until Rails 1.2.4?
   def test_index_with_funny_name_tag
-    Tagging.create(:tagger => users(:quentin), :tag => Tag('tag.'), :taggable => FeedItem.find(1))
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag.'), :feed_item => FeedItem.find(1))
     get :index, :view_id => users(:quentin).views.create
     assert_response :success
   end
   
   def test_edit_with_funny_name_tag
-    Tagging.create(:tagger => users(:quentin), :tag => Tag('tag.'), :taggable => FeedItem.find(1))
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag.'), :feed_item => FeedItem.find(1))
     get :edit, :id => 'tag.', :view_id => users(:quentin).views.create
     assert_response :success
   end
@@ -79,75 +80,81 @@ class TagsControllerTest < Test::Unit::TestCase
     referer('/')
     accept('text/html')
     
-    assert_equal 0, RenameTagging.count
     post :update, :id => 'tag', :tag => {:name => 'tag' }
-    assert_equal 0, RenameTagging.count
     assert_redirected_to '/'
-    assert_equal 'New tag cannot be the same as Old tag', flash[:error]
+    assert_equal([@tag], users(:quentin).tags)
   end
   
   def test_tag_renaming
     referer('/')
     accept('text/html')
     
-    assert_equal 0, RenameTagging.count
     post :update, :id => 'tag', :tag => {:name => 'new'}
     assert_redirected_to '/'
-    assert_equal 1, RenameTagging.count
-    assert_equal 'Renamed 1 tag from tag to new.', flash[:notice]
-    rename = RenameTagging.find(:first)
-    assert_equal Tag('tag'), rename.old_tag
-    assert_equal Tag('new'), rename.new_tag
-    assert_equal users(:quentin), rename.tagger
+    assert users(:quentin).tags.find_by_name('new')
   end
   
   def test_tag_merging
     accept('text/html')
     referer('/')
-    Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(1))
-    Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(2))
-    Tagging.create(:tagger => users(:quentin), :tag => Tag('new'), :taggable => FeedItem.find(2))
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(1))
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(2))
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
     
-    assert_equal 0, RenameTagging.count
-    post :update, :id => 'tag',:tag => {:name => 'new'}
+    post :update, :id => 'old',:tag => {:name => 'new'}
     assert_redirected_to '/'
-    assert_equal 1, RenameTagging.count
-    assert_equal 'Renamed 1 tag from tag to new. Left 1 tag tag untouched because new already exists on the item.', flash[:notice]
-    rename = RenameTagging.find(:first)
-    assert_equal Tag('tag'), rename.old_tag
-    assert_equal Tag('new'), rename.new_tag
-    assert_equal users(:quentin), rename.tagger
+    assert_equal("2 tags merged from 'old' to 'new'", flash[:notice])
+  end
+  
+  def test_tag_merging_with_conflict
+    accept('text/html')
+    referer('/')
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(1))
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(2))
+    Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(2))
+    
+    post :update, :id => 'old',:tag => {:name => 'new'}
+    assert_redirected_to '/'
+    assert_equal("1 tag merged from 'old' to 'new' with 1 conflict", flash[:warning])
   end
   
   def test_destroy_by_tag
     referer("/")
     login_as(:quentin)
-    Tagging.create(:tagger => users(:quentin), :tag => Tag.find_or_create_by_name('to_destroy'), :taggable => FeedItem.find(1))
-    Tagging.create(:tagger => users(:quentin), :tag => Tag.find_or_create_by_name('to_destroy'), :taggable => FeedItem.find(2))
-    Tagging.create(:tagger => users(:quentin), :tag => Tag.find_or_create_by_name('to_destroy'), :taggable => FeedItem.find(3))
-    Tagging.create(:tagger => users(:quentin), :tag => Tag.find_or_create_by_name('to_keep'), :taggable => FeedItem.find(1))
+    user = users(:quentin)
+    to_destroy = Tag(user, 'to_destroy')
+    to_keep = Tag(user, 'to_keep')
+    user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(1))
+    user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(2))
+    user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(3))
+    keep = user.taggings.create(:tag => to_keep, :feed_item => FeedItem.find(1))
     
-    assert_equal [@tag, Tag.find_by_name('to_destroy'), Tag.find_by_name('to_keep')], users(:quentin).tags
+    assert_equal [@tag, to_destroy, to_keep], user.tags
     
     post :destroy, :id => 'to_destroy'
     assert_redirected_to '/'
-    assert_equal [@tag, Tag.find_by_name('to_keep')], users(:quentin).tags(true)
-    assert_equal 'Deleted 3 uses of to_destroy.', flash[:notice]
+    assert_equal [@tag, to_keep], users(:quentin).tags(true)
+    assert_equal([@tagging, keep], user.taggings(true))
+    assert_equal 'Deleted to_destroy.', flash[:notice]
   end
   
   def test_destroy_by_tag_destroys_classifier_taggings
     referer('/')
     login_as(:quentin)
-    Tagging.create(:tagger => users(:quentin), :tag => Tag.find_or_create_by_name('to_destroy'), :taggable => FeedItem.find(1))
-    Tagging.create(:tagger => users(:quentin).classifier, :tag => Tag.find_or_create_by_name('to_destroy'), :taggable => FeedItem.find(2))
-    Tagging.create(:tagger => users(:quentin).classifier, :tag => Tag.find_or_create_by_name('to_destroy'), :taggable => FeedItem.find(3))
-    Tagging.create(:tagger => users(:quentin).classifier, :tag => Tag.find_or_create_by_name('to_keep'), :taggable => FeedItem.find(1))
+    user = users(:quentin)
+    to_destroy = Tag(user, 'to_destroy')
+    to_keep = Tag(user, 'to_keep')
+    
+    user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(1))
+    user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(2), :classifier_tagging => true)
+    user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(3), :classifier_tagging => true)
+    keep = user.taggings.create(:tag => to_keep, :feed_item => FeedItem.find(1), :classifier_tagging => true)
     
     post :destroy, :id => 'to_destroy'
     assert_redirected_to '/'
-    assert_equal 1, users(:quentin).classifier.taggings.size
-    assert_equal [Tag.find_by_name('to_keep')], users(:quentin).classifier.tags(true)
-    assert_equal 'Deleted 1 use of to_destroy.', flash[:notice]
+    assert_equal [@tagging, keep], user.taggings(true)
+    assert_equal [@tag, to_keep], user.tagging_tags(true)
+    assert_equal 'Deleted to_destroy.', flash[:notice]
   end
   
   def test_destroy_by_unused_tag

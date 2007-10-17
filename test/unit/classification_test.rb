@@ -33,7 +33,7 @@ class ClassificationTest < Test::Unit::TestCase
   end
   
   def test_classification_uses_tags_modified_since_last_run
-    BayesClassifier.any_instance.expects(:changed_tags).returns([Tag('tag1'), Tag('tag2')])
+    BayesClassifier.any_instance.expects(:changed_tags).returns([Tag(users(:quentin), 'tag1'), Tag(users(:quentin), 'tag2')])
     BayesClassifier.any_instance.expects(:classify_all).with(has_entry(:only, ['tag1', 'tag2']))
     ClassificationWorker.new.do_work(:classifier => 1)
   end

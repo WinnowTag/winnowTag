@@ -76,23 +76,26 @@
 
 class Tagging < ActiveRecord::Base
   acts_as_immutable
-  acts_as_paranoid
-  acts_as_authorizable
   belongs_to :tag
-  belongs_to :taggable, :polymorphic => true
-  belongs_to :tagger, :polymorphic => true
+  belongs_to :feed_item
+  belongs_to :user
   belongs_to :metadata, :polymorphic => true
-  validates_presence_of [:tag, :tagger, :taggable]
+  
+  validates_presence_of [:tag, :user, :feed_item]
   validates_numericality_of :strength
   validates_inclusion_of :strength, :in => 0..1
   validates_associated :tag
-  before_create :remove_pre_existing_tagging
+  
+  before_create :remove_preexisting_tagging
+  after_destroy do |tagging|
+    DeletedTagging.create(tagging.attributes.merge(:deleted_at => Time.now.utc))
+  end
   
   # Returns true if this tagging is positive based on the definition
   # of positive defined by the Tagger.
   #
   def positive?
-    self.tagger.positive_tagging?(self)
+    self.strength == 1 || (self.classifier_tagging? && strength > 0.9)
   end
   
   # Returns true if this tagging is borderline based on the definition
@@ -100,19 +103,22 @@ class Tagging < ActiveRecord::Base
   # a borderline_tagging? method in which case this method returns false.
   #
   def borderline?
-    if self.tagger.respond_to?(:borderline_tagging?)
-      self.tagger.borderline_tagging?(self)
-    else
-      false
-    end
+    self.classifier_tagging? && (0.88..0.92).include?(self.strength)
+  end
+  
+  def inspect
+    "<Tagging user=#{user.login}, item=#{feed_item.id}, tag=#{tag.name}, classifier=#{classifier_tagging?}>"
   end
   
   private
-  def remove_pre_existing_tagging
-    # Has this tagger tagged this item with this tag before?
-    # This ensures that taggings are unique by tagger, taggable and tag
-    tagger.taggings.find_by_taggable(taggable, :all, 
-                                     :conditions => {:tag_id => tag.id}).
+  def remove_preexisting_tagging
+    # Has this user tagged this item with this tag before?
+    # This ensures that taggings are unique by user, taggable, tag and classifier_tagging
+    user.taggings.find_by_feed_item(feed_item, :all, 
+                                     :conditions => {
+                                       :tag_id => tag.id,
+                                       :classifier_tagging => classifier_tagging?
+                                      }).
                                      each(&:destroy)
   end
 end

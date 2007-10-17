@@ -30,13 +30,10 @@
 
 quentins_classifier:
   id: 1
-  tagger_id: 1
-  tagger_type: User
+  user_id: 1
 aaron_classifier:
   id: 2
-  tagger_id: 2
-  tagger_type: User
+  user_id: 2
 admin_classifier:
   id: 3
-  tagger_id: 3
-  tagger_type: User
+  user_id: 3

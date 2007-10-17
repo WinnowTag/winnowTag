@@ -21,12 +21,13 @@ class RemoteProtectedItemsTest < Test::Unit::TestCase
     require 'tag'
     u1 = users(:quentin)
     u2 = users(:aaron)
-    tag = Tag('test')
-    u1.taggings.create(:tag => tag, :taggable => FeedItem.find(1))
-    u1.taggings.create(:tag => tag, :taggable => FeedItem.find(2))
-    u2.taggings.create(:tag => tag, :taggable => FeedItem.find(2))
-    u2.taggings.create(:tag => tag, :taggable => FeedItem.find(3))
-    u1.classifier.taggings.create(:tag => tag, :taggable => FeedItem.find(4))
+    tag1 = Tag(u1, 'test')
+    tag2 = Tag(u2, 'test')
+    u1.taggings.create(:tag => tag1, :feed_item => FeedItem.find(1))
+    u1.taggings.create(:tag => tag1, :feed_item => FeedItem.find(2))
+    u2.taggings.create(:tag => tag2, :feed_item => FeedItem.find(2))
+    u2.taggings.create(:tag => tag2, :feed_item => FeedItem.find(3))
+    u1.taggings.create(:tag => tag1, :feed_item => FeedItem.find(4), :classifier_tagging => true)
     
     ActiveResource::HttpMock.respond_to do |mock|
       mock.delete "/protectors/1/protected_items.xml;delete_all",    {}, nil
@@ -56,12 +57,13 @@ class RemoteProtectedItemsTest < Test::Unit::TestCase
     require 'tag'
     u1 = users(:quentin)
     u2 = users(:aaron)
-    tag = Tag('test')
-    u1.taggings.create(:tag => tag, :taggable => FeedItem.find(1))
-    u1.taggings.create(:tag => tag, :taggable => FeedItem.find(2))
-    u2.taggings.create(:tag => tag, :taggable => FeedItem.find(2))
-    u2.taggings.create(:tag => tag, :taggable => FeedItem.find(3))
-    u1.classifier.taggings.create(:tag => tag, :taggable => FeedItem.find(4))
+    tag1 = Tag(u1, 'test')
+    tag2 = Tag(u2, 'test')
+    u1.taggings.create(:tag => tag1, :feed_item => FeedItem.find(1))
+    u1.taggings.create(:tag => tag1, :feed_item => FeedItem.find(2))
+    u2.taggings.create(:tag => tag2, :feed_item => FeedItem.find(2))
+    u2.taggings.create(:tag => tag2, :feed_item => FeedItem.find(3))
+    u1.taggings.create(:tag => tag1, :feed_item => FeedItem.find(4), :classifier_tagging => true)
     
     ActiveResource::HttpMock.respond_to do |mock|
       mock.delete "/protectors/1/protected_items.xml;delete_all",    {}, nil
@@ -97,7 +99,7 @@ class RemoteProtectedItemsTest < Test::Unit::TestCase
   end
   
   def test_unprotect_item_doesnt_destroy_protected_item_when_taggings_exist
-    users(:quentin).taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(1))
+    users(:quentin).taggings.create(:tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     Remote::ProtectedItem.unprotect_item(FeedItem.find(1)).join
     assert_not_include ActiveResource::Request.new(:delete, "/protectors/1/protected_items.xml;delete_all?feed_item_id=1"),
                    ActiveResource::HttpMock.requests

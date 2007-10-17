@@ -34,11 +34,11 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     
   def test_index_with_tag_filtering
     user = users(:quentin)
-    tag = Tag.find_or_create_by_name('peerworks')
-    Tagging.create(:tag => tag, :tagger => user, :taggable => FeedItem.find(1), :strength => 0)
-    to_delete = Tagging.create(:tag => tag, :tagger => user, :taggable => FeedItem.find(2), :strength => 1)
+    tag = Tag(user, 'peerworks')
+    Tagging.create(:tag => tag, :user => user, :feed_item => FeedItem.find(1), :strength => 0)
+    to_delete = Tagging.create(:tag => tag, :user => user, :feed_item => FeedItem.find(2), :strength => 1)
     # tag 3 with a different tag to make sure it doesnt come up
-    Tagging.create(:tag => Tag.find_or_create_by_name('other'), :tagger => user, :taggable => FeedItem.find(3), :strength => 1)
+    Tagging.create(:tag => Tag(user, 'other'), :user => user, :feed_item => FeedItem.find(3), :strength => 1)
 
     login_as :quentin
     get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
@@ -89,14 +89,14 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     user = users(:quentin)    
     classifier = user.classifier
-    tag = Tag.find_or_create_by_name('peerworks')
-    Tagging.create(:tag => tag, :tagger => user, :taggable => FeedItem.find(3), :strength => 1)
-    Tagging.create(:tag => tag, :tagger => classifier, :taggable => FeedItem.find(3), :strength => 0.95)
-    Tagging.create(:tag => tag, :tagger => classifier, :taggable => FeedItem.find(4), :strength => 0.96)
+    tag = Tag(user, 'peerworks')
+    Tagging.create(:tag => tag, :user => user, :feed_item => FeedItem.find(3), :strength => 1)
+    Tagging.create(:tag => tag, :user => user, :feed_item => FeedItem.find(3), :strength => 0.95, :classifier_tagging => true)
+    Tagging.create(:tag => tag, :user => user, :feed_item => FeedItem.find(4), :strength => 0.96, :classifier_tagging => true)
         
     # create classifier for another user - should never show
-    other_classifier = users(:aaron).classifier
-    Tagging.create(:tag => tag, :tagger => other_classifier, :taggable => FeedItem.find(1), :strength => 0.91)
+    other_tag = Tag(users(:aaron), 'peerworks')
+    Tagging.create(:tag => other_tag, :user => users(:aaron), :feed_item => FeedItem.find(1), :strength => 0.91, :classifier_tagging => true)
     
     get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
@@ -105,8 +105,8 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_equal [3, 4], assigns(:feed_items).map(&:id).sort
     
     # now the classifier that tags 1 and 2 below the threshold, it should be ignored  
-    Tagging.create(:tag => tag, :tagger => classifier, :taggable => FeedItem.find(1), :strength => 0.4)
-    Tagging.create(:tag => tag, :tagger => classifier, :taggable => FeedItem.find(2), :strength => 0.6)
+    Tagging.create(:tag => tag, :user => user, :feed_item => FeedItem.find(1), :strength => 0.4, :classifier_tagging => true)
+    Tagging.create(:tag => tag, :user => user, :feed_item => FeedItem.find(2), :strength => 0.6, :classifier_tagging => true)
     get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
     assert_not_nil assigns(:feed_items)
@@ -118,13 +118,13 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     user = users(:quentin)
     classifier = user.classifier
-    tag = Tag.find_or_create_by_name('tag1')
+    tag = Tag(user, 'tag1')
     fi1 = FeedItem.find(1)
     fi2 = FeedItem.find(2)
     
-    Tagging.create(:tag => tag, :tagger => classifier, :taggable => fi1, :strength => 0.95)
-    Tagging.create(:tag => tag, :tagger => classifier, :taggable => fi2, :strength => 0.95)
-    Tagging.create(:tag => tag, :tagger => user, :taggable => fi2, :strength => 0)
+    Tagging.create(:tag => tag, :user => user, :feed_item => fi1, :strength => 0.95, :classifier_tagging => true)
+    Tagging.create(:tag => tag, :user => user, :feed_item => fi2, :strength => 0.95, :classifier_tagging => true)
+    Tagging.create(:tag => tag, :user => user, :feed_item => fi2, :strength => 0)
     
     get :index, :tag_filter => tag.id, :view_id => users(:quentin).views.create
     assert_response :success
@@ -138,7 +138,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     user = users(:quentin)
     classifier = user.classifier
     fi = FeedItem.find(1)
-    Tagging.create(:tag => Tag('tag1'), :tagger => classifier, :taggable => fi, :strength => 0.8)
+    Tagging.create(:tag => Tag(user, 'tag1'), :user => user, :feed_item => fi, :strength => 0.8, :classifier_tagging => true)
     
     accept('text/javascript')
     get :show, :id => 1

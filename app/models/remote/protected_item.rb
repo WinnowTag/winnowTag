@@ -11,10 +11,10 @@ module Remote
     
     class << self
       def update(protector_id = ::Protector.id)
-        items = Tagging.find(:all, :select => 'distinct taggable_id',
-                              :conditions => ['tagger_type = ?', 'User'])
+        items = Tagging.find(:all, :select => 'distinct feed_item_id',
+                              :conditions => ['classifier_tagging = ?', false])
         if items.any?
-          items_to_protect = items.map {|i| {:feed_item_id => i.taggable_id} }
+          items_to_protect = items.map {|i| {:feed_item_id => i.feed_item_id} }
           ActiveRecord::Base.benchmark("Creating #{items_to_protect.size} Protected Items") do
             connection.post(collection_path(:protector_id => protector_id), 
                           items_to_protect.to_xml(:root => 'protected_items'))

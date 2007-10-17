@@ -32,9 +32,8 @@ class BayesClassifierTest < Test::Unit::TestCase
     mock_feed_item.stubs(:id).returns(37)
     
     tagging = Tagging.new
-    tagging.stubs(:tagger_type).returns('User')
-    tagging.stubs(:taggable).returns(mock_feed_item)
-    tagging.stubs(:tag).returns(Tag.find_or_create_by_name('tag'))
+    tagging.stubs(:feed_item).returns(mock_feed_item)
+    tagging.stubs(:tag).returns(Tag(users(:quentin), 'tag'))
     
     classifier = BayesClassifier.new
     classifier.classifier.expects(:train).with('tag', mock_feed_item, 'Winnow::FeedItem::37')
@@ -49,7 +48,7 @@ class BayesClassifierTest < Test::Unit::TestCase
   def test_classifier_saves_bayes
     user = users(:quentin)
     classifier = BayesClassifier.new
-    classifier.train(Tagging.new(:tagger => user, :taggable => FeedItem.find(1), :tag => Tag('tag1')))
+    classifier.train(Tagging.new(:user => user, :feed_item => FeedItem.find(1), :tag => Tag(user, 'tag1')))
     assert_equal ['tag1'], classifier.classifier.pools_to_classify.map(&:name)
     classifier.save
     classifier = BayesClassifier.find(classifier.id)
@@ -59,7 +58,7 @@ class BayesClassifierTest < Test::Unit::TestCase
   
   def test_classifier_acts_as_paranoid
     classifier = BayesClassifier.new
-    classifier.tagger = User.find(1)
+    classifier.user = User.find(1)
     assert classifier.save
     
     classifier_id = classifier.id
@@ -73,28 +72,22 @@ class BayesClassifierTest < Test::Unit::TestCase
     assert_raise ActiveRecord::RecordNotFound do BayesClassifier.find_with_deleted(classifier_id) end
   end
   
-  def test_positive_tagging    
-    classifier = users(:quentin).classifier
-    fi = FeedItem.find(1)
-    assert Tagging.create(:tagger => classifier, :taggable => fi, :tag => Tag('tag1'), :strength => 0.95).positive?
-    assert !Tagging.create(:tagger => classifier, :taggable => fi, :tag => Tag('tag2'), :strength => 0.85).positive?
-  end
   
   def test_deleting_a_classifier_deletes_all_its_taggings
     # setup some data
     u1 = User.find(1)
     fi1 = FeedItem.find(1)
     fi2 = FeedItem.find(2)
-    peerworks = Tag.find_or_create_by_name('peerworks')
+    peerworks = Tag(u1, 'peerworks')
     
     classifier = BayesClassifier.new
-    classifier.tagger = u1
+    classifier.user = u1
     assert classifier.save
     
-    tagging1 = Tagging.create(:tagger => classifier, :taggable => fi1, :tag => peerworks)
-    tagging2 = Tagging.create(:tagger => classifier, :taggable => fi2, :tag => peerworks)
+    tagging1 = Tagging.create(:user => u1, :feed_item => fi1, :tag => peerworks, :classifier_tagging => true)
+    tagging2 = Tagging.create(:user => u1, :feed_item => fi2, :tag => peerworks, :classifier_tagging => true)
     
-    assert_equal 2, classifier.taggings.size
+    assert_equal 2, classifier.user.taggings.size
     classifier.destroy
     
     assert_raise ActiveRecord::RecordNotFound do Tagging.find(tagging1.id) end 
@@ -106,7 +99,7 @@ class BayesClassifierTest < Test::Unit::TestCase
     user = users(:quentin)
     classifier = user.classifier
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => user, :taggable => fi, :tag => Tag('tag1'))
+    Tagging.create(:user => user, :feed_item => fi, :tag => Tag(users(:quentin), 'tag1'))
     classifier.classifier.expects(:guess).returns({'tag1' => 0.95})
     classifier.classifier.stubs(:pools).returns({'tag1' => stub(:train_count => 10)})
     
@@ -114,10 +107,11 @@ class BayesClassifierTest < Test::Unit::TestCase
     
     assert_equal 2, Tagging.count
     tagging = Tagging.find(:all).last
-    assert_equal classifier, tagging.tagger
-    assert_equal fi, tagging.taggable
-    assert_equal Tag('tag1'), tagging.tag
+    assert_equal user, tagging.user
+    assert_equal fi, tagging.feed_item
+    assert_equal Tag(users(:quentin), 'tag1'), tagging.tag
     assert_equal 0.95, tagging.strength
+    assert tagging.classifier_tagging?
   end
   
   def test_classify_doesnt_create_taggings_when_prob_less_than_cutoff
@@ -126,7 +120,7 @@ class BayesClassifierTest < Test::Unit::TestCase
     classifier = user.classifier
     classifier.insertion_cutoff = 0.9
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => user, :taggable => fi, :tag => Tag('tag1'))
+    Tagging.create(:user => user, :feed_item => fi, :tag => Tag(users(:quentin), 'tag1'))
     classifier.classifier.expects(:guess).returns({'tag1' => 0.6})
     classifier.classifier.stubs(:pools).returns({'tag1' => stub(:train_count => 10)})
     
@@ -137,7 +131,7 @@ class BayesClassifierTest < Test::Unit::TestCase
 
   def test_classify_new_only_classifies_items_added_since_the_last_execution
     classifier = BayesClassifier.find(1)
-    classifier.tagger.taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(1))
+    classifier.user.taggings.create(:tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     classifier.expects(:classify).times(3)
     classifier.last_executed = Time.now.yesterday
     classifier.classify_new_items
@@ -145,7 +139,7 @@ class BayesClassifierTest < Test::Unit::TestCase
   
   def test_classify_new_does_nothing_with_no_new_items
     classifier = BayesClassifier.find(1)
-    classifier.tagger.taggings.create(:tag => Tag('tag'), :taggable => FeedItem.find(1))
+    classifier.user.taggings.create(:tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     classifier.last_executed = Time.now.tomorrow.tomorrow
     classifier.expects(:classify).never
     classifier.classify_new_items
@@ -211,7 +205,7 @@ class BayesClassifierTest < Test::Unit::TestCase
     classifier.insertion_cutoff = 0.8
     classifier.save
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => user, :taggable => fi, :tag => Tag('tag1'))
+    Tagging.create(:user => user, :feed_item => fi, :tag => Tag(users(:quentin), 'tag1'))
     classifier.classifier.expects(:guess).returns({'tag1' => 0.8})
     classifier.classifier.stubs(:pools).returns({'tag1' => stub(:train_count => 10)})
 
@@ -219,24 +213,25 @@ class BayesClassifierTest < Test::Unit::TestCase
     
     assert_equal 2, Tagging.count
     tagging = Tagging.find(:all).last
-    assert_equal classifier, tagging.tagger
-    assert_equal fi, tagging.taggable
-    assert_equal Tag('tag1'), tagging.tag
+    assert_equal user, tagging.user
+    assert_equal fi, tagging.feed_item
+    assert_equal Tag(users(:quentin), 'tag1'), tagging.tag
     assert_equal 0.8, tagging.strength
+    assert tagging.classifier_tagging?
   end
   
   def test_classify_adds_execution_data_to_tagging
     user = users(:quentin)
     fi = FeedItem.find(1)
-    Tagging.create(:tagger => user, :taggable => fi, :tag => Tag('tag1'))
+    Tagging.create(:user => user, :feed_item => fi, :tag => Tag(users(:quentin), 'tag1'))
     classifier = user.classifier
     ce = classifier.create_classifier_execution
     classifier.classifier.expects(:guess).returns({'tag1' => 0.95})
     classifier.classifier.stubs(:pools).returns({'tag1' => stub(:train_count => 10)})
     classifier.classify(fi, ce)
     
-    assert_equal 1, classifier.taggings.size
-    ce_db = classifier.taggings.first.metadata
+    assert_equal 1, classifier.user.classifier_taggings.size
+    ce_db = classifier.user.classifier_taggings.first.metadata
     assert ce_db.is_a?(ClassifierExecution)
     assert_equal ce, ce_db
   end
@@ -333,30 +328,6 @@ class BayesClassifierTest < Test::Unit::TestCase
     assert_equal(1.2, classifier.bias['tag2'])
   end
   
-  def test_borderline_threshold
-    classifier = users(:quentin).classifier
-    classifier.positive_cutoff = 0.9
-    classifier.borderline_threshold = 0.02
-    tagging = Tagging.new(:tagger => classifier, :strength => 0.92, :taggable => FeedItem.find(1), :tag => Tag('tag'))
-    
-    assert tagging.borderline?
-    
-    tagging.strength = 0.82
-    assert !tagging.borderline?
-    
-    tagging.strength = 0.88
-    assert tagging.borderline?
-  end
-  
-  def test_borderline_threshold_at_zero
-    classifier = users(:quentin).classifier
-    classifier.positive_cutoff = 0.9
-    classifier.borderline_threshold = 0
-    tagging = Tagging.new(:tagger => classifier, :strength => 0.9, :taggable => FeedItem.find(1), :tag => Tag('tag'))
-    
-    assert !tagging.borderline?
-  end
-  
   def test_update_training_with_no_taggings
     classifier = BayesClassifier.find(1)
     classifier.expects(:train).never
@@ -364,14 +335,14 @@ class BayesClassifierTest < Test::Unit::TestCase
   end
   
   def test_update_training_with_new_tagging
-    tagging = Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(1))
+    tagging = Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     classifier = BayesClassifier.find(1)
     classifier.expects(:train).with(tagging)
     classifier.update_training
   end
   
   def test_update_training_with_no_updates
-    tagging = Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(1))
+    tagging = Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     classifier = BayesClassifier.find(1)
     classifier.expects(:random_background_uptodate?).returns(true).times(2)
     classifier.expects(:train).with(tagging).times(1)
@@ -380,7 +351,7 @@ class BayesClassifierTest < Test::Unit::TestCase
   end
   
   def test_update_training_with_a_new_tagging
-    tagging1 = Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(1))
+    tagging1 = Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     classifier = BayesClassifier.find(1)
     classifier.expects(:random_background_uptodate?).returns(true).times(2)
     classifier.expects(:train).with(tagging1).times(1)
@@ -389,21 +360,21 @@ class BayesClassifierTest < Test::Unit::TestCase
     # wait a second since timestamps only work on seconds
     sleep(1)
     
-    tagging2 = Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(2))
+    tagging2 = Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(2))
     classifier.expects(:train).with(tagging2).times(1)
     classifier.update_training  
   end
   
   def test_update_training_with_a_deleted_tagging
-    tagging1 = Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(1))
+    tagging1 = Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     classifier = BayesClassifier.find(1)
     classifier.expects(:retrain).never
     classifier.expects(:random_background_uptodate?).returns(true).times(2)
     classifier.expects(:train).with(tagging1).times(1)
-    classifier.expects(:untrain).with(tagging1).times(1)
     classifier.update_training
     sleep(1)
     tagging1.destroy
+    classifier.expects(:untrain).with(classifier.user.deleted_taggings.first).times(1)
     classifier.update_training
   end
   
@@ -414,13 +385,13 @@ class BayesClassifierTest < Test::Unit::TestCase
     classifier.expects(:untrain).never
     classifier.update_training
     sleep(1)
-    tagging1 = Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(1))
+    tagging1 = Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     tagging1.destroy
     classifier.update_training
   end
   
   def test_update_training_after_clearing_training_data
-    tagging = Tagging.create(:tagger => users(:quentin), :tag => Tag('tag'), :taggable => FeedItem.find(1))
+    tagging = Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag'), :feed_item => FeedItem.find(1))
     classifier = BayesClassifier.find(1)
     classifier.expects(:random_background_uptodate?).returns(true).times(2)
     classifier.expects(:train).with(tagging).times(2)
@@ -454,35 +425,35 @@ class BayesClassifierTest < Test::Unit::TestCase
   
   def test_regression_test_fails_with_high_error
     classifier = BayesClassifier.find(1)
-    classifier.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'), :strength => 0)
+    classifier.user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'), :strength => 0, :classifier_tagging => true)
     classifier.expects(:guess).with{|fi, options| fi == FeedItem.find(1)}.returns('tag' => 1)
     assert_raise(BayesClassifier::RegressionTestFailure) { classifier.regression_test }
   end
   
   def test_regression_test_passes_with_no_error
     classifier = BayesClassifier.find(1)
-    classifier.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'), :strength => 1)
+    classifier.user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'), :strength => 1, :classifier_tagging => true)
     classifier.expects(:guess).with{|fi, options| fi == FeedItem.find(1)}.returns('tag' => 1)
     assert_nothing_raised(BayesClassifier::RegressionTestFailure) { classifier.regression_test }
   end
   
   def test_regression_test_passes_within_error_limit
     classifier = BayesClassifier.find(1)
-    classifier.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'), :strength => 1)
+    classifier.user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'), :strength => 1, :classifier_tagging => true)
     classifier.expects(:guess).with{|fi, options| fi == FeedItem.find(1)}.returns('tag' => 0.9)
     assert_nothing_raised(BayesClassifier::RegressionTestFailure) { classifier.regression_test(0.1) }
   end
   
   def test_regression_test_fails_outside_error_limit
     classifier = BayesClassifier.find(1)
-    classifier.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'), :strength => 1)
+    classifier.user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'), :strength => 1, :classifier_tagging => true)
     classifier.expects(:guess).with{|fi, options| fi == FeedItem.find(1)}.returns('tag' => 0.89)
     assert_raise(BayesClassifier::RegressionTestFailure) { classifier.regression_test(0.1) }
   end
   
   def test_delete_orphaned_taggings_should_delete_an_orphaned_tagging
     classifier = BayesClassifier.find(1)
-    tagging = classifier.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'))
+    tagging = classifier.user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'), :classifier_tagging => true)
     FeedItem.delete(1)
     BayesClassifier.delete_orphaned_taggings
     assert_raise(ActiveRecord::RecordNotFound) { Tagging.find(tagging.id) }
@@ -490,21 +461,21 @@ class BayesClassifierTest < Test::Unit::TestCase
   
   def test_delete_orphan_taggings_should_leave_non_orphan_tagging
     classifier = BayesClassifier.find(1)
-    tagging = classifier.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'))
+    tagging = classifier.user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'), :classifier_tagging => true)
     BayesClassifier.delete_orphaned_taggings
     assert_nothing_raised(ActiveRecord::RecordNotFound) { Tagging.find(tagging.id) }
   end
   
   def test_delete_orphan_taggings_should_leave_non_orphaned_user_taggings
     user = users(:quentin)
-    tagging = user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'))
+    tagging = user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'))
     BayesClassifier.delete_orphaned_taggings
     assert_nothing_raised(ActiveRecord::RecordNotFound) { Tagging.find(tagging.id) }
   end
 
   def test_delete_orphan_taggings_should_leave_orphaned_user_taggings
     user = users(:quentin)
-    tagging = user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag'))
+    tagging = user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'))
     FeedItem.delete(1)
     BayesClassifier.delete_orphaned_taggings
     assert_nothing_raised(ActiveRecord::RecordNotFound) { Tagging.find(tagging.id) }
@@ -519,46 +490,57 @@ class BayesClassifierTest < Test::Unit::TestCase
   def test_changed_tags_should_return_tag_altered_since_the_last_classification
     user = users(:quentin)
     user.classifier.last_executed = Time.now.ago(5.minutes).utc
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag1'))
-    assert_equal([Tag('tag1')], user.classifier.changed_tags)
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag1'))
+    assert_equal([Tag(users(:quentin), 'tag1')], user.classifier.changed_tags)
   end
   
   def test_changed_tags_should_return_tag_negatively_altered_since_the_last_classification
     user = users(:quentin)
     user.classifier.last_executed = Time.now.ago(5.minutes).utc
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag1'), :strength => 0)
-    assert_equal([Tag('tag1')], user.classifier.changed_tags)
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag1'), :strength => 0)
+    assert_equal([Tag(users(:quentin), 'tag1')], user.classifier.changed_tags)
   end
   
   def test_changed_tags_should_return_multiple_altered_tags_since_the_last_classification
     user = users(:quentin)
     user.classifier.last_executed = Time.now.ago(5.minutes).utc
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag1'))
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag2'))
-    assert_equal([Tag('tag1'), Tag('tag2')], user.classifier.changed_tags)
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag1'))
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag2'))
+    assert_equal([Tag(users(:quentin), 'tag1'), Tag(users(:quentin), 'tag2')], user.classifier.changed_tags)
   end
   
   def test_changed_tags_should_return_distinct_altered_tags_since_the_last_classification
     user = users(:quentin)
     user.classifier.last_executed = Time.now.ago(5.minutes).utc
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag1'))
-    user.taggings.create(:taggable => FeedItem.find(2), :tag => Tag('tag1'))
-    assert_equal([Tag('tag1')], user.classifier.changed_tags)
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag1'))
+    user.taggings.create(:feed_item => FeedItem.find(2), :tag => Tag(users(:quentin), 'tag1'))
+    assert_equal([Tag(users(:quentin), 'tag1')], user.classifier.changed_tags)
   end
   
   def test_changed_tags_should_return_tag_removed_since_last_classification
     user = users(:quentin)
     user.classifier.last_executed = Time.now.ago(5.minutes).utc
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag1'),
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag1'),
                          :created_on => Time.now.ago(10.minutes).utc).destroy
-    assert_equal([Tag('tag1')], user.classifier.changed_tags)
+    assert_equal([Tag(users(:quentin), 'tag1')], user.classifier.changed_tags)
   end
   
   def test_changed_tags_should_return_all_tags_for_new_classifier
     user = users(:quentin)
     user.classifier.last_executed = nil
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag1'))
-    user.taggings.create(:taggable => FeedItem.find(1), :tag => Tag('tag2'))
-    assert_equal([Tag('tag1'), Tag('tag2')], user.classifier.changed_tags)    
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag1'))
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag2'))
+    assert_equal([Tag(users(:quentin), 'tag1'), Tag(users(:quentin), 'tag2')], user.classifier.changed_tags)    
+  end
+  
+  def test_clear_existing_taggings_only_removes_classifier_taggings
+    user = users(:quentin)
+    t = user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag1'))
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag1'), :classifier_tagging => true)
+    assert_difference(user.taggings, :size, -1) do
+      user.classifier.clear_existing_taggings('tag1')
+    end
+    
+    assert_nothing_raised(ActiveRecord::RecordNotFound) { Tagging.find(t.id) }
   end
 end

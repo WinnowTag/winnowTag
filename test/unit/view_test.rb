@@ -75,8 +75,8 @@ class TagViewTest < Test::Unit::TestCase
   
   def setup
     @user = users(:quentin)
-    @tag = Tag('tag')
-    @user.taggings.create(:tag => @tag, :taggable => FeedItem.find(1))
+    @tag = Tag(@user, 'tag')
+    @user.taggings.create(:tag => @tag, :feed_item => FeedItem.find(1))
     @view = View.new :user => @user
   end
   
@@ -89,8 +89,8 @@ class TagViewTest < Test::Unit::TestCase
   end
 
   def test_add_tag_to_include_list_when_list_is_not_empty
-    @tag2 = Tag('tag2')
-    @user.taggings.create(:tag => @tag2, :taggable => FeedItem.find(1))
+    @tag2 = Tag(@user, 'tag2')
+    @user.taggings.create(:tag => @tag2, :feed_item => FeedItem.find(1))
 
     @view.add_tag :include, @tag2
     assert_equal 1, @view.tag_filter[:include].size

@@ -13,15 +13,13 @@ class TaggingsController < ApplicationController
   # Creates a single tagging for a <Taggable, Tagger, Tag>
   def create
     respond_to do |wants|
-      params[:tagging][:tag] = Tag.find_or_create_by_name(params[:tagging][:tag])
+      params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
       @tagging = current_user.taggings.build(params[:tagging])
-      @taggable = @tagging.taggable
+      @feed_item = @tagging.feed_item
       
-      if @tagging.save
-        wants.html { flash[:notice] = "Tag applied"; redirect_to :back }        
-        wants.js   { render :template => "#{@tagging.taggable_type.underscore.pluralize}/tags_updated.rjs" }
+      if @tagging.save    
+        wants.js
       else
-        wants.html { flash[:error] = "Tagging failed"; redirect_to :back }
         wants.js   { render :update do |page| page.alert("Tagging failed") end }
       end
     end 
@@ -37,14 +35,13 @@ class TaggingsController < ApplicationController
   def destroy
     respond_to do |wants|
       tagging = params[:tagging]
-      @taggable = tagging[:taggable_type].constantize.find(tagging[:taggable_id])
+      @feed_item = FeedItem.find(tagging[:feed_item_id])
       
-      current_user.taggings.find_by_taggable(@taggable, :all, 
-                                            :conditions => {:tag_id => Tag.find_or_create_by_name(tagging[:tag]).id}).
+      current_user.taggings.find_by_feed_item(@feed_item, :all, 
+                                            :conditions => {:tag_id => Tag(current_user, tagging[:tag]).id}).
                                             each(&:destroy)
     
-      wants.html { redirect_to(:back) }
-      wants.js   { render :template => "#{@taggable.class.name.underscore.pluralize}/tags_updated.rjs" }
+      wants.js
     end
   end
 end

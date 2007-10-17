@@ -130,6 +130,76 @@ class UserTest < Test::Unit::TestCase
     assert u.has_read_item?(f)
   end
   
+  def test_get_tags_with_count
+    u = users(:quentin)
+    fi1 = FeedItem.find(1)
+    fi2 = FeedItem.find(4)
+    peerworks = Tag(u, 'peerworks')
+    test = Tag(u, 'test')
+    tag = Tag(u, 'tag')
+    Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks).destroy
+    Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
+    Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
+    Tagging.create(:user => u, :feed_item => fi1, :tag => test)
+    Tagging.create(:user => u, :feed_item => fi1, :tag => tag).destroy
+
+    tags = u.tags_with_count
+    assert_equal 2, tags.size
+    assert_equal 'peerworks', tags[0].name
+    assert_equal 2, tags[0].count.to_i
+    assert_equal 'test', tags[1].name
+    assert_equal 1, tags[1].count.to_i
+
+    # now check it when limiting it by feed - only counts should change
+    tags = u.tags_with_count(:feed_filter => { :include => [2], :exclude => [] })
+    assert_equal 2, tags.size
+    assert_equal 'peerworks', tags[0].name
+    assert_equal 1, tags[0].count.to_i
+    assert_equal 'test', tags[1].name
+    assert_equal 0, tags[1].count.to_i
+  end
+  
+  def test_tagging_statistics
+    u = users(:quentin)
+    pw = Tag(u, 'peerworks')
+    tag = Tag(u, 'tag')
+
+    assert_equal 0, u.tagging_percentage
+    assert_nil u.last_tagging_on
+    assert_equal 0, u.average_taggings_per_item
+    assert_equal 0, u.number_of_tagged_items
+
+    assert Tagging.create(:user => u, :feed_item => FeedItem.find(1), :tag => pw)
+    assert last = Tagging.create(:user => u, :feed_item => FeedItem.find(2), :tag => pw)
+
+    assert_equal 50, u.tagging_percentage
+    assert_equal last.created_on.to_s, u.last_tagging_on.to_s
+    assert_equal 1, u.average_taggings_per_item
+    assert_equal 2, u.number_of_tagged_items
+
+    Tagging.create(:user => u, :feed_item => FeedItem.find(1), :tag => tag)
+    last = Tagging.create(:user => u, :feed_item => FeedItem.find(2), :tag => tag)
+
+    assert_equal 50, u.tagging_percentage
+    assert_equal last.created_on.to_s, u.last_tagging_on.to_s
+    assert_equal 2, u.average_taggings_per_item
+    assert_equal 2, u.number_of_tagged_items
+
+    Tagging.create(:user => u, :feed_item => FeedItem.find(3), :tag => pw)
+    last = Tagging.create(:user => u, :feed_item => FeedItem.find(4), :tag => pw)
+
+    assert_equal 100, u.tagging_percentage
+    assert_equal last.created_on.to_s, u.last_tagging_on.to_s
+    assert_equal 1.5, u.average_taggings_per_item
+    assert_equal 4, u.number_of_tagged_items
+
+    User.find_by_login('quentin').taggings.clear
+    assert_equal 0, u.tagging_percentage
+    assert_nil u.last_tagging_on
+    assert_equal 0, u.average_taggings_per_item
+    assert_equal 0, u.number_of_tagged_items
+  end
+  
   protected
     def create_user(options = {})
       User.create({ :login => 'quire', 

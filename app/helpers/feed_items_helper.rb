@@ -118,13 +118,13 @@ module FeedItemsHelper
   # * Users tags take precedence over classifier tags.
   #
   def display_tags_for(taggable)
-    taggers = [current_user, current_user.classifier]
-
-    tags = taggable.taggings_by_taggers(taggers, :all_taggings => true)
+    tags = taggable.taggings_by_user(current_user, :all_taggings => true)
     
     # Strip out tags that only have a classifier tagging below cutoff
     tags = tags.select do |tags, taggings|
-      taggings.detect {|tagging| tagging.tagger_type == 'User' or tagging.positive? or tagging.borderline?}
+      taggings.detect do |tagging| 
+        !tagging.classifier_tagging? || tagging.positive? || tagging.borderline?
+      end
     end
 
     tag_display = tags.collect do |tag, taggings|
@@ -167,10 +167,8 @@ module FeedItemsHelper
   # Builds tagging controls for a feed item
   #
   def tag_controls(feed_item, options = {})
-    options[:hide] = Array(options[:hide])
-    
-    taggers = [current_user, current_user.classifier]
-    tags = feed_item.taggings_by_taggers(taggers, :all_taggings => true)
+    options[:hide] = Array(options[:hide])    
+    tags = feed_item.taggings_by_user(current_user, :all_taggings => true)
 
     html = ""
     tags.each do |tag, taggings|
@@ -190,10 +188,8 @@ module FeedItemsHelper
   end
   
   def unused_tag_controls(feed_item, options = {})
-    options[:hide] = Array(options[:hide])
-    
-    taggers = [current_user, current_user.classifier]
-    tags = feed_item.taggings_by_taggers(taggers, :all_taggings => true)
+    options[:hide] = Array(options[:hide])    
+    tags = feed_item.taggings_by_user(current_user, :all_taggings => true)
 
     unused_tags = []
     current_user.tags.each do |tag|      
@@ -205,7 +201,7 @@ module FeedItemsHelper
         #       to do using the model objects without hitting the 
         #       database.
         #
-        unless taggings.last.any? {|tagging| tagging.tagger_type == 'User' || tagging.strength > 0.9}
+        unless taggings.last.any? {|tagging| !tagging.classifier_tagging? || tagging.positive?}
           unused_tags << tag
         end
       else
@@ -230,15 +226,13 @@ module FeedItemsHelper
 	  taggings = Array(taggings)
 	  classes = []
     
-    if taggings.empty?
-      # classes << "untagged"
-    elsif taggings.size == 1 and tagging = taggings.first
-      classes << "#{tagging.tagger_type.underscore}_tagging"
+    if taggings.size == 1 and tagging = taggings.first
+      classes << tagging_type_class(tagging)      
       classes << "borderline" if tagging.borderline?
       
       if tagging.positive? or tagging.borderline?
         classes << "tagged"
-      elsif tagging.tagger_type != 'BayesClassifier'
+      elsif !tagging.classifier_tagging?
         classes << "negative_tagging"
       else
         # revert to 'untagged' since we don't display negative taggings for classifiers
@@ -249,7 +243,7 @@ module FeedItemsHelper
       
       # Add untagged classes for the remaining taggings
       taggings.last(taggings.size - 1).each do |tagging|
-        classes << "#{tagging.tagger_type.underscore}_tagging"
+        classes << tagging_type_class(tagging)
       end
     end
     
@@ -261,6 +255,14 @@ module FeedItemsHelper
       "#{tag.name} (#{tag.count}/#{classifier_tag.count})"
     else
       "#{tag.name} (#{tag.count})"
+    end
+  end
+  
+  def tagging_type_class(tagging)
+    if tagging.classifier_tagging?
+      "bayes_classifier_tagging"
+    else
+      "user_tagging"
     end
   end
 end

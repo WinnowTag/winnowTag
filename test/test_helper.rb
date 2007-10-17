@@ -52,7 +52,7 @@ class Test::Unit::TestCase
   end
 
   def assert_valid(o, msg = "The object should be valid")
-    assert o.valid?, msg + ': ' + o.errors.to_s
+    assert o.valid?, msg + ': ' + o.errors.full_messages.join(", ")
   end
   
   def assert_invalid(o, msg = "The object should be invalid")

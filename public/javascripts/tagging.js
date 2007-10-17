@@ -36,8 +36,7 @@ function add_tag(taggable_id, tag_name, allow_remove) {
 	var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
 	var url = '/taggings/create';
 	var parameters = {};
-	parameters["tagging[taggable_type]"] = 'FeedItem';
-	parameters["tagging[taggable_id]"] = taggable_id.match(/(\d+)$/)[1];
+	parameters["tagging[feed_item_id]"] = taggable_id.match(/(\d+)$/)[1];
 	parameters["tagging[tag]"] = tag_name;
 	parameters["tagging[strength]"] = "1";
 	
@@ -68,8 +67,7 @@ function remove_tag(taggable_id, tag_name) {
 	var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
 	var url = '/taggings/destroy';
 	var parameters = {};
-	parameters["tagging[taggable_type]"] = 'FeedItem';
-	parameters["tagging[taggable_id]"] = taggable_id.match(/(\d+)$/)[1];
+	parameters["tagging[feed_item_id]"] = taggable_id.match(/(\d+)$/)[1];
 	parameters["tagging[tag]"] = tag_name;
 	
 	if (tag_control.match('.user_tagging.negative_tagging')) { 
