@@ -67,6 +67,14 @@ td.date, th.date {
   width: 10em;
 }
 
+th.sensitivity {
+  text-align: center;
+}
+
+th.sensitivity, td.sensitivity {
+  width: 90px;
+}
+
 table.data_table th.table_break {
 	padding-top: 10px;
 	font-size: 100%;

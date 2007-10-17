@@ -25,11 +25,7 @@
 	<td class="date"><%= format_date(tag.last_used_by(current_user)) %></td>	
 	<td class="indented" nowrap="nowrap"><%= current_user.display_name %></td>
 	<td>
-		<%= bias_slider(:tag => tag, :global => "sliders[#{tag.name.to_json}]", 
-						:prefix => tag.dom_id('slider'),
+		<%= bias_slider(:tag => tag, :global => "sliders[#{tag.name.to_json}]", :prefix => tag.dom_id('slider'),
 						:change => "if (slider.event) {$('#{tag.dom_id('bias_for')}').value = value; slider.options.isDefault = false;}") %>
 	</td>
-</tr>
-<tr id="<%= tag.dom_id('form_row') %>" class="form_row">
-	<td id="<%= tag.dom_id('form_cell') %>" colspan="7"></td>
 </tr>

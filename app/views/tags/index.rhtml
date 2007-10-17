@@ -13,12 +13,12 @@ For Private Tags, click on a tag name to rename it or merge it into an existing 
 			<tr>
 				<th class="tag">Tag</th>
 				<th class="view_state">View State</th>
-				<th></th>
+				<th class="control_icons">Controls</th>
 				<th class="usage number">Usage (+/-)</th>
 				<th class="classifier_usage number">Classifier</th>
 				<th class="date">Modified</th>
 				<th class="indented">User</th>
-				<th class="center">Sensitivity</th>
+				<th class="sensitivity">Sensitivity</th>
 			</tr>
 			<tr class="<%= cycle('odd', 'even') %>">
 				<td>Default</td>
@@ -28,11 +28,9 @@ For Private Tags, click on a tag name to rename it or merge it into an existing 
 				<td></td>
 				<td></td>
 				<td></td>
-				<td style="width: 80px;">
-					<%= bias_slider(:tag => :default, :var => 'default_slider',
-						:change => "$('default_bias').value = value;",
-						:slide =>"$H(sliders).values().each(function(s){" +
-								"if (s.options.isDefault) s.setValue(value);});") %>
+				<td>
+					<%= bias_slider(:tag => :default, :var => 'default_slider', :change => "$('default_bias').value = value;",
+                          :slide =>"$H(sliders).values().each(function(s) { if (s.options.isDefault) s.setValue(value); } );") %>
 				</td>
 			</tr>		
 		<% for tag in @tags -%>
