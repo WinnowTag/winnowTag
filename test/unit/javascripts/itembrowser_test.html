@@ -11,36 +11,36 @@
   <link rel="stylesheet" href="test.css" type="text/css" />
 
   <style type="text/css" media="screen">
-	.item {
-		position: relative;
-		height: 16px;
-	}
+		.item {
+			position: relative;
+			height: 16px;
+		}
   	#one {
 	    background-color: red;
-	}
+		}
   	#two {
 	    background-color: blue;
-	}
+		}
   	#three {
 	    background-color: green;
-	}
+		}
   	#four {
 	    background-color: orange;
-	}
+		}
   	#zero {
 	    background-color: yellow;
-	}
-	#feed_items {
-		height: 512px;
-	}
-	#content {
-		border: 1px solid grey;
-		height: 64px;
-		overflow: auto;
-	}
-	.item_spacer {
-		background-color: pink;
-	}
+		}
+		#feed_items {
+			height: 512px;
+		}
+		#content {
+			border: 1px solid grey;
+			height: 64px;
+			overflow: auto;
+		}
+		.item_spacer {
+			background-color: pink;
+		}
   </style>
 </head>
 <body>
@@ -64,11 +64,11 @@
 new Test.Unit.Runner({
   // optional setup function, run before each individual test case
   setup: function() { with(this) {
-	$('feed_items').update('<div id="feed_items_indicator"></div>' +
-						   '<div id="one" class="item" position="3"></div>' +
-						   '<div id="two" class="item" position="2"></div>' +
-						   '<div id="three" class="item" position="1"></div>' +
-						   '<div id="initial_spacer" class="item_spacer"></div>');
+		$('feed_items').update('<div id="feed_items_indicator"></div>' +
+												   '<div id="one" class="item" position="3"></div>' +
+												   '<div id="two" class="item" position="2"></div>' +
+												   '<div id="three" class="item" position="1"></div>' +
+												   '<div id="initial_spacer" class="item_spacer"></div>');
   }},
   // optional teardown function, run after each individual test case
   teardown: function() { with(this) {
@@ -77,458 +77,459 @@ new Test.Unit.Runner({
 
   testDefaultMaxItemThreshold: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	assertEqual(500, ib.options.pruning_threshold);
+		assertEqual(500, ib.options.pruning_threshold);
   }},
 
   testSettingWindowSize: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {pruning_threshold: 5});
-	assertEqual(5, ib.options.pruning_threshold);
+		assertEqual(5, ib.options.pruning_threshold);
   }},
 
   testItemBrowserGetFeedItemsContainer: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	assertEqual($('feed_items'), ib.feed_items_container);
-	assertEqual($('content'), ib.feed_items_scrollable);
-	assertEqual(32, ib.total_items);
+		assertEqual($('feed_items'), ib.feed_items_container);
+		assertEqual($('content'), ib.feed_items_scrollable);
+		assertEqual(32, ib.total_items);
   }},
 
   testNumberOfItemsInView: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	assertEqual(4, ib.numberOfItemsInView());
+		assertEqual(4, ib.numberOfItemsInView());
   }},
 
   testSetsSizeOfInitialSpacer: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	assertEqual('464px', $('initial_spacer').getStyle('height'));
+		assertEqual('464px', $('initial_spacer').getStyle('height'));
   }},
 
   testUpdateFeedItemCountWhenEmpty: function() { with(this) {
-	$('feed_items').update('');
+		$('feed_items').update('');
     var ib = new ItemBrowser('feed_items');
-	assertEqual(0, ib.items.length);
+		assertEqual(0, ib.items.length);
   }},
 
   testUpdateFeedItemCount: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.updateFeedItemCount();
-	assertEqual(3, ib.items.length);
-	assertEqual("About 3 items", $('feed_item_count').innerHTML);
+		ib.updateFeedItemCount();
+		assertEqual(3, ib.items.length);
+		assertEqual("About 3 items", $('feed_item_count').innerHTML);
   }},
 
   testUpdateFeedItemCountAfterInsertWithGap: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.insertItem('eight', 8, '<div id="eight" class="item"></div>')
-	ib.updateFeedItemCount();
-	assertEqual(9, ib.items.length);
-	assertEqual("About 4 items", $('feed_item_count').innerHTML);
+		ib.insertItem('eight', 8, '<div id="eight" class="item"></div>');
+		ib.updateFeedItemCount();
+		assertEqual(9, ib.items.length);
+		assertEqual("About 4 items", $('feed_item_count').innerHTML);
   }},
 
   testJumpToPositionStartsLoadAtOffset: function() { with(this) {
-	var updateFeedItemsCalled = false;
+		var updateFeedItemsCalled = false;
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.updateFeedItems = function(options) {
-		assertEqual(8, options.offset);
-		updateFeedItemsCalled = true;
-	};
-	ib.feed_items_scrollable.scrollTop = 128;
-	ib.scrollFeedItemView();
-	wait(550, function() {
-		assert(updateFeedItemsCalled, "updateFeedItems was not called");
-	});
+		ib.updateFeedItems = function(options) {
+			assertEqual(8, options.offset);
+			updateFeedItemsCalled = true;
+		};
+		ib.feed_items_scrollable.scrollTop = 128;
+		ib.scrollFeedItemView();
+		wait(1000, function() {
+			assert(updateFeedItemsCalled, "updateFeedItems was not called");
+		});
   }},
 
   testUpdateFeedItemsCallsDoUpdateWithOffsetsToCoverViewport: function() { with(this) {
-	var doUpdateCalled = false;
+		var doUpdateCalled = false;
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.doUpdate = function(options) {
-		assertEqual(6, options.offset);
-		assertEqual(8, options.limit);
-		doUpdateCalled = true;
-	};
+		ib.doUpdate = function(options) {
+			assertEqual(6, options.offset);
+			assertEqual(8, options.limit);
+			doUpdateCalled = true;
+		};
 	
-	ib.updateFeedItems({offset: 8});
-	assert(doUpdateCalled, "doUpdate was not called");
+		ib.updateFeedItems({offset: 8});
+		assert(doUpdateCalled, "doUpdate was not called");
   }},
 
   testUpdateFeedItemsOffsetsStayPositive: function() { with(this) {
-	var doUpdateCalled = false;
+		var doUpdateCalled = false;
     var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
-	ib.clear();
-	ib.doUpdate = function(options) {
-		assertEqual(0, options.offset);
-		assertEqual(7, options.limit);
-		doUpdateCalled = true;
-	};
+		ib.clear();
+		ib.doUpdate = function(options) {
+			assertEqual(0, options.offset);
+			assertEqual(7, options.limit);
+			doUpdateCalled = true;
+		};
 
-	ib.updateFeedItems({offset: 1});
-	assert(doUpdateCalled, "doUpdate was not called");
+		ib.updateFeedItems({offset: 1});
+		assert(doUpdateCalled, "doUpdate was not called");
   }},
 
   testUpdateFeedItemsReducesLimitWhenItemsAreAlreadyLoaded: function() { with(this) {
     var doUpdateCalled = false;
-	var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
-	ib.doUpdate = function(options) {
-		assertEqual(6, options.offset);
-		assertEqual(4, options.limit);
-		doUpdateCalled = true;
-	};
+		var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
+		ib.doUpdate = function(options) {
+			assertEqual(6, options.offset);
+			assertEqual(4, options.limit);
+			doUpdateCalled = true;
+		};
 	
-	ib.insertItem('new_item10', 10, '<div id="new_item10" class="item"></div>');
-	ib.insertItem('new_item11', 11, '<div id="new_item11" class="item"></div>');
-	ib.insertItem('new_item12', 12, '<div id="new_item12" class="item"></div>');
-	ib.insertItem('new_item13', 13, '<div id="new_item13" class="item"></div>');
-	ib.insertItem('new_item14', 14, '<div id="new_item14" class="item"></div>');
-	ib.updateFeedItems({offset: 8});
-	assert(doUpdateCalled, "doUpdate was not called");
+		ib.insertItem('new_item10', 10, '<div id="new_item10" class="item"></div>');
+		ib.insertItem('new_item11', 11, '<div id="new_item11" class="item"></div>');
+		ib.insertItem('new_item12', 12, '<div id="new_item12" class="item"></div>');
+		ib.insertItem('new_item13', 13, '<div id="new_item13" class="item"></div>');
+		ib.insertItem('new_item14', 14, '<div id="new_item14" class="item"></div>');
+		ib.updateFeedItems({offset: 8});
+		assert(doUpdateCalled, "doUpdate was not called");
   }},
 
   testUpdateFeedItemsIncreasesOffsetWhenItemsAreAlreadyLoaded: function() { with(this) {
     var doUpdateCalled = false;
-	var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
-	ib.doUpdate = function(options) {
-		assertEqual(3, options.offset);
-		assertEqual(7, options.limit);
-		doUpdateCalled = true;
-	};
+		var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
+		ib.doUpdate = function(options) {
+			assertEqual(3, options.offset);
+			assertEqual(7, options.limit);
+			doUpdateCalled = true;
+		};
 
-	ib.updateFeedItems({offset: 4});
-	assert(doUpdateCalled, "doUpdate was not called");
+		ib.updateFeedItems({offset: 4});
+		assert(doUpdateCalled, "doUpdate was not called");
   }},
 
   testUpdateFeedItemsIncreasesOffsetWhenItemsAreAlreadyLoaded2: function() { with(this) {
     var doUpdateCalled = false;
-	var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
-	ib.doUpdate = function(options) {
-		assertEqual(3, options.offset);
-		assertEqual(3, options.limit);
-		doUpdateCalled = true;
-	};
+		var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
+		ib.doUpdate = function(options) {
+			assertEqual(3, options.offset);
+			assertEqual(3, options.limit);
+			doUpdateCalled = true;
+		};
 
-	ib.updateFeedItems({offset: 0});
-	assert(doUpdateCalled, "doUpdate was not called");
+		ib.updateFeedItems({offset: 0});
+		assert(doUpdateCalled, "doUpdate was not called");
   }},
 
   testUpdateFeedItemsDoesNothingWhenLimitHitsZero: function() { with(this) {
     var options = null;
-	var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
-	ib.doUpdate = function(opts) {
-		options = opts;
-	};
+		var ib = new ItemBrowser('feed_items', {total_items: 32, update_threshold: 1});
+		ib.doUpdate = function(opts) {
+			options = opts;
+		};
 
-	ib.insertItem('new_item3', 3, '<div id="new_item3" class="item"></div>');
-	ib.insertItem('new_item4', 4, '<div id="new_item4" class="item"></div>');
-	ib.insertItem('new_item5', 5, '<div id="new_item5" class="item"></div>');
-	ib.insertItem('new_item6', 6, '<div id="new_item6" class="item"></div>');
-	ib.insertItem('new_item7', 7, '<div id="new_item7" class="item"></div>');
+		ib.insertItem('new_item3', 3, '<div id="new_item3" class="item"></div>');
+		ib.insertItem('new_item4', 4, '<div id="new_item4" class="item"></div>');
+		ib.insertItem('new_item5', 5, '<div id="new_item5" class="item"></div>');
+		ib.insertItem('new_item6', 6, '<div id="new_item6" class="item"></div>');
+		ib.insertItem('new_item7', 7, '<div id="new_item7" class="item"></div>');
 	
-	ib.updateFeedItems({offset: 0});
-	assertNull(options, "Got " + $H(options).inspect());
-	assert(!ib.loading, "ib.loading should be false");
+		ib.updateFeedItems({offset: 0});
+		assertNull(options, "Got " + $H(options).inspect());
+		assert(!ib.loading, "ib.loading should be false");
   }},
 
   testUpdateFeedItemsWithIncrementalUsesSpecifiedOffset: function() { with(this) {
     var options = null;
-	var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.doUpdate = function(opts) {options = opts;}
-	ib.updateFeedItems({offset: 3, incremental: true});
-	assertNotNull(options);
-	assertEqual(3, options.offset);		
+		var ib = new ItemBrowser('feed_items', {total_items: 32});
+		ib.doUpdate = function(opts) {options = opts;}
+		ib.updateFeedItems({offset: 3, incremental: true});
+		assertNotNull(options);
+		assertEqual(3, options.offset);		
   }},
 
   testScrollingAddsLoadToQueueWhenLoadInProgress: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.loading = true;
-	ib.updateFeedItems = function(opts) {fail("updateFeedItems should not be called");};
-	ib.scrollFeedItemView();
-	wait(350, function () {
-		assertEqual(1, ib.update_queue.size());		
-	});
+		ib.loading = true;
+		ib.updateFeedItems = function(opts) {fail("updateFeedItems should not be called");};
+		ib.scrollFeedItemView();
+		wait(350, function () {
+			assertEqual(1, ib.update_queue.size());		
+		});
   }},
 
   testUpdateFromQueue: function() { with(this) {
-	var received_options = null;
+		var received_options = null;
     var queued_options = {offset: 10};
 
-	var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.update_queue.push(queued_options);
-	ib.update_queue.push({offset: 11});
-	ib.updateFeedItems = function(opts) {received_options = opts;};
-	ib.updateFromQueue();
+		var ib = new ItemBrowser('feed_items', {total_items: 32});
+		ib.update_queue.push(queued_options);
+		ib.update_queue.push({offset: 11});
+		ib.updateFeedItems = function(opts) {received_options = opts;};
+		ib.updateFromQueue();
 	
-	assertEqual(queued_options, received_options);
-	assertEqual(11, ib.update_queue.first().offset);
+		assertEqual(queued_options, received_options);
+		assertEqual(11, ib.update_queue.first().offset);
   }},
 
   testItemListOnCreation: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
     assertEqual(3, ib.items.length);
 
-	assert(ib.items['one']);
-	assert(ib.items['two']);
-	assert(ib.items['three']);
+		assert(ib.items['one']);
+		assert(ib.items['two']);
+		assert(ib.items['three']);
 	
-	assertEqual(3, ib.items[0].position);
-	assertEqual("one", ib.items[0].element.getAttribute('id'));
-	assertEqual(2, ib.items[1].position);
-	assertEqual("two", ib.items[1].element.getAttribute('id'));
-	assertEqual(1, ib.items[2].position);
-	assertEqual("three", ib.items[2].element.getAttribute('id'));
+		assertEqual(3, ib.items[0].position);
+		assertEqual("one", ib.items[0].element.getAttribute('id'));
+		assertEqual(2, ib.items[1].position);
+		assertEqual("two", ib.items[1].element.getAttribute('id'));
+		assertEqual(1, ib.items[2].position);
+		assertEqual("three", ib.items[2].element.getAttribute('id'));
   }},
 
   testInsertAnItemDuplicateChangesNothing: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.insertItem('three', 2, '<div id="three" class="item"></div>')
+		ib.insertItem('three', 2, '<div id="three" class="item"></div>')
 
-	var spacer = $('three').nextSiblings().first();
-	assertNull($('three').nextSiblings()[1]);
-	assertEqual(3, ib.items.compact().length);
+		var spacer = $('three').nextSiblings().first();
+		assertNull($('three').nextSiblings()[1]);
+		assertEqual(3, ib.items.compact().length);
   }},
 
   testInsertAnItemWithAGapAddsSpacerDivs: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.insertItem('new_item', 8, '<div id="new_item" class="item"></div>')
+		ib.insertItem('new_item', 8, '<div id="new_item" class="item"></div>')
 	
-	var spacer = $('three').nextSiblings().first();
-	var item = $('three').nextSiblings()[1];
-	var end_spacer = $('three').nextSiblings()[2];
+		var spacer = $('three').nextSiblings().first();
+		var item = $('three').nextSiblings()[1];
+		var end_spacer = $('three').nextSiblings()[2];
 	
-	assertEqual('80px', spacer.getStyle('height'));
-	assert(spacer.hasClassName('item_spacer'));
+		assertEqual('80px', spacer.getStyle('height'));
+		assert(spacer.hasClassName('item_spacer'));
 	
-	assertEqual('new_item', item.getAttribute('id'));
+		assertEqual('new_item', item.getAttribute('id'));
 
-	assertEqual('368px', end_spacer.getStyle('height'));
-	assert(end_spacer.hasClassName('item_spacer'));
+		assertEqual('368px', end_spacer.getStyle('height'));
+		assert(end_spacer.hasClassName('item_spacer'));
 	
-	assertNull($('three').nextSiblings()[3]);
+		assertNull($('three').nextSiblings()[3]);
 	
-	assertNotNull(ib.items[8]);
-	assertEqual(item, ib.items[8].element);
+		assertNotNull(ib.items[8]);
+		assertEqual(item, ib.items[8].element);
   }},
 
   testInsertItemAdjacentToPrevious: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.insertItem('new_item', 3, '<div id="new_item" class="item"></div>')
+		ib.insertItem('new_item', 3, '<div id="new_item" class="item"></div>')
 
-	var item = $('three').nextSiblings()[0];
-	var end_spacer = $('three').nextSiblings()[1];
+		var item = $('three').nextSiblings()[0];
+		var end_spacer = $('three').nextSiblings()[1];
 
-	assertEqual('new_item', item.getAttribute('id'));
+		assertEqual('new_item', item.getAttribute('id'));
 
-	assertEqual('448px', end_spacer.getStyle('height'));
-	assert(end_spacer.hasClassName('item_spacer'));
+		assertEqual('448px', end_spacer.getStyle('height'));
+		assert(end_spacer.hasClassName('item_spacer'));
 
-	assertNull($('three').nextSiblings()[3]);
+		assertNull($('three').nextSiblings()[3]);
 
-	assertNotNull(ib.items[3]);
-	assertEqual(item, ib.items[3].element);
+		assertNotNull(ib.items[3]);
+		assertEqual(item, ib.items[3].element);
   }},
 
   testInsertAnItemAdjacentToNext: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	new Insertion.Bottom($('feed_items'), '<div id="next_item" class="item"></div>');
-	ib.items[31] = {element: $('next_item')};
+		new Insertion.Bottom($('feed_items'), '<div id="next_item" class="item"></div>');
+		ib.items[31] = {element: $('next_item')};
 	
-	ib.insertItem('new_item', 30, '<div id="new_item" class="item"></div>')
+		ib.insertItem('new_item', 30, '<div id="new_item" class="item"></div>')
 
-	var spacer = $('three').nextSiblings().first();
-	var item = $('three').nextSiblings()[1];
+		var spacer = $('three').nextSiblings().first();
+		var item = $('three').nextSiblings()[1];
 
-	assertEqual('432px', spacer.getStyle('height'));
-	assert(spacer.hasClassName('item_spacer'));
+		assertEqual('432px', spacer.getStyle('height'));
+		assert(spacer.hasClassName('item_spacer'));
 
-	assertEqual('new_item', item.getAttribute('id'));
+		assertEqual('new_item', item.getAttribute('id'));
 
-	assertEqual($('next_item'), $('three').nextSiblings()[2]);
+		assertEqual($('next_item'), $('three').nextSiblings()[2]);
 
-	assertNotNull(ib.items[30]);
-	assertEqual(item, ib.items[30].element);
+		assertNotNull(ib.items[30]);
+		assertEqual(item, ib.items[30].element);
   }},
  
   testInsertItemIntoEmptySpace: function() { with(this) {
-	var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.clear();
-	ib.item_height = 16;
-	ib.insertItem('new_item', 3, '<div id="new_item" class="item"></div>');
+		var ib = new ItemBrowser('feed_items', {total_items: 32});
+		ib.clear();
+		ib.item_height = 16;
+		ib.insertItem('new_item', 3, '<div id="new_item" class="item"></div>');
 	
-	assertEqual(3, $('feed_items').immediateDescendants().length);
-	var first_spacer = $('feed_items').immediateDescendants()[0];
-	var item = $('feed_items').immediateDescendants()[1];
-	var last_spacer = $('feed_items').immediateDescendants()[2];
+		assertEqual(3, $('feed_items').immediateDescendants().length);
+		var first_spacer = $('feed_items').immediateDescendants()[0];
+		var item = $('feed_items').immediateDescendants()[1];
+		var last_spacer = $('feed_items').immediateDescendants()[2];
 	
-	assertEqual('48px', first_spacer.getStyle('height'));
-	assert(first_spacer.hasClassName('item_spacer'));
+		assertEqual('48px', first_spacer.getStyle('height'));
+		assert(first_spacer.hasClassName('item_spacer'));
 	
-	assertEqual('448px', last_spacer.getStyle('height'));
-	assert(last_spacer.hasClassName('item_spacer'));
+		assertEqual('448px', last_spacer.getStyle('height'));
+		assert(last_spacer.hasClassName('item_spacer'));
 	
-	assertEqual($('new_item'), item);
+		assertEqual($('new_item'), item);
 	
-	assertEqual($('new_item'), ib.items[3].element);
+		assertEqual($('new_item'), ib.items[3].element);
   }},
 
   testBuildUpdateURLWithOffset: function() { with(this) {
-    var ib = new ItemBrowser('feed_items');
-	assertEqual('/feed_items?offset=1', ib.buildUpdateURL({offset: 1}));
+    var ib = new ItemBrowser('feed_items', { view_id: 1 });
+		assertEqual('/feed_items?view_id=1&offset=1', ib.buildUpdateURL({offset: 1}));
   }},
 
   testBuildUpdateURLWithOffsetAndLimit: function() { with(this) {
-    var ib = new ItemBrowser('feed_items');
-	assertEqual('/feed_items?offset=1&limit=8', ib.buildUpdateURL({offset: 1, limit: 8}));
+    var ib = new ItemBrowser('feed_items', { view_id: 1 });
+		assertEqual('/feed_items?view_id=1&offset=1&limit=8', ib.buildUpdateURL({offset: 1, limit: 8}));
   }},
 
   testBuildUpdateURLWithIncremental: function() { with(this) {
-    var ib = new ItemBrowser('feed_items');
-	assertEqual('/feed_items?offset=1&incremental=true', 
+    var ib = new ItemBrowser('feed_items', { view_id: 1 });
+		assertEqual('/feed_items?view_id=1&offset=1&incremental=true', 
 				ib.buildUpdateURL({offset: 1, incremental: true}));
   }},
 
   testBuildUpdateURLWithUserOnly: function() { with(this) {
-    var ib = new ItemBrowser('feed_items');
-	assertEqual('/feed_items?offset=1&only_tagger=user',
+    var ib = new ItemBrowser('feed_items', { view_id: 1 });
+		assertEqual('/feed_items?view_id=1&offset=1&only_tagger=user',
 				ib.buildUpdateURL({offset: 1, only_tagger: 'user'}));
   }},
 
   testBuildUpdateURLWithIncrementalAndClassifierOnly: function() { with(this) {
-    var ib = new ItemBrowser('feed_items');
-	assertEqual('/feed_items?offset=1&only_tagger=classifier&incremental=true',
+    var ib = new ItemBrowser('feed_items', { view_id: 1 });
+		assertEqual('/feed_items?view_id=1&offset=1&only_tagger=classifier&incremental=true',
 	 			ib.buildUpdateURL({offset: 1, only_tagger: 'classifier', incremental: true}));
   }},
 
   testItemPruning: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {window_size: 2});
-	ib.pruneExcessItems();
-	assertEqual(null, $('one'));
-	assertEqual(false, ib.items['one']);
-	assertEqual(2, ib.items.length, "Number of items is wrong");
-	assertEqual(1, ib.pruned_items);
+		ib.pruneExcessItems();
+		assertEqual(null, $('one'));
+		assertEqual(false, ib.items['one']);
+		assertEqual(2, ib.items.length, "Number of items is wrong");
+		assertEqual(1, ib.pruned_items);
   }},
 
   testPruningItemsInUpDirection: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {window_size: 2});
-	ib.pruned_items = 1;
-	ib.pruneExcessItems({direction: 'up'});
-	assert($('one'));
-	assertEqual(null, $('three'));
-	assertEqual(false, ib.items['three']);
-	assertEqual(2, ib.items.length, "Number of items is wrong");
-	assertEqual($('two'), ib.items.last().element);
-	assertEqual(0, ib.pruned_items);
+		ib.pruned_items = 1;
+		ib.pruneExcessItems({direction: 'up'});
+		assert($('one'));
+		assertEqual(null, $('three'));
+		assertEqual(false, ib.items['three']);
+		assertEqual(2, ib.items.length, "Number of items is wrong");
+		assertEqual($('two'), ib.items.last().element);
+		assertEqual(0, ib.pruned_items);
   }},
 
   testIncrementalUpdateDoesCountOnlyWhenPruningThresholdReached: function() { with(this) {
-	var options = null;
+		var options = null;
     var ib = new ItemBrowser('feed_items', {pruning_threshold: 2});
-	ib.doUpdate = function(opts) {options = opts}
-	ib.updateFeedItems({incremental: true});
-	assertNotNull(options);
-	assert(options.count_only);
+		ib.doUpdate = function(opts) {options = opts}
+		ib.updateFeedItems({incremental: true});
+		assertNotNull(options);
+		assert(options.count_only);
   }},
 
   testClearRemovesAllItems: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.clear();
-	assertEqual(0, document.getElementsByClassName('item').length);
-	assertEqual(0, ib.items.length);
-	assert(!ib.items['one']);
-	assert(!ib.items['two']);
-	assert(!ib.items['three']);
+		ib.clear();
+		assertEqual(0, document.getElementsByClassName('item').length);
+		assertEqual(0, ib.items.length);
+		assert(!ib.items['one']);
+		assert(!ib.items['two']);
+		assert(!ib.items['three']);
   }},
 
   testItemInsertionFromEmpty: function() { with(this) {
     $('feed_items').update('');
-	var ib = new ItemBrowser('feed_items');
-	ib.insertInOrder('item', 2.5, '<div id="zero" class="item" position="2.5"></div>');
+		var ib = new ItemBrowser('feed_items');
+		ib.insertInOrder('item', 2.5, '<div id="zero" class="item" position="2.5"></div>');
 
-	assertEqual(1, ib.items.length);
-	assertEqual(1, $('feed_items').getElementsByClassName('item').length)
+		assertEqual(1, ib.items.length);
+		assertEqual(1, $('feed_items').getElementsByClassName('item').length)
   }},
 
   testItemInsertionDuplicateDoesNothing: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.insertInOrder('one', 1, '<div id="one" class="item" position="1"></div>');
+		ib.insertInOrder('one', 1, '<div id="one" class="item" position="1"></div>');
 
-	assertEqual(3, ib.items.length);
-	assertEqual(3, document.getElementsByClassName('item').length);
+		assertEqual(3, ib.items.length);
+		assertEqual(3, document.getElementsByClassName('item').length);
   }},
 
   testItemInsertionAtEnd: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.insertInOrder('four', 0, '<div id="four" class="item" position="0"></div>');
+		ib.insertInOrder('four', 0, '<div id="four" class="item" position="0"></div>');
 	
-	assertEqual(4, ib.items.length);
-	assert(ib.items['four']);
+		assertEqual(4, ib.items.length);
+		assert(ib.items['four']);
 	
-	assertEqual(0, ib.items[3].position);
-	assertEqual("four", ib.items[3].element.getAttribute('id'));
+		assertEqual(0, ib.items[3].position);
+		assertEqual("four", ib.items[3].element.getAttribute('id'));
 	
-	assertEqual($('three'), $('four').previousSiblings().first());
+		assertEqual($('three'), $('four').previousSiblings().first());
   }},
 
   testItemInsertionAtBeginning: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.insertInOrder('zero', 4, '<div id="zero" class="item" position="4"></div>');
+		ib.insertInOrder('zero', 4, '<div id="zero" class="item" position="4"></div>');
 
-	assertEqual(4, ib.items.length);
-	assert(ib.items['zero']);
+		assertEqual(4, ib.items.length);
+		assert(ib.items['zero']);
 
-	assertEqual(4, ib.items[0].position);
-	assertEqual("zero", ib.items[0].element.getAttribute('id'));
-	assertEqual(3, ib.items[1].position);
-	assertEqual("one", ib.items[1].element.getAttribute('id'));
+		assertEqual(4, ib.items[0].position);
+		assertEqual("zero", ib.items[0].element.getAttribute('id'));
+		assertEqual(3, ib.items[1].position);
+		assertEqual("one", ib.items[1].element.getAttribute('id'));
 	
-	assertEqual($('one'), $('zero').nextSiblings().first());
+		assertEqual($('one'), $('zero').nextSiblings().first());
   }},
 
   testInsertInMiddle: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.insertInOrder('2.5', 2.5, '<div id="2.5" class="item" position="2.5"></div>');
+		ib.insertInOrder('2.5', 2.5, '<div id="2.5" class="item" position="2.5"></div>');
 
-	assertEqual(4, ib.items.length);
-	assert(ib.items['2.5']);
+		assertEqual(4, ib.items.length);
+		assert(ib.items['2.5']);
 
-	assertEqual(2.5, ib.items[1].position);
-	assertEqual("2.5", ib.items[1].element.getAttribute('id'));
-	assertEqual(2, ib.items[2].position);
-	assertEqual("two", ib.items[2].element.getAttribute('id'));
+		assertEqual(2.5, ib.items[1].position);
+		assertEqual("2.5", ib.items[1].element.getAttribute('id'));
+		assertEqual(2, ib.items[2].position);
+		assertEqual("two", ib.items[2].element.getAttribute('id'));
 
-	assertEqual($('two'), $('2.5').nextSiblings().first());
+		assertEqual($('two'), $('2.5').nextSiblings().first());
   }},
 
   testUpdateInitialSpacerAddedSpacerWhenMissing: function() { with(this) {
     $('feed_items').update('');
-	var ib = new ItemBrowser('feed_items');
-	ib.item_height = 16;
-	ib.setTotalItems(4);
-	assertNotNull($('initial_spacer'));
-	assertElementMatches('initial_spacer', 'div.item_spacer');
-	assertEqual("64px", $('initial_spacer').getStyle('height'));
+		var ib = new ItemBrowser('feed_items');
+		ib.item_height = 16;
+		ib.setTotalItems(4);
+		assertNotNull($('initial_spacer'));
+		assertElementMatches('initial_spacer', 'div.item_spacer');
+		assertEqual("64px", $('initial_spacer').getStyle('height'));
   }},
 
   testSetTotalItemsUpdatesLastSpacerIfItExists: function() { with(this) {
     var ib = new ItemBrowser('feed_items', {total_items: 32});
-	ib.insertItem('seven', 7, '<div id="seven" class="item"></div>');
-	var end_spacer = $('feed_items').immediateDescendants().last();
-	assertEqual('384px', end_spacer.getStyle('height'));
-	ib.setTotalItems(40);
-	assertNull($('initial_spacer'));
-	assertEqual('512px', end_spacer.getStyle('height'));
+		ib.insertItem('seven', 7, '<div id="seven" class="item"></div>');
+		var end_spacer = $('feed_items').immediateDescendants().last();
+		assertEqual('384px', end_spacer.getStyle('height'));
+		ib.setTotalItems(40);
+		assertNull($('initial_spacer'));
+		assertEqual('512px', end_spacer.getStyle('height'));
   }},
 
   testInsertInOrderWithEmptySpace: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.item_height = 16;
-	ib.insertItem('seven', 7, '<div id="seven" class="item" position="-3"></div>');
-	ib.insertInOrder('zero', 0, '<div id="zero" class="item" position="0"></div>');
-	assertEqual($('zero'), ib.items[3].element);
-	assertEqual(8, ib.items.size());
-	assertEqual(48, $('zero').nextSiblings().first().getHeight());
+		ib.item_height = 16;
+		ib.insertItem('seven', 7, '<div id="seven" class="item" position="-3"></div>');
+		ib.insertInOrder('zero', 0, '<div id="zero" class="item" position="0"></div>');
+		assertEqual($('zero'), ib.items[3].element);
+		assertEqual(8, ib.items.size());
+		assertEqual(48, $('zero').nextSiblings().first().getHeight());
   }},
+
   testClearingNullsSelectedItem: function() { with(this) {
     var ib = new ItemBrowser('feed_items');
-	ib.selectItem('one');
-	ib.clear();
-	assertNull(ib.selectedItem);
+		ib.selectItem('one');
+		ib.clear();
+		assertNull(ib.selectedItem);
   }}
 });
 // ]]>
