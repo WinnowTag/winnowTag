@@ -138,4 +138,23 @@ class TagViewTest < Test::Unit::TestCase
     @view.remove_tag @tag
     assert @view.tag_filter[:exclude].empty?
   end
+  
+  def test_dup
+    original_view = View.new :user => users(:quentin), :text_filter => "ruby", :tag_inspect_mode => true, :show_untagged => true
+    original_view.add_tag :include, Tag(users(:quentin), 'demo')
+    original_view.add_feed :include, 2
+        
+    dup_view = original_view.dup
+    
+    assert_equal users(:quentin), dup_view.user
+    assert_equal({ :include => [Tag(users(:quentin), 'demo').id.to_s], :exclude => [] }, dup_view.tag_filter)
+    assert_equal({ :always_include => [], :include => [2], :exclude => [] }, dup_view.feed_filter)
+    assert_equal "ruby", dup_view.text_filter
+    assert_equal true, dup_view.tag_inspect_mode?
+    assert_equal true, dup_view.show_untagged?
+  end
+  
+  
+      
+
 end

@@ -18,8 +18,8 @@ class View < ActiveRecord::Base
   def initialize(*args, &block)
     super(*args, &block)
     
-    self.feed_filter = { :always_include => [], :include => [], :exclude => [] }
-    self.tag_filter = { :include => [], :exclude => [] }
+    self.feed_filter ||= { :always_include => [], :include => [], :exclude => [] }
+    self.tag_filter ||= { :include => [], :exclude => [] }
   end
   
   def add_feed(feed_state, feed_id)
@@ -91,11 +91,8 @@ class View < ActiveRecord::Base
   end
   
   def dup
-    view = View.new(:user => user)
-    view.tag_filter = tag_filter.dup
-    view.feed_filter = feed_filter.dup
-    view.text_filter = text_filter
-    view
+    View.new :user => user, :tag_filter => tag_filter.dup, :feed_filter => feed_filter.dup, 
+             :text_filter => text_filter.dup, :tag_inspect_mode => tag_inspect_mode, :show_untagged => show_untagged
   end
   
   def dup!
