@@ -119,6 +119,7 @@ class TagsController < ApplicationController
   end
   
   def public
+    @tags = Tag.find_all_public_with_count
   end
   
   private

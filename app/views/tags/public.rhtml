@@ -1,1 +1,20 @@
-TODO
+<div id="tags">
+	<table class="data_table">		
+		<tr>
+			<th class="tag">Tag</th>
+			<th class="usage number">Usage (+/-)</th>
+			<th class="classifier_usage number">Classifier</th>
+			<th class="date">Modified</th>
+			<th class="indented">User</th>
+		</tr>
+		<% for tag in @tags -%>
+  		<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
+      	<td class="tag"><%= tag.name -%></td>
+      	<td class="number"><%= tag.count %> / <%= tag.negative_count %></td>
+  	    <td class="number"><%= tag.classifier_count %></td>
+  	    <td class="date"><%= format_date(tag.last_used_by(current_user)) %></td>	
+  	    <td class="indented" nowrap="nowrap"><%= current_user.display_name %></td>
+      </tr>
+		<% end -%>
+	</table>
+</div>

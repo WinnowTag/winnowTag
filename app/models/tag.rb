@@ -103,4 +103,15 @@ class Tag < ActiveRecord::Base
     
     count
   end
+  
+  def self.find_all_public_with_count
+    find(:all, 
+       :select => 'tags.*, ' <<
+                  'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 1, 1, NULL)) AS count, ' <<
+                  'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 0, 1, NULL)) AS negative_count, ' <<
+                  'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count',
+       :joins => "LEFT JOIN taggings ON tags.id = taggings.tag_id",
+       :group => 'tags.id',
+       :order => 'tags.name ASC')
+  end
 end

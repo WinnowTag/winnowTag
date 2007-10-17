@@ -6,10 +6,6 @@ table.data_table, table.property_table {
 	border-spacing: 0px;
 }
 
-table.data_table {
-  clear: both;
-}
-
 table.property_table {
 	width: 40%;
 	border-bottom: none;

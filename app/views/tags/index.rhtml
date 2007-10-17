@@ -2,43 +2,33 @@
 	<%= render :partial => 'bias_form' %>
 <% end -%>
 
-For Private Tags, click on a tag name to rename it or merge it into an existing tag. Existing tag names will appear in a drop down list as you type.
+To rename or merge one of your tags with another, just click on the tag name. Existing tag names will appear in a drop down list as you type.
 
 <%= javascript_tag("var sliders = {};") %>
 
 <div id="tags">
 	<table class="data_table">		
-		<tr><th colspan="8" class="table_break">My Private Tags</th></tr>
-		<tbody>
-			<tr>
-				<th class="tag">Tag</th>
-				<th class="view_state">View State</th>
-				<th class="control_icons">Controls</th>
-				<th class="usage number">Usage (+/-)</th>
-				<th class="classifier_usage number">Classifier</th>
-				<th class="date">Modified</th>
-				<th class="indented">User</th>
-				<th class="sensitivity">Sensitivity</th>
-			</tr>
-			<tr class="<%= cycle('odd', 'even') %>">
-				<td>Default</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td>
-					<%= bias_slider(:tag => :default, :var => 'default_slider', :change => "$('default_bias').value = value;",
-                          :slide =>"$H(sliders).values().each(function(s) { if (s.options.isDefault) s.setValue(value); } );") %>
-				</td>
-			</tr>		
-		<% for tag in @tags -%>
-			<%= render :partial => 'tag', :locals => { :tag => tag } %>
+		<tr><th colspan="8" class="table_break">My Tags</th></tr>
+    <%= render :partial => "header" %>
+		<tr class="<%= cycle('odd', 'even') %>">
+			<td>Default</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td>
+				<%= bias_slider(:tag => :default, :var => 'default_slider', :change => "$('default_bias').value = value;",
+                        :slide =>"$H(sliders).values().each(function(s) { if (s.options.isDefault) s.setValue(value); } );") %>
+			</td>
+		</tr>		
+		<%= render :partial => 'tag', :collection => @tags %>
+
+    <% unless @public_tags.blank? %>
+		  <tr><th colspan="8" class="table_break">Others Tags</th></tr>
+      <%= render :partial => "header" %>
+		  <%= render :partial => 'tag', :collection => @public_tags %>
 		<% end -%>
-		</tbody>
-		<tr><th colspan="8" class="table_break">Other Users' Published Tags</th></tr>
-		<%# TODO: Update for new tag publication feature %>
-		<%#= render :partial => 'tag_publications/by_tag_group/tag_publication', :collection => TagPublication.find_by_other_publisher(current_user) %>
 	</table>
 </div>
