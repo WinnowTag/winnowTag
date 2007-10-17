@@ -111,7 +111,7 @@ class Tag < ActiveRecord::Base
                   'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 0, 1, NULL)) AS negative_count, ' <<
                   'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count',
        :joins => "LEFT JOIN taggings ON tags.id = taggings.tag_id",
-       :conditions => ["tags.public = ?", true]
+       :conditions => ["tags.public = ?", true],
        :group => 'tags.id',
        :order => 'tags.name ASC')
   end
