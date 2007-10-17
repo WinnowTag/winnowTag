@@ -14,8 +14,14 @@
 		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
 		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
 	</td>
+	<td>
+	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
+  </td>
 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
-    <%= render :partial => "controls", :locals => { :tag => tag } %>
+    <%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => tag), :method => 'post', :title => "Copy #{tag.name}" %>
+    <%= link_to image_tag('trash.gif'), {:action => 'destroy', :id => tag}, 
+    			:method => 'delete', :title => "Destroy #{tag.name}",
+    			:confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone." %>
 	</td>
 	<td class="number">
     <%= link_to "#{tag.count} / #{tag.negative_count}", feed_items_path(:tag_filter => tag.id, :mode => 'tag_inspect', :view_id => :new), 

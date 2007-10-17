@@ -115,7 +115,7 @@ class TagsController < ApplicationController
   end
   
   def publicize
-    @tag.update_attribute(:public, true)
+    @tag.update_attribute(:public, params[:public])
   end
   
   def public
