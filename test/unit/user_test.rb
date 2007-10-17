@@ -129,7 +129,7 @@ class UserTest < Test::Unit::TestCase
     f = FeedItem.find(1)
     assert u.has_read_item?(f)
   end
-  
+
   def test_get_tags_with_count
     u = users(:quentin)
     fi1 = FeedItem.find(1)
@@ -137,26 +137,18 @@ class UserTest < Test::Unit::TestCase
     peerworks = Tag(u, 'peerworks')
     test = Tag(u, 'test')
     tag = Tag(u, 'tag')
-    Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks).destroy
     Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
     Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
     Tagging.create(:user => u, :feed_item => fi1, :tag => test)
-    Tagging.create(:user => u, :feed_item => fi1, :tag => tag).destroy
 
     tags = u.tags_with_count
-    assert_equal 2, tags.size
+    assert_equal 3, tags.size
     assert_equal 'peerworks', tags[0].name
     assert_equal 2, tags[0].count.to_i
-    assert_equal 'test', tags[1].name
-    assert_equal 1, tags[1].count.to_i
-
-    # now check it when limiting it by feed - only counts should change
-    tags = u.tags_with_count(:feed_filter => { :include => [2], :exclude => [] })
-    assert_equal 2, tags.size
-    assert_equal 'peerworks', tags[0].name
-    assert_equal 1, tags[0].count.to_i
-    assert_equal 'test', tags[1].name
+    assert_equal 'tag', tags[1].name
     assert_equal 0, tags[1].count.to_i
+    assert_equal 'test', tags[2].name
+    assert_equal 1, tags[2].count.to_i
   end
   
   def test_tagging_statistics

@@ -85,62 +85,17 @@ class User < ActiveRecord::Base
   # Tagging related methods
   
   # Gets a list of tags with a count of their usage for this user.
-  #
-  # This will be made of all tags the use currently has applied on items.
-  #
-  def tags_with_count(options = {})
-    options.assert_valid_keys(:feed_filter, :text_filter)
-    joins = []
-    
-    if options[:feed_filter]
-      if !options[:feed_filter][:include].empty? or !options[:feed_filter][:exclude].empty?
-        feed_joins = "INNER JOIN feed_items ON taggings.feed_item_id = feed_items.id"
-      
-        if !options[:feed_filter][:include].empty?
-          feed_joins << " AND feed_items.feed_id IN (#{options[:feed_filter][:include].join(",")})"
-        end
-      
-        if !options[:feed_filter][:exclude].empty?
-          feed_joins << " AND feed_items.feed_id NOT IN (#{options[:feed_filter][:exclude].join(",")})"
-        end
-        
-        joins << feed_joins
-      end
-    end
-        
-    if options[:text_filter]
-      joins << " INNER JOIN feed_item_contents_full_text on taggings.feed_item_id = feed_item_contents_full_text.id" +
-                  " and MATCH(content) AGAINST(#{connection.quote(options[:text_filter])} in boolean mode)"
-    end
-
-    tag_list = self.tagging_tags.find(:all, 
-       :select => 'tags.*, ' +
-                  'count(IF(classifier_tagging = 0 and taggings.strength = 1, 1, NULL)) as count, ' +
-                  'count(IF(classifier_tagging = 0 and taggings.strength = 0, 1, NULL)) as negative_count, ' +
-                  'count(IF(classifier_tagging = 1 and taggings.strength >= 0.9, 1, NULL)) as classifier_count',
-       :joins => joins.join(' '),
+  def tags_with_count
+    self.tags.find(:all, 
+       :select => 'tags.*, ' <<
+                  'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 1, 1, NULL)) AS count, ' <<
+                  'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 0, 1, NULL)) AS negative_count, ' <<
+                  'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count',
+       :joins => "LEFT JOIN taggings ON tags.id = taggings.tag_id",
        :group => 'tags.id',
-       :order => 'tags.name ASC'
-     )
-
-    if options[:feed_filter] and !options[:feed_filter][:include].empty?
-      # if feed was specified we need to fold it into the entire list of tags
-      all_tags = self.tagging_tags.find(:all, :select => "distinct tags.name, tags.id, '0' as count")
-
-      # index by id
-      tags_by_id = tag_list.inject(Hash.new) do |hash, tag|
-        hash[tag.id] = tag
-        hash
-      end
-
-      tag_list = all_tags.map do |tag|
-        (tags_by_id[tag.id] or tag)
-      end
-    end
-
-    tag_list
+       :order => 'tags.name ASC')
   end
-  
+
   # Gets the number of items tagged by this tagger
   def number_of_tagged_items
     self.taggings.find(:first, :select => 'count(distinct feed_item_id) as count').count.to_i
