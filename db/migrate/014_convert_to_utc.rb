@@ -1,5 +1,6 @@
 class ConvertToUtc < ActiveRecord::Migration
   class Classifier < ActiveRecord::Base; acts_as_paranoid; end
+  class Tagging < ActiveRecord::Base; acts_as_paranoid; end
   class RolesUsers < ActiveRecord::Base
     table_name = 'roles_users'
     cattr_accessor :combined_pk

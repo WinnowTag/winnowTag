@@ -5,6 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 class ConvertNegativeInterestingToUnwanted < ActiveRecord::Migration
+  class Tag < ActiveRecord::Base; end
   def self.up
     interesting = Tag.find_or_create_by_name('interesting')
     unwanted = Tag.find_or_create_by_name('unwanted')
