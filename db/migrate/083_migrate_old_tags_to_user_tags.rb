@@ -11,6 +11,14 @@ class MigrateOldTagsToUserTags < ActiveRecord::Migration
 
   class Tag < ActiveRecord::Base
   end
+
+  class Tagging < ActiveRecord::Base
+    belongs_to :tagger, :polymorphic => true
+  end
+
+  class User < ActiveRecord::Base
+    has_many :taggings, :as => :tagger
+  end
   
   def self.up
     Tag.transaction do
