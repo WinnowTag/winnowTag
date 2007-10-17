@@ -22,20 +22,20 @@ class MigrateOldTagsToUserTags < ActiveRecord::Migration
   
   def self.up
     Tag.transaction do
-      User.find(:all).each do |user|        
+      User.find(:all).each do |user|
         find_old_tags_for(user).each do |old_tag|
           new_tag = user.tags.create(:name => old_tag.name)
           execute <<-END
-            update taggings 
+            update taggings
               set tag_id = #{new_tag.id}
               where tag_id = #{old_tag.id}
                 and (tagger_id = #{user.id} and tagger_type = 'User'
                   or tagger_id = #{user.classifier.id} and tagger_type = 'BayesClassifier')
           END
-        end        
+        end
       end
       
-      drop_table :old_tags      
+      drop_table :old_tags
     end
   end
 
