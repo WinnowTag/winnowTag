@@ -35,8 +35,8 @@ For Private Tags, click on a tag name to rename it or merge it into an existing 
 								"if (s.options.isDefault) s.setValue(value);});") %>
 				</td>
 			</tr>		
-		<% for @tag in @tags -%>
-			<%= render :partial => 'tag' %>
+		<% for tag in @tags -%>
+			<%= render :partial => 'tag', :locals => { :tag => tag } %>
 		<% end -%>
 		</tbody>
 		<tr><th colspan="8" class="table_break">Other Users' Published Tags</th></tr>

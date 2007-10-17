@@ -1,35 +1,35 @@
-<tr id="<%= @tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
+<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
 	<td class="tag">
-		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => @tag.id, :view_id => :new), 
-									:class => 'tag_name', :title => "Show Only Items Tagged With #{@tag.name}" %>
-		<%= in_place_completing_editor_field(:tag, :name, {:id => @tag.dom_id('editor')}, 
-							{:param_name => '"tag[name]"', :url => "/tags/update/#{@tag.name}", :form_submit => true,
-							 :submit => %Q('validate_tag_edit(#{@tag.name.to_json}, $$(".editor_field").first().value)'),
+		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => tag.id, :view_id => :new), 
+									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
+		<% @tag = tag -%><%# TODO: This is a hack to get the below line to work... %>
+		<%= in_place_completing_editor_field(:tag, :name, {:id => tag.dom_id('editor')}, 
+							{:param_name => '"tag[name]"', :url => "/tags/update/#{tag.name}", :form_submit => true,
+							 :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'),
 							 :click_to_edit_text => "Click to edit tag name"},
-							:skip_style => true, :update => @tag.dom_id('auto_complete'),
-							:url => url_for(:action => 'auto_complete_for_tag_name', :id => @tag)) %>
+							:skip_style => true, :update => tag.dom_id('auto_complete'),
+							:url => url_for(:action => 'auto_complete_for_tag_name', :id => tag)) %>
 	</td>
 	<td class="view_state">
-		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(@tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{@tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{@tag.id}" %>
-		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(@tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{@tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{@tag.id}" %>
+		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
 	</td>
-	<td class="control_icons" id="<%= @tag.dom_id("controls") %>">
-    <%= render :partial => "controls", :locals => { :tag => @tag } %>
+	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
+    <%= render :partial => "controls", :locals => { :tag => tag } %>
 	</td>
 	<td class="number">
-    <%= link_to "#{@tag.count} / #{@tag.negative_count}", feed_items_path(:tag_filter => @tag.id, :mode => 'tag_inspect', :view_id => :new), 
-                :title => "Inspect #{@tag.name}" %>
+    <%= link_to "#{tag.count} / #{tag.negative_count}", feed_items_path(:tag_filter => tag.id, :mode => 'tag_inspect', :view_id => :new), 
+                :title => "Inspect #{tag.name}" %>
 	</td>
-	<td class="number"><%= @tag.classifier_count %></td>
-	<td class="date"><%= format_date(@tag.last_used_by(current_user)) %></td>	
+	<td class="number"><%= tag.classifier_count %></td>
+	<td class="date"><%= format_date(tag.last_used_by(current_user)) %></td>	
 	<td class="indented" nowrap="nowrap"><%= current_user.display_name %></td>
 	<td>
-		<%= bias_slider(:tag => @tag, :global => "sliders[#{@tag.name.to_json}]", 
-						:prefix => @tag.dom_id('slider'),
-						:change => "if (slider.event) {$('#{@tag.dom_id('bias_for')}').value = value;" +
-									   "slider.options.isDefault = false;}") %>
+		<%= bias_slider(:tag => tag, :global => "sliders[#{tag.name.to_json}]", 
+						:prefix => tag.dom_id('slider'),
+						:change => "if (slider.event) {$('#{tag.dom_id('bias_for')}').value = value; slider.options.isDefault = false;}") %>
 	</td>
 </tr>
-<tr id="<%= @tag.dom_id('form_row') %>" class="form_row">
-	<td id="<%= @tag.dom_id('form_cell') %>" colspan="7"></td>
+<tr id="<%= tag.dom_id('form_row') %>" class="form_row">
+	<td id="<%= tag.dom_id('form_cell') %>" colspan="7"></td>
 </tr>
