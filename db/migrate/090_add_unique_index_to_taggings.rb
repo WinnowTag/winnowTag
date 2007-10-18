@@ -7,8 +7,9 @@
 
 class AddUniqueIndexToTaggings < ActiveRecord::Migration
   def self.up
-    add_index :taggings, [:user_id, :tag_id, :feed_item_id, :classifier_tagging], :name => "user_tag_item_classifier", :unique => true
-    add_index :taggings, [:user_id, :feed_item_id, :tag_id, :classifier_tagging], :name => "user_item_tag_classifier", :unique => true
+    # Create using SQL so we can automatically remove duplicates
+    execute "alter ignore table taggings add unique index user_tag_item_classifier (user_id, tag_id, feed_item_id, classifier_tagging);"
+    execute "alter ignore table taggings add unique index user_item_tag_classifier (user_id, feed_item_id, tag_id, classifier_tagging);"
   end
 
   def self.down

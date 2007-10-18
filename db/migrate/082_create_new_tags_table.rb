@@ -13,6 +13,7 @@ class CreateNewTagsTable < ActiveRecord::Migration
       t.column :name, :string, :null => false
       t.column :user_id, :integer, :null => false
       t.column :public, :boolean
+      t.column :comment, :text
       t.column :bias, :float
       t.column :created_on, :datetime
       t.column :updated_on, :datetime

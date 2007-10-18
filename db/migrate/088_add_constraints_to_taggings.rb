@@ -11,7 +11,11 @@ class AddConstraintsToTaggings < ActiveRecord::Migration
     change_column :taggings, :feed_item_id, :integer, :null => false
     change_column :taggings, :strength, :float, :null => false
     
-    # First do some cleaning up
+    # Might have old indexes in place
+    execute "alter ignore table taggings drop index tagger_index;"
+    execute "alter ignore table taggings drop index taggable_index;"
+    
+    # First do some cleaning up    
     execute "delete from taggings where user_id = 0;"
     execute "delete from taggings where tag_id not in (select id from tags);"
     
