@@ -294,7 +294,9 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_text_filter_conditions!(text_filter, conditions)
     if text_filter
-      conditions.replace "MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE) AND (#{conditions})"
+      new_conditions = "MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+      new_conditions << "AND (#{conditions})" unless conditions.blank?
+      conditions.replace new_conditions
     end
   end
 
