@@ -205,50 +205,48 @@ class FeedItem < ActiveRecord::Base
     joins = []
     conditions = []
     
+    # Feed filtering (include/exclude)
     add_feed_filter_conditions!(view.feed_filter, conditions)
+    
+    # Text filtering
     add_text_filter_joins!(view.text_filter, joins)
     add_text_filter_conditions!(view.text_filter, conditions)
       
-    # Only apply tag filtering if both the tag filter and current user are provided
-    if view.user and (!view.tag_filter[:include].blank? or !view.tag_filter[:exclude].blank?)
-      tag_inclusion_filter_by_user = {}
-      tag_exclusion_filter_by_user = {}
-      
-      view.tag_filter[:include].each do |tag_id|
-        tag = Tag.find_by_id(tag_id)
-        tag_inclusion_filter_by_user[tag.user] ||= []
-        tag_inclusion_filter_by_user[tag.user] << tag.id
-      end
-      
-      view.tag_filter[:exclude].each do |tag_id|
-        tag = Tag.find_by_id(tag_id)
-        tag_exclusion_filter_by_user[tag.user] ||= []
-        tag_exclusion_filter_by_user[tag.user] << tag.id
-      end
-
-      (tag_inclusion_filter_by_user.keys + tag_exclusion_filter_by_user.keys).uniq.each do |tagger|        
-        tagger_condition = tagger_condition_for(tagger, filters[:include_negative], filters[:only_tagger])
-
-        add_tag_filter_joins!(tagger, tagger_condition, joins)
-        add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], tagger_condition, conditions)
-        add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], filters[:include_negative], conditions)        
-      end
+    # Tag filtring (include/exclude)
+    tag_inclusion_filter_by_user = {}
+    tag_exclusion_filter_by_user = {}
+    
+    view.tag_filter[:include].each do |tag_id|
+      tag = Tag.find_by_id(tag_id)
+      tag_inclusion_filter_by_user[tag.user] ||= []
+      tag_inclusion_filter_by_user[tag.user] << tag.id
     end
     
-    if view.user and !view.show_untagged?
-      if tag_exclusion_filter_by_user.nil? or (!tag_inclusion_filter_by_user.keys.include?(view.user) and !tag_exclusion_filter_by_user.keys.include?(view.user))
-        tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
-        add_tag_filter_joins!(view.user, tagger_condition, joins)
-      end
+    view.tag_filter[:exclude].each do |tag_id|
+      tag = Tag.find_by_id(tag_id)
+      tag_exclusion_filter_by_user[tag.user] ||= []
+      tag_exclusion_filter_by_user[tag.user] << tag.id
+    end
+
+    (tag_inclusion_filter_by_user.keys + tag_exclusion_filter_by_user.keys).uniq.each do |tagger|        
+      tagger_condition = tagger_condition_for(tagger, filters[:include_negative], filters[:only_tagger])
+
+      add_tag_filter_joins!(tagger, tagger_condition, joins)
+      add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], tagger_condition, conditions)
+      add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], filters[:include_negative], conditions)        
+    end
+    
+    # Untagged filtering
+    if !view.show_untagged?
+      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
+      add_tag_filter_joins!(view.user, tagger_condition, joins)
 
       add_tagged_state_conditions!(view.user, filters[:include_negative], conditions)
     end
 
-    if view.user and view.show_untagged? && !view.feed_filter[:include].blank? && !view.feed_filter[:exclude].blank?
-      if tag_exclusion_filter_by_user.nil? or (!tag_inclusion_filter_by_user.keys.include?(view.user) and !tag_exclusion_filter_by_user.keys.include?(view.user))
-        tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
-        add_tag_filter_joins!(view.user, tagger_condition, joins)
-      end
+    if view.show_untagged? && !view.feed_filter[:include].blank? && !view.feed_filter[:exclude].blank?
+      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
+      add_tag_filter_joins!(view.user, tagger_condition, joins)
       
       taggings_alias = taggings_alias_for(view.user)
       conditions << "#{taggings_alias}.id IS NULL"
@@ -258,16 +256,14 @@ class FeedItem < ActiveRecord::Base
     
     add_always_include_feed_filter_conditions!(view.feed_filter[:always_include], options[:conditions])
     
-    if view.user and view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank?
-      if tag_exclusion_filter_by_user.nil? or (!tag_inclusion_filter_by_user.keys.include?(view.user) and !tag_exclusion_filter_by_user.keys.include?(view.user))
-        tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
-        add_tag_filter_joins!(view.user, tagger_condition, joins)
-      end
+    if view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank?
+      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
+      add_tag_filter_joins!(view.user, tagger_condition, joins)
       
       add_untagged_state_conditions!(view.user, filters[:include_negative], options[:conditions])
     end
     
-    options[:joins] = joins.join(" ")
+    options[:joins] = joins.uniq.join(" ")
     
     options
   end
