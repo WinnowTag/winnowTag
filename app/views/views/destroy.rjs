@@ -1,1 +1,1 @@
-page.redirect_to feed_items_path
+page.redirect_to feed_items_path(:view_id => :new)
