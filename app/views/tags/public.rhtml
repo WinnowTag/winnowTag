@@ -10,6 +10,7 @@
 		<% for tag in @tags -%>
   		<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
       	<td class="tag">
+		      <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(tag.user, tag, :xml) %>
       	  <%= tag.name -%><br />
   	  		<span class="comment"><%= tag.comment %></span>
       	</td>

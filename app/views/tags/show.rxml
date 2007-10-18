@@ -1,16 +1,14 @@
-# TODO: Update to work w/ new publish tags feature.
-
 xml.instruct!
 
 xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
 
-  xml.title   @tag_publication.name
-  xml.link    "rel" => "self", "href" => user_tag_publication_url(@tag_publication.publisher, @tag_publication)
-  xml.id      user_tag_publication_url(@tag_publication.publisher, @tag_publication)
-  xml.updated @feed_items.first.time.strftime("%Y-%m-%dT%H:%M:%SZ") if @feed_items.any?
+  xml.title   @tag.name
+  xml.link    "rel" => "self", "href" => public_tag_url(@tag.user, @tag)
+  xml.id      public_tag_url(@tag.user, @tag)
+  xml.updated @tag.feed_items.first.time.strftime("%Y-%m-%dT%H:%M:%SZ") if @tag.feed_items.any?
   
 
-  @feed_items.each do |feed_item|
+  @tag.feed_items.find(:all, :include => [:feed, :feed_item_content], :limit => 100).each do |feed_item|
     xml.entry do
       xml.title feed_item.content.title
       xml.author  do

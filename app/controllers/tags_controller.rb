@@ -17,7 +17,8 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :show]
+  skip_before_filter :load_view, :only => :show
   
   # Show a table of the users tags
   def index
@@ -27,6 +28,16 @@ class TagsController < ApplicationController
       @classifier = current_user.classifier
       wants.html
       wants.xml {render :xml => @tags.to_xml}
+    end
+  end
+  
+  def show
+    @tag = User.find_by_login(params[:user_id]).tags.find_by_name(params[:id])
+    
+    respond_to do |wants|
+      wants.xml do
+        render :layout => false
+      end
     end
   end
 

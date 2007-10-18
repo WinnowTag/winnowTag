@@ -29,6 +29,9 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { :public => :get },
                 :member => { :publicize => :put }
   
+  map.public_tag "/tags/public/:user_id/:id", :controller => "tags", :action => "show"
+  map.formatted_public_tag "/tags/public/:user_id/:id.:format", :controller => "tags", :action => "show"
+  
   map.resource :classifier, 
                :member => {
                  :status => :post,
