@@ -207,11 +207,7 @@ class FeedItem < ActiveRecord::Base
     
     # Feed filtering (include/exclude)
     add_feed_filter_conditions!(view.feed_filter, conditions)
-    
-    # Text filtering
-    add_text_filter_joins!(view.text_filter, joins)
-    add_text_filter_conditions!(view.text_filter, conditions)
-      
+          
     # Tag filtring (include/exclude)
     tag_inclusion_filter_by_user = {}
     tag_exclusion_filter_by_user = {}
@@ -229,25 +225,19 @@ class FeedItem < ActiveRecord::Base
     end
 
     (tag_inclusion_filter_by_user.keys + tag_exclusion_filter_by_user.keys).uniq.each do |tagger|        
-      tagger_condition = tagger_condition_for(tagger, filters[:include_negative], filters[:only_tagger])
 
-      add_tag_filter_joins!(tagger, tagger_condition, joins)
-      add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], tagger_condition, conditions)
+      add_tag_filter_joins!(tagger, filters[:include_negative], filters[:only_tagger], joins)
+      add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], filters[:include_negative], filters[:only_tagger], conditions)
       add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], filters[:include_negative], conditions)        
     end
     
     # Untagged filtering
     if !view.show_untagged?
-      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
-      add_tag_filter_joins!(view.user, tagger_condition, joins)
-
+      add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       add_tagged_state_conditions!(view.user, filters[:include_negative], conditions)
-    end
-
-    if view.show_untagged? && !view.feed_filter[:include].blank? && !view.feed_filter[:exclude].blank?
-      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
-      add_tag_filter_joins!(view.user, tagger_condition, joins)
       
+    elsif view.show_untagged? && !view.feed_filter[:include].blank? && !view.feed_filter[:exclude].blank?
+      add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       taggings_alias = taggings_alias_for(view.user)
       conditions << "#{taggings_alias}.id IS NULL"
     end
@@ -257,11 +247,13 @@ class FeedItem < ActiveRecord::Base
     add_always_include_feed_filter_conditions!(view.feed_filter[:always_include], options[:conditions])
     
     if view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank?
-      tagger_condition = tagger_condition_for(view.user, filters[:include_negative], filters[:only_tagger])
-      add_tag_filter_joins!(view.user, tagger_condition, joins)
-      
+      add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       add_untagged_state_conditions!(view.user, filters[:include_negative], options[:conditions])
     end
+    
+    # Text filtering
+    add_text_filter_joins!(view.text_filter, joins)
+    add_text_filter_conditions!(view.text_filter, options[:conditions])
     
     options[:joins] = joins.uniq.join(" ")
     
@@ -300,7 +292,7 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_text_filter_conditions!(text_filter, conditions)
     if text_filter
-      conditions << "MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+      conditions.replace "MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE) AND (#{conditions})"
     end
   end
 
@@ -315,18 +307,18 @@ class FeedItem < ActiveRecord::Base
   #
   # Finally combine the user and classifier tagger conditions with a condition that constrains
   # all taggings to have the user_id equal to the id of the user. This is the tagger_condition.
-  def self.tagger_condition_for(user, include_negative, only_tagger)
-    conditions = ["user_id = #{user.id}"]
+  def self.tagger_condition_for(user, include_negative, only_tagger, taggings_alias = "taggings")
+    conditions = ["#{taggings_alias}.user_id = #{user.id}"]
     
     
     if only_tagger == "user"
-      conditions << 'classifier_tagging = 0'
+      conditions << "#{taggings_alias}.classifier_tagging = 0"
     elsif only_tagger == "classifier"
-      conditions << 'classifier_tagging = 1'
+      conditions << "#{taggings_alias}.classifier_tagging = 1"
     end
     
     unless include_negative
-      conditions << 'strength >= 0.88' # This is the borderline cutoff
+      conditions << "#{taggings_alias}.strength >= 0.88" # This is the borderline cutoff
     end
     
     "(#{conditions.join(" AND ")})"
@@ -336,24 +328,25 @@ class FeedItem < ActiveRecord::Base
     "#{tagger.class.name.downcase}_#{tagger.id}_taggings"
   end
   
-  def self.add_tag_filter_joins!(tagger, tagger_condition, joins)
+  def self.add_tag_filter_joins!(tagger, include_negative, only_tagger, joins)
     taggings_alias = taggings_alias_for(tagger)
+    tagger_condition = tagger_condition_for(tagger, include_negative, only_tagger, taggings_alias)
+
     
     joins << "LEFT OUTER JOIN taggings #{taggings_alias} ON " <<
              "#{taggings_alias}.feed_item_id = feed_items.id AND " <<
-             tagger_condition.gsub(/taggings\./, "#{taggings_alias}.")
+             tagger_condition
   end
   
-  def self.add_tag_exclusion_conditions!(tagger, tag_filter, tagger_condition, conditions)
-    taggings_alias = taggings_alias_for(tagger) + "_excluded"
-    
+  def self.add_tag_exclusion_conditions!(tagger, tag_filter, include_negative, only_tagger, conditions)
     unless tag_filter.blank?
+      taggings_alias = taggings_alias_for(tagger) + "_excluded"
+      tagger_condition = tagger_condition_for(tagger, include_negative, only_tagger, taggings_alias)
       
       conditions << <<-EOSQL
         feed_items.id NOT IN(
           SELECT feed_item_id FROM taggings #{taggings_alias}
-          WHERE #{tagger_condition.gsub(/taggings\./, "#{taggings_alias}.")} 
-            AND #{taggings_alias}.tag_id IN (#{tag_filter.join(",")})
+          WHERE #{tagger_condition} AND #{taggings_alias}.tag_id IN (#{tag_filter.join(",")})
         )
       EOSQL
     end
