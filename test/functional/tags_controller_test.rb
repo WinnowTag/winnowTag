@@ -162,4 +162,34 @@ class TagsControllerTest < Test::Unit::TestCase
     post :destroy, :id => 'unused'
     assert_response 404
   end
+  
+  def test_atom_feed_contains_items_in_tag
+    user = users(:quentin)
+    tag = Tag(user, 'tag')
+    tag.update_attribute :public, true
+    
+    user.taggings.create!(:feed_item => FeedItem.find(1), :tag => tag)
+    user.taggings.create!(:feed_item => FeedItem.find(2), :tag => tag)
+
+    get :show, :user_id => user.login, :id => tag.name, :format => "atom"
+
+    assert_response(:success)
+    assert_select("entry", 2, @response.body)
+  end
+
+  def test_atom_feed_with_missing_tag_returns_404
+    get :show, :user_id => users(:quentin).login, :id => "missing", :format => "atom"
+    assert_response(404)
+  end
+
+  def test_anyone_can_access_feeds
+    login_as(nil)
+
+    user = users(:quentin)
+    tag = Tag(user, 'tag')
+    tag.update_attribute :public, true
+
+    get :show, :user_id => user.login, :id => tag.name, :format => "atom"
+    assert_response :success
+  end
 end

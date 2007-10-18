@@ -17,8 +17,9 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :show]
   skip_before_filter :load_view, :only => :show
+  skip_before_filter :login_required, :only => :show
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :show]
   
   # Show a table of the users tags
   def index
@@ -32,12 +33,24 @@ class TagsController < ApplicationController
   end
   
   def show
-    @tag = User.find_by_login(params[:user_id]).tags.find_by_name(params[:id])
-    
-    respond_to do |wants|
-      wants.xml do
-        render :layout => false
+    user = User.find_by_login(params[:user_id])
+
+    if user and @tag = user.tags.find_by_name(params[:id])
+      respond_to do |wants|
+        wants.atom do        
+          last_modified = @tag.user.classifier.last_executed
+          since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
+
+          if since && last_modified && since >= last_modified
+            head :not_modified
+          else
+            response.headers['Last-Modified'] = last_modified.httpdate if last_modified
+            render :layout => false
+          end
+        end
       end
+    else
+      render :text => "#{params[:id]} has not been published by #{params[:user_id]}", :status => 404
     end
   end
 

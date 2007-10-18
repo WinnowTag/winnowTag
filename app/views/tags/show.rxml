@@ -8,7 +8,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
   xml.updated @tag.feed_items.first.time.strftime("%Y-%m-%dT%H:%M:%SZ") if @tag.feed_items.any?
   
 
-  @tag.feed_items.find(:all, :include => [:feed, :feed_item_content], :limit => 100).each do |feed_item|
+  @tag.feed_items.find(:all, :include => [:feed, :feed_item_content], :order => "feed_items.time DESC", :limit => 50).each do |feed_item|
     xml.entry do
       xml.title feed_item.content.title
       xml.author  do
