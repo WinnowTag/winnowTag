@@ -6,9 +6,14 @@
 		<%= in_place_completing_editor_field(:tag, :name, {:id => tag.dom_id('editor')}, 
 							{:param_name => '"tag[name]"', :url => "/tags/update/#{tag.name}", :form_submit => true,
 							 :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'),
-							 :click_to_edit_text => "Click to edit tag name"},
+							 :click_to_edit_text => "Click to edit tag name", :save_text => "Save"}, 
 							:skip_style => true, :update => tag.dom_id('auto_complete'),
 							:url => url_for(:action => 'auto_complete_for_tag_name', :id => tag)) %>
+		<div class="comment">
+		  <%= image_tag "comment.png", :id => tag.dom_id("edit_comment"), :title => "Click to edit tag comment" %>
+	    <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => "/tags/update/#{tag.name}?view_id=#{@view.id}", :method => :put,
+            :click_to_edit_text => "Click to edit tag comment", :external_control => tag.dom_id("edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
+		</div>
 	</td>
 	<td class="view_state">
 		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>

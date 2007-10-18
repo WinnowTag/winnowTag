@@ -78,12 +78,12 @@ class Tag < ActiveRecord::Base
       raise ArgumentError, "Can't copy tag to tag of the same name."
     end
     
-    if self != to and to.taggings.size > 0
+    if to.taggings.size > 0
       raise ArgumentError, "Target tagger already has a #{to.name} tag"
     end
     
     self.manual_taggings.each do |tagging|
-      to.user.taggings.create(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength)
+      to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength)
     end
   end
   
@@ -92,16 +92,13 @@ class Tag < ActiveRecord::Base
       raise ArgumentError, "Can't copy tag to tag of the same name."
     end
     
-    count = 0
     self.manual_taggings.each do |tagging|
       unless to.manual_taggings.exists?(['feed_item_id = ?', tagging.feed_item_id])
-        to.user.taggings.create(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength)
-        tagging.destroy
-        count += 1
+        to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength)
       end
     end
     
-    count
+    destroy
   end
   
   def self.find_all_public_with_count

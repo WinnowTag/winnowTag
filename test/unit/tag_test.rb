@@ -135,7 +135,7 @@ class TagTest < Test::Unit::TestCase
     u.taggings.create(:feed_item => FeedItem.find(1), :tag => old)
     u.taggings.create(:feed_item => FeedItem.find(2), :tag => new_tag)
     
-    assert_equal(1, old.merge(new_tag))
+    old.merge(new_tag)
     
     assert_equal([], old.taggings)
     assert_equal([1, 2], new_tag.taggings.map(&:feed_item_id).sort)
@@ -149,9 +149,9 @@ class TagTest < Test::Unit::TestCase
     u.taggings.create(:feed_item => FeedItem.find(1), :tag => old)
     u.taggings.create(:feed_item => FeedItem.find(1), :tag => new_tag)
     
-    assert_equal(0, old.merge(new_tag))
+    old.merge(new_tag)
     
-    assert_equal([1], old.taggings.map(&:feed_item_id))
+    assert_equal([], old.taggings.map(&:feed_item_id))
     assert_equal([1], new_tag.taggings.map(&:feed_item_id))    
   end
 end

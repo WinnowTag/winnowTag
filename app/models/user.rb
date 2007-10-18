@@ -4,25 +4,9 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-# 
-
+#
 require 'digest/sha1'
 require 'tzinfo'
- 
-module FindByFeedItem
-  def find_by_feed_item(feed_item, type = :all, options = {})
-    with_scope(:find => {:conditions => 
-        ['taggings.feed_item_id = ?', feed_item.id]}) do
-      find(type, options)
-    end
-  end
-
-  def find_by_tag(tag, type = :all, options = {})
-    with_scope(:find => {:conditions => ['taggings.tag_id = ?', tag.id]}) do
-      find(type, options)
-    end
-  end
-end
   
 # == Schema Information
 # Schema version: 57
@@ -48,7 +32,22 @@ end
 #  last_session_ended_at     :datetime      
 #
 
-class User < ActiveRecord::Base
+class User < ActiveRecord::Base   
+  module FindByFeedItem
+    def find_by_feed_item(feed_item, type = :all, options = {})
+      with_scope(:find => {:conditions => 
+          ['taggings.feed_item_id = ?', feed_item.id]}) do
+        find(type, options)
+      end
+    end
+
+    def find_by_tag(tag, type = :all, options = {})
+      with_scope(:find => {:conditions => ['taggings.tag_id = ?', tag.id]}) do
+        find(type, options)
+      end
+    end
+  end
+  
   acts_as_authorized_user
   acts_as_authorizable
   composed_of :tz, :class_name => TZInfo::Timezone, :mapping => %w(time_zone identifier)

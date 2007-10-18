@@ -92,7 +92,7 @@ class View < ActiveRecord::Base
   
   def dup
     View.new :user => user, :tag_filter => tag_filter.dup, :feed_filter => feed_filter.dup, 
-             :text_filter => text_filter.dup, :tag_inspect_mode => tag_inspect_mode, :show_untagged => show_untagged
+             :text_filter => text_filter, :tag_inspect_mode => tag_inspect_mode, :show_untagged => show_untagged
   end
   
   def dup!

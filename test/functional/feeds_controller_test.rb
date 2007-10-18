@@ -48,10 +48,12 @@ class FeedsControllerTest < Test::Unit::TestCase
   end
     
   def test_new_shows_form
+    view = users(:quentin).views.create
+    
     login_as(:quentin)
-    get :new, :view_id => users(:quentin).views.create
+    get :new, :view_id => view
     assert_response :success
-    assert_select('form[action="/feeds"]', 1, @response.body)
+    assert_select("form[action='/feeds?view_id=#{view.id}']", 1, @response.body)
   end
   
   def test_create_uses_rest

@@ -151,16 +151,12 @@ optgroup {
 	border-bottom: 1px solid #000;
 }
 
-#header_controls h4 {
-	display: inline;
-}
-
 #header_controls form {
-	display: inline;
+  display: inline;
 }
 
-#header_controls div {
-	display: inline;
+#header_controls form > div {
+  display: inline;
 }
 
 #header_controls .sidebar_control {
@@ -181,8 +177,8 @@ optgroup {
 }
 
 #header_controls .custom_controls {
-	float: right;
-	margin-right: .5em;
+  float: right;
+  margin-right: .5em;
 }
 
 a { color: #2c50e8; text-decoration: none; }
@@ -349,12 +345,6 @@ p.filter_group_heading {
 
 p.tag_publications_heading {
 	text-decoration: underline;
-}
-
-span.tag_publication_comment {
-	font-style: italic;
-	color: #444;
-	font-size: 90%;
 }
 
 div.sorting_and_filtering_controls {
@@ -753,4 +743,12 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 .add {
 	padding-left: 20px;
 	background: url(../images/add.png) 0 center no-repeat;
+}
+
+.inplaceeditor-form {
+  display: inline;
+}
+
+label {
+  cursor: pointer;
 }

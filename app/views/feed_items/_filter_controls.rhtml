@@ -1,3 +1,3 @@
 <p class="filter_group_heading">Filters</p>
-<%= check_box_tag "tagged_state", "untagged", @view.show_untagged?, :onclick => "window.location = '" + feed_items_url(:view_id => @view) + "&show_untagged=' + this.checked" %> <label for="tagged_state_tagged">Show Untagged</label>
+<%= check_box_tag "show_untagged", true, @view.show_untagged?, :onclick => "window.location = '" + feed_items_url(:view_id => @view) + "&show_untagged=' + this.checked" %> <label for="show_untagged">Show Untagged</label>
 

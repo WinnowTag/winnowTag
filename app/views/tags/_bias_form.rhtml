@@ -1,10 +1,21 @@
 <% form_for :classifier, @classifier, :url => classifier_path, :html => {:method => :put} do |f| -%>
-	<%= hidden_field_tag("classifier[default_bias]", @classifier.default_bias, :id => 'default_bias') %>
-	<% for tag in current_user.tags -%>
-		<%= hidden_field_tag("classifier[bias][#{tag.name}]", @classifier.bias_without_defaults[tag.name], :id => tag.dom_id('bias_for')) %>
-	<% end -%>
-	<div style="margin-left: 50px">
-		<%= submit_tag "Save Sensitivity Changes" %>
-		<%= link_to "Cancel" %>
-	</div>
+  <%= hidden_field_tag("classifier[default_bias]", @classifier.default_bias, :id => 'default_bias') %>
+  <% for tag in current_user.tags -%>
+    <%= hidden_field_tag("classifier[bias][#{tag.name}]", @classifier.bias_without_defaults[tag.name], :id => tag.dom_id('bias_for')) %>
+  <% end -%>
+  
+  <table>
+    <tr>
+      <td>
+        <%= submit_tag "Save Sensitivity Changes" %> <%= link_to "reset" %>
+      </td>
+      <td style="padding-left: 20px">
+        Default Sensitivity:
+      </td>
+      <td style="width: 82px; padding-right: 4px">
+        <%= bias_slider(:tag => :default, :var => 'default_slider', :change => "$('default_bias').value = value;",
+                        :slide =>"$H(sliders).values().each(function(s) { if (s.options.isDefault) s.setValue(value); } );") %>
+      </td>
+    </tr>
+  </table>
 <% end -%>

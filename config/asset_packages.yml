@@ -11,6 +11,7 @@ javascripts:
   - tagging
   - itembrowser
   - in_place_completer
+  - cookies
 stylesheets: 
 - base: 
   - winnow

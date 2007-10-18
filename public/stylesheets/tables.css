@@ -96,30 +96,13 @@ table td.even {
 	background: #ddd;
 }
 
-table.bias_table {
-	background: #D0EEFF;
-	border: 1px solid #EEE;
-	margin: 10px;
-	width: 40%;
+.comment {
+	font-style: italic;
+	color: #444;
+	font-size: 90%;
 }
 
-
-table.bias_table td {
-	background: white;
-	padding: 0px 2px 0px 2px;
-	width: 10%;
-}
-
-table.bias_table td.slider {
-	width: 200px;
-}
-
-table.bias_table td.reset {
-	width: 1em;
-}
-
-table.bias_table th {
-	text-align: left;
-	padding-right: 10px;
-	font-weight: normal;
+.comment img {
+  cursor: pointer;
+  vertical-align: bottom;
 }

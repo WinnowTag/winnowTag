@@ -27,9 +27,9 @@ class TagsControllerTest < Test::Unit::TestCase
     assert_difference(users(:quentin).tags, :count) do
       post :create, :copy => 'tag'
       assert_redirected_to "/tags"
-      assert_equal("'tag' successfully copied to 'Copy of tag'", flash[:notice])
+      assert_equal("'tag' successfully copied to 'tag - copy'", flash[:notice])
     end
-    assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'Copy of tag'])
+    assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])
     assert_equal(2, users(:quentin).taggings.size)
   end
   
@@ -69,53 +69,53 @@ class TagsControllerTest < Test::Unit::TestCase
   end
   
   def test_edit_with_js
+    view = users(:quentin).views.create
+    
     accept('text/javascript')
-    get :edit, :id => 'tag', :view_id => users(:quentin).views.create
+    get :edit, :id => 'tag', :view_id => view
     assert assigns(:tag)
     assert_select "html", false
-    assert_select "form[action = '/tags/tag']", 1, @response.body
+    assert_select "form[action = '/tags/tag?view_id=#{view.id}']", 1, @response.body
   end
   
   def test_tag_renaming_with_same_tag
-    referer('/')
-    accept('text/html')
+    view = users(:quentin).views.create
     
-    post :update, :id => 'tag', :tag => {:name => 'tag' }
-    assert_redirected_to '/'
+    post :update, :id => 'tag', :tag => {:name => 'tag' }, :view_id => view
+    assert_redirected_to "/tags?view_id=#{view.id}"
     assert_equal([@tag], users(:quentin).tags)
   end
   
   def test_tag_renaming
-    referer('/')
-    accept('text/html')
-    
-    post :update, :id => 'tag', :tag => {:name => 'new'}
-    assert_redirected_to '/'
+    view = users(:quentin).views.create
+
+    post :update, :id => 'tag', :tag => {:name => 'new'}, :view_id => view
+    assert_redirected_to "/tags?view_id=#{view.id}"
     assert users(:quentin).tags.find_by_name('new')
   end
   
   def test_tag_merging
-    accept('text/html')
-    referer('/')
+    view = users(:quentin).views.create
+    
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(1))
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(2))
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
     
-    post :update, :id => 'old',:tag => {:name => 'new'}
-    assert_redirected_to '/'
-    assert_equal("2 tags merged from 'old' to 'new'", flash[:notice])
+    post :update, :id => 'old', :tag => {:name => 'new'}, :view_id => view
+    assert_redirected_to "/tags?view_id=#{view.id}"
+    assert_equal("'old' merged with 'new'", flash[:notice])
   end
   
   def test_tag_merging_with_conflict
-    accept('text/html')
-    referer('/')
+    view = users(:quentin).views.create
+
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(1))
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'old'), :feed_item => FeedItem.find(2))
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(2))
     
-    post :update, :id => 'old',:tag => {:name => 'new'}
-    assert_redirected_to '/'
-    assert_equal("1 tag merged from 'old' to 'new' with 1 conflict", flash[:warning])
+    post :update, :id => 'old',:tag => {:name => 'new'}, :view_id => view
+    assert_redirected_to "/tags?view_id=#{view.id}"
+    assert_equal("'old' merged with 'new'", flash[:notice])
   end
   
   def test_destroy_by_tag

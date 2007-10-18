@@ -15,6 +15,11 @@ function validate_tag_edit(original_name, new_name) {
 		return false;
 	} 
 	
+	if (new_name == "") {
+		new ErrorMessage("Name can't be blank");
+		return false;
+	} 
+	
 	var merging = false;
 	
 	$$('span.in_place_editor_field').each(function(name) {

@@ -36,9 +36,8 @@ class TagsController < ApplicationController
   def create
     begin
       if params[:copy]
-        source = current_user
         from = current_user.tags.find_by_name(params[:copy])
-        to = Tag(current_user, "Copy of #{params[:copy]}")        
+        to = Tag(current_user, "#{params[:copy]} - copy")
         from.copy(to)
         
         flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"        
@@ -66,27 +65,22 @@ class TagsController < ApplicationController
   # current_user's instances of old_tag will be changed to instances of new_tag.
   #
   def update
-    if (merge_to = current_user.tags.find_by_name(params[:tag][:name])) && (merge_to != @tag)
-      initial_size = @tag.manual_taggings.size
-      number_merged = @tag.merge(merge_to)
-      
-      if number_merged == initial_size
-        flash[:notice] = "#{pluralize(number_merged, 'tag')} merged from '#{@tag}' to '#{merge_to}'"
+    if name = params[:tag][:name]
+      if (merge_to = current_user.tags.find_by_name(name)) && (merge_to != @tag)
+        @tag.merge(merge_to)
+        flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
       else
-        flash[:warning] = "#{pluralize(number_merged, 'tag')} merged from '#{@tag}' to '#{merge_to}' " +
-                            "with #{pluralize(initial_size - number_merged, 'conflict')}"
+        if @tag.update_attributes :name => name
+          flash[:notice] = "Tag Renamed"
+        else
+          flash[:error] = @tag.errors.full_messages.join('<br/>')
+        end
       end
-    else
-      @tag.name = params[:tag][:name]
-      
-      if @tag.save       
-        flash[:notice] = "Tag renamed"        
-      else
-        flash[:error] = @tag.errors.full_messages.join('<br/>')
-      end
+      redirect_to tags_path(:view_id => @view.id)
+    elsif comment = params[:tag][:comment]
+      @tag.update_attribute(:comment, comment)
+      render :text => @tag.comment
     end
-    
-    redirect_to :back
   end
 
   # Destroy the users use of the tag
