@@ -253,7 +253,9 @@ class FeedItem < ActiveRecord::Base
     
     # Text filtering
     add_text_filter_joins!(view.text_filter, joins)
-    add_text_filter_conditions!(view.text_filter, options[:conditions])
+    add_text_filter_conditions!(view.text_filter, options[:conditions] ||= "")
+    
+    options[:conditions] = nil if optional[:conditions].blank?
     
     options[:joins] = joins.uniq.join(" ")
     
