@@ -26,6 +26,8 @@ class MigrateOldTagsToUserTags < ActiveRecord::Migration
   
   def self.up
     Tag.transaction do
+      execute "create temporary table temp_taggings like taggings;"
+
       User.find(:all).each do |user|
         find_old_tags_for(user).each do |old_tag|
           say "Updating #{old_tag.name} for #{user.login}"
@@ -37,15 +39,32 @@ class MigrateOldTagsToUserTags < ActiveRecord::Migration
           end
           
           execute <<-END
-            update taggings
-              set tag_id = #{new_tag.id}
+            insert into temp_taggings
+              ( tag_id,
+ 		taggable_type, taggable_id,
+ 		tagger_type, tagger_id,
+		created_on,  deleted_at,
+		metadata_type, metadata_id,
+ 		strength )
+            select
+	       #{new_tag.id},
+ 		taggable_type, taggable_id,
+	 	tagger_type, tagger_id,
+ 		created_on,  deleted_at,
+ 		metadata_type, metadata_id,
+ 		strength
+	      from taggings
               where tag_id = #{old_tag.id}
-                and (tagger_id = #{user.id} and tagger_type = 'User'
-                  or tagger_id = #{classifier_id(user)} and tagger_type = 'BayesClassifier')
+                and ((tagger_id = #{user.id} and tagger_type = 'User')
+                  or (tagger_id = #{classifier_id(user)} and tagger_type = 'BayesClassifier'))
           END
+
+	 say "#{ActiveRecord::Base.connection.connection.affected_rows} affected rows"
         end
       end
-      
+
+      execute "delete from taggings;"
+      execute "insert into taggings select * from temp_taggings;"      
       drop_table :old_tags
     end
   end
