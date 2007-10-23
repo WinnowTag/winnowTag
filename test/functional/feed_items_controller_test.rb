@@ -160,6 +160,29 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_rjs :replace_html, 'tag_information_feed_item_1'
   end
+  
+  def test_info_with_user_tagging
+    user = users(:quentin)
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag'))
+    BayesClassifier.any_instance.expects(:guess).returns({'tag' => [0.95, [[0.4,1]]]})
+        
+    accept('text/javascript')
+    login_as(:quentin)
+    get :info, :id => 1, :view_id => users(:quentin).views.create
+    assert_select "h4[style= 'color: red;']", /tag - 0.9500/, @response.body
+  end
+  
+  def test_info_with_classifier_tagging
+    user = users(:quentin)
+    user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag'), :classifier_tagging => true)
+    BayesClassifier.any_instance.expects(:guess).returns({'tag' => [0.95, [[0.4,1]]]})
+        
+    accept('text/javascript')
+    login_as(:quentin)
+    get :info, :id => 1, :view_id => users(:quentin).views.create
+    assert_select "h4", /tag - 0.9500/, @response.body
+    assert_select "h4[style= 'color: red;']", false, @response.body
+  end
     
   def test_feed_filtering_assigns_the_feed_filter_to_the_view
     login_as(:quentin)

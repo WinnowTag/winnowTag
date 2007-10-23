@@ -1,5 +1,5 @@
 <% classifications = current_user.classifier.guess(feed_item, current_user.classifier.classification_options.merge({:include_evidence => true})) -%>
-<% user_tags_on_item = feed_item.taggings.find_by_user(current_user).map(&:tag) %>
+<% user_tags_on_item = current_user.manual_taggings.find(:all, :conditions => ["taggings.feed_item_id = ?", feed_item]).map(&:tag) %>
 
 <h3>Classifier Taggings</h3>
 	
@@ -10,7 +10,7 @@
 
 <% sorted_classifications = classifications.sort_by{|tag, cls| cls.first}.reverse -%>
 <% sorted_classifications.each_with_index do |(tag, cls), i| -%>
-	<h4 style="<%= "color: red;" if user_tags_on_item.include?(Tag(tag)) %>" onclick="$('<%= feed_item.dom_id("tokens_for_#{tag}")%>').toggle();">
+	<h4 style="<%= "color: red;" if user_tags_on_item.include?(Tag(current_user, tag)) %>" onclick="$('<%= feed_item.dom_id("tokens_for_#{tag}")%>').toggle();">
 		<%= tag %> - <%= '%.4f' % cls.first %>
 	</h4>
 	<table id="<%= feed_item.dom_id("tokens_for_#{tag}")%>" class="tokens<%= sorted_classifications.size == i + 1 ? " last" : "" %>" style="display: none">
