@@ -51,7 +51,7 @@
 <h2>Test Elements</h2>
 <!-- here go any elements you do the testing on -->
 <div id="content">
-	<div id="feed_item_loading_indicator"></div>
+	<div id="feed_items_indicator"></div>
 	<div id ="feed_items"></div>
 </div>
 <div id="feed_item_count"></div>
@@ -64,8 +64,7 @@
 new Test.Unit.Runner({
   // optional setup function, run before each individual test case
   setup: function() { with(this) {
-		$('feed_items').update('<div id="feed_items_indicator"></div>' +
-												   '<div id="one" class="item" position="3"></div>' +
+		$('feed_items').update('<div id="one" class="item" position="3"></div>' +
 												   '<div id="two" class="item" position="2"></div>' +
 												   '<div id="three" class="item" position="1"></div>' +
 												   '<div id="initial_spacer" class="item_spacer"></div>');

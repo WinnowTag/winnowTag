@@ -1,4 +1,4 @@
-page.hide('feed_items_indicator')
+page.call 'itemBrowser.hideLoadingIndicator'
 
 if params[:incremental]
   # page.replace_html 'tag_filters', tag_filter_options

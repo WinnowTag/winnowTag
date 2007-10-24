@@ -54,7 +54,7 @@ Classification.createItemBrowserClassification = function(classifier_url) {
 			onStarted: function(c) {				
 				$('progress_bar').style.width = "0%";
 				$('progress_title').update("Classifying changed tags");
-				$('feed_items_indicator').show();
+				itemBrowser.showLoadingIndicator("Waiting for Classifier...");
 				itemBrowser.clear();
 			},
 			onStartProgressUpdater: function(c) {
@@ -447,8 +447,7 @@ ItemBrowser.prototype = {
 				
 		if (do_update || update_options.incremental) {
 			if (!update_options.count_only) {
-				$('feed_item_count').hide();
-				$('feed_item_loading_indicator').show();
+        this.showLoadingIndicator();
 			}
 			this.doUpdate(update_options);
 		} else {
@@ -463,8 +462,7 @@ ItemBrowser.prototype = {
 			onComplete: function() {
 				this.updateFeedItemCount();
 				if (!options.count_only) {
-					$('feed_item_count').show();
-					$('feed_item_loading_indicator').hide();
+          this.hideLoadingIndicator();
 				}
 				this.loading = false;
 				this.updateFromQueue();
@@ -640,13 +638,23 @@ ItemBrowser.prototype = {
       // this.update_queue.push(parameters);
 		} else {
 		  this.loading = true;
-			$('feed_item_count').hide();
-			$('feed_item_loading_indicator').show();
-			
+      this.showLoadingIndicator();
       this.clear();
 			this.doUpdate(parameters);
 		}
 	},
+	
+	showLoadingIndicator: function(message) {
+	  var indicator = $('feed_items_indicator')
+	  indicator.update(message || "Loading feed items...");
+	  var left = this.feed_items_scrollable.getWidth() / 2 - indicator.getWidth() / 2 + this.feed_items_scrollable.offsetLeft;
+    indicator.style.left = left + "px";
+	  indicator.show();
+	},
+	
+	hideLoadingIndicator: function() {
+	  $('feed_items_indicator').hide();
+  },
 	
 	selectItem: function(item) {
 		this.deselectItem(this.selectedItem);
