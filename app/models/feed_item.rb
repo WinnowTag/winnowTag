@@ -213,13 +213,13 @@ class FeedItem < ActiveRecord::Base
     tag_exclusion_filter_by_user = {}
     
     view.tag_filter[:include].each do |tag_id|
-      tag = Tag.find_by_id(tag_id)
+      next unless tag = Tag.find_by_id(tag_id)
       tag_inclusion_filter_by_user[tag.user] ||= []
       tag_inclusion_filter_by_user[tag.user] << tag.id
     end
     
     view.tag_filter[:exclude].each do |tag_id|
-      tag = Tag.find_by_id(tag_id)
+      next unless tag = Tag.find_by_id(tag_id)
       tag_exclusion_filter_by_user[tag.user] ||= []
       tag_exclusion_filter_by_user[tag.user] << tag.id
     end

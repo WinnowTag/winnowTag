@@ -116,7 +116,7 @@ private
   def arg_to_tag(arg)
     if arg.is_a?(Tag)
       arg.id.to_s
-    elsif arg =~ /^\d+$/
+    elsif arg.to_s =~ /^\d+$/
       arg
     else
       raise ArgumentError.new("Argument must be a tag or tag id")

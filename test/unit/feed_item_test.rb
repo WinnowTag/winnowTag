@@ -67,7 +67,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => users(:quentin), :show_untagged => true
 
     feed_items = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-    assert_equal [FeedItem.find(1), FeedItem.find(2), FeedItem.find(3), FeedItem.find(4)], feed_items
+    assert_equal FeedItem.find(1, 2, 3, 4), feed_items
   end
   
   def test_find_includes_borderline_items
@@ -80,7 +80,7 @@ class FeedItemTest < Test::Unit::TestCase
     
     view = View.new :user => user
     
-    expected = [FeedItem.find(2), FeedItem.find(3), FeedItem.find(4)]
+    expected = FeedItem.find(2, 3, 4)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')    
     assert_equal expected, actual
   end
@@ -94,7 +94,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => user
     view.add_tag :include, tag
     
-    expected = [FeedItem.find(2), FeedItem.find(4)]
+    expected = FeedItem.find(2, 4)
     assert_equal(expected, FeedItem.find_with_filters(:view => view, :only_tagger => 'user', :include_negative => true, :order => 'feed_items.id asc'))
   end
   
@@ -169,7 +169,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => user
     view.add_tag :include, tag
 
-    assert_equal [FeedItem.find(2), FeedItem.find(3)], FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+    assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
   def test_find_with_show_untagged_and_an_include_tag_filter_should_return_items_with_that_tag_or_untagged
@@ -182,7 +182,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => user, :show_untagged => true
     view.add_tag :include, tag1
     
-    expected = [FeedItem.find(1), FeedItem.find(2), FeedItem.find(4)]
+    expected = FeedItem.find(1, 2, 4)
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
@@ -227,7 +227,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => user, :show_untagged => true
     view.add_tag :exclude, tag1
     
-    expected = [FeedItem.find(1), FeedItem.find(3), FeedItem.find(4)]
+    expected = FeedItem.find(1, 3, 4)
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
@@ -259,7 +259,7 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_tag :include, tag1
     view.add_tag :exclude, tag2
     
-    expected = [FeedItem.find(1), FeedItem.find(2), FeedItem.find(4)]
+    expected = FeedItem.find(1, 2, 4)
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
@@ -280,7 +280,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => users(:quentin), :show_untagged => true
     view.add_feed :include, 1
   
-    expected = [FeedItem.find(1), FeedItem.find(2), FeedItem.find(3)]
+    expected = FeedItem.find(1, 2, 3)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end
@@ -292,7 +292,7 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_feed :include, 1
     view.add_feed :include, 2
   
-    expected = [FeedItem.find(1), FeedItem.find(2), FeedItem.find(3), FeedItem.find(4)]
+    expected = FeedItem.find(1, 2, 3, 4)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end
@@ -370,7 +370,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => users(:quentin)
     view.add_feed :always_include, 2
   
-    expected = [FeedItem.find(2), FeedItem.find(4)]
+    expected = FeedItem.find(2, 4)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end
@@ -383,7 +383,7 @@ class FeedItemTest < Test::Unit::TestCase
     view = View.new :user => users(:quentin), :show_untagged => true
     view.add_feed :always_include, 2
   
-    expected = [FeedItem.find(1), FeedItem.find(2), FeedItem.find(3), FeedItem.find(4)]
+    expected = FeedItem.find(1, 2, 3, 4)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end
@@ -399,7 +399,7 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_feed :include, 1
     view.add_feed :always_include, 2
   
-    expected = [FeedItem.find(1), FeedItem.find(2), FeedItem.find(3), FeedItem.find(4)]
+    expected = FeedItem.find(1, 2, 3, 4)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end
@@ -415,7 +415,7 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_feed :include, 1
     view.add_feed :always_include, 2
   
-    expected = [FeedItem.find(2), FeedItem.find(4)]
+    expected = FeedItem.find(2, 4)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end
@@ -458,7 +458,7 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_tag :include, tag
     view.add_feed :always_include, 2
     
-    assert_equal [FeedItem.find(2), FeedItem.find(4)], FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+    assert_equal FeedItem.find(2, 4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
   def test_find_with_tag_filter_and_multiple_always_include_feed_filter_should_only_return_items_with_that_tag_or_in_those_feeds
@@ -471,7 +471,7 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_feed :always_include, 2
     view.add_feed :always_include, 1
     
-    assert_equal [FeedItem.find(1), FeedItem.find(2), FeedItem.find(3), FeedItem.find(4)], FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+    assert_equal FeedItem.find(1, 2, 3, 4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
   def test_find_with_tag_filter_and_feed_filter_should_only_return_items_with_that_tag_in_that_feed
@@ -712,5 +712,29 @@ class FeedItemTest < Test::Unit::TestCase
     
     fi.taggings.cached_taggings.merge!({user => [tagging_1, tagging_2]})
     assert_equal([tagging_3, tagging_4], fi.taggings.find_by_user(u2))
+  end
+
+  def test_find_with_non_existent_include_tag_filter_should_ignore_the_nonexistent_tag
+    user = users(:quentin)
+    tag = Tag(user, 'tag1')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
+    
+    view = View.new :user => user
+    view.add_tag :include, tag
+    view.add_tag :include, tag.id + 1
+    
+    assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
+  end
+
+  def test_find_with_non_existent_tag_exclude_filter_should_ignore_the_nonexistent_tag
+    user = users(:quentin)
+    tag = Tag(user, 'tag1')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
+    
+    view = View.new :user => user, :show_untagged => true
+    view.add_tag :exclude, tag
+    view.add_tag :exclude, tag.id + 1
+    
+    assert_equal FeedItem.find(1,3,4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id')
   end
 end
