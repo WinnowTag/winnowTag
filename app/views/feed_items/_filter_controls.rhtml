@@ -19,14 +19,16 @@
 
 <h4>Feed Filters</h4>
 
-<% form_tag nil, :onsubmit => "add_feed_filter($('feed_title').value); this.reset(); return false;" do -%>
-  <%= text_field_tag 'feed_title', nil %>
-  <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
-  <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
-        :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
-        :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
-  <%= submit_tag "Add" %>
-<% end -%>
+<center>
+  <% form_tag nil, :onsubmit => "add_feed_filter($('feed_title').value); this.reset(); return false;" do -%>
+    <%= text_field_tag 'feed_title', nil %>
+    <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
+    <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
+          :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
+          :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
+    <%= submit_tag "Add" %>
+  <% end -%>
+</center>
 
 <ul id="feed_filters" class="filter_list">
 <% @view.feed_filter.values.flatten.each do |feed_id| -%>
