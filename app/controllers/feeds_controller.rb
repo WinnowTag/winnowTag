@@ -64,7 +64,16 @@ class FeedsController < ApplicationController
 
   def auto_complete_for_feed_title
     @q = params[:feed][:title]
-    @feeds = Feed.find(:all, :conditions => ["id NOT IN (?) AND LOWER(title) LIKE LOWER(?)", @view.feed_filter.values.flatten, "%#{@q}%"])
+    
+    conditions = ["LOWER(title) LIKE LOWER(?)"]
+    values = ["%#{@q}%"]
+    
+    if !@view.feed_filter.values.flatten.blank?
+      conditions << "id NOT IN (?)"
+      values << @view.feed_filter.values.flatten
+    end
+    
+    @feeds = Feed.find(:all, :conditions => [conditions.join(" AND "), *values])
     render :layout => false
   end
 
