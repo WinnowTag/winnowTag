@@ -110,3 +110,11 @@ function updateFilterControl(control, add_url, remove_url) {
 		control.addClassName('selected');
 	}
 }
+
+function update_feed_filters(element, value) {
+	$('feed_filters').appendChild(value);
+}
+
+function clear_auto_complete(element, list) {
+	list.update('');
+}

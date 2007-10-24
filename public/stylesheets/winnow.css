@@ -366,29 +366,34 @@ a.editor_cancel {
 }
 
 /* =auto_complete */
-div.auto_complete {
+.auto_complete {
   background: #fff;
 	z-index: 100;
 }
 
-div.auto_complete ul {
+.auto_complete ul {
   border: 1px solid #888;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-div.auto_complete ul li {
+.auto_complete ul li {
   margin: 0;
   padding: 0;
+  border-bottom: 1px solid #999;
 }
 
-div.auto_complete ul li.selected {
+.auto_complete ul li.selected {
   background-color: #b8d7ff;
 }
 
-div.auto_complete ul li .highlight {
+.auto_complete ul li .highlight {
 	font-weight: bold;
+}
+
+.auto_complete ul li .filter_control {
+  display: none;
 }
 
 .loading {

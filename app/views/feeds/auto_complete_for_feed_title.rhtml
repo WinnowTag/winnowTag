@@ -1,0 +1,5 @@
+<ul>
+  <% @feeds.each do |feed| -%>
+    <%= render :partial => "filter_control", :locals => { :feed => feed } %>
+  <% end %>
+</ul>

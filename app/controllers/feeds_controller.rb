@@ -57,12 +57,17 @@ class FeedsController < ApplicationController
     end    
   end
   
-  # Shows the details for a single feed.
   def show
     @feed = Feed.find(params[:id])
     @title = @feed.title
   end  
-  
+
+  def auto_complete_for_feed_title
+    @q = params[:feed][:title]
+    @feeds = Feed.find(:all, :conditions => ["id NOT IN (?) AND LOWER(title) LIKE LOWER(?)", @view.feed_filter.values.flatten, "%#{@q}%"])
+    render :layout => false
+  end
+
   private
   def setup_search_term
     @search_term = params[:search_term]
