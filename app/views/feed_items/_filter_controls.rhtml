@@ -17,3 +17,17 @@
   <label for="show_untagged">Show Untagged</label>
 </center>
 
+<h4>Feed Filters</h4>
+
+<ul class="filter_list">
+<% @view.feed_filter.values.flatten.each do |feed_id| -%>
+  <% feed = Feed.find(feed_id) -%>
+  <li class="clearfix">
+			<%= filter_control "Always Include This Feed", :exclude, @view.feed_filter[:exclude].include?(feed.id), 
+			      :onclick => "itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_state: 'exclude', feed_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
+			<%= filter_control "Always Exclude This Feed", :include, @view.feed_filter[:always_include].include?(feed.id), 
+			      :onclick => "itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_state: 'always_include', feed_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
+    <%= truncate(feed.title) %>
+  </li>
+<% end -%>
+</ul>

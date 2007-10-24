@@ -57,14 +57,21 @@ class View < ActiveRecord::Base
      elsif params[:mode] == 'normal'
       self.tag_inspect_mode = false
     end
-    
+
     new_feed_filter = params[:feed_filter]
     if new_feed_filter =~ /all/i
       self.feed_filter[:always_include].clear
       self.feed_filter[:include].clear
       self.feed_filter[:exclude].clear
     elsif new_feed_filter
-      add_feed :include, new_feed_filter
+      new_feed_filter_action = params[:feed_filter_action] || 'add'
+
+      if new_feed_filter_action =~ /add/i
+        new_feed_filter_state = params[:feed_filter_state] || 'include'
+        add_feed new_feed_filter_state, new_feed_filter
+      elsif new_feed_filter_action =~ /remove/i
+        remove_feed new_feed_filter
+      end
     end
     
     new_tag_filter = params[:tag_filter]
