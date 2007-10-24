@@ -142,8 +142,18 @@ optgroup {
 	width:  230px;
 	height: auto;
 	float: left;
-	padding: 0px 3px;
+	padding: 0 5px 5px 5px;
 	border-right: 1px solid #999;
+}
+
+#sidebar h4 {
+  padding: 0;
+	margin: 5px 0 5px 0;
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: .8em;
+	color: #999;
 }
 
 #header_controls {
@@ -326,22 +336,12 @@ kbd {
 	font-size: 11px;
 }
 
-p.filter_group_heading {
-	margin-bottom: 3px;
-	text-align: center;
-	text-transform: uppercase;
-	font-size: 80%;
-	font-weight: bold;
-	color: #999;
-}
-
 .item_spacer {
 	background-image: url(/images/item_spacer_bg.png);
 	opacity: 0.25;
 	-moz-opacity: 0.25;
 	filter:alpha(opacity=25);
 }
-
 
 p.tag_publications_heading {
 	text-decoration: underline;
