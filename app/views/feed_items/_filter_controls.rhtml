@@ -1,3 +1,15 @@
 <p class="filter_group_heading">Filters</p>
+
+<ul class="filter_list">
+<% current_user.tags.each do |tag| -%>
+  <li class="clearfix">
+
+	  <%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+    <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+    <%= tag.name %>
+  </li>
+<% end -%>
+</ul>
+
 <%= check_box_tag "show_untagged", true, @view.show_untagged?, :onclick => "window.location = '" + feed_items_url(:view_id => @view) + "&show_untagged=' + this.checked" %> <label for="show_untagged">Show Untagged</label>
 

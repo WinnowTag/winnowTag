@@ -715,6 +715,16 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 	cursor: pointer;
 }
 
+.filter_list {
+  margin: 0;
+  padding: 0;
+  
+}
+
+.filter_list .filter_control {
+  float: right;
+}
+
 .filter_control {
   float: left;
 	cursor: pointer;
