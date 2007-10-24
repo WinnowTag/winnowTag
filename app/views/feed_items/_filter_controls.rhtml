@@ -3,12 +3,14 @@
 <ul class="filter_list">
 <% current_user.tags.each do |tag| -%>
   <li class="clearfix">
-    <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
-	  <%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+    <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id), 
+          :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'exclude', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
+	  <%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id), 
+	        :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'include', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
     <%= tag.name %>
   </li>
 <% end -%>
 </ul>
 
-<%= check_box_tag "show_untagged", true, @view.show_untagged?, :onclick => "window.location = '" + feed_items_url(:view_id => @view) + "&show_untagged=' + this.checked" %> <label for="show_untagged">Show Untagged</label>
+<%= check_box_tag "show_untagged", true, @view.show_untagged?, :onclick => "itemBrowser.reload({show_untagged: this.checked})" %> <label for="show_untagged">Show Untagged</label>
 

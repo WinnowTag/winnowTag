@@ -99,11 +99,11 @@ function observeFontSizeChange(callback) {
 }
 
 function updateFilterControl(control, add_url, remove_url) {
-	if(control.hasClassName('selected')) { 
-		new Ajax.Request(remove_url, {evalScripts:true});
+	if(control.hasClassName('selected')) {
+	  if(remove_url) { new Ajax.Request(remove_url, {evalScripts:true}); }
 		control.removeClassName('selected');
 	} else { 
-		new Ajax.Request(add_url, {evalScripts:true});
+	  if(add_url) { new Ajax.Request(add_url, {evalScripts:true}); }
 		control.up().getElementsBySelector(".filter_control").each(function(other_control) {
 			other_control.removeClassName('selected');
 		});

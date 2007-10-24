@@ -459,7 +459,7 @@ ItemBrowser.prototype = {
 	/** Issues the request to get new items.
 	 */
 	doUpdate: function(options) {
-	    new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
+    new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
 			onComplete: function() {
 				this.updateFeedItemCount();
 				if (!options.count_only) {
@@ -633,6 +633,19 @@ ItemBrowser.prototype = {
 		this.feed_items_container.update('<div id="initial_spacer" class="item_spacer"></div>');
 		this.selectedItem = null;
 		this.initializeItemList();
+	},
+	
+	reload: function(parameters) {
+		if (this.loading) {
+      // this.update_queue.push(parameters);
+		} else {
+		  this.loading = true;
+			$('feed_item_count').hide();
+			$('feed_item_loading_indicator').show();
+			
+      this.clear();
+			this.doUpdate(parameters);
+		}
 	},
 	
 	selectItem: function(item) {

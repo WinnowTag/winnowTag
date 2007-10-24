@@ -165,11 +165,17 @@ module ApplicationHelper
     options_for_select(views, @view.id)
   end
   
-  def filter_control tooltip, clazz, selected, add_url, remove_url
+  def filter_control tooltip, clazz, selected, options = {}
     classes = ["filter_control", clazz]
     classes << "selected" if selected
     
-    content_tag :span, nil, :title => tooltip, :class => classes.join(" "), :onclick => "updateFilterControl(this, '#{add_url}', '#{remove_url}');"
+    if options[:onclick]
+      onclick = "updateFilterControl(this); #{options[:onclick]}"
+    else
+      onclick = "updateFilterControl(this, '#{options[:add_url]}', '#{options[:remove_url]}');"
+    end
+    
+    content_tag :span, nil, :title => tooltip, :class => classes.join(" "), :onclick => onclick
   end
   
   def in_place_editor(field_id, options = {})

@@ -59,22 +59,27 @@ class View < ActiveRecord::Base
     end
     
     new_feed_filter = params[:feed_filter]
-    if new_feed_filter == 'all'
+    if new_feed_filter =~ /all/i
       self.feed_filter[:always_include].clear
       self.feed_filter[:include].clear
       self.feed_filter[:exclude].clear
     elsif new_feed_filter
-      # self.feed_filter[:include].clear
       add_feed :include, new_feed_filter
     end
     
     new_tag_filter = params[:tag_filter]
-    if new_tag_filter == 'all'
+    if new_tag_filter =~ /all/i
       self.tag_filter[:include].clear
       self.tag_filter[:exclude].clear
     elsif new_tag_filter
-      # self.tag_filter[:include].clear
-      add_tag :include, new_tag_filter
+      new_tag_filter_action = params[:tag_filter_action] || 'add'
+
+      if new_tag_filter_action =~ /add/i
+        new_tag_filter_state = params[:tag_filter_state] || 'include'
+        add_tag new_tag_filter_state, new_tag_filter
+      elsif new_tag_filter_action =~ /remove/i
+        remove_tag new_tag_filter
+      end
     end
   
     new_text_filter = params[:text_filter]
@@ -118,7 +123,7 @@ private
     elsif arg.to_s =~ /^\d+$/
       arg.to_i
     else
-      raise ArgumentError.new("Argument must be a tag or tag id")
+      raise ArgumentError.new("Argument must be a tag or tag id but was #{arg.inspect}")
     end
   end
 

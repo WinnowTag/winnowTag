@@ -16,8 +16,12 @@
 		</div>
 	</td>
 	<td class="view_state">
-		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
-		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id), 
+		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", 
+		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id), 
+		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", 
+		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
 	</td>
 	<td>
 	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
