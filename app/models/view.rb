@@ -60,10 +60,11 @@ class View < ActiveRecord::Base
     
     new_feed_filter = params[:feed_filter]
     if new_feed_filter == 'all'
+      self.feed_filter[:always_include].clear
       self.feed_filter[:include].clear
       self.feed_filter[:exclude].clear
-    elsif params.has_key?(:feed_filter) and new_feed_filter
-      self.feed_filter[:include].clear
+    elsif new_feed_filter
+      # self.feed_filter[:include].clear
       add_feed :include, new_feed_filter
     end
     
@@ -71,15 +72,13 @@ class View < ActiveRecord::Base
     if new_tag_filter == 'all'
       self.tag_filter[:include].clear
       self.tag_filter[:exclude].clear
-    elsif params.has_key?(:tag_filter) and new_tag_filter
-      self.tag_filter[:include].clear
+    elsif new_tag_filter
+      # self.tag_filter[:include].clear
       add_tag :include, new_tag_filter
     end
   
     new_text_filter = params[:text_filter]
-    if new_feed_filter or new_tag_filter
-      self.text_filter = nil
-    elsif params.has_key?(:text_filter) and new_text_filter.blank?
+    if params.has_key?(:text_filter) and new_text_filter.blank?
       self.text_filter = nil
     elsif new_text_filter
       self.text_filter = new_text_filter
@@ -115,9 +114,9 @@ class View < ActiveRecord::Base
 private
   def arg_to_tag(arg)
     if arg.is_a?(Tag)
-      arg.id.to_s
+      arg.id
     elsif arg.to_s =~ /^\d+$/
-      arg
+      arg.to_i
     else
       raise ArgumentError.new("Argument must be a tag or tag id")
     end

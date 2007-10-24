@@ -45,7 +45,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'index'
     assert_not_nil assigns(:feed_items)
-    assert assigns(:view).tag_filter[:include].include?(tag.id.to_s)
+    assert assigns(:view).tag_filter[:include].include?(tag.id)
     
     # tag filter only work over positive taggings for M2
     assert_equal 1, assigns(:feed_items).size
@@ -56,7 +56,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'index'
     assert_not_nil assigns(:feed_items)
-    assert assigns(:view).tag_filter[:include].include?(tag.id.to_s)
+    assert assigns(:view).tag_filter[:include].include?(tag.id)
     assert_equal 1, assigns(:feed_items).size
     assert_equal 2, assigns(:feed_items).first.id
         

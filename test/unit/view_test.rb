@@ -6,6 +6,130 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
+class UpdateFiltersViewTest < Test::Unit::TestCase
+  def test_changes_tag_inspect_mode
+    @view = View.new
+    assert !@view.tag_inspect_mode?
+    
+    # Should not change the mode
+    @view.update_filters :mode => "garbage"
+    assert !@view.tag_inspect_mode?
+    
+    # Should not change the mode
+    @view.update_filters
+    assert !@view.tag_inspect_mode?
+    
+    @view.update_filters :mode => "tag_inspect"
+    assert @view.tag_inspect_mode?
+
+    # Should not change the mode
+    @view.update_filters :mode => "garbage"
+    assert @view.tag_inspect_mode
+
+    # Should not change the mode
+    @view.update_filters
+    assert @view.tag_inspect_mode
+
+    @view.update_filters :mode => "normal"
+    assert !@view.tag_inspect_mode?
+  end
+
+  def test_changes_show_untagged
+    @view = View.new
+    assert !@view.show_untagged?
+
+    # Should not change show_untagged
+    @view.update_filters
+    assert !@view.show_untagged?
+
+    @view.update_filters :show_untagged => "true"
+    assert @view.show_untagged?
+
+    # Should not change show_untagged
+    @view.update_filters
+    assert @view.show_untagged?
+
+    @view.update_filters :show_untagged => "false"
+    assert !@view.show_untagged?
+  end
+
+  def test_changes_text_filter
+    @view = View.new
+    assert_nil @view.text_filter
+    
+    @view.update_filters :text_filter => " "
+    assert_nil @view.text_filter
+    
+    @view.update_filters :text_filter => "ruby"
+    assert_equal "ruby", @view.text_filter
+    
+    @view.update_filters
+    assert_equal "ruby", @view.text_filter
+    
+    @view.update_filters :text_filter => " "
+    assert_nil @view.text_filter
+  end
+  
+  def test_changes_feed_filter
+    @view = View.new
+    assert @view.feed_filter[:always_include].blank?
+    assert @view.feed_filter[:include].blank?
+    assert @view.feed_filter[:exclude].blank?
+    
+    @view.update_filters :feed_filter => "1"
+    assert @view.feed_filter[:always_include].blank?
+    assert_equal [1], @view.feed_filter[:include]
+    assert @view.feed_filter[:exclude].blank?
+    
+    @view.update_filters :feed_filter => "1"
+    assert @view.feed_filter[:always_include].blank?
+    assert_equal [1], @view.feed_filter[:include]
+    assert @view.feed_filter[:exclude].blank?
+    
+    @view.update_filters :feed_filter => "2"
+    assert @view.feed_filter[:always_include].blank?
+    assert_equal [1, 2], @view.feed_filter[:include]
+    assert @view.feed_filter[:exclude].blank?
+    
+    @view.add_feed :always_include, 3
+    @view.add_feed :exclude, 4
+    assert !@view.feed_filter[:always_include].blank?
+    assert !@view.feed_filter[:include].blank?
+    assert !@view.feed_filter[:exclude].blank?
+    
+    @view.update_filters :feed_filter => "all"
+    assert @view.feed_filter[:always_include].blank?
+    assert @view.feed_filter[:include].blank?
+    assert @view.feed_filter[:exclude].blank?
+  end
+  
+  def test_changes_tag_filter
+    @view = View.new
+    assert @view.tag_filter[:include].blank?
+    assert @view.tag_filter[:exclude].blank?
+    
+    @view.update_filters :tag_filter => "1"
+    assert_equal [1], @view.tag_filter[:include]
+    assert @view.tag_filter[:exclude].blank?
+    
+    @view.update_filters :tag_filter => "1"
+    assert_equal [1], @view.tag_filter[:include]
+    assert @view.tag_filter[:exclude].blank?
+    
+    @view.update_filters :tag_filter => "2"
+    assert_equal [1, 2], @view.tag_filter[:include]
+    assert @view.tag_filter[:exclude].blank?
+    
+    @view.add_tag :exclude, 3
+    assert !@view.tag_filter[:include].blank?
+    assert !@view.tag_filter[:exclude].blank?
+    
+    @view.update_filters :tag_filter => "all"
+    assert @view.tag_filter[:include].blank?
+    assert @view.tag_filter[:exclude].blank?
+  end
+end
+
 class FeedViewTest < Test::Unit::TestCase
   def test_add_feed_to_include_list_when_list_is_empty
     view = View.new
@@ -85,7 +209,7 @@ class TagViewTest < Test::Unit::TestCase
     
     @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size    
-    assert @view.tag_filter[:include].include?(@tag.id.to_s)
+    assert @view.tag_filter[:include].include?(@tag.id)
   end
 
   def test_add_tag_to_include_list_when_list_is_not_empty
@@ -97,8 +221,8 @@ class TagViewTest < Test::Unit::TestCase
         
     @view.add_tag :include, @tag
     assert_equal 2, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag.id.to_s)
-    assert @view.tag_filter[:include].include?(@tag2.id.to_s)
+    assert @view.tag_filter[:include].include?(@tag.id)
+    assert @view.tag_filter[:include].include?(@tag2.id)
   end
   
   def test_add_tag_to_include_when_tag_is_already_in_exclude
@@ -107,24 +231,24 @@ class TagViewTest < Test::Unit::TestCase
     
     @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag.id.to_s)
+    assert @view.tag_filter[:include].include?(@tag.id)
     assert @view.tag_filter[:exclude].empty?
   end
   
   def test_add_tag_to_include_when_tag_is_already_in_include
     @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag.id.to_s)
+    assert @view.tag_filter[:include].include?(@tag.id)
     
     @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag.id.to_s)
+    assert @view.tag_filter[:include].include?(@tag.id)
   end
   
   def test_remove_tag_from_include
     @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filter[:include].size
-    assert @view.tag_filter[:include].include?(@tag.id.to_s)
+    assert @view.tag_filter[:include].include?(@tag.id)
     
     @view.remove_tag @tag
     assert @view.tag_filter[:include].empty?
@@ -133,7 +257,7 @@ class TagViewTest < Test::Unit::TestCase
   def test_remove_tag_from_exclude
     @view.add_tag :exclude, @tag
     assert_equal 1, @view.tag_filter[:exclude].size
-    assert @view.tag_filter[:exclude].include?(@tag.id.to_s)
+    assert @view.tag_filter[:exclude].include?(@tag.id)
     
     @view.remove_tag @tag
     assert @view.tag_filter[:exclude].empty?
@@ -147,14 +271,10 @@ class TagViewTest < Test::Unit::TestCase
     dup_view = original_view.dup
     
     assert_equal users(:quentin), dup_view.user
-    assert_equal({ :include => [Tag(users(:quentin), 'demo').id.to_s], :exclude => [] }, dup_view.tag_filter)
+    assert_equal({ :include => [Tag(users(:quentin), 'demo').id], :exclude => [] }, dup_view.tag_filter)
     assert_equal({ :always_include => [], :include => [2], :exclude => [] }, dup_view.feed_filter)
     assert_equal "ruby", dup_view.text_filter
     assert_equal true, dup_view.tag_inspect_mode?
     assert_equal true, dup_view.show_untagged?
   end
-  
-  
-      
-
 end
