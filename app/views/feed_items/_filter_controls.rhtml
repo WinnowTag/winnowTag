@@ -3,9 +3,8 @@
 <ul class="filter_list">
 <% current_user.tags.each do |tag| -%>
   <li class="clearfix">
-
-	  <%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
     <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+	  <%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id.to_s), "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
     <%= tag.name %>
   </li>
 <% end -%>
