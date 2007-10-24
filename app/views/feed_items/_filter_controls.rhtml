@@ -20,7 +20,7 @@
 <h4>Feed Filters</h4>
 
 <center>
-  <% form_tag nil, :onsubmit => "add_feed_filter($('feed_title').value); this.reset(); return false;" do -%>
+  <% form_tag nil, :onsubmit => "return false;" do -%>
     <%= text_field_tag 'feed_title', nil %>
     <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
     <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
