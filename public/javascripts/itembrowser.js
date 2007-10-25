@@ -371,7 +371,10 @@ ItemBrowser.prototype = {
 		
 		this.item_loading_timeout = setTimeout(function() {
 			if (this.loading) {
-				this.update_queue.push({offset: offset});
+			  var self = this;
+				this.update_queue.push(function() {
+				  self.updateFeedItems({offset: offset});
+				});
 			} else {
 				this.updateFeedItems({offset: offset});				
 			}
@@ -385,7 +388,8 @@ ItemBrowser.prototype = {
 	
 	updateFromQueue: function() {
 		if (this.update_queue.any()) {
-			this.updateFeedItems(this.update_queue.shift());
+			var next_action = this.update_queue.shift();
+			next_action();
 		}
 	},
 	
@@ -635,7 +639,13 @@ ItemBrowser.prototype = {
 	
 	reload: function(parameters) {
 		if (this.loading) {
-      // this.update_queue.push(parameters);
+		  var self = this;
+      this.update_queue.push(function() {
+        self.loading = true;
+        self.showLoadingIndicator();
+        self.clear();
+        self.doUpdate(parameters);
+      });
 		} else {
 		  this.loading = true;
       this.showLoadingIndicator();

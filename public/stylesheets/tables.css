@@ -22,7 +22,6 @@ th.indented {
 table.data_table th, table.property_table th {
 	color: #444;
 	font-size: 90%;
-	font-weight: 650;
 	text-transform: uppercase;
 	border-bottom: 2px solid #ddd;
 }
