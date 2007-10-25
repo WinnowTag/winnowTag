@@ -466,7 +466,12 @@ a.editor_cancel {
 }
 
 .auto_complete ul li .filter_control, 
-.auto_complete ul li .remove_filter  {
+.auto_complete ul li .remove_filter,
+.auto_complete ul li .show_feed_control  {
+  display: none;
+}
+
+#feed_filters li .feed_name {
   display: none;
 }
 
