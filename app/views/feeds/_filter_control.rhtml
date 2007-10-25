@@ -4,5 +4,5 @@
 	<%= filter_control "Always Exclude This Feed", :include, @view.feed_filter[:always_include].include?(feed.id), 
 		      :onclick => "itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_state: 'always_include', feed_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
 	<%= link_to_function image_tag("cross.gif"), "this.up('li').remove(); itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_action: 'remove'})", :class => "remove_filter" %>
-  <%= link_to highlight(truncate(feed.title), @q, '<span class="highlight">\1</span>'), feed_items_path(:feed_filter => feed, :view_id => :new) %>
+  <%= link_to highlight(truncate(feed.title), @q, '<span class="highlight">\1</span>'), feed_items_path(:feed_filter => feed, :show_untagged => true, :view_id => :new) %>
 </li>
