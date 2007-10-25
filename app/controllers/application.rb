@@ -34,10 +34,9 @@ class ApplicationController < ActionController::Base
     if current_user
       if params[:view_id]
         if params[:view_id] == "new"
-          @view = current_user.views.create
           if request.get?
+            @view = current_user.views.create!
             redirect_to params.merge(:view_id => @view)
-            return false
           end
         else
           @view = current_user.views.find(params[:view_id])
@@ -46,13 +45,11 @@ class ApplicationController < ActionController::Base
       elsif @view = current_user.views.default
         if request.get?
           redirect_to params.merge(:view_id => @view)
-          return false
         end
       else
-        @view = current_user.views.create
+        @view = current_user.views.create!
         if request.get?
           redirect_to params.merge(:view_id => @view)
-          return false
         end
       end
     end
