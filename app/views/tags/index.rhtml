@@ -13,7 +13,7 @@ To rename or merge one of your tags with another, just click on the tag name. Ex
 		<%= render :partial => 'tag', :collection => @tags %>
 
     <% unless @subscribed_tags.blank? %>
-		  <tr><th colspan="9" class="table_break">Subscribed Tags</th></tr>
+		  <tr><th colspan="2" class="table_break">Subscribed Tags</th></tr>
 		  <%= render :partial => 'subscribed', :collection => @subscribed_tags %>
 		<% end -%>
 	</table>

@@ -37,6 +37,7 @@ class TagsControllerTest < Test::Unit::TestCase
     get :index, :view_id => users(:quentin).views.create
     assert assigns(:tags)
     assert_equal(@tag, assigns(:tags).first)
+    assert assigns(:subscribed_tags)
     assert assigns(:classifier)
     assert_select "tr##{@tag.dom_id}", 1
     assert_select "tr##{@tag.dom_id} td:nth-child(1)", /tag.*/
