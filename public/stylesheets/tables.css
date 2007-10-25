@@ -71,6 +71,10 @@ th.sensitivity, td.sensitivity {
   width: 90px;
 }
 
+td.controls {
+  text-align: right;
+}
+
 table.data_table th.table_break {
 	padding-top: 10px;
 	font-size: 100%;

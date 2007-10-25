@@ -25,8 +25,8 @@
 		<td class="number"><%= feed.feed_items_count %></td>
 		<td class="date"><%= format_date(feed.updated_on) %></td>
 		<td class="controls">
-			<%= control_link 'Show Items', feed_items_path(:feed_filter => feed, :view_id => :new) %><% "|" if is_admin? %>
-			<%= control_link 'Destroy', feed_path(feed), :method => :delete, :requires => is_admin?, :confirm => "Do you really want to delete #{feed.title}?" %>
+			<%= control_link image_tag("show.gif"), feed_items_path(:feed_filter => feed, :view_id => :new) %>
+			<%= control_link image_tag("trash.gif"), feed_path(feed), :method => :delete, :requires => is_admin?, :confirm => "Do you really want to delete #{feed.title}?" %>
 		</td>
   </tr>
 <% end %>
