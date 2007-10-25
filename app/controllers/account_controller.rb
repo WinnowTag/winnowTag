@@ -18,11 +18,9 @@ class AccountController < ApplicationController
   end
   
   def welcome
-    @title = 'Welcome to Winnow'
   end
 
   def edit
-    @title = "My Info"
     if request.post?
       params[:current_user].delete(:login)
       if current_user.update_attributes(params[:current_user])
@@ -52,7 +50,6 @@ class AccountController < ApplicationController
   end
   
   def login
-    @title = "Log In"
     return unless request.post?
     self.current_user = User.authenticate(params[:login], params[:password])
     if current_user
@@ -78,7 +75,6 @@ class AccountController < ApplicationController
       flash[:error] = "Signup is currently disabled.  Please contact info@peerworks.org for more information."
       redirect_to :back and return
     end
-    @title = 'Create an Account'
     @user = User.new(params[:user])
     return unless request.post?
     @user.save!

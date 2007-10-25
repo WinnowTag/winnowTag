@@ -42,13 +42,6 @@ body > p {
 	font-size: 12px;
 }
 
-#page_title {
-	padding: 5px 9px 9px 9px;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 24px;
-	text-transform: capitalize;
-}
-
 #error_message {
 	background-color: #D32;
 	color: white;

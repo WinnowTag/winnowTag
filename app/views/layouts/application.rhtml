@@ -18,7 +18,6 @@
 </head>
 <body id="<%= controller_name %>_controller">
 	<%= render :partial => 'layouts/account_controls' %>
-	<div id="page_title"><%= @title or "Winnow" %></div>
 	<%= render :partial => 'layouts/navbar' %>
 	<div id="header_controls" class="clearfix">
 		<% if sidebar_content = yield(:sidebar) -%>

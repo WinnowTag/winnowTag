@@ -69,12 +69,11 @@ function resizeContent() {
 	var sidebar = $('sidebar');
 	if(content) {
 		var body_height = $(document.body).getDimensions().height;
-		var page_title_height = $('page_title').getDimensions().height;
 		var nav_bar_height = $('nav_bar') ? $('nav_bar').getDimensions().height : 0;
 		var flash_height = $('flash').getDimensions().height;
 		var text_filter_height = $('header_controls').getHeight();
 		var footer_height = $('footer') ? $('footer').getHeight() : 0;
-		var feed_item_height = body_height - nav_bar_height - page_title_height - flash_height - text_filter_height - footer_height;
+		var feed_item_height = body_height - nav_bar_height - flash_height - text_filter_height - footer_height;
 		content.style.height = (feed_item_height - ($('feed_items_controller') ? 0 : 20)) + 'px';
 		if(sidebar) {
 			sidebar.style.height = feed_item_height + 'px';

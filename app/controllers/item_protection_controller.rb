@@ -10,7 +10,6 @@ class ItemProtectionController < ApplicationController
   
   def show
     begin
-      @title = 'winnow: admin'
       @protector = Protector.protector(request.host)
     rescue ActiveResource::ConnectionError
       flash.now[:error] = "Unable to fetch protection status from the collector"

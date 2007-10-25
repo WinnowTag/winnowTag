@@ -8,6 +8,5 @@
 class AdminController < ApplicationController
   permit 'admin'
   def index
-    @title = 'winnow: admin'
   end
 end

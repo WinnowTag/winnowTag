@@ -24,7 +24,6 @@ class TagsController < ApplicationController
   # Show a table of the users tags
   def index
     respond_to do |wants|
-      @title = 'My Tags'
       @tags = current_user.tags_with_count
       @classifier = current_user.classifier
       wants.html

@@ -79,7 +79,6 @@ class FeedItemsController < ApplicationController
   end
   
   def inspect
-    @title = "Classifer Inspector for '#{truncate(@feed_item.display_title)}'"
     @feed_item = FeedItem.find(params[:id])
     @user_tags_on_item = @feed_item.taggings.find_by_user(current_user).map(&:tag)
     

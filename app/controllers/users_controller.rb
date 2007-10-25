@@ -16,7 +16,6 @@ class UsersController < ApplicationController
           :add_flash => {:error => 'login_as requires post'}
   
   def index
-    @title = 'Users'
     @user_pages, @users = paginate(:users, :order => 'lastname, firstname', :per_page => 20)
   end
 
@@ -34,7 +33,6 @@ class UsersController < ApplicationController
   end
   
   def show  
-    @title = "#{@user.display_name}'s Details"
   end
 
   # currently don't support updates by admins

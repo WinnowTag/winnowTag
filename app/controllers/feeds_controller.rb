@@ -19,7 +19,6 @@ class FeedsController < ApplicationController
         add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
         add_to_sortable_columns('feeds', :field => 'updated_on', :alias => 'updated_on')
         
-        @title = 'winnow feeds'
         @feed_pages = Paginator.new(self, Feed.count(:conditions => @conditions), 40, params[:page])
         @feeds = Feed.find(:all,
                             :conditions => @conditions,
@@ -30,12 +29,11 @@ class FeedsController < ApplicationController
                                                     :field => 'title', 
                                                     :sort_direction => :desc))
       end
-      wants.xml {render :xml => Feed.find(:all).to_xml}
+      wants.xml { render :xml => Feed.find(:all).to_xml }
     end
   end
   
   def new
-    @title = "winnow feeds: add a feed"
     @feed = Feed.new
   end
   
@@ -59,7 +57,6 @@ class FeedsController < ApplicationController
   
   def show
     @feed = Feed.find(params[:id])
-    @title = @feed.title
   end  
 
   def auto_complete_for_feed_title

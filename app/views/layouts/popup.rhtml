@@ -3,11 +3,10 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title><%= @title %></title>
+  <title>Winnow <%= "(#{current_user.display_name})" unless current_user.nil? %>: <%= controller.controller_name %> <% controller.action_name %></title>
   <%= stylesheet_link_tag 'winnow.css' %>
 </head>
 <body>
-	<div id="page_title"><%= @title or "needs title"%></div>
-	<%= @content_for_layout %>
+	<%= yield %>
 </body>
 </html>

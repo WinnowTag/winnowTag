@@ -8,7 +8,6 @@
 class AboutController < ApplicationController
 
   def index
-    @title = 'About Winnow'
     @about = `svn info #{__FILE__}`
     
     if @about =~ /Revision: ([\d]+)/
@@ -21,7 +20,6 @@ class AboutController < ApplicationController
   end
   
   def help
-    @title = "Winnow User Documentation"
     render :action => 'help', :layout => 'popup'
   end
 end
