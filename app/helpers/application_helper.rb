@@ -26,20 +26,31 @@ module ApplicationHelper
   
   def navigation_bar
     tabs = ''
-    tabs << link_to('Feeds', feeds_path(:view_id => @view), :class => tab_selected('feeds')) 
-  	tabs << link_to('Feed Items', feed_items_path(:view_id => @view), :class => tab_selected('feed_items')) 
-  	tabs << link_to('My Tags', tags_path(:view_id => @view), :class => tab_selected('tags', 'index'))
-  	tabs << link_to('Public Tags', public_tags_path(:view_id => @view), :class => tab_selected('tags', 'public'))
-  	       
-  	if current_user and is_admin?
-  	  tabs << link_to('Admin', admin_path(:view_id => @view), :class => tab_selected('admin'))
-		end 
+    
+    if current_user
+    	tabs << link_to('Items', feed_items_path(:view_id => @view), :class => tab_selected('feed_items'))
+    	tabs << link_to('My Tags', tags_path(:view_id => @view), :class => tab_selected('tags', 'index'))
+    	tabs << link_to('Public Tags', public_tags_path(:view_id => @view), :class => tab_selected('tags', 'public'))
+      tabs << link_to('Feeds', feeds_path(:view_id => @view), :class => tab_selected('feeds'))
+
+    	if is_admin?
+    	  tabs << link_to('Admin', admin_path(:view_id => @view), :class => tab_selected('admin'))
+    	  tabs << link_to("About", about_path(:view_id => @view), :class => tab_selected('about'))
+  		end
   		
-  	tabs << link_to("About", about_path(:view_id => @view), :class => tab_selected('about'))
+  		tabs << link_to('Help', help_path, :popup => ['help', 'width=500,height=400'])
+  		tabs << link_to('My Info', edit_account_path(:id => current_user, :view_id => @view), :class => tab_selected('account', 'edit'))
+  		tabs << link_to("Logout", logout_path)
+  	else
+  	  tabs << link_to("Login", login_path, :class => tab_selected('account', 'login'))
+      unless AccountController.signup_disabled
+        tabs << link_to("Signup", signup_path)
+      end
+  	end
   	
   	tabs
   end
-  
+    
   def show_flash
     [:notice, :warning, :message, :error].map do |name|
       if flash[name]
