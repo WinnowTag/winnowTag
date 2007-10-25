@@ -66,7 +66,6 @@ function selected_display_of(control_id) {
 
 function resizeContent() {
 	var content = $('content');
-	var sidebar = $('sidebar');
 	if(content) {
 		var body_height = $(document.body).getDimensions().height;
 		var nav_bar_height = $('nav_bar') ? $('nav_bar').getDimensions().height : 0;
@@ -75,12 +74,31 @@ function resizeContent() {
 		var footer_height = $('footer') ? $('footer').getHeight() : 0;
 		var feed_item_height = body_height - nav_bar_height - flash_height - text_filter_height - footer_height;
 		content.style.height = (feed_item_height - ($('feed_items_controller') ? 0 : 20)) + 'px';
+		
+	  var sidebar = $('sidebar');
 		if(sidebar) {
 			sidebar.style.height = feed_item_height + 'px';
+			$('sidebar_control').style.height = feed_item_height + 'px';
 		}
 	}
 }
 
+function toggleSidebar() {
+  var sidebar = $('sidebar');
+  var sidebar_control = $('sidebar_control');
+  sidebar.toggle();
+  if(sidebar.visible()) {
+    // This is a hack for Safari's refusal to redraw the content div when the sidebar is toggled
+    $('content').setStyle({width: 'auto'});
+    sidebar_control.addClassName('open');
+    Cookie.set("show_sidebar", true);
+  } else {
+    // This is a hack for Safari's refusal to redraw the content div when the sidebar is toggled
+    $('content').setStyle({width: '100%'});
+    sidebar_control.removeClassName('open');
+    Cookie.set("show_sidebar", false);
+  }
+}
 
 var lastFontSize;
 function observeFontSizeChange(callback) {

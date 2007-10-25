@@ -125,11 +125,35 @@ optgroup {
 }
 
 #sidebar {
-	width:  230px;
+	width: 230px;
 	height: auto;
 	float: left;
 	padding: 0 5px 5px 5px;
+}
+
+#sidebar_control {
+  cursor: pointer;
+	width: 10px;
+	height: auto;
+	float: left;
+	background: url(../images/right_aarow.png) 3px center no-repeat;
 	border-right: 1px solid #999;
+}
+
+#sidebar_control:hover {
+	border-left: 1px solid #999;
+	width: 9px;
+  background-color: #E8EEF7;
+  background-position: 2px center;
+}
+
+#sidebar_control.open {
+	background: url(../images/left_aarow.png) 2px center no-repeat;
+}
+
+#sidebar_control.open:hover {
+  background-color: #E8EEF7;
+  background-position: 1px center;
 }
 
 #sidebar h4 {
@@ -153,11 +177,6 @@ optgroup {
 
 #header_controls form > div {
   display: inline;
-}
-
-#header_controls .sidebar_control {
-	float: left;
-	margin: .3em 1em 0 0;
 }
 
 #header_controls .view_controls {

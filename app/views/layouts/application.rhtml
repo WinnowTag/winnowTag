@@ -19,22 +19,6 @@
 <body id="<%= controller_name %>_controller">
 	<%= render :partial => 'layouts/navbar' %>
 	<div id="header_controls" class="clearfix">
-		<% if sidebar_content = yield(:sidebar) -%>
-		  <%# This is a hack for Safari's refusal to redraw the content div when %>
-		  <%# the side bar is hidden.  We force a redraw by changing the style. %>
-			<%= link_to_function "#{show_sidebar? ? 'Hide' : 'Show' } Sidebar", %Q[
-			    $('sidebar').toggle();
-			    if (this.innerHTML.match(/hide/i)) {
-			        this.update('Show Sidebar');
-			        $('content').setStyle({width: '100%'});
-			        Cookie.set("show_sidebar", false);
-			    } else {
-			        this.update('Hide Sidebar');
-			        $('content').setStyle({width: 'auto'});
-			        Cookie.set("show_sidebar", true);
-			    }], :class => "sidebar_control" %>
-		<% end -%>
-		
 		<%= render :partial => "layouts/view_controls" %>
 		<div class="custom_controls">
 			<%= yield(:header_controls) %>
@@ -45,11 +29,16 @@
 		<div id="error_message" style="display: none;"></div>
 		<%= show_flash %>
 	</div>
-	
-	<% if sidebar_content -%>
-		<div id="sidebar" style="<%= show_sidebar? ? nil : 'display: none;' %>"><%= sidebar_content %></div>
+
+	<% if sidebar_content = yield(:sidebar) -%>
+		<div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
+		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
 	<% end -%>
-	<div id="content"><%= yield %></div>
+
+	<div id="content">
+	  <%= yield %>
+	</div>
+
 	<% if footer_content = yield(:footer) -%>
 		<div id="footer"><%= footer_content %></div>
 	<% end -%>
