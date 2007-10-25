@@ -27,7 +27,7 @@ class FeedsController < ApplicationController
                             :order => sortable_order('feeds', 
                                                     :model => Feed, 
                                                     :field => 'title', 
-                                                    :sort_direction => :desc))
+                                                    :sort_direction => :asc))
       end
       wants.xml { render :xml => Feed.find(:all).to_xml }
     end
