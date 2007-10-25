@@ -146,7 +146,7 @@ class TagsController < ApplicationController
   
   def subscribe
     if tag = Tag.find_by_name(params[:id])
-      if params[:subscribe]
+      if params[:subscribe] =~ /true/i
         TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
       else
         TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id

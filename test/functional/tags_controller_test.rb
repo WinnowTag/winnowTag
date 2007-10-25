@@ -202,7 +202,7 @@ class TagsControllerTest < Test::Unit::TestCase
     
     TagSubscription.expects(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
     
-    put :subscribe, :id => tag.name, :subscribe => true, :view_id => users(:quentin).views.create!
+    put :subscribe, :id => tag.name, :subscribe => "true", :view_id => users(:quentin).views.create!
     
     assert_response :success
   end
@@ -216,7 +216,7 @@ class TagsControllerTest < Test::Unit::TestCase
     
     TagSubscription.expects(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
     
-    put :subscribe, :id => tag.name, :subscribe => false, :view_id => users(:quentin).views.create!
+    put :subscribe, :id => tag.name, :subscribe => "false", :view_id => users(:quentin).views.create!
     
     assert_response :success
   end
