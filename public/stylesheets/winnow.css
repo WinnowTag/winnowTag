@@ -772,3 +772,7 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 label {
   cursor: pointer;
 }
+
+input.example {
+  color: #999;
+}
