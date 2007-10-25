@@ -24,10 +24,13 @@ class TagsController < ApplicationController
   # Show a table of the users tags
   def index
     respond_to do |wants|
-      @tags = current_user.tags_with_count
-      @classifier = current_user.classifier
-      wants.html
-      wants.xml {render :xml => @tags.to_xml}
+      wants.html do
+        @classifier = current_user.classifier
+        
+        setup_sortable_columns
+        @tags = current_user.tags.find_all_with_count(:order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+      end
+      wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end
   end
   
@@ -136,7 +139,9 @@ class TagsController < ApplicationController
   end
   
   def public
-    @tags = Tag.find_all_public_with_count
+    setup_sortable_columns
+    @tags = Tag.find_all_with_count(:conditions => ["tags.public = ?", true], 
+                                    :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
   end
   
   private
@@ -148,5 +153,13 @@ class TagsController < ApplicationController
     else
       true
     end
+  end
+  
+  def setup_sortable_columns
+    add_to_sortable_columns('tags', :field => 'name')
+    add_to_sortable_columns('tags', :field => 'public')
+    add_to_sortable_columns('tags', :field => 'classifier_count')
+    add_to_sortable_columns('tags', :field => 'last_used_by')
+    add_to_sortable_columns('tags', :field => 'login')
   end
 end

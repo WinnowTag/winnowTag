@@ -1,11 +1,11 @@
 <div id="tags">
 	<table class="data_table">		
 		<tr>
-			<th class="tag">Tag</th>
+			<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => "name") %></th>
 			<th class="usage number">Usage (+/-)</th>
-			<th class="classifier_usage number">Classifier</th>
-			<th class="date">Last Trained</th>
-			<th class="indented">User</th>
+			<th class="classifier_usage number"><%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %></th>
+			<th class="date"><%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %></th>
+			<th class="indented"><%= link_to "User", sort_param('tags', :alias => "login") %></th>
 		</tr>
 		<% for tag in @tags -%>
   		<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">

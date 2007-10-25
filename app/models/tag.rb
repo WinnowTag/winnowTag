@@ -69,8 +69,12 @@ class Tag < ActiveRecord::Base
   end
   
   def last_used_by
-    if tagging = taggings.find(:first, :order => 'created_on DESC')
-      tagging.created_on
+    if last_used_by = read_attribute(:last_used_by)
+      Time.parse(last_used_by)
+    else
+      if tagging = taggings.find(:first, :order => 'created_on DESC')
+        tagging.created_on
+      end
     end
   end
   
@@ -102,15 +106,17 @@ class Tag < ActiveRecord::Base
     destroy
   end
   
-  def self.find_all_public_with_count
+  def self.find_all_with_count(options = {})
     find(:all, 
        :select => 'tags.*, ' <<
                   'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 1, 1, NULL)) AS count, ' <<
                   'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 0, 1, NULL)) AS negative_count, ' <<
-                  'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count',
-       :joins => "LEFT JOIN taggings ON tags.id = taggings.tag_id",
-       :conditions => ["tags.public = ?", true],
+                  'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count, ' <<
+                  'MAX(taggings.created_on) AS last_used_by',
+       :joins => "LEFT JOIN taggings ON tags.id = taggings.tag_id " <<
+                 "LEFT JOIN users ON tags.user_id = users.id",
+       :conditions => options[:conditions],
        :group => 'tags.id',
-       :order => 'tags.name ASC')
+       :order => options[:order])
   end
 end

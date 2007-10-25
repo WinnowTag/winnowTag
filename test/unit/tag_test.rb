@@ -154,4 +154,26 @@ class TagTest < Test::Unit::TestCase
     assert_equal([], old.taggings.map(&:feed_item_id))
     assert_equal([1], new_tag.taggings.map(&:feed_item_id))    
   end
+  
+  def test_find_all_with_count
+    u = users(:quentin)
+    fi1 = FeedItem.find(1)
+    fi2 = FeedItem.find(4)
+    peerworks = Tag(u, 'peerworks')
+    test = Tag(u, 'test')
+    tag = Tag(u, 'tag')
+    Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
+    Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
+    Tagging.create(:user => u, :feed_item => fi1, :tag => test)
+
+    tags = Tag.find_all_with_count(:order => "tags.name")
+    assert_equal 3, tags.size
+    assert_equal 'peerworks', tags[0].name
+    assert_equal 2, tags[0].count.to_i
+    assert_equal 'tag', tags[1].name
+    assert_equal 0, tags[1].count.to_i
+    assert_equal 'test', tags[2].name
+    assert_equal 1, tags[2].count.to_i
+  end
+
 end
