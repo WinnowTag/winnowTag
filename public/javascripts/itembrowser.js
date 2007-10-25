@@ -647,8 +647,13 @@ ItemBrowser.prototype = {
 	showLoadingIndicator: function(message) {
 	  var indicator = $('feed_items_indicator')
 	  indicator.update(message || "Loading feed items...");
+
 	  var left = this.feed_items_scrollable.getWidth() / 2 - indicator.getWidth() / 2 + this.feed_items_scrollable.offsetLeft;
     indicator.style.left = left + "px";
+
+    // var top = this.feed_items_scrollable.getHeight() / 2 - indicator.getHeight() / 2 - this.feed_items_scrollable.offsetTop;
+    // indicator.style.top = top + "px";
+    
 	  indicator.show();
 	},
 	

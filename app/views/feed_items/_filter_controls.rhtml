@@ -19,20 +19,18 @@
 
 <h4>Feed Filters</h4>
 
-<center>
-  <% form_tag nil, :onsubmit => "return false;" do -%>
-    <%= text_field_tag 'feed_title', nil %>
-    <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
-    <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
-          :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
-          :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
-    <%= submit_tag "Add" %>
-  <% end -%>
-</center>
+<% form_tag nil, :onsubmit => "return false;", :class => "feed_filters_form" do -%>
+  <%= text_field_tag 'feed_title', nil %>
+  <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
+  <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
+        :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
+        :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
+  <%= submit_tag "Add" %>
+<% end -%>
 
 <ul id="feed_filters" class="filter_list">
 <% @view.feed_filter.values.flatten.each do |feed_id| -%>
   <% feed = Feed.find(feed_id) -%>
-  <%= render :partial => "feeds/filter_control", :locals => { :feed => feed } %>
+  <%= render :partial => "feeds/filter_control", :locals => { :feed => feed, :last => false } %>
 <% end -%>
 </ul>

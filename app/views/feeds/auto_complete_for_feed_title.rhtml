@@ -1,5 +1,5 @@
 <ul>
-  <% @feeds.each do |feed| -%>
-    <%= render :partial => "filter_control", :locals => { :feed => feed } %>
+  <% @feeds.each_with_index do |feed, index| -%>
+    <%= render :partial => "filter_control", :locals => { :feed => feed, :last => @feeds.size == index + 1 } %>
   <% end %>
 </ul>

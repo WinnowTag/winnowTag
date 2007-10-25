@@ -384,6 +384,10 @@ a.editor_cancel {
   border-bottom: 1px solid #999;
 }
 
+.auto_complete ul li.last {
+  border-bottom: 0;
+}
+
 .auto_complete ul li.selected {
   background-color: #b8d7ff;
 }
@@ -392,7 +396,8 @@ a.editor_cancel {
 	font-weight: bold;
 }
 
-.auto_complete ul li .filter_control {
+.auto_complete ul li .filter_control, 
+.auto_complete ul li .remove_filter  {
   display: none;
 }
 
@@ -727,10 +732,17 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 	cursor: pointer;
 }
 
+.feed_filters_form {
+  text-align: center;
+}
+
+.feed_filters_form ul {
+  text-align: left;
+}
+
 .filter_list {
   margin: 0;
   padding: 0;
-  
 }
 
 .filter_list .filter_control {
