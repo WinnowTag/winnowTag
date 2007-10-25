@@ -29,6 +29,7 @@ class TagsController < ApplicationController
         
         setup_sortable_columns
         @tags = current_user.tags.find_all_with_count(:order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @subscribed_tags = current_user.subscribed_tags
       end
       wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end
