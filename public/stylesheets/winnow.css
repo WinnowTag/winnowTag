@@ -124,8 +124,7 @@ img.flash_icon {
 }
 
 .navigation .main li a:hover {
-  background-color: #647CFF;
-  color: white;
+  text-decoration: underline;
 }
 
 .navigation .extra {
@@ -452,7 +451,6 @@ a.editor_cancel {
 .auto_complete ul li {
   margin: 0;
   padding: 0;
-/*  border-bottom: 1px solid #999;*/
 }
 
 .auto_complete ul li.last {
