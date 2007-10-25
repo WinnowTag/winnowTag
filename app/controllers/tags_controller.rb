@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :load_view, :only => :show
   skip_before_filter :login_required, :only => :show
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :show]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :show, :subscribe]
   
   # Show a table of the users tags
   def index
@@ -142,6 +142,17 @@ class TagsController < ApplicationController
     setup_sortable_columns
     @tags = Tag.find_all_with_count(:conditions => ["tags.public = ?", true], 
                                     :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+  end
+  
+  def subscribe
+    if tag = Tag.find_by_name(params[:id])
+      if params[:subscribe]
+        TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
+      else
+        TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
+      end
+    end
+    render :nothing => true
   end
   
   private

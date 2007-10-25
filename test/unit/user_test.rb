@@ -10,8 +10,12 @@ require File.dirname(__FILE__) + '/../test_helper'
 class UserTest < Test::Unit::TestCase  
   fixtures :users, :feed_items, :bayes_classifiers
   
-  def test_belongs_to_views
+  def test_has_many_views
     assert_association User, :has_many, :views
+  end
+  
+  def test_has_many_tag_subscriptions
+    assert_association User, :has_many, :tag_subscriptions
   end
 
   def test_should_be_owner_of_self

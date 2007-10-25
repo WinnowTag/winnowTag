@@ -27,7 +27,7 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => {:mark_read => :put}
   map.resources :tags, :requirements => {:id => /.*/},
                 :collection => { :public => :get },
-                :member => { :publicize => :put }
+                :member => { :publicize => :put, :subscribe => :put }
   
   map.public_tag "/tags/public/:user_id/:id", :controller => "tags", :action => "show"
   map.formatted_public_tag "/tags/public/:user_id/:id.:format", :controller => "tags", :action => "show"

@@ -192,4 +192,32 @@ class TagsControllerTest < Test::Unit::TestCase
     get :show, :user_id => user.login, :id => tag.name, :format => "atom"
     assert_response :success
   end
+  
+  def test_subscribe_to_public_tag    
+    other_user = users(:aaron)
+    # Note: we must use a tag name other than the oft-used 'tag' to make this test pass. Finding a
+    # tag by name only isn't sufficient, since tag names are unique by user, not globally.
+    tag = Tag(other_user, 'hockey')
+    tag.update_attribute :public, true
+    
+    TagSubscription.expects(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+    
+    put :subscribe, :id => tag.name, :subscribe => true, :view_id => users(:quentin).views.create!
+    
+    assert_response :success
+  end
+  
+  def test_unsubscribe_from_public_tag
+    other_user = users(:aaron)
+    # Note: we must use a tag name other than the oft-used 'tag' to make this test pass. Finding a
+    # tag by name only isn't sufficient, since tag names are unique by user, not globally.
+    tag = Tag(other_user, 'hockey')
+    tag.update_attribute :public, true
+    
+    TagSubscription.expects(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+    
+    put :subscribe, :id => tag.name, :subscribe => false, :view_id => users(:quentin).views.create!
+    
+    assert_response :success
+  end
 end

@@ -31,6 +31,7 @@ class Tag < ActiveRecord::Base
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true]
   has_many :feed_items, :through => :taggings
+  has_many :tag_subscriptions
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
@@ -104,6 +105,11 @@ class Tag < ActiveRecord::Base
     end
     
     destroy
+  end
+  
+  def subscribed?(user)
+    subscription = tag_subscriptions.find_by_user_id(user.id)
+    !subscription.nil?
   end
   
   def self.find_all_with_count(options = {})

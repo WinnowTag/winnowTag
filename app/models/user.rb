@@ -70,6 +70,7 @@ class User < ActiveRecord::Base
     end
   end
   has_many :unread_items, :dependent => :delete_all
+  has_many :tag_subscriptions
   before_create :create_classifier
   after_create :assign_manager_role_to_classifier
  
