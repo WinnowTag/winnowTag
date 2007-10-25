@@ -1,4 +1,4 @@
-<li class="clearfix<%= last ? " last" : nil %>">
+<li class="clearfix<%= last ? " last" : nil %>" title="<%= feed.feed_items.size %> items in this feed">
 	<%= filter_control "Always Include This Feed", :exclude, @view.feed_filter[:exclude].include?(feed.id), 
 		      :onclick => "itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_state: 'exclude', feed_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
 	<%= filter_control "Always Exclude This Feed", :include, @view.feed_filter[:always_include].include?(feed.id), 
