@@ -246,7 +246,11 @@ class FeedItem < ActiveRecord::Base
     
     add_always_include_feed_filter_conditions!(view.feed_filter[:always_include], options[:conditions])
     
-    if view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank?
+    # The untagged filter is only added if we are doing any sort of tag filtering.
+    # This ensures that there are no unneccesary joins to include untagged items
+    # when we are not filtering on tags anyway.
+    if view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank? &&
+                            !(view.tag_filter[:include].blank? && view.tag_filter[:exclude].blank?)
       add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       add_untagged_state_conditions!(view.user, filters[:include_negative], options[:conditions])
     end
