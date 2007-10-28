@@ -221,4 +221,37 @@ class TagsControllerTest < Test::Unit::TestCase
     
     assert_response :success
   end
+  
+  # SG: This test ensures that the user's public tag is actually the one that is subscribed to.
+  #     It also exposes the fact that sending only the name of the tag as the parameter is not
+  #     sufficient, it also needs the name of the user since tags are only unique for a user.
+  #     In fact it probably makes sense to use the public_tag route to call subscribe.
+  #
+  #     This test is currently failing, Craig should probably be the one to fix it.
+  #
+  def test_subscribe_to_other_users_tag_with_same_name
+    other_user = users(:aaron)
+    tag = Tag(other_user, 'tag')
+    tag.update_attribute :public, true
+    
+    TagSubscription.expects(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+    
+    put :subscribe, :id => tag.name, :subscribe => "true", :view_id => users(:quentin).views.create!
+    
+    assert_response :success
+  end
+
+  # SG: This ensures that only public tags can be subscribed to.
+  # 
+  def test_cant_subscribe_to_other_users_non_public_tags
+    other_user = users(:aaron)
+    tag = Tag(other_user, 'hockey')
+    tag.update_attribute :public, false
+
+    assert_no_difference(TagSubscription, :count) do
+      put :subscribe, :id => tag.name, :subscribe => "true", :view_id => users(:quentin).views.create!
+    end
+    
+    assert_response 500   # Not sure if this is the right return code. 
+  end
 end
