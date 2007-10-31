@@ -29,7 +29,7 @@ class TagsController < ApplicationController
         
         setup_sortable_columns
         @tags = current_user.tags.find_all_with_count(:order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @subscribed_tags = current_user.subscribed_tags
+        @subscribed_tags = Tag.find_all_with_count(:user => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
       wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end
@@ -146,7 +146,8 @@ class TagsController < ApplicationController
   end
   
   def subscribe
-    if tag = Tag.find_by_name(params[:id])
+    tag = Tag.find_by_name(params[:id])
+    if tag && tag.public?
       if params[:subscribe] =~ /true/i
         TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
       else

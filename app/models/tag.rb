@@ -113,14 +113,20 @@ class Tag < ActiveRecord::Base
   end
   
   def self.find_all_with_count(options = {})
+    joins = []
+    joins << "LEFT JOIN taggings ON tags.id = taggings.tag_id"
+    joins << "LEFT JOIN users ON tags.user_id = users.id"
+    if options[:user]
+      joins << "INNER JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
+    end
+    
     find(:all, 
        :select => 'tags.*, ' <<
                   'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 1, 1, NULL)) AS count, ' <<
                   'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 0, 1, NULL)) AS negative_count, ' <<
                   'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count, ' <<
                   'MAX(taggings.created_on) AS last_used_by',
-       :joins => "LEFT JOIN taggings ON tags.id = taggings.tag_id " <<
-                 "LEFT JOIN users ON tags.user_id = users.id",
+       :joins => joins.join(" "),
        :conditions => options[:conditions],
        :group => 'tags.id',
        :order => options[:order])

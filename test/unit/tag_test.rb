@@ -8,7 +8,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class TagTest < Test::Unit::TestCase
-  fixtures :tags, :users
+  fixtures :tags, :users, :feed_items
 
   # Replace this with your real tests.
   def test_cant_create_duplicate_tags
@@ -194,6 +194,24 @@ class TagTest < Test::Unit::TestCase
     assert_equal 0, tags[1].count.to_i
     assert_equal 'test', tags[2].name
     assert_equal 1, tags[2].count.to_i
+  end
+  
+  def test_find_all_subscribed_tags_with_count
+    u = users(:quentin)
+    fi1 = FeedItem.find(1)
+    fi2 = FeedItem.find(4)
+    peerworks = Tag(u, 'peerworks')
+    test = Tag(u, 'test')
+    tag = Tag(u, 'tag')
+    Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
+    Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
+    Tagging.create(:user => u, :feed_item => fi1, :tag => test)
+    TagSubscription.create(:tag_id => tag.id, :user_id => users(:aaron).id)
+
+    tags = Tag.find_all_with_count(:order => "tags.name", :user => users(:aaron))
+    assert_equal 1, tags.size
+    assert_equal 'tag', tags[0].name
+    assert_equal 0, tags[0].count.to_i
   end
 
 end

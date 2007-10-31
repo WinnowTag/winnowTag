@@ -252,6 +252,6 @@ class TagsControllerTest < Test::Unit::TestCase
       put :subscribe, :id => tag.name, :subscribe => "true", :view_id => users(:quentin).views.create!
     end
     
-    assert_response 500   # Not sure if this is the right return code. 
+    assert_response :success 
   end
 end
