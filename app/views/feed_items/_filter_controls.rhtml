@@ -2,7 +2,8 @@
   <h4>Tag Filters</h4>
 
   <ul id="tag_filters" class="filter_list">
-  <% current_user.tags.each do |tag| -%>
+    <% all_tags = current_user.tags + current_user.subscribed_tags -%>
+  <% all_tags.each do |tag| -%>
     <li class="clearfix">
       <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id), 
             :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'exclude', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
