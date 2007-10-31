@@ -224,18 +224,20 @@ class FeedItem < ActiveRecord::Base
       tag_exclusion_filter_by_user[tag.user] << tag.id
     end
 
-    (tag_inclusion_filter_by_user.keys + tag_exclusion_filter_by_user.keys).uniq.each do |tagger|        
-
+    (tag_inclusion_filter_by_user.keys + tag_exclusion_filter_by_user.keys).uniq.each do |tagger|
       add_tag_filter_joins!(tagger, filters[:include_negative], filters[:only_tagger], joins)
       add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], filters[:include_negative], filters[:only_tagger], conditions)
-      add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], filters[:include_negative], conditions)        
+      add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], conditions)        
     end
     
     # Untagged filtering
     if !view.show_untagged?
       add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
-      add_tagged_state_conditions!(view.user, filters[:include_negative], conditions)
+      add_tagged_state_conditions!(view.user, conditions)
       
+      view.user.subscribed_tags.each do |tag|
+        add_tag_filter_joins!(tag.user, filters[:include_negative], filters[:only_tagger], joins)
+      end
     elsif view.show_untagged? && !view.feed_filter[:include].blank? && !view.feed_filter[:exclude].blank?
       add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       taggings_alias = taggings_alias_for(view.user)
@@ -252,7 +254,7 @@ class FeedItem < ActiveRecord::Base
     if view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank? &&
                             !(view.tag_filter[:include].blank? && view.tag_filter[:exclude].blank?)
       add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
-      add_untagged_state_conditions!(view.user, filters[:include_negative], options[:conditions])
+      add_untagged_state_conditions!(view.user, options[:conditions])
     end
     
     # Text filtering
@@ -326,7 +328,14 @@ class FeedItem < ActiveRecord::Base
     end
     
     unless include_negative
-      conditions << "#{taggings_alias}.strength >= 0.88" # This is the borderline cutoff
+      # This is the borderline cutoff
+      conditions << ("#{taggings_alias}.strength >= 0.88 AND 0 = ( " <<
+                      "SELECT COUNT(*) FROM taggings WHERE " <<
+                      "taggings.feed_item_id = #{taggings_alias}.feed_item_id AND " <<
+                      "taggings.tag_id = #{taggings_alias}.tag_id AND " <<
+                      "taggings.classifier_tagging = 0 AND "<<
+                      "taggings.strength = 0" <<
+                    ")")
     end
     
     "(#{conditions.join(" AND ")})"
@@ -360,59 +369,27 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  def self.add_tag_inclusion_conditions!(user, tag_filter, include_negative, conditions)
+  def self.add_tag_inclusion_conditions!(user, tag_filter, conditions)
     unless tag_filter.blank?
       taggings_alias = taggings_alias_for(user)
       tag_conditions = ["#{taggings_alias}.id IS NOT NULL", "#{taggings_alias}.tag_id IN (#{tag_filter.join(",")})"]
       conditions.concat(tag_conditions)
-      
-      # Finally, when applying normal tag filters if :include_negative is false
-      # add another condition overrides classifier assigned tags with any negative
-      # tagging by the user.  This ensures that when a user removes a classifier 
-      # assigned tag, which has the effect of adding a negative user tag, the classifier
-      # assigned tags don't cause the item to be included.
-      #
-      unless include_negative
-        taggings_alias_for_include_negative = taggings_alias_for(user) + "_negative"
-        
-        conditions << <<-EOSQL
-          feed_items.id NOT IN(
-            SELECT feed_item_id FROM taggings #{taggings_alias_for_include_negative}
-            WHERE #{taggings_alias_for_include_negative}.user_id = #{user.id}
-              AND #{taggings_alias_for_include_negative}.strength = 0
-              AND #{tag_conditions.join(" AND ").gsub(taggings_alias, taggings_alias_for_include_negative)}
-          )
-        EOSQL
-      end
     end
   end
   
-  def self.add_tagged_state_conditions!(user, include_negative, conditions)
+  def self.add_tagged_state_conditions!(user, conditions)
     taggings_alias = taggings_alias_for(user)
-  
-    tag_conditions = ["#{taggings_alias}.id IS NOT NULL"]
-    conditions.concat(tag_conditions)
+    ored_conditions = ["#{taggings_alias}.id IS NOT NULL"]
     
-    # Finally, when applying normal tag filters if :include_negative is false
-    # add another condition overrides classifier assigned tags with any negative
-    # tagging by the user.  This ensures that when a user removes a classifier 
-    # assigned tag, which has the effect of adding a negative user tag, the classifier
-    # assigned tags don't cause the item to be included.
-    #
-    unless include_negative
-      taggings_alias_for_include_negative = taggings_alias_for(user) + "_negative"
-      conditions << <<-EOSQL
-        feed_items.id NOT IN(
-          SELECT feed_item_id FROM taggings #{taggings_alias_for_include_negative}
-          WHERE #{taggings_alias_for_include_negative}.user_id = #{user.id}
-            AND #{taggings_alias_for_include_negative}.strength = 0
-            AND #{tag_conditions.join(" AND ").gsub(taggings_alias, taggings_alias_for_include_negative)}
-        )
-      EOSQL
+    user.subscribed_tags.group_by(&:user).each do |user, tags|
+      taggings_alias = taggings_alias_for(user)
+      ored_conditions << "#{taggings_alias}.tag_id IN (#{tags.map(&:id).join(",")})"
     end
+    
+    conditions << "(#{ored_conditions.join(" OR ")})"
   end
   
-  def self.add_untagged_state_conditions!(tagger, include_negative, conditions)
+  def self.add_untagged_state_conditions!(tagger, conditions)
     if !conditions.blank?
       taggings_alias = taggings_alias_for(tagger)
       conditions.replace "#{taggings_alias}.id IS NULL OR (#{conditions})"
@@ -517,9 +494,6 @@ class FeedItem < ActiveRecord::Base
   #
   # === Parameters
   #
-  # <tt>taggers</tt>::
-  #    An array of taggers to get the taggings for.  The order of the array enforces the priority
-  #    of the taggings.
   # <tt>:all_taggings</tt> <em>(true|false)</em>:: 
   #    If true return all taggings, not just the positive or priority ones. The default is false.
   #
@@ -537,8 +511,12 @@ class FeedItem < ActiveRecord::Base
   # first tagger will be returned.
   #
   def taggings_by_user(user, options = {})
-    options.assert_valid_keys([:all_taggings])  
-    taggings = self.taggings.find_by_user(user)
+    options.assert_valid_keys([:all_taggings, :tags])  
+    if options[:tags]
+      taggings = self.taggings.find_all_by_user_id_and_tag_id(user, options[:tags])
+    else
+      taggings = self.taggings.find_by_user(user)
+    end
 
     if options[:all_taggings]
       taggings.inject({}) do |hash, tagging|

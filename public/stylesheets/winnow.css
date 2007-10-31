@@ -734,6 +734,11 @@ a.editor_cancel {
 	color: #B2563F;
 }
 
+.item .closed .tags .public {
+	background: url(../images/public.png) center right no-repeat;
+	padding-right: 14px;
+}
+
 ul.tag_list {
 	margin: 0;
 	padding: 0;
@@ -809,6 +814,14 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 .filter_list {
   margin: 0;
   padding: 0;
+}
+
+.filter_list li {
+	padding-left: 14px;
+}
+
+.filter_list li.public {
+	background: url(../images/public.png) left center no-repeat;
 }
 
 .filter_list .filter_control {
