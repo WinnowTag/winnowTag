@@ -8,12 +8,6 @@
 class UsersController < ApplicationController
   permit 'admin'
   before_filter :setup_user, :except => [:create, :new]
-  verify :except => [:index, :new, :create], :params => :id, :redirect_to => {:action => ''},
-          :add_flash => {:error => 'action requires a user id'}
-  verify :only => [:destroy], :method => :delete, :redirect_to => {:action => ''},
-          :add_flash => {:error => 'destroy requires delete'}
-  verify :only => :login_as, :method => :post, :redirect_to => {:action => ''},
-          :add_flash => {:error => 'login_as requires post'}
   
   def index
     @user_pages, @users = paginate(:users, :order => 'lastname, firstname', :per_page => 20)
@@ -47,10 +41,10 @@ class UsersController < ApplicationController
 
   def destroy
     @user.destroy
-    redirect_to :action => ''
+    redirect_to users_path
   end
   
-  private
+private
   def setup_user
      if params[:id] =~ /^[\d]+$/    
        @user = User.find(params[:id]) 

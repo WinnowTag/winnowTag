@@ -94,14 +94,7 @@ class FeedsControllerTest < Test::Unit::TestCase
     assert_template 'show'
     assert_not_nil assigns(:feed)
   end
-  
-  def test_show_without_id_redirects_to_index
-    login_as(:admin)
-    get :show, :view_id => users(:admin).views.create
-    assert_response :redirect
-    assert_redirected_to :action => 'index'
-  end
-  
+    
   def test_show_assigns_feed
     login_as(:admin)
     get :show, :id => 1, :view_id => users(:admin).views.create

@@ -74,7 +74,7 @@ class FeedsController < ApplicationController
     render :layout => false
   end
 
-  private
+private
   def setup_search_term
     @search_term = params[:search_term]
     unless @search_term.nil? or @search_term.empty?

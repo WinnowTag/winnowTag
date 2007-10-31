@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
         :status => 400
       }
       
-  protected
+protected
   def local_request?
     [["216.176.191.98"] * 2, ["127.0.0.1"] * 2].include?([request.remote_addr, request.remote_ip])
   end

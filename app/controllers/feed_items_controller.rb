@@ -124,7 +124,6 @@ class FeedItemsController < ApplicationController
   end
 
 private
-  
   def update_access_time
     current_user.update_attribute(:last_accessed_at, Time.now.utc)
   end

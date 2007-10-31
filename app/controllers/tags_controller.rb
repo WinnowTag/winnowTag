@@ -19,9 +19,8 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :load_view, :only => :show
   skip_before_filter :login_required, :only => :show
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :show, :subscribe]
+  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe]
   
-  # Show a table of the users tags
   def index
     respond_to do |wants|
       wants.html do
@@ -63,7 +62,7 @@ class TagsController < ApplicationController
   def create
     begin
       if params[:copy]
-        from = current_user.tags.find_by_name(params[:copy])
+        from = current_user.tags.find_by_id(params[:copy])
         to = Tag(current_user, "#{params[:copy]} - copy")
         from.copy(to)
         
@@ -86,11 +85,7 @@ class TagsController < ApplicationController
     end
   end
 
-  # Merge or rename a tag.
-  #
-  # This doesn't actually modify the tag, instead all of the 
-  # current_user's instances of old_tag will be changed to instances of new_tag.
-  #
+  # Merge, rename, or change the comment on a tag.
   def update
     if name = params[:tag][:name]
       if (merge_to = current_user.tags.find_by_name(name)) && (merge_to != @tag)
@@ -110,13 +105,6 @@ class TagsController < ApplicationController
     end
   end
 
-  # Destroy the users use of the tag
-  #
-  # User tags are loaded and their destroy method is called. Classifier tags
-  # are just deleted using SQL.  This because we can completely remove the 
-  # classifier tags, but user tags need to be marked as deleted and then used
-  # in untraining during the next classification run.
-  # 
   def destroy
     @tag.destroy
     flash[:notice] = "Deleted #{@tag.name}."
@@ -146,8 +134,7 @@ class TagsController < ApplicationController
   end
   
   def subscribe
-    tag = Tag.find_by_name(params[:id])
-    if tag && tag.public?
+    if tag = Tag.find_by_id_and_public(params[:id], true)
       if params[:subscribe] =~ /true/i
         TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
       else
@@ -157,15 +144,10 @@ class TagsController < ApplicationController
     render :nothing => true
   end
   
-  private
+private
   def find_tag
-    @tag = current_user.tags.find_by_name(params[:id])
-    
-    if @tag.nil?
-      render(:status => 404, :text => "#{params[:id]} not found.") and return false
-    else
-      true
-    end
+    @tag = current_user.tags.find_by_id(params[:id])    
+    render :status => 404, :text => "#{params[:id]} not found." unless @tag
   end
   
   def setup_sortable_columns

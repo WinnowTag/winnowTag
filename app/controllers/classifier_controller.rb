@@ -12,12 +12,11 @@
 # == Non-CRUD actions include:
 #
 # <tt>classify</tt>:: Starts a background classification process for the classifier.
-# <tt>classification_status</tt>: Gets JSON object containing the classification progress.
-# <tt>cancel_classification</tt>: Cancels the in progress classification.
+# <tt>status</tt>: Gets JSON object containing the classification progress.
+# <tt>cancel</tt>: Cancels the in progress classification.
 #
 class ClassifierController < ApplicationController
   before_filter :setup_classifier
-  verify :only => [:classify, :clear, :reset], :method => :post, :render => SHOULD_BE_POST
 
   def show
     respond_to do |wants|
@@ -44,7 +43,7 @@ class ClassifierController < ApplicationController
       begin
         raise "There are no changes to your tags" if @classifier.changed_tags.empty?
         @classifier.start_background_classification
-        wants.html { redirect_to :action => 'classification_status' }
+        wants.html { redirect_to status_classifier_path }
         wants.js   { render :nothing => true }
       rescue => detail
         logger.fatal(detail)        
@@ -83,7 +82,7 @@ class ClassifierController < ApplicationController
     render :nothing => true
   end
 
-  private
+private
   def setup_classifier
     @classifier = current_user.classifier
   end

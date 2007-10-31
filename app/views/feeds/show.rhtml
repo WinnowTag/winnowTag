@@ -1,6 +1,6 @@
 <div class="control_bar">
-	<%= control_link 'Return to list', {:action => ''} %>
-	| <%= control_link 'Show Items', {:controller => 'feed_items', :action => nil, :feed_filter => @feed.id} %>
+	<%= control_link 'Return to list', feeds_path %>
+	| <%= control_link 'Show Items', feed_items_path(:feed_filter => @feed.id) %>
 </div>
 
 <table id="<%= "feed_#{@feed.id}" %>" class="property_table <%= "inactive_feed" unless @feed.active? %>">

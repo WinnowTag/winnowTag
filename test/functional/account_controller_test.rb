@@ -98,7 +98,7 @@ class AccountControllerTest < Test::Unit::TestCase
   def test_should_login_with_cookie
     users(:quentin).remember_me
     @request.cookies["auth_token"] = cookie_for(:quentin)
-    get :index
+    get :welcome
     assert @controller.send(:logged_in?)
   end
 
@@ -106,14 +106,14 @@ class AccountControllerTest < Test::Unit::TestCase
     users(:quentin).remember_me
     users(:quentin).update_attribute :remember_token_expires_at, 5.minutes.ago.utc
     @request.cookies["auth_token"] = cookie_for(:quentin)
-    get :index
+    get :welcome
     assert !@controller.send(:logged_in?)
   end
 
-  def test_should_fail_cookie_login
+  def test_should_fail_cookie_login_again
     users(:quentin).remember_me
     @request.cookies["auth_token"] = auth_token('invalid_auth_token')
-    get :index
+    get :welcome
     assert !@controller.send(:logged_in?)
   end
   

@@ -13,10 +13,6 @@ class AccountController < ApplicationController
   skip_before_filter :login_required, :except => [:edit] # don't need to login for any of these actions
   skip_before_filter :load_view, :only => [ :logout ]
     
-  def index
-    redirect_to ''
-  end
-  
   def welcome
   end
 
@@ -97,7 +93,7 @@ class AccountController < ApplicationController
     
       if @user and @user.activate
         self.current_user = @user
-        redirect_back_or_default(:controller => '')
+        redirect_back_or_default(root_path)
         flash[:notice] = "Your account has been activated." 
       else
         flash[:error] = "Unable to activate the account.  Did you provide the correct information?" 
@@ -107,7 +103,7 @@ class AccountController < ApplicationController
     end
   end
   
-  private
+private
   def setup_mailer_site_url
     UserNotifier.site_url = request.host_with_port    
   end

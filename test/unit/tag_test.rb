@@ -41,10 +41,10 @@ class TagTest < Test::Unit::TestCase
     assert_equal('tag1', tag.to_s)
   end
   
-  def test_tag_to_param_returns_name
-    tag = Tag(users(:quentin), 'tag1')
-    assert_equal('tag1', tag.to_param)
-  end
+  # def test_tag_to_param_returns_name
+  #   tag = Tag(users(:quentin), 'tag1')
+  #   assert_equal('tag1', tag.to_param)
+  # end
   
   def test_sorting
     tag1 = Tag(users(:quentin), 'aaa')

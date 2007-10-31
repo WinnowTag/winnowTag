@@ -24,10 +24,10 @@ class UsersControllerTest < Test::Unit::TestCase
   def test_admin_required
     cannot_access(:quentin, :get, :index)
     cannot_access(:quentin, :get, :create)
-    cannot_access(:quentin, :get, :show, :id => users(:quentin).id)
-    cannot_access(:quentin, :get, :login_as)
-    cannot_access(:quentin, :get, :update, :id => users(:quentin).id)
-    cannot_access(:quentin, :get, :destroy)    
+    cannot_access(:quentin, :get, :show, :id => users(:quentin))
+    cannot_access(:quentin, :get, :login_as, :id => users(:quentin))
+    cannot_access(:quentin, :get, :update, :id => users(:quentin))
+    cannot_access(:quentin, :get, :destroy, :id => users(:quentin))
   end
   
   def test_index
@@ -75,33 +75,18 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_not_nil assigns(:user)
     assert_equal users(:quentin), assigns(:user)
   end
-  
-  def test_login_as_requires_post
-    login_as(:admin)
-    get :login_as, :id => users(:quentin).id, :view_id => users(:admin).views.create
-    assert_redirected_to(:action => '')
-    assert_equal 'login_as requires post', flash[:error]
-  end
-  
+    
   def test_login_as_changes_current_user_and_redirects_to_index
     login_as(:admin)
     post :login_as, :id => users(:quentin).id
     assert_redirected_to('/')
     assert_equal users(:quentin).id, session[:user]
   end
-  
-  def test_destroy_require_delete
-    login_as(:admin)
-    get :destroy, :id => users(:quentin).id, :view_id => users(:admin).views.create
-    assert_redirected_to(:action => '')
-    assert_equal 'destroy requires delete', flash[:error]
-    assert_not_nil User.find(users(:quentin).id)
-  end
-  
+    
   def test_destroy
     login_as(:admin)
     delete :destroy, :id => users(:quentin).id
     assert_raise(ActiveRecord::RecordNotFound) {User.find(users(:quentin).id)}
-    assert_redirected_to(:action => '')
+    assert_redirected_to users_path
   end
 end

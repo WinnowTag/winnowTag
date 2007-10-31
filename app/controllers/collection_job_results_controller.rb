@@ -52,7 +52,7 @@ class CollectionJobResultsController < ApplicationController
     end
   end
   
-  private
+private
   def find_user
     unless @user = User.find_by_login(params[:user_id])
       @user = User.find(params[:user_id]) 

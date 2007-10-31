@@ -12,13 +12,7 @@ class ClassifierControllerTest < Test::Unit::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end
-  
-  def test_classify_requires_post
-    login_as(:quentin)
-    get :classify, :view_id => users(:quentin).views.create
-    assert_response 400
-  end
-  
+    
   def test_classifier_is_current_users
     login_as(:quentin)
     get :show, :view_id => users(:quentin).views.create
@@ -37,7 +31,7 @@ class ClassifierControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     post :classify
     assert_response :redirect
-    assert_redirected_to '/classifier/classification_status'
+    assert_redirected_to status_classifier_path
     assert_equal 'jobkey', BayesClassifier.find(users(:quentin).classifier.id).classifier_job.jobkey
   end
   
@@ -78,12 +72,12 @@ class ClassifierControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     post :classify
     assert_response :redirect
-    assert_redirected_to '/classifier/classification_status'
+    assert_redirected_to status_classifier_path
     assert_nil flash[:error]
     assert_equal 'jobkey', BayesClassifier.find(users(:quentin).classifier.id).classifier_job.jobkey
   end
   
-  def test_classification_status_action
+  def test_status_action
     accept('text/x-json')
     login_as(:quentin)
     
@@ -100,7 +94,7 @@ class ClassifierControllerTest < Test::Unit::TestCase
     assert_equal(job.attributes.to_json, @response.headers['X-JSON'])
   end
   
-  def test_classification_status_action_when_not_running
+  def test_status_action_when_not_running
     accept('text/x-json')
     login_as(:quentin)
         

@@ -52,9 +52,9 @@ class Tag < ActiveRecord::Base
   end
   
   # Gets a parameter representation of the tag.
-  def to_param
-    self.name
-  end
+  # def to_param
+  #   self.name
+  # end
   
   def inspect
     "<Tag name=#{name}, user=#{user.login}>"

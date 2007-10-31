@@ -1,22 +1,14 @@
 ActionController::Routing::Routes.draw do |map|
-
-  # The priority is based upon order of creation: first created -> highest priority.
-  
-  # Sample of regular route:
-  # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
-  # This route can be invoked with purchase_url(:id => product.id)
-    
-  map.resources :users, 
-                :member => {
+  map.resources :users,
+                :member => { 
                   :login_as => :post
                 }
                 
-  map.resources :feeds                              
-  map.resources :feed_items, 
+  map.resources :feeds,
+                :collection => {
+                  :auto_complete_for_feed_title => :any
+                }
+  map.resources :feed_items,
                 :member => {
                   :inspect => :get,
                   :mark_read => :put,
@@ -24,15 +16,31 @@ ActionController::Routing::Routes.draw do |map|
                   :info => :get,
                   :description => :get
                 },
-                :collection => {:mark_read => :put}
-  map.resources :tags, :requirements => {:id => /.*/},
-                :collection => { :public => :get },
-                :member => { :publicize => :put, :subscribe => :put }
+                :collection => { 
+                  :mark_read => :put
+                }
+
+  map.connect "tags/:id", :controller => "tags", :action => "update", :requirements => { :method => "post", :id => /\d+/ }
+  map.resources :tags,
+                :collection => { 
+                  :public => :get,
+                  :auto_complete_for_tag_name => :any
+                },
+                :member => { 
+                  :publicize => :put, 
+                  :subscribe => :put, 
+                  :auto_complete_for_tag_name => :any
+                }
   
-  map.public_tag "/tags/public/:user_id/:id", :controller => "tags", :action => "show"
-  map.formatted_public_tag "/tags/public/:user_id/:id.:format", :controller => "tags", :action => "show"
+  map.public_tag "tags/public/:user_id/:id", :controller => "tags", :action => "show"
+  map.formatted_public_tag "tags/public/:user_id/:id.:format", :controller => "tags", :action => "show"
   
-  map.resource :classifier, 
+  map.with_options :controller => "taggings" do |taggings_map|
+    taggings_map.connect 'taggings/create', :action => "create"
+    taggings_map.connect 'taggings/destroy', :action => "destroy"
+  end
+  
+  map.resource :classifier,
                :member => {
                  :status => :post,
                  :cancel => :post,
@@ -45,23 +53,31 @@ ActionController::Routing::Routes.draw do |map|
                   :rebuild => :post
                 }
                 
-  map.resources :views, :member => { :add_feed => :post, :remove_feed => :post, :add_tag => :post, :remove_tag => :post, :duplicate => :post }
+  map.resources :views, 
+                :member => { 
+                  :add_feed => :post, 
+                  :remove_feed => :post, 
+                  :add_tag => :post, 
+                  :remove_tag => :post, 
+                  :duplicate => :post
+                }
   
-  map.login "/account/login", :controller => "account", :action => "login"
-  map.logout "/account/logout", :controller => "account", :action => "logout"
-  map.signup "/account/signup", :controller => "account", :action => "signup"
-  map.edit_account "/account/edit/:id", :controller => "account", :action => "edit"
+  map.with_options :controller => "account" do |account_map|
+    account_map.welcome "account/welcome", :action => "welcome"
+    account_map.edit_account "account/edit", :action => "edit"
+    account_map.change_password "account/change_password", :action => "change_password"
+    account_map.login "account/login", :action => "login"
+    account_map.signup "account/signup", :action => "signup"
+    account_map.logout "account/logout", :action => "logout"
+    account_map.activate "account/activate", :action => "activate"
+  end
   
-  map.about "/about", :controller => "about"
-  map.help "/about/help", :controller => "about", :action => "help"
-
-  map.admin "/admin", :controller => "admin"
+  map.with_options :controller => "about" do |about_map|
+    about_map.about "about"
+    about_map.help "about/help", :action => "help"
+  end
   
-  # You can have the root of your site routed by hooking up '' 
-  # -- just remember to delete public/index.html.
-  map.connect '', :controller => "feed_items"
+  map.admin "admin", :controller => "admin"
   
-  # Install the default route as the lowest priority.
-  #map.connect ':controller/:action/:id.:format'
-  map.connect ':controller/:action/:id', :requirements => {:id => /.*/}
+  map.root '', :controller => "feed_items"
 end
