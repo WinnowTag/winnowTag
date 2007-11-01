@@ -25,22 +25,12 @@ module ApplicationHelper
   end
       
   def show_flash
-    [:notice, :warning, :message, :error].map do |name|
-      if flash[name]
-        content_tag 'div', 
-            image_tag("#{name}.png", :class => 'flash_icon', :size => '16x16', :alt => '') +
-            flash[name].to_s + 
-            link_to_function(
-                    image_tag('cross.png',
-                              :size => '11x11',
-                              :alt => 'X',
-                              :class => 'flash_icon'), 
-                    "$('#{name}').hide();", 
-                    :id => 'close_flash',
-                    :title => 'Close message') , 
-          :id => name.to_s
-      end
-    end.compact.join
+    # flash[:error] = "testing..."
+    
+    [:notice, :warning, :error].map do |name|
+      close = link_to_function(image_tag('cross.png', :size => '11x11', :alt => 'X', :class => 'flash_icon'), "$('#{name}').hide();", :id => 'close_flash', :title => 'Close message')
+      content_tag :div, "#{flash[name]} #{close}", :id => name, :style => flash[:name].blank? ? "display: none" : nil
+    end.join
   end
   
   def property_row(obj, property, title = property.to_s.humanize, *args)

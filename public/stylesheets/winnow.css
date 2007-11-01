@@ -35,15 +35,6 @@ body > p {
   margin-left: 20px;
 }
 
-#error_message {
-	background-color: #D32;
-	color: white;
-	padding: 3px;
-	font-size: 90%;
-	overflow: hidden;
-	white-space: nowrap;
-}
-
 a#close_flash {
   position: absolute;
   right: 0px;
@@ -56,22 +47,23 @@ img.flash_icon {
 }
 
 #notice, #warning, #error {
-	padding: 5px;
+	padding: 5px 5px 5px 26px;
 	position: relative;
+	height: 1.2em;
 }
 
 #notice {
-  background-color: #F0FFE0;
+  background: #F0FFE0 url(../images/notice.png) 5px center no-repeat;
   border: 1px solid #A0DC11;
 }
 
 #warning {
-  background-color: #FBF6D3;
+  background: #FBF6D3 url(../images/warning.png) 5px center no-repeat;
   border: 1px solid #D28D37;
 } 
 
 #error {
-  background-color: #FDDFD7;
+  background: #FDDFD7 url(../images/error.png) 5px center no-repeat;
   border: 1px solid #FF260B;
 }
 
@@ -689,20 +681,6 @@ a.editor_cancel {
 
 #footer #previous-next-buttons {
 	float: left;
-}
-
-#footer #error_message {
-	position: absolute;
-	top: 5px;
-	left: 400px;
-	text-align: left;
-	background-color: #D32;
-	color: white;
-	padding: 3px;
-	font-size: 90%;
-	margin-right: 200px;
-	overflow: hidden;
-	white-space: nowrap;
 }
 
 #footer #feed_item_count {

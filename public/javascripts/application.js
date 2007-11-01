@@ -16,11 +16,14 @@ ErrorMessage.prototype = {
 		if (errorTimeout) {
 			clearTimeout(errorTimeout);
 		}
-		this.error_message = $('error_message');
+		this.error_message = $('error');
 		this.error_message.update(message);
 		this.error_message.show();
-		new Effect.Fade(this.error_message, {duration: 4});
-		//errorTimeout = setTimeout(function(){new Effect.Fade(this.error_message);}.bind(this), 3000);
+
+		self = this;
+		errorTimeout = setTimeout(function() { 
+			new Effect.Fade(self.error_message, {duration: 4}); 
+		}, 10000);
 	}	
 };
 
