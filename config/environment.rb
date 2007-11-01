@@ -163,3 +163,4 @@ module UrlWithViewId
   end
 end
 ActionView::Base.send :include, UrlWithViewId
+ActionController::Base.send :include, UrlWithViewId
