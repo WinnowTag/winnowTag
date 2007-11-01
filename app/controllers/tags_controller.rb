@@ -129,7 +129,7 @@ class TagsController < ApplicationController
   
   def public
     setup_sortable_columns
-    @tags = Tag.find_all_with_count(:conditions => ["tags.public = ?", true], 
+    @tags = Tag.find_all_with_count(:conditions => ["tags.public = ?", true], :subscriber => current_user,
                                     :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
   end
   
@@ -152,6 +152,7 @@ private
   
   def setup_sortable_columns
     add_to_sortable_columns('tags', :field => 'name')
+    add_to_sortable_columns('tags', :field => 'subscribe')
     add_to_sortable_columns('tags', :field => 'public')
     add_to_sortable_columns('tags', :field => 'classifier_count')
     add_to_sortable_columns('tags', :field => 'last_used_by')
