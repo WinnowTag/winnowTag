@@ -3,7 +3,7 @@
 		<tr>
 			<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => "name") %></th>
 			<th class="subscribe"><%= link_to "Subscribe", sort_param('tags', :alias => "subscribe") %></th>
-			<th class="usage number">Training (+/-)</th>
+			<th class="usage number"><%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %></th>
 			<th class="classifier_usage number"><%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %></th>
 			<th class="date"><%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %></th>
 			<th class="indented"><%= link_to "User", sort_param('tags', :alias => "login") %></th>
@@ -19,7 +19,7 @@
 					<%= check_box_tag tag.dom_id("subscribe"), "1", tag.subscribed?(current_user), 
 														:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }") %>
 				</td>
-      	<td class="number"><%= tag.count %> / <%= tag.negative_count %></td>
+      	<td class="number"><%= tag.positive_count %> / <%= tag.negative_count %></td>
   	    <td class="number"><%= tag.classifier_count %></td>
   	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
   	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>

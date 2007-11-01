@@ -185,15 +185,25 @@ class TagTest < Test::Unit::TestCase
     Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
     Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
     Tagging.create(:user => u, :feed_item => fi1, :tag => test)
+    Tagging.create(:user => u, :feed_item => fi2, :tag => test, :strength => 0)
 
     tags = Tag.find_all_with_count(:order => "tags.name")
     assert_equal 3, tags.size
+
     assert_equal 'peerworks', tags[0].name
-    assert_equal 2, tags[0].count.to_i
+    assert_equal 2, tags[0].positive_count.to_i
+    assert_equal 0, tags[0].negative_count.to_i
+    assert_equal 2, tags[0].training_count.to_i
+
     assert_equal 'tag', tags[1].name
-    assert_equal 0, tags[1].count.to_i
+    assert_equal 0, tags[1].positive_count.to_i
+    assert_equal 0, tags[1].negative_count.to_i
+    assert_equal 0, tags[1].training_count.to_i
+
     assert_equal 'test', tags[2].name
-    assert_equal 1, tags[2].count.to_i
+    assert_equal 1, tags[2].positive_count.to_i
+    assert_equal 1, tags[2].negative_count.to_i
+    assert_equal 2, tags[2].training_count.to_i
   end
   
   def test_find_all_subscribed_tags_with_count
@@ -211,7 +221,7 @@ class TagTest < Test::Unit::TestCase
     tags = Tag.find_all_with_count(:order => "tags.name", :user => users(:aaron))
     assert_equal 1, tags.size
     assert_equal 'tag', tags[0].name
-    assert_equal 0, tags[0].count.to_i
+    assert_equal 0, tags[0].positive_count.to_i
   end
 
 end

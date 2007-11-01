@@ -119,10 +119,11 @@ class Tag < ActiveRecord::Base
     end
     
     select = ['tags.*', 
-              'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 1, 1, NULL)) AS count',
+              'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 1, 1, NULL)) AS positive_count',
               'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 0, 1, NULL)) AS negative_count', 
               'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count',
-              'MAX(taggings.created_on) AS last_used_by']
+              'MAX(taggings.created_on) AS last_used_by',
+              'COUNT(IF(classifier_tagging = 0, 1, NULL)) AS training_count']
               
     if options[:subscriber]
       select << "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscriber].id}) > 0) AS subscribe"
