@@ -43,8 +43,7 @@ To rename or merge one of your tags with another, just click on the tag name. Ex
       	 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
             <%= link_to image_tag('copy.gif'), tags_path(:copy => tag), :method => 'post', :title => "Copy #{tag.name}" %>
             <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => tag}, 
-            			:method => 'put', :title => "Unsubscribe #{tag.name}",
-            			:confirm => "Do you really want to unsubscribe #{tag.name}?" %>
+            			:method => 'put', :title => "Unsubscribe #{tag.name}" %>
         	</td>
           <td class="number"><%= tag.positive_count %> / <%= tag.negative_count %></td>
           <td class="number"><%= tag.classifier_count %></td>
