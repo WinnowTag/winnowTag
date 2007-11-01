@@ -89,7 +89,7 @@ class Tag < ActiveRecord::Base
     end
     
     self.manual_taggings.each do |tagging|
-      to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength)
+      to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength, :user_id => to.user_id)
     end
   end
   

@@ -62,8 +62,8 @@ class TagsController < ApplicationController
   def create
     begin
       if params[:copy]
-        from = current_user.tags.find_by_id(params[:copy])
-        to = Tag(current_user, "#{params[:copy]} - copy")
+        from = Tag.find_by_id(params[:copy])
+        to = Tag(current_user, "#{from.name} - copy")
         from.copy(to)
         
         flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"        
@@ -98,7 +98,10 @@ class TagsController < ApplicationController
           flash[:error] = @tag.errors.full_messages.join('<br/>')
         end
       end
-      redirect_to tags_path(:view_id => @view.id)
+      respond_to do |format|
+        format.html{ redirect_to tags_path }
+        format.js { render(:update) { |p| p.redirect_to tags_path } }
+      end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
       render :text => @tag.comment

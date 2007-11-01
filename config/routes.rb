@@ -20,7 +20,6 @@ ActionController::Routing::Routes.draw do |map|
                   :mark_read => :put
                 }
 
-  map.connect "tags/:id", :controller => "tags", :action => "update", :requirements => { :method => "post", :id => /\d+/ }
   map.resources :tags,
                 :collection => { 
                   :public => :get,

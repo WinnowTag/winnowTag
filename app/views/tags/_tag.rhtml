@@ -4,14 +4,14 @@
 									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
 		<% @tag = tag -%><%# TODO: This is a hack to get the below line to work... %>
 		<%= in_place_completing_editor_field(:tag, :name, {:id => tag.dom_id('editor')}, 
-							{:param_name => '"tag[name]"', :url => tag_path(tag), :form_submit => true,
+							{:param_name => '"tag[name]"', :url => tag_path(tag), :options => "{method: 'put'}", :script => true,
 							 :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'),
 							 :click_to_edit_text => "Click to edit tag name", :save_text => "Save"}, 
 							:skip_style => true, :update => tag.dom_id('auto_complete'),
 							:url => auto_complete_for_tag_name_tag_path(tag)) %>
 		<div class="comment">
 		  <%= image_tag "comment.png", :id => tag.dom_id("edit_comment"), :title => "Click to edit tag comment" %>
-	    <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :method => :put,
+	    <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
             :click_to_edit_text => "Click to edit tag comment", :external_control => tag.dom_id("edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
 		</div>
 	</td>
@@ -27,9 +27,8 @@
 	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
   </td>
 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
-    <%= link_to image_tag('copy.gif'), hash_for_tags_path(:copy => tag), :method => 'post', :title => "Copy #{tag.name}" %>
-    <%= link_to image_tag('trash.gif'), {:action => 'destroy', :id => tag}, 
-    			:method => 'delete', :title => "Destroy #{tag.name}",
+    <%= link_to image_tag('copy.gif'), tags_path(:copy => tag), :method => 'post', :title => "Copy #{tag.name}" %>
+    <%= link_to image_tag('trash.gif'), tag_path(tag), :method => 'delete', :title => "Destroy #{tag.name}",
     			:confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone." %>
 	</td>
 	<td class="number">
