@@ -5,9 +5,9 @@
   <% all_tags = current_user.tags + current_user.subscribed_tags -%>
   <% all_tags.each do |tag| -%>
     <li class="clearfix<%= tag.user == current_user ? '' : " public" %>">
-      <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id), 
+      <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, tag), 
             :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'exclude', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
-  	  <%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id), 
+  	  <%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
   	        :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'include', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
       <%= tag.name %>
     </li>
@@ -34,9 +34,8 @@
   <% end -%>
 
   <ul id="feed_filters" class="filter_list">
-  <% @view.feed_filter.values.flatten.each do |feed_id| -%>
-    <% feed = Feed.find(feed_id) -%>
-    <%= render :partial => "feeds/filter_control", :locals => { :feed => feed, :last => false } %>
+  <% @view.feed_filters.each do |feed_filter| -%>
+    <%= render :partial => "feeds/filter_control", :locals => { :feed => feed_filter.feed, :last => false } %>
   <% end -%>
   </ul>
 </div>

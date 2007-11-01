@@ -11,44 +11,68 @@ class View < ActiveRecord::Base
   state :saved
     
   belongs_to :user
-  
-  serialize :tag_filter
-  serialize :feed_filter
-  
-  def initialize(*args, &block)
-    super(*args, &block)
+  has_many :tag_filters, :class_name => "ViewTagState", :dependent => :delete_all do
+    def include
+      self.select { |tag_filter| tag_filter.state == "include" }
+    end
     
-    self.feed_filter ||= { :always_include => [], :include => [], :exclude => [] }
-    self.tag_filter ||= { :include => [], :exclude => [] }
+    def exclude
+      self.select { |tag_filter| tag_filter.state == "exclude" }
+    end
+    
+    def includes?(state, tag)
+      tag_id = View.arg_to_tag(tag)
+      self.detect { |tag_filter| tag_filter.state == state.to_s && tag_filter.tag_id == tag_id }
+    end
   end
-  
-  def add_feed(feed_state, feed_id)
-    feed_state, feed_id = feed_state.to_sym, feed_id.to_i
 
-    other_feed_states(feed_state).each { |other_feed_state| feed_filter[other_feed_state].delete(feed_id) }
-    feed_filter[feed_state] << feed_id unless feed_filter[feed_state].include?(feed_id)
-  end
-  
-  def remove_feed(feed_id)
-    feed_filter[:always_include].delete(feed_id.to_i)
-    feed_filter[:include].delete(feed_id.to_i)
-    feed_filter[:exclude].delete(feed_id.to_i)
-  end
-  
-  def add_tag(tag_state, tag)
-    tag_state, tag = tag_state.to_sym, arg_to_tag(tag)
+  has_many :feed_filters, :class_name => "ViewFeedState", :dependent => :delete_all do
+    def always_include
+      self.select { |feed_filter| feed_filter.state == "always_include" }
+    end
     
-    if tag and !tag_filter[tag_state].include?(tag)
-      tag_filter[other_tag_state(tag_state)].delete(tag)
-      tag_filter[tag_state] << tag
+    def include
+      self.select { |feed_filter| feed_filter.state == "include" }
+    end
+
+    def exclude
+      self.select { |feed_filter| feed_filter.state == "exclude" }
+    end
+    
+    def includes?(state, feed)
+      feed_id = View.arg_to_feed(feed)
+      self.detect { |feed_filter| feed_filter.state == state.to_s && feed_filter.feed_id == feed_id }
+    end
+  end
+    
+  def add_feed(feed_state, feed)
+    feed_state, feed_id = feed_state.to_sym, arg_to_feed(feed)
+    
+    remove_feed(feed_id)
+    feed_filters.create :feed_id => feed_id, :state => feed_state.to_s
+  end
+  
+  def remove_feed(feed)
+    feed_id = arg_to_feed(feed)
+    if feed_filter = (feed_filters.includes?(:always_include, feed_id) || feed_filters.includes?(:include, feed_id) || feed_filters.includes?(:exclude, feed_id))
+      feed_filters.delete(feed_filter)
     end
   end
   
-  def remove_tag(tag)
-    tag = arg_to_tag(tag)
+  def add_tag(tag_state, tag)
+    tag_state, tag_id = tag_state.to_sym, arg_to_tag(tag)
     
-    tag_filter[:include].delete(tag)
-    tag_filter[:exclude].delete(tag)
+    if tag_id
+      remove_tag(tag_id)
+      tag_filters.create :tag_id => tag_id, :state => tag_state.to_s
+    end    
+  end
+  
+  def remove_tag(tag)
+    tag_id = arg_to_tag(tag)
+    if tag_filter = (tag_filters.includes?(:include, tag_id) || tag_filters.includes?(:exclude, tag_id))
+      tag_filters.delete(tag_filter)
+    end
   end
     
   def update_filters(params = {})
@@ -60,9 +84,7 @@ class View < ActiveRecord::Base
 
     new_feed_filter = params[:feed_filter]
     if new_feed_filter =~ /all/i
-      self.feed_filter[:always_include].clear
-      self.feed_filter[:include].clear
-      self.feed_filter[:exclude].clear
+      feed_filters.clear
     elsif new_feed_filter
       new_feed_filter_action = params[:feed_filter_action] || 'add'
 
@@ -76,8 +98,7 @@ class View < ActiveRecord::Base
     
     new_tag_filter = params[:tag_filter]
     if new_tag_filter =~ /all/i
-      self.tag_filter[:include].clear
-      self.tag_filter[:exclude].clear
+      tag_filters.clear
     elsif new_tag_filter
       new_tag_filter_action = params[:tag_filter_action] || 'add'
 
@@ -102,13 +123,16 @@ class View < ActiveRecord::Base
   end
   
   def dup
-    View.new :user => user, :tag_filter => tag_filter.dup, :feed_filter => feed_filter.dup, 
-             :text_filter => text_filter, :tag_inspect_mode => tag_inspect_mode, :show_untagged => show_untagged
   end
   
   def dup!
-    view = dup
-    view.save!
+    view = View.create! :user => user, :text_filter => text_filter, :tag_inspect_mode => tag_inspect_mode, :show_untagged => show_untagged
+    tag_filters.each do |tag_filter|
+      view.tag_filters.create :tag_id => tag_filter.tag_id, :state => tag_filter.state
+    end
+    feed_filters.each do |feed_filter|
+      view.feed_filters.create :feed_id => feed_filter.feed_id, :state => feed_filter.state
+    end
     view
   end
   
@@ -125,6 +149,14 @@ class View < ActiveRecord::Base
   
 private
   def arg_to_tag(arg)
+    self.class.arg_to_tag(arg)
+  end
+  
+  def arg_to_feed(arg)
+    self.class.arg_to_feed(arg)
+  end
+
+  def self.arg_to_tag(arg)
     if arg.is_a?(Tag)
       arg.id
     elsif arg.to_s =~ /^\d+$/
@@ -133,14 +165,14 @@ private
       raise ArgumentError.new("Argument must be a tag or tag id but was #{arg.inspect}")
     end
   end
-
-  def other_tag_state(state)
-    state.to_sym == :include ? :exclude : :include
-  end
   
-  def other_feed_states(state)
-    feed_states = [:always_include, :include, :exclude]
-    feed_states.delete(state)
-    feed_states
+  def self.arg_to_feed(arg)
+    if arg.is_a?(Feed)
+      arg.id
+    elsif arg.to_s =~ /^\d+$/
+      arg.to_i
+    else
+      raise ArgumentError.new("Argument must be a feed or feed id but was #{arg.inspect}")
+    end
   end
 end

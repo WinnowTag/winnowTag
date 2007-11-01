@@ -75,6 +75,10 @@ class User < ActiveRecord::Base
  
   def has_read_item?(feed_item_or_feed_item_id)
     !self.unread_items.exists?(['feed_item_id = ?', feed_item_or_feed_item_id])
+
+    # TODO: Would this be better done in memory?
+    # feed_item_id = feed_item_or_feed_item_id.is_a?(FeedItem) ? feed_item_or_feed_item_id.id : feed_item_or_feed_item_id
+    # !self.unread_items.detect { |unread_item| unread_item.feed_item_id == feed_item_id }
   end
   
   def assign_manager_role_to_classifier

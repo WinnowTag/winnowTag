@@ -24,7 +24,7 @@ class FeedItemsController < ApplicationController
   #
   # === The parameters are passed through to +FeedItem.find_with_filters+.
   #
-  # <tt>tag_filter</tt>:: The name of a tag to filter on.
+  # <tt>tag_filter</tt>:: The id of a tag to filter on.
   # <tt>feed_filter</tt>:: The id of a feed to filter on.
   # <tt>only_tagger</tt>:: Defines which tagger is used for the tag_filter. Can be 'user', 'classifier', or nil, in which case both are used.
   # <tt>mode</tt>:: When set to 'tag_inspect' the tag inspect mode is turned on. Any other value resets the mode to normal.

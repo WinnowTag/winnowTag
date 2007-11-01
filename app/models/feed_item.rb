@@ -183,13 +183,9 @@ class FeedItem < ActiveRecord::Base
   #
   # A Hash with thiese keys (all optional):
   #
-  # <tt>:feed_filter</tt>:: Constrains returned items to be members of a given feed. (Should be the id of the feed)
-  # <tt>:only_latest</tt>:: (true|false) If true only items collected in the latest collection of the feed will be returned.
-  # <tt>:tag_filter</tt>:: Constrains returned items to be tagged with the provided tag. <tt>:user</tt> should also be provided.
-  # <tt>:user</tt>:: Required for :tag_filter. Constrains taggings that meet the tag_filter to have the user or their classifier as the tagger. 
+  # <tt>:view</tt>:: Constrains returned items to the parameters defined in the view
   # <tt>:only_tagger</tt>:: Can be 'user' or 'classifier'.  Constrains the type of tagger in a tag filter to user or classifier.
   # <tt>:include_negative</tt>:: (true|false) If true negative taggings will be included in a tag_filters results. Default is false.
-  # <tt>:text_filter</tt>:: Constrains items that contain a sub-string. Uses MySQL full text index on title, author and description.
   # 
   # Also supports <tt>:limit</tt>, <tt>:offset</tt> and <tt>:order</tt> as defined by ActiveRecord::Base.find
   #
@@ -204,20 +200,20 @@ class FeedItem < ActiveRecord::Base
     conditions = []
     
     # Feed filtering (include/exclude)
-    add_feed_filter_conditions!(view.feed_filter, conditions)
+    add_feed_filter_conditions!(view.feed_filters, conditions)
           
     # Tag filtring (include/exclude)
     tag_inclusion_filter_by_user = {}
     tag_exclusion_filter_by_user = {}
     
-    view.tag_filter[:include].each do |tag_id|
-      next unless tag = Tag.find_by_id(tag_id)
+    view.tag_filters.include.each do |tag_filter|
+      next unless tag = tag_filter.tag
       tag_inclusion_filter_by_user[tag.user] ||= []
       tag_inclusion_filter_by_user[tag.user] << tag.id
     end
     
-    view.tag_filter[:exclude].each do |tag_id|
-      next unless tag = Tag.find_by_id(tag_id)
+    view.tag_filters.exclude.each do |tag_filter|
+      next unless tag = tag_filter.tag
       tag_exclusion_filter_by_user[tag.user] ||= []
       tag_exclusion_filter_by_user[tag.user] << tag.id
     end
@@ -236,7 +232,7 @@ class FeedItem < ActiveRecord::Base
       view.user.subscribed_tags.each do |tag|
         add_tag_filter_joins!(tag.user, filters[:include_negative], filters[:only_tagger], joins)
       end
-    elsif view.show_untagged? && !view.feed_filter[:include].blank? && !view.feed_filter[:exclude].blank?
+    elsif view.show_untagged? && !view.feed_filters.include.blank? && !view.feed_filters.exclude.blank?
       add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       taggings_alias = taggings_alias_for(view.user)
       conditions << "#{taggings_alias}.id IS NULL"
@@ -244,13 +240,13 @@ class FeedItem < ActiveRecord::Base
         
     options[:conditions] = conditions.empty? ? nil : conditions.join(" AND ")
     
-    add_always_include_feed_filter_conditions!(view.feed_filter[:always_include], options[:conditions])
+    add_always_include_feed_filter_conditions!(view.feed_filters.always_include, options[:conditions])
     
     # The untagged filter is only added if we are doing any sort of tag filtering.
     # This ensures that there are no unneccesary joins to include untagged items
     # when we are not filtering on tags anyway.
-    if view.show_untagged? && view.feed_filter[:include].blank? && view.feed_filter[:exclude].blank? &&
-                            !(view.tag_filter[:include].blank? && view.tag_filter[:exclude].blank?)
+    if view.show_untagged? && view.feed_filters.include.blank? && view.feed_filters.exclude.blank? &&
+                            !(view.tag_filters.include.blank? && view.tag_filters.exclude.blank?)
       add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       add_untagged_state_conditions!(view.user, options[:conditions])
     end
@@ -276,14 +272,14 @@ class FeedItem < ActiveRecord::Base
         "MATCH(content) AGAINST(#{connection.quote(query)} IN BOOLEAN MODE) "
   end
   
-  def self.add_feed_filter_conditions!(feed_filter, conditions)
-    if feed_filter
-      if !feed_filter[:include].empty?
-        conditions << "feed_items.feed_id IN (#{feed_filter[:include].join(",")})"
+  def self.add_feed_filter_conditions!(feed_filters, conditions)
+    if feed_filters
+      if !feed_filters.include.empty?
+        conditions << "feed_items.feed_id IN (#{feed_filters.include.map(&:feed_id).join(",")})"
       end
     
-      if !feed_filter[:exclude].empty?
-        conditions << "feed_items.feed_id NOT IN (#{feed_filter[:exclude].join(",")})"
+      if !feed_filters.exclude.empty?
+        conditions << "feed_items.feed_id NOT IN (#{feed_filters.exclude.map(&:feed_id).join(",")})"
       end
     end
   end
@@ -394,9 +390,9 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  def self.add_always_include_feed_filter_conditions!(feed_filter, conditions)
-    if !conditions.blank? and !feed_filter.blank?
-      conditions.replace "feed_items.feed_id IN (#{feed_filter.join(",")}) OR (#{conditions})"
+  def self.add_always_include_feed_filter_conditions!(feed_filters, conditions)
+    if !conditions.blank? and !feed_filters.blank?
+      conditions.replace "feed_items.feed_id IN (#{feed_filters.map(&:feed_id).join(",")}) OR (#{conditions})"
     end
   end
   

@@ -32,10 +32,10 @@ To rename or merge one of your tags with another, just click on the tag name. Ex
     	  		<span class="comment"><%= tag.comment %></span>
         	</td>
       		<td class="view_state">
-        		<%= filter_control "Only Include This Tag", :include, @view.tag_filter[:include].include?(tag.id), 
+        		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
         		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", 
         		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
-        		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filter[:exclude].include?(tag.id), 
+        		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, tag), 
         		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", 
         		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
         	</td>

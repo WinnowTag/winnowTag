@@ -45,7 +45,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'index'
     assert_not_nil assigns(:feed_items)
-    assert assigns(:view).tag_filter[:include].include?(tag.id)
+    assert assigns(:view).tag_filters.includes?(:include, tag)
     
     # tag filter only work over positive taggings for M2
     assert_equal 1, assigns(:feed_items).size
@@ -56,7 +56,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'index'
     assert_not_nil assigns(:feed_items)
-    assert assigns(:view).tag_filter[:include].include?(tag.id)
+    assert assigns(:view).tag_filters.includes?(:include, tag)
     assert_equal 1, assigns(:feed_items).size
     assert_equal 2, assigns(:feed_items).first.id
         
@@ -189,7 +189,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     get :index, :feed_filter => 1, :view_id => users(:quentin).views.create
     assert_response :success
     assert assigns(:feed_items)
-    assert assigns(:view).feed_filter[:include].include?(1)
+    assert assigns(:view).feed_filters.includes?(:include, 1)
   end
 
   def test_session_storage_of_text_filter

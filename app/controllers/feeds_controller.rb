@@ -65,9 +65,9 @@ class FeedsController < ApplicationController
     conditions = ["LOWER(title) LIKE LOWER(?)"]
     values = ["%#{@q}%"]
     
-    if !@view.feed_filter.values.flatten.blank?
+    if !@view.feed_filters.map(&:feed_id).blank?
       conditions << "id NOT IN (?)"
-      values << @view.feed_filter.values.flatten
+      values << @view.feed_filters.map(&:feed_id)
     end
     
     @feeds = Feed.find(:all, :conditions => [conditions.join(" AND "), *values])
