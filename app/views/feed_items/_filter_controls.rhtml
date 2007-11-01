@@ -9,7 +9,7 @@
             :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'exclude', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
   	  <%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
   	        :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'include', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
-      <%= tag.name %>
+      <%= tag_name_with_tooltip tag %>
     </li>
   <% end -%>
   </ul>

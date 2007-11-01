@@ -135,12 +135,9 @@ module FeedItemsHelper
 
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
       more_tags = taggable.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
-      tags += more_tags
       tag_display += more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
-          content_tag('span', 
-            h(tag.name), 
-            :class => classes_for_taggings(tagging, [:public]).join(" "))
+          tag_name_with_tooltip(tag, :class => classes_for_taggings(tagging, [:public]).join(" "))
         end
       end.compact
     end
@@ -153,7 +150,6 @@ module FeedItemsHelper
     
     content_tag(:span, html, 
       :class => "tags", :id => taggable.dom_id("open_tags"), 
-      :title => tags.collect{ |tag, taggings| tag.name }.join(", "),
       :onclick => "itemBrowser.toggleOpenCloseModerationPanel('#{taggable.dom_id}'); Event.stop(event);")
   end
  
@@ -177,6 +173,18 @@ module FeedItemsHelper
           :onmouseover => "show_tag_tooltip(this, '#{escape_javascript(tag.name)}');") + " "
       end
     end
+    
+    current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
+      more_tags = feed_item.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+      more_tags.collect do |tag, taggings|
+        if tagging = Array(taggings).first
+          tag_name_with_tooltip(tag, :class => classes_for_taggings(tagging, [:public, :name]).join(" "))
+        end
+      end.compact.each do |tag_span|
+        html << content_tag(:li, tag_span)
+      end
+    end
+    
     content_tag "ul", html, :class => "tag_list clearfix", :id => feed_item.dom_id("tag_controls")
   end
   
@@ -256,5 +264,9 @@ module FeedItemsHelper
     else
       "user_tagging"
     end
+  end
+  
+  def tag_name_with_tooltip(tag, options = {})
+    content_tag :span, h(tag.name), options.merge(:title => tag.user == current_user ? nil :  "from #{tag.user.display_name}")
   end
 end

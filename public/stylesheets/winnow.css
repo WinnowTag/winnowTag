@@ -759,6 +759,12 @@ ul.tag_list li {
 	white-space: nowrap;
 }
 
+ul.tag_list li .public {
+	background: url(../images/public.png) right center no-repeat;
+	padding: 1px 16px 2px 0;
+	margin-left: 3px;
+}
+
 ul.tag_list li .add {
 	background: url(../images/add_disabled.png) 0 center no-repeat;
 	padding: 1px 16px 2px 0;
