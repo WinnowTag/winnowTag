@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :load_view, :only => :show
   skip_before_filter :login_required, :only => :show
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe]
+  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe]
   
   def index
     respond_to do |wants|
@@ -142,6 +142,13 @@ class TagsController < ApplicationController
       end
     end
     render :nothing => true
+  end
+  
+  def unsubscribe
+    if tag = Tag.find_by_id_and_public(params[:id], true)
+      TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
+    end
+    redirect_to :back
   end
   
 private

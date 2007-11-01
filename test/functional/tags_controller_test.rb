@@ -210,7 +210,8 @@ class TagsControllerTest < Test::Unit::TestCase
     assert_response :success
   end
   
-  def test_unsubscribe_from_public_tag
+  # Test how unsubscribing as implemented on the "Public Tags" page
+  def test_unsubscribe_from_public_tag_via_subscribe_action
     other_user = users(:aaron)
 
     tag = Tag(other_user, 'hockey')
@@ -221,6 +222,21 @@ class TagsControllerTest < Test::Unit::TestCase
     put :subscribe, :id => tag, :subscribe => "false", :view_id => users(:quentin).views.create!
     
     assert_response :success
+  end
+
+  # Test unsubscribing as implemented on the "My Tags" page
+  def test_unsubscribe_from_public_tag_via_unsubscribe_action
+    referer("/tags")
+    other_user = users(:aaron)
+
+    tag = Tag(other_user, 'hockey')
+    tag.update_attribute :public, true
+
+    TagSubscription.expects(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+
+    put :unsubscribe, :id => tag, :view_id => users(:quentin).views.create!
+
+    assert_response :redirect
   end
   
   # SG: This test ensures that the user's public tag is actually the one that is subscribed to.

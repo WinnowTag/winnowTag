@@ -28,7 +28,8 @@ ActionController::Routing::Routes.draw do |map|
                 },
                 :member => { 
                   :publicize => :put, 
-                  :subscribe => :put, 
+                  :subscribe => :put,
+                  :unsubscribe => :put, 
                   :auto_complete_for_tag_name => :any
                 }
   
