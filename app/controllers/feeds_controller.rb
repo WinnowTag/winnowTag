@@ -9,25 +9,19 @@ class FeedsController < ApplicationController
   include ActionView::Helpers::TextHelper
   permit 'admin', :only => [:import, :update]  
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
-  before_filter :setup_search_term, :only => [:index]
   before_filter :flash_collection_job_result
   
   def index
     respond_to do |wants|
       wants.html do
-        add_to_sortable_columns('feeds', :model => Feed, :field => 'title', :alias => 'title')
+        add_to_sortable_columns('feeds', :field => 'title')
         add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
-        add_to_sortable_columns('feeds', :field => 'updated_on', :alias => 'updated_on')
-        
-        @feed_pages = Paginator.new(self, Feed.count(:conditions => @conditions), 40, params[:page])
-        @feeds = Feed.find(:all,
-                            :conditions => @conditions,
-                            :limit => @feed_pages.items_per_page, 
-                            :offset => @feed_pages.current.offset,
-                            :order => sortable_order('feeds', 
-                                                    :model => Feed, 
-                                                    :field => 'title', 
-                                                    :sort_direction => :asc))
+        add_to_sortable_columns('feeds', :field => 'updated_on')
+        add_to_sortable_columns('feeds', :field => 'view_state')
+
+        @search_term = params[:search_term]
+        @feeds = Feed.search :search_term => @search, :view => @view,
+                             :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
       end
       wants.xml { render :xml => Feed.find(:all).to_xml }
     end
@@ -72,13 +66,5 @@ class FeedsController < ApplicationController
     
     @feeds = Feed.find(:all, :conditions => [conditions.join(" AND "), *values])
     render :layout => false
-  end
-
-private
-  def setup_search_term
-    @search_term = params[:search_term]
-    unless @search_term.nil? or @search_term.empty?
-      @conditions = ['title like ? or url like ?', "%#{@search_term}%", "%#{@search_term}%"]
-    end
   end
 end

@@ -35,4 +35,22 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 #
 
 class Feed < ActiveRecord::Base
+  def self.search options = {}
+    conditions, values = [], []
+    
+    unless options[:search_term].blank?
+      conditions << '(title LIKE ? OR url LIKE ?)'
+      values << "%#{@search_term}%" << "%#{@search_term}%"
+    end
+    
+    select = ["feeds.*", "CASE view_feed_states.state WHEN 'exclude' THEN 0 WHEN 'always_include' THEN 1 ELSE 2 END AS view_state"]
+    
+    paginate(:select => select.join(","),
+             :joins => "LEFT JOIN view_feed_states ON view_feed_states.feed_id = feeds.id " <<
+                       "LEFT JOIN views ON views.id = view_feed_states.view_id AND views.id = #{options[:view].id}",
+             :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
+             :page => options[:page],
+             :group => "feeds.id",
+             :order => options[:order])
+  end
 end

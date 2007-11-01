@@ -869,3 +869,7 @@ label {
 input.example {
   color: #999;
 }
+
+.pagination {
+	display: inline;
+}
