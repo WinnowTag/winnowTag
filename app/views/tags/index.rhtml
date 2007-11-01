@@ -16,7 +16,7 @@ To rename or merge one of your tags with another, just click on the tag name. Ex
 		  <tr><th colspan="8" class="table_break">Subscribed Tags</th></tr>
   		<tr>
   			<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => "name") %></th>
-				<th class="view_state">View State</th>
+				<th class="view_state"><%= link_to "View State", sort_param('tags', :alias => "view_state") %></th>
 				<th></th>
 				<th>Actions</th>
         <th class="usage number"><%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %></th>
