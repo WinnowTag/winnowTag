@@ -4,8 +4,6 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-require 'rubygems' # this is need on stonecutter for some reason
-require 'hpricot'
 
 module FeedItemsHelper
   include ActionView::Helpers::TagHelper

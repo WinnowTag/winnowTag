@@ -5,8 +5,6 @@
 # Please contact info@peerworks.org for further information.
 #
 
-require 'tag'
-
 class FeedItemsController < ApplicationController
   include FeedItemsHelper
   include ActionView::Helpers::TextHelper

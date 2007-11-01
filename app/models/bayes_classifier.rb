@@ -5,10 +5,6 @@
 # Please contact info@peerworks.org for further information.
 #
 
-require 'tag'
-require 'feed_item_tokenizer'
-
-#
 # Provides the hook between Winnow and the Bayes classifier.
 #
 # The BayesClassifier class sets up and manages an instance of the Bayes classifier

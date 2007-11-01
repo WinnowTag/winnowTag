@@ -5,8 +5,6 @@
 # Please contact info@peerworks.org for further information.
 #
 #
-require 'digest/sha1'
-require 'tzinfo'
   
 # == Schema Information
 # Schema version: 57

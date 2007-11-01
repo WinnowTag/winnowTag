@@ -5,8 +5,6 @@
 # Please contact info@peerworks.org for further information.
 #
 
-require 'tag'
-
 # Need to manually require feed_item since the winnow_feed plugin  defines
 # these classes the auto-require functionality of Rails doesn't try to load the Winnow 
 # additions to these classes.

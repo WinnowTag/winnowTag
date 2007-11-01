@@ -17,6 +17,12 @@
 #   RAILS_ROOT = ENV['RAILS_ROOT']
 # end
 # load any host specific configuration
+
+require 'rubygems' # this is need on stonecutter for some reason
+require 'hpricot'
+require 'digest/sha1'
+require 'tzinfo'
+
 host_specific_config = File.join(File.dirname(__FILE__), 'local', 'environment.rb')
 if File.exist?(host_specific_config)
   require host_specific_config
@@ -58,7 +64,7 @@ Rails::Initializer.run do |config|
   config.active_record.schema_format = :sql
 
   # Activate observers that should always be running
-  config.active_record.observers = :user_observer
+  # config.active_record.observers = :user_observer
 
   # Make Active Record use UTC-base instead of local time
   config.active_record.default_timezone = :utc
