@@ -18,11 +18,6 @@
 # end
 # load any host specific configuration
 
-require 'rubygems' # this is need on stonecutter for some reason
-require 'hpricot'
-require 'digest/sha1'
-require 'tzinfo'
-
 host_specific_config = File.join(File.dirname(__FILE__), 'local', 'environment.rb')
 if File.exist?(host_specific_config)
   require host_specific_config
@@ -71,6 +66,11 @@ Rails::Initializer.run do |config|
   
   # See Rails::Configuration for more options
 end
+
+require 'rubygems' # this is need on stonecutter for some reason
+require 'hpricot'
+require 'digest/sha1'
+require 'tzinfo'
 
 # Use SQL Session Store
 ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:database_manager => SqlSessionStore)
