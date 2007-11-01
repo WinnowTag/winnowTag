@@ -20,7 +20,7 @@ class FeedsController < ApplicationController
         add_to_sortable_columns('feeds', :field => 'view_state')
 
         @search_term = params[:search_term]
-        @feeds = Feed.search :search_term => @search, :view => @view,
+        @feeds = Feed.search :search_term => @search_term, :view => @view,
                              :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
       end
       wants.xml { render :xml => Feed.find(:all).to_xml }

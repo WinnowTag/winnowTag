@@ -40,7 +40,7 @@ class Feed < ActiveRecord::Base
     
     unless options[:search_term].blank?
       conditions << '(title LIKE ? OR url LIKE ?)'
-      values << "%#{@search_term}%" << "%#{@search_term}%"
+      values << "%#{options[:search_term]}%" << "%#{options[:search_term]}%"
     end
     
     select = ["feeds.*", "CASE view_feed_states.state WHEN 'exclude' THEN 0 WHEN 'always_include' THEN 1 ELSE 2 END AS view_state"]
