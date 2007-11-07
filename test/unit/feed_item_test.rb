@@ -6,6 +6,7 @@
 #
 
 require File.dirname(__FILE__) + '/../test_helper'
+require "tag"
 
 class FeedItemTest < Test::Unit::TestCase
   fixtures :feed_items, :users, :roles, :roles_users, :feed_item_tokens_containers, :bayes_classifiers
@@ -736,5 +737,29 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_tag :exclude, tag.id + 1
     
     assert_equal FeedItem.find(1,3,4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id')
+  end
+  
+  def test_including_both_subscribed_and_private_tags_returns_feed_items_from_either_tag
+    quentin = users(:quentin)
+    aaron = users(:aaron)
+    
+    f1 = FeedItem.find(1)
+    f2 = FeedItem.find(2)
+    
+    tag1 = Tag(quentin, 'tag1')
+    tag2 = Tag(aaron, 'tag2')
+    tag2.public = true
+    tag2.save!
+    
+    tagging_1 = Tagging.create(:user => quentin, :feed_item => f1, :tag => tag1)
+    tagging_2 = Tagging.create(:user => aaron, :feed_item => f2, :tag => tag2)
+    
+    TagSubscription.create! :tag => tag2, :user => quentin
+    
+    view = quentin.views.create!
+    view.add_tag(:include, tag1)
+    view.add_tag(:include, tag2)
+    
+    assert_equal [f1, f2], FeedItem.find_with_filters(:view => view, :order => 'feed_items.id')
   end
 end
