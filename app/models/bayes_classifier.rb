@@ -4,6 +4,7 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
+require "feed_item_tokenizer"
 
 # Provides the hook between Winnow and the Bayes classifier.
 #
