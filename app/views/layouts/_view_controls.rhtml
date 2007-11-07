@@ -3,7 +3,7 @@
 		<%= select_tag :views, options_for_view_select, :id => "view_selector",
 									 :onchange => "window.location = '#{url_for(params.merge(:view_id => nil, :mode => nil, :tag_filter => nil, :feed_filter => nil, :text_filter => nil, :commit => nil, :show_untagged => nil))}?view_id=' + selected_value_of(this);" %>
 
-		<%= link_to_function image_tag("new.png", :title => "New View"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/create', {evalScripts:true,method:'post',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :id => "view_new" %>
+		<%= link_to_function image_tag("new.png", :title => "New View"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views', {evalScripts:true,method:'post',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :id => "view_new" %>
 
 		<%= link_to_function image_tag("duplicate.png", :title => "Duplicate Selected Vew"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';duplicate', {evalScripts:true,method:'post',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :id => "view_duplicate", :style => @view.saved? ? nil : "display: none;" %>
 		<%= link_to_function image_tag("edit.png", :title => "Rename Selected Vew"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';edit', {evalScripts:true,method:'get',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :id => "view_edit", :style => @view.saved? ? nil : "display: none;" %>
