@@ -60,22 +60,19 @@ class TagsController < ApplicationController
   #
   # :copy must be the name of a tag to copy
   def create
-    begin
-      if params[:copy]
-        from = Tag.find_by_id(params[:copy])
-        to = Tag(current_user, "#{from.name} - copy")
-        from.copy(to)
-        
-        flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"        
-      else
-        flash[:error] = "Provide a tag to copy"
+    if params[:copy] && params[:name]
+      from = Tag.find_by_id(params[:copy])
+      to = Tag(current_user, params[:name])
+      from.copy(to)
+      
+      flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
+      
+      render :update do |page|
+        page.redirect_to tags_path
       end
-    rescue
-      logger.warn($!)
-      flash[:error] = $!.message
+    else
+      render :nothing => true
     end
-    
-    redirect_to tags_path
   end
   
   def edit

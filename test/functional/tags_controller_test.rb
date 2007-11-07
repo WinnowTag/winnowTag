@@ -25,8 +25,8 @@ class TagsControllerTest < Test::Unit::TestCase
   def test_create_should_copy_named_tag
     users(:quentin).taggings.create(:tag => @tag, :feed_item => FeedItem.find(1))
     assert_difference(users(:quentin).tags, :count) do
-      post :create, :copy => @tag
-      assert_redirected_to tags_path
+      post :create, :copy => @tag, :name => "tag - copy"
+      assert_response :success
       assert_equal("'tag' successfully copied to 'tag - copy'", flash[:notice])
     end
     assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])

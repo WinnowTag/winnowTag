@@ -41,7 +41,7 @@ To rename or merge one of your tags with another, just click on the tag name. Ex
         	</td>
         	<td></td>
       	 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
-            <%= link_to image_tag('copy.gif'), tags_path(:copy => tag), :method => 'post', :title => "Copy #{tag.name}" %>
+            <%= link_to_remote image_tag('copy.gif', :title => "Copy #{tag.name}"), :url => tags_path(:copy => tag), :with => "{name: prompt('New tag name', '#{tag.name} - copy')}" %>
             <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => tag}, 
             			:method => 'put', :title => "Unsubscribe #{tag.name}" %>
         	</td>

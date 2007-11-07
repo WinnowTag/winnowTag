@@ -27,7 +27,7 @@
 	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
   </td>
 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
-    <%= link_to image_tag('copy.gif'), tags_path(:copy => tag), :method => 'post', :title => "Copy #{tag.name}" %>
+    <%= link_to_remote image_tag('copy.gif', :title => "Copy #{tag.name}"), :url => tags_path(:copy => tag), :with => "{name: prompt('New tag name', '#{tag.name} - copy')}" %>
     <%= link_to image_tag('trash.gif'), tag_path(tag), :method => 'delete', :title => "Destroy #{tag.name}",
     			:confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone." %>
 	</td>
