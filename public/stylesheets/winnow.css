@@ -688,16 +688,10 @@ a.editor_cancel {
 }
 
 #feed_items_indicator {
-  padding: 52px 10px 10px 10px;
-  background: #fff url(../images/indicator_medium.gif) no-repeat center 10px;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 100;
-  border: 2px solid #000;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 0.7em;
+  display: inline;
+  background-image: url(../images/indicator.gif);
+  background-repeat: no-repeat;
+  padding-left: 20px;
 }
 
 .button {
