@@ -103,21 +103,24 @@ module ApplicationHelper
   #   * requires - a permission expression that if permits?(options[:requires]) evaluates to true
   #                the link will be rendered, otherwise it wont
   def control_link(content, url, options = {})
+    html_options = options.delete(:html) || {}
+    css_classes = ["control"]
+    css_classes << html_options[:class] unless html_options[:class].blank?
+    
     if options[:requires].nil? or options[:requires] == true or (options[:requires].is_a?(String) and permit?(options.delete(:requires)))
       if options.delete(:remote)
-        css_class = 'control'
         
         if options.delete(:disabled)
-          css_class += ' disabled'
+          css_classes << 'disabled'
         end
         
         options[:url] = url
         options[:condition] = '!this.hasClassName("disabled")'
-        html_options = (options.delete(:html) or Hash.new)
-        link_to_remote(content, options, html_options.merge(:class => css_class))
+        link_to_remote(content, options, html_options.merge(:class => css_classes.join(" ")))
       else
-        link_to_unless(options.delete(:disabled), content, url, options.merge(:class => 'control')) do |name|
-          link_to(name, '#', :class => 'disabled control')
+        link_to_unless(options.delete(:disabled), content, url, options.merge(:class => css_classes.join(" "))) do |name|
+          css_classes << "disabled"
+          link_to(name, '#', html_options.merge(:class => css_classes.join(" ")))
         end
       end
     elsif options[:alternate]

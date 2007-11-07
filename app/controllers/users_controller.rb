@@ -10,11 +10,11 @@ class UsersController < ApplicationController
   before_filter :setup_user, :except => [:create, :new]
   
   def index
-    @user_pages, @users = paginate(:users, :order => 'lastname, firstname', :per_page => 20)
+    @users = User.paginate(:order => 'lastname, firstname', :per_page => 20, :page => params[:page])
   end
 
   def new
-    @user = User.new()
+    @user = User.new
   end
   
   def create

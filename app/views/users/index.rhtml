@@ -1,6 +1,9 @@
-<div class="control_bar">
-	<%= control_link 'Create User', new_user_url, :requires => 'admin'%> 
-</div>
+<% content_for :header_controls do -%>
+  <ul class="control_bar">
+    <li><%= control_link 'Create User', new_user_url, :requires => 'admin', :html => {:class => "add"} %></li>
+    <li><%= will_paginate(@users) %></li>
+  </ul>
+<% end -%>
 <table class="data_table">
 	<tr>
 		<th>User</th>
