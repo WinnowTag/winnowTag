@@ -91,13 +91,9 @@ function toggleSidebar() {
   var sidebar_control = $('sidebar_control');
   sidebar.toggle();
   if(sidebar.visible()) {
-    // This is a hack for Safari's refusal to redraw the content div when the sidebar is toggled
-    $('content').setStyle({width: 'auto'});
     sidebar_control.addClassName('open');
     Cookie.set("show_sidebar", true);
   } else {
-    // This is a hack for Safari's refusal to redraw the content div when the sidebar is toggled
-    $('content').setStyle({width: '100%'});
     sidebar_control.removeClassName('open');
     Cookie.set("show_sidebar", false);
   }
