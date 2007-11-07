@@ -33,6 +33,36 @@ class TagsControllerTest < Test::Unit::TestCase
     assert_equal(2, users(:quentin).taggings.size)
   end
   
+  def test_copying_tag_to_an_already_existing_name_prompts_the_user_to_overwrite
+    tag2 = Tag(users(:quentin), 'tag2')
+    
+    post :create, :copy => @tag, :name => "tag2"
+    assert_response :success
+    
+    assert_match /confirm/, @response.body
+  end
+  
+  def test_copying_tag_to_an_already_existing_name_with_overwrite_flag
+    tag2 = Tag(users(:quentin), 'tag2')
+    
+    feed_item_1 = FeedItem.find(1)
+    feed_item_2 = FeedItem.find(2)
+    
+    users(:quentin).taggings.create(:tag => @tag, :feed_item => feed_item_1)
+    users(:quentin).taggings.create(:tag => tag2, :feed_item => feed_item_2)
+
+    assert_equal [feed_item_1], @tag.taggings.map(&:feed_item)
+    assert_equal [feed_item_2], tag2.taggings.map(&:feed_item)
+
+    assert_difference(users(:quentin).tags, :count, 0) do
+      post :create, :copy => @tag, :name => "tag2", :overwrite => "true"
+      assert_response :success
+      assert_equal("'tag' successfully copied to 'tag2'", flash[:notice])
+    end
+
+    assert_equal [feed_item_1], tag2.taggings(:reload).map(&:feed_item)
+  end
+  
   def test_index
     get :index, :view_id => users(:quentin).views.create
     assert assigns(:tags)

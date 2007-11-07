@@ -62,13 +62,32 @@ class TagsController < ApplicationController
   def create
     if params[:copy] && params[:name]
       from = Tag.find_by_id(params[:copy])
-      to = Tag(current_user, params[:name])
-      from.copy(to)
+      to = Tag.find_by_user_id_and_name(current_user.id, params[:name])
+      if to
+        if params[:overwrite] =~ /true/i
+          from.overwrite(to)
+          flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
+          render :update do |page|
+            page.redirect_to tags_path
+          end
+        else
+          render :update do |page|
+            page << <<-EOJS
+              if(confirm("Tag '#{params[:name]}' already exists. This copy will completely replace it with a copy of '#{from.name}'")) {
+                #{remote_function(:url => hash_for_tags_path(:copy => from, :name => params[:name], :overwrite => true))};
+              }
+            EOJS
+          end
+        end
+      else
+        to = Tag(current_user, params[:name])
+        from.copy(to)
       
-      flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
+        flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
       
-      render :update do |page|
-        page.redirect_to tags_path
+        render :update do |page|
+          page.redirect_to tags_path
+        end
       end
     else
       render :nothing => true

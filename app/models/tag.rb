@@ -91,6 +91,13 @@ class Tag < ActiveRecord::Base
     self.manual_taggings.each do |tagging|
       to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength, :user_id => to.user_id)
     end
+    
+    to_classifier = to.user.classifier
+    to_classifier.bias[to.to_s] = self.user.classifier.bias[self.to_s]
+    to_classifier.save!
+    
+    to.comment = self.comment
+    to.save!
   end
   
   def merge(to)
@@ -105,6 +112,11 @@ class Tag < ActiveRecord::Base
     end
     
     destroy
+  end
+  
+  def overwrite(to)
+    to.taggings.clear
+    self.copy(to)
   end
   
   def subscribed?(user)

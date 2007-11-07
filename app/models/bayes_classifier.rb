@@ -615,13 +615,13 @@ class BayesClassifier < ActiveRecord::Base
   # bias value for 'tag1'.
   #
   def bias=(bias_hash)
-    initial_bias = (read_attribute(:bias) or {})
+    initial_bias = read_attribute(:bias) || {}
     
     new_bias = bias_hash.inject({}) do |hash, (tag, bias)|
       if bias == "default"
         initial_bias.delete(tag)
       else
-        hash[tag] = bias.to_f unless bias.nil? or bias == ""
+        hash[tag] = bias.to_f unless bias.blank?
       end
       hash
     end
@@ -649,8 +649,8 @@ class BayesClassifier < ActiveRecord::Base
   #
   def bias
     bias = read_attribute(:bias)
-    if bias.nil?
-      bias = self.bias = {}
+    if bias.blank?
+      bias = write_attribute(:bias, {})
     end
     bias.default = default_bias
     bias
