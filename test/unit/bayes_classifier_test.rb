@@ -413,16 +413,6 @@ class BayesClassifierTest < Test::Unit::TestCase
     assert classifier.random_background_uptodate?
   end
   
-  def test_random_background_uptodate_should_be_false_when_size_setting_changes
-    FeedItem.expects(:find_random_items_with_tokens).with(2).returns([FeedItem.find(1), FeedItem.find(2)])
-    classifier = BayesClassifier.find(1)
-    classifier.random_background_size = 2
-    classifier.train_random_background
-    assert classifier.random_background_uptodate?
-    classifier.random_background_size = 3
-    assert !classifier.random_background_uptodate?
-  end
-  
   def test_regression_test_fails_with_high_error
     classifier = BayesClassifier.find(1)
     classifier.user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag'), :strength => 0, :classifier_tagging => true)

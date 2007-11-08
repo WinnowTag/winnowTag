@@ -251,7 +251,7 @@ class BayesClassifier < ActiveRecord::Base
   #
   def random_background_uptodate?
     self.classifier.pools[RANDOM_BACKGROUND] != nil and 
-      self.classifier.pools[RANDOM_BACKGROUND].train_count == self.random_background_size
+      self.classifier.pools[RANDOM_BACKGROUND].train_count > 0
   end
   
   # Trains the classifier with a tagging
