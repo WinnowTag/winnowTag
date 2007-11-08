@@ -19,10 +19,12 @@ ErrorMessage.prototype = {
 		this.error_message = $('error');
 		this.error_message.update(message);
 		this.error_message.show();
+		
+		resizeContent();
 
 		self = this;
 		errorTimeout = setTimeout(function() { 
-			new Effect.Fade(self.error_message, {duration: 4}); 
+			new Effect.Fade(self.error_message, {duration: 4, afterFinish: resizeContent});
 		}, 10000);
 	}	
 };
@@ -73,9 +75,12 @@ function resizeContent() {
 		var body_height = $(document.body).getDimensions().height;
 		var navigation_height = $('navigation') ? $('navigation').getDimensions().height : 0;
 		var flash_height = $('flash').getDimensions().height;
+		var error_height = $('error').visible() ? $('error').getHeight() : 0;
+		var warning_height = $('warning').visible() ? $('warning').getHeight() : 0;
+		var notice_height = $('notice').visible() ? $('notice').getHeight() : 0;
 		var text_filter_height = $('header_controls').getHeight();
 		var footer_height = $('footer') ? $('footer').getHeight() : 0;
-		var feed_item_height = body_height - navigation_height - flash_height - text_filter_height - footer_height;
+		var feed_item_height = body_height - navigation_height - flash_height - error_height - warning_height - notice_height - text_filter_height - footer_height - 1;
 		content.style.height = (feed_item_height - ($('feed_items_controller') ? 0 : 20)) + 'px';
 		
 	  var sidebar = $('sidebar');

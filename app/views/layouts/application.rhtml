@@ -25,12 +25,13 @@
 		</div>		
 	</div>
 	
-	<div id="flash" class="clearfix">
-		<%= show_flash %>
+  <div id="flash" class="clearfix">
     <div class="custom_controls">
       <%= yield(:page_controls) %>
     </div>
-	</div>
+  </div>
+
+	<%= show_flash %>	
 
 	<% if sidebar_content = yield(:sidebar) -%>
 		<div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
