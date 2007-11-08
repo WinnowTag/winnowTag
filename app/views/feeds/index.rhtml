@@ -38,7 +38,6 @@
 		<td class="date"><%= format_date(feed.updated_on) %></td>
 		<td class="controls">
 			<%= control_link image_tag("show.gif"), feed_items_path(:feed_filter => feed, :show_untagged => true, :view_id => :new) %>
-			<%= control_link image_tag("trash.gif"), feed_path(feed), :method => :delete, :requires => is_admin?, :confirm => "Do you really want to delete #{feed.title}?" %>
 		</td>
   </tr>
 <% end %>
