@@ -5,6 +5,11 @@
 # Please contact info@peerworks.org for further information.
 #
 
+# Required for the Tag() function.  Rails can sometimes auto-load this and
+# sometimes it doesn't so lets put it here explicitly so we can always be
+# sure it has been loaded and the Tag and function is available.
+require 'tag.rb'
+
 class TaggingsController < ApplicationController
   helper :feed_items
   verify :method => :post, :render => SHOULD_BE_POST
@@ -12,7 +17,6 @@ class TaggingsController < ApplicationController
   
   # Creates a single tagging for a <Taggable, Tagger, Tag>
   def create
-    Tag #This is just a hack to get the Tag() method to be loaded from the tag.rb file via rails auto loading magic
     respond_to do |wants|
       params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
       @tagging = current_user.taggings.build(params[:tagging])
