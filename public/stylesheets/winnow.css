@@ -703,11 +703,11 @@ a.editor_cancel {
 	float: right;
 }
 
-#feed_items_indicator {
-  display: inline;
-  background-image: url(../images/indicator.gif);
-  background-repeat: no-repeat;
+#footer #feed_items_indicator {
+	float: left;
+  background: url(../images/indicator.gif) center left no-repeat;
   padding-left: 20px;
+	margin-left: 1em;
 }
 
 .button {
