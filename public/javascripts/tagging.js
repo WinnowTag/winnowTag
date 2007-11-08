@@ -99,7 +99,7 @@ function sendTagRequest(url, parameters) {
 	new Ajax.Request(url, {parameters: $H(parameters).toQueryString(),
 		method: 'post',
 		onFailure: function(transport) {
-			alert('The tag was not successfully removed.');
+			alert('The tag was not successfully updated.');
 		},
 		onException: function(transport, exception) {
 			alert("Error contacting server.  You're changes have not been saved.");
