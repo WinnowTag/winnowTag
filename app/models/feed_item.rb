@@ -225,7 +225,7 @@ class FeedItem < ActiveRecord::Base
       add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], include_conditions)
     end
     conditions << "(#{include_conditions.join(" OR ")})" unless include_conditions.blank?
-    conditions << "(#{exclude_conditions.join(" OR ")})" unless exclude_conditions.blank?
+    conditions << "(#{exclude_conditions.join(" AND ")})" unless exclude_conditions.blank?
     
     # Untagged filtering
     if !view.show_untagged?
