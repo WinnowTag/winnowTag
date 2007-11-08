@@ -20,6 +20,10 @@ module ApplicationHelper
     end
   end
   
+  def referrer_with_new_view(view)
+    request.env['HTTP_REFERER'].gsub(/view_id=\d+/, "view_id=#{view.id}")
+  end
+  
   def tab_selected(controller, action = nil)
     "selected" if params[:controller] == controller and (action.nil? or params[:action] == action)
   end
