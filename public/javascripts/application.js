@@ -72,16 +72,12 @@ function selected_display_of(control_id) {
 function resizeContent() {
 	var content = $('content');
 	if(content) {
-		var body_height = $(document.body).getDimensions().height;
-		var navigation_height = $('navigation') ? $('navigation').getDimensions().height : 0;
-		var flash_height = $('flash').getDimensions().height;
-		var error_height = $('error').visible() ? $('error').getHeight() : 0;
-		var warning_height = $('warning').visible() ? $('warning').getHeight() : 0;
-		var notice_height = $('notice').visible() ? $('notice').getHeight() : 0;
-		var text_filter_height = $('header_controls').getHeight();
+		var body_height = $(document.body).getHeight();
+		var top_of_content = content.offsetTop;
+		var vertical_padding = parseInt(content.getStyle("padding-top")) + parseInt(content.getStyle("padding-bottom"));
 		var footer_height = $('footer') ? $('footer').getHeight() : 0;
-		var feed_item_height = body_height - navigation_height - flash_height - error_height - warning_height - notice_height - text_filter_height - footer_height - 1;
-		content.style.height = (feed_item_height - ($('feed_items_controller') ? 0 : 20)) + 'px';
+		var feed_item_height = body_height - top_of_content - vertical_padding - footer_height - 1;
+		content.style.height = feed_item_height + 'px';
 		
 	  var sidebar = $('sidebar');
 		if(sidebar) {

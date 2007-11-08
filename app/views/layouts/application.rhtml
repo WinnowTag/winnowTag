@@ -20,16 +20,20 @@
 	<%= render :partial => 'layouts/navbar' %>
 	<div id="header_controls" class="clearfix">
 		<%= render :partial => "layouts/view_controls" %>
-		<div class="custom_controls">
-			<%= yield(:header_controls) %>
-		</div>		
+		<% if header_controls = yield(:header_controls) -%>
+  		<div class="custom_controls">
+  			<%= header_controls %>
+  		</div>
+	  <% end -%>
 	</div>
 	
-  <div id="flash" class="clearfix">
-    <div class="custom_controls">
-      <%= yield(:page_controls) %>
+	<% if page_controls = yield(:page_controls) -%>
+    <div id="page_controls" class="clearfix">
+      <div class="custom_controls">
+        <%= page_controls %>
+      </div>
     </div>
-  </div>
+  <% end -%>
 
 	<%= show_flash %>	
 

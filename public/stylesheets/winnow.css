@@ -239,7 +239,7 @@ optgroup {
 #header_controls {
 	padding: 3px;
 	border-bottom: 1px solid #000;
-	height: 1.9em;
+	height: 2em;
 }
 
 #header_controls form {
@@ -267,18 +267,18 @@ optgroup {
   margin-right: .5em;
 }
 
-#flash {
+#page_controls {
 	padding: 3px;
 	border-bottom: 1px solid #000;
-	height: 1.9em;
+	height: 2em;
 }
 
-#flash .custom_controls {
+#page_controls .custom_controls {
   float: right;
   margin-right: .5em;
 }
 
-#flash .custom_controls form {
+#page_controls .custom_controls form {
   display: inline;
 }
 
@@ -329,12 +329,14 @@ ul.control_bar {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	white-space: nowrap;
 }
 
 ul.control_bar li {
 	display: inline;
 	margin: 0 0 0 2em;
 	padding: 0;
+	white-space: nowrap;
 }
 	
 .current_page {
