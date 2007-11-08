@@ -37,6 +37,7 @@
 	</td>
 	<td class="number"><%= tag.classifier_count %></td>
 	<td class="date"><%= format_date(tag.last_used_by) %></td>	
+  <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
 	<td>
 		<%= bias_slider(:tag => tag, :global => "sliders[#{tag.name.to_json}]", :prefix => tag.dom_id('slider'),
 						:change => "if (slider.event) {$('#{tag.dom_id('bias_for')}').value = value; slider.options.isDefault = false;}") %>

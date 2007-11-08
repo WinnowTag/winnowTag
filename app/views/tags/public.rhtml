@@ -1,29 +1,34 @@
+<% @skip_content_container = true %>
 <div id="tags">
-	<table class="data_table">		
-		<tr>
-			<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => "name") %></th>
-			<th class="subscribe"><%= link_to "Subscribe", sort_param('tags', :alias => "subscribe") %></th>
-			<th class="usage number"><%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %></th>
-			<th class="classifier_usage number"><%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %></th>
-			<th class="date"><%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %></th>
-			<th class="indented"><%= link_to "User", sort_param('tags', :alias => "login") %></th>
-		</tr>
-		<% for tag in @tags -%>
-  		<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
-      	<td class="tag">
-		      <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(tag.user, tag, :atom) %>
-      	  <%= tag.name -%><br />
-  	  		<span class="comment"><%= tag.comment %></span>
-      	</td>
-				<td>
-					<%= check_box_tag tag.dom_id("subscribe"), "1", tag.subscribed?(current_user), 
-														:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }") %>
-				</td>
-      	<td class="number"><%= tag.positive_count %> / <%= tag.negative_count %></td>
-  	    <td class="number"><%= tag.classifier_count %></td>
-  	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
-  	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
-      </tr>
-		<% end -%>
+	<table class="data_table">	
+	  <thead>	
+  		<tr>
+  			<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => "name") %></th>
+  			<th class="subscribe"><%= link_to "Subscribe", sort_param('tags', :alias => "subscribe") %></th>
+  			<th class="usage number"><%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %></th>
+  			<th class="classifier_usage number"><%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %></th>
+  			<th class="date"><%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %></th>
+  			<th class="indented"><%= link_to "User", sort_param('tags', :alias => "login") %></th>
+  		</tr>
+  	</thead>
+  	<tbody id="content">
+  		<% for tag in @tags -%>
+    		<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
+        	<td class="tag">
+  		      <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(tag.user, tag, :atom) %>
+        	  <%= tag.name -%><br />
+    	  		<span class="comment"><%= tag.comment %></span>
+        	</td>
+  				<td>
+  					<%= check_box_tag tag.dom_id("subscribe"), "1", tag.subscribed?(current_user), 
+  														:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }") %>
+  				</td>
+        	<td class="number"><%= tag.positive_count %> / <%= tag.negative_count %></td>
+    	    <td class="number"><%= tag.classifier_count %></td>
+    	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
+    	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
+        </tr>
+  		<% end -%>
+  	</tbody>
 	</table>
 </div>

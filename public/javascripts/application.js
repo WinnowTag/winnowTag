@@ -76,7 +76,7 @@ function resizeContent() {
 		var top_of_content = content.offsetTop;
 		var vertical_padding = parseInt(content.getStyle("padding-top")) + parseInt(content.getStyle("padding-bottom"));
 		var footer_height = $('footer') ? $('footer').getHeight() : 0;
-		var feed_item_height = body_height - top_of_content - vertical_padding - footer_height - 1;
+		var feed_item_height = body_height - top_of_content - vertical_padding - footer_height;
 		content.style.height = feed_item_height + 'px';
 		
 	  var sidebar = $('sidebar');

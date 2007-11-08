@@ -25,6 +25,7 @@ body {
 	height: 100%;
 	background-color: white;
 	background-color: #E1ECFE;
+	overflow-y: hidden;
 }
 
 body > h2, body > h3, body > h4 {
@@ -148,7 +149,9 @@ optgroup {
 #content {
 	background-color: #fff;
 	overflow: auto;
+	overflow-x: hidden;
 	padding: 10px;
+	position: relative;
 }
 
 #feed_items_controller #content {

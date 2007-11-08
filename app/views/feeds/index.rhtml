@@ -1,3 +1,4 @@
+<% @skip_content_container = true %>
 <% content_for :header_controls do -%>
   <% form_tag(feeds_path, :method => :get) do -%>
   	<%= hidden_field_tag :view_id, @view.id %>
@@ -15,30 +16,33 @@
 <% end -%>
 
 <table class="data_table">
-  <tr>
-		<th><%= link_to "Title", sort_param('feeds', :alias => 'title') %></th>
-		<th class="view_state"><%= link_to "View State", sort_param('feeds', :alias => 'view_state') %></th>
-		<th class="number"><%= link_to "Items", sort_param('feeds', :alias => 'item_count') %></th>
-		<th class="date"><%= link_to "Last Updated", sort_param('feeds', :alias => 'updated_on') %></th>
-		<th></th>
-  </tr>
-  
-<% for feed in @feeds %>
-  <tr id="<%= "feed_#{feed.id}" %>" class="<%= cycle("odd", "even") %>">
-		<td><%= feed_link(feed) %></td>
-		<td class="view_state">
-			<%= filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
-			      :add_url => "/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=always_include", 
-			      :remove_url => "/views/#{@view.id};remove_feed?feed_id=#{feed.id}" %>
-			<%= filter_control "Always Exclude This Feed", :exclude, @view.feed_filters.includes?(:exclude, feed), 
-			      :add_url => "/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=exclude", 
-			      :remove_url => "/views/#{@view.id};remove_feed?feed_id=#{feed.id}" %>
-		</td>
-		<td class="number"><%= feed.feed_items_count %></td>
-		<td class="date"><%= format_date(feed.updated_on) %></td>
-		<td class="controls">
-			<%= control_link image_tag("show.gif"), feed_items_path(:feed_filter => feed, :show_untagged => true, :view_id => :new) %>
-		</td>
-  </tr>
-<% end %>
+  <thead>
+    <tr>
+  		<th><%= link_to "Title", sort_param('feeds', :alias => 'title') %></th>
+  		<th class="view_state"><%= link_to "View State", sort_param('feeds', :alias => 'view_state') %></th>
+  		<th class="number"><%= link_to "Items", sort_param('feeds', :alias => 'item_count') %></th>
+  		<th class="date"><%= link_to "Last Updated", sort_param('feeds', :alias => 'updated_on') %></th>
+  		<th></th>
+    </tr>
+  </thead>
+  <tbody id="content">
+    <% for feed in @feeds %>
+      <tr id="<%= "feed_#{feed.id}" %>" class="<%= cycle("odd", "even") %>">
+    		<td><%= feed_link(feed) %></td>
+    		<td class="view_state">
+    			<%= filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
+    			      :add_url => "/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=always_include", 
+    			      :remove_url => "/views/#{@view.id};remove_feed?feed_id=#{feed.id}" %>
+    			<%= filter_control "Always Exclude This Feed", :exclude, @view.feed_filters.includes?(:exclude, feed), 
+    			      :add_url => "/views/#{@view.id};add_feed?feed_id=#{feed.id}&feed_state=exclude", 
+    			      :remove_url => "/views/#{@view.id};remove_feed?feed_id=#{feed.id}" %>
+    		</td>
+    		<td class="number"><%= feed.feed_items_count %></td>
+    		<td class="date"><%= format_date(feed.updated_on) %></td>
+    		<td class="controls">
+    			<%= control_link image_tag("show.gif"), feed_items_path(:feed_filter => feed, :show_untagged => true, :view_id => :new) %>
+    		</td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>

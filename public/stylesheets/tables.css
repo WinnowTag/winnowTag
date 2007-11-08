@@ -13,6 +13,7 @@ table.property_table {
 
 th {
 	text-align: left;
+	padding: 5px;
 }
 
 th.indented {
@@ -70,9 +71,10 @@ th.sensitivity, td.sensitivity {
   width: 90px;
 }
 
-td.controls {
-  text-align: right;
+tbody#content {
+	padding: 0;
 }
+
 
 table.data_table th.table_break {
 	padding-top: 10px;
@@ -113,3 +115,4 @@ table td.even {
 .data_table td.tag img {
   vertical-align: bottom;
 }
+table.data_table td:last-child { padding-right: 20px;} /*prevent Mozilla scrollbar from hiding cell content*/

@@ -41,10 +41,14 @@
 		<div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
 		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
 	<% end -%>
-
-	<div id="content">
+  
+  <% if @skip_content_container -%>
 	  <%= yield %>
-	</div>
+	<% else -%>
+  	<div id="content">
+  	  <%= yield %>
+  	</div>
+	<% end -%>
 
 	<% if footer_content = yield(:footer) -%>
 		<div id="footer"><%= footer_content %></div>
