@@ -20,4 +20,30 @@ Spec::Runner.configure do |config|
   #
   # If you declare global fixtures, be aware that they will be declared
   # for all of your examples, even those that don't use them.
+  
+  def valid_feed_item_attributes(attributes = {})
+    unique_id = rand(1000)
+    { :link => "http://#{unique_id}.example.com", 
+      :unique_id => unique_id
+    }.merge(attributes)
+  end
+  
+  def valid_user_attributes(attributes = {})
+    unique_id = rand(1000)
+    { :login => "user_#{unique_id}",
+      :email => "user_#{unique_id}@example.com",
+      :password => "password",
+      :password_confirmation => "password",
+      :firstname => "John_#{unique_id}",
+      :lastname => "Doe_#{unique_id}"
+    }.merge(attributes)
+  end
+  
+  def valid_tag_attributes(attributes = {})
+    unique_id = rand(1000)
+    {
+      :name => "Tag #{unique_id}",
+      :user_id => unique_id
+    }.merge(attributes)
+  end
 end

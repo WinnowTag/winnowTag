@@ -218,15 +218,14 @@ class FeedItem < ActiveRecord::Base
       tag_exclusion_filter_by_user[tag.user] << tag.id
     end
 
-    ored_conditions = []
+    include_conditions, exclude_conditions = [], []
     (tag_inclusion_filter_by_user.keys + tag_exclusion_filter_by_user.keys).uniq.each do |tagger|
-      anded_conditions = []
       add_tag_filter_joins!(tagger, filters[:include_negative], filters[:only_tagger], joins)
-      add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], filters[:include_negative], filters[:only_tagger], anded_conditions)
-      add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], anded_conditions)
-      ored_conditions << "( #{anded_conditions.join(" AND ")} )" unless anded_conditions.blank?
+      add_tag_exclusion_conditions!(tagger, tag_exclusion_filter_by_user[tagger], filters[:include_negative], filters[:only_tagger], exclude_conditions)
+      add_tag_inclusion_conditions!(tagger, tag_inclusion_filter_by_user[tagger], include_conditions)
     end
-    conditions << "( #{ored_conditions.join(" OR ")} )" unless ored_conditions.blank?
+    conditions << "(#{include_conditions.join(" OR ")})" unless include_conditions.blank?
+    conditions << "(#{exclude_conditions.join(" OR ")})" unless exclude_conditions.blank?
     
     # Untagged filtering
     if !view.show_untagged?
@@ -370,7 +369,7 @@ class FeedItem < ActiveRecord::Base
   def self.add_tag_inclusion_conditions!(user, tag_filter, conditions)
     unless tag_filter.blank?
       taggings_alias = taggings_alias_for(user)
-      tag_conditions = ["#{taggings_alias}.id IS NOT NULL", "#{taggings_alias}.tag_id IN (#{tag_filter.join(",")})"]
+      tag_conditions = ["#{taggings_alias}.id IS NOT NULL AND #{taggings_alias}.tag_id IN (#{tag_filter.join(",")})"]
       conditions.concat(tag_conditions)
     end
   end
