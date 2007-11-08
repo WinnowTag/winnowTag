@@ -12,6 +12,7 @@ class TaggingsController < ApplicationController
   
   # Creates a single tagging for a <Taggable, Tagger, Tag>
   def create
+    Tag #This is just a hack to get the Tag() method to be loaded from the tag.rb file via rails auto loading magic
     respond_to do |wants|
       params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
       @tagging = current_user.taggings.build(params[:tagging])
