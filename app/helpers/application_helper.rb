@@ -28,8 +28,8 @@ module ApplicationHelper
     # flash[:error] = "testing..."
     
     [:notice, :warning, :error].map do |name|
-      close = link_to_function(image_tag('cross.png', :size => '11x11', :alt => 'X', :class => 'flash_icon'), "$('#{name}').hide();", :id => 'close_flash', :title => 'Close message')
-      content_tag :div, "#{flash[name]} #{close}", :id => name, :style => flash[:name].blank? ? "display: none" : nil
+      close = link_to_function(image_tag('cross.png', :size => '11x11', :alt => 'X', :class => 'flash_icon'), "$('#{name}').hide()", :id => 'close_flash', :title => 'Close message')
+      content_tag :div, "#{flash[name]} #{close}", :id => name, :style => flash[name].blank? ? "display: none" : nil
     end.join
   end
   

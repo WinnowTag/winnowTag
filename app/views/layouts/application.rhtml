@@ -22,11 +22,14 @@
 		<%= render :partial => "layouts/view_controls" %>
 		<div class="custom_controls">
 			<%= yield(:header_controls) %>
-		</div>
+		</div>		
 	</div>
 	
-	<div id="flash">
+	<div id="flash" class="clearfix">
 		<%= show_flash %>
+    <div class="custom_controls">
+      <%= yield(:page_controls) %>
+    </div>
 	</div>
 
 	<% if sidebar_content = yield(:sidebar) -%>

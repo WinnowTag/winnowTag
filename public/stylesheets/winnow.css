@@ -239,6 +239,7 @@ optgroup {
 #header_controls {
 	padding: 3px;
 	border-bottom: 1px solid #000;
+	height: 1.9em;
 }
 
 #header_controls form {
@@ -264,6 +265,21 @@ optgroup {
 #header_controls .custom_controls {
   float: right;
   margin-right: .5em;
+}
+
+#flash {
+	padding: 3px;
+	border-bottom: 1px solid #000;
+	height: 1.9em;
+}
+
+#flash .custom_controls {
+  float: right;
+  margin-right: .5em;
+}
+
+#flash .custom_controls form {
+  display: inline;
 }
 
 a { color: #2c50e8; text-decoration: none; }
@@ -829,11 +845,6 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 
 .filter_control.exclude.selected {
 	background: url(../images/remove.png) 0 center no-repeat;
-}
-
-.add {
-	padding-left: 20px;
-	background: url(../images/add.png) 0 center no-repeat;
 }
 
 .inplaceeditor-form {
