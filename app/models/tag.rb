@@ -127,8 +127,7 @@ class Tag < ActiveRecord::Base
   def self.find_all_with_count(options = {})
     joins = ["LEFT JOIN taggings ON tags.id = taggings.tag_id", "LEFT JOIN users ON tags.user_id = users.id"]
     if options[:view]
-      joins << "LEFT JOIN view_tag_states ON view_tag_states.tag_id = tags.id "
-      joins << "LEFT JOIN views ON views.id = view_tag_states.view_id AND views.id = #{options[:view].id}"
+      joins << "LEFT JOIN view_tag_states ON view_tag_states.tag_id = tags.id AND view_id = #{options[:view].id}"
     end
 
     if options[:user]
