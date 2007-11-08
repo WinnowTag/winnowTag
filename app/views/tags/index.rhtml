@@ -9,39 +9,22 @@
 
 <div id="tags">
 	<table class="data_table">
-    <%= render :partial => "header" %>
+    <thead>
+      <tr>
+      	<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => 'name') %></th>
+      	<th class="view_state"><%= link_to "View State", sort_param('tags', :alias => "view_state") %></th>
+      	<th class="control_icons"><%= link_to "Public", sort_param('tags', :alias => "public") %></th>
+      	<th class="control_icons">Actions</th>
+      	<th class="usage number"><%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %></th>
+      	<th class="classifier_usage number"><%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %></th>
+      	<th class="date"><%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %></th>
+        <th class="indented"><%= link_to "User", sort_param('tags', :alias => "login") %></th>
+      	<th class="sensitivity">Sensitivity</th>
+      </tr>
+    </thead>
     <tbody id="content">
   		<%= render :partial => 'tag', :collection => @tags %>
-				
-  		<% unless @subscribed_tags.blank? %>
-    		<% for tag in @subscribed_tags -%>
-      		<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
-          	<td class="tag">
-    		      <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(tag.user, tag, :atom) %>
-          	  <%= tag.name -%><br />
-      	  		<span class="comment"><%= tag.comment %></span>
-          	</td>
-        		<td class="view_state">
-          		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
-          		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", 
-          		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
-          		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, tag), 
-          		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", 
-          		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
-          	</td>
-          	<td></td>
-        	 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
-              <%= link_to_remote image_tag('copy.gif', :title => "Copy #{tag.name}"), :url => tags_path(:copy => tag), :with => "{name: prompt('New tag name', '#{tag.name} - copy')}" %>
-              <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => tag}, 
-              			:method => 'put', :title => "Unsubscribe #{tag.name}" %>
-          	</td>
-            <td class="number"><%= tag.positive_count %> / <%= tag.negative_count %></td>
-            <td class="number"><%= tag.classifier_count %></td>
-      	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
-            <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
-          </tr>
-    		<% end -%>
-    	<% end -%>
+  		<%= render :partial => 'subscribed_tag', :collection => @subscribed_tags %>
     </tbody>
 	</table>
 </div>
