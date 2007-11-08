@@ -41,6 +41,7 @@ function add_tag(taggable_id, tag_name, allow_remove) {
 	var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
 	var url = '/taggings/create';
 	var parameters = {};
+	var revert_callback;
 	parameters["tagging[feed_item_id]"] = taggable_id.match(/(\d+)$/)[1];
 	parameters["tagging[tag]"] = tag_name;
 	parameters["tagging[strength]"] = "1";
@@ -65,13 +66,14 @@ function add_tag(taggable_id, tag_name, allow_remove) {
 		console.log("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
 	}
 
-	sendTagRequest(url, parameters);
+	sendTagRequest(url, parameters, revert_callback);
 }
 
 function remove_tag(taggable_id, tag_name) {
 	var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
 	var url = '/taggings/destroy';
 	var parameters = {};
+	var revert_callback;
 	parameters["tagging[feed_item_id]"] = taggable_id.match(/(\d+)$/)[1];
 	parameters["tagging[tag]"] = tag_name;
 	
@@ -89,20 +91,18 @@ function remove_tag(taggable_id, tag_name) {
 		console.log("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
 	}
 
-	sendTagRequest(url, parameters);
+	sendTagRequest(url, parameters, revert_callback);
 }
 
 
 /** Sends the tag request to the server.
  */
-function sendTagRequest(url, parameters) {
+function sendTagRequest(url, parameters, revert_callback) {
 	new Ajax.Request(url, {parameters: $H(parameters).toQueryString(),
 		method: 'post',
 		onFailure: function(transport) {
-			alert('The tag was not successfully updated.');
-		},
-		onException: function(transport, exception) {
 			alert("Error contacting server.  You're changes have not been saved.");
+			// revert_callback();
 		}
 	});
 }
