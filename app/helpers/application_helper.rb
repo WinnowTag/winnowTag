@@ -30,8 +30,8 @@ module ApplicationHelper
       
   def show_flash
     [:notice, :warning, :error].map do |name|
-      close = link_to_function(image_tag('cross.png', :size => '11x11', :alt => 'X', :class => 'flash_icon'), "$('#{name}').hide()", :id => 'close_flash', :title => 'Close message')
-      content_tag :div, "#{flash[name]} #{close}", :id => name, :style => flash[name].blank? ? "display: none" : nil
+      close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => 'Close Message')
+      content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display: none" : nil
     end.join
   end
   
