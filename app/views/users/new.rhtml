@@ -1,4 +1,4 @@
-<% labeled_form_for :user, @user, :url => users_url, :method => :post do |f| %>
+<% labeled_form_for :user, @user, :url => users_path, :method => :post do |f| %>
 	<%= error_messages_for 'user' %>
 	<fieldset>
 		<legend>Create User</legend>
@@ -11,7 +11,7 @@
 		<p>
 			<label>&nbsp;</label>
 			<%= submit_tag 'Save changes', :name => 'save'%>
-			<%= link_to 'Cancel', :action => '' %>
+			<%= link_to 'Cancel', users_path %>
 		</p>
 	</fieldset>
 <%  end -%>

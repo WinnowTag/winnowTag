@@ -37,6 +37,13 @@ class UsersControllerTest < Test::Unit::TestCase
     assert_not_nil assigns(:users)
   end
   
+  def test_new
+    login_as(:admin)
+    get :new, :view_id => users(:admin).views.create
+    assert_response :success
+    assert_select "form[action = #{users_path}]", true
+  end
+  
   def test_create
     login_as(:admin)
     assert_no_difference(User, :count) do
