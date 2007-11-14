@@ -157,6 +157,8 @@ optgroup {
 	float: left;
 	padding: 5px;
 	background-color: #E1ECFE;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 #sidebar_control {
