@@ -157,19 +157,6 @@ class FeedItemsHelperTest < HelperTestCase
     assert is_item_unread?( FeedItem.find(1) )
   end
     
-  def test_display_new_item_status_for_unread_item
-    @current_user.unread_items.create(:feed_item_id => 1)
-    @response.body = display_new_item_status(1)
-    assert_select("a")
-    assert_match(/addClassName\('read'\)/, @response.body)
-  end
-  
-  def test_empty_new_item_status_for_item_not_in_new_item_list
-    @response.body = display_new_item_status(1)
-    assert_select("a")
-    assert_match(/addClassName\('unread'\)/, @response.body)
-  end
-  
   # TODO: Update this to work with published tags
   # def test_display_published_tags_when_tag_filter_is_a_published_tag
   #   tag_filter = TagPublication.find(1)

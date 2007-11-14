@@ -34,18 +34,9 @@ module FeedItemsHelper
     !current_user.has_read_item?(feed_item_id)
   end
   
-  def display_new_item_status(feed_item_id)
-    if is_item_unread?(feed_item_id)
-      link_to_remote "", 
-        { :url => mark_read_feed_item_path(feed_item_id), :method => :put, 
-          :before => "$('feed_item_#{feed_item_id}').addClassName('read'); $('feed_item_#{feed_item_id}').removeClassName('unread');" }, 
-        { :title => "Click to mark as read" }
-    else
-      link_to_remote "", 
-        { :url => mark_unread_feed_item_path(feed_item_id), :method => :put, 
-          :before => "$('feed_item_#{feed_item_id}').addClassName('unread'); $('feed_item_#{feed_item_id}').removeClassName('read');" }, 
-        { :title => "Click to mark as unread" }
-    end
+  def toggle_read_unread_button
+    link_to_function "", "itemBrowser.toggleReadUnreadItem(this.up('.item'))", 
+          :onmouseover => "this.title = 'Click to mark as ' + (this.up('.item').match('.read') ? 'unread' : 'read');"
   end
   
   # Classification helpers

@@ -98,11 +98,13 @@ class FeedItemsController < ApplicationController
       
       FeedItem.mark_read(filters)
     end
+    render :nothing => true
   end
   
   def mark_unread
     @feed_item = FeedItem.find(params[:id])
     current_user.unread_items.create(:feed_item => @feed_item)
+    render :nothing => true
   end
   
   def description

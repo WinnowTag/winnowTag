@@ -763,17 +763,17 @@ ItemBrowser.prototype = {
 	},
 	
 	markItemRead: function(item) {
-		var status = $$('#status_' + $(item).getAttribute('id') + " a").first();
-		if (status && $(item).hasClassName('unread')) {
-			status.onclick();
-		}
+	  item = $(item);
+    item.addClassName('read');
+    item.removeClassName('unread');
+    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + ';mark_read', {method: 'put'});
 	},
 	
 	markItemUnread: function(item) {
-		var status = $$('#status_' + $(item).getAttribute('id') + " a").first();
-		if (status && $(item).hasClassName('read')) {
-			status.onclick();
-		}
+	  item = $(item);
+    item.addClassName('unread'); 
+    item.removeClassName('read');    
+    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + ';mark_unread', {method: 'put'});
 	},
 	
 	toggleReadUnreadItem: function(item) {
@@ -792,6 +792,7 @@ ItemBrowser.prototype = {
 	},
 	
 	markAllItemsRead: function() {
+	  $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
 		new Ajax.Request('/feed_items/mark_read?view_id=' + this.options.view_id, {method: 'put'});
 	},
 	
