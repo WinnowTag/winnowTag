@@ -241,7 +241,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
       login_as(:quentin)
       put :mark_read, :id => 1
       assert_response :success
-      assert_rjs :replace_html, 'status_feed_item_1'
     end
   end
   
@@ -263,7 +262,6 @@ class FeedItemsControllerTest < Test::Unit::TestCase
       login_as(:quentin)
       put :mark_unread, :id => 1
       assert_response :success
-      assert_rjs :replace_html, 'status_feed_item_1'
     end
   end
 end
