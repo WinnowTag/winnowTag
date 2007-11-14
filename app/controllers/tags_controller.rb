@@ -37,7 +37,7 @@ class TagsController < ApplicationController
   def show
     user = User.find_by_login(params[:user_id])
 
-    if user and @tag = user.tags.find_by_name(params[:id])
+    if user and @tag = user.tags.find_by_id(params[:id])
       respond_to do |wants|
         wants.atom do        
           last_modified = @tag.user.classifier.last_executed

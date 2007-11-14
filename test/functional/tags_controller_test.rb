@@ -205,7 +205,7 @@ class TagsControllerTest < Test::Unit::TestCase
     user.taggings.create!(:feed_item => FeedItem.find(1), :tag => tag)
     user.taggings.create!(:feed_item => FeedItem.find(2), :tag => tag)
 
-    get :show, :user_id => user.login, :id => tag.name, :format => "atom"
+    get :show, :user_id => user.login, :id => tag, :format => "atom"
 
     assert_response(:success)
     assert_select("entry", 2, @response.body)
@@ -223,7 +223,7 @@ class TagsControllerTest < Test::Unit::TestCase
     tag = Tag(user, 'tag')
     tag.update_attribute :public, true
 
-    get :show, :user_id => user.login, :id => tag.name, :format => "atom"
+    get :show, :user_id => user.login, :id => tag, :format => "atom"
     assert_response :success
   end
   
