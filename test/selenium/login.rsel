@@ -9,10 +9,11 @@
 # how this test is rendered, or to http://localhost:3000/selenium to
 # run the suite.
 
-# setup :fixtures => :users
+
+setup :fixtures => [:users, :bayes_classifiers]
 open "/account/login"
-type "login", "mark"
-type "password", "password"
+type "login", "quentin"
+type "password", "test"
 click "commit"
 wait_for_page_to_load 30000
-assert_title "Winnow (Mark Van Holstyn): feed_items"
+assert_title "Winnow (Quentin Doe): feed_items"
