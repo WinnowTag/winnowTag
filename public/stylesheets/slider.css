@@ -2,7 +2,7 @@
 
 div.slider_track {
 	z-index: 11;
-	width: 95%;
+	width: 100px;
 	margin-left: auto;
 	margin-right: auto;
 	height: 5px;

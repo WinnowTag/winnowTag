@@ -114,7 +114,7 @@ namespace :test do
   end
 end
 
-task :test => ['test:pw_plugins', 'test:classifier']
+task :test => ['test:pw_plugins', 'test:classifier', 'test:acceptance']
 
 # Replace test task dependency on db:test:prepare with our own db:test:initialize
 [:'test:recent', :'test:units', :'test:functionals', :'test:integration'].each do |task|
@@ -128,4 +128,5 @@ task :cruise do
   Rake::Task['test:db:initialize'].invoke
   Rake::Task['test'].invoke
   Rake::Task['test:rcov'].invoke
+  # Rake::Task['test:acceptance'].invoke
 end
