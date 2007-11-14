@@ -9,7 +9,6 @@
 # how this test is rendered, or to http://localhost:3000/selenium to
 # run the suite.
 
-
 setup :fixtures => [:users, :bayes_classifiers]
 open "/account/login"
 type "login", "quentin"
@@ -17,3 +16,11 @@ type "password", "test"
 click "commit"
 wait_for_page_to_load 30000
 assert_title "Winnow (Quentin Doe): feed_items"
+
+setup :fixtures => [:users, :bayes_classifiers]
+open "/account/login"
+type "login", "quentin"
+type "password", "wrong"
+click "commit"
+wait_for_page_to_load 30000
+assert_text "notice", "Invalid credentials. Please try again."
