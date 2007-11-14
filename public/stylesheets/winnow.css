@@ -234,7 +234,7 @@ optgroup {
 }
 
 #header_controls {
-	padding: 3px;
+  padding: 3px;
 	border-bottom: 1px solid #000;
 	height: 2em;
 	background-color: #E1ECFE;
@@ -256,8 +256,8 @@ optgroup {
 	vertical-align: middle;
 }
 
-#header_controls .view_controls #view_form {
-	margin-left: .5em;
+#header_controls .view_controls #view_form form {
+	margin: 0 0 0 .5em;
 }
 
 #header_controls .custom_controls {
