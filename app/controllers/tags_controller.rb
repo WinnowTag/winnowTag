@@ -126,6 +126,9 @@ class TagsController < ApplicationController
 
   def destroy
     @tag.destroy
+    TagSubscription.delete_all(:tag_id => @tag)
+    ViewTagState.delete_all_for(@tag)
+
     flash[:notice] = "Deleted #{@tag.name}."
     redirect_to :back
   end
@@ -144,6 +147,10 @@ class TagsController < ApplicationController
   
   def publicize
     @tag.update_attribute(:public, params[:public])
+    unless @tag.public?
+      TagSubscription.delete_all(:tag_id => @tag)
+      ViewTagState.delete_all_for(@tag, :except => @tag.user)
+    end
   end
   
   def public
@@ -158,6 +165,7 @@ class TagsController < ApplicationController
         TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
       else
         TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
+        ViewTagState.delete_all_for(tag, :only => current_user)
       end
     end
     render :nothing => true
@@ -166,6 +174,7 @@ class TagsController < ApplicationController
   def unsubscribe
     if tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
+      ViewTagState.delete_all_for(tag, :only => current_user)
     end
     redirect_to :back
   end
