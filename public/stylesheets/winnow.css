@@ -44,7 +44,7 @@ a.close img {
 	padding: 5px 5px 5px 26px;
 	position: relative;
 	height: 1.2em;
-	margin: 10px 10px 0 10px;
+	margin: 10px;
 }
 
 #notice {
@@ -87,7 +87,7 @@ a.close img {
 .navigation .main li {
   float: left;
   padding: 0;
-  margin: 0px 10px 0px 0;
+  margin: 0 10px 0 0;
 }
 
 .navigation .main li a {
