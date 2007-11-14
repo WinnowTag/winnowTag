@@ -23,7 +23,7 @@ SERVER_COMMAND =      c_b :server_command do
   else
     # don't use redirects to /dev/nul since it makes the fork return wrong pid
     # see UnixSubProcess
-    "#{server_path} webrick -p %d -e test"
+    "#{server_path} -p %d -e test"
   end
 end
 
@@ -108,7 +108,7 @@ module SeleniumOnRails
         puts "Starting #{browser}"
         base_url = "http://#{HOST}:#{@port}#{BASE_URL_PATH}"
         log = log_file browser
-        command = "\"#{path}\" \"http://#{HOST}:#{@port}#{TEST_RUNNER_URL}?test=tests&auto=true&baseUrl=#{base_url}&resultsUrl=postResults/#{log}&multiWindow=#{MULTI_WINDOW}\""
+        command = "#{path} \"http://#{HOST}:#{@port}#{TEST_RUNNER_URL}?test=tests&auto=true&baseUrl=#{base_url}&resultsUrl=postResults/#{log}&multiWindow=#{MULTI_WINDOW}\""
         @browser = start_subprocess command    
         log_path log
       end
@@ -161,7 +161,7 @@ class SeleniumOnRails::AcceptanceTestRunner::SubProcess
   def stop what
     begin
       puts "Stopping #{what} (pid=#{@pid}) ..."
-      Process.kill 9, @pid
+      Process.kill 15, @pid
     rescue Errno::EPERM #such as the process is already closed (tabbed browser)
     end
   end

@@ -20,12 +20,13 @@ browsers:
   # ie: 'c:\Program Files\Internet Explorer\iexplore.exe'
 
   # Mac OS X
-  firefox: '/Applications/Firefox.app/Contents/MacOS/firefox-bin'
+  firefox: '/Applications/Firefox.app/Contents/MacOS/firefox-bin -P selenium'
   safari: '/Applications/Safari.app/Contents/MacOS/Safari'
 
+start_server: true
+port_start: 4000
+port_end: 4005
 #host: 'localhost'
-#port_start: 3000
-#port_end: 3005
 #base_url_path: '/'
 #max_browser_duration: 120
 #multi_window: false
