@@ -1,0 +1,8 @@
+# Unsuccessful login
+setup :fixtures => [:users, :bayes_classifiers]
+open "/account/login"
+type "login", "quentin"
+type "password", "wrong"
+click "commit"
+wait_for_page_to_load 30000
+assert_text "notice", "Invalid credentials. Please try again."
