@@ -158,11 +158,18 @@ applesearch.init = function () {
 		  Event.observe(text_input, 'keyup', function() {
 		    applesearch.onChange(text_input, clear_button);
 	    });
+		  Event.observe(text_input, 'focus', function() {
+		    applesearch.removePlaceholder(text_input);
+	    });
+		  Event.observe(text_input, 'blur', function() {
+		    applesearch.insertPlaceholder(text_input);
+	    });
 		  Event.observe(clear_button, 'click', function() {
 		    applesearch.clearFld(text_input, clear_button);
 	    });
 	    
       applesearch.onChange(text_input, clear_button);
+      applesearch.insertPlaceholder(text_input);
 		});
 	}
 }
@@ -178,4 +185,19 @@ applesearch.onChange = function (fld, btn) {
 applesearch.clearFld = function (fld,btn) {
 	fld.value = "";
 	this.onChange(fld,btn);
+	fld.focus();
+}
+
+applesearch.insertPlaceholder = function(fld) {
+  if(fld.value == "") {
+	  fld.addClassName("placeholder");
+	  fld.value = fld.getAttribute("placeholder");
+  }
+}
+
+applesearch.removePlaceholder = function(fld) {
+   if(fld.value == fld.getAttribute("placeholder")) {
+	  fld.removeClassName("placeholder");
+	  fld.value = "";
+  }
 }

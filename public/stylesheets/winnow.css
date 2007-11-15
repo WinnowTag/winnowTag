@@ -895,3 +895,7 @@ input.example {
 	font: 11px/13px arial;
 	color: #000;
 }
+
+.applesearch.non_safari input.placeholder {
+	color: #666;
+}
