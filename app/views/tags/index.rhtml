@@ -1,4 +1,14 @@
 <% @skip_content_container = true %>
+
+<% content_for :header_controls do -%>
+  <% form_tag(tags_path, :method => :get) do -%>
+  	<%= hidden_field_tag :view_id, @view.id %>
+  	<%= text_field_tag :search_term, @search_term, :size => 30 %>
+  	<%= submit_tag 'Search', :name => nil %>
+  	<%= link_to "Clear", tags_path %>
+  <% end -%>
+<% end -%>
+
 <% content_for :page_controls do -%>
 	<%= render :partial => 'bias_form' %>
 <% end -%>

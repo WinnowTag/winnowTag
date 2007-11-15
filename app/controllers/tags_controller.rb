@@ -24,11 +24,12 @@ class TagsController < ApplicationController
   def index
     respond_to do |wants|
       wants.html do
+        @search_term = params[:search_term]
         @classifier = current_user.classifier
         
         setup_sortable_columns
-        @tags = current_user.tags.find_all_with_count(:view => @view, :subscriber => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @subscribed_tags = Tag.find_all_with_count(:view => @view, :user => current_user, :subscriber => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @tags = current_user.tags.find_all_with_count(:view => @view, :search_term => @search_term, :subscriber => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @subscribed_tags = Tag.find_all_with_count(:view => @view, :search_term => @search_term, :user => current_user, :subscriber => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
       wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end
@@ -154,8 +155,9 @@ class TagsController < ApplicationController
   end
   
   def public
+    @search_term = params[:search_term]
     setup_sortable_columns
-    @tags = Tag.find_all_with_count(:conditions => ["tags.public = ?", true], :subscriber => current_user,
+    @tags = Tag.find_all_with_count(:search_term => @search_term, :conditions => ["tags.public = ?", true], :subscriber => current_user,
                                     :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
   end
   

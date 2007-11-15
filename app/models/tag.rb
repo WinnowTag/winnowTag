@@ -125,7 +125,8 @@ class Tag < ActiveRecord::Base
   end
   
   def self.find_all_with_count(options = {})
-    joins = ["LEFT JOIN taggings ON tags.id = taggings.tag_id", "LEFT JOIN users ON tags.user_id = users.id"]
+    joins = ["LEFT JOIN taggings ON tags.id = taggings.tag_id", 
+             "LEFT JOIN users ON tags.user_id = users.id"]
     if options[:view]
       joins << "LEFT JOIN view_tag_states ON view_tag_states.tag_id = tags.id AND view_id = #{options[:view].id}"
     end
@@ -150,10 +151,26 @@ class Tag < ActiveRecord::Base
       select << "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscriber].id}) > 0) AS subscribe"
     end
     
+    conditions, values = [], []
+    if options[:conditions]
+      conditions << sanitize_sql(options[:conditions])
+    end
+    
+    if !options[:search_term].blank?
+      ored_conditions = []
+      ored_conditions << "LOWER(tags.name) LIKE LOWER(?)"
+      ored_conditions << "LOWER(tags.comment) LIKE LOWER(?)"
+      ored_conditions << "LOWER(users.login) LIKE LOWER(?)"
+      conditions << "(#{ored_conditions.join(" OR ")})"
+      
+      value = "%#{options[:search_term]}%"
+      values << value << value << value
+    end
+    
     find(:all, 
        :select => select.join(","),
        :joins => joins.join(" "),
-       :conditions => options[:conditions],
+       :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
        :group => 'tags.id',
        :order => options[:order])
   end

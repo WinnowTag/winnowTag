@@ -27,4 +27,37 @@ describe Tag do
     tags.first.negative_count.should == "1"
     tags.first.classifier_count.should == "1"
   end
+  
+  it "filters items by search term" do
+    user_1 = User.create! valid_user_attributes
+    user_2 = User.create! valid_user_attributes(:login => "everman")
+    
+    tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "The best tag ever in the world", :comment => "")
+    tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "Another Tag", :comment => "The second best tag ever")
+    tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
+    
+    tags = Tag.find_all_with_count(:search_term => "ever")
+    tags.should == [tag_1, tag_2, tag_3]
+    
+    tags = Tag.find_all_with_count(:search_term => "world")
+    tags.should == [tag_1]
+    
+    tags = Tag.find_all_with_count(:search_term => "second")
+    tags.should == [tag_2]
+    
+    tags = Tag.find_all_with_count(:search_term => "man")
+    tags.should == [tag_3]
+  end
+  
+  it "does not clobber conditions when filtering by search term" do
+    user_1 = User.create! valid_user_attributes
+    user_2 = User.create! valid_user_attributes(:login => "everman")
+    
+    tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :public => true, :name => "The best tag ever in the world", :comment => "")
+    tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :public => true, :name => "Another Tag", :comment => "The second best tag ever")
+    tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
+    
+    tags = Tag.find_all_with_count(:search_term => "ever", :conditions => { :public => true })
+    tags.should == [tag_1, tag_2]
+  end
 end
