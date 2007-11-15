@@ -34,7 +34,9 @@
   					<%= check_box_tag tag.dom_id("subscribe"), "1", tag.subscribed?(current_user), 
   														:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }") %>
   				</td>
-        	<td class="number"><%= tag.positive_count %> / <%= tag.negative_count %></td>
+        	<td class="number">
+            <%= tag.positive_count %> / <%= tag.negative_count %>
+        	</td>
     	    <td class="number"><%= tag.classifier_count %></td>
     	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
     	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>

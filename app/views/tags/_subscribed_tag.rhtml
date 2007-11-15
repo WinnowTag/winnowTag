@@ -18,7 +18,11 @@
     <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => subscribed_tag}, 
     			:method => 'put', :title => "Unsubscribe #{subscribed_tag.name}" %>
 	</td>
-  <td class="number"><%= subscribed_tag.positive_count %> / <%= subscribed_tag.negative_count %></td>
+  <td class="number">
+        <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
+                    feed_items_path(:tag_filter => subscribed_tag.id, :mode => 'tag_inspect', :view_id => :new), 
+                    :title => "Inspect #{subscribed_tag.name}" %>
+  </td>
   <td class="number"><%= subscribed_tag.classifier_count %></td>
   <td class="date"><%= format_date(subscribed_tag.last_used_by) %></td>	
   <td class="indented" nowrap="nowrap"><%= subscribed_tag.user.display_name %></td>
