@@ -18,8 +18,6 @@
 	</script>
 </head>
 <body id="<%= controller_name %>_controller">
-	<%= show_flash %>	
-
 	<%= render :partial => 'layouts/navbar' %>
 	<div id="header_controls" class="clearfix">
 		<%= render :partial => "layouts/view_controls" %>
@@ -37,6 +35,8 @@
       </div>
     </div>
   <% end -%>
+
+	<%= show_flash %>	
 
 	<% if sidebar_content = yield(:sidebar) -%>
 		<div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
