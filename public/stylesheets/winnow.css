@@ -76,7 +76,7 @@ a.close img {
 .navigation {
   padding: 10px 10px 0 10px;
   background-color: #fff;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #999;
 }
 .navigation .main {
   padding: 0;
@@ -93,7 +93,7 @@ a.close img {
 .navigation .main li a {
   display: block;
   padding: 5px;
-  border: 1px solid #000;
+  border: 1px solid #999;
   border-width: 1px 1px 0 1px;
 	-moz-border-radius-topleft: 1em;
 	-moz-border-radius-topright: 1em;
@@ -236,8 +236,8 @@ optgroup {
 }
 
 #header_controls {
-  padding: 3px;
-	border-bottom: 1px solid #000;
+  padding: 3px 3px 1px 3px;
+	border-bottom: 1px solid #999;
 	height: 2em;
   background-color: #e1ecfe;
 }
@@ -270,7 +270,7 @@ optgroup {
 
 #page_controls {
 	padding: 3px;
-	border-bottom: 1px solid #000;
+	border-bottom: 1px solid #999;
 	height: 2em;
 	background-color: #E1ECFE;
 }
@@ -368,9 +368,8 @@ form {
 	margin: 0px;
 }
 
-
 input.readonly {
-	border-top:  1px solid black;
+	border-top:  1px solid #000;
 	border-left:  1px;
 	border-right:  0px;
 	border-bottom:  0px;
@@ -870,17 +869,19 @@ input.example {
 
 .applesearch.non_safari .sbox_l {
 	background: url('../images/search_field.gif') no-repeat top left;
-	float: left;
+  float: left;
 	width: 19px;
 	height: 19px;
+	margin-top: 2px;
 }
 
 .applesearch.non_safari .sbox_r {
 	background: url('../images/search_field.gif') no-repeat top left;
 	background-position: -19px 0;
-	float: left;
+  float: left;
 	width: 19px;
 	height: 19px;
+	margin-top: 2px;
 }
 
 .applesearch.non_safari .sbox_r.clear_button {
@@ -889,12 +890,13 @@ input.example {
 
 .applesearch.non_safari input {
 	background: url('../images/srch_bg.gif') repeat-x top left;
-	float: left;
+  float: left;
 	border: 0;
 	height: 19px;
 	padding: 3px;
 	font: 11px/13px arial;
 	color: #000;
+	margin-top: 2px;
 }
 
 .applesearch.non_safari input.placeholder {
