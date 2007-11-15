@@ -259,8 +259,8 @@ optgroup {
 	vertical-align: middle;
 }
 
-#header_controls .view_controls #view_form form {
-	margin: 0 0 0 .5em;
+#header_controls .view_controls #view_form #view_name {
+  padding-left: 4px;
 }
 
 #header_controls .custom_controls {
