@@ -239,7 +239,7 @@ optgroup {
   padding: 3px;
 	border-bottom: 1px solid #000;
 	height: 2em;
-	background-color: #E1ECFE;
+  background-color: #e1ecfe;
 }
 
 #header_controls form {
@@ -865,4 +865,33 @@ input.example {
 
 .pagination {
 	display: inline;
+}
+
+.applesearch.non_safari .sbox_l {
+	background: url('../images/search_field.gif') no-repeat top left;
+	float: left;
+	width: 19px;
+	height: 19px;
+}
+
+.applesearch.non_safari .sbox_r {
+	background: url('../images/search_field.gif') no-repeat top left;
+	background-position: -19px 0;
+	float: left;
+	width: 19px;
+	height: 19px;
+}
+
+.applesearch.non_safari .sbox_r.clear_button {
+	background-position: -38px 0;
+}
+
+.applesearch.non_safari input {
+	background: url('../images/srch_bg.gif') repeat-x top left;
+	float: left;
+	border: 0;
+	height: 19px;
+	padding: 3px;
+	font: 11px/13px arial;
+	color: #000;
 }

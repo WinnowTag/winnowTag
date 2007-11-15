@@ -3,10 +3,7 @@
 <% content_for :header_controls do -%>
   <% form_tag(public_tags_path, :method => :get) do -%>
   	<%= hidden_field_tag :view_id, @view.id %>
-  	<%= text_field_tag :search_term, @search_term, :size => 30 %>
-  	<%= submit_tag 'Search', :name => nil %>
-  	<%= link_to "Clear", public_tags_path %>
-  <% end -%>
+	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{public_tags_path}';" } %>  <% end -%>
 <% end -%>
 
 <div id="tags">

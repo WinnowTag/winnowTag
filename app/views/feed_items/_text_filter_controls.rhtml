@@ -1,5 +1,4 @@
-<% form_tag "", :onsubmit => "itemBrowser.reload({text_filter: $('text_filter').value}); return false;" do -%>
-	<%= text_field_tag 'text_filter', @view.text_filter, :size => 30 %>
-	<%= submit_tag "Search" %>
-	<%= link_to_function "Clear", "itemBrowser.reload({text_filter: $('text_filter').value = ''}); return false;" %>
+<% form_tag feed_items_path, :method => :get, :onsubmit => "itemBrowser.reload({text_filter: $('text_filter').value}); return false;" do -%>
+  <%= search_field_tag "text_filter", @view.text_filter, :clear => { :onclick => "itemBrowser.reload({text_filter: $('text_filter').value = ''});" } %>
 <% end -%>
+	
