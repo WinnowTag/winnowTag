@@ -33,8 +33,27 @@ table.data_table td.indented {
 
 table.data_table td {
 	background: white;
-	padding: 5px;
+  padding: 5px;
 	vertical-align: top;
+}
+
+#tags table.data_table td {
+  padding: 5px 5px 0 5px;
+}
+
+#tags table.data_table tr.comment td {
+  padding: 0px 5px 5px 5px;
+}
+
+table.data_table tr.comment {
+	font-style: italic;
+	color: #444;
+	font-size: 90%;
+}
+
+table.data_table tr.comment img {
+  cursor: pointer;
+  vertical-align: middle;
 }
 
 table.property_table td {
@@ -91,25 +110,6 @@ tr.bad_feed td, tr.existing_feed td {
 
 tr.even td {
 	background: #ddd;
-}
-
-tr.odd td {
-	border-top: 1px solid #ddd;
-}
-
-table td.even {
-	background: #ddd;
-}
-
-.comment {
-	font-style: italic;
-	color: #444;
-	font-size: 90%;
-}
-
-.comment img {
-  cursor: pointer;
-  vertical-align: bottom;
 }
 
 .data_table td.tag img {

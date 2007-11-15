@@ -1,4 +1,4 @@
-<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
+<tr id="<%= tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %>">
 	<td class="tag">
 		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => tag.id, :view_id => :new), 
 									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
@@ -9,11 +9,6 @@
 							 :click_to_edit_text => "Click to edit tag name", :save_text => "Save"}, 
 							:skip_style => true, :update => tag.dom_id('auto_complete'),
 							:url => auto_complete_for_tag_name_tag_path(tag)) %>
-		<div class="comment">
-		  <%= image_tag "comment.png", :id => tag.dom_id("edit_comment"), :title => "Click to edit tag comment" %>
-	    <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
-            :click_to_edit_text => "Click to edit tag comment", :external_control => tag.dom_id("edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
-		</div>
 	</td>
 	<td class="view_state">
 		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
@@ -42,4 +37,11 @@
 		<%= bias_slider(:tag => tag, :global => "sliders[#{tag.name.to_json}]", :prefix => tag.dom_id('slider'),
 						:change => "if (slider.event) {$('#{tag.dom_id('bias_for')}').value = value; slider.options.isDefault = false;}") %>
 	</td>
+</tr>
+<tr class="comment <%= css_class %>">
+  <td colspan="9">
+	  <%= image_tag "comment.png", :id => tag.dom_id("edit_comment"), :title => "Click to edit tag comment" %>
+    <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
+          :click_to_edit_text => "Click to edit tag comment", :external_control => tag.dom_id("edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
+  </td>
 </tr>

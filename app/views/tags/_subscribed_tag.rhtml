@@ -1,8 +1,7 @@
-<tr id="<%= subscribed_tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
+<tr id="<%= subscribed_tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %>">
 	<td class="tag">
     <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom) %>
 	  <%= subscribed_tag.name -%><br />
-		<span class="comment"><%= subscribed_tag.comment %></span>
 	</td>
 	<td class="view_state">
 		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, subscribed_tag), 
@@ -27,4 +26,9 @@
   <td class="date"><%= format_date(subscribed_tag.last_used_by) %></td>	
   <td class="indented" nowrap="nowrap"><%= subscribed_tag.user.display_name %></td>
   <td><%= bias_slider(:tag => subscribed_tag, :disabled => true) %></td>
+</tr>
+<tr class="comment <%= css_class %>">
+  <td colspan="9">
+    <%= subscribed_tag.comment %>
+  </td>
 </tr>

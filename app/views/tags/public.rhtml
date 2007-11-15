@@ -24,11 +24,10 @@
   	</thead>
   	<tbody id="content">
   		<% for tag in @tags -%>
-    		<tr id="<%= tag.dom_id %>" class="<%= cycle('odd', 'even') %>">
+    		<tr id="<%= tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %>">
         	<td class="tag">
   		      <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(tag.user, tag, :atom) %>
-        	  <%= tag.name -%><br />
-    	  		<span class="comment"><%= tag.comment %></span>
+        	  <%= tag.name -%>
         	</td>
   				<td>
   					<%= check_box_tag tag.dom_id("subscribe"), "1", tag.subscribed?(current_user), 
@@ -41,6 +40,9 @@
     	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
     	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
   	      <td><%= bias_slider(:tag => tag, :disabled => true) %></td>
+        </tr>
+        <tr class="comment <%= css_class %>">
+  	  		<td colspan="7"><%= tag.comment %></td>
         </tr>
   		<% end -%>
   	</tbody>
