@@ -872,7 +872,7 @@ input.example {
   float: left;
 	width: 19px;
 	height: 19px;
-	margin-top: 2px;
+	margin-top: 1px;
 }
 
 .applesearch.non_safari .sbox_r {
@@ -881,7 +881,7 @@ input.example {
   float: left;
 	width: 19px;
 	height: 19px;
-	margin-top: 2px;
+	margin-top: 1px;
 }
 
 .applesearch.non_safari .sbox_r.clear_button {
@@ -896,7 +896,7 @@ input.example {
 	padding: 3px;
 	font: 11px/13px arial;
 	color: #000;
-	margin-top: 2px;
+	margin-top: 1px;
 }
 
 .applesearch.non_safari input.placeholder {
