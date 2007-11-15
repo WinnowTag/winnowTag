@@ -1,2 +1,3 @@
+page[:view_select_form].hide
 page[:view_form].replace_html :partial => "form", :locals => { :view => @new_view }
 page[:view_name].focus

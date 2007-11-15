@@ -9,4 +9,6 @@ else
   page[:view_destroy].show
   
   page[:view_save].hide
+  
+  page[:view_select_form].show
 end
