@@ -1,18 +1,7 @@
 <div class="section">
   <h4>Tag Filters</h4>
 
-  <ul id="tag_filters" class="filter_list">
-  <% all_tags = current_user.tags + current_user.subscribed_tags -%>
-  <% all_tags.each do |tag| -%>
-    <li class="clearfix<%= tag.user == current_user ? '' : " public" %>">
-      <%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, tag), 
-            :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'exclude', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
-  	  <%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
-  	        :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'include', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
-      <%= tag_name_with_tooltip tag %>
-    </li>
-  <% end -%>
-  </ul>
+  <ul id="tag_filters" class="filter_list"><%= render :partial => "tag_filter_controls" %></ul>
   
   <div class="show_untagged">
     <%= check_box_tag "show_untagged", true, @view.show_untagged?, :onclick => "itemBrowser.reload({show_untagged: this.checked})" %>
