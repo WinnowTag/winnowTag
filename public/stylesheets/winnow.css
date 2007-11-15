@@ -255,6 +255,7 @@ optgroup {
 }
 
 #header_controls .view_controls img {
+  margin: 0;
 	vertical-align: middle;
 }
 

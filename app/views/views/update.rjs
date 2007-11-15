@@ -4,11 +4,7 @@ else
   page[:view_form].replace_html ""
   page[:view_selector].replace_html options_for_view_select
   
-  page[:view_duplicate].show
-  page[:view_edit].show
-  page[:view_destroy].show
-  
-  page[:view_save].hide
+  page[:view_control_buttons].replace_html :partial => "layouts/view_control_buttons"
   
   page[:view_select_form].show
 end
