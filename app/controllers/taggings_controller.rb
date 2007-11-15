@@ -8,7 +8,12 @@
 # Required for the Tag() function.  Rails can sometimes auto-load this and
 # sometimes it doesn't so lets put it here explicitly so we can always be
 # sure it has been loaded and the Tag and function is available.
-require 'tag.rb'
+# require 'tag.rb'
+
+# Not explicitly requiring the file because is causes problems with reloading
+# in development mode. Using this contstant allows rails to auto load the 
+# Tag class, and there fore the Tag() function
+Tag
 
 class TaggingsController < ApplicationController
   helper :feed_items
