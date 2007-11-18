@@ -59,7 +59,7 @@ class AccountController < ApplicationController
       redirect_back_or_default('')
     else
       if user = User.find_by_login(params[:login]) and user.activated_at
-        flash[:notice] = "Invalid credentials. Please try again."
+        flash[:warning] = "Invalid credentials. Please try again."
       else
         flash[:notice] = "Your account has not been activated.  Please check your email for an activation link."
       end
