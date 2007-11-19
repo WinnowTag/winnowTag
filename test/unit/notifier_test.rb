@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class NotifierTest < Test::Unit::TestCase
-  FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures'
-  CHARSET = "utf-8"
+  FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures' unless defined?(FIXTURES_PATH)
+  CHARSET = "utf-8" unless defined?(CHARSET)
 
   include ActionMailer::Quoting
 
