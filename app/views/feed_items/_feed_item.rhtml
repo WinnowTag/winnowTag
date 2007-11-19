@@ -2,9 +2,11 @@
 	<div class="closed clearfix">
 		<span id="<%= feed_item.dom_id('status') %>" class="status"><%= toggle_read_unread_button %></span>
 		<div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= feed_item.dom_id %>');">
+	    <% cache(:action => 'index', :action_suffix => feed_item.dom_id("title")) do -%>
 			<span class="feed_title"><%= feed_item.feed.title %></span>
 			<div class="title_and_tags clearfix">
-				<span class="title"><%= feed_item.display_title.blank? ? "<i>no title</i>" : feed_item.display_title %></span>
+			    <span class="title"><%= feed_item.display_title.blank? ? "<i>no title</i>" : feed_item.display_title %></span>
+		<% end -%>
 				<%= display_tags_for(feed_item) %>
 			</div>			
 			<span class="date"><%= format_date(feed_item.time) %></span>
