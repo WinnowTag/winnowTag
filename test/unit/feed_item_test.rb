@@ -530,7 +530,7 @@ class FeedItemTest < Test::Unit::TestCase
   
   def test_options_for_filters_creates_text_filter
     view = users(:quentin).views.build :text_filter => "text"
-    assert_match(/MATCH/, FeedItem.send(:options_for_filters, :view => view)[:conditions])
+    assert_match(/MATCH/, FeedItem.send(:options_for_filters, :view => view)[:joins])
   end
   
   def test_find_with_text_filter_works

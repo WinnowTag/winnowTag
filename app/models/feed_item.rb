@@ -248,7 +248,7 @@ class FeedItem < ActiveRecord::Base
     # The untagged filter is only added if we are doing any sort of tag filtering.
     # This ensures that there are no unneccesary joins to include untagged items
     # when we are not filtering on tags anyway.
-    if view.show_untagged? && view.feed_filters.include.blank? && view.feed_filters.exclude.blank? &&
+    if view.show_untagged? && #view.feed_filters.include.blank? && view.feed_filters.exclude.blank? &&
                             !(view.tag_filters.include.blank? && view.tag_filters.exclude.blank?)
       add_tag_filter_joins!(view.user, filters[:include_negative], filters[:only_tagger], joins)
       add_untagged_state_conditions!(view.user, options[:conditions])
@@ -263,16 +263,6 @@ class FeedItem < ActiveRecord::Base
     options[:joins] = joins.uniq.join(" ")
     
     options
-  end
-  
-  # Returns an SQL join statement that restricts feed items to those that match a query string
-  #
-  # Currently uses the a MySQL full text index on the feed_item_contents_full_text table.
-  #
-  def self.text_filter_join(query)
-    "JOIN feed_item_contents_full_text ON " +
-        "feed_items.id = feed_item_contents_full_text.id AND " +
-        "MATCH(content) AGAINST(#{connection.quote(query)} IN BOOLEAN MODE) "
   end
   
   def self.add_feed_filter_conditions!(feed_filters, conditions)
@@ -291,13 +281,14 @@ class FeedItem < ActiveRecord::Base
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
     if text_filter
-      joins << "LEFT JOIN feed_item_contents_full_text ON feed_items.id = feed_item_contents_full_text.id"
+      joins << "LEFT JOIN feed_item_contents_full_text ON feed_items.id = feed_item_contents_full_text.id" +
+               " and MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
     end
   end
   
   def self.add_text_filter_conditions!(text_filter, conditions)
     if text_filter
-      new_conditions = "MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+      new_conditions = "feed_item_contents_full_text.id is not null "
       new_conditions << "AND (#{conditions})" unless conditions.blank?
       conditions.replace new_conditions
     end
@@ -325,7 +316,7 @@ class FeedItem < ActiveRecord::Base
     end
     
     unless include_negative
-      # This is the borderline cutoff
+      # This removes items that are negatively tagged by the user
       conditions << ("#{taggings_alias}.strength >= 0.88 AND 0 = ( " <<
                       "SELECT COUNT(*) FROM taggings WHERE " <<
                       "taggings.feed_item_id = #{taggings_alias}.feed_item_id AND " <<
