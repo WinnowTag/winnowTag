@@ -739,6 +739,16 @@ class FeedItemTest < Test::Unit::TestCase
     assert_equal FeedItem.find(1,3,4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id')
   end
   
+  def test_using_tagged_filter_ignored_negatively_tagged_items
+    user = users(:quentin)
+    tag = Tag(user, 'tag1')
+    user.taggings.create(:user => user, :feed_item =>FeedItem.find(2), :tag => tag)
+    user.taggings.create(:user => user, :feed_item =>FeedItem.find(3), :tag => tag, :strength => 0)
+    
+    view = user.views.create!
+    assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view, :order => 'feed_items.id')
+  end
+  
   def test_including_both_subscribed_and_private_tags_returns_feed_items_from_either_tag
     quentin = users(:quentin)
     aaron = users(:aaron)
