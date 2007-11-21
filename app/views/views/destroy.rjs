@@ -1,1 +1,1 @@
-page.redirect_to feed_items_path(:view_id => :new)
+page.redirect_to referrer_with_new_view(:new)

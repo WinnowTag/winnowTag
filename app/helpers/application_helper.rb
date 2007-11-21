@@ -21,7 +21,8 @@ module ApplicationHelper
   end
   
   def referrer_with_new_view(view)
-    request.env['HTTP_REFERER'].gsub(/view_id=\d+/, "view_id=#{view.id}")
+    view_id = view.is_a?(View) ? view.id : view
+    request.env['HTTP_REFERER'].gsub(/view_id=\d+/, "view_id=#{view_id}")
   end
   
   def tab_selected(controller, action = nil)
