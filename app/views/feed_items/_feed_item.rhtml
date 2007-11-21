@@ -38,7 +38,7 @@
 		<div id="<%= feed_item.dom_id('tag_information') %>" style="display: none;" url="<%= info_feed_item_path(feed_item) %>" class="tag_information"></div>
 		
 		<div id="<%= feed_item.dom_id('body') %>" class="body clearfix" url="<%= description_feed_item_path(feed_item) %>">
-			<%= render :partial => "description", :locals => { :feed_item => feed_item } if false and is_item_unread?(feed_item) %>
+			<%= render :partial => "description", :locals => { :feed_item => feed_item } if is_item_unread?(feed_item) %>
 		</div>
 	</div>
 </div>
