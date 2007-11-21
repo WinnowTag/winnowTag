@@ -127,6 +127,7 @@ task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
   Rake::Task['test:db:initialize'].invoke
   Rake::Task['test'].invoke
+  Rake::Task['spec'].invoke
   Rake::Task['test:rcov'].invoke
   # Rake::Task['test:acceptance'].invoke
 end
