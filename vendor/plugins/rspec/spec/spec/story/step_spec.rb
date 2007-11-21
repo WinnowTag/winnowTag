@@ -2,10 +2,20 @@ require File.dirname(__FILE__) + '/story_helper'
 
 module Spec
   module Story
-    describe Step do
+    describe Step, "matching" do
       it "should match a text string" do
         step_matcher = Step.new("this text") {}
         step_matcher.matches?("this text").should be_true
+      end
+      
+      it "should not match a text string that does not start the same" do
+        step_matcher = Step.new("this text") {}
+        step_matcher.matches?("Xthis text").should be_false
+      end
+      
+      it "should not match a text string that does not start the same" do
+        step_matcher = Step.new("this text") {}
+        step_matcher.matches?("this textX").should be_false
       end
       
       it "should match a text string with a param" do
@@ -48,6 +58,14 @@ module Spec
         step_matcher.matches?("other anything text").should be_false
       end
       
+      it "should not get bogged down by parens in strings" do
+        step_matcher = Step.new("before () after") {}
+        step_matcher.matches?("before () after").should be_true
+      end
+      
+    end
+    
+    describe Step do
       it "should make complain with no block" do
         lambda {
           step_matcher = Step.new("foo")

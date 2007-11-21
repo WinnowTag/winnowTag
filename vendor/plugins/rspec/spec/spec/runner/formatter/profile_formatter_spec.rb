@@ -7,8 +7,9 @@ module Spec
         
         before(:each) do
           @io = StringIO.new
-          @options = Options.new(StringIO.new, @io)
-          @formatter = @options.create_formatter(ProfileFormatter)
+          options = mock('options')
+          options.stub!(:colour).and_return(true)
+          @formatter = ProfileFormatter.new(options, @io)
         end
         
         it "should print a heading" do
@@ -17,7 +18,7 @@ module Spec
         end
         
         it "should set the current behaviour" do
-          @formatter.add_behaviour('Test')
+          @formatter.add_example_group('Test')
           @formatter.instance_variable_get("@behaviour").should == 'Test'
         end
         
@@ -31,7 +32,7 @@ module Spec
         it "should correctly record a passed example" do
           now = Time.now
           Time.stub!(:now).and_return(now)
-          @formatter.add_behaviour('Test')
+          @formatter.add_example_group('Test')
           @formatter.example_started('when foo')
           Time.stub!(:now).and_return(now+1)
           @formatter.example_passed('when foo')
