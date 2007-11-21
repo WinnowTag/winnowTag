@@ -675,6 +675,7 @@ ItemBrowser.prototype = {
 		this.deselectItem(this.selectedItem);
 		this.selectedItem = $(item);
 		this.selectedItem.addClassName('selected');
+		this.scrollToItem(item);
 	},
 	
 	deselectItem: function(item) {
@@ -691,7 +692,7 @@ ItemBrowser.prototype = {
 		}
 		$('open_' + $(item).getAttribute('id')).show();
 		this.markItemRead(item);
-		this.scrollToItem(item, "top");
+		this.scrollToItem(item);
 		this.loadItemDescription(item);
 	},
 	
@@ -725,7 +726,7 @@ ItemBrowser.prototype = {
 
 		$('new_tag_form_' + $(item).getAttribute('id')).show();
 		$('new_tag_field_' + $(item).getAttribute('id')).focus();
-		this.scrollToItem(item, "bottom");
+		this.scrollToItem(item);
 	},
 	
 	closeItemModerationPanel: function(item) {
@@ -746,7 +747,7 @@ ItemBrowser.prototype = {
 	
 	openItemTagInformationPanel: function(item) {
 		$('tag_information_' + $(item).getAttribute('id')).show();
-		this.scrollToItem(item, "bottom");
+		this.scrollToItem(item);
 		this.loadItemInformation(item);
 	},
 	
@@ -796,8 +797,8 @@ ItemBrowser.prototype = {
 		new Ajax.Request('/feed_items/mark_read?view_id=' + this.options.view_id, {method: 'put'});
 	},
 	
-	scrollToItem: function(item, position) {
-		new Effect.ScrollToInDiv(this.feed_items_scrollable, $(item).getAttribute('id'), position, {duration: 0.3});
+	scrollToItem: function(item) {
+		new Effect.ScrollToInDiv(this.feed_items_scrollable, $(item).getAttribute('id'), {duration: 0.3});
 	},
 	
 	loadItemDescription: function(item) {
@@ -823,7 +824,7 @@ ItemBrowser.prototype = {
 					onComplete: function() {
 						target.removeClassName("loading");
 						if(current_item == $(item)) {
-							item_browser.scrollToItem(item, "bottom");
+							item_browser.scrollToItem(item);
 						}
 					},
 					onException: function(transport, exception) {
