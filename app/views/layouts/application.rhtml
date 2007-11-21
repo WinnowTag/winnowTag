@@ -11,10 +11,10 @@
 	<%= yield(:head) %>
 	
 	<script type="text/javascript" charset="utf-8">
-    Event.observe(window, 'dom:loaded', resizeContent);
+    document.observe('dom:loaded', resizeContent);
+    document.observe('dom:loaded', applesearch.init);
+    document.observe('font:resized', resizeContent);
     Event.observe(window, 'resize', resizeContent);
-    Event.observe(window, 'dom:loaded', applesearch.init);
-    Event.observe(window, 'font:resized', resizeContent);
 	</script>
 </head>
 <body id="<%= controller_name %>_controller">
