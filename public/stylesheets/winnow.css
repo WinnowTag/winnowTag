@@ -269,19 +269,12 @@ optgroup {
 }
 
 #page_controls {
-	padding: 3px;
 	border-bottom: 1px solid #999;
-	height: 2em;
-	background-color: #E1ECFE;
+  background-color: #E1ECFE;
 }
 
 #page_controls .custom_controls {
   float: right;
-  margin-right: .5em;
-}
-
-#page_controls .custom_controls form {
-  display: inline;
 }
 
 a { color: #2c50e8; text-decoration: none; }

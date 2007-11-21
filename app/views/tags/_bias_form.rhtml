@@ -12,7 +12,7 @@
       <td style="padding-left: 20px">
         Default Sensitivity:
       </td>
-      <td style="padding-right: 9px">
+      <td style="padding-right: 3px">
         <%= bias_slider(:tag => :default, :var => 'default_slider', :change => "$('default_bias').value = value;",
                         :slide =>"$H(sliders).values().each(function(s) { if (s.options.isDefault) s.setValue(value); } );") %>
       </td>
