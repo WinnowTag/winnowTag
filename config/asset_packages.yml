@@ -2,7 +2,6 @@
 javascripts: 
 - base: 
   - prototype
-  - scriptaculous
   - effects
   - controls
   - slider
