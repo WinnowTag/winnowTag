@@ -257,7 +257,7 @@ ItemBrowser.prototype = {
 		};
 		Object.extend(this.options, options || {});
 		
-		Event.observe(document, 'keypress', this.keypress.bindAsEventListener(this));
+		document.observe('keypress', this.keypress.bindAsEventListener(this));
 		
 		this.update_queue = new Array();
 		
@@ -888,20 +888,15 @@ ItemBrowser.prototype = {
 	},
 	
 	keypress: function(e){
-		if( e.target == document.getElementsByTagName("html")[0] ||
-				e.target == document.getElementsByTagName("body")[0] ) {
-		} else {
+		if($(e.target).match('input') || $(e.target).match('select') || $(e.target).match('textarea')) {
 			return;
 		}
-		var code;
-		if (!e) var e = window.event;
-		
+
 		if (e.metaKey || e.shiftKey || e.altKey || e.ctrlKey) {
-		    return;
+      return;
 		}
-		
-		if (e.keyCode) code = e.keyCode;
-		else if (e.which) code = e.which;		
+
+		var code = e.keyCode || e.which;
 		var character = String.fromCharCode(code).toLowerCase();
 		if(character == "j") {
 			this.openNextItem();
