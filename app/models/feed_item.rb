@@ -202,10 +202,6 @@ class FeedItem < ActiveRecord::Base
     # Feed filtering (include/exclude)
     add_feed_filter_conditions!(view.feed_filters, conditions)
           
-    # Tag filtering (include/exclude)
-    tag_inclusion_filter_by_user = {}
-    tag_exclusion_filter_by_user = {}
-    
     include_conditions = view.tag_filters.include.map do |tag_filter|
       if tag = tag_filter.tag
         build_tag_inclusion_filter(tag, filters[:include_negative])
@@ -214,7 +210,7 @@ class FeedItem < ActiveRecord::Base
     
     exclude_conditions = view.tag_filters.exclude.map do |tag_filter|
       if tag = tag_filter.tag
-        build_tag_exclusion_filter(tag, filters[:include_negative])
+        build_tag_exclusion_filter(tag)
       end
     end.compact
 
@@ -284,7 +280,7 @@ class FeedItem < ActiveRecord::Base
       ")"
   end
 
-  def self.build_tag_exclusion_filter(tag, include_negative)
+  def self.build_tag_exclusion_filter(tag)
     "NOT EXISTS ("                          +
       "select 1 from taggings where "       +
         "tag_id = #{tag.id} and "           +
