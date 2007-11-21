@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		
-		Event.observe(window, 'load', function() {
+		Event.observe(window, 'dom:loaded', function() {
 			itemBrowser = new ItemBrowser('feed_items', {view_id: <%= @view.id %>, total_items: <%= @feed_item_count %>});
 		});
 	</script>

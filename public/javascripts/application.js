@@ -100,20 +100,22 @@ function toggleSidebar() {
   }
 }
 
-var lastFontSize;
-function observeFontSizeChange(callback) {
-	if( window.getComputedStyle ) {
+(function() {
+  var lastFontSize;
+  
+	if(window.getComputedStyle) {
 		setInterval(function () {
 			var currentFontSize = window.getComputedStyle(document.documentElement,null).fontSize;
 			if( !lastFontSize || currentFontSize != lastFontSize ) {
-				callback();
+				document.fire("font:resized");
 				lastFontSize = currentFontSize;
 			}
 		}, 500);
 	} else {
 		// do the IE hackaround	
 	}
-}
+})();
+
 
 function updateFilterControl(control, add_url, remove_url) {
 	if(control.hasClassName('selected')) {
