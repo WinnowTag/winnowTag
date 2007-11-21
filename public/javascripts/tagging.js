@@ -197,6 +197,7 @@ function show_control_tooltip(control, tag, tag_name) {
 }
 
 function show_tag_tooltip(tag, tag_name) {
+  tag = $(tag);
 	var tag_tooltip = "";
 	
 	if (tag.match('.user_tagging.negative_tagging')) {
