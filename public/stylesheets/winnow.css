@@ -751,14 +751,16 @@ ul.tag_list li .public {
 }
 
 ul.tag_list li .add {
-	background: url(../images/add_disabled.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -16px 0;
 	padding: 1px 16px 2px 0;
 	margin-left: 3px;
 	cursor: pointer;
 }
 
 ul.tag_list li .remove {
-	background: url(../images/remove_disabled.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -48px 0;
 	padding: 1px 16px 2px 0;
 	cursor: pointer;
 }
@@ -771,11 +773,12 @@ ul.tag_list li.user_tagging .user {
 
 /* Positive user tagging */
 ul.tag_list li.user_tagging.tagged .add {
-	background: url(../images/add.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
 }
 
 ul.tag_list li.user_tagging.tagged .remove {
-	background: url(../images/remove_disabled.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -48px 0;
 	display: none;
 }
 
@@ -785,12 +788,14 @@ ul.tag_list li.user_tagging.tagged .user {
 
 /* Negative user tagging */
 ul.tag_list li.user_tagging.negative_tagging .add {
-	background: url(../images/add_disabled.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -16px 0;
 	display: none;
 }
 
 ul.tag_list li.user_tagging.negative_tagging .remove {
-	background: url(../images/remove.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -32px 0;
 }
 
 ul.tag_list li.user_tagging.negative_tagging .user {
@@ -829,19 +834,22 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 
 .filter_control.include {
   margin-right: 5px;
-	background: url(../images/add_disabled.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -16px 0;
 }
 
 .filter_control.exclude {
-	background: url(../images/remove_disabled.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -48px 0;
 }
 
 .filter_control.include.selected {
-	background: url(../images/add.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
 }
 
 .filter_control.exclude.selected {
-	background: url(../images/remove.png) 0 center no-repeat;
+	background: url(../images/add_remove.png) no-repeat;
+	background-position: -32px 0;
 }
 
 .inplaceeditor-form {
@@ -861,7 +869,7 @@ input.example {
 }
 
 .applesearch.non_safari .sbox_l {
-	background: url('../images/search_field.gif') no-repeat top left;
+	background: url('../images/search_field.gif') no-repeat;
   float: left;
 	width: 19px;
 	height: 19px;
@@ -869,7 +877,7 @@ input.example {
 }
 
 .applesearch.non_safari .sbox_r {
-	background: url('../images/search_field.gif') no-repeat top left;
+	background: url('../images/search_field.gif') no-repeat;
 	background-position: -19px 0;
   float: left;
 	width: 19px;
