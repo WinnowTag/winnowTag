@@ -336,10 +336,7 @@ class BayesClassifier < ActiveRecord::Base
     conditions = ['feed_items.created_on >= ?', self.last_executed] unless self.last_executed.nil?
     options = self.create_classifier_execution
     total = 0
-    FeedItem.find(:all, :select => 'feed_items.id, feed_items.position, fitc.tokens as tokens',
-                        :joins => "left join feed_item_tokens_containers as fitc on feed_items.id = fitc.feed_item_id" +
-                                  " and fitc.tokenizer_version = #{FeedItemTokenizer::VERSION}",
-                        :conditions => conditions).each_with_index do |item, index|
+    FeedItem.find(:all, :conditions => conditions).each_with_index do |item, index|
       total = index
       self.classify(item, options)
     end
@@ -388,14 +385,7 @@ class BayesClassifier < ActiveRecord::Base
     
     self.class.benchmark("Total classification time", Logger::DEBUG, false) do
       self.classifier.with_guess_options(ce.classification_options) do |classifier|
-          # Do a manual join between the feed_items and feed_item_tokens_containers tables
-          # and read the tokens straight from the feed_items model.  This is much faster
-          # than doing an eager load using :include (about an order of magnitude) and since
-          # we call this alot during classification we want it to be as fast as possible.
-          select = 'feed_items.id, feed_items.position, fitc.tokens as tokens'
-          joins = "left join feed_item_tokens_containers as fitc on feed_items.id = fitc.feed_item_id" +
-                  " and fitc.tokenizer_version = #{FeedItemTokenizer::VERSION}"
-          FeedItem.each_with_index(:select => select, :joins => joins, :limit => limit, :column => :position) do |item, index|
+          FeedItem.each_with_index(:limit => limit, :column => :position) do |item, index|
             classify(item, ce, nil, classifier)
             yield(item, index) if block_given?
           end      
@@ -476,7 +466,7 @@ class BayesClassifier < ActiveRecord::Base
     
     errors = []
     options = self.classification_options
-    FeedItem.find(taggings_by_id.keys, :include => :latest_tokens).each do |fi|
+    FeedItem.find(taggings_by_id.keys).each do |fi|
       scores = self.guess(fi, options)      
       taggings_by_id[fi.id].each do |tagging|
         error = scores[tagging.tag.name] - tagging.strength

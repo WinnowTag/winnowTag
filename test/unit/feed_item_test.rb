@@ -9,46 +9,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 require "tag"
 
 class FeedItemTest < Test::Unit::TestCase
-  fixtures :feed_items, :users, :roles, :roles_users, :feed_item_tokens_containers, :bayes_classifiers
-  
-  def test_tokens_calls_create
-    tokens = {'a' => 1, 'b' => 2, 'c' => 3}
-    fi = FeedItem.new
-    fi.token_containers.expects(:create).with(:tokens_with_counts => tokens, :tokenizer_version => 1)
-    fi.tokens_with_counts(1) do |feed_item|
-      assert_equal fi, feed_item
-      tokens
-    end
-  end
-  
-  def test_tokens_retrieves_from_db
-    tokens = {'a' => 1, 'b' => 2, 'c' => 3}
-    fi = FeedItem.find(1)
-    fi.tokens_with_counts(1) do |feed_item|
-      tokens
-    end
-    # do it again to make sure they were saved
-    assert_equal tokens, fi.tokens_with_counts(1)
-  end
-  
-  def test_tokens_when_no_tokens_exist
-    fi = FeedItem.find(1)
-    assert_nil(fi.tokens(1))
-  end
-  
-  def test_tokens_when_tokens_exist_in_db
-    fi = FeedItem.find(1)
-    assert_equal(feed_item_tokens_containers(:tokens_for_first).tokens, fi.tokens(0))
-  end
-  
-  def test_tokens_when_selected_with_item
-    expected = feed_item_tokens_containers(:tokens_for_first).tokens
-    FeedItemTokensContainer.expects(:find).never
-    fi = FeedItem.find(:first, :select => 'feed_items.*, feed_item_tokens_containers.tokens as tokens',
-                              :joins => 'inner join feed_item_tokens_containers on feed_items.id = feed_item_tokens_containers.feed_item_id')
-    assert_equal(expected, fi.tokens(0))
-  end
-  
+  fixtures :feed_items, :users, :roles, :roles_users, :bayes_classifiers
+    
   def test_getting_content_when_content_returns_empty_content
     feed_item = FeedItem.new    
     assert_nil feed_item.content.title

@@ -107,10 +107,7 @@ class FeedItem < ActiveRecord::Base
   #
   def self.find_random_items_with_tokens(size)
     self.find(:all,
-      :select => "feed_items.id, fitc.tokens_with_counts as tokens_with_counts",
-      :joins => "inner join random_backgrounds as rnd on feed_items.id = rnd.feed_item_id " +
-                "inner join feed_item_tokens_containers as fitc on fitc.feed_item_id = feed_items.id" + 
-                " and fitc.tokenizer_version = #{FeedItemTokenizer::VERSION}",
+      :joins => "inner join random_backgrounds as rnd on feed_items.id = rnd.feed_item_id ",
       :limit => size)
   end
   
@@ -322,60 +319,6 @@ class FeedItem < ActiveRecord::Base
   def self.add_always_include_feed_filter_conditions!(feed_filters, conditions)
     if !conditions.blank? and !feed_filters.blank?
       conditions.replace "feed_items.feed_id IN (#{feed_filters.map(&:feed_id).join(",")}) OR (#{conditions})"
-    end
-  end
-  
-  # Gets the tokens with frequency counts for the feed_item.
-  # 
-  # This return a hash with token => freqency entries.
-  #
-  # There are a number of different ways to get the tokens for an item:
-  # 
-  # The fastest, providing the token already exists, is to select out the 
-  # tokens field from the feed_item_tokens_containers table as a field of
-  # the feed item. In this case the tokens will be unmarshaled without type
-  # casting.
-  #
-  # You can also include the :latest_tokens association on a query for feed
-  # items which will get the tokens with the highest tokenizer version.  This
-  # method will require Rails to build the association so it is slower than the 
-  # previously described method.
-  #
-  # Finally, the slowest, but also the method that will create the tokens if the
-  # dont exists is to pass version and a block, if there are no tokens matching the 
-  # tokenizer version the block is called and a token container will be created
-  # using the result from the block as the tokens. This is the method used by
-  # FeedItemTokenizer#tokens.
-  #
-  def tokens_with_counts(version = FeedItemTokenizer::VERSION, force = false)
-    if block_given? and force
-      tokens = yield(self)
-      token_containers.create(:tokens_with_counts => tokens, :tokenizer_version => version)
-      tokens
-    elsif tokens = read_attribute_before_type_cast('tokens_with_counts')
-      Marshal.load(tokens)  
-    elsif self.latest_tokens and self.latest_tokens.tokenizer_version == version
-      self.latest_tokens.tokens_with_counts
-    elsif token_container = self.token_containers.find(:first, :conditions => ['tokenizer_version = ?', version])
-      token_container.tokens_with_counts
-    elsif block_given?
-      tokens = yield(self)
-      token_containers.create(:tokens_with_counts => tokens, :tokenizer_version => version)
-      tokens
-    end
-  end
-  
-  # Gets the tokens without frequency counts.
-  #
-  # This method requires the tokens to have already been extracted and stored in the token_container.
-  # 
-  def tokens(version = FeedItemTokenizer::VERSION)
-    if tokens = read_attribute_before_type_cast('tokens')
-      Marshal.load(tokens)
-    elsif self.latest_tokens and self.latest_tokens.tokenizer_version == version
-      self.latest_tokens.tokens
-    elsif token_container = self.token_containers.find(:first, :conditions => ['tokenizer_version = ?', version])
-      token_container.tokens
     end
   end
   
