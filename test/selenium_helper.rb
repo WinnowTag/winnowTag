@@ -31,7 +31,7 @@ def dont_see_element(*args)
 end
 
 def assert_element_disabled(selector)
-  see_element("#{selector}[disabled=disabled]")
+  see_element("#{selector}[disabled]")
 end
 
 def assert_element_enabled(selector)
