@@ -1,5 +1,0 @@
-open "/account/login"
-type "login", "quentin"
-type "password", "test"
-click "commit"
-wait_for_page_to_load 30000
