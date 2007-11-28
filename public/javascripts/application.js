@@ -71,7 +71,7 @@ function selected_display_of(control_id) {
 
 function resizeContent() {
 	var content = $('content');
-	if(content) {
+	if(content && (!Prototype.Browser.IE || content.tagName != 'TBODY')) {
 		var body_height = $(document.body).getHeight();
 		var top_of_content = content.offsetTop;
 		var vertical_padding = parseInt(content.getStyle("padding-top")) + parseInt(content.getStyle("padding-bottom"));
