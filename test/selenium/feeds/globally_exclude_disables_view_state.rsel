@@ -1,0 +1,20 @@
+setup :fixtures => [:users, :feeds, :view_feed_states, :excluded_feeds]
+include_partial 'login'
+open "/feeds"
+click "always_include_feed_2"
+assert_attribute "always_include_feed_2", "class", "regexp:selected"
+assert_not_attribute "exclude_feed_2", "class", "regexp:selected"
+assert_not_attribute "always_include_feed_2", "class", "regexp:disabled"
+assert_not_attribute "exclude_feed_2", "class", "regexp:disabled"
+
+click "globally_exclude_feed_2"
+wait_for_not_attribute "always_include_feed_2", "class", "regexp:selected"
+assert_not_attribute "exclude_feed_2", "class", "regexp:selected"
+assert_attribute "always_include_feed_2", "class", "regexp:disabled"
+assert_attribute "exclude_feed_2", "class", "regexp:disabled"
+
+click "always_include_feed_2"
+assert_not_attribute "always_include_feed_2", "class", "regexp:selected"
+
+click "exclude_feed_2"
+assert_not_attribute "exclude_feed_2", "class", "regexp:selected"

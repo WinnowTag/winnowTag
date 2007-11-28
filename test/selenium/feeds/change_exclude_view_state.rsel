@@ -1,0 +1,12 @@
+setup :fixtures => [:users, :feeds, :view_feed_states]
+include_partial 'login'
+open "/feeds"
+assert_not_attribute "exclude_feed_2", "class", "regexp:selected"
+click "exclude_feed_2"
+assert_attribute "exclude_feed_2", "class", "regexp:selected"
+refresh_and_wait
+assert_attribute "exclude_feed_2", "class", "regexp:selected"
+click "exclude_feed_2"
+assert_not_attribute "exclude_feed_2", "class", "regexp:selected"
+refresh_and_wait
+assert_not_attribute "exclude_feed_2", "class", "regexp:selected"
