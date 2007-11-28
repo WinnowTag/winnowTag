@@ -5,9 +5,11 @@
 	</td>
 	<td class="view_state">
 		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, subscribed_tag), 
+		      :id => subscribed_tag.dom_id("include"),
 		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{subscribed_tag.id}&tag_state=include", 
 		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{subscribed_tag.id}" %>
 		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, subscribed_tag), 
+		      :id => subscribed_tag.dom_id("exclude"),
 		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{subscribed_tag.id}&tag_state=exclude", 
 		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{subscribed_tag.id}" %>
 	</td>
@@ -18,9 +20,9 @@
     			:method => 'put', :title => "Unsubscribe #{subscribed_tag.name}" %>
 	</td>
   <td class="number">
-        <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
-                    feed_items_path(:tag_filter => subscribed_tag.id, :mode => 'tag_inspect', :view_id => :new), 
-                    :title => "Inspect #{subscribed_tag.name}" %>
+    <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
+                feed_items_path(:tag_filter => subscribed_tag.id, :mode => 'tag_inspect', :view_id => :new), 
+                :title => "Inspect #{subscribed_tag.name}" %>
   </td>
   <td class="number"><%= subscribed_tag.classifier_count %></td>
   <td class="date"><%= format_date(subscribed_tag.last_used_by) %></td>	
