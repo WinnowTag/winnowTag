@@ -41,24 +41,25 @@ a.close img {
 }
 
 #notice, #warning, #error {
-	padding: 5px 5px 5px 26px;
-	position: relative;
-	height: 1.2em;
-	margin: 5px;
+  margin: 5px;
+  padding: 5px 5px 5px 26px;
 }
 
 #notice {
-  background: #F0FFE0 url(../images/notice.png) 5px center no-repeat;
+  background: #F0FFE0 url(../images/vertical_sprite.png) no-repeat;
+  background-position: 5px -411px;
   border: 1px solid #A0DC11;
 }
 
 #warning {
-  background: #FBF6D3 url(../images/warning.png) 5px center no-repeat;
+  background: #FBF6D3 url(../images/vertical_sprite.png) no-repeat;
+  background-position: 5px -475px;
   border: 1px solid #D28D37;
 } 
 
 #error {
-  background: #FDDFD7 url(../images/error.png) 5px center no-repeat;
+  background: #FDDFD7 url(../images/vertical_sprite.png) no-repeat;
+  background-position: 5px -443px;
   border: 1px solid #FF260B;
 }
 
@@ -283,7 +284,6 @@ a:visited { color: #2c50e8; }
 a.disabled {color: #888; cursor: default;}
 a:hover.disabled {color: #888; background-color: transparent; text-decoration: none;}
 a img, img.blank {border: 0; vertical-align: baseline; margin-left: 3px;}
-.feed_icon {margin-right: 5px;}
 
 ul.help li {
 	margin-bottom: 5px;
@@ -530,15 +530,13 @@ a.editor_cancel {
 }
 
 .item.unread .closed .status a {
-	background: url(../images/unread.png);
-	background-repeat: no-repeat;
-	background-position: center center;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -638px;
 }
 
 .item.read .closed .status a {
-	background: url(../images/read.png);
-	background-repeat: no-repeat;
-	background-position: center center;	
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -670px;
 }
 
 .item .closed .opener {
@@ -679,8 +677,9 @@ a.editor_cancel {
 	position: absolute;
 	top: 5px;
 	right: 5px;
-	background: url(../images/information.png) 0 center no-repeat;
-	padding: 1px 0 0 20px;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -544px;
+	padding: 1px 0 0 19px;
 }
 
 /* =footer */
@@ -751,34 +750,36 @@ ul.tag_list li .public {
 }
 
 ul.tag_list li .add {
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -16px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -32px;
 	padding: 1px 16px 2px 0;
 	margin-left: 3px;
 	cursor: pointer;
 }
 
 ul.tag_list li .remove {
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -48px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -96px;
 	padding: 1px 16px 2px 0;
 	cursor: pointer;
 }
 
 ul.tag_list li.user_tagging .user {
-	background: url(../images/user.png) 0 center no-repeat;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -512px;
 	padding: 1px 16px 2px 0;
 	display: none;
 }
 
 /* Positive user tagging */
 ul.tag_list li.user_tagging.tagged .add {
-	background: url(../images/add_remove.png) no-repeat;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 0;
 }
 
 ul.tag_list li.user_tagging.tagged .remove {
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -48px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -96px;
 	display: none;
 }
 
@@ -788,14 +789,14 @@ ul.tag_list li.user_tagging.tagged .user {
 
 /* Negative user tagging */
 ul.tag_list li.user_tagging.negative_tagging .add {
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -16px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -32px;
 	display: none;
 }
 
 ul.tag_list li.user_tagging.negative_tagging .remove {
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -32px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -64px;
 }
 
 ul.tag_list li.user_tagging.negative_tagging .user {
@@ -834,22 +835,23 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 
 .filter_control.include {
   margin-right: 5px;
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -16px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -32px;
 }
 
 .filter_control.exclude {
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -48px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -96px;
 }
 
 .filter_control.include.selected {
-	background: url(../images/add_remove.png) no-repeat;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 0;
 }
 
 .filter_control.exclude.selected {
-	background: url(../images/add_remove.png) no-repeat;
-	background-position: -32px 0;
+	background: url(../images/vertical_sprite.png) no-repeat;
+	background-position: 0 -64px;
 }
 
 .inplaceeditor-form {
@@ -902,4 +904,67 @@ input.example {
 
 .applesearch.non_safari input.placeholder {
 	color: #666;
+}
+
+.replace {
+  float: left;
+  display: block;
+  width: 16px;
+  height: 16px;
+  text-indent: 1000em;
+	overflow: hidden;
+  margin: 0 2px 0 2px;
+  background: url(../images/vertical_sprite.png) no-repeat;
+}
+
+.feed_icon {
+  background-position: 0 -608px;
+}
+
+.new_icon {
+  background-position: 0 -128px;
+}
+
+.save_icon {
+  background-position: 0 -160px;
+}
+
+.save_disabled_icon {
+  background-position: 0 -192px;
+}
+
+.duplicate_icon {
+  background-position: 0 -224px;
+}
+
+.duplicate_disabled_icon {
+  background-position: 0 -256px;
+}
+
+.edit_icon {
+  background-position: 0 -288px;
+}
+
+.edit_disabled_icon {
+  background-position: 0 -320px;
+}
+
+.destroy_icon {
+  background-position: 0 -352px;
+}
+
+.destroy_disabled_icon {
+  background-position: 0 -384px;
+}
+
+.comment_icon {
+  background-position: 0 -576px;
+}
+
+#view_selector {
+  float: left;
+}
+
+#view_control_buttons .replace {
+  margin-top: .2em;
 }

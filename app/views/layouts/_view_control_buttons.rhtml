@@ -1,13 +1,13 @@
-<%= link_to_function image_tag("new.png", :title => "New View"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views', {evalScripts:true,method:'post',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :id => "view_new" %>
+<%= link_to_function "New", %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views', {evalScripts:true,method:'post',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :id => "view_new", :class => "new_icon replace" %>
 
 <% if @view.saved? -%>
-  <%= image_tag("save_disabled.png") %>
-  <%= link_to_function image_tag("duplicate.png", :title => "Duplicate Selected Vew"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';duplicate', {evalScripts:true,method:'post',onComplete:function(){$('view_form').removeClassName('small_loading');}})) %>
-  <%= link_to_function image_tag("edit.png", :title => "Rename Selected Vew"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';edit', {evalScripts:true,method:'get',onComplete:function(){$('view_form').removeClassName('small_loading');}})) %>
-  <%= link_to_function image_tag("destroy.png", :title => "Destroy Selected Vew"), %Q(if(confirm('Are you sure you want to destroy "' + selected_display_of('view_selector') + '"?')) { $('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector'), {evalScripts:true, method:'delete'})}) %>
+  <span class="save_disabled_icon replace"></span>
+  <%= link_to_function "Duplicate", %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';duplicate', {evalScripts:true,method:'post',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :class => "duplicate_icon replace" %>
+  <%= link_to_function "Edit", %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';edit', {evalScripts:true,method:'get',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :class => "edit_icon replace" %>
+  <%= link_to_function "Destroy", %Q(if(confirm('Are you sure you want to destroy "' + selected_display_of('view_selector') + '"?')) { $('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector'), {evalScripts:true, method:'delete'})}), :class => "destroy_icon replace" %>
 <% else -%>
-  <%= link_to_function image_tag("save.png", :title => "Save Selected Vew"), %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';edit', {evalScripts:true,method:'get',onComplete:function(){$('view_form').removeClassName('small_loading');}})) %>
-  <%= image_tag("duplicate_disabled.png") %>
-  <%= image_tag("edit_disabled.png") %>
-  <%= image_tag("destroy_disabled.png") %>
+  <%= link_to_function "Save", %Q($('view_form').update(''); $('view_form').addClassName('small_loading'); new Ajax.Request('/views/' + selected_value_of('view_selector') + ';edit', {evalScripts:true,method:'get',onComplete:function(){$('view_form').removeClassName('small_loading');}})), :class => "save_icon replace" %>
+  <span class="duplicate_disabled_icon replace"></span>
+  <span class="edit_disabled_icon replace"></span>
+  <span class="destroy_disabled_icon replace"></span>
 <% end -%>

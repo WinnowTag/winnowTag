@@ -39,7 +39,7 @@
 </tr>
 <tr class="comment <%= css_class %>">
   <td colspan="9">
-	  <%= image_tag "comment.png", :id => tag.dom_id("edit_comment"), :title => "Click to edit tag comment" %>
+    <span class="comment_icon replace" id="<%= tag.dom_id("edit_comment") %>">Edit</span>
     <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
           :click_to_edit_text => "Click to edit tag comment", :external_control => tag.dom_id("edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
   </td>

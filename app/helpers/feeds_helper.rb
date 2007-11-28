@@ -8,16 +8,16 @@
 module FeedsHelper
   def feed_link(feed)
     feed_page_link = if feed.link and feed.title
-        link_to(feed.title, feed.link)
-      elsif feed.title
-        feed.title
-      elsif feed.link
-        link_to(feed.link, feed.link)
-      else
-        feed.url
-      end
-      
-    link_to(image_tag('feed_icon.png', :size => '14x14', :class => 'feed_icon'), feed.url) + ' ' + feed_page_link
+      link_to(feed.title, feed.link)
+    elsif feed.title
+      feed.title
+    elsif feed.link
+      link_to(feed.link, feed.link)
+    else
+      feed.url
+    end
+    
+    link_to("Feed", feed.url, :class => "feed_icon replace") + ' ' + feed_page_link
   end
   
   def activate_feed_control(feed)

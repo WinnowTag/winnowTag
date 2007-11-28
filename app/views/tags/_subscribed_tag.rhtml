@@ -1,6 +1,6 @@
 <tr id="<%= subscribed_tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %> subscribed_tag">
 	<td class="tag">
-    <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom) %>
+    <%= link_to "Feed", formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom), :class => "feed_icon replace" %>
 	  <%= subscribed_tag.name -%><br />
 	</td>
 	<td class="view_state">
