@@ -30,7 +30,7 @@ class TaggingsController < ApplicationController
       if @tagging.save    
         wants.js
       else
-        wants.js   { render :update do |page| page.alert("Tagging failed") end }
+        wants.js { render :update do |page| page.alert("Tagging failed") end }
       end
     end 
   end

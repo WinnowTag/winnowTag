@@ -55,4 +55,18 @@ describe FeedItem do
     
     FeedItem.find_with_filters(:view => view, :order => 'feed_items.id').should == [feed_item_1]
   end
+  
+  it "properly filters on globally excluded feeds" do
+    user_1 = User.create! valid_user_attributes
+    
+    feed_item_1 = FeedItem.create! valid_feed_item_attributes(:feed_id => 1)
+    feed_item_2 = FeedItem.create! valid_feed_item_attributes(:feed_id => 1)
+    feed_item_3 = FeedItem.create! valid_feed_item_attributes(:feed_id => 2)
+    feed_item_4 = FeedItem.create! valid_feed_item_attributes(:feed_id => 3)
+    
+    view = user_1.views.create! :show_untagged => true
+    ExcludedFeed.create! :feed_id => 1, :user_id => user_1.id
+    
+    FeedItem.find_with_filters(:view => view, :order => 'feed_items.id').should == [feed_item_3, feed_item_4]
+  end
 end

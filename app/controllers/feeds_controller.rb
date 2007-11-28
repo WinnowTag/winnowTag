@@ -18,6 +18,7 @@ class FeedsController < ApplicationController
         add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
         add_to_sortable_columns('feeds', :field => 'updated_on')
         add_to_sortable_columns('feeds', :field => 'view_state')
+        add_to_sortable_columns('feeds', :field => 'globally_exclude')
 
         @search_term = params[:search_term]
         @feeds = Feed.search :search_term => @search_term, :view => @view,
@@ -59,12 +60,24 @@ class FeedsController < ApplicationController
     conditions = ["LOWER(title) LIKE LOWER(?)"]
     values = ["%#{@q}%"]
     
-    if !@view.feed_filters.map(&:feed_id).blank?
+    feed_ids = @view.feed_filters.map(&:feed_id) + current_user.excluded_feeds.map(&:feed_id)
+    if !feed_ids.blank?
       conditions << "id NOT IN (?)"
-      values << @view.feed_filters.map(&:feed_id)
+      values << feed_ids
     end
     
     @feeds = Feed.find(:all, :conditions => [conditions.join(" AND "), *values])
     render :layout => false
+  end
+  
+  def globally_exclude
+    @feed = Feed.find(params[:id])
+    if params[:globally_exclude] =~ /true/i
+      ExcludedFeed.create! :feed_id => @feed.id, :user_id => current_user.id
+      ViewFeedState.delete_all_for(@feed, :only => current_user)
+    else
+      ExcludedFeed.delete_all :feed_id => @feed.id, :user_id => current_user.id
+      render :nothing => true
+    end
   end
 end

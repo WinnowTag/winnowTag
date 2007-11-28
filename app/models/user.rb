@@ -69,6 +69,7 @@ class User < ActiveRecord::Base
   end
   has_many :unread_items, :dependent => :delete_all
   has_many :tag_subscriptions
+  has_many :excluded_feeds
  
   def has_read_item?(feed_item_or_feed_item_id)
     !self.unread_items.exists?(['feed_item_id = ?', feed_item_or_feed_item_id])

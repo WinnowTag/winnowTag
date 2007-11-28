@@ -1,8 +1,7 @@
 class ViewTagState < ActiveRecord::Base
   belongs_to :view
   belongs_to :tag
-  
-  
+    
   class << self
     def delete_all_for(tag, options = {})
       conditions, values, using = ["#{table_name}.tag_id = ?"], [tag], nil

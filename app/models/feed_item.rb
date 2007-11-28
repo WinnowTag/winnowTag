@@ -225,6 +225,7 @@ class FeedItem < ActiveRecord::Base
     
     options[:conditions] = conditions.join(" AND ")
     add_always_include_feed_filter_conditions!(view.feed_filters.always_include, options[:conditions])
+    add_globally_exclude_feed_filter_conditions!(view.user.excluded_feeds, options[:conditions])
 
     # Text filtering
     add_text_filter_joins!(view.text_filter, joins)
@@ -319,6 +320,12 @@ class FeedItem < ActiveRecord::Base
   def self.add_always_include_feed_filter_conditions!(feed_filters, conditions)
     if !conditions.blank? and !feed_filters.blank?
       conditions.replace "feed_items.feed_id IN (#{feed_filters.map(&:feed_id).join(",")}) OR (#{conditions})"
+    end
+  end
+  
+  def self.add_globally_exclude_feed_filter_conditions!(feed_filters, conditions)
+    if !conditions.blank? and !feed_filters.blank?
+      conditions.replace "feed_items.feed_id NOT IN (#{feed_filters.map(&:feed_id).join(",")}) AND (#{conditions})"
     end
   end
   

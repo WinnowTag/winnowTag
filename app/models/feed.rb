@@ -42,8 +42,9 @@ class Feed < ActiveRecord::Base
       conditions << '(title LIKE ? OR url LIKE ?)'
       values << "%#{options[:search_term]}%" << "%#{options[:search_term]}%"
     end
-    
+  
     select = ["feeds.*", "CASE view_feed_states.state WHEN 'exclude' THEN 0 WHEN 'always_include' THEN 1 ELSE 2 END AS view_state"]
+    select << "((SELECT COUNT(*) FROM excluded_feeds WHERE feeds.id = excluded_feeds.feed_id AND excluded_feeds.user_id = #{options[:view].user_id}) > 0) AS globally_exclude"
     
     paginate(:select => select.join(","),
              :joins => "LEFT JOIN view_feed_states ON view_feed_states.feed_id = feeds.id " <<
@@ -52,5 +53,9 @@ class Feed < ActiveRecord::Base
              :page => options[:page],
              :group => "feeds.id",
              :order => options[:order])
+  end
+  
+  def globally_excluded?(user)
+    user.excluded_feeds.find_by_feed_id(id)
   end
 end

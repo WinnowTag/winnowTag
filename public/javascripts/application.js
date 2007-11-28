@@ -118,7 +118,9 @@ function toggleSidebar() {
 
 
 function updateFilterControl(control, add_url, remove_url) {
-	if(control.hasClassName('selected')) {
+  if(control.hasClassName('disabled')) {
+    return;
+  } else if(control.hasClassName('selected')) {
 	  if(remove_url) { new Ajax.Request(remove_url, {evalScripts:true}); }
 		control.removeClassName('selected');
 	} else { 

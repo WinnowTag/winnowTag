@@ -148,6 +148,7 @@ module ApplicationHelper
   def filter_control tooltip, clazz, selected, options = {}
     classes = ["filter_control", clazz]
     classes << "selected" if selected
+    classes << "disabled" if options[:disabled]
     
     if options[:onclick]
       onclick = "updateFilterControl(this); #{options[:onclick]}"
@@ -155,7 +156,7 @@ module ApplicationHelper
       onclick = "updateFilterControl(this, '#{options[:add_url]}', '#{options[:remove_url]}');"
     end
     
-    content_tag :span, nil, :title => tooltip, :class => classes.join(" "), :onclick => onclick
+    content_tag :span, nil, :title => tooltip, :class => classes.join(" "), :onclick => onclick, :id => options[:id]
   end
   
   def in_place_editor(field_id, options = {})
