@@ -9,7 +9,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 require "tag"
 
 class FeedItemTest < Test::Unit::TestCase
-  fixtures :feed_items, :users, :roles, :roles_users, :bayes_classifiers
+  fixtures :feed_items, :users, :roles, :roles_users
     
   def test_getting_content_when_content_returns_empty_content
     feed_item = FeedItem.new    
@@ -113,9 +113,12 @@ class FeedItemTest < Test::Unit::TestCase
   
   def test_find_with_tag_filter_should_ignore_other_users_tags
     user = users(:quentin)
+    aaron = users(:aaron)
     tag = Tag(user, 'tag1')
+    atag = Tag(aaron, 'tag1')
+    
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-    Tagging.create(:user => users(:aaron), :feed_item => FeedItem.find(3), :tag => tag)
+    Tagging.create(:user => users(:aaron), :feed_item => FeedItem.find(3), :tag => atag)
 
     view = View.new :user => user
     view.add_tag :include, tag

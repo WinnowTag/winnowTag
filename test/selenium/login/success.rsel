@@ -10,7 +10,7 @@
 # run the suite.
 
 # Successful login
-setup :fixtures => [:users, :bayes_classifiers]
+setup :fixtures => [:users]
 open "/account/login"
 type "login", "quentin"
 type "password", "test"

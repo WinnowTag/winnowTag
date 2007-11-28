@@ -92,10 +92,7 @@ class Tag < ActiveRecord::Base
       to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength, :user_id => to.user_id)
     end
     
-    to_classifier = to.user.classifier
-    to_classifier.bias[to.to_s] = self.user.classifier.bias[self.to_s]
-    to_classifier.save!
-    
+    to.bias = self.bias    
     to.comment = self.comment
     to.save!
   end

@@ -18,33 +18,21 @@ module BiasSliderHelper
   # bias. When tag is :default the default bias will be show, but it will be editable.
   # When tag is a user tag the bias for that tag will be shown and it will be editable.
   #
-  def bias_slider(options = {})
-    prefix = (options[:prefix] or 'bias_slider')
-    variable = (options[:var] or options[:global] or 'bias_slider')
-    var_dec = 'var ' unless options[:global]
-    
-    tag = options[:tag]
-    tagger = current_user
-    
-    bias = tagger.classifier.bias[tag.to_s]
-    is_default = !tagger.classifier.bias.has_key?(tag.to_s)
-    
+  def bias_slider(tag, options = {})    
+    bias = ((tag.is_a?(Tag) ? tag.bias : 1.0) or 1.0)   
     # Don't let it go over 1.3
-    max_bias_value = [bias, 1.3].max 
-    
-    # The silder will be disabled unless tag is :default or a valid user tag
-    slider_disabled = options[:disabled] || tag.nil?
-    
-    onChange = options[:change] ? "onChange: function(value, slider){\n#{options[:change]}\n}," : ""
-    onSlide = options[:slide] ? "onSlide: function(value, slider){\n#{options[:slide]}\n}," : ""
-    
-    js = "#{var_dec}#{variable} = new BiasSlider('#{prefix}_handle', '#{prefix}_track', {" + 
-              onChange + onSlide + 
+    max_bias_value = [bias, 1.3].max     
+    slider_disabled = options[:disabled] ? true : false
+    prefix = tag.dom_id('slider')
+    variable = "#{prefix}_var"
+        
+    js = "var #{variable} = new BiasSlider('#{prefix}_handle', '#{prefix}_track', {" + 
+              "onChange: function(newBias, slider) {slider.sendUpdate(newBias, slider.options.tag_id);}," +
+              "tag_id: #{tag.id}," +
   						"disabled: #{slider_disabled}," +
   						"range: $R(0.9, #{max_bias_value})," +
   						"values: $R(90,#{max_bias_value * 100}).map(function(i) {return i / 100;})," +
-  						"sliderValue: #{bias}," +
-  						"isDefault: #{is_default}" +
+  						"sliderValue: #{bias}" +
   				"});\n"
   	
   	# Set the position of the slider markers

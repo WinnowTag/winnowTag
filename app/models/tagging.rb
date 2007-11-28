@@ -87,6 +87,7 @@ class Tagging < ActiveRecord::Base
   validates_associated :tag
   
   before_create :remove_preexisting_tagging
+  after_create :update_tag_timestamp
   after_destroy do |tagging|
     DeletedTagging.create(tagging.attributes.merge(:deleted_at => Time.now.utc))
   end
@@ -111,6 +112,11 @@ class Tagging < ActiveRecord::Base
   end
   
   private
+  def update_tag_timestamp
+    self.tag.updated_on = Time.now.utc
+    self.tag.save!
+  end
+  
   def remove_preexisting_tagging
     # Has this user tagged this item with this tag before?
     # This ensures that taggings are unique by user, taggable, tag and classifier_tagging

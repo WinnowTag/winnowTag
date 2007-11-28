@@ -47,4 +47,23 @@ Spec::Runner.configure do |config|
       :user_id => unique_id
     }.merge(attributes)
   end
+  
+  def login_as(user_id)
+    session[:user] = user_id
+  end
+  
+  def mock_user_for_controller
+    @user = mock_model(User)
+    @tags = mock("tags")
+    @views = mock("views")
+    
+    @view = mock_model(View)
+    @view.stub!(:set_as_default!)
+    @views.stub!(:find).and_return(@view)
+    @views.stub!(:default).and_return(@view)
+    
+    User.stub!(:find_by_id).and_return(@user)
+    @user.stub!(:tags).and_return(@tags)
+    @user.stub!(:views).and_return(@views)
+  end
 end

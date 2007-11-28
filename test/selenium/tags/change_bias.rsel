@@ -1,0 +1,11 @@
+setup :fixtures => [:users, :tags]
+include_partial 'login'
+open "/tags"
+store_element_position_left "css=div.slider_handle", "initialPosition"
+mouse_down "css=div.slider_handle"
+mouse_move_at "css=div.slider_handle", "30,0"
+mouse_up "css=div.slider_handle"
+assert_not_element_position_left "css=div.slider_handle", "${initialPosition}"
+store_element_position_left "css=div.slider_handle", "newPosition"
+refresh_and_wait
+assert_element_position_left "css=div.slider_handle", "${newPosition}"

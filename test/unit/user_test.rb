@@ -8,7 +8,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < Test::Unit::TestCase  
-  fixtures :users, :feed_items, :bayes_classifiers
+  fixtures :users, :feed_items
   
   def test_has_many_views
     assert_association User, :has_many, :views
@@ -84,17 +84,7 @@ class UserTest < Test::Unit::TestCase
     users(:quentin).forget_me
     assert_nil users(:quentin).remember_token
   end
- 
-  def test_creates_classifier
-    user = create_user
-    assert user.classifier
-  end
-  
-  def test_user_is_manager_of_classifier
-    user = create_user
-    assert user.has_role?('manager', user.classifier), "User should be the manager of their classifier"
-  end
-  
+   
   def test_tz_returns_time_zone_object
     user = create_user
     user.time_zone = 'Australia/Adelaide'

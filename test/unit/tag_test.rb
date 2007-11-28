@@ -130,21 +130,15 @@ class TagTest < Test::Unit::TestCase
   def test_copying_copies_the_tag_comment_and_bias
     user = users(:quentin)
     old_tag = Tag(user, 'old')
-    old_tag.update_attributes :comment => "old tag comment"
+    old_tag.update_attributes :comment => "old tag comment", :bias => 0.9
     new_tag = Tag(user, 'new')
     new_tag.update_attributes :comment => "new tag comment"
-
-    classifier = user.classifier
-    classifier.bias[old_tag.to_s] = 0.9
-    classifier.bias[new_tag.to_s] = 0.7
-    classifier.save!
         
     old_tag.copy(new_tag)
     
     new_tag.reload
-    classifier.reload
     
-    assert_equal 0.9, classifier.bias[new_tag.to_s]
+    assert_equal 0.9, new_tag.bias
     assert_equal "old tag comment", new_tag.comment
   end
   
@@ -179,14 +173,9 @@ class TagTest < Test::Unit::TestCase
   def test_overwriting_a_tag
     user = users(:quentin)
     old_tag = Tag(user, 'old')
-    old_tag.update_attributes :comment => "old tag comment"
+    old_tag.update_attributes :comment => "old tag comment", :bias => 0.9
     new_tag = Tag(user, 'new')
     new_tag.update_attributes :comment => "new tag comment"
-
-    classifier = user.classifier
-    classifier.bias[old_tag.to_s] = 0.9
-    classifier.bias[new_tag.to_s] = 0.7
-    classifier.save!
     
     user.taggings.create(:feed_item => FeedItem.find(1), :tag => old_tag)
     user.taggings.create(:feed_item => FeedItem.find(2), :tag => new_tag)
@@ -194,10 +183,9 @@ class TagTest < Test::Unit::TestCase
     old_tag.overwrite(new_tag)
     
     new_tag.reload
-    classifier.reload
     
     assert_equal [1], new_tag.taggings(:reload).map(&:feed_item_id)
-    assert_equal 0.9, classifier.bias[new_tag.to_s]
+    assert_equal 0.9, new_tag.bias
     assert_equal "old tag comment", new_tag.comment
   end
   
@@ -233,7 +221,7 @@ class TagTest < Test::Unit::TestCase
     Tagging.create(:user => u, :feed_item => fi1, :tag => test)
     Tagging.create(:user => u, :feed_item => fi2, :tag => test, :strength => 0)
 
-    tags = Tag.find_all_with_count(:order => "tags.name")
+    tags = u.tags.find_all_with_count(:order => "tags.name")
     assert_equal 3, tags.size
 
     assert_equal 'peerworks', tags[0].name
@@ -269,5 +257,4 @@ class TagTest < Test::Unit::TestCase
     assert_equal 'tag', tags[0].name
     assert_equal 0, tags[0].positive_count.to_i
   end
-
 end

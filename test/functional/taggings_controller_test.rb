@@ -5,7 +5,7 @@ require 'taggings_controller'
 class TaggingsController; def rescue_action(e) raise e end; end
 
 class TaggingsControllerTest < Test::Unit::TestCase
-  fixtures :users, :feed_items, :tags, :taggings, :bayes_classifiers
+  fixtures :users, :feed_items, :tags, :taggings
   def setup
     @controller = TaggingsController.new
     @request    = ActionController::TestRequest.new

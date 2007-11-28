@@ -42,12 +42,12 @@ module FeedItemsHelper
   # Classification helpers
   # TODO: Remove if we are not using this, else update it to work with new filters
   def report_in_progress_classification
-    if current_user.classifier.current_job
-      javascript_tag <<-END_JS
-        classification = Classification.createItemBrowserClassification('/classifier');
-        classification.startProgressUpdater();
-      END_JS
-    end
+    #if current_user.classifier.current_job
+    #  javascript_tag <<-END_JS
+    #    classification = Classification.createItemBrowserClassification('/classifier');
+    #    classification.startProgressUpdater();
+    #  END_JS
+    #end
   end
   
   # Creates the classification button.
@@ -65,9 +65,9 @@ module FeedItemsHelper
   #
   def classification_button
     display = ""
-    if current_user.classifier.current_job
-      display = "display: none"
-    end
+    #if current_user.classifier.current_job
+    #  display = "display: none"
+    #end
      
     classifier_path = "/classifier"
      
@@ -82,9 +82,9 @@ module FeedItemsHelper
   # TODO: Remove if we are not using this, else update it to work with new filters
   def cancel_classification_button
     display = "display: none"
-    if current_user.classifier.current_job
-      display = ""
-    end
+    #if current_user.classifier.current_job
+    #  display = ""
+    #end
     
     button_to_function("Stop", 'cancelClassification();', 
                         :style => display, 
@@ -93,11 +93,7 @@ module FeedItemsHelper
   
   # TODO: Remove if we are not using this, else update it to work with new filters
   def classifier_progress_title
-    if title = current_user.classifier.progress_title
-      title
-    else
-      "Classify changed tags"
-    end
+    "Classify changed tags"
   end
   
   # Prints each tag between a given user and taggable, including

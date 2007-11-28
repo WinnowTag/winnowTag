@@ -25,7 +25,6 @@ class TagsController < ApplicationController
     respond_to do |wants|
       wants.html do
         @search_term = params[:search_term]
-        @classifier = current_user.classifier
         
         setup_sortable_columns
         @tags = current_user.tags.find_all_with_count(:view => @view, :search_term => @search_term, :subscriber => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
@@ -41,7 +40,7 @@ class TagsController < ApplicationController
     if user and @tag = user.tags.find_by_id(params[:id])
       respond_to do |wants|
         wants.atom do        
-          last_modified = @tag.user.classifier.last_executed
+          last_modified = @tag.updated_on
           since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
 
           if since && last_modified && since >= last_modified
@@ -122,6 +121,9 @@ class TagsController < ApplicationController
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
       render :text => @tag.comment
+    elsif bias = params[:tag][:bias]
+      @tag.update_attribute(:bias, bias)
+      render :nothing => true
     end
   end
 

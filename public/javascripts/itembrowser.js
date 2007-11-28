@@ -22,14 +22,6 @@ function cancelClassification() {
 
 var BiasSlider = Class.create();
 BiasSlider.prototype = Object.extend(Control.Slider.prototype, {
-	getBias: function() {
-  		// only return a bias if the control is not disabled and the value has changed
-	  	if (!bias_slider.disabled && bias_slider.value != bias_slider.options.sliderValue) {
-	    	return bias_slider.value;
-	  	} else {
-	    	return null;
-	  	}
-	},
 	setDisabled: function() {
 		this.disabled = true;
 		this.track.addClassName('disabled');		
@@ -38,9 +30,8 @@ BiasSlider.prototype = Object.extend(Control.Slider.prototype, {
 		this.disabled = false;
 		this.track.removeClassName('disabled');
 	},
-	setToDefault: function(value) {
-		this.options.isDefault = true;
-		this.setValue(value);
+	sendUpdate: function(bias, tag_id) {
+	  new Ajax.Request("/tags/" + tag_id + "?tag[bias]=" + bias, {method: "PUT"});
 	}
 });
 
@@ -204,8 +195,8 @@ Classification.prototype = {
 						new ErrorMessage(transport.responseText);
 					}.bind(this),
 					onException: function(request, exception) {
+					  this.notify("Cancelled");
 						executer.stop();
-						this.reset();
 						if (!exceptionToIgnore(exception)) {
 							new ErrorMessage("Unable to connect to the web server: " + exception.message);
 						}

@@ -15,39 +15,23 @@
 # <tt>status</tt>: Gets JSON object containing the classification progress.
 # <tt>cancel</tt>: Cancels the in progress classification.
 #
-class ClassifierController < ApplicationController
-  before_filter :setup_classifier
-
-  def show
-    respond_to do |wants|
-      wants.html {redirect_to :controller => 'tags'}
-    end
-  end
-     
-  def edit
-    respond_to do |wants|
-      wants.html {redirect_to :controller => 'tags'}
-    end
-  end
-  
-  def update
-    if @classifier.update_attributes(params[:classifier])
-      redirect_to :back
-    else
-      render :action => 'edit'
-    end    
-  end
-  
+class ClassifierController < ApplicationController  
   def classify
     respond_to do |wants|
       begin
-        raise "There are no changes to your tags" if @classifier.changed_tags.empty?
-        @classifier.start_background_classification
-        wants.html { redirect_to status_classifier_path }
+        if job_running?
+          raise "The classifier is already running."
+        elsif current_user.changed_tags.empty?
+          raise "There are no changes to your tags" 
+        else          
+          job = Remote::ClassifierJob.create(:user_id => current_user.id)          
+          session[:classification_job_id] = job.id
+        end
+        
         wants.js   { render :nothing => true }
-      rescue => detail
-        logger.fatal(detail)        
-        wants.html { flash[:error] = detail.message; redirect_to :back }
+      rescue => detail        
+        logger.fatal(detail)
+        logger.fatal(detail.backtrace.join("\n"))
         wants.js   { render :json => detail.message, :status => 500 }
       end
     end    
@@ -56,10 +40,9 @@ class ClassifierController < ApplicationController
   def status
     respond_to do |wants|
       status = {:error_message => 'No classification process running', :progress => 100}
-      if job = @classifier.classifier_job
-        if job.progress >= 100 || job.active?
-          status = job.attributes
-        end
+      
+      if (job_id = session[:classification_job_id]) && (job = Remote::ClassifierJob.find(job_id))
+        status = {:progress => job.progress, :status => job.status}
       end
       
       wants.json do
@@ -68,22 +51,30 @@ class ClassifierController < ApplicationController
         if status[:error_message]
           render :json => status[:error_message], :status => 500
         else
-          render :nothing => true
+          render :json => status.to_json
         end
       end
     end
   end
   
   def cancel
-    if process = @classifier.current_job
-      process.cancel!
+    if (job_id = session[:classification_job_id]) && (job = Remote::ClassifierJob.find(job_id))
+      job.destroy
+      session[:classification_job_id] = nil
     end
     
     render :nothing => true
   end
-
-private
-  def setup_classifier
-    @classifier = current_user.classifier
+  
+  private
+  def job_running?
+    if job_id = session[:classification_job_id]
+      begin
+        job = Remote::ClassifierJob.find(job_id)
+        return job.status != Remote::ClassifierJob::Status::COMPLETE
+      rescue ActiveResource::ResourceNotFound => ex
+        return false
+      end
+    end
   end
 end

@@ -1,4 +1,4 @@
-<tr id="<%= subscribed_tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %>">
+<tr id="<%= subscribed_tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %> subscribed_tag">
 	<td class="tag">
     <%= link_to image_tag('feed_icon.png'), formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom) %>
 	  <%= subscribed_tag.name -%><br />
@@ -25,7 +25,7 @@
   <td class="number"><%= subscribed_tag.classifier_count %></td>
   <td class="date"><%= format_date(subscribed_tag.last_used_by) %></td>	
   <td class="indented" nowrap="nowrap"><%= subscribed_tag.user.display_name %></td>
-  <td><%= bias_slider(:tag => subscribed_tag, :disabled => true) %></td>
+  <td><%= bias_slider(subscribed_tag, :disabled => true) %></td>
 </tr>
 <tr class="comment <%= css_class %>">
   <td colspan="9">

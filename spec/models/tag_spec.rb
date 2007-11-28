@@ -60,4 +60,16 @@ describe Tag do
     tags = Tag.find_all_with_count(:search_term => "ever", :conditions => { :public => true })
     tags.should == [tag_1, tag_2]
   end
+  
+  it "should update it's timestamp when a new tag is created" do
+    user = User.create! valid_user_attributes
+    feed_item = FeedItem.create! valid_feed_item_attributes
+    
+    tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "No this tag is the best tag in the world")
+    updated_on = tag.updated_on
+    sleep(1)
+    Tagging.create! :tag_id => tag.id, :user_id => user.id, :feed_item_id => feed_item.id, :strength => 1    
+    tag.reload
+    tag.updated_on.should > updated_on
+  end
 end
