@@ -13,6 +13,11 @@ def login(login = "quentin", password = "test")
   open "/account/login"
   type "login", login
   type "password", password
-  click "commit"
-  wait_for_page_to_load 30000
+  click_and_wait "commit"
+end
+
+def assert_path(path)
+  url = Regexp.escape("http://localhost:3001/#{path}")
+  url << /(\?.*)?/.inspect[1..-2]
+  assert_location "regexp:^#{url}$"
 end
