@@ -3,12 +3,12 @@ load File.join(RAILS_ROOT, 'test', 'selenium_helper.rb')
 setup :fixtures => [:users, :feeds, :view_feed_states, :excluded_feeds]
 login
 open "/feeds"
-assert_not_attribute "always_include_feed_2", "class", "regexp:selected"
+dont_see_element "#always_include_feed_2.selected"
 click "always_include_feed_2"
-assert_attribute "always_include_feed_2", "class", "regexp:selected"
+see_element "#always_include_feed_2.selected"
 refresh_and_wait
-assert_attribute "always_include_feed_2", "class", "regexp:selected"
+see_element "#always_include_feed_2.selected"
 click "always_include_feed_2"
-assert_not_attribute "always_include_feed_2", "class", "regexp:selected"
+dont_see_element "#always_include_feed_2.selected"
 refresh_and_wait
-assert_not_attribute "always_include_feed_2", "class", "regexp:selected"
+dont_see_element "#always_include_feed_2.selected"
