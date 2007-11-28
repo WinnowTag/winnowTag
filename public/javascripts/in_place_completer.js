@@ -43,7 +43,7 @@ Object.extend(Ajax.InPlaceEditor.Completion.prototype, {
         },
      createEditField: function() {
             var ret = this.super_createEditField();
-            this.completer = new Ajax.Autocompleter(this.editField, this.completion_element, this.completion_url, this.completion_options);
+            this.completer = new Ajax.Autocompleter(this._controls.editor, this.completion_element, this.completion_url, this.completion_options);
             return ret;
         },
      leaveEditMode: function() {

@@ -251,6 +251,7 @@ module InPlaceCompleterHelper
     js_options['loadTextURL'] = "'#{url_for(options[:load_text_url])}'" if options[:load_text_url]
     js_options['ajaxOptions'] = options[:options] if options[:options]
     js_options['evalScripts'] = options[:script] if options[:script]
+    js_options['htmlResponse'] = options[:html_response] if options.key?(:html_response)
     js_options['callback']   = "function(form) { return #{options[:with]} }" if options[:with]
     js_options['formSubmit'] = options[:form_submit] if options[:form_submit]
     js_options['onSubmit'] = options[:submit] if options[:submit]

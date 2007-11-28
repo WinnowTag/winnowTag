@@ -4,7 +4,7 @@
 									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
 		<% @tag = tag -%><%# TODO: This is a hack to get the below line to work... %>
 		<%= in_place_completing_editor_field(:tag, :name, {:id => tag.dom_id('editor')}, 
-							{:param_name => '"tag[name]"', :url => tag_path(tag), :options => "{method: 'put'}", :script => true,
+							{:param_name => '"tag[name]"', :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false,
 							 :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'),
 							 :click_to_edit_text => "Click to edit tag name", :save_text => "Save"}, 
 							:skip_style => true, :update => tag.dom_id('auto_complete'),
