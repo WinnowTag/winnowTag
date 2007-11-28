@@ -36,7 +36,7 @@
     	    <td class="number"><%= tag.classifier_count %></td>
     	    <td class="date"><%= format_date(tag.last_used_by) %></td>	
     	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
-  	      <td><%= bias_slider(:tag => tag, :disabled => true) %></td>
+  	      <td><%= bias_slider(tag, :disabled => true) %></td>
         </tr>
         <tr class="comment <%= css_class %>">
   	  		<td colspan="7"><%= tag.comment %></td>
