@@ -17,7 +17,7 @@ def login(login = "quentin", password = "test")
 end
 
 def assert_path(path)
-  url = Regexp.escape("http://localhost:3001/#{path}")
+  url = Regexp.escape("http://") + ".+?" + Regexp.escape("/#{path}")
   url << /(\?.*)?/.inspect[1..-2]
   assert_location "regexp:^#{url}$"
 end
