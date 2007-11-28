@@ -1,0 +1,18 @@
+load File.join(RAILS_ROOT, 'test', 'selenium_helper.rb')
+
+setup :fixtures => [:users]
+
+Tag.delete_all
+tag_1 = Tag.create! valid_tag_attributes(:user_id => User.find_by_login("quentin").id, :public => true)
+tag_2 = Tag.create! valid_tag_attributes(:user_id => User.find_by_login("aaron").id, :public => true)
+TagSubscription.create! :tag_id => tag_2.id, :user_id => User.find_by_login("quentin").id
+
+login
+open "/tags"
+
+assert_element_enabled "#public_tag_#{tag_1.id}"
+assert_element_disabled "#public_tag_#{tag_2.id}"
+
+assert_checked "public_tag_#{tag_2.id}"
+click "public_tag_#{tag_2.id}"
+assert_checked "public_tag_#{tag_2.id}"

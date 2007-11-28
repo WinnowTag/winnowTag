@@ -14,3 +14,8 @@ click "subscribe_tag_#{tag_2.id}"
 assert_checked "subscribe_tag_#{tag_2.id}"
 refresh_and_wait
 assert_checked "subscribe_tag_#{tag_2.id}"
+
+click "subscribe_tag_#{tag_2.id}"
+assert_not_checked "subscribe_tag_#{tag_2.id}"
+refresh_and_wait
+assert_not_checked "subscribe_tag_#{tag_2.id}"

@@ -13,7 +13,7 @@
 		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{subscribed_tag.id}&tag_state=exclude", 
 		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{subscribed_tag.id}" %>
 	</td>
-	<td><%= check_box_tag nil, nil, true, :disabled => true %></td>
+	<td><%= check_box_tag subscribed_tag.dom_id("public"), nil, true, :disabled => true %></td>
  	<td class="control_icons" id="<%= subscribed_tag.dom_id("controls") %>">
     <%= link_to_remote image_tag('copy.gif', :title => "Copy #{subscribed_tag.name}"), :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}" %>
     <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => subscribed_tag}, 
