@@ -118,6 +118,7 @@ function toggleSidebar() {
 
 
 function updateFilterControl(control, add_url, remove_url) {
+  control = $(control);
   if(control.hasClassName('disabled')) {
     return;
   } else if(control.hasClassName('selected')) {
