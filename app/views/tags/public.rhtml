@@ -27,7 +27,7 @@
         	  <%= tag.name -%>
         	</td>
   				<td>
-  					<%= check_box_tag tag.dom_id("subscribe"), "1", tag.subscribed?(current_user), 
+  					<%= check_box_tag tag.dom_id("subscribe"), "1", tag.subscribed?(current_user), :disabled => current_user == tag.user,
   														:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }") %>
   				</td>
         	<td class="number">
