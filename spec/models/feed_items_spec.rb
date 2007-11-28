@@ -59,6 +59,7 @@ describe FeedItem do
   it "properly filters on globally excluded feeds" do
     user_1 = User.create! valid_user_attributes
     
+    FeedItem.delete_all # :(
     feed_item_1 = FeedItem.create! valid_feed_item_attributes(:feed_id => 1)
     feed_item_2 = FeedItem.create! valid_feed_item_attributes(:feed_id => 1)
     feed_item_3 = FeedItem.create! valid_feed_item_attributes(:feed_id => 2)
