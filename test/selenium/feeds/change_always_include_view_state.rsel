@@ -1,5 +1,7 @@
-setup :fixtures => [:users, :feeds, :view_feed_states]
-include_partial 'login'
+require File.join(RAILS_ROOT, 'test', 'selenium_helper')
+
+setup :fixtures => [:users, :feeds, :view_feed_states, :excluded_feeds]
+login
 open "/feeds"
 assert_not_attribute "always_include_feed_2", "class", "regexp:selected"
 click "always_include_feed_2"

@@ -1,5 +1,7 @@
+require File.join(RAILS_ROOT, 'test', 'selenium_helper')
+
 setup :fixtures => [:users, :tag_subscriptions, :tags]
-include_partial 'login'
+login
 open "/tags"
 store_element_position_left "css=tr.subscribed_tag div.slider_handle", "initialPosition"
 mouse_down "css=tr.subscribed_tag div.slider_handle"

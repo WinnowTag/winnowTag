@@ -1,19 +1,5 @@
-# It's often a good idea to start the test with 'setup'.
-# See /selenium/setup for more info.
+require File.join(RAILS_ROOT, 'test', 'selenium_helper')
 
-# More information about the commands is available at:
-#   http://release.openqa.org/selenium-core/nightly/reference.html
-# See also the RDoc for SeleniumOnRails::TestBuilder.
-
-# Point the browser to http://localhost:3000/selenium/tests/login.rsel to see
-# how this test is rendered, or to http://localhost:3000/selenium to
-# run the suite.
-
-# Successful login
 setup :fixtures => [:users]
-open "/account/login"
-type "login", "quentin"
-type "password", "test"
-click "commit"
-wait_for_page_to_load 30000
+login
 assert_title "Winnow (Quentin Doe): feed_items"
