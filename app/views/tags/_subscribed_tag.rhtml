@@ -17,7 +17,7 @@
  	<td class="control_icons" id="<%= subscribed_tag.dom_id("controls") %>">
     <%= link_to_remote image_tag('copy.gif', :title => "Copy #{subscribed_tag.name}"), :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}" %>
     <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => subscribed_tag}, 
-    			:method => 'put', :title => "Unsubscribe #{subscribed_tag.name}" %>
+    			:method => 'put', :title => "Unsubscribe #{subscribed_tag.name}", :id => subscribed_tag.dom_id("unsubscribe") %>
 	</td>
   <td class="number">
     <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
