@@ -164,3 +164,9 @@ module UrlWithViewId
 end
 ActionView::Base.send :include, UrlWithViewId
 ActionController::Base.send :include, UrlWithViewId
+
+
+Selenium::configure do |config|
+  config.browser 'firefox'
+  config.browser 'iexplore', :default => false
+end
