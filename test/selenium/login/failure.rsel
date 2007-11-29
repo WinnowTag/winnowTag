@@ -1,5 +1,0 @@
-load File.join(RAILS_ROOT, 'test', 'selenium_helper.rb')
-
-setup :fixtures => [:users]
-login "quentin", "wrong"
-assert_text "warning", "Invalid credentials. Please try again."

@@ -1,5 +1,0 @@
-load File.join(RAILS_ROOT, 'test', 'selenium_helper.rb')
-
-setup :fixtures => [:users]
-login
-assert_path "feed_items"
