@@ -3,13 +3,17 @@ module SeleniumHelper
     open login_path
     type "login", login
     type "password", password
-    click "commit"
-    wait_for_page_to_load
+    click_and_wait "commit"
   end
   
-  def refresh_and_wait
+  def click_and_wait(locator, timeout = 30)
+    click locator
+    wait_for_page_to_load(timeout)
+  end
+  
+  def refresh_and_wait(timeout = 30)
     refresh
-    wait_for_page_to_load
+    wait_for_page_to_load(timeout)
   end
   
   def see_element(*args)
@@ -20,7 +24,14 @@ module SeleniumHelper
     assert !is_element_present("css=#{args.join}")
   end
   
+  def assert_visible(locator)
+    assert is_visible(locator)
+  end
   
+  def assert_not_visible(locator)
+    assert !is_visible(locator)
+  end
+
   
   
   
