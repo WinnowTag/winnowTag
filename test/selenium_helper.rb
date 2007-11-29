@@ -1,24 +1,34 @@
 module SeleniumHelper
   def login(login = "quentin", password = "test")
-    open "/account/login"
+    open login_path
     type "login", login
     type "password", password
     click "commit"
     wait_for_page_to_load
   end
+  
+  def refresh_and_wait
+    refresh
+    wait_for_page_to_load
+  end
+  
+  def see_element(*args)
+    assert is_element_present("css=#{args.join}")
+  end
+
+  def dont_see_element(*args)
+    assert !is_element_present("css=#{args.join}")
+  end
+  
+  
+  
+  
+  
 
   def assert_path(path)
     url = Regexp.escape("http://") + ".+?" + Regexp.escape("/#{path}")
     url << /(\?.*)?/.inspect[1..-2]
     assert_location "regexp:^#{url}$"
-  end
-
-  def see_element(*args)
-    assert_element_present "css=#{args.join}"
-  end
-
-  def dont_see_element(*args)
-    assert_element_not_present "css=#{args.join}"
   end
 
   def assert_element_disabled(selector)
