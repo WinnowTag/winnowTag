@@ -896,6 +896,9 @@ module Selenium
             do_command("waitForPageToLoad", [timeout,])
         end
 
+        def delete_cookie(name, path)
+            do_command("deleteCookie", [name, path,])
+        end
 
     end
 
