@@ -1,0 +1,14 @@
+load File.join(RAILS_ROOT, 'test', 'selenium_helper.rb')
+
+setup :fixtures => [:users, :feed_items]
+
+feed_item = FeedItem.find(:first)
+
+login
+open "/feed_items"
+
+assert_not_visible "new_tag_form_feed_item_#{feed_item.id}"
+click "open_tags_feed_item_#{feed_item.id}"
+assert_visible "new_tag_form_feed_item_#{feed_item.id}"
+click "open_tags_feed_item_#{feed_item.id}"
+assert_not_visible "new_tag_form_feed_item_#{feed_item.id}"
