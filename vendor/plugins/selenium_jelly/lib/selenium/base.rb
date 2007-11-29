@@ -80,26 +80,26 @@ module Selenium
   
   class SubProcess
     def initialize command
-      puts command
+      @command = command
+    end
+    
+    def start
+      # puts "Starting: #{command}"
       @pid = fork do
-        # Since we can't use shell redirects without screwing 
-        # up the pid, we'll reopen stdin and stdout instead
-        # to get the same effect.
+        # Since we can't use shell redirects without screwing up the pid, we'll reopen stdin and stdout instead to get the same effect.
         [STDOUT,STDERR].each {|f| f.reopen '/dev/null', 'w' }
-        exec command
+        exec @command
       end
     end
 
-    def stop what
-      begin
-        puts "Stopping #{what} (pid=#{@pid}) ..."
-        Process.kill 15, @pid
-      rescue Errno::EPERM #such as the process is already closed (tabbed browser)
-      end
+    def stop
+      # puts "Stopping: #{@command} (pid=#{@pid})"
+      Process.kill 9, @pid
+    # rescue Errno::EPERM #such as the process is already closed (tabbed browser)
     end
         
     def self.start(*args)
-      new(*args)
+      new(*args).start
     end
   end
 end
