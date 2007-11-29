@@ -25,7 +25,7 @@
   </td>
 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
     <%= link_to_remote image_tag('copy.gif', :title => "Copy #{tag.name}"), :url => tags_path(:copy => tag), :with => "{name: prompt('New tag name', '#{tag.name} - copy')}" %>
-    <%= link_to image_tag('trash.gif'), tag_path(tag), :method => 'delete', :title => "Destroy #{tag.name}",
+    <%= link_to image_tag('trash.gif'), tag_path(tag), :method => 'delete', :title => "Destroy #{tag.name}", :id => tag.dom_id("destroy"),
     			:confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone." %>
 	</td>
 	<td class="number">
