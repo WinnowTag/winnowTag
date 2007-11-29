@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FeedItemsTest < Test::Unit::SeleniumTestCase
+class FeedItemsKeyboardShortcutsTest < Test::Unit::SeleniumTestCase
   include SeleniumHelper
   fixtures :users, :feed_items
 
@@ -9,7 +9,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
     open feed_items_path
   end
   
-  def test_keyboard_shortcut_change_item
+  def test_change_item
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
@@ -42,7 +42,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
     assert_not_visible "open_feed_item_#{feed_item_2.id}"
   end
   
-  def test_keyboard_shortcut_mark_read_unread
+  def test_mark_read_unread
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
@@ -69,7 +69,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
     see_element "#feed_item_#{feed_item_2.id}.read"
   end
   
-  def test_keyboard_shortcut_open_close_moderation_panel
+  def test_open_close_moderation_panel
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
@@ -96,7 +96,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
     assert_not_visible "new_tag_form_feed_item_#{feed_item_2.id}"
   end
   
-  def test_keyboard_shortcut_open_close_item
+  def test_open_close_item
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
@@ -123,7 +123,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
     assert_not_visible "open_feed_item_#{feed_item_2.id}"
   end
   
-  def test_keyboard_shortcut_select_item
+  def test_select_item
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
