@@ -11,7 +11,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
   end
 
   def test_mark_read_unread
-    feed_item_1 = FeedItem.find(1)
+    feed_item_1 = FeedItem.find(2)
     
     see_element "#feed_item_#{feed_item_1.id}.read"
 
@@ -29,7 +29,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
   end
   
   def test_open_close_item
-    feed_item = FeedItem.find(:first)
+    feed_item = FeedItem.find(2)
 
     assert_not_visible "open_feed_item_#{feed_item.id}"
     
@@ -41,7 +41,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
   end
   
   def test_open_close_moderation_panel
-    feed_item = FeedItem.find(:first)
+    feed_item = FeedItem.find(2)
 
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}"
 
@@ -53,8 +53,6 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
   end
   
   def test_open_close_sidebar
-    feed_item = FeedItem.find(:first)
-    
     assert_not_visible "sidebar"
     
     click "sidebar_control"
