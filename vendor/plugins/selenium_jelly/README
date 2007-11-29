@@ -1,0 +1,78 @@
+= selenium_jelly
+
+If you find this plugin useful, please consider a donation to show your support!
+
+  http://www.paypal.com/cgi-bin/webscr?cmd=_send-money
+  
+  Email address: jonathan.viney@gmail.com
+  
+== Instructions
+
+This plugin provides nice integration between Selenium-RC and Rails.
+
+Developed with edge Rails (1.2) and Selenium-RC 0.8.1. Requires Java.
+
+== Installation
+
+Install the plugin:
+
+  script/plugin install http://svn.viney.net.nz/things/rails/plugins/selenium_jelly
+  
+== Install Selenium-RC
+
+ * Download Selenium-RC from http://openqa.org/selenium-rc/
+ * Unpack and run, you can use vendor/ if you like
+ * cd vendor
+ * unzip ~/selenium-remote-control-0.8.1.zip
+ * cd selenium-remote-control-0.8.1/server
+ * java -jar selenium-server.jar
+  
+== Configure Browsers
+
+In config/environment.rb, configure at least one browser:
+
+Selenium::configure do |config|
+  config.browser 'firefox'
+  config.browser 'iexplore', :default => false
+end
+
+== Run Rails test server
+
+ruby script/server test -p 3001
+
+== Generate tests
+
+  script/generate selenium_test person
+  
+Edit test/selenium/person_selenium_test.rb and add your tests:
+
+  class PersonSeleniumTest < Test::Unit::SeleniumTestCase
+    fixtures :people
+    
+    def test_view_person
+      open :controller => 'person'
+      
+      assert_visible 'title'
+      
+      type 'person_name', 'New name'
+      
+      submit 'person_form'
+    end
+  end
+  
+See vendor/plugins/selenium_jelly/lib/selenium.rb for documentation on all the Selenium commands that are available.
+The methods that begin with is_ are available to be used as assert_ in your tests. Eg: is_visible can be used as assert_visible.
+
+Run an individual Selenium test just in the same way you would a unit or functional test.
+
+  ruby test/selenium/person_test.rb
+  
+Or run all your Selenium tests with:
+
+  rake test:selenium
+
+== Help
+
+Feel free to email with any problems, suggestions, bugs etc...
+
+  jonathan dot viney @ gmail . com

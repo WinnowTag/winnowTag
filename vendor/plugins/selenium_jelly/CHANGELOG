@@ -1,0 +1,21 @@
+[7 Nov 2006]
+
+* Add support for multiple browsers.
+
+* Make browser accessible from console.
+
+* Make get_ methods accessible without the prefix.
+
+* Add ? methods as shortcuts to is_ methods that return booleans
+
+    is_text_present("Text")
+    
+    becomes
+    
+    text_present?("Text")
+
+[10 Oct 2006]
+
+* Add named routes to SeleniumTestCase
+
+* Add changelog
