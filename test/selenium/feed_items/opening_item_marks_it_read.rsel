@@ -1,0 +1,13 @@
+load File.join(RAILS_ROOT, 'test', 'selenium_helper.rb')
+
+setup :fixtures => [:users, :feed_items]
+
+feed_item_1 = FeedItem.find(1)
+User.find_by_login("quentin").unread_items.create(:feed_item => feed_item_1)
+
+login
+open "/feed_items"
+
+see_element "#feed_item_#{feed_item_1.id}.unread"
+click "css=#feed_item_#{feed_item_1.id} .opener"
+see_element "#feed_item_#{feed_item_1.id}.read"

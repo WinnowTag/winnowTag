@@ -1,0 +1,27 @@
+load File.join(RAILS_ROOT, 'test', 'selenium_helper.rb')
+
+setup :fixtures => [:users, :feed_items]
+
+feed_item_2, feed_item_1 = FeedItem.find(3, 4)
+
+login
+open "/feed_items"
+
+dont_see_element "#feed_item_#{feed_item_1.id}.selected"
+dont_see_element "#feed_item_#{feed_item_2.id}.selected"
+
+key_press "css=body", "n"
+see_element "#feed_item_#{feed_item_1.id}.selected"
+dont_see_element "#feed_item_#{feed_item_2.id}.selected"
+
+key_press "css=body", "n"
+dont_see_element "#feed_item_#{feed_item_1.id}.selected"
+see_element "#feed_item_#{feed_item_2.id}.selected"
+
+key_press "css=body", "p"
+see_element "#feed_item_#{feed_item_1.id}.selected"
+dont_see_element "#feed_item_#{feed_item_2.id}.selected"
+
+key_press "css=body", "p"
+see_element "#feed_item_#{feed_item_1.id}.selected"
+dont_see_element "#feed_item_#{feed_item_2.id}.selected"
