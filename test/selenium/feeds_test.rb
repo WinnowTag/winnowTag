@@ -65,6 +65,15 @@ class FeedsTest < Test::Unit::SeleniumTestCase
     dont_see_element "#exclude_feed_2.selected"
     dont_see_element "#always_include_feed_2.disabled"
     dont_see_element "#exclude_feed_2.disabled"    
+    
+    click "always_include_feed_2"
+    see_element "#always_include_feed_2.selected"
+
+    click "exclude_feed_2"
+    see_element "#exclude_feed_2.selected"
+    
+    click "exclude_feed_2"
+    dont_see_element "#exclude_feed_2.selected"
   end
   
   def test_toggling_between_view_states

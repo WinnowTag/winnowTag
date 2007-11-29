@@ -1,5 +1,10 @@
-page[@feed.dom_id("always_include")].removeClassName "selected"
-page[@feed.dom_id("exclude")].removeClassName "selected"
+if @feed.globally_excluded?(current_user)
+  page[@feed.dom_id("always_include")].removeClassName "selected"
+  page[@feed.dom_id("exclude")].removeClassName "selected"
 
-page[@feed.dom_id("always_include")].addClassName "disabled"
-page[@feed.dom_id("exclude")].addClassName "disabled"
+  page[@feed.dom_id("always_include")].addClassName "disabled"
+  page[@feed.dom_id("exclude")].addClassName "disabled"
+else
+  page[@feed.dom_id("always_include")].removeClassName "disabled"
+  page[@feed.dom_id("exclude")].removeClassName "disabled"  
+end

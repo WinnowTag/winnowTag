@@ -77,7 +77,6 @@ class FeedsController < ApplicationController
       ViewFeedState.delete_all_for(@feed, :only => current_user)
     else
       ExcludedFeed.delete_all :feed_id => @feed.id, :user_id => current_user.id
-      render :nothing => true
     end
   end
 end
