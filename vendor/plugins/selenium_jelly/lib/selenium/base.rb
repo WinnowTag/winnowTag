@@ -70,9 +70,36 @@ module Selenium
     @@default = new(
       'selenium_server_host'  => 'localhost',
       'selenium_server_port'  => 4444,
+      'start_selenium_server' => true,
       'browser_command'       => '*firefox',
       'test_server_port'      => 3001,
+      'start_test_server'     => true,
       'close_browser_on_exit' => true
     )
+  end
+  
+  class SubProcess
+    def initialize command
+      puts command
+      @pid = fork do
+        # Since we can't use shell redirects without screwing 
+        # up the pid, we'll reopen stdin and stdout instead
+        # to get the same effect.
+        [STDOUT,STDERR].each {|f| f.reopen '/dev/null', 'w' }
+        exec command
+      end
+    end
+
+    def stop what
+      begin
+        puts "Stopping #{what} (pid=#{@pid}) ..."
+        Process.kill 15, @pid
+      rescue Errno::EPERM #such as the process is already closed (tabbed browser)
+      end
+    end
+        
+    def self.start(*args)
+      new(*args)
+    end
   end
 end
