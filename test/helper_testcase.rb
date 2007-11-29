@@ -20,8 +20,6 @@ class HelperTestCase < Test::Unit::TestCase
   include ActionView::Helpers::PrototypeHelper
 
   def setup
-    super
-
     @request    = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new
     @controller = StubController.new
