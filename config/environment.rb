@@ -138,7 +138,6 @@ class CGI
   end
 end
 
-
 module UrlWithViewId
   def self.included(base)
     base.alias_method_chain :url_for, :view_id
@@ -165,9 +164,8 @@ end
 ActionView::Base.send :include, UrlWithViewId
 ActionController::Base.send :include, UrlWithViewId
 
-
 Selenium::configure do |config|
   config.browser 'firefox', :default => true
-  config.browser 'safari', :default => false
+  # config.browser 'safari', :default => true
   config.browser 'iexplore', :default => false
 end

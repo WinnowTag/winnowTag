@@ -27,7 +27,8 @@ class Test::Unit::SeleniumTestCase < Test::Unit::TestCase
       puts "You must define at least one browser in config/environment.rb"
       exit
     end
-    
+
+    Selenium::Server.connect!    
     @browsers.each do |@browser|
       super
     end
