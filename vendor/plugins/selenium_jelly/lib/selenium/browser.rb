@@ -43,7 +43,7 @@ module Selenium
         end
         
         @selenium = SeleneseInterpreter.new(configuration.selenium_server_host, configuration.selenium_server_port,
-          command, "http://localhost:#{configuration.test_server_port}/")
+          command, "http://#{configuration.test_server_host}:#{configuration.test_server_port}/")
         
         @selenium.start
         

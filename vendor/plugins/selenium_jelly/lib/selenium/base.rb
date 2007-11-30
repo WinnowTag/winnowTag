@@ -71,7 +71,7 @@ module Selenium
       'selenium_server_host'  => 'localhost',
       'selenium_server_port'  => 4444,
       'start_selenium_server' => true,
-      'browser_command'       => '*firefox',
+      'test_server_host'      => 'localhost',
       'test_server_port'      => 3001,
       'start_test_server'     => true,
       'close_browser_on_exit' => true
