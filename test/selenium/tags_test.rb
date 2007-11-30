@@ -37,4 +37,27 @@ class TagsTest < Test::Unit::SeleniumTestCase
     click_and_wait "unsubscribe_tag_#{tag.id}"
     dont_see_element "#unsubscribe_tag_#{tag.id}"
   end
+  
+  def test_destroying_a_tag
+    tag = Tag.find(1)
+    see_element "#destroy_tag_#{tag.id}"
+    click_and_wait "destroy_tag_#{tag.id}"
+    assert is_confirmation_present
+    dont_see_element "#destroy_tag_#{tag.id}"
+  end
+  
+  def test_marking_a_tag_public
+    tag_1 = Tag.find(1)
+
+    assert !is_checked("public_tag_#{tag_1.id}")
+    click "public_tag_#{tag_1.id}"
+    assert is_checked("public_tag_#{tag_1.id}")
+    refresh_and_wait
+    assert is_checked("public_tag_#{tag_1.id}")
+
+    click "public_tag_#{tag_1.id}"
+    assert !is_checked("public_tag_#{tag_1.id}")
+    refresh_and_wait
+    assert !is_checked("public_tag_#{tag_1.id}")
+  end
 end
