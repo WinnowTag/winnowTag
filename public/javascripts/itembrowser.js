@@ -81,11 +81,11 @@ Classification.createItemBrowserClassification = function(classifier_url) {
 				$('progress_bar').setStyle({width: progress.progress + '%'});
 					
 				// Only update every second loop
-				if (c.updateItems) {
+				if (!c.skipUpdate) {
 					itemBrowser.updateFeedItems({offset: c.classifier_items_loaded, incremental: true, only_tagger: 'classifier'});
-					c.updateItems = false;
+					c.skipUpdate = true;
 				} else {
-					c.updateItems = true;
+					c.updateItems = false;
 				}
 			}						
 		});

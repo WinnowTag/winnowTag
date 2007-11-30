@@ -31,7 +31,6 @@ class ClassifierController < ApplicationController
         wants.js   { render :nothing => true }
       rescue => detail        
         logger.fatal(detail)
-        logger.fatal(detail.backtrace.join("\n"))
         wants.js   { render :json => detail.message, :status => 500 }
       end
     end    
