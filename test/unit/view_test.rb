@@ -7,6 +7,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UpdateFiltersViewTest < Test::Unit::TestCase
+  fixtures :feeds, :users
   def test_changes_tag_inspect_mode
     @view = View.new
     assert !@view.tag_inspect_mode?
@@ -150,6 +151,7 @@ class UpdateFiltersViewTest < Test::Unit::TestCase
 end
 
 class FeedViewTest < Test::Unit::TestCase
+  fixtures :feeds, :users
   def setup
     @feed1 = Feed.create! :url => "http://one.example.com"
     @feed2 = Feed.create! :url => "http://two.example.com"

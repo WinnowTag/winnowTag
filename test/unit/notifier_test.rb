@@ -7,6 +7,7 @@ class NotifierTest < Test::Unit::TestCase
   include ActionMailer::Quoting
 
   def setup
+    ActiveRecord::Base.logger.info("NotifierTest")
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
     ActionMailer::Base.deliveries = []

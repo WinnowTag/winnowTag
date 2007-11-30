@@ -258,7 +258,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     assert_difference(UnreadItem, :count, 1) do
       accept('text/javascript')
       login_as(:quentin)
-      put :mark_unread, :id => 1
+      put :mark_unread, :id => 2
       assert_response :success
     end
   end

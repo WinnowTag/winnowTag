@@ -19,11 +19,10 @@ class UnreadItemTest < Test::Unit::TestCase
   end
   
   def test_user_and_feed_item_existing_is_valid
-    assert_valid UnreadItem.new(:user => User.find(1), :feed_item => FeedItem.find(1))
+    assert_valid UnreadItem.new(:user => User.find(1), :feed_item => FeedItem.find(2))
   end
   
   def test_user_and_feed_item_must_be_unique
-    UnreadItem.create(:user => User.find(1), :feed_item => FeedItem.find(1))
     assert_invalid UnreadItem.new(:user => User.find(1), :feed_item => FeedItem.find(1))
   end
 end

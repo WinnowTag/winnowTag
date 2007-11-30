@@ -120,7 +120,7 @@ class UserTest < Test::Unit::TestCase
   
   def test_is_item_unread_when_it_doesnt_exist
     u = User.find(1)
-    f = FeedItem.find(1)
+    f = FeedItem.find(2)
     assert u.has_read_item?(f)
   end
   
