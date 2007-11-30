@@ -11,7 +11,6 @@ class TaggingsControllerTest < Test::Unit::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     @request.env['HTTP_REFERER'] = '/feed_items'
-    MiddleMan.stubs(:worker).returns(stub_everything)
   end
 
   def test_create_requires_post

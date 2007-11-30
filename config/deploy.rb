@@ -114,10 +114,6 @@ ssh_options[:port] = 65000
 #   are treated as local variables, which are made available to the (ERb)
 #   template.
 
-task :run_classifier_regression do
-  run "cd #{release_path} && script/runner 'BayesClassifier.regression_test'"
-end
-
 task :package_assets, :role => :web do
   run "cd #{release_path} && rake RAILS_ENV=production asset:packager:build_all"
 end
@@ -130,7 +126,6 @@ task :after_update_code do
   run "ln -s #{shared_path}/tmp #{release_path}/tmp"
   run "ln -s #{shared_path}/exported_corpus #{release_path}/public/exported_corpus"
   run "ln -s #{shared_path}/database.yml #{release_path}/config/database.yml"
-  run "ln -s #{shared_path}/backgroundrb.yml #{release_path}/config/backgroundrb.yml"
   run "ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/mongrel_cluster.yml"
   run "ln -s #{shared_path}/collector.conf #{release_path}/config/collector.conf"
 end
@@ -138,11 +133,6 @@ end
 task :before_symlink do
   run_classifier_regression
   package_assets
-end
-
-task :after_restart do
-  run "#{current_path}/script/backgroundrb stop"
-  run "#{current_path}/script/backgroundrb start"
 end
 
 desc "Notify the list of deployment"
