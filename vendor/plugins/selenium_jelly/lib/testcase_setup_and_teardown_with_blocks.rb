@@ -34,14 +34,14 @@ class Test::Unit::TestCase
   end
   
   def setup_with_blocks #:nodoc:
-    setup_with_fixtures unless self.class.fixture_table_names.empty?
-    _setup_blocks.each { |p| p.bind(self).call }
+    setup_with_fixtures
+    _setup_blocks.each { |p| p.bind(self).call } unless _setup_blocks.nil?
   end
   alias_method :setup, :setup_with_blocks
     
   def teardown_with_blocks #:nodoc:
-    teardown_with_fixtures unless self.class.fixture_table_names.empty?
-    _teardown_blocks.each { |p| p.bind(self).call }
+    teardown_with_fixtures
+    _teardown_blocks.each { |p| p.bind(self).call } unless _teardown_blocks.nil?
   end
   alias_method :teardown, :teardown_with_blocks
   
