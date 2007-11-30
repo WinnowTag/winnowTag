@@ -8,13 +8,12 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class FeedItemsHelperTest < HelperTestCase
-  fixtures :users, :roles, :roles_users, :feed_items
+  fixtures :users, :roles, :roles_users, :feed_items, :unread_items
   include FeedItemsHelper
   attr_reader :current_user, :session
-  self.use_transactional_fixtures = true
+  #self.use_transactional_fixtures = true
 
   def setup
-    super
     @output = ""
     @current_user = users(:quentin)
     @min_train_count = 1
@@ -149,11 +148,10 @@ class FeedItemsHelperTest < HelperTestCase
   end
   
   def test_is_item_unread_with_read_item
-    assert !is_item_unread?( FeedItem.find(1) )
+    assert !is_item_unread?( FeedItem.find(2) )
   end
   
   def test_is_item_unread_with_unread_item
-    @current_user.unread_items.create(:feed_item_id => 1)
     assert is_item_unread?( FeedItem.find(1) )
   end
     
