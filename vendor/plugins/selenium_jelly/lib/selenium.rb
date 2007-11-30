@@ -899,7 +899,18 @@ module Selenium
         def delete_cookie(name, path)
             do_command("deleteCookie", [name, path,])
         end
-
+        
+        def get_element_position_left(locator)
+            return get_number("getElementPositionLeft", [locator,])
+        end
+        
+        def mouse_move_at(locator,coordString)
+            do_command("mouseMoveAt", [locator,coordString,])
+        end
+        
+        def mouse_up(locator)
+            do_command("mouseUp", [locator,])
+        end
     end
 
 end
