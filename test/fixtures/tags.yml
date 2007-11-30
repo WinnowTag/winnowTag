@@ -9,3 +9,9 @@ other:
   name: other
   bias: 1.0
   public: true
+# public_tag:
+#   id: 3
+#   user_id: 1
+#   name: public_tag
+#   bias: 0
+#   public: true

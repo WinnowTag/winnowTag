@@ -60,4 +60,16 @@ class TagsTest < Test::Unit::SeleniumTestCase
     refresh_and_wait
     assert !is_checked("public_tag_#{tag_1.id}")
   end
+  
+  def test_cant_mark_subscribed_tag_public
+    tag_1 = Tag.find(1)
+    tag_2 = Tag.find(2)
+
+    assert_element_enabled "#public_tag_#{tag_1.id}"
+    assert_element_disabled "#public_tag_#{tag_2.id}"
+
+    assert is_checked("public_tag_#{tag_2.id}")
+    click "public_tag_#{tag_2.id}"
+    assert is_checked("public_tag_#{tag_2.id}")
+  end
 end

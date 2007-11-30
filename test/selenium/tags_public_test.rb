@@ -24,4 +24,16 @@ class TagsPublicTest < Test::Unit::SeleniumTestCase
     refresh_and_wait
     assert !is_checked("subscribe_tag_#{tag_2.id}")
   end
+  
+  def test_cant_subscribe_to_own_public_tag
+    tag_1 = Tag.find(3)
+    tag_2 = Tag.find(2)
+
+    assert_element_disabled "#subscribe_tag_#{tag_1.id}"
+    assert_element_enabled "#subscribe_tag_#{tag_2.id}"
+
+    assert !is_checked("subscribe_tag_#{tag_1.id}")
+    click "subscribe_tag_#{tag_1.id}"
+    assert !is_checked("subscribe_tag_#{tag_1.id}")
+  end
 end
