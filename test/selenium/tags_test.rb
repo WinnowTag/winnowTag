@@ -29,4 +29,12 @@ class TagsTest < Test::Unit::SeleniumTestCase
     refresh_and_wait
     assert_equal new_position, get_element_position_left("css=div.slider_handle")
   end
+  
+  def test_unsubscribing_from_a_tag
+    tag = Tag.find(2)
+
+    see_element "#unsubscribe_tag_#{tag.id}"
+    click_and_wait "unsubscribe_tag_#{tag.id}"
+    dont_see_element "#unsubscribe_tag_#{tag.id}"
+  end
 end

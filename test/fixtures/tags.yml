@@ -8,3 +8,4 @@ other:
   user_id: 2
   name: other
   bias: 1.0
+  public: true
