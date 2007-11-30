@@ -103,8 +103,8 @@ module Selenium
           @test_server = nil
         end
       
-        if configuration.start_selenium_server? && @selenium_servet
-          @selenium_servet.stop
+        if configuration.start_selenium_server? && @selenium_server
+          @selenium_server.stop
           @selenium_server = nil
         end
       end
@@ -127,12 +127,14 @@ module Selenium
 
     def stop
       # puts "Stopping: #{@command} (pid=#{@pid})"
-      Process.kill 9, @pid
+      Process.kill 15, @pid
     # rescue Errno::EPERM #such as the process is already closed (tabbed browser)
     end
         
     def self.start(*args)
-      new(*args).start
+      process = new(*args)
+      process.start
+      process
     end
   end
 end

@@ -33,6 +33,9 @@ RAILS_GEM_VERSION = '1.2.4' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 ENV['INLINEDIR'] = File.join(RAILS_ROOT, '.ruby_inline')
 
+# Need to require this first so i can setup at_exit handlers to run AFTER test/unit at_exit handler which runs tests
+require File.join(RAILS_ROOT, %w[vendor plugins selenium_jelly lib selenium at_exit])
+
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here
   
@@ -163,9 +166,3 @@ module UrlWithViewId
 end
 ActionView::Base.send :include, UrlWithViewId
 ActionController::Base.send :include, UrlWithViewId
-
-Selenium::configure do |config|
-  config.browser 'firefox', :default => true
-  # config.browser 'safari', :default => true
-  config.browser 'iexplore', :default => false
-end
