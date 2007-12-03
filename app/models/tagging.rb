@@ -88,9 +88,9 @@ class Tagging < ActiveRecord::Base
   
   before_create :remove_preexisting_tagging
   after_create :update_tag_timestamp
-  # after_destroy do |tagging|
-  #   DeletedTagging.create(tagging.attributes.merge(:deleted_at => Time.now.utc))
-  # end
+  after_destroy do |tagging|
+    DeletedTagging.create(tagging.attributes.merge(:deleted_at => Time.now.utc))
+  end
   
   # Returns true if this tagging is positive based on the definition
   # of positive defined by the Tagger.
