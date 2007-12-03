@@ -11,7 +11,22 @@ describe ClassifierController do
   before(:each) do
     mock_user_for_controller
     login_as(1)
-    @user.stub!(:changed_tags).and_return([:dummy])
+    @user.stub!(:changed_tags).and_return([mock("tag", :null_object => true)])
+  end  
+  
+  it "should delete existing taggings for changed tags when classifying" do
+    mock_taggings = mock("classifier_taggings")
+    mock_taggings.should_receive(:clear)
+    mock_tag = mock_model(Tag)
+    mock_tag.should_receive(:classifier_taggings).and_return(mock_taggings)
+    @user.stub!(:changed_tags).and_return([mock_tag])
+    
+    mock_job = mock_model(Remote::ClassifierJob)
+    mock_job.stub!(:id)
+    Remote::ClassifierJob.should_receive(:create).with(:user_id => @user.id).and_return(mock_job)
+    
+    post "classify"
+    response.should be_success
   end
   
   it "should create a new job on classify" do

@@ -19,18 +19,24 @@ class ClassifierController < ApplicationController
   def classify
     respond_to do |wants|
       begin
+        changed_tags = current_user.changed_tags
+        
         if job_running?
           raise "The classifier is already running."
-        elsif current_user.changed_tags.empty?
+        elsif changed_tags.empty?
           raise "There are no changes to your tags" 
-        else          
+        else
+          changed_tags.each do |t|
+            t.classifier_taggings.clear
+          end
           job = Remote::ClassifierJob.create(:user_id => current_user.id)          
           session[:classification_job_id] = job.id
         end
         
         wants.js   { render :nothing => true }
-      rescue => detail        
-        logger.fatal(detail)
+      rescue => detail       
+        logger.fatal(detail) 
+        logger.debug(detail.backtrace.join("\n"))
         wants.js   { render :json => detail.message, :status => 500 }
       end
     end    

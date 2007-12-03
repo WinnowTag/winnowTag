@@ -29,7 +29,8 @@ class Tag < ActiveRecord::Base
   
   has_many :taggings, :dependent => :delete_all
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
-  has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true]
+  has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true], 
+            :dependent => :delete_all
   has_many :feed_items, :through => :taggings
   has_many :tag_subscriptions
   belongs_to :user
