@@ -131,7 +131,6 @@ task :after_update_code do
 end
 
 task :before_symlink do
-  run_classifier_regression
   package_assets
 end
 
