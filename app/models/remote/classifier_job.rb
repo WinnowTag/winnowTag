@@ -14,7 +14,7 @@ module Remote
     self.element_name = "job"
     self.logger = ActiveRecord::Base.logger
     begin
-      self.site = File.read(File.join(RAILS_ROOT, 'config', 'classifier-server.conf'))
+      self.site = File.read(File.join(RAILS_ROOT, 'config', 'classifier-client.conf'))
     rescue
       self.site = "http://localhost:8008/classifier"
     end

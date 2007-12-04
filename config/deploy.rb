@@ -128,6 +128,8 @@ task :after_update_code do
   run "ln -s #{shared_path}/database.yml #{release_path}/config/database.yml"
   run "ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/mongrel_cluster.yml"
   run "ln -s #{shared_path}/collector.conf #{release_path}/config/collector.conf"
+  run "ln -s #{shared_path}/classifier.conf #{release_path}/config/classifier.conf"
+  run "ln -s #{shared_path}/classifier-client.conf #{release_path}/config/classifier-client.conf"
 end
 
 task :before_symlink do
