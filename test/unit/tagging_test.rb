@@ -5,6 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 require File.dirname(__FILE__) + '/../test_helper'
+Tag
 
 class TaggingTest < Test::Unit::TestCase
   fixtures :taggings, :feeds, :feed_items, :users

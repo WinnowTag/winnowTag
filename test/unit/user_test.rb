@@ -6,6 +6,7 @@
 #
 
 require File.dirname(__FILE__) + '/../test_helper'
+Tag
 
 class UserTest < Test::Unit::TestCase  
   fixtures :users, :feed_items

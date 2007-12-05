@@ -5,6 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 require File.dirname(__FILE__) + '/../test_helper'
+Tag
 
 class UpdateFiltersViewTest < Test::Unit::TestCase
   fixtures :feeds, :users
@@ -152,6 +153,7 @@ end
 
 class FeedViewTest < Test::Unit::TestCase
   fixtures :feeds, :users
+  
   def setup
     @feed1 = Feed.create! :url => "http://one.example.com"
     @feed2 = Feed.create! :url => "http://two.example.com"
@@ -226,14 +228,12 @@ end
 
 class TagViewTest < Test::Unit::TestCase
   fixtures :users, :feed_items
-  
-  require 'tag'
-  
+    
   def setup
     @user = users(:quentin)
     @tag = Tag(@user, 'tag')
     @user.taggings.create(:tag => @tag, :feed_item => FeedItem.find(1))
-    @view = View.new :user => @user
+    @view = @user.views.create!
   end
   
   def test_add_tag_to_include_list_when_list_is_empty

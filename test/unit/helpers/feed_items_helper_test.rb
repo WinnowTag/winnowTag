@@ -4,14 +4,13 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-
 require File.dirname(__FILE__) + '/../../test_helper'
+Tag
 
 class FeedItemsHelperTest < HelperTestCase
   fixtures :users, :roles, :roles_users, :feed_items, :unread_items
   include FeedItemsHelper
   attr_reader :current_user, :session
-  #self.use_transactional_fixtures = true
 
   def setup
     @output = ""

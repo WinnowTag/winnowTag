@@ -19,7 +19,7 @@ class FeedItemTest < Test::Unit::TestCase
   
   # Tests for the find_with_filters method
   def test_find_with_no_filters_should_return_all_tagged_items
-    view = View.new :user => users(:quentin)
+    view = users(:quentin).views.create!
     Tagging.create(:user => users(:quentin), :feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag1'))
 
     feed_items = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
@@ -27,7 +27,7 @@ class FeedItemTest < Test::Unit::TestCase
   end
   
   def test_find_with_show_untagged_returns_all_items
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
 
     feed_items = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal FeedItem.find(1, 2, 3, 4), feed_items
@@ -41,7 +41,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2, :classifier_tagging => true)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag2, :strength => 0.89, :classifier_tagging => true)
     
-    view = View.new :user => user
+    view = user.views.create!
     
     expected = FeedItem.find(2, 3, 4)
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')    
@@ -54,7 +54,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag, :strength => 0)
     
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
     
     expected = FeedItem.find(2, 4)
@@ -66,7 +66,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
     
     assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
@@ -79,7 +79,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
     
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
     view.add_tag :include, tag2
     
@@ -92,7 +92,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
 
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
 
     assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
@@ -105,7 +105,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :classifier_tagging => true)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
 
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
 
     assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
@@ -120,7 +120,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     Tagging.create(:user => users(:aaron), :feed_item => FeedItem.find(3), :tag => atag)
 
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
 
     assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
@@ -132,7 +132,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :classifier_tagging => true)
 
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
 
     assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
@@ -145,7 +145,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
     
-    view = View.new :user => user, :show_untagged => true
+    view = user.views.create! :show_untagged => true
     view.add_tag :include, tag1
     
     expected = FeedItem.find(1, 2, 4)
@@ -159,7 +159,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
 
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :exclude, tag1
     
     expected = [FeedItem.find(3)]
@@ -175,7 +175,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag3)
 
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :exclude, tag1
     view.add_tag :exclude, tag2
     
@@ -190,7 +190,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
 
-    view = View.new :user => user, :show_untagged => true
+    view = user.views.create! :show_untagged => true
     view.add_tag :exclude, tag1
     
     expected = FeedItem.find(1, 3, 4)
@@ -205,7 +205,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
 
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag1
     view.add_tag :exclude, tag2
     
@@ -221,7 +221,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
 
-    view = View.new :user => user, :show_untagged => true
+    view = user.views.create! :show_untagged => true
     view.add_tag :include, tag1
     view.add_tag :exclude, tag2
     
@@ -234,7 +234,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag1 = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     
-    view = View.new :user => users(:quentin)
+    view = users(:quentin).views.create!
     view.add_feed :include, 1
   
     expected = [FeedItem.find(2)]
@@ -243,7 +243,7 @@ class FeedItemTest < Test::Unit::TestCase
   end
   
   def test_find_with_feed_filters_and_show_untagged_should_return_only_items_from_the_included_feed
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
     view.add_feed :include, 1
   
     expected = FeedItem.find(1, 2, 3)
@@ -254,7 +254,7 @@ class FeedItemTest < Test::Unit::TestCase
   def test_find_with_multiple_feed_filters_and_show_untagged_should_return_only_items_from_the_included_feeds
     feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
     
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
     view.add_feed :include, 1
     view.add_feed :include, 2
   
@@ -271,7 +271,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
     
-    view = View.new :user => users(:quentin)
+    view = users(:quentin).views.create!
     view.add_feed :exclude, 1
   
     expected = [FeedItem.find(4)]
@@ -286,7 +286,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag1 = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => feed_item5, :tag => tag1)
     
-    view = View.new :user => users(:quentin)
+    view = users(:quentin).views.create!
     view.add_feed :exclude, 1
     view.add_feed :exclude, 2
   
@@ -303,7 +303,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
     
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
     view.add_feed :exclude, 1
   
     expected = [FeedItem.find(4), feed_item5]
@@ -319,7 +319,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
     
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
     view.add_feed :exclude, 1
     view.add_feed :exclude, 2
   
@@ -333,7 +333,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag1 = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     
-    view = View.new :user => users(:quentin)
+    view = users(:quentin).views.create!
     view.add_feed :always_include, 2
   
     expected = FeedItem.find(2, 4)
@@ -346,7 +346,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag1 = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
     view.add_feed :always_include, 2
   
     expected = FeedItem.find(1, 2, 3, 4)
@@ -361,7 +361,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag1 = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
 
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
     view.add_feed :include, 1
     view.add_feed :always_include, 2
   
@@ -377,7 +377,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag1 = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
 
-    view = View.new :user => users(:quentin)
+    view = users(:quentin).views.create!
     view.add_feed :include, 1
     view.add_feed :always_include, 2
   
@@ -394,7 +394,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
     
-    view = View.new :user => users(:quentin)
+    view = users(:quentin).views.create!
     view.add_feed :exclude, 1
     view.add_feed :always_include, 3
   
@@ -406,7 +406,7 @@ class FeedItemTest < Test::Unit::TestCase
   def test_find_with_exclude_feed_and_always_include_feed_and_show_untagged_should_return_all_items_that_are_not_in_the_excluded_feed
     feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
         
-    view = View.new :user => users(:quentin), :show_untagged => true
+    view = users(:quentin).views.create! :show_untagged => true
     view.add_feed :exclude, 1
     view.add_feed :always_include, 3
   
@@ -420,7 +420,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
     view.add_feed :always_include, 2
     
@@ -432,7 +432,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
     view.add_feed :always_include, 2
     view.add_feed :always_include, 1
@@ -446,7 +446,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag)
   
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
     view.add_feed :include, 1
   
@@ -459,7 +459,7 @@ class FeedItemTest < Test::Unit::TestCase
   #   tag_pub = TagPublication.find(1)
   #   tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
   #   
-  #   view = View.new :user => user
+  #   view = user.views.create!
   #   view.add_tag :include, tag_pub
   #    
   #   expected = [FeedItem.find(1)]
@@ -472,7 +472,7 @@ class FeedItemTest < Test::Unit::TestCase
   #   tag_pub = TagPublication.find(1)
   #   tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
   #   
-  #   view = View.new :user => user
+  #   view = user.views.create!
   #   view.add_tag :include, tag_pub
   #   
   #   expected = [FeedItem.find(1)]
@@ -486,7 +486,7 @@ class FeedItemTest < Test::Unit::TestCase
   #   tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1), :strength => 0)
   #   tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
   #    
-  #   view = View.new :user => user
+  #   view = user.views.create!
   #   view.add_tag :include, tag_pub
   #    
   #   expected = []
@@ -685,7 +685,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     
-    view = View.new :user => user
+    view = user.views.create!
     view.add_tag :include, tag
     view.add_tag :include, tag.id + 1
     
@@ -697,7 +697,7 @@ class FeedItemTest < Test::Unit::TestCase
     tag = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     
-    view = View.new :user => user, :show_untagged => true
+    view = user.views.create! :show_untagged => true
     view.add_tag :exclude, tag
     view.add_tag :exclude, tag.id + 1
     
