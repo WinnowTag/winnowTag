@@ -89,12 +89,7 @@ namespace :test do
     end
     sh command
   end
-  
-  desc 'Test the classifier.'
-  task :classifier do
-    sh "cd vendor/bayes && rake"
-  end
-  
+    
   desc 'Test all custom plugins'
   task :pw_plugins do
     %w(winnow_feed).each do |plugin|
@@ -114,7 +109,7 @@ namespace :test do
   end
 end
 
-task :test => ['test:pw_plugins', 'test:classifier']
+task :test => ['test:pw_plugins']
 
 # Replace test task dependency on db:test:prepare with our own db:test:initialize
 [:'test:recent', :'test:units', :'test:functionals', :'test:integration'].each do |task|

@@ -31,7 +31,6 @@ RAILS_GEM_VERSION = '1.2.4' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-ENV['INLINEDIR'] = File.join(RAILS_ROOT, '.ruby_inline')
 
 # Need to require this first so i can setup at_exit handlers to run AFTER test/unit at_exit handler which runs tests
 require File.join(RAILS_ROOT, %w[vendor plugins selenium_jelly lib selenium at_exit])
@@ -82,8 +81,6 @@ SqlSessionStore.session_class = MysqlSession
 ExceptionNotifier.exception_recipients = %w(wizzadmin@peerworks.org)
 ExceptionNotifier.email_prefix = "[WINNOW] "
 ExceptionNotifier.sender_address = %("Winnow Admin" <wizzadmin@peerworks.org>)
-
-Bayes::TokenAtomizer.store = :db
 
 require 'array_ext'
 require 'hash_ext'
