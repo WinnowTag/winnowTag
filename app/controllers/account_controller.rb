@@ -6,16 +6,11 @@
 #
 
 class AccountController < ApplicationController
-  @@signup_disabled = true
-  cattr_accessor :signup_disabled
   # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :setup_mailer_site_url
   skip_before_filter :login_required, :except => [:edit] # don't need to login for any of these actions
   skip_before_filter :load_view, :only => [ :logout ]
-    
-  def welcome
-  end
-
+  
   def edit
     if request.post?
       params[:current_user].delete(:login)
@@ -56,7 +51,7 @@ class AccountController < ApplicationController
         self.current_user.remember_me
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
       end
-      redirect_back_or_default('')
+      redirect_back_or_default feed_items_path
     else
       if user = User.find_by_login(params[:login]) and user.activated_at
         flash[:warning] = "Invalid credentials. Please try again."
@@ -67,17 +62,13 @@ class AccountController < ApplicationController
   end
 
   def signup
-    if signup_disabled
-      flash[:error] = "Signup is currently disabled.  Please contact info@peerworks.org for more information."
-      redirect_to :back and return
-    end
     @user = User.new(params[:user])
-    return unless request.post?
-    @user.save!
-    redirect_back_or_default(:controller => '/account', :action => 'welcome')
-    flash[:notice] = "Thanks for signing up!"
-  rescue ActiveRecord::RecordInvalid
-    render :action => 'signup'
+    if @user.save && @user.activate
+      self.current_user = @user
+      redirect_back_or_default feed_items_path
+    else
+      render :action => 'login'
+    end
   end
   
   def logout
@@ -86,7 +77,7 @@ class AccountController < ApplicationController
     reset_session
     redirect_to(:action => 'login')
   end
-  
+
   def activate
     if params[:activation_code]
       @user = User.find_by_activation_code(params[:activation_code]) 
@@ -104,6 +95,7 @@ class AccountController < ApplicationController
   end
   
 private
+
   def setup_mailer_site_url
     UserNotifier.site_url = request.host_with_port    
   end

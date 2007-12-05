@@ -119,13 +119,9 @@ class User < ActiveRecord::Base
   SALT = "Things which are unimportant can seem important. Things which are important can seem unimportant." unless const_defined?(:SALT)
   attr_accessor :password
 
-  validates_presence_of     :login, :email, :firstname, :lastname, :time_zone
-  validates_presence_of     :password,                   :if => :password_required?
-  validates_presence_of     :password_confirmation,      :if => :password_required?
+  validates_presence_of     :login, :email, :time_zone
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
-  validates_length_of       :login,    :within => 3..40
-  validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
   validates_inclusion_of    :time_zone, :in => TZInfo::Timezone.all_identifiers, :message => "is not a valid timezone"
   before_create :make_activation_code
@@ -203,7 +199,11 @@ class User < ActiveRecord::Base
     end
     
     def password_required?
-      crypted_password.blank? || !password.blank?
+      crypted_password.blank? || password?
+    end
+    
+    def password?
+      !password.blank?
     end
     
     def make_activation_code

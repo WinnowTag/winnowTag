@@ -12,7 +12,6 @@ class AccountControllerTest < Test::Unit::TestCase
     @controller = AccountController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    AccountController.signup_disabled = false
     # for testing action mailer
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
@@ -36,7 +35,7 @@ class AccountControllerTest < Test::Unit::TestCase
     assert_difference User, :count do
       create_user
       assert_response :redirect
-      assert_nil session[:user]
+      assert session[:user]
     end
   end
 
@@ -52,14 +51,6 @@ class AccountControllerTest < Test::Unit::TestCase
     assert_no_difference User, :count do
       create_user(:password => nil)
       assert assigns(:user).errors.on(:password)
-      assert_response :success
-    end
-  end
-
-  def test_should_require_password_confirmation_on_signup
-    assert_no_difference User, :count do
-      create_user(:password_confirmation => nil)
-      assert assigns(:user).errors.on(:password_confirmation)
       assert_response :success
     end
   end
@@ -98,7 +89,7 @@ class AccountControllerTest < Test::Unit::TestCase
   def test_should_login_with_cookie
     users(:quentin).remember_me
     @request.cookies["auth_token"] = cookie_for(:quentin)
-    get :welcome
+    get :edit
     assert @controller.send(:logged_in?)
   end
 
@@ -106,14 +97,14 @@ class AccountControllerTest < Test::Unit::TestCase
     users(:quentin).remember_me
     users(:quentin).update_attribute :remember_token_expires_at, 5.minutes.ago.utc
     @request.cookies["auth_token"] = cookie_for(:quentin)
-    get :welcome
+    get :edit
     assert !@controller.send(:logged_in?)
   end
 
   def test_should_fail_cookie_login_again
     users(:quentin).remember_me
     @request.cookies["auth_token"] = auth_token('invalid_auth_token')
-    get :welcome
+    get :edit
     assert !@controller.send(:logged_in?)
   end
   
@@ -224,25 +215,18 @@ class AccountControllerTest < Test::Unit::TestCase
     assert_not_nil User.find_by_login('quentin').logged_in_at
     assert_not_equal previous_login_time, User.find_by_login('quentin').logged_in_at
   end
-  
-  def test_disable_signup
-    AccountController.signup_disabled = true
-    referer('')
-    get :signup
-    assert_redirected_to ''
+    
+protected
+  def create_user(options = {})
+    post :signup, :user => { :login => 'quire', :email => 'quire@example.com', :firstname => 'Qu', :lastname => 'Ire',
+      :password => 'quire', :password_confirmation => 'quire' }.merge(options)
   end
-  
-  protected
-    def create_user(options = {})
-      post :signup, :user => { :login => 'quire', :email => 'quire@example.com', :firstname => 'Qu', :lastname => 'Ire',
-        :password => 'quire', :password_confirmation => 'quire' }.merge(options)
-    end
-    
-    def auth_token(token)
-      CGI::Cookie.new('name' => 'auth_token', 'value' => token)
-    end
-    
-    def cookie_for(user)
-      auth_token users(user).remember_token
-    end
+
+  def auth_token(token)
+    CGI::Cookie.new('name' => 'auth_token', 'value' => token)
+  end
+
+  def cookie_for(user)
+    auth_token users(user).remember_token
+  end
 end

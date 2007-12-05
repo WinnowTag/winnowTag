@@ -44,13 +44,6 @@ class UserTest < Test::Unit::TestCase
     end
   end
 
-  def test_should_require_password_confirmation
-    assert_no_difference User, :count do
-      u = create_user(:password_confirmation => nil)
-      assert u.errors.on(:password_confirmation)
-    end
-  end
-
   def test_should_require_email
     assert_no_difference User, :count do
       u = create_user(:email => nil)

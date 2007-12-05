@@ -1,22 +1,60 @@
-<% form_tag '', :id=> 'login_form' do -%>
-<fieldset>
-	<p><label for="login">Login</label>
-	<%= text_field_tag 'login' %></p>
+<div id="forms">
+  <% form_tag login_path, :id => 'login_form' do -%>
+    <h1>Login</h1>
+  
+  	<p>
+  	  <label for="login">Login</label>
+  	  <%= text_field_tag 'login' %>
+  	</p>
 
-	<p><label for="password">Password</label>
-	<%= password_field_tag 'password' %></p>
+  	<p>
+  	  <label for="password">Password</label>
+  	  <%= password_field_tag 'password' %>
+  	</p>
 
 
-	<p><label for="remember_me">Remember me</label>
-	<%= check_box_tag 'remember_me', "1", true %></p>
+  	<p>
+  	  <%= check_box_tag 'remember_me', "1", true %>
+  	  <label for="remember_me" class="inline">Remember me</label>
+  	</p>
 
+  	<p><label>&nbsp;</label><%= submit_tag 'Login' %></p>
+  <% end -%>
 
-	<p><label>&nbsp;</label><%= submit_tag 'Log in' %></p>
-</fieldset>
-<% end -%>
+  <% form_for :user, :url => signup_path, :id => "signup_form" do |f| -%>
+    <h1>Signup</h1>
+    
+    <%= error_messages_for :user %>
+
+    <p>
+      <label for="login">Login</label>
+      <%= f.text_field :login %>
+    </p>
+
+    <p>
+      <label for="password">Password</label>
+      <%= f.password_field :password %>
+    </p>
+
+    <p>
+      <label for="password_confirmation">Confirm Password</label>
+      <%= f.password_field :password_confirmation %>
+    </p>
+
+    <p>
+      <label for="email">Email</label>
+      <%= f.text_field :email %>
+    </p>
+
+    <p><%= submit_tag 'Signup' %></p>
+  <% end -%>
+</div>
+
 <h3>Welcome to Winnow</h3>
-<p>Winnow is the demonstration environment for the auto-tagging classifier built by
-	<a href="http://www.peerworks.org">Peerworks</a>.</p>
-<p>This version of Winnow is only tested in the 
-	<a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser,
-	as such things may not work correctly in other browsers.</p>
+<p>
+  Winnow is the demonstration environment for the auto-tagging classifier built by <a href="http://www.peerworks.org">Peerworks</a>.
+</p>
+<p>
+  This version of Winnow is only tested in the  <a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser, 
+  as such things may not work correctly in other browsers.
+</p>

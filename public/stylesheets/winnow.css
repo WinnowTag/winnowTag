@@ -63,15 +63,35 @@ a.close img {
   border: 1px solid #FF260B;
 }
 
-#login_form fieldset {
+
+#forms {
 	border: none;
-	width: 400px;
+	width: 30em;
 	float: right;
 	margin-right: 50px;
 }
 
-#login_form fieldset label {
-	width: 150px;
+#forms label {
+  display: block;
+}
+
+#forms label.inline {
+  display: inline;
+}
+
+#forms input[type=text], #forms input[type=password] {
+  width: 100%;
+}
+
+#forms input[type=checkbox] {
+  width: 1em;
+  height: 1em;
+}
+
+#forms h1 {
+  font-size: 1.5em;
+  text-align: center;
+  border-bottom: 1px solid #999;
 }
 
 .navigation {
