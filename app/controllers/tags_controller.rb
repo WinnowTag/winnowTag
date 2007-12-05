@@ -27,8 +27,8 @@ class TagsController < ApplicationController
         @search_term = params[:search_term]
         
         setup_sortable_columns
-        @tags = current_user.tags.find_all_with_count(:view => @view, :search_term => @search_term, :subscriber => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @subscribed_tags = Tag.find_all_with_count(:view => @view, :search_term => @search_term, :user => current_user, :subscriber => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @tags = current_user.tags.find_all_with_count(:view => @view, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @subscribed_tags = Tag.find_all_with_count(:view => @view, :search_term => @search_term, :user => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
       wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end

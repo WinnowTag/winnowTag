@@ -127,30 +127,29 @@ class Tag < ActiveRecord::Base
   end
   
   def self.find_all_with_count(options = {})
-    joins = ["LEFT JOIN taggings ON tags.id = taggings.tag_id", 
-             "LEFT JOIN users ON tags.user_id = users.id"]
+    joins = ["LEFT JOIN users ON tags.user_id = users.id"]
     if options[:view]
       joins << "LEFT JOIN view_tag_states ON view_tag_states.tag_id = tags.id AND view_id = #{options[:view].id}"
     end
-
     if options[:user]
       joins << "INNER JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
     end
     
     select = ['tags.*', 
-              'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 1, 1, NULL)) AS positive_count',
-              'COUNT(IF(classifier_tagging = 0 AND taggings.strength = 0, 1, NULL)) AS negative_count', 
-              'COUNT(IF(classifier_tagging = 1 AND taggings.strength >= 0.9, 1, NULL)) AS classifier_count',
-              'MAX(taggings.created_on) AS last_used_by',
-              'COUNT(IF(classifier_tagging = 0, 1, NULL)) AS training_count']
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND taggings.strength >= 0.9) AS classifier_count',
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
+              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by']
     if options[:view]
       select << "CASE view_tag_states.state WHEN 'exclude' THEN 0 WHEN 'include' THEN 1 ELSE 2 END AS view_state"
     else
       select << "0 AS view_state"
     end
-              
     if options[:subscriber]
       select << "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscriber].id}) > 0) AS subscribe"
+    else
+      select << "0 AS subscribe"
     end
     
     conditions, values = [], []
