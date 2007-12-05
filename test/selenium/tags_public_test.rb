@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class TagsPublicTest < Test::Unit::SeleniumTestCase
-  include SeleniumHelper
   fixtures :users, :tags
   
   def setup
@@ -26,7 +25,8 @@ class TagsPublicTest < Test::Unit::SeleniumTestCase
   end
   
   def test_cant_subscribe_to_own_public_tag
-    tag_1 = Tag.find(3)
+    tag_1 = Tag.create! :user_id => 1, :name => "public_tag", :public => true
+    refresh_and_wait
     tag_2 = Tag.find(2)
 
     assert_element_disabled "#subscribe_tag_#{tag_1.id}"

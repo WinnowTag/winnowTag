@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class LoginTest < Test::Unit::SeleniumTestCase
-  include SeleniumHelper
   fixtures :users
   
   def test_successful_login

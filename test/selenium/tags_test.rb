@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class TagsTest < Test::Unit::SeleniumTestCase
-  include SeleniumHelper
   fixtures :users, :tags, :tag_subscriptions, :view_tag_states
   
   def setup
@@ -32,17 +31,18 @@ class TagsTest < Test::Unit::SeleniumTestCase
   
   def test_unsubscribing_from_a_tag
     tag = Tag.find(2)
-
+  
     see_element "#unsubscribe_tag_#{tag.id}"
     click_and_wait "unsubscribe_tag_#{tag.id}"
     dont_see_element "#unsubscribe_tag_#{tag.id}"
   end
-  
+
   def test_destroying_a_tag
     tag = Tag.find(1)
     see_element "#destroy_tag_#{tag.id}"
     click_and_wait "destroy_tag_#{tag.id}"
     assert is_confirmation_present
+    get_confirmation
     dont_see_element "#destroy_tag_#{tag.id}"
   end
   

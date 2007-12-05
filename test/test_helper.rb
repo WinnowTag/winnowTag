@@ -105,3 +105,10 @@ class Test::Unit::TestCase
     assert !arr.include?(o), msg
   end
 end
+
+Test::Unit::SeleniumTestCase # auto-requires this class
+class Test::Unit::SeleniumTestCase
+  include SeleniumHelper
+
+  self.use_transactional_fixtures = false
+end
