@@ -1,7 +1,6 @@
 <% content_for :head do -%>
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
-		
 		document.observe('dom:loaded', function() {
 			itemBrowser = new ItemBrowser('feed_items', {view_id: <%= @view.id %>, total_items: <%= @feed_item_count %>});
 		});
