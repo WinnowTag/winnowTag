@@ -97,7 +97,7 @@ namespace :test do
   
   desc 'Test all custom plugins'
   task :pw_plugins do
-    %w(active_record_iterator winnow_feed).each do |plugin|
+    %w(winnow_feed).each do |plugin|
       cd "vendor/plugins/#{plugin}" do
         sh "rake"
       end
