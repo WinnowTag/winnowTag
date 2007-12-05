@@ -21,25 +21,6 @@ class AccountController < ApplicationController
     end
   end
   
-  def change_password
-    return unless request.post?
-    if User.authenticate(current_user.login, params[:old_password])
-      if (params[:password] == params[:password_confirmation])
-        current_user.password_confirmation = params[:password_confirmation]
-        current_user.password = params[:password]
-        flash[:notice] = current_user.save ?
-              "Password changed" :
-              "Password not changed"
-        redirect_to :back
-      else
-        flash[:notice] = "Password mismatch" 
-        @old_password = params[:old_password]
-      end
-    else
-      flash[:notice] = "Wrong password" 
-    end
-  end
-  
   def login
     return unless request.post?
     self.current_user = User.authenticate(params[:login], params[:password])

@@ -68,7 +68,6 @@ ActionController::Routing::Routes.draw do |map|
   
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit", :action => "edit"
-    account_map.change_password "account/change_password", :action => "change_password"
     account_map.login "account/login", :action => "login"
     account_map.signup "account/signup", :action => "signup", :conditions => { :method => :post }
     account_map.logout "account/logout", :action => "logout"

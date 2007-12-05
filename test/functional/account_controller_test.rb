@@ -178,37 +178,7 @@ class AccountControllerTest < Test::Unit::TestCase
       post :edit
     end
   end
-  
-  def test_should_allow_password_change
-    referer("")
-    post :login, :login => 'quentin', :password => 'test'
-    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'newpassword' }
-    assert_equal 'newpassword', assigns(:current_user).password
-    assert_equal "Password changed", flash[:notice]
-    assert_redirected_to ''
-    post :logout
-    assert_nil session[:user]
-    post :login, :login => 'quentin', :password => 'newpassword'
-    assert session[:user] 
-    assert_response :redirect
-  end
-
-  def test_non_matching_passwords_should_not_change
-    post :login, :login => 'quentin', :password => 'test'
-    assert session[:user]
-    post :change_password, { :old_password => 'test', :password => 'newpassword', :password_confirmation => 'test' }
-    assert_not_equal 'newpassword', assigns(:current_user).password
-    assert_equal "Password mismatch", flash[:notice]
-  end
-
-  def test_incorrect_old_password_does_not_change
-    post :login, :login => 'quentin', :password => 'test'
-    assert session[:user]
-    post :change_password, { :old_password => 'wrongpassword', :password => 'newpassword', :password_confirmation => 'newpassword' }
-    assert_not_equal 'newpassword', assigns(:current_user).password
-    assert_equal "Wrong password", flash[:notice]
-  end
-    
+      
   def test_login_updates_logged_in_at_time
     previous_login_time = User.find_by_login('quentin').logged_in_at
     post :login, :login => 'quentin', :password => 'test'
