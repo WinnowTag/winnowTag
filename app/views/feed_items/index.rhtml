@@ -19,12 +19,11 @@
 <% end -%>
 
 <div id="feed_items">
-<% if @feed_items.empty? -%>
-	<p>No items match these criteria.</p>
-<% end -%>
-<% for feed_item in @feed_items do -%>	
-	<%= render :partial => 'feed_item', :locals => {:feed_item => feed_item} -%>
-<% end -%>
+  <% if @feed_items.empty? -%>
+  	<p>No items match these criteria.</p>
+  <% else -%>
+  	<%= render :partial => 'feed_item', :collection => @feed_items -%>
+  <% end -%>
 	<div id="initial_spacer" class="item_spacer"></div>
 </div>
 
