@@ -122,6 +122,10 @@ class Tag < ActiveRecord::Base
     !subscription.nil?
   end
   
+  def delete_classifier_taggings!
+    Tagging.delete_all("classifier_tagging = 1 and tag_id = #{self.id}")
+  end
+  
   def self.find_all_with_count(options = {})
     joins = ["LEFT JOIN taggings ON tags.id = taggings.tag_id", 
              "LEFT JOIN users ON tags.user_id = users.id"]

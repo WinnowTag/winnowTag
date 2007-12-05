@@ -27,7 +27,7 @@ class ClassifierController < ApplicationController
           raise "There are no changes to your tags" 
         else
           changed_tags.each do |t|
-            t.classifier_taggings.clear
+            t.delete_classifier_taggings!
           end
           job = Remote::ClassifierJob.create(:user_id => current_user.id)          
           session[:classification_job_id] = job.id

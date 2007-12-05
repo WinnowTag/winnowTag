@@ -15,10 +15,8 @@ describe ClassifierController do
   end  
   
   it "should delete existing taggings for changed tags when classifying" do
-    mock_taggings = mock("classifier_taggings")
-    mock_taggings.should_receive(:clear)
     mock_tag = mock_model(Tag)
-    mock_tag.should_receive(:classifier_taggings).and_return(mock_taggings)
+    mock_tag.should_receive(:delete_classifier_taggings!)
     @user.stub!(:changed_tags).and_return([mock_tag])
     
     mock_job = mock_model(Remote::ClassifierJob)

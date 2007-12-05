@@ -72,4 +72,19 @@ describe Tag do
     tag.reload
     tag.updated_on.should > updated_on
   end
+  
+  it "should delete classifier taggings" do
+    user = User.create! valid_user_attributes
+    feed_item_1 = FeedItem.create! valid_feed_item_attributes
+    feed_item_2 = FeedItem.create! valid_feed_item_attributes
+    tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "mytag")
+    
+    t1 = Tagging.create! :user => user, :feed_item => feed_item_1, :tag => tag
+    t2 = Tagging.create! :user => user, :feed_item => feed_item_2, :tag => tag, :classifier_tagging => true
+    
+    tag.taggings.should == [t1, t2]    
+    tag.reload
+    tag.delete_classifier_taggings!
+    tag.taggings.should == [t1]
+  end
 end
