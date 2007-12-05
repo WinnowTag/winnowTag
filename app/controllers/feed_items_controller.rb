@@ -109,18 +109,17 @@ class FeedItemsController < ApplicationController
   
   def description
     @feed_item = FeedItem.find(params[:id])
-    
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
   end
   
   def info
     @feed_item = FeedItem.find(params[:id])
-    
-    respond_to do |format|
-      format.js
-    end
+    respond_to :js
+  end
+  
+  def moderation_panel
+    @feed_item = FeedItem.find(params[:id])
+    respond_to :js
   end
 
 private

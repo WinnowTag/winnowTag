@@ -715,9 +715,14 @@ ItemBrowser.prototype = {
 			this.selectItem(item);
 		}
 
-		$('new_tag_form_' + $(item).getAttribute('id')).show();
-		$('new_tag_field_' + $(item).getAttribute('id')).focus();
+		var container = $('new_tag_form_' + $(item).getAttribute('id'));
+		container.show();
 		this.scrollToItem(item);
+	  this.loadItemModerationPanel(item);
+
+		if(!container.empty()) {
+		  $('new_tag_field_' + $(item).getAttribute('id')).focus();
+		}
 	},
 	
 	closeItemModerationPanel: function(item) {
@@ -804,11 +809,17 @@ ItemBrowser.prototype = {
 		this.loadData(item, tag_information, url, "Unable to connect to the server to get the tag information panel.", this.closeItemTagInformationPanel.bind(this));
 	},
 	
+	loadItemModerationPanel: function(item) {
+		var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id'));
+		var url = moderation_panel.getAttribute('url');
+		this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
+	},
+	
 	loadData: function(item, target, url, error_message, error_callback) {
 		var item_browser = this;
 		var current_item = this.selectedItem;
 		
-		if( target && target.innerHTML.match(/^\s*$/) ) {
+		if(target && target.empty()) {
 			target.addClassName("loading");
 			new Ajax.Request(url,{
 				method: 'get',
