@@ -346,14 +346,14 @@ class FeedItem < ActiveRecord::Base
 
   # Get the display title for this feed item.
   def display_title
-    if self.content.title and not self.content.title.empty?
+    if not self.content.title.blank?
       self.content.title
     elsif self.content.encoded_content and self.content.encoded_content.match(/^<?p?>?<(strong|h1|h2|h3|h4|b)>([^<]*)<\/\1>/i)
       $2
     elsif self.content.encoded_content.is_a? String
       self.content.encoded_content.split(/\n|<br ?\/?>/).each do |line|
         potential_title = line.gsub(/<\/?[^>]*>/, "").chomp # strip html
-        break potential_title if potential_title and not potential_title.empty?
+        break potential_title if not potential_title.blank?
       end.split(/!|\?|\./).first
     else
       ""
