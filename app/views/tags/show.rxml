@@ -20,7 +20,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom" do
       xml.updated feed_item.time.strftime("%Y-%m-%dT%H:%M:%SZ")
       if feed_item.content.encoded_content
         xml.content "type" => "html" do
-          xml.text! %Q(<strong>Sourced from: <a href="#{feed_item.feed.link}">#{feed_item.feed_title}</a></strong><br/><br/>)
+          xml.text! %Q(<strong>Sourced from: <a href="#{feed_item.feed.link}">#{feed_item.feed.title}</a></strong><br/><br/>)
           xml.text! feed_item.content.encoded_content
         end
       end

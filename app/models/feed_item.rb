@@ -137,7 +137,7 @@ class FeedItem < ActiveRecord::Base
   def self.find_with_filters(filters = {})    
     feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => 'feed_items.id, feed_items.time,' +
                                                                       ' feed_items.link, feed_items.sort_title,' +
-                                                                      ' feed_items.feed_id, feed_items.created_on'))
+                                                                      ' feed_items.feed_id, feed_items.created_on, feeds.title AS feed_title'))
     
     if user = filters[:view].user
       feed_item_ids = feed_items.map(&:id)
@@ -193,7 +193,7 @@ class FeedItem < ActiveRecord::Base
     options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}
     view = filters[:view]
 
-    joins = []
+    joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
     conditions = []
     
     # Feed filtering (include/exclude)
