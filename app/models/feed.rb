@@ -54,8 +54,4 @@ class Feed < ActiveRecord::Base
              :group => "feeds.id",
              :order => options[:order])
   end
-  
-  def globally_excluded?(user)
-    user.excluded_feeds.find_by_feed_id(id)
-  end
 end

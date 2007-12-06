@@ -170,9 +170,24 @@ class UserTest < Test::Unit::TestCase
   def test_knows_that_given_user_is_subscribed
     current_user = users(:quentin)
     tag = Tag(current_user, 'hockey')
-    TagSubscription.create! :tag_id => tag.id, :user_id => current_user
+    TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
     
     assert current_user.subscribed?(tag)
+  end
+  
+  def test_knows_feed_is_globally_excluded
+    current_user = users(:quentin)
+    feed = Feed.create! :url => "http://news.google.com"
+    ExcludedFeed.create! :feed_id => feed.id, :user_id => current_user.id
+    
+    assert current_user.globally_excluded?(feed)
+  end
+  
+  def test_knows_feed_is_not_globally_excluded
+    current_user = users(:quentin)
+    feed = Feed.create! :url => "http://news.google.com"
+    
+    assert !current_user.globally_excluded?(feed)
   end
 
 protected

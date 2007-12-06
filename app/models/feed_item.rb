@@ -325,7 +325,7 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_globally_exclude_feed_filter_conditions!(feed_filters, conditions)
     if !conditions.blank? and !feed_filters.blank?
-      conditions.replace "feed_items.feed_id NOT IN (#{feed_filters.map(&:feed_id).join(",")}) AND (#{conditions})"
+      conditions.replace "feed_items.feed_id NOT IN (#{feed_filters.map(&:id).join(",")}) AND (#{conditions})"
     end
   end
   

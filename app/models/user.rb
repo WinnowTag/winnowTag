@@ -69,12 +69,17 @@ class User < ActiveRecord::Base
   end
   has_many :unread_items, :dependent => :delete_all
   has_many :tag_subscriptions
-  has_many :excluded_feeds
+  has_many :feed_exclusions, :class_name => "ExcludedFeed"
+  has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
  
   def subscribed?(tag)
     subscribed_tags.include?(tag)
   end
- 
+  
+  def globally_excluded?(feed)
+    excluded_feeds.include?(feed)
+  end
+
   def has_read_item?(feed_item_or_feed_item_id)
     !self.unread_items.exists?(['feed_item_id = ?', feed_item_or_feed_item_id])
 

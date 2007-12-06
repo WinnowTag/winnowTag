@@ -60,7 +60,7 @@ class FeedsController < ApplicationController
     conditions = ["LOWER(title) LIKE LOWER(?)"]
     values = ["%#{@q}%"]
     
-    feed_ids = @view.feed_filters.map(&:feed_id) + current_user.excluded_feeds.map(&:feed_id)
+    feed_ids = @view.feed_filters.map(&:feed_id) + current_user.excluded_feeds.map(&:id)
     if !feed_ids.blank?
       conditions << "id NOT IN (?)"
       values << feed_ids
