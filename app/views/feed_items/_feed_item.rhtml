@@ -1,4 +1,4 @@
-<div class="item<%= is_item_unread?(feed_item) ? " unread" : " read" %>" id="<%= feed_item.dom_id %>">
+<div class="item<%= current_user.has_read_item?(feed_item) ? " read" : " unread" %>" id="<%= feed_item.dom_id %>">
   <div class="closed clearfix">
     <span id="<%= feed_item.dom_id('status') %>" class="status"><%= toggle_read_unread_button %></span>
     <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= feed_item.dom_id %>');">
@@ -15,7 +15,7 @@
     <%= link_to_function "Info", "itemBrowser.toggleOpenCloseTagInformationPanel('#{feed_item.dom_id}');", :class => "info" %>
     <div id="<%= feed_item.dom_id('tag_information') %>" style="display: none;" url="<%= info_feed_item_path(feed_item) %>" class="tag_information"></div>
     <div id="<%= feed_item.dom_id('body') %>" class="body clearfix" url="<%= description_feed_item_path(feed_item) %>">
-      <%= render :partial => "description", :locals => { :feed_item => feed_item } if is_item_unread?(feed_item) %>
+      <%= render :partial => "description", :locals => { :feed_item => feed_item } unless current_user.has_read_item?(feed_item) %>
     </div>
   </div>
 </div>

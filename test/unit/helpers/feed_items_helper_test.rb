@@ -145,15 +145,7 @@ class FeedItemsHelperTest < HelperTestCase
     
     assert_no_match(/tag1/, @response.body)
   end
-  
-  def test_is_item_unread_with_read_item
-    assert !is_item_unread?( FeedItem.find(2) )
-  end
-  
-  def test_is_item_unread_with_unread_item
-    assert is_item_unread?( FeedItem.find(1) )
-  end
-    
+      
   # TODO: Update this to work with published tags
   # def test_display_published_tags_when_tag_filter_is_a_published_tag
   #   tag_filter = TagPublication.find(1)

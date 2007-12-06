@@ -30,10 +30,6 @@ module FeedItemsHelper
     end
   end
   
-  def is_item_unread?(feed_item_id)
-    !current_user.has_read_item?(feed_item_id)
-  end
-  
   def toggle_read_unread_button
     link_to_function "", "itemBrowser.toggleReadUnreadItem(this.up('.item'))", 
           :onmouseover => "this.title = 'Click to mark as ' + ($(this).up('.item').match('.read') ? 'unread' : 'read');"

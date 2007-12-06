@@ -80,12 +80,10 @@ class User < ActiveRecord::Base
     excluded_feeds.include?(feed)
   end
 
-  def has_read_item?(feed_item_or_feed_item_id)
-    !self.unread_items.exists?(['feed_item_id = ?', feed_item_or_feed_item_id])
-
-    # TODO: Would this be better done in memory?
-    # feed_item_id = feed_item_or_feed_item_id.is_a?(FeedItem) ? feed_item_or_feed_item_id.id : feed_item_or_feed_item_id
-    # !self.unread_items.detect { |unread_item| unread_item.feed_item_id == feed_item_id }
+  def has_read_item?(feed_item)
+    !self.unread_items.exists?(['feed_item_id = ?', feed_item])
+    # REALLY SLOW when the user has a lot of unread items
+    # unread_items.detect { |unread_item| unread_item.feed_item_id == feed_item.id }    
   end
     
   # Gets the number of items tagged by this tagger
