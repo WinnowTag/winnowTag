@@ -6,6 +6,8 @@
 #
 
 class AddTokenArrayToTokenContainer < ActiveRecord::Migration
+  class FeedItemTokensContainer < ActiveRecord::Base; end
+
   def self.up
     rename_column :feed_item_tokens_containers, :tokens, :tokens_with_counts
     add_column :feed_item_tokens_containers, :tokens, :text

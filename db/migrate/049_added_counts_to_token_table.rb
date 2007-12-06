@@ -6,6 +6,8 @@
 #
 
 class AddedCountsToTokenTable < ActiveRecord::Migration
+  class FeedItemTokensContainer < ActiveRecord::Base; end
+  
   def self.up
     add_column :feed_item_tokens_containers, :distinct_token_count, :integer
     add_column :feed_item_tokens_containers, :total_token_count, :integer

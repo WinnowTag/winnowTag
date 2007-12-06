@@ -6,6 +6,8 @@
 #
 
 class RemovePolymorphicTaggers < ActiveRecord::Migration
+  class BayesClassifier < ActiveRecord::Base; end
+
   def self.up
     Tagging.transaction do
       execute "update taggings set user_id = tagger_id where tagger_type = 'User';"
