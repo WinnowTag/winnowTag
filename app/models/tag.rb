@@ -116,12 +116,7 @@ class Tag < ActiveRecord::Base
     to.taggings.clear
     self.copy(to)
   end
-  
-  def subscribed?(user)
-    subscription = tag_subscriptions.find_by_user_id(user.id)
-    !subscription.nil?
-  end
-  
+    
   def delete_classifier_taggings!
     Tagging.delete_all("classifier_tagging = 1 and tag_id = #{self.id}")
   end

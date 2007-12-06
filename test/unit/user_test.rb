@@ -159,13 +159,29 @@ class UserTest < Test::Unit::TestCase
     assert_equal 0, u.number_of_tagged_items
   end
   
-  protected
-    def create_user(options = {})
-      User.create({ :login => 'quire', 
-                    :email => 'quire@example.com', 
-                    :password => 'quire', 
-                    :firstname => 'Qu', 
-                    :lastname => 'Ire',
-                    :password_confirmation => 'quire' }.merge(options))
-    end
+  def test_knows_that_given_user_is_not_subscribed
+    current_user = users(:quentin)
+    tag = Tag(current_user, 'hockey')
+    TagSubscription.delete_all
+    
+    assert !current_user.subscribed?(tag)
+  end
+  
+  def test_knows_that_given_user_is_subscribed
+    current_user = users(:quentin)
+    tag = Tag(current_user, 'hockey')
+    TagSubscription.create! :tag_id => tag.id, :user_id => current_user
+    
+    assert current_user.subscribed?(tag)
+  end
+
+protected
+  def create_user(options = {})
+    User.create({ :login => 'quire', 
+                  :email => 'quire@example.com', 
+                  :password => 'quire', 
+                  :firstname => 'Qu', 
+                  :lastname => 'Ire',
+                  :password_confirmation => 'quire' }.merge(options))
+  end
 end

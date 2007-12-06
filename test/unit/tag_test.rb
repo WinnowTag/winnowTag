@@ -192,23 +192,7 @@ class TagTest < Test::Unit::TestCase
   def test_has_many_tag_subscriptions
     assert_association Tag, :has_many, :tag_subscriptions    
   end
-  
-  def test_knows_that_given_user_is_not_subscribed
-    current_user = users(:quentin)
-    tag = Tag(current_user, 'hockey')
-    TagSubscription.delete_all
     
-    assert !tag.subscribed?(current_user)
-  end
-  
-  def test_knows_that_given_user_is_subscribed
-    current_user = users(:quentin)
-    tag = Tag(current_user, 'hockey')
-    TagSubscription.create! :tag_id => tag.id, :user_id => current_user
-    
-    assert tag.subscribed?(current_user)
-  end
-  
   def test_find_all_with_count
     u = users(:quentin)
     fi1 = FeedItem.find(1)
