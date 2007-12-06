@@ -250,6 +250,6 @@ module FeedItemsHelper
   end
   
   def tag_name_with_tooltip(tag, options = {})
-    content_tag :span, h(tag.name), options.merge(:title => tag.user == current_user ? nil :  "from #{tag.user.display_name}")
+    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
   end
 end
