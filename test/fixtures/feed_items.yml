@@ -26,7 +26,6 @@ first:
   xml_data_size: 10
   link: http://first
   content_length: 5
-  position: 1
   created_on: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
 another:
   id: 2
@@ -37,7 +36,6 @@ another:
   xml_data_size: 15
   content_length: 11
   link: http://second
-  position: 2
   created_on: <%= Time.now.to_formatted_s(:db)%>
 third:
   id: 3
@@ -48,7 +46,6 @@ third:
   xml_data_size: 5
   content_length: 5
   link: http://third
-  position: 3
   created_on: <%= Time.now.to_formatted_s(:db)%>
 forth:
   id: 4
@@ -59,5 +56,4 @@ forth:
   xml_data_size: 20
   content_length: 10
   link: http://forth
-  position: 4
   created_on: <%= Time.now.tomorrow.to_formatted_s(:db)%>
