@@ -89,6 +89,15 @@ describe ClassifierController do
     response.headers['X-JSON'].should include("status: \"Waiting\"")
   end
 
+  it "should delete the job when complete" do
+    job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::COMPLETE, :progress => 100)    
+    job.should_receive(:destroy)
+    Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
+    session[:classification_job_id] = "JOB-ID"
+    get "status", :view_id => "1001"
+    response.should be_success    
+  end
+  
   it "should return an error when a stale job key is sent" do
     Remote::ClassifierJob.should_receive(:find).with("STALE").and_return(nil)
     session[:classification_job_id] = "STALE"

@@ -48,6 +48,10 @@ class ClassifierController < ApplicationController
       
       if (job_id = session[:classification_job_id]) && (job = Remote::ClassifierJob.find(job_id))
         status = {:progress => job.progress, :status => job.status}
+        
+        if job.status == Remote::ClassifierJob::Status::COMPLETE
+          job.destroy
+        end
       end
       
       wants.json do
