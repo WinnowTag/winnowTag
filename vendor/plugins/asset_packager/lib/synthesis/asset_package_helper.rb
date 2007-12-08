@@ -37,7 +37,7 @@ module Synthesis
     private
       # rewrite compute_public_path to allow us to not include the query string timestamp
       # used by ActionView::Helpers::AssetTagHelper
-      def compute_public_path(source, dir, ext, add_asset_id=true)
+      def compute_public_path(source, dir, ext = nil, add_asset_id=true)
         source = source.dup
         source << ".#{ext}" if File.extname(source).blank?
         unless source =~ %r{^[-a-z]+://}
