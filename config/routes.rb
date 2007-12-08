@@ -44,7 +44,7 @@ ActionController::Routing::Routes.draw do |map|
     taggings_map.connect 'taggings/destroy', :action => "destroy"
   end
   
-  map.resource :classifier,
+  map.resource :classifier, :controller => "classifier",
                :member => {
                  :status => :post,
                  :cancel => :post,
@@ -52,7 +52,7 @@ ActionController::Routing::Routes.draw do |map|
                }
               
   map.resources :collection_job_results, :path_prefix => '/users/:user_id'
-  map.resource :item_protection, 
+  map.resource :item_protection, :controller => "item_protection",
                 :member => {
                   :rebuild => :post
                 }
@@ -81,5 +81,5 @@ ActionController::Routing::Routes.draw do |map|
   
   map.admin "admin", :controller => "admin"
   
-  map.root '', :controller => "feed_items"
+  map.root :controller => "feed_items"
 end
