@@ -21,16 +21,4 @@
 require File.dirname(__FILE__) + "/../config/environment"
 require 'fcgi_handler'
 
-# Potential work around for Dreamhost killing off FCGI Processes.
-# See http://wiki.dreamhost.com/index.php/Ruby_on_Rails#Possible_Gotchas:
-class RailsFCGIHandler
- private
-   def frao_handler(signal)
-     dispatcher_log :info, "asked to terminate immediately"
-     dispatcher_log :info, "frao handler working its magic!"
-     restart_handler(signal)
-   end
-   alias_method :exit_now_handler, :frao_handler
- end
-
 RailsFCGIHandler.process!
