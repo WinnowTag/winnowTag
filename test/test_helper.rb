@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require File.expand_path(File.dirname(__FILE__) + '/helper_testcase')
 require File.expand_path(File.dirname(__FILE__) + '/selenium_helper')
+require 'active_resource/http_mock'
 
 begin
   require 'redgreen' unless ENV['TM_MODE']
