@@ -13,12 +13,12 @@
 	<td class="view_state">
 		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
 		      :id => tag.dom_id("include"),
-		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=include", 
-		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+		      :add_url => add_tag_view_path(@view, :tag_id => tag, :tag_state => "include"),
+		      :remove_url => remove_tag_view_path(@view, :tag_id => tag) %>
 		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, tag), 
 		      :id => tag.dom_id("exclude"),
-		      :add_url => "/views/#{@view.id};add_tag?tag_id=#{tag.id}&tag_state=exclude", 
-		      :remove_url => "/views/#{@view.id};remove_tag?tag_id=#{tag.id}" %>
+		      :add_url => add_tag_view_path(@view, :tag_id => tag, :tag_state => "exclude"),
+		      :remove_url => remove_tag_view_path(@view, :tag_id => tag) %>
 	</td>
 	<td>
 	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>

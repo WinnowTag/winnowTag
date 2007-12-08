@@ -117,7 +117,7 @@ Classification.prototype = {
 		this.notify('Start');		
 		this.showProgressBar();
 						
-		new Ajax.Request(this.classifier_url + ';classify', {
+		new Ajax.Request(this.classifier_url + '/classify', {
 			evalScripts: true,
 			onSuccess: function() {
 				this.notify('Started');
@@ -149,7 +149,7 @@ Classification.prototype = {
 		this.progressUpdater.stop();
 		this.reset();
 				
-		new Ajax.Request(this.classifier_url + ';cancel?no_redirect=true', {
+		new Ajax.Request(this.classifier_url + '/cancel?no_redirect=true', {
 			onComplete: function() {
 				this.notify('Cancelled');
 			}.bind(this),
@@ -176,7 +176,7 @@ Classification.prototype = {
 		this.progressUpdater = new PeriodicalExecuter(function(executer) {
 			if (!this.loading) {
 				this.loading = true;
-				new Ajax.Request(this.classifier_url + ';status', {
+				new Ajax.Request(this.classifier_url + '/status', {
 					onComplete: function(transport, json) {					
 						this.loading = false;
 						if (!json || json.progress >= 100) {
@@ -763,14 +763,14 @@ ItemBrowser.prototype = {
 	  item = $(item);
     item.addClassName('read');
     item.removeClassName('unread');
-    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + ';mark_read', {method: 'put'});
+    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/mark_read', {method: 'put'});
 	},
 	
 	markItemUnread: function(item) {
 	  item = $(item);
     item.addClassName('unread'); 
     item.removeClassName('read');    
-    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + ';mark_unread', {method: 'put'});
+    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/mark_unread', {method: 'put'});
 	},
 	
 	toggleReadUnreadItem: function(item) {
