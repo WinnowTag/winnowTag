@@ -88,7 +88,7 @@ class TaggingsControllerTest < Test::Unit::TestCase
     accept('text/javascript')
     login_as(:quentin)
     post :destroy, :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
-    assert_template 'destroy.rjs'
+    assert_template 'destroy'
     assert_raise (ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
   end
   

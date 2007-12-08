@@ -38,10 +38,12 @@ class UsersControllerTest < Test::Unit::TestCase
   end
   
   def test_new
+    view = users(:admin).views.create!
+    
     login_as(:admin)
-    get :new, :view_id => users(:admin).views.create
+    get :new, :view_id => view.id
     assert_response :success
-    assert_select "form[action = #{users_path}]", true
+    assert_select "form[action=#{users_path(:view_id => view.id)}]"
   end
   
   def test_create

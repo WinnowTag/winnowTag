@@ -37,9 +37,9 @@ class RemoteProtectedItemsTest < Test::Unit::TestCase
     Remote::ProtectedItem.update
     assert req = ActiveResource::HttpMock.requests.detect {|r| r.method == :post }
     items = HashWithIndifferentAccess.new(Hash.from_xml(req.body))
-    assert_instance_of(HashWithIndifferentAccess, items[:protected_items], items.inspect)
-    assert_equal(3, items[:protected_items][:protected_item].size)
-    assert_equal([1, 2, 3], items[:protected_items][:protected_item].collect {|item| item['feed_item_id'] })
+    assert_instance_of(Array, items[:protected_items], items.inspect)
+    assert_equal(3, items[:protected_items].size)
+    assert_equal([1, 2, 3], items[:protected_items].collect {|item| item['feed_item_id'] })
   end
   
   def test_rebuild_sends_delete_all
@@ -73,9 +73,9 @@ class RemoteProtectedItemsTest < Test::Unit::TestCase
     Remote::ProtectedItem.rebuild
     assert req = ActiveResource::HttpMock.requests.detect {|r| r.method == :post }
     items = HashWithIndifferentAccess.new(Hash.from_xml(req.body))
-    assert_instance_of(HashWithIndifferentAccess, items[:protected_items], items.inspect)
-    assert_equal(3, items[:protected_items][:protected_item].size)
-    assert_equal([1, 2, 3], items[:protected_items][:protected_item].collect {|item| item['feed_item_id'] })
+    assert_instance_of(Array, items[:protected_items], items.inspect)
+    assert_equal(3, items[:protected_items].size)
+    assert_equal([1, 2, 3], items[:protected_items].collect {|item| item['feed_item_id'] })
   end
   
   def test_protect_item_returns_a_thread

@@ -4,10 +4,6 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-# application_helper.rb
-
-# Methods added to this helper will be available to all templates in the application.
-
 module ApplicationHelper  
   include DateHelper
   
@@ -188,9 +184,7 @@ module ApplicationHelper
   end
   
   def show_sidebar?
-    if cookies["show_sidebar"]
-      cookies["show_sidebar"].first =~ /true/i
-    end
+    cookies[:show_sidebar].to_s =~ /true/i
   end
   
   def search_field_tag(name, value = nil, options = {})

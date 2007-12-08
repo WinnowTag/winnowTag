@@ -6,6 +6,7 @@ class ItemProtectionController; def rescue_action(e) raise e end; end
 
 class ItemProtectionControllerTest < Test::Unit::TestCase
   fixtures :users
+
   def setup
     @controller = ItemProtectionController.new
     @request    = ActionController::TestRequest.new
@@ -26,7 +27,8 @@ class ItemProtectionControllerTest < Test::Unit::TestCase
   end
   
   def test_index_displays_protector_info
-    get :show, :view_id => users(:admin).views.create
+    view = users(:admin).views.create!
+    get :show, :view_id => view.id
     assert_instance_of(Remote::Protector, assigns(:protector))
     assert_response :success
   end
@@ -41,7 +43,8 @@ class ItemProtectionControllerTest < Test::Unit::TestCase
     ActiveResource::HttpMock.respond_to do |mock|
       mock.get "/protectors/1.xml", {}, nil, 500
     end
-    get :show, :view_id => users(:admin).views.create
+    view = users(:admin).views.create!
+    get :show, :view_id => view.id
     assert_response :not_found
     assert_select "div#error", "Unable to fetch protection status from the collector"
   end

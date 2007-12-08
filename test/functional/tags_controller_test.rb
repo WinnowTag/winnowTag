@@ -113,7 +113,7 @@ class TagsControllerTest < Test::Unit::TestCase
     view = users(:quentin).views.create
     
     post :update, :id => @tag, :tag => {:name => 'tag' }, :view_id => view
-    assert_redirected_to tags_path(:view_id => view)
+    assert_redirected_to tags_path
     assert_equal([@tag], users(:quentin).tags)
   end
   
@@ -121,7 +121,7 @@ class TagsControllerTest < Test::Unit::TestCase
     view = users(:quentin).views.create
 
     post :update, :id => @tag, :tag => {:name => 'new'}, :view_id => view
-    assert_redirected_to tags_path(:view_id => view)
+    assert_redirected_to tags_path
     assert users(:quentin).tags.find_by_name('new')
   end
   
@@ -134,7 +134,7 @@ class TagsControllerTest < Test::Unit::TestCase
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
     
     post :update, :id => old, :tag => {:name => 'new'}, :view_id => view
-    assert_redirected_to tags_path(:view_id => view)
+    assert_redirected_to tags_path
     assert_equal("'old' merged with 'new'", flash[:notice])
   end
   
@@ -147,7 +147,7 @@ class TagsControllerTest < Test::Unit::TestCase
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(2))
     
     post :update, :id => old, :tag => {:name => 'new'}, :view_id => view
-    assert_redirected_to tags_path(:view_id => view)
+    assert_redirected_to tags_path
     assert_equal("'old' merged with 'new'", flash[:notice])
   end
   

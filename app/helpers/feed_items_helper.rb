@@ -252,4 +252,8 @@ module FeedItemsHelper
   def tag_name_with_tooltip(tag, options = {})
     content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
   end
+  
+  def link_to_feed_item(feed_item)
+    feed_item.content.link ? link_to(feed_item.display_title, feed_item.content.link, :target => "_blank") : feed_item.display_title
+  end
 end

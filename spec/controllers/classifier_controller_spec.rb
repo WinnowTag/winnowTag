@@ -85,8 +85,8 @@ describe ClassifierController do
     session[:classification_job_id] = "JOB-ID"
     get "status", :view_id => "1001"
     response.should be_success
-    response.headers['X-JSON'].should include("progress: 0")
-    response.headers['X-JSON'].should include("status: \"Waiting\"")
+    response.headers['X-JSON'].should include('"progress": 0')
+    response.headers['X-JSON'].should include('"status": "Waiting"')
   end
 
   it "should delete the job when complete" do
@@ -103,7 +103,7 @@ describe ClassifierController do
     session[:classification_job_id] = "STALE"
     get "status", :view_id => "1001"
     assert_response 500
-    response.headers['X-JSON'].should include("error_message: \"No classification process running\"")
+    response.headers['X-JSON'].should include('"error_message": "No classification process running"')
   end
   
   it "should cancel a running job" do

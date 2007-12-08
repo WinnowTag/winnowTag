@@ -1,5 +1,5 @@
 <% cache(:action => 'index', :action_suffix => feed_item.dom_id('description')) do -%>
-	<h3><%= link_to feed_item.display_title, feed_item.content.link, :target => "_blank" %></h3>
+	<h3><%= link_to_feed_item(feed_item) %></h3>
 	<p class="metadata">
 		from <%= feed_link(feed_item, :target => "_blank") %>
 		<% if not feed_item.content.author.blank? %>

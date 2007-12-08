@@ -78,7 +78,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     accept('text/javascript')
     get :index, :offset => '1', :limit => '1', :view_id => users(:quentin).views.create, :show_untagged => true
     assert_response :success
-    assert_equal 'text/javascript; charset=utf-8', @response.headers['Content-Type']
+    assert_equal 'text/javascript; charset=utf-8', @response.headers['type']
     assert_not_nil assigns(:feed_items)
     assert_nil assigns(:feeds)
     regex = /itemBrowser\.insertItem\("#{assigns(:feed_items).first.dom_id}", 1/

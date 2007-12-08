@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
   
   acts_as_authorized_user
   acts_as_authorizable
-  composed_of :tz, :class_name => TZInfo::Timezone, :mapping => %w(time_zone identifier)
+  composed_of :tz, :class_name => "TZInfo::Timezone", :mapping => %w(time_zone identifier)
   has_many :collection_job_results
   has_one :collection_job_result_to_display, :class_name => "CollectionJobResult", :foreign_key => 'user_id',
               :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on asc', 
