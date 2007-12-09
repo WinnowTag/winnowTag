@@ -5,7 +5,7 @@ require 'collection_job_results_controller'
 class CollectionJobResultsController; def rescue_action(e) raise e end; end
 
 class CollectionJobResultsControllerTest < Test::Unit::TestCase
-  fixtures :collection_job_results, :users
+  fixtures :collection_job_results, :users, :feeds
 
   def setup
     @controller = CollectionJobResultsController.new
