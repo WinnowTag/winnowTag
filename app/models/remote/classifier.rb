@@ -6,11 +6,10 @@
 #
 
 module Remote
-  class ClassifierJob < ClassifierResource
-    self.element_name = "job"
-    class Status
-      WAITING = "Waiting"
-      COMPLETE = "Complete"
+  class Classifier < ClassifierResource
+    self.element_name = ""
+    def self.get_info
+      new(self.connection.get("/classifier.xml"))
     end
   end
 end
