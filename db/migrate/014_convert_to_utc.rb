@@ -1,6 +1,6 @@
 class ConvertToUtc < ActiveRecord::Migration
-  class Classifier < ActiveRecord::Base; acts_as_paranoid; end
-  class Tagging < ActiveRecord::Base; acts_as_paranoid; end
+  class Classifier < ActiveRecord::Base;  end
+  class Tagging < ActiveRecord::Base;  end
   class RolesUsers < ActiveRecord::Base
     table_name = 'roles_users'
     cattr_accessor :combined_pk
@@ -11,7 +11,7 @@ class ConvertToUtc < ActiveRecord::Migration
     ActiveRecord::Base.default_timezone = :local
     ActiveRecord::Base.transaction do
       say_with_time "Converting Classifiers to UTC..." do
-        Classifier.find_with_deleted(:all).each do |c|
+        Classifier.find(:all).each do |c|
           convert_time(c, :utc, :created_on, :updated_on, :deleted_at, :last_executed)
         end
       end
@@ -47,7 +47,7 @@ class ConvertToUtc < ActiveRecord::Migration
       end
       
       say_with_time "Converting Taggings to UTC..." do
-        Tagging.find_with_deleted(:all).each do |t|
+        Tagging.find(:all).each do |t|
           convert_time(t, :utc, :created_on, :deleted_at)
         end
       end
