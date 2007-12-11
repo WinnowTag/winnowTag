@@ -17,6 +17,12 @@ class AboutController < ApplicationController
     if @about =~ /http:\/\/svn.winnow.peerworks.org\/(.+)\/app\/controllers\/about_controller.rb/
       @repos = $1
     end
+    
+    begin
+      @classifier_info = Remote::Classifier.get_info
+    rescue
+      @classifier_info = nil
+    end
   end
   
   def help
