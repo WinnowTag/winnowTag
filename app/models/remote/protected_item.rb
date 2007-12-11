@@ -23,38 +23,11 @@ module Remote
       end
       
       def rebuild(protector_id = ::Protector.id)
-        # Need to build this path manually since ActiveResource is not exactly compatible
-        # with Rails 1.2 routes for custom collection actions.  Should be fixed in 2.0.
         ActiveRecord::Base.benchmark("Deleting Protected Items") do
-          connection.delete(collection_path(:protector_id => protector_id) + ";delete_all")
+          delete(:delete_all, :protector_id => protector_id)
         end
         update(protector_id)
-      end
-    
-      # Creates a protected item instance for an item.
-      #
-      # This is done in a thread so it never blocks the request cycle.
-      # Don't access the DB in this thread though!
-      #
-      def protect_item(item, protector_id = ::Protector.id)
-        Thread.new do
-          self.create(:protector_id => protector_id, :feed_item_id => item.id)
-        end
-      end
-      
-      # Deletes a protected item instance for an item.
-      #
-      # This is done in a thread so it never blocks the request cycle.
-      # Don't access the DB in this thread though!
-      #
-      def unprotect_item(item, protector_id = ::Protector.id)
-        Thread.new do
-          if item.taggings.empty?
-            connection.delete(collection_path(:protector_id => protector_id) + ";delete_all" + 
-                                                        query_string(:feed_item_id => item.id))
-          end
-        end
-      end
+      end  
     end
   end
 end
