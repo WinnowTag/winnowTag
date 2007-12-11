@@ -1,13 +1,13 @@
-<% labeled_form_for :user, @user, :url => users_path, :method => :post do |f| %>
+<% form_for :user, @user, :url => users_path, :method => :post do |f| %>
 	<%= error_messages_for 'user' %>
 	<fieldset>
 		<legend>Create User</legend>
-		<%= f.text_field :login %>
-		<%= f.text_field :firstname %>
-		<%= f.text_field :lastname %>
-		<%= f.text_field :email %>
-		<%= f.password_field :password %>
-		<%= f.password_field :password_confirmation %>
+		<p><%= f.label(:login) %><%= f.text_field :login %></p>
+		<p><%= f.label(:firstname) %><%= f.text_field :firstname %></p>
+		<p><%= f.label(:label) %><%= f.text_field :lastname %></p>
+		<p><%= f.label(:email) %><%= f.text_field :email %></p>
+		<p><%= f.label(:password) %><%= f.password_field :password %></p>
+		<p><%= f.label(:password_confirmation) %><%= f.password_field :password_confirmation %></p>
 		<p>
 			<label>&nbsp;</label>
 			<%= submit_tag 'Save changes', :name => 'save'%>

@@ -1,13 +1,13 @@
 <%= error_messages_for 'current_user' %>
-<% labeled_form_for :current_user do |f| %>
+<% form_for :current_user do |f| %>
 <fieldset>
 	<legend>Account Details</legend>
-	<%= f.text_field 'login', :readonly => true %>
-	<%= f.password_field 'password' %>
-	<%= f.password_field 'password_confirmation' %>
-	<%= f.text_field 'email' %>
-	<%= f.text_field 'firstname' %>
-	<%= f.text_field 'lastname' %>
+	<p><%= f.label(:login) %><%= f.text_field 'login', :readonly => true %></p>
+	<p><%= f.label(:password) %><%= f.password_field 'password' %></p>
+	<p><%= f.label(:password_confirmation) %><%= f.password_field 'password_confirmation' %></p>
+	<p><%= f.label(:email) %><%= f.text_field 'email' %></p>
+	<p><%= f.label(:firstname) %><%= f.text_field 'firstname' %></p>
+	<p><%= f.label(:lastname) %><%= f.text_field 'lastname' %></p>
 	<p>
 	    <label for="">Time Zone</label>
 	    <%= time_zone_select 'current_user', 'time_zone', TZInfo::Timezone.all.sort, :model => TZInfo::Timezone %>
