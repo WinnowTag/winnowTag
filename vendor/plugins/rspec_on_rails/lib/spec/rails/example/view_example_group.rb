@@ -42,8 +42,7 @@ module Spec
           @controller.class.send :public, :flash
         end
 
-        def teardown #:nodoc:
-          super
+        def teardown #:nodoc:          
           ensure_that_base_view_path_is_not_set_across_example_groups
         end
 
