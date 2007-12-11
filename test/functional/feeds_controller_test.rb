@@ -84,7 +84,7 @@ class FeedsControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     post :create, :feed => {:url => '####'}
     assert_response :success
-    assert_select("div#errorExplanation", true, @response.body)
+    assert_select("div#error", true, @response.body)
   end
         
   def test_non_admin_can_show

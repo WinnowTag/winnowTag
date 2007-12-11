@@ -45,6 +45,7 @@ class FeedsController < ApplicationController
           redirect_to feeds_url
         end
       else
+        flash[:error] = @feed.errors.on(:url)
         wants.html { render :action => 'new' }
       end
     end    
