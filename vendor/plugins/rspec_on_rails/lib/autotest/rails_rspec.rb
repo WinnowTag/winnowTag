@@ -40,8 +40,8 @@ class Autotest::RailsRspec < Autotest::Rspec
       %r%^app/models/(.*)\.rb$% => proc { |_, m|
         ["spec/models/#{m[1]}_spec.rb"]
       },
-      %r%^app/views/(.*)$% => proc { |_, m|
-        files_matching %r%^spec/views/#{m[1]}_spec.rb$%
+      %r%^app/views/(.*)/(.*)\..*$% => proc { |_, m|
+        files_matching %r%^spec/views/#{m[1]}/#{m[2]}_spec.rb$%
       },
       %r%^app/controllers/(.*)\.rb$% => proc { |_, m|
         ["spec/controllers/#{m[1]}_spec.rb"]
