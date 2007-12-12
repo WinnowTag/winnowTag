@@ -7,17 +7,13 @@
 
 module FeedsHelper
   def feed_link(feed)
-    feed_page_link = if feed.link and feed.title
-      link_to(feed.title, feed.link)
-    elsif feed.title
-      feed.title
-    elsif feed.link
-      link_to(feed.link, feed.link)
-    else
-      feed.url
-    end
+    feed_link = link_to("Feed", feed.url, :class => "feed_icon replace")
+    feed_home_link = feed.link ? 
+                        link_to("Feed Home", feed.link, :class => "home_icon replace") : 
+                        content_tag('span', '', :class => 'blank_icon replace')
+    feed_page_link = link_to((feed.title or feed.url), feed_path(feed))
     
-    link_to("Feed", feed.url, :class => "feed_icon replace") + ' ' + feed_page_link
+    feed_link + ' ' + feed_home_link + ' ' + feed_page_link
   end
   
   def activate_feed_control(feed)

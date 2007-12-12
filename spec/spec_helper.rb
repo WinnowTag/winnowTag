@@ -29,6 +29,17 @@ Spec::Runner.configure do |config|
     }.merge(attributes)
   end
   
+  def valid_feed_attributes(attributes = {})
+    unique_id = rand(1000)
+    { :url => "http://#{unique_id}.example.com/index.xml",
+      :link => "http://#{unique_id}.example.com",
+      :title => "#{unique_id} Example",
+      :feed_items_count => 0,
+      :updated_on => Time.now,
+      :dom_id => "feed_#{unique_id}"
+    }.merge(attributes)
+  end
+  
   def valid_user_attributes(attributes = {})
     unique_id = rand(1000)
     { :login => "user_#{unique_id}",

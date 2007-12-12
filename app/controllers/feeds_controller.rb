@@ -42,7 +42,7 @@ class FeedsController < ApplicationController
           flash[:notice] = "Added feed from '#{@feed.url}'. " +
                            "Collection has been scheduled for this feed, " +
                            "we'll let you know when it's done."
-          redirect_to feeds_url
+          redirect_to feed_url(@feed)
         end
       else
         flash[:error] = @feed.errors.on(:url)

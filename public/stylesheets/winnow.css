@@ -937,6 +937,10 @@ input.example {
   background: url(../images/vertical_sprite.png) no-repeat;
 }
 
+.blank_icon {
+  background-position: 0 -720px;
+}
+
 .feed_icon {
   background-position: 0 -608px;
 }
@@ -979,6 +983,11 @@ input.example {
 
 .comment_icon {
   background-position: 0 -576px;
+}
+
+.home_icon {
+  background-position: 0 -700px;
+  margin-right: 5px;
 }
 
 #view_selector {

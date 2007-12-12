@@ -64,7 +64,7 @@ class FeedsControllerTest < Test::Unit::TestCase
 
     login_as(:quentin)
     post :create, :feed => {:url => "http://newfeed.com"}
-    assert_redirected_to feeds_url
+    assert_redirected_to feed_url(1)
     assert_equal("Added feed from 'http://newfeed.com'. " +
                   "Collection has been scheduled for this feed, " +
                   "we'll let you know when it's done.", flash[:notice])
