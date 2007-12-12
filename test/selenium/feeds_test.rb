@@ -24,7 +24,40 @@ class FeedsTest < Test::Unit::SeleniumTestCase
     dont_see_element "#always_include_feed_2.selected"
   end
   
+  def test_changing_always_include_view_state_from_feed_page
+    click_and_wait "css=a[href='/feeds/2']"
+    dont_see_element "#always_include_feed_2.selected"
+    
+    click "always_include_feed_2"
+    see_element "#always_include_feed_2.selected"
+    
+    refresh_and_wait
+    see_element "#always_include_feed_2.selected"
+    
+    click "always_include_feed_2"
+    dont_see_element "#always_include_feed_2.selected"
+    
+    refresh_and_wait
+    dont_see_element "#always_include_feed_2.selected"
+  end
+  
   def test_changing_exclude_view_state
+    dont_see_element "#exclude_feed_2.selected"
+    
+    click "exclude_feed_2"
+    see_element "#exclude_feed_2.selected"
+    
+    refresh_and_wait
+    see_element "#exclude_feed_2.selected"
+    
+    click "exclude_feed_2"
+    dont_see_element "#exclude_feed_2.selected"
+    
+    refresh_and_wait
+    dont_see_element "#exclude_feed_2.selected"
+  end
+  
+  def test_changing_exclude_view_state_from_feed_page
     dont_see_element "#exclude_feed_2.selected"
     
     click "exclude_feed_2"

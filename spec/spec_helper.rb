@@ -35,8 +35,7 @@ Spec::Runner.configure do |config|
       :link => "http://#{unique_id}.example.com",
       :title => "#{unique_id} Example",
       :feed_items_count => 0,
-      :updated_on => Time.now,
-      :dom_id => "feed_#{unique_id}"
+      :updated_on => Time.now
     }.merge(attributes)
   end
   
@@ -76,5 +75,12 @@ Spec::Runner.configure do |config|
     User.stub!(:find_by_id).and_return(@user)
     @user.stub!(:tags).and_return(@tags)
     @user.stub!(:views).and_return(@views)
+  end
+  
+  def mock_model_with_dom_id(cls, attributes)
+    m = mock_model(cls, attributes)    
+    m.stub!(:dom_id).with(no_args()).and_return("#{cls.name.underscore}_#{m.id}")
+    m.should_receive(:dom_id).with(an_instance_of(String)).any_number_of_times.and_return {|p| "#{p}_#{cls.name.underscore}_#{m.id}"}
+    m
   end
 end

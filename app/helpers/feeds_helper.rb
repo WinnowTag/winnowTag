@@ -16,10 +16,26 @@ module FeedsHelper
     feed_link + ' ' + feed_home_link + ' ' + feed_page_link
   end
   
-  def activate_feed_control(feed)
-    check_box_tag("activate[#{feed.id}]", true, feed.active?, :id => "activate_#{feed.id}",
-                    :disabled => !permit?('admin')) +
-		  observe_field("activate_#{feed.id}", :url => {:action => 'update', :id => feed},
-		 		            :with => "'feed[active]=' + $('activate_#{feed.id}').checked")
+  def globally_exclude_check_box(feed)
+    check_box_tag feed.dom_id("globally_exclude"), "1", 
+                  current_user.globally_excluded?(feed), 
+                  :onclick => remote_function(
+                                :url => globally_exclude_feed_path(feed), 
+                                :with => "{ globally_exclude: this.checked }"
+                              )
+  end
+  
+  def always_include_feed_filter_control(feed)
+    filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
+			      :id => feed.dom_id("always_include"), :disabled => current_user.globally_excluded?(feed),
+			      :add_url => add_feed_view_path(@view, :feed_id => feed, :feed_state => "always_include"), 
+			      :remove_url => remove_feed_view_path(@view, :feed_id => feed)    
+  end
+  
+  def always_exclude_feed_filter_control(feed)
+    filter_control "Always Exclude This Feed", :exclude, @view.feed_filters.includes?(:exclude, feed), 
+			      :id => feed.dom_id("exclude"), :disabled => current_user.globally_excluded?(feed),
+			      :add_url => add_feed_view_path(@view, :feed_id => feed, :feed_state => "exclude"), 
+			      :remove_url => remove_feed_view_path(@view, :feed_id => feed)
   end
 end

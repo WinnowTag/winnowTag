@@ -10,7 +10,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe '/feeds/index' do  
   before(:each) do
     login_as(1)
-    @feed = mock_model(Feed, valid_feed_attributes)
+    @feed = mock_model_with_dom_id(Feed, valid_feed_attributes)
     @feeds = [@feed]
     @feeds.should_receive(:page_count).and_return(1)
     @view = mock_model(View, :feed_filters => mock_model(ViewFeedState, :includes? => false))

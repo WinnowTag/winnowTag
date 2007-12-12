@@ -29,19 +29,10 @@
       <tr id="<%= "feed_#{feed.id}" %>" class="<%= cycle("odd", "even") %>">
     		<td><%= feed_link(feed) %></td>
     		<td class="view_state">
-    			<%= filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
-    			      :id => feed.dom_id("always_include"), :disabled => current_user.globally_excluded?(feed),
-    			      :add_url => add_feed_view_path(@view, :feed_id => feed, :feed_state => "always_include"), 
-    			      :remove_url => remove_feed_view_path(@view, :feed_id => feed) %>
-    			<%= filter_control "Always Exclude This Feed", :exclude, @view.feed_filters.includes?(:exclude, feed), 
-    			      :id => feed.dom_id("exclude"), :disabled => current_user.globally_excluded?(feed),
-    			      :add_url => add_feed_view_path(@view, :feed_id => feed, :feed_state => "exclude"), 
-    			      :remove_url => remove_feed_view_path(@view, :feed_id => feed) %>
+    			<%= always_include_feed_filter_control(feed) %>
+    			<%= always_exclude_feed_filter_control(feed) %>
     		</td>
-    	  <td>
-					<%= check_box_tag feed.dom_id("globally_exclude"), "1", current_user.globally_excluded?(feed), 
-                :onclick => remote_function(:url => globally_exclude_feed_path(feed), :with => "{ globally_exclude: this.checked }") %>
-    		</td>
+    	    <td><%= globally_exclude_check_box(feed) %></td>
     		<td class="number"><%= feed.feed_items_count %></td>
     		<td class="date"><%= format_date(feed.updated_on) %></td>
     		<td class="controls">
