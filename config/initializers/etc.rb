@@ -4,8 +4,8 @@ require 'digest/sha1'
 require 'tzinfo'
 
 # Use SQL Session Store
-# ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:database_manager => SqlSessionStore)
-# SqlSessionStore.session_class = MysqlSession
+ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:database_manager => SqlSessionStore)
+SqlSessionStore.session_class = MysqlSession
 
 # ActionController::Base.fragment_cache_store = :file_store, File.join(RAILS_ROOT, 'tmp', 'cache')
 
