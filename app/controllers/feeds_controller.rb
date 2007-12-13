@@ -34,9 +34,8 @@ class FeedsController < ApplicationController
   
   def create
     if @feed = Feed.find_by_url_or_link(params[:feed][:url])
-      flash.now[:notice] = "#{@feed.title} has already been added, here it is!"
-      flash.keep
-      redirect_to feed_url(@feed)
+      flash[:notice] = "#{@feed.title} has already been added, here it is!"
+      redirect_to feed_url(@feed, :view_id => @view.id)
     else
       @feed = Remote::Feed.new(params[:feed])
       if @feed.save
