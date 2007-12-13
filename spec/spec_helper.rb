@@ -23,7 +23,7 @@ Spec::Runner.configure do |config|
   # for all of your examples, even those that don't use them.
   
   def valid_feed_item_attributes(attributes = {})
-    unique_id = rand(1000)
+    unique_id = rand(10000)
     { :link => "http://#{unique_id}.example.com", 
       :unique_id => unique_id
     }.merge(attributes)
@@ -63,7 +63,7 @@ Spec::Runner.configure do |config|
   end
   
   def mock_user_for_controller
-    @user = mock_model(User)
+    @user = mock_model(User, valid_user_attributes)
     @tags = mock("tags")
     @views = mock("views")
     

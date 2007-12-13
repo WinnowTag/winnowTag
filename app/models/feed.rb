@@ -54,4 +54,8 @@ class Feed < ActiveRecord::Base
              :group => "feeds.id",
              :order => options[:order])
   end
+  
+  def self.find_by_url_or_link(url)
+    self.find(:first, :conditions => ['url = ? or link = ?', url, url])
+  end
 end

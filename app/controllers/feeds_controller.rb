@@ -33,22 +33,24 @@ class FeedsController < ApplicationController
   end
   
   def create
-    @feed = Remote::Feed.new(params[:feed])
-    respond_to do |wants|
+    if @feed = Feed.find_by_url_or_link(params[:feed][:url])
+      flash.now[:notice] = "#{@feed.title} has already been added, here it is!"
+      flash.keep
+      redirect_to feed_url(@feed)
+    else
+      @feed = Remote::Feed.new(params[:feed])
       if @feed.save
         @collection_job = @feed.collect(:created_by => current_user.login, 
                                         :callback_url => collection_job_results_url(current_user))
-        wants.html do
-          flash[:notice] = "Added feed from '#{@feed.url}'. " +
-                           "Collection has been scheduled for this feed, " +
-                           "we'll let you know when it's done."
-          redirect_to feed_url(@feed)
-        end
+        flash[:notice] = "Added feed from '#{@feed.url}'. " +
+                         "Collection has been scheduled for this feed, " +
+                         "we'll let you know when it's done."
+        redirect_to feed_url(@feed)
       else
         flash[:error] = @feed.errors.on(:url)
-        wants.html { render :action => 'new' }
+        render :action => 'new'        
       end
-    end    
+    end
   end
   
   def show
