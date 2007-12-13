@@ -56,8 +56,8 @@ describe FeedsController do
     Feed.should_receive(:find_by_url_or_link).with('http://example.com').and_return(feed)
     Remote::Feed.should_receive(:new).never
     
-    post 'create', :feed => {:url => 'http://example.com'}, :view_id => 1
-    response.should redirect_to(feed_path(feed))
+    post 'create', :feed => {:url => 'http://example.com'}, :view_id => @view.id
+    response.should redirect_to(feed_url(feed, :view_id => @view.id))
   end
   
   it "should flash collection result" do
