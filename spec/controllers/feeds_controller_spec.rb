@@ -47,8 +47,8 @@ describe FeedsController do
     feed.stub!(:collect)
     Remote::Feed.should_receive(:new).with("url" => 'http://example.com').and_return(feed)
     
-    post 'create', :feed => {:url => 'http://example.com'}, :view_id => 1
-    response.should redirect_to(feed_path(feed))    
+    post 'create', :feed => {:url => 'http://example.com'}, :view_id => @view.id
+    response.should redirect_to(feed_path(feed, :view_id => @view.id))    
   end
   
   it "should redirect to existing feed on duplicate" do
