@@ -254,6 +254,6 @@ module FeedItemsHelper
   end
   
   def link_to_feed_item(feed_item)
-    feed_item.content.link ? link_to(feed_item.display_title, feed_item.content.link, :target => "_blank") : feed_item.display_title
+    feed_item.link ? link_to(feed_item.title, feed_item.link, :target => "_blank") : feed_item.title
   end
 end

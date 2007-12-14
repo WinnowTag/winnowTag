@@ -8,7 +8,7 @@
         <%= javascript_tag "Event.observe('#{feed_item.dom_id('feed_link_for')}','click', function(e) {e.stopPropagation();});" %>
       </span>
       <div class="title_and_tags clearfix">
-        <span class="title"><%= feed_item.display_title.blank? ? "<i>no title</i>" : feed_item.display_title %></span>
+        <span class="title"><%= feed_item.title %></span>
         <%= display_tags_for(feed_item) %>
       </div>      
       <span class="date"><%= format_date(feed_item.time) %></span>

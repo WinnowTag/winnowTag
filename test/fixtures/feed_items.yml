@@ -27,6 +27,7 @@ first:
   link: http://first
   content_length: 5
   created_on: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
+  title: This is a test
 another:
   id: 2
   feed_id: 1
@@ -37,6 +38,7 @@ another:
   content_length: 11
   link: http://second
   created_on: <%= Time.now.to_formatted_s(:db)%>
+  title: This is another test
 third:
   id: 3
   feed_id: 1
@@ -47,6 +49,7 @@ third:
   content_length: 5
   link: http://third
   created_on: <%= Time.now.to_formatted_s(:db)%>
+  title: Yet another test
 forth:
   id: 4
   feed_id: 2
@@ -57,3 +60,4 @@ forth:
   content_length: 10
   link: http://forth
   created_on: <%= Time.now.tomorrow.to_formatted_s(:db)%>
+  title: fourth

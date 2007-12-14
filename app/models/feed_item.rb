@@ -135,7 +135,7 @@ class FeedItem < ActiveRecord::Base
   # of the complexity of the joining in the query produced by options_with_filters.
   #
   def self.find_with_filters(filters = {})    
-    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => 'feed_items.id, feed_items.time,' +
+    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => 'feed_items.id, feed_items.time, feed_items.title,' +
                                                                       ' feed_items.link, feed_items.sort_title,' +
                                                                       ' feed_items.feed_id, feed_items.created_on, feeds.title AS feed_title'))
     
@@ -342,22 +342,6 @@ class FeedItem < ActiveRecord::Base
       self.build_feed_item_content
     end
     self.feed_item_content(force)
-  end
-
-  # Get the display title for this feed item.
-  def display_title
-    if not self.content.title.blank?
-      self.content.title
-    elsif self.content.encoded_content and self.content.encoded_content.match(/^<?p?>?<(strong|h1|h2|h3|h4|b)>([^<]*)<\/\1>/i)
-      $2
-    elsif self.content.encoded_content.is_a? String
-      self.content.encoded_content.split(/\n|<br ?\/?>/).each do |line|
-        potential_title = line.gsub(/<\/?[^>]*>/, "").chomp # strip html
-        break potential_title if not potential_title.blank?
-      end.split(/!|\?|\./).first
-    else
-      ""
-    end
   end
   
   # Gets taggings between a list of taggers and this taggable.
