@@ -1001,3 +1001,15 @@ input.example {
 #view_control_buttons .replace {
   margin-top: .2em;
 }
+
+a.bookmarklet {
+  background-color:#EBEBEB;
+  color:#565656;
+  font-size:8pt;
+  font-weight:700;
+  padding:4px 8px;
+}
+
+a.bookmarklet:hover {
+  text-decoration: none;
+}

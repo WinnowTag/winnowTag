@@ -29,7 +29,7 @@ class FeedsController < ApplicationController
   end
   
   def new
-    @feed = Feed.new
+    @feed = Feed.new(params[:feed])
   end
   
   def create
@@ -44,7 +44,7 @@ class FeedsController < ApplicationController
         flash[:notice] = "Added feed from '#{@feed.url}'. " +
                          "Collection has been scheduled for this feed, " +
                          "we'll let you know when it's done."
-        redirect_to feed_url(@feed)
+        redirect_to feed_url(@feed, :view_id => @view.id)
       else
         flash[:error] = @feed.errors.on(:url)
         render :action => 'new'        
