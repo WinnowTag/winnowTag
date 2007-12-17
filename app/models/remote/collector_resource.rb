@@ -12,5 +12,20 @@ module Remote
     rescue
       self.site = "http://localhost:3000"
     end
+    
+    def self.with_redirect
+      begin
+        yield
+      rescue ActiveResource::Redirection => redirect
+        # try and get the id
+        if id = redirect.response['Location'][/\/([^\/]*?)(\.\w+)?$/, 1]
+          with_redirect do
+            self.find(id)
+          end
+        else
+          raise ActiveResource::RecordNotFound, redirect.response
+        end
+      end
+    end
   end
 end

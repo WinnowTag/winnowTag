@@ -24,6 +24,7 @@ describe FeedsController do
   
   it "should assign feed on show" do
     feed = mock('feed_1')
+    feed.stub!(:duplicate)
     Feed.should_receive(:find).with("1").and_return(feed)
     get 'show', :id => 1, :view_id => 1
     assigns[:feed].should == feed
@@ -31,9 +32,9 @@ describe FeedsController do
 
   it "should re-render form on resource error" do
     feed = mock_model(Remote::Feed)
-    feed.should_receive(:save).and_return(false)
+    feed.errors.should_receive(:empty?).and_return(false)
     feed.errors.should_receive(:on).with(:url).and_return("Error")
-    Remote::Feed.should_receive(:new).with("url" => 'http://example.com').and_return(feed)
+    Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
     post 'create', :feed => {:url => 'http://example.com'}, :view_id => 1
     response.should be_success
@@ -41,23 +42,14 @@ describe FeedsController do
     flash[:error].should == "Error"
   end
   
-  it "should create resource when no duplicates exist" do
+  it "should create resource" do    
     feed = mock_model(Remote::Feed, :url => 'http://example.com')
-    feed.should_receive(:save).and_return(true)
-    feed.stub!(:collect)
-    Remote::Feed.should_receive(:new).with("url" => 'http://example.com').and_return(feed)
+    feed.errors.should_receive(:empty?).and_return(true)
+    feed.should_receive(:collect)
+    Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
     post 'create', :feed => {:url => 'http://example.com'}, :view_id => @view.id
     response.should redirect_to(feed_path(feed, :view_id => @view.id))    
-  end
-  
-  it "should redirect to existing feed on duplicate" do
-    feed = mock_model(Feed, valid_feed_attributes)
-    Feed.should_receive(:find_by_url_or_link).with('http://example.com').and_return(feed)
-    Remote::Feed.should_receive(:new).never
-    
-    post 'create', :feed => {:url => 'http://example.com'}, :view_id => @view.id
-    response.should redirect_to(feed_url(feed, :view_id => @view.id))
   end
   
   it "should flash collection result" do

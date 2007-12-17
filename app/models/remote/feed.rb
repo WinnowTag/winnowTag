@@ -6,7 +6,19 @@
 #
 
 module Remote
-  class Feed < CollectorResource    
+  class Feed < CollectorResource  
+    def self.find_with_redirect(id)
+      with_redirect do 
+        self.find(id)
+      end
+    end
+    
+    def self.find_or_create_by_url(url)
+      with_redirect do
+        self.create(:url => url)
+      end
+    end
+        
     def collect(options = {})
       Remote::CollectionJob.create(options.merge(:feed_id => self.id))
     end

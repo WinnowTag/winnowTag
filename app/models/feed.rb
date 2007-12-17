@@ -36,7 +36,7 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 
 class Feed < ActiveRecord::Base
   def self.search options = {}
-    conditions, values = [], []
+    conditions, values = ['is_duplicate = ?'], [false]
     
     unless options[:search_term].blank?
       conditions << '(title LIKE ? OR url LIKE ?)'

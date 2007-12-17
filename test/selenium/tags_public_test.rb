@@ -6,6 +6,7 @@ class TagsPublicTest < Test::Unit::SeleniumTestCase
   def setup
     login
     open public_tags_path
+    TagSubscription.delete_all
   end
   
   def test_subscribing_to_public_tag

@@ -33,27 +33,25 @@ class FeedsController < ApplicationController
   end
   
   def create
-    if @feed = Feed.find_by_url_or_link(params[:feed][:url])
-      flash[:notice] = "#{@feed.title} has already been added, here it is!"
+    @feed = Remote::Feed.find_or_create_by_url(params[:feed][:url])
+    if @feed.errors.empty?
+      @collection_job = @feed.collect(:created_by => current_user.login, 
+                                      :callback_url => collection_job_results_url(current_user))
+      flash[:notice] = "Added feed from '#{@feed.url}'. " +
+                       "Collection has been scheduled for this feed, " +
+                       "we'll let you know when it's done."
       redirect_to feed_url(@feed, :view_id => @view.id)
     else
-      @feed = Remote::Feed.new(params[:feed])
-      if @feed.save
-        @collection_job = @feed.collect(:created_by => current_user.login, 
-                                        :callback_url => collection_job_results_url(current_user))
-        flash[:notice] = "Added feed from '#{@feed.url}'. " +
-                         "Collection has been scheduled for this feed, " +
-                         "we'll let you know when it's done."
-        redirect_to feed_url(@feed, :view_id => @view.id)
-      else
-        flash[:error] = @feed.errors.on(:url)
-        render :action => 'new'        
-      end
+      flash[:error] = @feed.errors.on(:url)
+      render :action => 'new'        
     end
   end
   
   def show
     @feed = Feed.find(params[:id])
+    if @feed.duplicate
+      redirect_to feed_url(@feed.duplicate)
+    end
   end  
 
   def auto_complete_for_feed_title

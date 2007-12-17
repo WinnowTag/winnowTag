@@ -29,33 +29,64 @@ ErrorMessage.prototype = {
 	}	
 };
 
+var timeout_id = 1;
+var TimeoutMessage = Class.create();
+TimeoutMessage.prototype = {
+  initialize: function(ajax) {
+    this.timeout_id = timeout_id++;
+    this.error_message = $('error');
+    this.ajax = ajax;
+    
+    if (this.error_message) {
+      this.error_message.update("The server is taking a while to repond. " + 
+                                "We'll keep trying but you can " +
+                                "<a href=\"#\" id=\"timeout" + this.timeout_id + "\">cancel</a>" +
+                                " if you like.");
+      Event.observe("timeout" + this.timeout_id, 'click', this.cancel.bindAsEventListener(this));
+      this.error_message.show();
+      resizeContent();
+    }
+  },
+  
+  clear: function() {
+    this.error_message.hide();
+    resizeContent();
+  },
+  
+  cancel: function() {
+    if (this.ajax) {      
+			// disable the standard Prototype state change handle to avoid
+			// confusion between timeouts and exceptions
+      this.ajax.transport.onreadystatechange = Prototype.emptyFunction;
+      this.ajax.transport.abort();
+      
+      if (this.ajax.options.onComplete && !(this.ajax instanceof Ajax.Updater)) {
+				this.ajax.options.onComplete(this.ajax.transport, this.ajax.json);
+			}
+    }
+    
+    this.clear();
+  }
+};
+
 /** Ajax Responders to Handle time outs of Ajax requests */
 Ajax.Responders.register({
 	onCreate: function(request) {
 		request.timeoutId = window.setTimeout(function() {
 			var state = Ajax.Request.Events[request.transport.readyState];
 			
-			if (!['Uninitialized', 'Complete'].include(state)) {
-				// disable the standard Prototype state change handle to avoid
-				// confusion between timeouts and exceptions
-				request.transport.onreadystatechange = Prototype.emptyFunction;
-				request.transport.abort();
-				
+			if (!['Uninitialized', 'Complete'].include(state)) {				
 				if (request.options.onTimeout) {
 					request.options.onTimeout(request.transport, request.json);
 				} else {
-					new ErrorMessage("Ajax request timed out. This should be handled by adding a onTimeout function to the request.");
-				}
-				
-				if (request.options.onComplete && !(request instanceof Ajax.Updater)) {
-					request.options.onComplete(request.transport, request.json);
-				}
+					request.timeout_message = new TimeoutMessage(request);
+				}				
 			}
 		}, 10000);
 	},
 	onComplete: function(request) {
-		if (request.timeoutId) {
-			clearTimeout(request.timeoutId)
+		if (request.timeout_message) {
+			request.timeout_message.clear();			
 		}
 	}
 });
