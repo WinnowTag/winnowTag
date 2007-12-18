@@ -9,7 +9,8 @@ ActionController::Routing::Routes.draw do |map|
                   :globally_exclude => :post
                 },
                 :collection => {
-                  :auto_complete_for_feed_title => :any
+                  :auto_complete_for_feed_title => :any,
+                  :import => :any
                 }
   map.resources :feed_items,
                 :member => {

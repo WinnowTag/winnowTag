@@ -7,7 +7,6 @@
 class FeedsController < ApplicationController
   include CollectionJobResultsHelper
   include ActionView::Helpers::TextHelper
-  permit 'admin', :only => [:import, :update]  
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :flash_collection_job_result
   
@@ -44,6 +43,14 @@ class FeedsController < ApplicationController
     else
       flash[:error] = @feed.errors.on(:url)
       render :action => 'new'        
+    end
+  end
+  
+  def import
+    if params[:opml]
+      @feeds = Remote::Feed.import_opml(params[:opml].read)
+      flash[:notice] = "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file"
+      redirect_to feeds_url(:view_id => @view.id)
     end
   end
   

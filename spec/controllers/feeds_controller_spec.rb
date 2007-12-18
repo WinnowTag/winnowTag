@@ -71,4 +71,19 @@ describe FeedsController do
     get :index, :view_id => 1
     flash[:warning].should =~ /Collection Job for #{feed.title} failed with result: Message/
   end
+  
+  it "should render import form" do
+    get :import, :view_id => 1
+    response.should be_success
+    response.should render_template("feeds/import")
+  end
+  
+  it "should import feeds from opml" do
+    Remote::Feed.should_receive(:import_opml).
+                 with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml"))).
+                 and_return(stub('feeds', :size => 23))
+    post :import, :view_id => 1, :opml => fixture_file_upload("example.opml")
+    response.should redirect_to(feeds_path(:view_id => @view.id))
+    flash[:notice].should == "Imported 23 feeds from your OPML file"
+  end
 end

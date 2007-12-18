@@ -18,9 +18,16 @@ module Remote
         self.create(:url => url)
       end
     end
-        
+    
+    def self.import_opml(opml)
+      response = connection.post(custom_method_collection_url(:import_opml), opml, 'Content-Type' => 'text/x-opml')
+      format.decode(response.body).map do |attributes|
+        new(attributes)
+      end
+    end
+     
     def collect(options = {})
       Remote::CollectionJob.create(options.merge(:feed_id => self.id))
-    end
+    end    
   end
 end

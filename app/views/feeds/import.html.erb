@@ -1,0 +1,13 @@
+<% form_tag import_feeds_path(:view_id => @view.id), :method => :post, :multipart => true do -%>
+	<fieldset>
+		<legend>Upload an OPML file</legend>
+		<p>You can upload an OPML file containing a list of feeds. Most feed readers 
+		    support exporting subscription lists in OPML format so you can easily
+		    add your feeds to Winnow.</p>
+		<p><label for="opml">OPML File</label><%= file_field_tag 'opml', :size => 50 %></p>
+		<p><label>&nbsp;</label>
+			<%= submit_tag "Import" %> 
+			<%= link_to "Cancel", feeds_url %>
+		</p>
+	</fieldset>
+<% end -%>
