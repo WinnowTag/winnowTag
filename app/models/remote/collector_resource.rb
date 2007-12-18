@@ -13,13 +13,14 @@ module Remote
       self.site = "http://localhost:3000"
     end
     
-    def self.with_redirect
+    def self.with_redirect(limit = 5)      
       begin
         yield
       rescue ActiveResource::Redirection => redirect
+        raise redirect if limit < 0
         # try and get the id
         if id = redirect.response['Location'][/\/([^\/]*?)(\.\w+)?$/, 1]
-          with_redirect do
+          with_redirect(limit - 1) do
             self.find(id)
           end
         else

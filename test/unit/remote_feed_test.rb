@@ -58,4 +58,13 @@ class RemoteFeedTest < Test::Unit::TestCase
     assert_equal 24, job.id
     assert job.errors.empty?
   end
+  
+  def test_find_or_create_by_url_with_redirect_loop_raises_exception
+    ActiveResource::HttpMock.respond_to do |http|
+      http.post  "/feeds.xml", {}, {:url => 'http://example.com'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
+      http.get   "/feeds/24.xml", {}, nil, 302, 'Location' => '/feeds/24'
+    end
+    
+    assert_raise(ActiveResource::Redirection) { job = Remote::Feed.find_or_create_by_url('http://example.com') }    
+  end
 end
