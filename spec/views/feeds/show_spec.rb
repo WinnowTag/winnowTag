@@ -71,9 +71,7 @@ describe '/feeds/show' do
   it "should show the filter state when not filtered" do
     render '/feeds/show'
     response.should have_tag("#always_include_feed_#{@feed.id}")
-    response.should have_tag("#exclude_feed_#{@feed.id}")
     response.should_not have_tag("#always_include_feed_#{@feed.id}.selected")
-    response.should_not have_tag("#exclude_feed_#{@feed.id}.selected")
   end
   
   it "should show the filter state when included" do
@@ -81,15 +79,5 @@ describe '/feeds/show' do
     
     render '/feeds/show'
     response.should have_tag("#always_include_feed_#{@feed.id}.selected")
-    response.should have_tag("#exclude_feed_#{@feed.id}")
-    response.should_not have_tag("#exclude_feed_#{@feed.id}.selected")
   end
-  
-  it "should show the filter state when excluded" do
-    @feed_filters.should_receive(:includes?).with(:exclude, @feed).and_return(true)
-    render '/feeds/show'
-    response.should have_tag("#always_include_feed_#{@feed.id}")
-    response.should have_tag("#exclude_feed_#{@feed.id}.selected")
-    response.should_not have_tag("#always_include_feed_#{@feed.id}.selected")
-  end  
 end

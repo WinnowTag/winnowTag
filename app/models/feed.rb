@@ -49,7 +49,7 @@ class Feed < ActiveRecord::Base
       values << "%#{options[:search_term]}%" << "%#{options[:search_term]}%"
     end
   
-    select = ["feeds.*", "CASE view_feed_states.state WHEN 'exclude' THEN 0 WHEN 'always_include' THEN 1 ELSE 2 END AS view_state"]
+    select = ["feeds.*", "CASE view_feed_states.state WHEN 'always_include' THEN 0 ELSE 1 END AS view_state"]
     select << "((SELECT COUNT(*) FROM excluded_feeds WHERE feeds.id = excluded_feeds.feed_id AND excluded_feeds.user_id = #{options[:view].user_id}) > 0) AS globally_exclude"
     
     paginate(:select => select.join(","),

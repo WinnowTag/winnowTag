@@ -87,31 +87,25 @@ class UpdateFiltersViewTest < Test::Unit::TestCase
     assert @view.feed_filters.always_include.empty?
     assert_equal 1, @view.feed_filters.include.size
     assert @view.feed_filters.includes?(:include, @feed1)
-    assert @view.feed_filters.exclude.empty?
     
     @view.update_filters :feed_filter => @feed1
     assert @view.feed_filters.always_include.empty?
     assert_equal 1, @view.feed_filters.include.size
     assert @view.feed_filters.includes?(:include, @feed1)
-    assert @view.feed_filters.exclude.empty?
     
     @view.update_filters :feed_filter => @feed2
     assert @view.feed_filters.always_include.empty?
     assert_equal 2, @view.feed_filters.include.size
     assert @view.feed_filters.includes?(:include, @feed1)
     assert @view.feed_filters.includes?(:include, @feed2)
-    assert @view.feed_filters.exclude.empty?
     
     @view.add_feed :always_include, @feed3
-    @view.add_feed :exclude, @feed4
     assert !@view.feed_filters.always_include.empty?
     assert !@view.feed_filters.include.empty?
-    assert !@view.feed_filters.exclude.empty?
     
     @view.update_filters :feed_filter => "all"
     assert @view.feed_filters.always_include.empty?
     assert @view.feed_filters.include.empty?
-    assert @view.feed_filters.exclude.empty?
   end
   
   def test_changes_tag_filter
@@ -182,16 +176,6 @@ class FeedViewTest < Test::Unit::TestCase
     assert @view.feed_filters.includes?(:include, @feed2)
   end
   
-  def test_add_feed_to_include_when_feed_is_already_in_exclude
-    @view.add_feed :exclude, @feed1
-    @view.add_feed :include, @feed1
-
-    assert_equal 1, @view.feed_filters.size
-    assert_equal 0, @view.feed_filters.exclude.size
-    assert_equal 1, @view.feed_filters.include.size
-    assert @view.feed_filters.includes?(:include, @feed1)
-  end
-  
   def test_add_feed_to_include_when_feed_is_already_in_include
     @view.add_feed :include, @feed1
     @view.add_feed :include, @feed1
@@ -211,18 +195,6 @@ class FeedViewTest < Test::Unit::TestCase
     @view.remove_feed @feed1
     assert @view.feed_filters.empty?
     assert @view.feed_filters.include.empty?
-  end
-  
-  def test_remove_feed_from_exclude
-    @view.add_feed :exclude, @feed1
-
-    assert_equal 1, @view.feed_filters.size
-    assert_equal 1, @view.feed_filters.exclude.size
-    assert @view.feed_filters.includes?(:exclude, @feed1)
-    
-    @view.remove_feed @feed1
-    assert @view.feed_filters.empty?
-    assert @view.feed_filters.exclude.empty?
   end
 end
 

@@ -32,13 +32,6 @@ module FeedsHelper
 			      :remove_url => remove_feed_view_path(@view, :feed_id => feed)    
   end
   
-  def always_exclude_feed_filter_control(feed)
-    filter_control "Always Exclude This Feed", :exclude, @view.feed_filters.includes?(:exclude, feed), 
-			      :id => feed.dom_id("exclude"), :disabled => current_user.globally_excluded?(feed),
-			      :add_url => add_feed_view_path(@view, :feed_id => feed, :feed_state => "exclude"), 
-			      :remove_url => remove_feed_view_path(@view, :feed_id => feed)
-  end
-  
   def bookmarklet_js
     "javascript:" +
     "var f = document.createElement('form'); f.setAttribute('method', 'POST');" +

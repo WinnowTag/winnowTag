@@ -262,72 +262,7 @@ class FeedItemTest < Test::Unit::TestCase
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end
-  
-  def test_find_with_feed_filters_should_return_only_tagged_items_not_excluded_from_the_feed
-    feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
-    
-    user = users(:quentin)
-    tag1 = Tag(user, 'tag1')
-    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-    Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
-    
-    view = users(:quentin).views.create!
-    view.add_feed :exclude, 1
-  
-    expected = [FeedItem.find(4)]
-    actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-    assert_equal expected, actual
-  end
-  
-  def test_find_with_feed_filters_should_return_only_tagged_items_not_excluded_from_the_feeds
-    feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
-    
-    user = users(:quentin)
-    tag1 = Tag(user, 'tag1')
-    Tagging.create(:user => user, :feed_item => feed_item5, :tag => tag1)
-    
-    view = users(:quentin).views.create!
-    view.add_feed :exclude, 1
-    view.add_feed :exclude, 2
-  
-    expected = [feed_item5]
-    actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-    assert_equal expected, actual
-  end
-  
-  def test_find_with_feed_filters_should_return_only_tagged_items_not_excluded_from_the_feed
-    feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
-    
-    user = users(:quentin)
-    tag1 = Tag(user, 'tag1')
-    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-    Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
-    
-    view = users(:quentin).views.create! :show_untagged => true
-    view.add_feed :exclude, 1
-  
-    expected = [FeedItem.find(4), feed_item5]
-    actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-    assert_equal expected, actual
-  end
-  
-  def test_find_with_feed_filters_should_return_only_tagged_items_not_excluded_from_the_feeds
-    feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
-    
-    user = users(:quentin)
-    tag1 = Tag(user, 'tag1')
-    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-    Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
-    
-    view = users(:quentin).views.create! :show_untagged => true
-    view.add_feed :exclude, 1
-    view.add_feed :exclude, 2
-  
-    expected = [feed_item5]
-    actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-    assert_equal expected, actual
-  end
-  
+      
   def test_find_with_feed_set_to_always_include_returns_all_tagged_items
     user = users(:quentin)
     tag1 = Tag(user, 'tag1')
@@ -382,35 +317,6 @@ class FeedItemTest < Test::Unit::TestCase
     view.add_feed :always_include, 2
   
     expected = FeedItem.find(2, 4)
-    actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-    assert_equal expected, actual
-  end
-  
-  def test_find_with_exclude_feed_and_always_include_feed_should_return_all_tagged_from_items_not_in_the_excluded_feed_and_all_items_from_the_always_included_feed
-    feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
-    
-    user = users(:quentin)
-    tag1 = Tag(user, 'tag1')
-    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-    Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag1)
-    
-    view = users(:quentin).views.create!
-    view.add_feed :exclude, 1
-    view.add_feed :always_include, 3
-  
-    expected = [FeedItem.find(4), feed_item5]
-    actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-    assert_equal expected, actual
-  end
-  
-  def test_find_with_exclude_feed_and_always_include_feed_and_show_untagged_should_return_all_items_that_are_not_in_the_excluded_feed
-    feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
-        
-    view = users(:quentin).views.create! :show_untagged => true
-    view.add_feed :exclude, 1
-    view.add_feed :always_include, 3
-  
-    expected = [FeedItem.find(4), feed_item5]
     actual = FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
     assert_equal expected, actual
   end

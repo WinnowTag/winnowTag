@@ -241,10 +241,6 @@ class FeedItem < ActiveRecord::Base
       if !feed_filters.include.empty?
         conditions << "feed_items.feed_id IN (#{feed_filters.include.map(&:feed_id).join(",")})"
       end
-    
-      if !feed_filters.exclude.empty?
-        conditions << "feed_items.feed_id NOT IN (#{feed_filters.exclude.map(&:feed_id).join(",")})"
-      end
     end
   end
   

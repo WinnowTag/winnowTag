@@ -35,10 +35,6 @@ class View < ActiveRecord::Base
       self.select { |feed_filter| feed_filter.state == "include" }
     end
 
-    def exclude
-      self.select { |feed_filter| feed_filter.state == "exclude" }
-    end
-    
     def includes?(state, feed)
       feed_id = View.arg_to_feed(feed)
       self.detect { |feed_filter| feed_filter.state == state.to_s && feed_filter.feed_id == feed_id }
@@ -54,7 +50,7 @@ class View < ActiveRecord::Base
   
   def remove_feed(feed)
     feed_id = arg_to_feed(feed)
-    if feed_filter = (feed_filters.includes?(:always_include, feed_id) || feed_filters.includes?(:include, feed_id) || feed_filters.includes?(:exclude, feed_id))
+    if feed_filter = (feed_filters.includes?(:always_include, feed_id) || feed_filters.includes?(:include, feed_id))
       feed_filters.delete(feed_filter)
     end
   end
