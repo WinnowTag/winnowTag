@@ -15,10 +15,6 @@
 		      :id => tag.dom_id("include"),
 		      :add_url => add_tag_view_path(@view, :tag_id => tag, :tag_state => "include"),
 		      :remove_url => remove_tag_view_path(@view, :tag_id => tag) %>
-		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, tag), 
-		      :id => tag.dom_id("exclude"),
-		      :add_url => add_tag_view_path(@view, :tag_id => tag, :tag_state => "exclude"),
-		      :remove_url => remove_tag_view_path(@view, :tag_id => tag) %>
 	</td>
 	<td>
 	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>

@@ -15,11 +15,7 @@ class View < ActiveRecord::Base
     def include
       self.select { |tag_filter| tag_filter.state == "include" }
     end
-    
-    def exclude
-      self.select { |tag_filter| tag_filter.state == "exclude" }
-    end
-    
+        
     def includes?(state, tag)
       tag_id = View.arg_to_tag(tag)
       self.detect { |tag_filter| tag_filter.state == state.to_s && tag_filter.tag_id == tag_id }
@@ -66,7 +62,7 @@ class View < ActiveRecord::Base
   
   def remove_tag(tag)
     tag_id = arg_to_tag(tag)
-    if tag_filter = (tag_filters.includes?(:include, tag_id) || tag_filters.includes?(:exclude, tag_id))
+    if tag_filter = tag_filters.includes?(:include, tag_id)
       tag_filters.delete(tag_filter)
     end
   end

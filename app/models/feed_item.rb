@@ -196,7 +196,7 @@ class FeedItem < ActiveRecord::Base
     joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
     conditions = []
     
-    # Feed filtering (include/exclude)
+    # Feed filtering (include)
     add_feed_filter_conditions!(view.feed_filters, conditions)
           
     include_conditions = view.tag_filters.include.map do |tag_filter|
@@ -205,11 +205,12 @@ class FeedItem < ActiveRecord::Base
       end
     end.compact
     
-    exclude_conditions = view.tag_filters.exclude.map do |tag_filter|
-      if tag = tag_filter.tag
-        build_tag_exclusion_filter(tag)
-      end
-    end.compact
+    # exclude_conditions = view.tag_filters.exclude.map do |tag_filter|
+    #   if tag = tag_filter.tag
+    #     build_tag_exclusion_filter(tag)
+    #   end
+    # end.compact
+    exclude_conditions = nil
 
     # If these are blank add 1=1 so it is easier to combine them
     include_conditions_sql = include_conditions.blank? ? "1=1" : include_conditions.join(" OR ")

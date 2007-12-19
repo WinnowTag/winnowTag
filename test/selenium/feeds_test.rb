@@ -45,7 +45,6 @@ class FeedsTest < Test::Unit::SeleniumTestCase
     click "always_include_feed_2"
     see_element "#always_include_feed_2.selected"
     dont_see_element "#always_include_feed_2.disabled"
-    dont_see_element "#exclude_feed_2.disabled"
 
     click "globally_exclude_feed_2"
     sleep 0.1

@@ -122,26 +122,18 @@ class UpdateFiltersViewTest < Test::Unit::TestCase
     @view.update_filters :tag_filter => @tag1
     assert_equal 1, @view.tag_filters.include.size
     assert @view.tag_filters.includes?(:include, @tag1)
-    assert @view.tag_filters.exclude.blank?
     
     @view.update_filters :tag_filter => @tag1
     assert_equal 1, @view.tag_filters.include.size
     assert @view.tag_filters.includes?(:include, @tag1)
-    assert @view.tag_filters.exclude.blank?
     
     @view.update_filters :tag_filter => @tag2
     assert_equal 2, @view.tag_filters.include.size
     assert @view.tag_filters.includes?(:include, @tag1)
     assert @view.tag_filters.includes?(:include, @tag2)
-    assert @view.tag_filters.exclude.blank?
-    
-    @view.add_tag :exclude, @tag3
-    assert !@view.tag_filters.include.blank?
-    assert !@view.tag_filters.exclude.blank?
-    
+        
     @view.update_filters :tag_filter => "all"
     assert @view.tag_filters.include.blank?
-    assert @view.tag_filters.exclude.blank?
   end
 end
 
@@ -229,16 +221,6 @@ class TagViewTest < Test::Unit::TestCase
     assert @view.tag_filters.includes?(:include, @tag2)
   end
   
-  def test_add_tag_to_include_when_tag_is_already_in_exclude
-    @view.add_tag :exclude, @tag
-    assert_equal 1, @view.tag_filters.exclude.size
-    
-    @view.add_tag :include, @tag
-    assert_equal 1, @view.tag_filters.include.size
-    assert @view.tag_filters.includes?(:include, @tag)
-    assert @view.tag_filters.exclude.empty?
-  end
-  
   def test_add_tag_to_include_when_tag_is_already_in_include
     @view.add_tag :include, @tag
     assert_equal 1, @view.tag_filters.include.size
@@ -256,15 +238,6 @@ class TagViewTest < Test::Unit::TestCase
     
     @view.remove_tag @tag
     assert @view.tag_filters.include.empty?
-  end
-  
-  def test_remove_tag_from_exclude
-    @view.add_tag :exclude, @tag
-    assert_equal 1, @view.tag_filters.exclude.size
-    assert @view.tag_filters.includes?(:exclude, @tag)
-    
-    @view.remove_tag @tag
-    assert @view.tag_filters.exclude.empty?
   end
   
   def test_dup

@@ -137,7 +137,7 @@ class Tag < ActiveRecord::Base
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
               '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by']
     if options[:view]
-      select << "CASE view_tag_states.state WHEN 'exclude' THEN 0 WHEN 'include' THEN 1 ELSE 2 END AS view_state"
+      select << "CASE view_tag_states.state WHEN 'include' THEN 0 ELSE 1 END AS view_state"
     else
       select << "0 AS view_state"
     end

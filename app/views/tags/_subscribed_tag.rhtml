@@ -8,10 +8,6 @@
 		      :id => subscribed_tag.dom_id("include"),
 		      :add_url => add_tag_view_path(@view, :tag_id => subscribed_tag, :tag_state => "include"),
 		      :remove_url => remove_tag_view_path(@view, :tag_id => subscribed_tag) %>
-		<%= filter_control "Always Exclude This Tag", :exclude, @view.tag_filters.includes?(:exclude, subscribed_tag), 
-		      :id => subscribed_tag.dom_id("exclude"),
-		      :add_url => add_tag_view_path(@view, :tag_id => subscribed_tag, :tag_state => "exclude"),
-		      :remove_url => remove_tag_view_path(@view, :tag_id => subscribed_tag) %>
 	</td>
 	<td><%= check_box_tag subscribed_tag.dom_id("public"), nil, true, :disabled => true %></td>
  	<td class="control_icons" id="<%= subscribed_tag.dom_id("controls") %>">
