@@ -6,9 +6,12 @@ ActionController::Routing::Routes.draw do |map|
                 
   map.resources :feeds,
                 :member => {
-                  :globally_exclude => :post
+                  :globally_exclude => :post,
+                  :subscribe => :put,
+                  :unsubscribe => :put
                 },
                 :collection => {
+                  :all => :get,
                   :auto_complete_for_feed_title => :any,
                   :import => :any
                 }

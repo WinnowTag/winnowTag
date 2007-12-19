@@ -36,7 +36,13 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 
 class Feed < ActiveRecord::Base
   def self.search options = {}
+    joins = ["LEFT JOIN view_feed_states ON view_feed_states.feed_id = feeds.id",
+             "LEFT JOIN views ON views.id = view_feed_states.view_id AND views.id = #{options[:view].id}"]
     conditions, values = ['is_duplicate = ?'], [false]
+    
+    if options[:user]
+      joins << "INNER JOIN feed_subscriptions ON feeds.id = feed_subscriptions.feed_id AND feed_subscriptions.user_id = #{options[:user].id}"
+    end
     
     unless options[:search_term].blank?
       conditions << '(title LIKE ? OR url LIKE ?)'
@@ -47,8 +53,7 @@ class Feed < ActiveRecord::Base
     select << "((SELECT COUNT(*) FROM excluded_feeds WHERE feeds.id = excluded_feeds.feed_id AND excluded_feeds.user_id = #{options[:view].user_id}) > 0) AS globally_exclude"
     
     paginate(:select => select.join(","),
-             :joins => "LEFT JOIN view_feed_states ON view_feed_states.feed_id = feeds.id " <<
-                       "LEFT JOIN views ON views.id = view_feed_states.view_id AND views.id = #{options[:view].id}",
+             :joins => joins.join(" "),
              :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
              :page => options[:page],
              :group => "feeds.id",

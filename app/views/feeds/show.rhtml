@@ -1,36 +1,32 @@
-<% content_for :page_controls do -%>
-<div class="control_bar">
-	<%= control_link 'Return to list', feeds_path %>
-</div>
-<% end -%>
-
 <table id="<%= "feed_#{@feed.id}" %>" class="property_table">
 	<tr>
 		<th>Title</th>
 		<td>
-		    <%= link_to("Feed Home", @feed.link, :class => "home_icon replace", :style => 'float: right') if @feed.link %>
-		    <%= link_to("Feed", @feed.url, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
-		    <%= @feed.title %>
+		  <%= link_to("Feed Home", @feed.link, :class => "home_icon replace", :style => 'float: right') if @feed.link %>
+		  <%= link_to("Feed", @feed.url, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
+		  <%= @feed.title %>
 		</td>		
 	</tr>
 	<tr>
-	    <th>Number of Items</th>
+	  <th>Number of Items</th>
 		<td><span class="item_count"><%= @feed.feed_items.size %></span></td>
 	</tr>
 	<tr>
-	    <th>Last Collected</th>
-	    <td><%= format_date @feed.updated_on %></td>
+	  <th>Last Collected</th>
+	  <td><%= format_date @feed.updated_on %></td>
 	</tr>
-    <tr>
-        <th>Globally Excluded</th>
-        <td><%= globally_exclude_check_box(@feed) %></td>
-    </tr>
-    <tr>
-        <th>Filtering</th>
-        <td>
-            <%= always_exclude_feed_filter_control(@feed) %>
-            <%= always_include_feed_filter_control(@feed) %>
-        </td>
-    </tr>
+	<% if current_user.subscribed?(@feed) -%>
+  <tr>
+    <th>Globally Excluded</th>
+    <td><%= globally_exclude_check_box(@feed) %></td>
+  </tr>
+  <tr>
+    <th>Filtering</th>
+    <td>
+      <%= always_exclude_feed_filter_control(@feed) %>
+      <%= always_include_feed_filter_control(@feed) %>
+    </td>
+  </tr>
+  <% end -%>
 </table>
 

@@ -10,8 +10,9 @@
   	<ul class="main clearfix">
       <li><%= link_to('Items', feed_items_path(:view_id => @view), :class => tab_selected('feed_items')) %></li>
   	  <li><%= link_to('My Tags', tags_path(:view_id => @view), :class => tab_selected('tags', 'index')) %></li>
+  	  <li><%= link_to('My Feeds', feeds_path(:view_id => @view), :class => tab_selected('feeds', 'index')) %></li>
   	  <li><%= link_to('Public Tags', public_tags_path(:view_id => @view), :class => tab_selected('tags', 'public')) %></li>
-      <li><%= link_to('Feeds', feeds_path(:view_id => @view), :class => tab_selected('feeds')) %></li>
+      <li><%= link_to('All Feeds', all_feeds_path(:view_id => @view), :class => tab_selected('feeds', 'all')) %></li>
       <% if is_admin? -%>
         <li><%= link_to('Admin', admin_path(:view_id => @view), :class => tab_selected('admin')) %></li>
       <% end -%>

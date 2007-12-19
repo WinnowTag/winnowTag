@@ -13,18 +13,20 @@ class FeedsController < ApplicationController
   def index
     respond_to do |wants|
       wants.html do
-        add_to_sortable_columns('feeds', :field => 'title')
-        add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
-        add_to_sortable_columns('feeds', :field => 'updated_on')
-        add_to_sortable_columns('feeds', :field => 'view_state')
-        add_to_sortable_columns('feeds', :field => 'globally_exclude')
-
+        setup_sortable_columns
         @search_term = params[:search_term]
-        @feeds = Feed.search :search_term => @search_term, :view => @view,
+        @feeds = Feed.search :search_term => @search_term, :view => @view, :user => current_user,
                              :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
       end
       wants.xml { render :xml => Feed.find(:all).to_xml }
     end
+  end
+  
+  def all
+    setup_sortable_columns
+    @search_term = params[:search_term]
+    @feeds = Feed.search :search_term => @search_term, :view => @view,
+                         :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
   end
   
   def new
@@ -85,5 +87,27 @@ class FeedsController < ApplicationController
     else
       ExcludedFeed.delete_all :feed_id => @feed.id, :user_id => current_user.id
     end
+  end
+
+  def subscribe
+    if feed = Feed.find_by_id(params[:id])
+      if params[:subscribe] =~ /true/i
+        FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
+      else
+        FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
+        ViewFeedState.delete_all_for feed, :only => current_user
+        ExcludedFeed.delete_all :feed_id => feed.id, :user_id => current_user.id
+      end
+    end
+    render :nothing => true
+  end
+  
+private
+  def setup_sortable_columns
+    add_to_sortable_columns('feeds', :field => 'title')
+    add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
+    add_to_sortable_columns('feeds', :field => 'updated_on')
+    add_to_sortable_columns('feeds', :field => 'view_state')
+    add_to_sortable_columns('feeds', :field => 'globally_exclude')
   end
 end

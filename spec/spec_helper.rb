@@ -62,6 +62,10 @@ Spec::Runner.configure do |config|
     session[:user] = user_id
   end
   
+  def mock_new_model(model_class, options_and_stubs = {})
+    mock_model(model_class, options_and_stubs.reverse_merge(:id => nil, :to_param => nil, :new_record? => true))
+  end
+  
   def mock_user_for_controller
     @user = mock_model(User, valid_user_attributes)
     @tags = mock("tags")

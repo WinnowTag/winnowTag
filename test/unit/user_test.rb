@@ -18,6 +18,10 @@ class UserTest < Test::Unit::TestCase
   def test_has_many_tag_subscriptions
     assert_association User, :has_many, :tag_subscriptions
   end
+  
+  def test_has_many_tag_subscriptions
+    assert_association User, :has_many, :feed_subscriptions
+  end
 
   def test_should_be_owner_of_self
     u = create_user
@@ -159,7 +163,7 @@ class UserTest < Test::Unit::TestCase
     assert_equal 0, u.number_of_tagged_items
   end
   
-  def test_knows_that_given_user_is_not_subscribed
+  def test_knows_that_given_user_is_not_subscribed_to_a_tag
     current_user = users(:quentin)
     tag = Tag(current_user, 'hockey')
     TagSubscription.delete_all
@@ -167,12 +171,28 @@ class UserTest < Test::Unit::TestCase
     assert !current_user.subscribed?(tag)
   end
   
-  def test_knows_that_given_user_is_subscribed
+  def test_knows_that_given_user_is_subscribed_to_a_tag
     current_user = users(:quentin)
     tag = Tag(current_user, 'hockey')
     TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
     
     assert current_user.subscribed?(tag)
+  end
+  
+  def test_knows_that_given_user_is_not_subscribed_to_a_feed
+    current_user = users(:quentin)
+    feed = Feed.find(:first)
+    FeedSubscription.delete_all
+    
+    assert !current_user.subscribed?(feed)
+  end
+  
+  def test_knows_that_given_user_is_subscribed_to_a_feed
+    current_user = users(:quentin)
+    feed = Feed.find(:first)
+    FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
+    
+    assert current_user.subscribed?(feed)
   end
   
   def test_knows_feed_is_globally_excluded

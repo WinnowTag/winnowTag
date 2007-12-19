@@ -9,7 +9,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feeds/new' do
   before(:each) do
-    @feed = mock_model(Feed, valid_feed_attributes)
+    @feed = mock_new_model(Feed, valid_feed_attributes)
     @view = mock_model(View)
     assigns[:feed] = @feed
     assigns[:view] = @view

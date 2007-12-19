@@ -54,7 +54,6 @@ class User < ActiveRecord::Base
               :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on asc', 
               :include => :feed
   has_many :tags
-  has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
   has_many :taggings, :dependent => :delete_all, :extend => FindByFeedItem
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true],
@@ -69,11 +68,18 @@ class User < ActiveRecord::Base
   end
   has_many :unread_items, :dependent => :delete_all
   has_many :tag_subscriptions
+  has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
+  has_many :feed_subscriptions
+  has_many :subscribed_feeds, :through => :feed_subscriptions, :source => :feed
   has_many :feed_exclusions, :class_name => "ExcludedFeed"
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
  
-  def subscribed?(tag)
-    subscribed_tags.include?(tag)
+  def subscribed?(tag_or_feed)
+    if tag_or_feed.is_a?(Tag)
+      subscribed_tags.include?(tag_or_feed)
+    elsif tag_or_feed.is_a?(Feed)
+      subscribed_feeds.include?(tag_or_feed)
+    end
   end
   
   def globally_excluded?(feed)
