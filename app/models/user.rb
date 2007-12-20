@@ -220,27 +220,45 @@ class User < ActiveRecord::Base
     self.login
   end
   
-  protected
-    # before filter 
-    def encrypt_password
-      return if password.blank?
-      self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
-      self.crypted_password = encrypt(password)
-    end
-    
-    def password_required?
-      crypted_password.blank? || password?
-    end
-    
-    def password?
-      !password.blank?
-    end
-    
-    def make_activation_code
-      self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
-    end
-    
-    def make_owner_of_self
-      self.has_role('owner', self)
-    end
+  def enable_reminder!
+    self.reminder_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.reminder_expires_at = 1.day.from_now
+    save!
+  end
+  
+  def login!(time = Time.now)
+    self.logged_in_at = time
+    self.save!
+  end
+  
+  def reminder_login!(time = Time.now)
+    self.logged_in_at = time
+    self.reminder_code = nil
+    self.reminder_expires_at = nil
+    self.save!
+  end
+  
+protected
+  # before filter 
+  def encrypt_password
+    return if password.blank?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+    self.crypted_password = encrypt(password)
+  end
+  
+  def password_required?
+    crypted_password.blank? || password?
+  end
+  
+  def password?
+    !password.blank?
+  end
+  
+  def make_activation_code
+    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+  end
+  
+  def make_owner_of_self
+    self.has_role('owner', self)
+  end
 end
