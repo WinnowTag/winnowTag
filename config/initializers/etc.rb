@@ -1,8 +1,3 @@
-require 'rubygems' # this is need on stonecutter for some reason
-require 'hpricot'
-require 'digest/sha1'
-require 'tzinfo'
-
 # Use SQL Session Store
 ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:database_manager => SqlSessionStore)
 SqlSessionStore.session_class = MysqlSession
