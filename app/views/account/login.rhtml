@@ -4,21 +4,38 @@
   
   	<p>
   	  <label for="login">Login</label>
-  	  <%= text_field_tag 'login' %>
+  	  <%= text_field_tag :login %>
   	</p>
 
   	<p>
   	  <label for="password">Password</label>
-  	  <%= password_field_tag 'password' %>
+  	  <%= password_field_tag :password %>
   	</p>
 
 
   	<p>
-  	  <%= check_box_tag 'remember_me', "1", true %>
+  	  <%= check_box_tag :remember_me %>
   	  <label for="remember_me" class="inline">Remember me</label>
   	</p>
 
-  	<p><label>&nbsp;</label><%= submit_tag 'Login' %></p>
+  	<p>
+  	  <%= link_to_function "Forgot your password?", "$('login_form').hide(); $('reminder_form').show();", :class => "forgot_password_link" %>
+  	  <%= submit_tag 'Login' %>
+  	</p>
+  <% end -%>
+  
+  <% form_remote_tag :url => reminder_path, :html => { :id => 'reminder_form', :style => "display: none" } do -%>
+    <h1>Password Reminder</h1>
+  
+  	<p>
+  	  <label for="login">Login</label>
+  	  <%= text_field_tag :login %>
+  	</p>
+
+  	<p>
+  	  <%= link_to_function "Back to login", "$('login_form').show(); $('reminder_form').hide();", :class => "forgot_password_link" %>
+  	  <%= submit_tag 'Submit' %>
+  	</p>
   <% end -%>
 
   <% form_for :user, :url => signup_path, :id => "signup_form" do |f| -%>
