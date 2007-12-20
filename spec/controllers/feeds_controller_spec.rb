@@ -48,6 +48,8 @@ describe FeedsController do
     feed.should_receive(:collect)
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
+    FeedSubscription.should_receive(:create!).with(:feed_id => feed.id, :user_id => @user.id)
+    
     post 'create', :feed => {:url => 'http://example.com'}, :view_id => @view.id
     response.should redirect_to(feed_path(feed, :view_id => @view.id))    
   end
@@ -79,11 +81,19 @@ describe FeedsController do
   end
   
   it "should import feeds from opml" do
+    mock_feed1 = mock_model(Remote::Feed)
+    mock_feed2 = mock_model(Remote::Feed)
+    mock_feed1.should_receive(:collect)
+    mock_feed2.should_receive(:collect)
+    
+    FeedSubscription.should_receive(:create!).with(:feed_id => mock_feed1.id, :user_id => @user.id)
+    FeedSubscription.should_receive(:create!).with(:feed_id => mock_feed2.id, :user_id => @user.id)
+    
     Remote::Feed.should_receive(:import_opml).
                  with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml"))).
-                 and_return(stub('feeds', :size => 23))
+                 and_return([mock_feed1, mock_feed2])
     post :import, :view_id => 1, :opml => fixture_file_upload("example.opml")
     response.should redirect_to(feeds_path(:view_id => @view.id))
-    flash[:notice].should == "Imported 23 feeds from your OPML file"
-  end
+    flash[:notice].should == "Imported 2 feeds from your OPML file"
+  end 
 end

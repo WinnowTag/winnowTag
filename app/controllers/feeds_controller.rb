@@ -36,6 +36,7 @@ class FeedsController < ApplicationController
   def create
     @feed = Remote::Feed.find_or_create_by_url(params[:feed][:url])
     if @feed.errors.empty?
+      FeedSubscription.create! :feed_id => @feed.id, :user_id => current_user.id
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
       flash[:notice] = "Added feed from '#{@feed.url}'. " +
@@ -51,6 +52,11 @@ class FeedsController < ApplicationController
   def import
     if params[:opml]
       @feeds = Remote::Feed.import_opml(params[:opml].read)
+      @feeds.each do |feed|
+        FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
+        feed.collect(:created_by   => current_user.login, 
+                     :callback_url => collection_job_results_url(current_user))
+      end
       flash[:notice] = "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file"
       redirect_to feeds_url(:view_id => @view.id)
     end
