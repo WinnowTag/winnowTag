@@ -209,6 +209,34 @@ class UserTest < Test::Unit::TestCase
     
     assert !current_user.globally_excluded?(feed)
   end
+  
+  def test_update_feed_state_moves_feed_subscriptions_when_feed_is_a_duplicate
+    current_user = users(:quentin)
+    feed = Feed.create! :url => 'http://news.google.com'
+    duplicate = Feed.create! :url => 'http://google.com/news'
+    duplicate.is_duplicate = true
+    duplicate.duplicate = feed
+    duplicate.save!
+    
+    # create a subscription to the duplicate
+    sub = FeedSubscription.create! :feed_id => duplicate.id, :user_id => current_user.id
+    
+    current_user.update_feed_state(duplicate)
+    
+    assert_raise(ActiveRecord::RecordNotFound) { FeedSubscription.find(sub.id) }
+    assert current_user.subscribed?(feed)
+  end
+  
+  def test_update_feed_state_does_nothing_with_feed_is_not_a_duplicate
+    current_user = users(:quentin)
+    feed = Feed.create! :url => 'http://news.google.com'
+    # create a subscription to the feed
+    sub = FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
+    
+    current_user.update_feed_state(feed)
+    
+    assert current_user.subscribed?(feed)
+  end
 
 protected
   def create_user(options = {})

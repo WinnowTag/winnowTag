@@ -35,14 +35,15 @@ class CollectionJobResultsController < ApplicationController
   # POST /collection_job_results
   # POST /collection_job_results.xml
   def create
-    if params[:collection_job_result]
-      @collection_job_result = @user.collection_job_results.build(params[:collection_job_result])
-    elsif job = params[:collection_job]      
-      @collection_job_result = @user.collection_job_results.build(:message => job[:message], 
-                                                                  :feed_id => job[:feed_id],
-                                                                  :failed  => job[:failed])
+    @collection_job_result = @user.collection_job_results.build(
+                                      :message => params[:collection_job_result][:message],
+                                      :failed  => params[:collection_job_result][:failed],
+                                      :feed_id => params[:collection_job_result][:feed_id])
+    
+    if (feed = @collection_job_result.feed) && feed.is_duplicate?
+      @user.update_feed_state(feed)
     end
-
+    
     respond_to do |format|
       if @collection_job_result.save
         format.xml  { head :created, :location => collection_job_result_url(@user, @collection_job_result) }

@@ -82,6 +82,19 @@ class User < ActiveRecord::Base
     end
   end
   
+  # Updates any feed state between this feed and the user.
+  #
+  # Only makes changes if the feed is a duplicate
+  def update_feed_state(feed)
+    if feed.is_duplicate? && feed.duplicate_id
+      subscriptions = feed_subscriptions.find(:all, :conditions => { :feed_id => feed.id })
+      subscriptions.each {|s| s.destroy }
+      if subscriptions.any?
+        FeedSubscription.create(:feed_id => feed.duplicate_id, :user_id => self.id)
+      end
+    end
+  end
+  
   def globally_excluded?(feed)
     excluded_feeds.include?(feed)
   end
