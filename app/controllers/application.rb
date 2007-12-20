@@ -38,6 +38,7 @@ protected
         if params[:view_id] == "new"
           if request.get?
             @view = current_user.views.create!
+            flash.keep
             redirect_to params.merge(:view_id => @view)
           end
         else
@@ -46,11 +47,13 @@ protected
         end
       elsif @view = current_user.views.default
         if request.get?
+          flash.keep
           redirect_to params.merge(:view_id => @view)
         end
       else
         @view = current_user.views.create!
         if request.get?
+          flash.keep
           redirect_to params.merge(:view_id => @view)
         end
       end
