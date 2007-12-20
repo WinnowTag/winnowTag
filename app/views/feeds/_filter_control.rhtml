@@ -1,8 +1,8 @@
-<li class="clearfix<%= last ? " last" : nil %>" title="<%= feed.feed_items.size %> items in this feed">
+<li class="clearfix<%= last ? " last" : nil %>" title="<%= feed.feed_items.size %> items in this feed" subscribe_url="<%= subscribe_feed_path(feed, :subscribe => true) %>">
   <div class="show_feed_control">
 	  <%= filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
 		      :onclick => "itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_state: 'always_include', feed_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
-	  <%= link_to_function image_tag("cross.gif"), "this.up('li').remove(); itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_action: 'remove'})" %>
+	  <%= link_to_function image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => subscribe_feed_path(feed, :subscribe => false), :method => :put)}; itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_action: 'remove'})" %>
     <%= link_to feed.title, feed_items_path(:feed_filter => feed, :show_untagged => true, :view_id => :new) %>
   </div>
   <span class="feed_name">

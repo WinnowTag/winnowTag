@@ -105,7 +105,14 @@ class FeedsController < ApplicationController
         ExcludedFeed.delete_all :feed_id => feed.id, :user_id => current_user.id
       end
     end
-    render :nothing => true
+      
+    if params[:remove] =~ /true/i
+      render :update do |page|
+        page[feed.dom_id].remove
+      end
+    else
+      render :nothing => true
+    end
   end
   
 private

@@ -12,13 +12,13 @@
 <div class="section">
   <h4>Feed Filters</h4>
 
-  <!-- <%= text_field_tag 'feed_title', 'find feeds...', :class => "feed_filter_search example",
+  <%= text_field_tag 'feed_title', 'find feeds...', :class => "feed_filter_search example",
         :onclick => "if(this.value == 'find feeds...') { this.value = ''; this.removeClassName('example'); }",
         :onblur => "if(this.value == '') { this.value = 'find feeds...'; this.addClassName('example'); }" %>
   <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
   <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
         :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
-        :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %> -->
+        :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
 
   <ul id="feed_filters" class="filter_list">
   <% current_user.subscribed_feeds.each do |feed| -%>

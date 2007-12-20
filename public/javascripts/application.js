@@ -166,6 +166,7 @@ function updateFilterControl(control, add_url, remove_url) {
 
 function update_feed_filters(element, value) {
 	$('feed_filters').appendChild(value);
+	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
 
 	// TODO: Need to unbind these listeners...
   // for (var i = 0, length = Event.observers.length; i < length; i++) {
