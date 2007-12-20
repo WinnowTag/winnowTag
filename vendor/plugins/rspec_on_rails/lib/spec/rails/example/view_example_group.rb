@@ -24,13 +24,11 @@ module Spec
       #     end
       #   end
       class ViewExampleGroup < FunctionalExampleGroup
-        clear_description
-
         before(:each) do
           ensure_that_flash_and_session_work_properly
         end
 
-        def initialize(example, instance_variables={}) #:nodoc:
+        def initialize(defined_description, &implementation) #:nodoc:
           super
           @controller_class_name = "Spec::Rails::Example::ViewExampleGroupController"
         end

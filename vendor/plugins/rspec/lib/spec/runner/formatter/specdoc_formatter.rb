@@ -6,45 +6,32 @@ module Spec
       class SpecdocFormatter < BaseTextFormatter
         def add_example_group(example_group)
           super
-          @level = 0
-          full_description = example_group.full_description
-          @output.puts
-          full_description.each do |description|
-            @output.puts "#{dashes}#{description}:"
-            @level += 1 if @level < 2
-          end
-          @output.flush
+          output.puts
+          output.puts example_group.description
+          output.flush
         end
       
         def example_failed(example, counter, failure)
           message = if failure.expectation_not_met?
-            "#{dashes}#{example} (FAILED - #{counter})"
+            "- #{example.description} (FAILED - #{counter})"
           else
-            "#{dashes}#{example} (ERROR - #{counter})"
+            "- #{example.description} (ERROR - #{counter})"
           end
           
-          @output.puts(failure.expectation_not_met? ? red(message) : magenta(message))
-          @output.flush
+          output.puts(failure.expectation_not_met? ? red(message) : magenta(message))
+          output.flush
         end
         
         def example_passed(example)
-          message = "#{dashes}#{example}"
-          @output.puts green(message)
-          @output.flush
+          message = "- #{example.description}"
+          output.puts green(message)
+          output.flush
         end
         
-        def example_pending(example_group_description, example_name, message)
+        def example_pending(example_group_description, example, message)
           super
-          @output.puts yellow("#{dashes}#{example_name} (PENDING: #{message})")
-          @output.flush
-        end
-
-        def dashes
-          if @level == 0
-            ""
-          else
-            "#{'-'*@level} "
-          end
+          output.puts yellow("- #{example.description} (PENDING: #{message})")
+          output.flush
         end
       end
     end

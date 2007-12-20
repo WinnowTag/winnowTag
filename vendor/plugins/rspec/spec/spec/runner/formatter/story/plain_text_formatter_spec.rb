@@ -9,8 +9,11 @@ module Spec
           before :each do
             # given
             @out = StringIO.new
+            @tweaker = mock('tweaker')
+            @tweaker.stub!(:tweak_backtrace)
             @options = mock('options')
             @options.stub!(:colour).and_return(false)
+            @options.stub!(:backtrace_tweaker).and_return(@tweaker)
             @formatter = PlainTextFormatter.new(@options, @out)
           end
         
@@ -57,6 +60,40 @@ module Spec
           
             # then
             @out.string.should include("3 scenarios: 1 succeeded, 2 failed")
+          end
+        
+          it 'should end cleanly (no characters on the last line) with successes' do
+            # when
+            @formatter.run_started(1)
+            @formatter.scenario_started(nil, nil)
+            @formatter.scenario_succeeded('story', 'scenario')
+            @formatter.run_ended
+          
+            # then
+            @out.string.should =~ /\n\z/
+          end
+        
+          it 'should end cleanly (no characters on the last line) with failures' do
+            # when
+            @formatter.run_started(1)
+            @formatter.scenario_started(nil, nil)
+            @formatter.scenario_failed('story', 'scenario', exception_from { raise RuntimeError, 'oops' })
+            @formatter.run_ended
+          
+            # then
+            @out.string.should =~ /\n\z/
+          end
+        
+          it 'should end cleanly (no characters on the last line) with pending steps' do
+            # when
+            @formatter.run_started(1)
+            @formatter.scenario_started(nil, nil)
+            @formatter.step_pending(:then, 'do pend')
+            @formatter.scenario_pending('story', 'scenario', exception_from { raise RuntimeError, 'oops' })
+            @formatter.run_ended
+          
+            # then
+            @out.string.should =~ /\n\z/
           end
         
           it 'should summarize the number of pending scenarios when the run ends' do

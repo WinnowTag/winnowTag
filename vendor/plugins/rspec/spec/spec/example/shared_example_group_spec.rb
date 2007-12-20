@@ -3,11 +3,9 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 module Spec
   module Example
     describe ExampleGroup, "with :shared => true" do
-      attr_reader :options, :original_rspec_options, :formatter, :example_group
+      it_should_behave_like "sandboxed rspec_options"
+      attr_reader :formatter, :example_group
       before(:each) do
-        @options = ::Spec::Runner::Options.new(StringIO.new, StringIO.new)
-        @original_rspec_options = $rspec_options
-        $rspec_options = options
         @formatter = Spec::Mocks::Mock.new("formatter", :null_object => true)
         options.formatters << formatter
         @example_group = Class.new(ExampleGroup).describe("example_group")
@@ -17,7 +15,6 @@ module Spec
       end
 
       after(:each) do
-        $rspec_options = @original_rspec_options
         @formatter.rspec_verify
         @example_group = nil
         $shared_example_groups.clear unless $shared_example_groups.nil?
@@ -57,20 +54,6 @@ module Spec
       it "should not be shared when not configured as shared" do
         example_group = non_shared_example_group
         SharedExampleGroup.shared_example_groups.should_not include(example_group)
-      end
-
-      it "should raise if run when shared" do
-        example_group = make_shared_example_group("context") {}
-        $example_ran = false
-        example_group.it("test") {$example_ran = true}
-        lambda { example_group.run }.should raise_error
-        $example_ran.should be_false
-      end
-
-      it "should contain examples when shared" do
-        shared_example_group = make_shared_example_group("shared example_group") {}
-        shared_example_group.it("shared example") {}
-        shared_example_group.number_of_examples.should == 1
       end
 
       it "should complain when adding a second shared example_group with the same description" do
@@ -223,8 +206,9 @@ module Spec
       it "should include modules, included into shared example_group, into current example_group" do
         @formatter.should_receive(:add_example_group).with(any_args)
 
-        shared_example_group = make_shared_example_group("shared example_group") {}
-        shared_example_group.it("shared example") { shared_example_ran = true }
+        shared_example_group = make_shared_example_group("shared example_group") do
+          it("shared example") { shared_example_ran = true }
+        end
 
         mod1_method_called = false
         mod1 = Module.new do

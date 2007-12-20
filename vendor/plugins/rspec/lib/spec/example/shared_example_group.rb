@@ -45,6 +45,14 @@ module Spec
       def included(mod) # :nodoc:
         mod.module_eval(&@example_group_block)
       end
+
+      def execute_in_class_hierarchy(superclass_last=false)
+        classes = [self]
+        superclass_last ? classes << ExampleMethods : classes.unshift(ExampleMethods)
+        classes.each do |example_group|
+          yield example_group
+        end
+      end
     end
   end
 end

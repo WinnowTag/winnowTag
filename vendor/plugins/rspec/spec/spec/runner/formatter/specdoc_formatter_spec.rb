@@ -5,17 +5,17 @@ module Spec
   module Runner
     module Formatter
       describe SpecdocFormatter do
+        it_should_behave_like "sandboxed rspec_options"
         attr_reader :io, :options, :formatter, :example_group
         before(:each) do
           @io = StringIO.new
-          @options = mock('options')
           options.stub!(:dry_run).and_return(false)
           options.stub!(:colour).and_return(false)
           @formatter = SpecdocFormatter.new(options, io)
           @example_group = Class.new(::Spec::Example::ExampleGroup).describe("ExampleGroup")
         end
 
-        describe SpecdocFormatter, "where ExampleGroup has no superclasss with a description" do
+        describe "where ExampleGroup has no superclasss with a description" do
           before do
             formatter.add_example_group(example_group)
           end
@@ -31,7 +31,7 @@ module Spec
           end
 
           it "should push ExampleGroup name" do
-            io.string.should eql("\nExampleGroup:\n")
+            io.string.should eql("\nExampleGroup\n")
           end
 
           it "when having an error, should push failing spec name and failure number" do
@@ -68,25 +68,26 @@ module Spec
           end
 
           it "should push pending example name and message" do
-            formatter.example_pending('example_group', 'example', 'reason')
+            formatter.example_pending('example_group', ExampleGroup.new("example"), 'reason')
             io.string.should have_example_group_output("- example (PENDING: reason)\n")
           end
 
           it "should dump pending" do
-            formatter.example_pending('example_group', 'example', 'reason')
+            formatter.example_pending('example_group', ExampleGroup.new("example"), 'reason')
             io.rewind
             formatter.dump_pending
             io.string.should =~ /Pending\:\nexample_group example \(reason\)\n/
           end
 
           def have_example_group_output(expected_output)
-            ::Spec::Matchers::SimpleMatcher.new(expected_output) do |actual|
-              actual == "\nExampleGroup:\n#{expected_output}"
+            expected = "\nExampleGroup\n#{expected_output}"
+            ::Spec::Matchers::SimpleMatcher.new(expected) do |actual|
+              actual == expected
             end
           end
         end
 
-        describe SpecdocFormatter, "where ExampleGroup has two superclasses with a description" do
+        describe "where ExampleGroup has two superclasses with a description" do
           attr_reader :child_example_group, :grand_child_example_group
           before do
             @child_example_group = Class.new(example_group).describe("Child ExampleGroup")
@@ -100,7 +101,7 @@ module Spec
               98,
               Reporter::Failure.new("c s", RuntimeError.new)
             )
-            io.string.should have_example_group_output("-- spec (ERROR - 98)\n")
+            io.string.should have_nested_example_group_output("- spec (ERROR - 98)\n")
           end
 
           specify "when having an expectation failure, should push failing spec name and failure number" do
@@ -109,11 +110,11 @@ module Spec
               98,
               Reporter::Failure.new("c s", Spec::Expectations::ExpectationNotMetError.new)
             )
-            io.string.should have_example_group_output("-- spec (FAILED - 98)\n")
+            io.string.should have_nested_example_group_output("- spec (FAILED - 98)\n")
           end
 
-          def have_example_group_output(expected_output)
-            expected_full_output = "\nExampleGroup:\n- Child ExampleGroup:\n-- GrandChild ExampleGroup:\n#{expected_output}"
+          def have_nested_example_group_output(expected_output)
+            expected_full_output = "\nExampleGroup Child ExampleGroup GrandChild ExampleGroup\n#{expected_output}"
             ::Spec::Matchers::SimpleMatcher.new(expected_full_output) do |actual|
               actual == expected_full_output
             end
