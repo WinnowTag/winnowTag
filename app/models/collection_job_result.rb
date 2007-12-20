@@ -4,14 +4,17 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-
 class CollectionJobResult < ActiveRecord::Base
   belongs_to :user
   belongs_to :feed
   
   def feed_title
-    if self.feed
-      feed.title or feed.url
+    if feed
+      if feed.title.blank?
+        feed.url
+      else
+        feed.title
+      end
     else
       "Unknown Feed"
     end
