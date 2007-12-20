@@ -6,10 +6,9 @@
 #
 
 class AccountController < ApplicationController
-  # If you want "remember me" functionality, add this before_filter to Application Controller
   before_filter :setup_mailer_site_url
-  skip_before_filter :login_required, :except => [:edit] # don't need to login for any of these actions
-  skip_before_filter :load_view, :only => [ :logout ]
+  skip_before_filter :login_required, :except => [:edit]
+  skip_before_filter :load_view, :only => [:logout]
   
   def edit
     if request.post?
@@ -22,22 +21,32 @@ class AccountController < ApplicationController
   end
   
   def login
-    return unless request.post?
-    self.current_user = User.authenticate(params[:login], params[:password])
-    if current_user
-      self.current_user.logged_in_at = Time.now 
-      self.current_user.save
-      
-      if params[:remember_me] == "1"
-        self.current_user.remember_me
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
-      end
-      redirect_back_or_default feed_items_path
-    else
-      if user = User.find_by_login(params[:login]) and user.activated_at
-        flash[:warning] = "Invalid credentials. Please try again."
+    if request.post?
+      self.current_user = User.authenticate(params[:login], params[:password])
+      if current_user
+        current_user.login!
+              
+        if params[:remember_me] == "1"
+          self.current_user.remember_me
+          cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+        end
+        redirect_back_or_default feed_items_path
       else
-        flash[:notice] = "Your account has not been activated.  Please check your email for an activation link."
+        if user = User.find_by_login(params[:login]) and user.activated_at
+          flash[:warning] = "Invalid credentials. Please try again."
+        else
+          flash[:notice] = "Your account has not been activated.  Please check your email for an activation link."
+        end
+      end
+    elsif params[:code]
+      self.current_user = User.find(:first, :conditions => ["reminder_code = ? AND reminder_expires_at > ?", params[:code], Time.now])
+      if current_user
+        current_user.reminder_login!
+        flash[:warning] = "Please update your password"
+        redirect_to edit_account_path
+      else
+        flash[:error] = "Invalid reminder code"
+        redirect_to login_path(:code => nil)
       end
     end
   end
@@ -74,6 +83,24 @@ class AccountController < ApplicationController
       flash.clear
     end
   end
+  
+  def reminder
+    if user = User.find_by_login(params[:login])
+      user.enable_reminder!
+      UserNotifier.deliver_reminder(user, login_url(user.reminder_code))
+      render :update do |page|
+        page[:notice].update "A password reminder has been sent"
+        page[:notice].show
+        page[:error].hide
+      end
+    else
+      render :update do |page|
+        page[:error].update "Invalid login"
+        page[:error].show
+        page[:notice].hide
+      end
+    end
+  end 
   
 private
 
