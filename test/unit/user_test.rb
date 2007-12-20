@@ -220,10 +220,13 @@ class UserTest < Test::Unit::TestCase
     
     # create a subscription to the duplicate
     sub = FeedSubscription.create! :feed_id => duplicate.id, :user_id => current_user.id
-    
+
+    assert current_user.subscribed?(duplicate)
+    assert !current_user.subscribed?(feed)
+
     current_user.update_feed_state(duplicate)
     
-    assert_raise(ActiveRecord::RecordNotFound) { FeedSubscription.find(sub.id) }
+    assert !current_user.subscribed?(duplicate)
     assert current_user.subscribed?(feed)
   end
   
