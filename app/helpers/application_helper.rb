@@ -195,4 +195,15 @@ module ApplicationHelper
         content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]), 
       :class => "applesearch"
   end
+
+  def globally_exclude_check_box(tag_or_feed)
+    url = if tag_or_feed.is_a?(Tag)
+      globally_exclude_tag_path(tag_or_feed)
+    elsif tag_or_feed.is_a?(Feed)
+      globally_exclude_feed_path(tag_or_feed)
+    end
+    
+    check_box_tag tag_or_feed.dom_id("globally_exclude"), "1",current_user.globally_excluded?(tag_or_feed), 
+      :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+  end
 end

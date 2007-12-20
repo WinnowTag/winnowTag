@@ -70,8 +70,8 @@ class TagsControllerTest < Test::Unit::TestCase
     assert assigns(:subscribed_tags)
     assert_select "tr##{@tag.dom_id}", 1
     assert_select "tr##{@tag.dom_id} td:nth-child(1)", /tag.*/
-    assert_select "tr##{@tag.dom_id} td:nth-child(5)", "1 / 0"
-    assert_select "tr##{@tag.dom_id} td:nth-child(6)", "0"
+    assert_select "tr##{@tag.dom_id} td:nth-child(6)", "1 / 0"
+    assert_select "tr##{@tag.dom_id} td:nth-child(7)", "0"
   end
   
   # TODO - Tags with periods on the end break routing until Rails 1.2.4?

@@ -1,4 +1,4 @@
-<% all_tags = current_user.tags + current_user.subscribed_tags -%>
+<% all_tags = current_user.tags + current_user.subscribed_tags - current_user.excluded_tags -%>
 <% all_tags.each do |tag| -%>
   <li class="clearfix<%= tag.user_id == current_user.id ? '' : " public" %>">
 	  <%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 

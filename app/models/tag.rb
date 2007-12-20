@@ -138,8 +138,10 @@ class Tag < ActiveRecord::Base
               '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by']
     if options[:view]
       select << "CASE view_tag_states.state WHEN 'include' THEN 0 ELSE 1 END AS view_state"
+      select << "((SELECT COUNT(*) FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:view].user_id}) > 0) AS globally_exclude"
     else
       select << "0 AS view_state"
+      select << "0 AS globally_exclude"
     end
     if options[:subscriber]
       select << "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscriber].id}) > 0) AS subscribe"

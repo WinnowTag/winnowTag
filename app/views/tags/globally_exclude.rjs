@@ -1,0 +1,6 @@
+if current_user.globally_excluded?(@tag)
+  page[@tag.dom_id("include")].removeClassName "selected"
+  page[@tag.dom_id("include")].addClassName "disabled"
+else
+  page[@tag.dom_id("include")].removeClassName "disabled"
+end

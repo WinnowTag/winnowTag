@@ -106,4 +106,31 @@ class TagsTest < Test::Unit::SeleniumTestCase
     refresh_and_wait
     dont_see_element "#include_tag_#{tag.id}.selected"
   end
+  
+  def test_globally_exclude_control_disables_view_state_controls
+    tag = Tag.find(2)
+
+    click "include_tag_#{tag.id}"
+    see_element "#include_tag_#{tag.id}.selected"
+    dont_see_element "#include_tag_#{tag.id}.disabled"
+
+    click "globally_exclude_tag_#{tag.id}"
+    sleep 0.1
+    dont_see_element "#include_tag_#{tag.id}.selected"
+    see_element "#include_tag_#{tag.id}.disabled"
+
+    click "include_tag_#{tag.id}"
+    dont_see_element "#include_tag_#{tag.id}.selected"
+    
+    click "globally_exclude_tag_#{tag.id}"
+    sleep 0.1
+    dont_see_element "#include_tag_#{tag.id}.selected"
+    dont_see_element "#include_tag_#{tag.id}.disabled"
+    
+    click "include_tag_#{tag.id}"
+    see_element "#include_tag_#{tag.id}.selected"
+    
+    click "include_tag_#{tag.id}"
+    dont_see_element "#include_tag_#{tag.id}.selected"
+  end
 end

@@ -210,6 +210,21 @@ class UserTest < Test::Unit::TestCase
     assert !current_user.globally_excluded?(feed)
   end
   
+  def test_knows_tag_is_globally_excluded
+    current_user = users(:quentin)
+    tag = Tag(current_user, 'demo')
+    current_user.tag_exclusions.create! :tag_id => tag.id
+    
+    assert current_user.globally_excluded?(tag)
+  end
+  
+  def test_knows_tag_is_not_globally_excluded
+    current_user = users(:quentin)
+    tag = Tag(current_user, 'demo')
+    
+    assert !current_user.globally_excluded?(tag)
+  end
+  
   def test_update_feed_state_moves_feed_subscriptions_when_feed_is_a_duplicate
     current_user = users(:quentin)
     feed = Feed.create! :url => 'http://news.google.com'

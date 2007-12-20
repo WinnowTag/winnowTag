@@ -205,12 +205,9 @@ class FeedItem < ActiveRecord::Base
       end
     end.compact
     
-    # exclude_conditions = view.tag_filters.exclude.map do |tag_filter|
-    #   if tag = tag_filter.tag
-    #     build_tag_exclusion_filter(tag)
-    #   end
-    # end.compact
-    exclude_conditions = nil
+    exclude_conditions = view.user.excluded_tags.map do |tag|
+      build_tag_exclusion_filter(tag)
+    end
 
     # If these are blank add 1=1 so it is easier to combine them
     include_conditions_sql = include_conditions.blank? ? "1=1" : include_conditions.join(" OR ")
@@ -257,19 +254,19 @@ class FeedItem < ActiveRecord::Base
   def self.build_tag_inclusion_filter(tag, include_negative)
     negative_condition = ""
     unless include_negative
-      negative_condition = "and strength >= 0.88 "                +
-                           "and NOT EXISTS ("                     +
-                              "select 1 from taggings where "     +
-                              "tag_id = #{tag.id} and "           +
-                              "feed_item_id = feed_items.id and " +
-                              "classifier_tagging = 0 and "       +
+      negative_condition = "AND strength >= 0.88 "                +
+                           "AND NOT EXISTS ("                     +
+                              "SELECT 1 FROM taggings WHERE "     +
+                              "tag_id = #{tag.id} AND "           +
+                              "feed_item_id = feed_items.id AND " +
+                              "classifier_tagging = 0 AND "       +
                               "strength = 0"                      +
                             ")"                                   
     end
     
     "EXISTS ("                                +
-        "select 1 from taggings where "       +
-        "tag_id = #{tag.id} and "             +
+        "SELECT 1 FROM taggings WHERE "       +
+        "tag_id = #{tag.id} AND "             +
         "feed_item_id = feed_items.id "       +
         negative_condition                    +
       ")"
@@ -277,9 +274,9 @@ class FeedItem < ActiveRecord::Base
 
   def self.build_tag_exclusion_filter(tag)
     "NOT EXISTS ("                          +
-      "select 1 from taggings where "       +
-        "tag_id = #{tag.id} and "           +
-        "feed_item_id = feed_items.id and " +
+      "SELECT 1 FROM taggings WHERE "       +
+        "tag_id = #{tag.id} AND "           +
+        "feed_item_id = feed_items.id AND " +
         "strength >= 0.88"                  +
     ")"
   end
@@ -287,12 +284,12 @@ class FeedItem < ActiveRecord::Base
   def self.build_show_untagged_filter(view, include_negative)
     negative_condition = ""
     unless include_negative
-      negative_condtion = " and strength >= 0.88"
+      negative_condtion = " AND strength >= 0.88"
     end
     
     "NOT EXISTS (" +
-      "select 1 from taggings where " + 
-        "user_id = #{view.user.id} and " +
+      "SELECT 1 FROM taggings WHERE " + 
+        "user_id = #{view.user.id} AND " +
         "feed_item_id = feed_items.id" +
         negative_condition +
       ")"
@@ -301,14 +298,14 @@ class FeedItem < ActiveRecord::Base
   def self.build_show_tagged_filter(view, include_negative)
     negative_condition = ""
     unless include_negative
-      negative_condition = " and strength >= 0.88"
+      negative_condition = " AND strength >= 0.88"
     end
     
     users = [view.user.id] + view.user.subscribed_tags.map {|t| t.user_id}
     
     "EXISTS (" +
-      "select 1 from taggings where " + 
-        "user_id IN (#{users.join(",")}) and " +
+      "SELECT 1 FROM taggings WHERE " + 
+        "user_id IN (#{users.join(",")}) AND " +
         "feed_item_id = feed_items.id" +
         negative_condition +
       ")"

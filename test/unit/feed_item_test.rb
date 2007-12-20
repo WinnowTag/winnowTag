@@ -152,82 +152,82 @@ class FeedItemTest < Test::Unit::TestCase
     assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   end
   
-  # def test_find_with_excluded_tag_should_return_items_not_tagged_with_that_tag
-  #   user = users(:quentin)
-  #   tag1 = Tag(user, 'tag1')
-  #   tag2 = Tag(user, 'tag2')
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  # 
-  #   view = user.views.create!
-  #   view.add_tag :exclude, tag1
-  #   
-  #   expected = [FeedItem.find(3)]
-  #   assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-  # end
+  def test_find_with_excluded_tag_should_return_items_not_tagged_with_that_tag
+    user = users(:quentin)
+    tag1 = Tag(user, 'tag1')
+    tag2 = Tag(user, 'tag2')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
   
-  # def test_find_with_multiple_excluded_tags_should_return_items_not_tagged_with_those_tags
-  #   user = users(:quentin)
-  #   tag1 = Tag(user, 'tag1')
-  #   tag2 = Tag(user, 'tag2')
-  #   tag3 = Tag(user, 'tag3')
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag3)
-  # 
-  #   view = user.views.create!
-  #   view.add_tag :exclude, tag1
-  #   view.add_tag :exclude, tag2
-  #   
-  #   expected = [FeedItem.find(4)]
-  #   assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-  # end
+    view = user.views.create!
+    user.tag_exclusions.create! :tag_id => tag1.id
+    
+    expected = [FeedItem.find(3)]
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
   
-  # def test_find_with_excluded_tag_should_return_items_not_tagged_with_that_tag
-  #   user = users(:quentin)
-  #   tag1 = Tag(user, 'tag1')
-  #   tag2 = Tag(user, 'tag2')
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  # 
-  #   view = user.views.create! :show_untagged => true
-  #   view.add_tag :exclude, tag1
-  #   
-  #   expected = FeedItem.find(1, 3, 4)
-  #   assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-  # end
+  def test_find_with_multiple_excluded_tags_should_return_items_not_tagged_with_those_tags
+    user = users(:quentin)
+    tag1 = Tag(user, 'tag1')
+    tag2 = Tag(user, 'tag2')
+    tag3 = Tag(user, 'tag3')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag3)
   
-  # def test_find_with_included_and_excluded_tags_should_return_items_tagged_with_included_tag_and_not_the_excluded_tag
-  #   user = users(:quentin)
-  #   tag1 = Tag(user, 'tag1')
-  #   tag2 = Tag(user, 'tag2')
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag1)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  # 
-  #   view = user.views.create!
-  #   view.add_tag :include, tag1
-  #   view.add_tag :exclude, tag2
-  #   
-  #   expected = [FeedItem.find(2)]
-  #   assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-  # end
+    view = user.views.create!
+    user.tag_exclusions.create! :tag_id => tag1.id
+    user.tag_exclusions.create! :tag_id => tag2.id
+    
+    expected = [FeedItem.find(4)]
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
   
-  # def test_find_with_included_and_excluded_tags_and_show_untagged_should_return_items_tagged_with_included_tag_and_not_the_excluded_tag_or_untagged_items
-  #   user = users(:quentin)
-  #   tag1 = Tag(user, 'tag1')
-  #   tag2 = Tag(user, 'tag2')
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag1)
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  # 
-  #   view = user.views.create! :show_untagged => true
-  #   view.add_tag :include, tag1
-  #   view.add_tag :exclude, tag2
-  #   
-  #   expected = FeedItem.find(1, 2, 4)
-  #   assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
-  # end
+  def test_find_with_excluded_tag_should_return_items_not_tagged_with_that_tag
+    user = users(:quentin)
+    tag1 = Tag(user, 'tag1')
+    tag2 = Tag(user, 'tag2')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
+  
+    view = user.views.create! :show_untagged => true
+    user.tag_exclusions.create! :tag_id => tag1.id
+    
+    expected = FeedItem.find(1, 3, 4)
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
+  
+  def test_find_with_included_and_excluded_tags_should_return_items_tagged_with_included_tag_and_not_the_excluded_tag
+    user = users(:quentin)
+    tag1 = Tag(user, 'tag1')
+    tag2 = Tag(user, 'tag2')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag1)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
+  
+    view = user.views.create!
+    view.add_tag :include, tag1
+    user.tag_exclusions.create! :tag_id => tag2.id
+    
+    expected = [FeedItem.find(2)]
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
+  
+  def test_find_with_included_and_excluded_tags_and_show_untagged_should_return_items_tagged_with_included_tag_and_not_the_excluded_tag_or_untagged_items
+    user = users(:quentin)
+    tag1 = Tag(user, 'tag1')
+    tag2 = Tag(user, 'tag2')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag1)
+    Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
+  
+    view = user.views.create! :show_untagged => true
+    view.add_tag :include, tag1
+    user.tag_exclusions.create! :tag_id => tag2.id
+    
+    expected = FeedItem.find(1, 2, 4)
+    assert_equal expected, FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
+  end
   
   def test_find_with_feed_filters_should_return_only_tagged_items_from_the_included_feed
     user = users(:quentin)
@@ -358,46 +358,6 @@ class FeedItemTest < Test::Unit::TestCase
   
     assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
   end
-  
-  #TODO: Update to work w/ new tag publication feature.  
-  # def test_find_with_tag_publication_tag_filter
-  #   user = users(:quentin)
-  #   tag_pub = TagPublication.find(1)
-  #   tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
-  #   
-  #   view = user.views.create!
-  #   view.add_tag :include, tag_pub
-  #    
-  #   expected = [FeedItem.find(1)]
-  #   assert_equal(expected, FeedItem.find_with_filters(:view => view))
-  # end
-
-  #TODO: Update to work w/ new tag publication feature.
-  # def test_find_with_tag_publication_tag_filter_includes_publications_classifier_tags
-  #   user = users(:quentin)
-  #   tag_pub = TagPublication.find(1)
-  #   tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
-  #   
-  #   view = user.views.create!
-  #   view.add_tag :include, tag_pub
-  #   
-  #   expected = [FeedItem.find(1)]
-  #   assert_equal(expected, FeedItem.find_with_filters(:view => view))
-  # end
-
-  #TODO: Update to work w/ new tag publication feature.
-  # def test_find_with_tag_publication_tag_filter_excludes_publications_classifier_tags_when_overriden_by_negative
-  #   user = users(:quentin)
-  #   tag_pub = TagPublication.find(1)
-  #   tag_pub.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1), :strength => 0)
-  #   tag_pub.classifier.taggings.create(:tag => tag_pub.tag, :taggable => FeedItem.find(1))
-  #    
-  #   view = user.views.create!
-  #   view.add_tag :include, tag_pub
-  #    
-  #   expected = []
-  #   assert_equal(expected, FeedItem.find_with_filters(:view => view))
-  # end
   
   def test_options_for_filters_creates_text_filter
     view = users(:quentin).views.build :text_filter => "text"
@@ -598,17 +558,17 @@ class FeedItemTest < Test::Unit::TestCase
     assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:view => view)
   end
 
-  # def test_find_with_non_existent_tag_exclude_filter_should_ignore_the_nonexistent_tag
-  #   user = users(:quentin)
-  #   tag = Tag(user, 'tag1')
-  #   Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-  #   
-  #   view = user.views.create! :show_untagged => true
-  #   view.add_tag :exclude, tag
-  #   view.add_tag :exclude, tag.id + 1
-  #   
-  #   assert_equal FeedItem.find(1,3,4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id')
-  # end
+  def test_find_with_non_existent_tag_exclude_filter_should_ignore_the_nonexistent_tag
+    user = users(:quentin)
+    tag = Tag(user, 'tag1')
+    Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
+    
+    view = user.views.create! :show_untagged => true
+    user.tag_exclusions.create! :tag_id => tag.id
+    user.tag_exclusions.create! :tag_id => tag.id + 1
+    
+    assert_equal FeedItem.find(1,3,4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id')
+  end
   
   def test_using_tagged_filter_ignored_negatively_tagged_items
     user = users(:quentin)

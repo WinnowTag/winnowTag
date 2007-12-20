@@ -16,15 +16,6 @@ module FeedsHelper
     feed_link + ' ' + feed_home_link + ' ' + feed_page_link
   end
   
-  def globally_exclude_check_box(feed)
-    check_box_tag feed.dom_id("globally_exclude"), "1", 
-                  current_user.globally_excluded?(feed), 
-                  :onclick => remote_function(
-                                :url => globally_exclude_feed_path(feed), 
-                                :with => "{ globally_exclude: this.checked }"
-                              )
-  end
-  
   def always_include_feed_filter_control(feed)
     filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
 			      :id => feed.dom_id("always_include"), :disabled => current_user.globally_excluded?(feed),

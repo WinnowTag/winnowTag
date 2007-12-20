@@ -9,6 +9,7 @@
 		      :add_url => add_tag_view_path(@view, :tag_id => subscribed_tag, :tag_state => "include"),
 		      :remove_url => remove_tag_view_path(@view, :tag_id => subscribed_tag) %>
 	</td>
+  <td><%= globally_exclude_check_box(subscribed_tag) %></td>
 	<td><%= check_box_tag subscribed_tag.dom_id("public"), nil, true, :disabled => true %></td>
  	<td class="control_icons" id="<%= subscribed_tag.dom_id("controls") %>">
     <%= link_to_remote image_tag('copy.gif', :title => "Copy #{subscribed_tag.name}"), :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}" %>

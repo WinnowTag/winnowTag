@@ -13,6 +13,7 @@
       <tr>
       	<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => 'name') %></th>
       	<th class="view_state"><%= link_to "View State", sort_param('tags', :alias => "view_state") %></th>
+  		  <th class="view_state"><%= link_to "Globally Exclude", sort_param('tags', :alias => 'globally_exclude') %></th>
       	<th class="control_icons"><%= link_to "Public", sort_param('tags', :alias => "public") %></th>
       	<th class="control_icons">Actions</th>
       	<th class="usage number"><%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %></th>

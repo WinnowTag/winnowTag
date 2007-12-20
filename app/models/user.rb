@@ -73,6 +73,8 @@ class User < ActiveRecord::Base
   has_many :subscribed_feeds, :through => :feed_subscriptions, :source => :feed
   has_many :feed_exclusions
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
+  has_many :tag_exclusions
+  has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
  
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
@@ -93,8 +95,12 @@ class User < ActiveRecord::Base
     end
   end
   
-  def globally_excluded?(feed)
-    excluded_feeds.include?(feed)
+  def globally_excluded?(tag_or_feed)
+    if tag_or_feed.is_a?(Tag)
+      excluded_tags.include?(tag_or_feed)
+    elsif tag_or_feed.is_a?(Feed)
+      excluded_feeds.include?(tag_or_feed)
+    end
   end
 
   def has_read_item?(feed_item)

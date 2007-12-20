@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :load_view, :only => :show
   skip_before_filter :login_required, :only => :show
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe]
+  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude]
   
   def index
     respond_to do |wants|
@@ -167,6 +167,16 @@ class TagsController < ApplicationController
     @tags = Tag.find_all_with_count(:search_term => @search_term, :conditions => ["tags.public = ?", true], :subscriber => current_user,
                                     :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
   end
+
+  def globally_exclude
+    @tag = Tag.find(params[:id])
+    if params[:globally_exclude] =~ /true/i
+      current_user.tag_exclusions.create! :tag_id => @tag.id
+      ViewTagState.delete_all_for(@tag, :only => current_user)
+    else
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+    end
+  end
   
   def subscribe
     if tag = Tag.find_by_id_and_public(params[:id], true)
@@ -175,6 +185,7 @@ class TagsController < ApplicationController
       else
         TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
         ViewTagState.delete_all_for(tag, :only => current_user)
+        TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
       end
     end
     render :nothing => true
@@ -184,6 +195,7 @@ class TagsController < ApplicationController
     if tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
       ViewTagState.delete_all_for(tag, :only => current_user)
+      TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
     end
     redirect_to :back
   end
@@ -203,5 +215,6 @@ private
     add_to_sortable_columns('tags', :field => 'classifier_count')
     add_to_sortable_columns('tags', :field => 'last_used_by')
     add_to_sortable_columns('tags', :field => 'login')
+    add_to_sortable_columns('tags', :field => 'globally_exclude')
   end
 end
