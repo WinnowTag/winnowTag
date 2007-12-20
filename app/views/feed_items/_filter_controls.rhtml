@@ -21,7 +21,7 @@
         :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
 
   <ul id="feed_filters" class="filter_list">
-  <% current_user.subscribed_feeds.each do |feed| -%>
+  <% (current_user.subscribed_feeds - current_user.excluded_feeds).each do |feed| -%>
     <%= render :partial => "feeds/filter_control", :locals => { :feed => feed, :last => false } %>
   <% end -%>
   </ul>
