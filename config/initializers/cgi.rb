@@ -1,13 +1,3 @@
-# Use SQL Session Store
-ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:database_manager => SqlSessionStore)
-SqlSessionStore.session_class = MysqlSession
-
-# winnow_collect_log_file 
-# based on the comment above regarding RAILS_ROOT being set incorrect I'll use relative paths
-logger_suffix = RAILS_ENV == 'test' ? 'test' : ""
-WINNOW_COLLECT_LOG = File.join(RAILS_ROOT, 'log', "winnow_collect.log#{logger_suffix}")
-
-# And now some Monkey Patching
 
 # Patch CGI::unescapeHTML to ignore non-printable characters and not escape ampersands
 # that are already part of an escape.  This is to better handle special characters in
@@ -52,29 +42,3 @@ class CGI
     end
   end
 end
-
-module UrlWithViewId
-  def self.included(base)
-    base.alias_method_chain :url_for, :view_id
-  end
-  
-  def url_for_with_view_id(options = {})
-    if @view
-      if options.kind_of? Hash
-        options = { :view_id => @view.id }.update(options.symbolize_keys)
-      elsif options.kind_of? String
-        unless options.include?("view_id=")
-          if options.include?("?")
-            options << "&view_id=#{@view.id}"
-          else
-            options << "?view_id=#{@view.id}"
-          end
-        end
-      end
-    end
-    
-    url_for_without_view_id(options)
-  end
-end
-ActionView::Base.send :include, UrlWithViewId
-ActionController::Base.send :include, UrlWithViewId
