@@ -2,18 +2,8 @@
 ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:database_manager => SqlSessionStore)
 SqlSessionStore.session_class = MysqlSession
 
-# ActionController::Base.fragment_cache_store = :file_store, File.join(RAILS_ROOT, 'tmp', 'cache')
-
-ExceptionNotifier.exception_recipients = %w(wizzadmin@peerworks.org)
-ExceptionNotifier.email_prefix = "[WINNOW] "
-ExceptionNotifier.sender_address = %("Winnow Admin" <wizzadmin@peerworks.org>)
-
-require 'hash_ext'
-require 'module_ext'
-
 # winnow_collect_log_file 
-# based on the comment above regarding RAILS_ROOT being set incorrect I'll use 
-# relative paths
+# based on the comment above regarding RAILS_ROOT being set incorrect I'll use relative paths
 logger_suffix = RAILS_ENV == 'test' ? 'test' : ""
 WINNOW_COLLECT_LOG = File.join(RAILS_ROOT, 'log', "winnow_collect.log#{logger_suffix}")
 
