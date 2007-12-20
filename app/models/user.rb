@@ -71,7 +71,7 @@ class User < ActiveRecord::Base
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
   has_many :feed_subscriptions
   has_many :subscribed_feeds, :through => :feed_subscriptions, :source => :feed
-  has_many :feed_exclusions, :class_name => "ExcludedFeed"
+  has_many :feed_exclusions
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
  
   def subscribed?(tag_or_feed)

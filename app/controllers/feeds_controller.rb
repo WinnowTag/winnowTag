@@ -88,21 +88,21 @@ class FeedsController < ApplicationController
   def globally_exclude
     @feed = Feed.find(params[:id])
     if params[:globally_exclude] =~ /true/i
-      ExcludedFeed.create! :feed_id => @feed.id, :user_id => current_user.id
+      current_user.feed_exclusions.create! :feed_id => @feed.id
       ViewFeedState.delete_all_for(@feed, :only => current_user)
     else
-      ExcludedFeed.delete_all :feed_id => @feed.id, :user_id => current_user.id
+      FeedExclusion.delete_all :feed_id => @feed.id, :user_id => current_user.id
     end
   end
 
   def subscribe
     if feed = Feed.find_by_id(params[:id])
       if params[:subscribe] =~ /true/i
-        FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
+        current_user.feed_subscriptions.create! :feed_id => @feed.id
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         ViewFeedState.delete_all_for feed, :only => current_user
-        ExcludedFeed.delete_all :feed_id => feed.id, :user_id => current_user.id
+        FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
       end
     end
       

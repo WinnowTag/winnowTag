@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class FeedsTest < Test::Unit::SeleniumTestCase
-  fixtures :users, :feeds, :view_feed_states, :excluded_feeds, :feed_subscriptions
+  fixtures :users, :feeds, :view_feed_states, :feed_exclusions, :feed_subscriptions
   
   def setup
     login

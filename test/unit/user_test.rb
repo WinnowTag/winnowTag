@@ -198,7 +198,7 @@ class UserTest < Test::Unit::TestCase
   def test_knows_feed_is_globally_excluded
     current_user = users(:quentin)
     feed = Feed.create! :url => "http://news.google.com"
-    ExcludedFeed.create! :feed_id => feed.id, :user_id => current_user.id
+    current_user.feed_exclusions.create! :feed_id => feed.id
     
     assert current_user.globally_excluded?(feed)
   end
