@@ -24,8 +24,14 @@ class UserNotifier < ActionMailer::Base
     @subject    += 'Your account has been activated!'
     @body[:url]  = url_for(:controller => '')
   end
+  
+  def reminder(user, url)
+    setup_email(user)
+    @subject    += "Password Reminder"
+    @body[:url]  = url
+  end
     
-  protected
+protected
   def setup_email(user)
     @recipients  = "#{user.email}"
     @from        = "seangeo@peerworks.org"
