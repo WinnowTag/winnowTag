@@ -13,6 +13,8 @@ describe FeedsController do
     mock_user_for_controller
     @user.stub!(:collection_job_result_to_display)
     Feed.stub!(:find_by_url_or_link)
+    @feed = mock_model(Feed)
+    Feed.stub!(:find_by_id).and_return(@feed)
     @feeds = mock('feeds')
     Feed.stub!(:search).and_return(@feeds)
   end
@@ -96,4 +98,12 @@ describe FeedsController do
     response.should redirect_to(feeds_path(:view_id => @view.id))
     flash[:notice].should == "Imported 2 feeds from your OPML file"
   end 
+  
+  it "should create a feed subscription when for the subscribe action" do
+    subscriptions = mock('subscriptions')
+    subscriptions.should_receive(:create!).with(:feed_id => @feed.id)
+    @user.should_receive(:feed_subscriptions).and_return(subscriptions)
+    
+    post :subscribe, :id => @feed.id, :subscribe => 'true'
+  end
 end

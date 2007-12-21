@@ -98,7 +98,7 @@ class FeedsController < ApplicationController
   def subscribe
     if feed = Feed.find_by_id(params[:id])
       if params[:subscribe] =~ /true/i
-        current_user.feed_subscriptions.create! :feed_id => @feed.id
+        current_user.feed_subscriptions.create! :feed_id => feed.id
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         ViewFeedState.delete_all_for feed, :only => current_user
