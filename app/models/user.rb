@@ -6,8 +6,6 @@
 #
 #
   
-require 'digest/sha1'
-
 # == Schema Information
 # Schema version: 57
 #
