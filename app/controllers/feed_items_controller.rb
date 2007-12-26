@@ -57,16 +57,9 @@ class FeedItemsController < ApplicationController
     end
   
     @feed_items = FeedItem.find_with_filters(filters)    
-  
-    # If the request is just to load some items via Ajax we don't need the count
-    # unless request.xhr? and not(params[:incremental])
-      @feed_item_count = FeedItem.count_with_filters(filters)
-    # end
+    @feed_item_count = FeedItem.count_with_filters(filters)
     
-    respond_to do |wants|
-      wants.html
-      wants.js 
-    end
+    respond_to :html, :js
   end
   
   def show
