@@ -60,7 +60,11 @@ class User < ActiveRecord::Base
   has_many :deleted_taggings, :dependent => :delete_all
   has_many :tagging_tags, :through => :taggings, :select => 'DISTINCT tags.*', 
                 :order => 'tags.name ASC', :source => :tag
-  has_many :unread_items, :dependent => :delete_all
+  has_many :unread_items, :dependent => :delete_all do
+    def for(feed)
+      find(:all, :joins => :feed_item, :conditions => { "feed_items.feed_id" => feed })
+    end
+  end
   has_many :tag_subscriptions
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
   has_many :feed_subscriptions

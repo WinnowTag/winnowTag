@@ -2,6 +2,7 @@
   <div class="show_feed_control">
 	  <%#= filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
 		      :onclick => "itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_state: 'always_include', feed_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
+  	<span class="unread_count">(<%= current_user.unread_items.for(feed).size %>)</span>
 	  <%= link_to_function image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => subscribe_feed_path(feed, :subscribe => false), :method => :put)}; itemBrowser.reload({feed_filter: #{feed.id}, feed_filter_action: 'remove'})" %>
     <%= link_to feed.title, "#feed_ids=#{feed.id}", :onclick => "itemBrowser.reload({feed_ids: #{feed.id}});" %>
   </div>

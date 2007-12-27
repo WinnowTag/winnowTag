@@ -990,3 +990,7 @@ a.bookmarklet:hover {
   margin: .2em 0 0 0;
   float: right;
 }
+
+.unread_count {
+  float: right;
+}
