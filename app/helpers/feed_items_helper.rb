@@ -233,14 +233,6 @@ module FeedItemsHelper
     classes.uniq
   end
 
-  def tag_filter_title(tag, classifier_tag)
-    if classifier_tag
-      "#{tag.name} (#{tag.count}/#{classifier_tag.count})"
-    else
-      "#{tag.name} (#{tag.count})"
-    end
-  end
-  
   def tagging_type_class(tagging)
     if tagging.classifier_tagging?
       "bayes_classifier_tagging"

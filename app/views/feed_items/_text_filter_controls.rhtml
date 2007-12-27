@@ -1,4 +1,4 @@
 <% form_tag feed_items_path, :method => :get, :onsubmit => "itemBrowser.reload({text_filter: $('text_filter').value}); return false;" do -%>
-  <%= search_field_tag "text_filter", @view.text_filter, :clear => { :onclick => "itemBrowser.reload({text_filter: $('text_filter').value = ''});" } %>
+  <%= search_field_tag "text_filter", params[:text_filter], :clear => { :onclick => "itemBrowser.reload({text_filter: $('text_filter').value = ''});" } %>
 <% end -%>
 	

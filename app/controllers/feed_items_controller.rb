@@ -24,8 +24,6 @@ class FeedItemsController < ApplicationController
   #
   # === The parameters are passed through to +FeedItem.find_with_filters+.
   #
-  # <tt>tag_filter</tt>:: The id of a tag to filter on.
-  # <tt>feed_filter</tt>:: The id of a feed to filter on.
   # <tt>only_tagger</tt>:: Defines which tagger is used for the tag_filter. Can be 'user', 'classifier', or nil, in which case both are used.
   # <tt>mode</tt>:: When set to 'tag_inspect' the tag inspect mode is turned on. Any other value resets the mode to normal.
   # <tt>limit</tt>:: The number of items to fetch. Default is 40, max is 100.
@@ -39,27 +37,29 @@ class FeedItemsController < ApplicationController
   #
   # See also +FeedItem.find_with_filters+.
   def index
-    @view.update_filters(params)
-    @view.save!
+    respond_to do |format|
+      format.html
+      format.js do
+        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
 
-    limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
-
-    filters = { :view => @view,
-                :order => 'feed_items.time DESC',
-                :limit => limit,
-                :offset => params[:offset],
-                :only_tagger => params[:only_tagger]
-              }
-              
-    if @view.tag_inspect_mode?
-      filters[:only_tagger] = 'user'
-      filters[:include_negative] = true
-    end
-  
-    @feed_items = FeedItem.find_with_filters(filters)    
-    @feed_item_count = FeedItem.count_with_filters(filters)
+        filters = { :order => 'feed_items.time DESC',
+                    :limit => limit,
+                    :offset => params[:offset],
+                    :only_tagger => params[:only_tagger],
+                    :feed_ids => params[:feed_ids],
+                    :tag_ids => params[:tag_ids],
+                    :text_filter => params[:text_filter],
+                    :user => current_user }
     
-    respond_to :html, :js
+        # if @view.tag_inspect_mode?
+        #   filters[:only_tagger] = 'user'
+        #   filters[:include_negative] = true
+        # end
+  
+        @feed_items = FeedItem.find_with_filters(filters)    
+        @feed_item_count = FeedItem.count_with_filters(filters)
+      end
+    end
   end
   
   def show
@@ -82,12 +82,12 @@ class FeedItemsController < ApplicationController
       @feed_item_id = params[:id]
       FeedItem.mark_read_for(current_user.id, @feed_item_id)
     else
-      filters = { :view => @view, :only_tagger => params[:only_tagger] }
+      filters = { :only_tagger => params[:only_tagger], :user => current_user }
 
-      if @view.tag_inspect_mode?
-        filters[:only_tagger] = 'user'
-        filters[:include_negative] = true
-      end
+      # if @view.tag_inspect_mode?
+      #   filters[:only_tagger] = 'user'
+      #   filters[:include_negative] = true
+      # end
       
       FeedItem.mark_read(filters)
     end

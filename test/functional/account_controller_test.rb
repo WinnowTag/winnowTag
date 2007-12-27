@@ -159,7 +159,7 @@ class AccountControllerTest < Test::Unit::TestCase
   
   def test_edit_shows_timezone_select_set_to_current_timezone
     login_as(:quentin)
-    get :edit, :view_id => users(:quentin).views.create
+    get :edit
     assert_select "select[name='current_user[time_zone]']", true do
       assert_select "option[value='#{users(:quentin).time_zone}']", true
     end
@@ -167,7 +167,7 @@ class AccountControllerTest < Test::Unit::TestCase
   
   def test_get_edit_returns_the_form
     login_as(:quentin)
-    get :edit, :view_id => users(:quentin).views.create
+    get :edit
     assert_response :success
     assert_template 'edit'
   end

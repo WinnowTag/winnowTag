@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class FeedItemsTest < Test::Unit::SeleniumTestCase
-  fixtures :users, :views, :feed_items, :feeds, :unread_items
+  fixtures :users, :feed_items, :feeds, :unread_items
 
   def setup
     delete_cookie "show_sidebar", "/"

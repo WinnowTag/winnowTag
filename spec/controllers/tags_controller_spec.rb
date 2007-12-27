@@ -21,7 +21,7 @@ describe TagsController do
   
   it "should update the tag's bias" do
     @tag.should_receive(:update_attribute).with(:bias, 1.2)
-    put "update", :id => 1, :tag => {:bias => 1.2}, :view_id => 1
+    put "update", :id => 1, :tag => {:bias => 1.2}
     response.should be_success
   end
   
@@ -31,7 +31,7 @@ describe TagsController do
     @tag.stub!(:last_classified_at).and_return(time)    
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
     
-    get "show", :id => 1, :view_id => 1, :user_id => 'quentin'
+    get "show", :id => 1, :user_id => 'quentin'
     response.code.should == '304'
   end
   
@@ -40,7 +40,7 @@ describe TagsController do
     @tag.stub!(:last_classified_at).and_return(Time.now.yesterday.yesterday)
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
     
-    get "show", :id => 1, :view_id => 1, :user_id => 'quentin'
+    get "show", :id => 1, :user_id => 'quentin'
     response.should be_success
   end
   
@@ -49,7 +49,7 @@ describe TagsController do
     @tag.stub!(:updated_on).and_return(Time.now.yesterday.yesterday)
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
     
-    get "show", :id => 1, :view_id => 1, :user_id => 'quentin'
+    get "show", :id => 1, :user_id => 'quentin'
     response.should be_success
   end
 end

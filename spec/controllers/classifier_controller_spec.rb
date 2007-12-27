@@ -83,7 +83,7 @@ describe ClassifierController do
     job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 0)
     Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
     session[:classification_job_id] = "JOB-ID"
-    get "status", :view_id => "1001"
+    get "status"
     response.should be_success
     response.headers['X-JSON'].should include('"progress": 0')
     response.headers['X-JSON'].should include('"status": "Waiting"')
@@ -94,14 +94,14 @@ describe ClassifierController do
     job.should_receive(:destroy)
     Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
     session[:classification_job_id] = "JOB-ID"
-    get "status", :view_id => "1001"
+    get "status"
     response.should be_success    
   end
   
   it "should return an error when a stale job key is sent" do
     Remote::ClassifierJob.should_receive(:find).with("STALE").and_return(nil)
     session[:classification_job_id] = "STALE"
-    get "status", :view_id => "1001"
+    get "status"
     assert_response 500
     response.headers['X-JSON'].should include('"error_message": "No classification process running"')
   end

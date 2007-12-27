@@ -15,7 +15,7 @@ class FeedsController < ApplicationController
       wants.html do
         setup_sortable_columns
         @search_term = params[:search_term]
-        @feeds = Feed.search :search_term => @search_term, :view => @view, :user => current_user,
+        @feeds = Feed.search :search_term => @search_term, :subscribed_by => current_user, :excluder => current_user, 
                              :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
       end
       wants.xml { render :xml => Feed.find(:all).to_xml }
@@ -25,7 +25,7 @@ class FeedsController < ApplicationController
   def all
     setup_sortable_columns
     @search_term = params[:search_term]
-    @feeds = Feed.search :search_term => @search_term, :view => @view,
+    @feeds = Feed.search :search_term => @search_term,
                          :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
   end
   
@@ -42,7 +42,7 @@ class FeedsController < ApplicationController
       flash[:notice] = "Added feed from '#{@feed.url}'. " +
                        "Collection has been scheduled for this feed, " +
                        "we'll let you know when it's done."
-      redirect_to feed_url(@feed, :view_id => @view.id)
+      redirect_to feed_url(@feed)
     else
       flash[:error] = @feed.errors.on(:url)
       render :action => 'new'        
@@ -58,7 +58,7 @@ class FeedsController < ApplicationController
                      :callback_url => collection_job_results_url(current_user))
       end
       flash[:notice] = "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file"
-      redirect_to feeds_url(:view_id => @view.id)
+      redirect_to feeds_url
     end
   end
   
@@ -89,10 +89,10 @@ class FeedsController < ApplicationController
     @feed = Feed.find(params[:id])
     if params[:globally_exclude] =~ /true/i
       current_user.feed_exclusions.create! :feed_id => @feed.id
-      ViewFeedState.delete_all_for(@feed, :only => current_user)
     else
       FeedExclusion.delete_all :feed_id => @feed.id, :user_id => current_user.id
     end
+    render :nothing => true
   end
 
   def subscribe
@@ -101,7 +101,6 @@ class FeedsController < ApplicationController
         current_user.feed_subscriptions.create! :feed_id => feed.id
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
-        ViewFeedState.delete_all_for feed, :only => current_user
         FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
       end
     end
@@ -120,7 +119,6 @@ private
     add_to_sortable_columns('feeds', :field => 'title')
     add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
     add_to_sortable_columns('feeds', :field => 'updated_on')
-    add_to_sortable_columns('feeds', :field => 'view_state')
     add_to_sortable_columns('feeds', :field => 'globally_exclude')
   end
 end

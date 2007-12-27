@@ -21,13 +21,7 @@ describe '/feeds/show' do
 
     @user.should_receive(:subscribed?).with(@feed).and_return(true)
     
-    @view = mock_model(View, :unsaved? => false)
-    @feed_filters = mock_model(ViewFeedState)
-    @feed_filters.stub!(:includes?).and_return(false)
-    @view.stub!(:feed_filters).and_return(@feed_filters)
-    
     assigns[:feed] = @feed
-    assigns[:view] = @view
   end
   
   it "should show the title of the feed" do
@@ -66,18 +60,5 @@ describe '/feeds/show' do
     @user.should_receive(:globally_excluded?).with(@feed).any_number_of_times.and_return(true)
     render '/feeds/show'
     response.should have_tag("#globally_exclude_feed_#{@feed.id}[checked='checked']", true, response.body)
-  end
-  
-  it "should show the filter state when not filtered" do
-    render '/feeds/show'
-    response.should have_tag("#always_include_feed_#{@feed.id}")
-    response.should_not have_tag("#always_include_feed_#{@feed.id}.selected")
-  end
-  
-  it "should show the filter state when included" do
-    @feed_filters.should_receive(:includes?).with(:always_include, @feed).and_return(true)
-    
-    render '/feeds/show'
-    response.should have_tag("#always_include_feed_#{@feed.id}.selected")
   end
 end

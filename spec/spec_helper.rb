@@ -69,16 +69,9 @@ Spec::Runner.configure do |config|
   def mock_user_for_controller
     @user = mock_model(User, valid_user_attributes)
     @tags = mock("tags")
-    @views = mock("views")
-    
-    @view = mock_model(View)
-    @view.stub!(:set_as_default!)
-    @views.stub!(:find).and_return(@view)
-    @views.stub!(:default).and_return(@view)
     
     User.stub!(:find_by_id).and_return(@user)
     @user.stub!(:tags).and_return(@tags)
-    @user.stub!(:views).and_return(@views)
   end
   
   def mock_model_with_dom_id(cls, attributes)

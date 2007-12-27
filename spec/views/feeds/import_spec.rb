@@ -8,14 +8,9 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feeds/import' do
-  before(:each) do
-    @view = mock_model(View, :feed_filters => mock_model(ViewFeedState, :includes? => false))
-    assigns[:view] = @view
-  end
-  
   it "should show a form for uploading an OPML file" do
     render '/feeds/import'
-    response.should have_tag("form[method = 'post'][action = '/feeds/import?view_id=#{@view.id}'][enctype = 'multipart/form-data']", true, response.body) do
+    response.should have_tag("form[method = 'post'][action = '/feeds/import'][enctype = 'multipart/form-data']", true, response.body) do
       have_tag("input[type = 'file'][name = 'opml']")
     end
   end

@@ -271,19 +271,6 @@ optgroup {
   display: inline;
 }
 
-#header_controls .view_controls {
-	float: left;
-}
-
-#header_controls .view_controls img {
-  margin: 0;
-	vertical-align: middle;
-}
-
-#header_controls .view_controls #view_form #view_name {
-  padding-left: 4px;
-}
-
 #header_controls .custom_controls {
   float: right;
   margin-right: .5em;
@@ -985,14 +972,6 @@ input.example {
 .home_icon {
   background-position: 0 -700px;
   margin-right: 5px;
-}
-
-#view_selector {
-  float: left;
-}
-
-#view_control_buttons .replace {
-  margin-top: .2em;
 }
 
 a.bookmarklet {

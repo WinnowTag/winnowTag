@@ -1,1 +1,0 @@
-page.redirect_to referrer_with_new_view(:new)

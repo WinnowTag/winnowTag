@@ -261,14 +261,11 @@ ItemBrowser.prototype = {
 		this.feed_items_scrollable = $('content');
 
 		this.initializeItemList();
-		this.updateFeedItemCount();
-		
-		if (this.options.total_items) {
-			this.setTotalItems(this.options.total_items);
-		}
 		
 		var self = this;
-		Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });	
+		Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
+		
+		this.reload(location.hash.gsub('#', '').toQueryParams());
 	},
 	
 	/** Called to initialize the internal list of items from the items loaded into the feed_item_container.
@@ -290,9 +287,13 @@ ItemBrowser.prototype = {
 		this.feed_items_container.getElementsByClassName('item').each(function(fi) {
 			this.items.insert(this.items.length, fi.getAttribute('id'), fi.getAttribute('position'), fi);
 		}.bind(this));
-		
+	},
+	
+	itemHeight: function() {
 		if (this.items[0]) {
-			this.item_height = this.items[0].element.offsetHeight;
+			return this.items[0].element.offsetHeight;
+		} else {
+		  return 0;
 		}
 	},
 	
@@ -304,7 +305,7 @@ ItemBrowser.prototype = {
 	
 	/** Returns the number of items in the viewable area of the scrollable container */
 	numberOfItemsInView: function() {
-		return Math.round(this.feed_items_scrollable.getHeight() / this.item_height);
+		return Math.round(this.feed_items_scrollable.getHeight() / this.itemHeight());
 	},
 	
 	/** Sets the total number of items.
@@ -323,17 +324,12 @@ ItemBrowser.prototype = {
 	 *  items already loaded.
 	 */
 	updateInitialSpacer: function() {
-		var height = (this.total_items - this.items.length) * this.item_height;
-		var spacer = $('initial_spacer');
+		var height = (this.total_items - this.items.length) * this.itemHeight();
+		var spacer = this.feed_items_container.down(".item_spacer");
 		
 		if (!spacer) {
-			var candidateSpacer = this.feed_items_container.immediateDescendants().last();
-			if (candidateSpacer && candidateSpacer.hasClassName('item_spacer')) {
-				spacer = candidateSpacer;
-			} else {
-				new Insertion.Bottom(this.feed_items_container, '<div id="initial_spacer" class="item_spacer"></div>');
-				spacer = $('initial_spacer');
-			}
+			new Insertion.Bottom(this.feed_items_container, '<div class="item_spacer"></div>');
+			spacer = this.feed_items_container.down(".item_spacer");
 		}
 		
 		spacer.setStyle({height: '' + height + 'px'});		
@@ -358,7 +354,7 @@ ItemBrowser.prototype = {
 		// bail out of scrollTop is zero - this prevents prematurely 
 		// getting items when the list is cleared.
 		if (scrollTop == 0) {return;}
-		var offset = Math.floor(scrollTop / this.item_height);
+		var offset = Math.floor(scrollTop / this.itemHeight());
 		
 		this.item_loading_timeout = setTimeout(function() {
 			if (this.loading) {
@@ -374,7 +370,7 @@ ItemBrowser.prototype = {
 	
 	/** Creates the update URL from a list of options. */
 	buildUpdateURL: function(options) {
-		return '/feed_items?view_id=' + this.options.view_id + '&' + $H(options).toQueryString();
+		return '/feed_items?' + $H(options).toQueryString();
 	},
 	
 	updateFromQueue: function() {
@@ -545,8 +541,8 @@ ItemBrowser.prototype = {
 				existing_spacer = this.feed_items_container.immediateDescendants().first();
 			}
 			
-			var first_spacer_height = (position - previous_position - 1) * this.item_height;
-			var next_spacer_height = (next_position - position - 1) * this.item_height;
+			var first_spacer_height = (position - previous_position - 1) * this.itemHeight();
+			var next_spacer_height = (next_position - position - 1) * this.itemHeight();
 			var first_spacer_content = '';
 			var next_spacer_content = '';
 
@@ -614,7 +610,7 @@ ItemBrowser.prototype = {
 		if (this.items[index - 1]) {
 			var space = this.items[index - 1].element.nextSiblings().first();
 			if (space) {
-				space.setStyle({height: space.getHeight() - this.item_height + 'px'});
+				space.setStyle({height: space.getHeight() - this.itemHeight() + 'px'});
 			}
 		}
 		
@@ -623,7 +619,7 @@ ItemBrowser.prototype = {
 
 	/** Clears all the items. */
 	clear: function() {
-		this.feed_items_container.update('<div id="initial_spacer" class="item_spacer"></div>');
+		this.feed_items_container.update('');
 		this.selectedItem = null;
 		this.initializeItemList();
 	},
@@ -790,7 +786,7 @@ ItemBrowser.prototype = {
 	
 	markAllItemsRead: function() {
 	  $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
-		new Ajax.Request('/feed_items/mark_read?view_id=' + this.options.view_id, {method: 'put'});
+		new Ajax.Request('/feed_items/mark_read', {method: 'put'});
 	},
 	
 	scrollToItem: function(item) {

@@ -1,20 +1,20 @@
 <% if current_user -%>
   <div id="navigation" class="navigation clearfix">
   	<ul class="extra">
-      <li><%= link_to("About", about_path(:view_id => @view), :class => tab_selected('about')) %></li>
+      <li><%= link_to("About", about_path, :class => tab_selected('about')) %></li>
       <li><%= link_to('Help', help_path, :popup => ['help', 'width=500,height=400']) %></li>
-      <li><%= link_to('My Info', edit_account_path(:id => current_user, :view_id => @view), :class => tab_selected('account', 'edit')) %></li>
+      <li><%= link_to('My Info', edit_account_path(:id => current_user), :class => tab_selected('account', 'edit')) %></li>
       <li class="last"><%= link_to("Logout", logout_path) %></li>
     </ul>
 
   	<ul class="main clearfix">
-      <li><%= link_to('Items', feed_items_path(:view_id => @view), :class => tab_selected('feed_items')) %></li>
-  	  <li><%= link_to('My Tags', tags_path(:view_id => @view), :class => tab_selected('tags', 'index')) %></li>
-  	  <li><%= link_to('My Feeds', feeds_path(:view_id => @view), :class => tab_selected('feeds', 'index')) %></li>
-  	  <li><%= link_to('Public Tags', public_tags_path(:view_id => @view), :class => tab_selected('tags', 'public')) %></li>
-      <li><%= link_to('All Feeds', all_feeds_path(:view_id => @view), :class => tab_selected('feeds', 'all')) %></li>
+      <li><%= link_to('Items', feed_items_path, :class => tab_selected('feed_items')) %></li>
+  	  <li><%= link_to('My Tags', tags_path, :class => tab_selected('tags', 'index')) %></li>
+  	  <li><%= link_to('My Feeds', feeds_path, :class => tab_selected('feeds', 'index')) %></li>
+  	  <li><%= link_to('Public Tags', public_tags_path, :class => tab_selected('tags', 'public')) %></li>
+      <li><%= link_to('All Feeds', all_feeds_path, :class => tab_selected('feeds', 'all')) %></li>
       <% if is_admin? -%>
-        <li><%= link_to('Admin', admin_path(:view_id => @view), :class => tab_selected('admin')) %></li>
+        <li><%= link_to('Admin', admin_path, :class => tab_selected('admin')) %></li>
       <% end -%>
   	</ul>
 	</div>

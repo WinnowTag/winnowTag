@@ -236,7 +236,7 @@ class TagTest < Test::Unit::TestCase
     Tagging.create(:user => u, :feed_item => fi1, :tag => test)
     TagSubscription.create(:tag_id => tag.id, :user_id => users(:aaron).id)
 
-    tags = Tag.find_all_with_count(:order => "tags.name", :user => users(:aaron))
+    tags = Tag.find_all_with_count(:order => "tags.name", :subscribed_by => users(:aaron))
     assert_equal 1, tags.size
     assert_equal 'tag', tags[0].name
     assert_equal 0, tags[0].positive_count.to_i

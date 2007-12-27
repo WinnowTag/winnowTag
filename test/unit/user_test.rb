@@ -11,10 +11,6 @@ Tag
 class UserTest < Test::Unit::TestCase  
   fixtures :users, :feed_items
   
-  def test_has_many_views
-    assert_association User, :has_many, :views
-  end
-  
   def test_has_many_tag_subscriptions
     assert_association User, :has_many, :tag_subscriptions
   end

@@ -1,4 +1,0 @@
-<% form_remote_for :view, :url => view_path(:id => view, :redirect => @redirect), :html => { :method => :put } do |form| -%>
-	<%= form.text_field :name %>
-	<%= submit_tag "Save" %> or <%= link_to_function "cancel", "$('view_form').update(''); $('view_select_form').show();" %>
-<% end -%>

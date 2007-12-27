@@ -15,7 +15,7 @@ class AdminControllerTest < Test::Unit::TestCase
   # Replace this with your real tests.
   def test_admin_can_access
     login_as(:admin)
-    get :index, :view_id => users(:admin).views.create
+    get :index
     assert_response :success
   end
   

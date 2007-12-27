@@ -123,11 +123,8 @@ class Tag < ActiveRecord::Base
   
   def self.find_all_with_count(options = {})
     joins = ["LEFT JOIN users ON tags.user_id = users.id"]
-    if options[:view]
-      joins << "LEFT JOIN view_tag_states ON view_tag_states.tag_id = tags.id AND view_id = #{options[:view].id}"
-    end
-    if options[:user]
-      joins << "INNER JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
+    if options[:subscribed_by]
+      joins << "INNER JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscribed_by].id}"
     end
     
     select = ['tags.*', 
@@ -136,11 +133,9 @@ class Tag < ActiveRecord::Base
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND taggings.strength >= 0.9) AS classifier_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
               '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by']
-    if options[:view]
-      select << "CASE view_tag_states.state WHEN 'include' THEN 0 ELSE 1 END AS view_state"
-      select << "((SELECT COUNT(*) FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:view].user_id}) > 0) AS globally_exclude"
+    if options[:excluder]
+      select << "((SELECT COUNT(*) FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:excluder].id}) > 0) AS globally_exclude"
     else
-      select << "0 AS view_state"
       select << "0 AS globally_exclude"
     end
     if options[:subscriber]

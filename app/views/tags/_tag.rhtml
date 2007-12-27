@@ -1,6 +1,6 @@
 <tr id="<%= tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %>">
 	<td class="tag">
-		<%= link_to image_tag('show.gif'), feed_items_path(:tag_filter => tag.id, :view_id => :new), 
+		<%= link_to image_tag('show.gif'), feed_items_path(:anchor => "tag_ids=#{tag.id}"), 
 									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
 		<% @tag = tag -%><%# TODO: This is a hack to get the below line to work... %>
 		<%= in_place_completing_editor_field(:tag, :name, {:id => tag.dom_id('editor')}, 
@@ -9,12 +9,6 @@
 							 :click_to_edit_text => "Click to edit tag name", :save_text => "Save"}, 
 							:skip_style => true, :update => tag.dom_id('auto_complete'),
 							:url => auto_complete_for_tag_name_tag_path(tag)) %>
-	</td>
-	<td class="view_state">
-		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
-		      :id => tag.dom_id("include"),
-		      :add_url => add_tag_view_path(@view, :tag_id => tag, :tag_state => "include"),
-		      :remove_url => remove_tag_view_path(@view, :tag_id => tag) %>
 	</td>
   <td><%= globally_exclude_check_box(tag) %></td>
 	<td>
@@ -26,7 +20,7 @@
     			:confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone." %>
 	</td>
 	<td class="number">
-    <%= link_to "#{tag.positive_count} / #{tag.negative_count}", feed_items_path(:tag_filter => tag.id, :mode => 'tag_inspect', :view_id => :new), 
+    <%= link_to "#{tag.positive_count} / #{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}", :mode => 'tag_inspect'), 
                 :title => "Inspect #{tag.name}" %>
 	</td>
 	<td class="number"><%= tag.classifier_count %></td>

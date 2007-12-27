@@ -1,4 +1,0 @@
-page[:view_form].replace_html :partial => "form", :locals => { :view => @view }
-page[:view_name].focus
-page << "$('view_name').setStyle({width: $('view_selector').getWidth() + 'px'});"
-page[:view_select_form].hide

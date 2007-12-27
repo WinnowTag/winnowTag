@@ -20,7 +20,7 @@ describe FeedsController do
   end
   
   it "should assign feeds on index" do    
-    get 'index', :view_id => 1
+    get 'index'
     assigns[:feeds].should == @feeds
   end
   
@@ -28,7 +28,7 @@ describe FeedsController do
     feed = mock('feed_1')
     feed.stub!(:duplicate)
     Feed.should_receive(:find).with("1").and_return(feed)
-    get 'show', :id => 1, :view_id => 1
+    get 'show', :id => 1
     assigns[:feed].should == feed
   end
 
@@ -38,7 +38,7 @@ describe FeedsController do
     feed.errors.should_receive(:on).with(:url).and_return("Error")
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
-    post 'create', :feed => {:url => 'http://example.com'}, :view_id => 1
+    post 'create', :feed => {:url => 'http://example.com'}
     response.should be_success
     response.should render_template(:new)
     flash[:error].should == "Error"
@@ -52,8 +52,8 @@ describe FeedsController do
     
     FeedSubscription.should_receive(:create!).with(:feed_id => feed.id, :user_id => @user.id)
     
-    post 'create', :feed => {:url => 'http://example.com'}, :view_id => @view.id
-    response.should redirect_to(feed_path(feed, :view_id => @view.id))    
+    post 'create', :feed => {:url => 'http://example.com'}
+    response.should redirect_to(feed_path(feed))
   end
   
   it "should flash collection result" do
@@ -62,7 +62,7 @@ describe FeedsController do
     job.should_receive(:update_attribute).with(:user_notified, true)
     @user.should_receive(:collection_job_result_to_display).and_return(job)
     
-    get :index, :view_id => 1
+    get :index
     flash[:notice].should =~ /Collection Job for #{feed.title} completed with result: Message/
   end
   
@@ -72,12 +72,12 @@ describe FeedsController do
     job.should_receive(:update_attribute).with(:user_notified, true)
     @user.should_receive(:collection_job_result_to_display).and_return(job)
     
-    get :index, :view_id => 1
+    get :index
     flash[:warning].should =~ /Collection Job for #{feed.title} failed with result: Message/
   end
   
   it "should render import form" do
-    get :import, :view_id => 1
+    get :import
     response.should be_success
     response.should render_template("feeds/import")
   end
@@ -94,8 +94,8 @@ describe FeedsController do
     Remote::Feed.should_receive(:import_opml).
                  with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml"))).
                  and_return([mock_feed1, mock_feed2])
-    post :import, :view_id => 1, :opml => fixture_file_upload("example.opml")
-    response.should redirect_to(feeds_path(:view_id => @view.id))
+    post :import, :opml => fixture_file_upload("example.opml")
+    response.should redirect_to(feeds_path)
     flash[:notice].should == "Imported 2 feeds from your OPML file"
   end 
   

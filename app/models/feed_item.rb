@@ -139,7 +139,7 @@ class FeedItem < ActiveRecord::Base
                                                                       ' feed_items.link, feed_items.sort_title,' +
                                                                       ' feed_items.feed_id, feed_items.created_on, feeds.title AS feed_title'))
     
-    if user = filters[:view].user
+    if user = filters[:user]
       feed_item_ids = feed_items.map(&:id)
       user_taggings = user.taggings.find(:all, :conditions => ['taggings.feed_item_id in (?)', feed_item_ids], :include => :tag)
             
@@ -162,7 +162,7 @@ class FeedItem < ActiveRecord::Base
     feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
     feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
 
-    UnreadItem.delete_all(["user_id = ? AND feed_item_id IN (#{feed_item_ids_sql})", filters[:view].user])
+    UnreadItem.delete_all(["user_id = ? AND feed_item_id IN (#{feed_item_ids_sql})", filters[:user]])
   end
   
   def self.mark_read_for(user_id, feed_item_id)
@@ -189,44 +189,44 @@ class FeedItem < ActiveRecord::Base
   # This will return a Hash of options suitable for passing to FeedItem.find.
   # 
   def self.options_for_filters(filters) # :doc:
-    filters.assert_valid_keys(:limit, :order, :offset, :view, :only_tagger, :include_negative)
+    filters.assert_valid_keys(:limit, :order, :offset, :only_tagger, :include_negative, :user, :feed_ids, :tag_ids, :text_filter)
     options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}
-    view = filters[:view]
 
     joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
     conditions = []
     
     # Feed filtering (include)
-    add_feed_filter_conditions!(view.feed_filters, conditions)
-          
-    include_conditions = view.tag_filters.include.map do |tag_filter|
-      if tag = tag_filter.tag
+    add_feed_filter_conditions!(filters[:feed_ids], conditions)
+    
+    include_conditions = filters[:tag_ids].to_s.split(',').map do |tag_id|
+      if tag = Tag.find_by_id(tag_id)
         build_tag_inclusion_filter(tag, filters[:include_negative])
       end
     end.compact
     
-    exclude_conditions = view.user.excluded_tags.map do |tag|
+    exclude_conditions = filters[:user].excluded_tags.map do |tag|
       build_tag_exclusion_filter(tag)
     end
 
     # If these are blank add 1=1 so it is easier to combine them
-    include_conditions_sql = include_conditions.blank? ? "1=1" : include_conditions.join(" OR ")
-    exclude_conditions_sql = exclude_conditions.blank? ? "1=1" : exclude_conditions.join(" AND ")
+    include_conditions_sql = include_conditions.blank? ? nil : include_conditions.join(" OR ")
+    exclude_conditions_sql = exclude_conditions.blank? ? nil : exclude_conditions.join(" AND ")
     
-    if !view.show_untagged?      
-      untagged = build_show_tagged_filter(view, filters[:include_negative])
-      conditions << [include_conditions_sql, exclude_conditions_sql, untagged].join(" AND ")
-    else
-      untagged = build_show_untagged_filter(view, filters[:include_negative])
-      conditions << "(#{[[include_conditions_sql, exclude_conditions_sql].join(" AND "), untagged].join(" OR ")})"
-    end
+    # if !view.show_untagged?
+      # untagged = build_show_tagged_filter(filters[:user], filters[:include_negative])
+      tag_conditions = [include_conditions_sql, exclude_conditions_sql].compact
+      conditions << tag_conditions.join(" AND ") unless tag_conditions.blank?
+    # else
+    #   untagged = build_show_untagged_filter(filters[:user], filters[:include_negative])
+    #   conditions << "(#{[[include_conditions_sql, exclude_conditions_sql].join(" AND "), untagged].join(" OR ")})"
+    # end
     
     options[:conditions] = conditions.join(" AND ")
-    add_always_include_feed_filter_conditions!(view.feed_filters.always_include, options[:conditions])
-    add_globally_exclude_feed_filter_conditions!(view.user.excluded_feeds, options[:conditions])
+    # add_always_include_feed_filter_conditions!(view.feed_filters.always_include, options[:conditions])
+    add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
 
     # Text filtering
-    add_text_filter_joins!(view.text_filter, joins)
+    add_text_filter_joins!(filters[:text_filter], joins)
     
     options[:conditions] = nil if options[:conditions].blank?    
     options[:joins] = joins.uniq.join(" ")
@@ -234,18 +234,17 @@ class FeedItem < ActiveRecord::Base
     options
   end
   
-  def self.add_feed_filter_conditions!(feed_filters, conditions)
-    if feed_filters
-      if !feed_filters.include.empty?
-        conditions << "feed_items.feed_id IN (#{feed_filters.include.map(&:feed_id).join(",")})"
-      end
+  def self.add_feed_filter_conditions!(feed_ids, conditions)
+    feeds = Feed.find_all_by_id(feed_ids.to_s.split(','))
+    if !feeds.empty?
+      conditions << "feed_items.feed_id IN (#{feeds.map(&:id).join(",")})"
     end
   end
   
   # Add any text_filter. This is done using a inner join on feed_item_contents with an
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
-    if text_filter
+    if !text_filter.blank?
       joins << "INNER JOIN feed_item_contents_full_text ON feed_items.id = feed_item_contents_full_text.id" +
                " and MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
     end
@@ -281,7 +280,7 @@ class FeedItem < ActiveRecord::Base
     ")"
   end
   
-  def self.build_show_untagged_filter(view, include_negative)
+  def self.build_show_untagged_filter(user, include_negative)
     negative_condition = ""
     unless include_negative
       negative_condtion = " AND strength >= 0.88"
@@ -289,19 +288,19 @@ class FeedItem < ActiveRecord::Base
     
     "NOT EXISTS (" +
       "SELECT 1 FROM taggings WHERE " + 
-        "user_id = #{view.user.id} AND " +
+        "user_id = #{user.id} AND " +
         "feed_item_id = feed_items.id" +
         negative_condition +
       ")"
   end
   
-  def self.build_show_tagged_filter(view, include_negative)
+  def self.build_show_tagged_filter(user, include_negative)
     negative_condition = ""
     unless include_negative
       negative_condition = " AND strength >= 0.88"
     end
     
-    users = [view.user.id] + view.user.subscribed_tags.map {|t| t.user_id}
+    users = [user.id] + user.subscribed_tags.map {|t| t.user_id}
     
     "EXISTS (" +
       "SELECT 1 FROM taggings WHERE " + 
@@ -318,8 +317,14 @@ class FeedItem < ActiveRecord::Base
   end
   
   def self.add_globally_exclude_feed_filter_conditions!(feed_filters, conditions)
-    if !conditions.blank? and !feed_filters.blank?
-      conditions.replace "feed_items.feed_id NOT IN (#{feed_filters.map(&:id).join(",")}) AND (#{conditions})"
+    return if feed_filters.blank?
+
+    exclude_conditions = "feed_items.feed_id NOT IN (#{feed_filters.map(&:id).join(",")})"
+
+    if conditions.blank?
+      conditions.replace exclude_conditions
+    else
+      conditions.replace "#{exclude_conditions} AND (#{conditions})"
     end
   end
   

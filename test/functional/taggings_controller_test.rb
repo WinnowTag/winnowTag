@@ -15,13 +15,13 @@ class TaggingsControllerTest < Test::Unit::TestCase
 
   def test_create_requires_post
     login_as(:quentin)
-    get :create, :view_id => users(:quentin).views.create
+    get :create
     assert_response 400
   end
   
   def test_destroy_requires_post
     login_as(:quentin)
-    get :destroy, :view_id => users(:quentin).views.create
+    get :destroy
     assert_response 400
   end
   

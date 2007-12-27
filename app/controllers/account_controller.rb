@@ -8,7 +8,6 @@
 class AccountController < ApplicationController
   before_filter :setup_mailer_site_url
   skip_before_filter :login_required, :except => [:edit]
-  skip_before_filter :load_view, :only => [:logout]
   
   def edit
     if request.post?

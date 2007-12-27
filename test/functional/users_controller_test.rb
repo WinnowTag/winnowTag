@@ -32,18 +32,16 @@ class UsersControllerTest < Test::Unit::TestCase
   
   def test_index
     login_as(:admin)
-    get :index, :view_id => users(:admin).views.create
+    get :index
     assert_response :success
     assert_not_nil assigns(:users)
   end
   
   def test_new
-    view = users(:admin).views.create!
-    
     login_as(:admin)
-    get :new, :view_id => view.id
+    get :new
     assert_response :success
-    assert_select "form[action=#{users_path(:view_id => view.id)}]"
+    assert_select "form[action=#{users_path}]"
   end
   
   def test_create
@@ -71,7 +69,7 @@ class UsersControllerTest < Test::Unit::TestCase
   
   def test_show
     login_as(:admin)
-    get :show, :id => users(:quentin).id, :view_id => users(:admin).views.create
+    get :show, :id => users(:quentin).id
     assert_response :success
     assert_not_nil assigns(:user)
     assert_equal users(:quentin), assigns(:user)
@@ -79,7 +77,7 @@ class UsersControllerTest < Test::Unit::TestCase
   
   def test_show_works_with_login
     login_as(:admin)
-    get :show, :id => users(:quentin).login, :view_id => users(:admin).views.create
+    get :show, :id => users(:quentin).login
     assert_response :success
     assert_not_nil assigns(:user)
     assert_equal users(:quentin), assigns(:user)

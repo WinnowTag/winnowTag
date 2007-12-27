@@ -1,6 +1,0 @@
-if current_user.globally_excluded?(@feed)
-  page[@feed.dom_id("always_include")].removeClassName "selected"
-  page[@feed.dom_id("always_include")].addClassName "disabled"
-else
-  page[@feed.dom_id("always_include")].removeClassName "disabled"
-end

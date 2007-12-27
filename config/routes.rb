@@ -62,15 +62,6 @@ ActionController::Routing::Routes.draw do |map|
                   :rebuild => :post
                 }
                 
-  map.resources :views, 
-                :member => { 
-                  :add_feed => :post, 
-                  :remove_feed => :post, 
-                  :add_tag => :post, 
-                  :remove_tag => :post, 
-                  :duplicate => :post
-                }
-  
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit", :action => "edit"
     account_map.login "account/login/:code", :action => "login", :code => nil

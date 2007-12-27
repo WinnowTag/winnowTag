@@ -3,12 +3,6 @@
     <%= link_to "Feed", formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom), :class => "feed_icon replace" %>
 	  <%= subscribed_tag.name -%><br />
 	</td>
-	<td class="view_state">
-		<%= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, subscribed_tag), 
-		      :id => subscribed_tag.dom_id("include"),
-		      :add_url => add_tag_view_path(@view, :tag_id => subscribed_tag, :tag_state => "include"),
-		      :remove_url => remove_tag_view_path(@view, :tag_id => subscribed_tag) %>
-	</td>
   <td><%= globally_exclude_check_box(subscribed_tag) %></td>
 	<td><%= check_box_tag subscribed_tag.dom_id("public"), nil, true, :disabled => true %></td>
  	<td class="control_icons" id="<%= subscribed_tag.dom_id("controls") %>">
@@ -18,7 +12,7 @@
 	</td>
   <td class="number">
     <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
-                feed_items_path(:tag_filter => subscribed_tag.id, :mode => 'tag_inspect', :view_id => :new), 
+                feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}", :mode => 'tag_inspect'), 
                 :title => "Inspect #{subscribed_tag.name}" %>
   </td>
   <td class="number"><%= subscribed_tag.classifier_count %></td>

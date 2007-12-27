@@ -13,9 +13,7 @@ describe '/feeds/index' do
     @feed = mock_model_with_dom_id(Feed, valid_feed_attributes)
     @feeds = [@feed]
     @feeds.should_receive(:page_count).and_return(1)
-    @view = mock_model(View, :feed_filters => mock_model(ViewFeedState, :includes? => false))
     assigns[:feeds] = @feeds
-    assigns[:view] = @view
   end
   
   it "should show feed icon with link to feed url" do

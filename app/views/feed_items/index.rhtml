@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feed_items', {view_id: <%= @view.id %>, total_items: <%= @feed_item_count %>});
+			itemBrowser = new ItemBrowser('feed_items');
 		});
 	</script>
 <% end -%>
@@ -18,14 +18,7 @@
 	<%= render :partial => "classification_controls" %>
 <% end -%>
 
-<div id="feed_items">
-  <% if @feed_items.empty? -%>
-  	<p>No items match these criteria.</p>
-  <% else -%>
-  	<%= render :partial => 'feed_item', :collection => @feed_items -%>
-  <% end -%>
-	<div id="initial_spacer" class="item_spacer"></div>
-</div>
+<div id="feed_items"></div>
 
 <% content_for :footer do -%>
 	<span id="previous-next-buttons">
@@ -34,5 +27,5 @@
 		<%= image_submit_tag "mark_read.png", :onclick => "itemBrowser.markAllItemsRead();" %>
 	</span>
 	<span id="feed_items_indicator" style="display:none;"></span>
-	<span id="feed_item_count">About <%= @feed_items.size %> items</span>
+	<span id="feed_item_count"></span>
 <% end -%>

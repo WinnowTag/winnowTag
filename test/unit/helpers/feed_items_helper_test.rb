@@ -17,7 +17,6 @@ class FeedItemsHelperTest < HelperTestCase
     @current_user = users(:quentin)
     @min_train_count = 1
     @session = {}
-    @view = View.new(:user => current_user)
     @feed_item_count = nil
   end
 

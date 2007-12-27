@@ -18,7 +18,7 @@ describe CollectionJobResultsController do
     results = mock('results')
     @user.should_receive(:collection_job_results).and_return(results)
     
-    get :index, :user_id => @user.id, :view_id => 1
+    get :index, :user_id => @user.id
     response.should be_success
     assigns[:collection_job_results].should == results
   end

@@ -16,11 +16,6 @@ module ApplicationHelper
     end
   end
   
-  def referrer_with_new_view(view)
-    view_id = view.is_a?(View) ? view.id : view
-    request.env['HTTP_REFERER'].gsub(/view_id=\d+/, "view_id=#{view_id}")
-  end
-  
   def tab_selected(controller, action = nil)
     "selected" if params[:controller] == controller and (action.nil? or params[:action] == action)
   end
@@ -133,12 +128,6 @@ module ApplicationHelper
     end
     
     @is_admin
-  end
-  
-  def options_for_view_select
-    views = current_user.views.saved.map { |v| [v.name, v.id] }
-    views.unshift(["Unsaved View", @view.id]) if @view.unsaved?
-    options_for_select(views, @view.id)
   end
   
   def filter_control tooltip, clazz, selected, options = {}

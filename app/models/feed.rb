@@ -36,12 +36,11 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 
 class Feed < ActiveRecord::Base
   def self.search options = {}
-    joins = ["LEFT JOIN view_feed_states ON view_feed_states.feed_id = feeds.id",
-             "LEFT JOIN views ON views.id = view_feed_states.view_id AND views.id = #{options[:view].id}"]
+    joins = []
     conditions, values = ['is_duplicate = ?'], [false]
     
-    if options[:user]
-      joins << "INNER JOIN feed_subscriptions ON feeds.id = feed_subscriptions.feed_id AND feed_subscriptions.user_id = #{options[:user].id}"
+    if options[:subscribed_by]
+      joins << "INNER JOIN feed_subscriptions ON feeds.id = feed_subscriptions.feed_id AND feed_subscriptions.user_id = #{options[:subscribed_by].id}"
     end
     
     unless options[:search_term].blank?
@@ -49,8 +48,10 @@ class Feed < ActiveRecord::Base
       values << "%#{options[:search_term]}%" << "%#{options[:search_term]}%"
     end
   
-    select = ["feeds.*", "CASE view_feed_states.state WHEN 'always_include' THEN 0 ELSE 1 END AS view_state"]
-    select << "((SELECT COUNT(*) FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:view].user_id}) > 0) AS globally_exclude"
+    select = ["feeds.*"]
+    if options[:excluder]
+      select << "((SELECT COUNT(*) FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) > 0) AS globally_exclude"
+    end
     
     paginate(:select => select.join(","),
              :joins => joins.join(" "),

@@ -17,7 +17,6 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  skip_before_filter :load_view, :only => :show
   skip_before_filter :login_required, :only => :show
   before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude]
   
@@ -27,8 +26,8 @@ class TagsController < ApplicationController
         @search_term = params[:search_term]
         
         setup_sortable_columns
-        @tags = current_user.tags.find_all_with_count(:view => @view, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @subscribed_tags = Tag.find_all_with_count(:view => @view, :search_term => @search_term, :user => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @tags = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @subscribed_tags = Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
       wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end
@@ -135,7 +134,6 @@ class TagsController < ApplicationController
   def destroy
     @tag.destroy
     TagSubscription.delete_all(:tag_id => @tag)
-    ViewTagState.delete_all_for(@tag)
 
     flash[:notice] = "Deleted #{@tag.name}."
     redirect_to :back
@@ -157,7 +155,6 @@ class TagsController < ApplicationController
     @tag.update_attribute(:public, params[:public])
     unless @tag.public?
       TagSubscription.delete_all(:tag_id => @tag)
-      ViewTagState.delete_all_for(@tag, :except => @tag.user)
     end
   end
   
@@ -172,10 +169,10 @@ class TagsController < ApplicationController
     @tag = Tag.find(params[:id])
     if params[:globally_exclude] =~ /true/i
       current_user.tag_exclusions.create! :tag_id => @tag.id
-      ViewTagState.delete_all_for(@tag, :only => current_user)
     else
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
+    render :nothing => true
   end
   
   def subscribe
@@ -184,7 +181,6 @@ class TagsController < ApplicationController
         TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
       else
         TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
-        ViewTagState.delete_all_for(tag, :only => current_user)
         TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
       end
     end
@@ -194,7 +190,6 @@ class TagsController < ApplicationController
   def unsubscribe
     if tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
-      ViewTagState.delete_all_for(tag, :only => current_user)
       TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
     end
     redirect_to :back
@@ -209,7 +204,6 @@ private
   def setup_sortable_columns
     add_to_sortable_columns('tags', :field => 'name')
     add_to_sortable_columns('tags', :field => 'subscribe')
-    add_to_sortable_columns('tags', :field => 'view_state')
     add_to_sortable_columns('tags', :field => 'public')
     add_to_sortable_columns('tags', :field => 'training_count')
     add_to_sortable_columns('tags', :field => 'classifier_count')

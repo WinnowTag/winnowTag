@@ -10,13 +10,11 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe '/feeds/new' do
   before(:each) do
     @feed = mock_new_model(Feed, valid_feed_attributes)
-    @view = mock_model(View)
     assigns[:feed] = @feed
-    assigns[:view] = @view
   end
   
   it "should show form" do
     render '/feeds/new'
-    response.should have_tag("form[action='/feeds?view_id=#{@view.id}']")
+    response.should have_tag("form[action='/feeds']")
   end
 end

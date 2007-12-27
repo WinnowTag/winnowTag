@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class FeedItemsKeyboardShortcutsTest < Test::Unit::SeleniumTestCase
-  fixtures :users, :views, :feed_items, :feeds
+  fixtures :users, :feed_items, :feeds
 
   def setup
     login

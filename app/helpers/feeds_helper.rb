@@ -16,13 +16,6 @@ module FeedsHelper
     feed_link + ' ' + feed_home_link + ' ' + feed_page_link
   end
   
-  def always_include_feed_filter_control(feed)
-    filter_control "Always Include This Feed", :include, @view.feed_filters.includes?(:always_include, feed), 
-			      :id => feed.dom_id("always_include"), :disabled => current_user.globally_excluded?(feed),
-			      :add_url => add_feed_view_path(@view, :feed_id => feed, :feed_state => "always_include"), 
-			      :remove_url => remove_feed_view_path(@view, :feed_id => feed)    
-  end
-  
   def bookmarklet_js
     "javascript:" +
     "var f = document.createElement('form'); f.setAttribute('method', 'POST');" +

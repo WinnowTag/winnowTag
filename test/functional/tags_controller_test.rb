@@ -64,89 +64,79 @@ class TagsControllerTest < Test::Unit::TestCase
   end
   
   def test_index
-    get :index, :view_id => users(:quentin).views.create
+    get :index
     assert assigns(:tags)
     assert_equal(@tag, assigns(:tags).first)
     assert assigns(:subscribed_tags)
     assert_select "tr##{@tag.dom_id}", 1
     assert_select "tr##{@tag.dom_id} td:nth-child(1)", /tag.*/
-    assert_select "tr##{@tag.dom_id} td:nth-child(6)", "1 / 0"
-    assert_select "tr##{@tag.dom_id} td:nth-child(7)", "0"
+    assert_select "tr##{@tag.dom_id} td:nth-child(5)", "1 / 0"
+    assert_select "tr##{@tag.dom_id} td:nth-child(6)", "0"
   end
   
   # TODO - Tags with periods on the end break routing until Rails 1.2.4?
   def test_index_with_funny_name_tag
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag.'), :feed_item => FeedItem.find(1))
-    get :index, :view_id => users(:quentin).views.create
+    get :index
     assert_response :success
   end
   
   def test_edit_with_funny_name_tag
     tag_dot = Tag(users(:quentin), 'tag.')
     Tagging.create(:user => users(:quentin), :tag => tag_dot, :feed_item => FeedItem.find(1))
-    get :edit, :id => tag_dot, :view_id => users(:quentin).views.create
+    get :edit, :id => tag_dot
     assert_response :success
   end
   
   def test_edit
-    get :edit, :id => @tag, :view_id => users(:quentin).views.create
+    get :edit, :id => @tag
     assert assigns(:tag)
     assert_template 'edit'
   end
   
   def test_edit_with_missing_tag
-    get :edit, :id => 'missing', :view_id => users(:quentin).views.create
+    get :edit, :id => 'missing'
     assert_response 404
   end
   
   def test_edit_with_js
-    view = users(:quentin).views.create
-    
     accept('text/javascript')
-    get :edit, :id => @tag, :view_id => view
+    get :edit, :id => @tag
     assert assigns(:tag)
     assert_select "html", false
-    assert_select "form[action = '#{tag_path(:id => @tag, :view_id => view)}']", 1, @response.body
+    assert_select "form[action='#{tag_path(@tag)}']", 1, @response.body
   end
   
   def test_tag_renaming_with_same_tag
-    view = users(:quentin).views.create
-    
-    post :update, :id => @tag, :tag => {:name => 'tag' }, :view_id => view
+    post :update, :id => @tag, :tag => {:name => 'tag' }
     assert_redirected_to tags_path
     assert_equal([@tag], users(:quentin).tags)
   end
   
   def test_tag_renaming
-    view = users(:quentin).views.create
-
-    post :update, :id => @tag, :tag => {:name => 'new'}, :view_id => view
+    post :update, :id => @tag, :tag => {:name => 'new'}
     assert_redirected_to tags_path
     assert users(:quentin).tags.find_by_name('new')
   end
   
   def test_tag_merging
-    view = users(:quentin).views.create
-    
     old = Tag(users(:quentin), 'old')
     Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
     Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
     
-    post :update, :id => old, :tag => {:name => 'new'}, :view_id => view
+    post :update, :id => old, :tag => {:name => 'new'}
     assert_redirected_to tags_path
     assert_equal("'old' merged with 'new'", flash[:notice])
   end
   
   def test_tag_merging_with_conflict
-    view = users(:quentin).views.create
-
     old = Tag(users(:quentin), 'old')
     Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
     Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
     Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(2))
     
-    post :update, :id => old, :tag => {:name => 'new'}, :view_id => view
+    post :update, :id => old, :tag => {:name => 'new'}
     assert_redirected_to tags_path
     assert_equal("'old' merged with 'new'", flash[:notice])
   end
@@ -234,7 +224,7 @@ class TagsControllerTest < Test::Unit::TestCase
     
     TagSubscription.expects(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
     
-    put :subscribe, :id => tag, :subscribe => "true", :view_id => users(:quentin).views.create!
+    put :subscribe, :id => tag, :subscribe => "true"
     
     assert_response :success
   end
@@ -248,7 +238,7 @@ class TagsControllerTest < Test::Unit::TestCase
     
     TagSubscription.expects(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
     
-    put :subscribe, :id => tag, :subscribe => "false", :view_id => users(:quentin).views.create!
+    put :subscribe, :id => tag, :subscribe => "false"
     
     assert_response :success
   end
@@ -263,7 +253,7 @@ class TagsControllerTest < Test::Unit::TestCase
 
     TagSubscription.expects(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
 
-    put :unsubscribe, :id => tag, :view_id => users(:quentin).views.create!
+    put :unsubscribe, :id => tag
 
     assert_response :redirect
   end
@@ -282,7 +272,7 @@ class TagsControllerTest < Test::Unit::TestCase
     
     TagSubscription.expects(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
     
-    put :subscribe, :id => tag, :subscribe => "true", :view_id => users(:quentin).views.create!
+    put :subscribe, :id => tag, :subscribe => "true"
     
     assert_response :success
   end
@@ -295,7 +285,7 @@ class TagsControllerTest < Test::Unit::TestCase
     tag.update_attribute :public, false
 
     assert_no_difference(TagSubscription, :count) do
-      put :subscribe, :id => tag, :subscribe => "true", :view_id => users(:quentin).views.create!
+      put :subscribe, :id => tag, :subscribe => "true"
     end
     
     assert_response :success 

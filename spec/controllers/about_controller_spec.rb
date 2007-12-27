@@ -16,14 +16,14 @@ describe AboutController do
   it "should fetch classifier info" do
     mock = mock_model(Remote::Classifier)
     Remote::Classifier.should_receive(:get_info).and_return(mock)
-    get "index", :view_id => 1
+    get "index"
     response.should be_success
     assigns[:classifier_info].should == mock
   end
   
   it "should set handle exceptions on classifier" do
     Remote::Classifier.should_receive(:get_info).once.and_raise(StandardError)
-    get "index", :view_id => 1
+    get "index"
     response.should be_success
     assigns[:classifier_info].should be_nil
   end

@@ -367,30 +367,30 @@ new Test.Unit.Runner({
   }},
 
   testBuildUpdateURLWithOffset: function() { with(this) {
-    var ib = new ItemBrowser('feed_items', { view_id: 1 });
-		assertEqual('/feed_items?view_id=1&offset=1', ib.buildUpdateURL({offset: 1}));
+    var ib = new ItemBrowser('feed_items');
+		assertEqual('/feed_items?offset=1', ib.buildUpdateURL({offset: 1}));
   }},
 
   testBuildUpdateURLWithOffsetAndLimit: function() { with(this) {
-    var ib = new ItemBrowser('feed_items', { view_id: 1 });
-		assertEqual('/feed_items?view_id=1&offset=1&limit=8', ib.buildUpdateURL({offset: 1, limit: 8}));
+    var ib = new ItemBrowser('feed_items');
+		assertEqual('/feed_items?offset=1&limit=8', ib.buildUpdateURL({offset: 1, limit: 8}));
   }},
 
   testBuildUpdateURLWithIncremental: function() { with(this) {
-    var ib = new ItemBrowser('feed_items', { view_id: 1 });
-		assertEqual('/feed_items?view_id=1&offset=1&incremental=true', 
+    var ib = new ItemBrowser('feed_items');
+		assertEqual('/feed_items?offset=1&incremental=true', 
 				ib.buildUpdateURL({offset: 1, incremental: true}));
   }},
 
   testBuildUpdateURLWithUserOnly: function() { with(this) {
-    var ib = new ItemBrowser('feed_items', { view_id: 1 });
-		assertEqual('/feed_items?view_id=1&offset=1&only_tagger=user',
+    var ib = new ItemBrowser('feed_items');
+		assertEqual('/feed_items?offset=1&only_tagger=user',
 				ib.buildUpdateURL({offset: 1, only_tagger: 'user'}));
   }},
 
   testBuildUpdateURLWithIncrementalAndClassifierOnly: function() { with(this) {
-    var ib = new ItemBrowser('feed_items', { view_id: 1 });
-		assertEqual('/feed_items?view_id=1&offset=1&only_tagger=classifier&incremental=true',
+    var ib = new ItemBrowser('feed_items');
+		assertEqual('/feed_items?offset=1&only_tagger=classifier&incremental=true',
 	 			ib.buildUpdateURL({offset: 1, only_tagger: 'classifier', incremental: true}));
   }},
 

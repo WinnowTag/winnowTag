@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class TagsTest < Test::Unit::SeleniumTestCase
-  fixtures :users, :tags, :tag_subscriptions, :view_tag_states
+  fixtures :users, :tags, :tag_subscriptions
   
   def setup
     login
@@ -71,66 +71,5 @@ class TagsTest < Test::Unit::SeleniumTestCase
     assert is_checked("public_tag_#{tag_2.id}")
     click "public_tag_#{tag_2.id}"
     assert is_checked("public_tag_#{tag_2.id}")
-  end
-  
-  def test_changing_include_view_state
-    dont_see_element "#include_tag_1.selected"
-
-    click "include_tag_1"
-    see_element "#include_tag_1.selected"
-
-    refresh_and_wait
-    see_element "#include_tag_1.selected"
-
-    click "include_tag_1"
-    dont_see_element "#include_tag_1.selected"
-    
-    refresh_and_wait
-    dont_see_element "#include_tag_1.selected"
-  end
-  
-  def test_changing_include_view_state_for_subscribed_tag
-    tag = Tag.find(2)
-
-    dont_see_element "#include_tag_#{tag.id}.selected"
-
-    click "include_tag_#{tag.id}"
-    see_element "#include_tag_#{tag.id}.selected"
-
-    refresh_and_wait
-    see_element "#include_tag_#{tag.id}.selected"
-
-    click "include_tag_#{tag.id}"
-    dont_see_element "#include_tag_#{tag.id}.selected"
-
-    refresh_and_wait
-    dont_see_element "#include_tag_#{tag.id}.selected"
-  end
-  
-  def test_globally_exclude_control_disables_view_state_controls
-    tag = Tag.find(2)
-
-    click "include_tag_#{tag.id}"
-    see_element "#include_tag_#{tag.id}.selected"
-    dont_see_element "#include_tag_#{tag.id}.disabled"
-
-    click "globally_exclude_tag_#{tag.id}"
-    sleep 0.1
-    dont_see_element "#include_tag_#{tag.id}.selected"
-    see_element "#include_tag_#{tag.id}.disabled"
-
-    click "include_tag_#{tag.id}"
-    dont_see_element "#include_tag_#{tag.id}.selected"
-    
-    click "globally_exclude_tag_#{tag.id}"
-    sleep 0.1
-    dont_see_element "#include_tag_#{tag.id}.selected"
-    dont_see_element "#include_tag_#{tag.id}.disabled"
-    
-    click "include_tag_#{tag.id}"
-    see_element "#include_tag_#{tag.id}.selected"
-    
-    click "include_tag_#{tag.id}"
-    dont_see_element "#include_tag_#{tag.id}.selected"
   end
 end

@@ -65,7 +65,7 @@ class Test::Unit::TestCase
     self.send(:define_method, "test_#{action}_requires_post".to_sym) do
       user = options[:user] || :quentin
       login_as(user)
-      get action, options[:params].merge(:view_id => users(user).views.create), options[:session]
+      get action, options[:params], options[:session]
       assert_response :redirect
       assert_redirected_to options[:redirect_to] if options[:redirect_to]
       assert_equal "Action can not be called with HTTP get", flash[:error]
@@ -89,7 +89,7 @@ class Test::Unit::TestCase
   # See: http://svn.writertopia.com/svn/testapps/object_roles_test/test/integration/stories_test.rb
   def cannot_access(user, method, action, args = {})
     login_as(user)
-    self.send(method, action, args.merge(:view_id => users(user).views.create))
+    self.send(method, action, args)
     assert_response :redirect
     assert_redirected_to "/account/login"
   end

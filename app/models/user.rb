@@ -60,11 +60,6 @@ class User < ActiveRecord::Base
   has_many :deleted_taggings, :dependent => :delete_all
   has_many :tagging_tags, :through => :taggings, :select => 'DISTINCT tags.*', 
                 :order => 'tags.name ASC', :source => :tag
-  has_many :views do
-    def default
-      find_by_default(true)
-    end
-  end
   has_many :unread_items, :dependent => :delete_all
   has_many :tag_subscriptions
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag

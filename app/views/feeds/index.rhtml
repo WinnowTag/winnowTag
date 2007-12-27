@@ -1,7 +1,6 @@
 <% @skip_content_container = true %>
 <% content_for :header_controls do -%>
   <% form_tag(feeds_path, :method => :get) do -%>
-  	<%= hidden_field_tag :view_id, @view.id %>
 	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{feeds_path}';" } %>
   <% end -%>
 <% end -%>
@@ -19,7 +18,6 @@
     <tr>
   		<th><%= link_to "Title", sort_param('feeds', :alias => 'title') %></th>
 			<th class="subscribe"><%= "Subscribe" %></th>
-  		<th class="view_state"><%= link_to "View State", sort_param('feeds', :alias => 'view_state') %></th>
   		<th class="view_state"><%= link_to "Globally Exclude", sort_param('feeds', :alias => 'globally_exclude') %></th>
   		<th class="number"><%= link_to "Items", sort_param('feeds', :alias => 'item_count') %></th>
   		<th class="date"><%= link_to "Last Updated", sort_param('feeds', :alias => 'updated_on') %></th>
@@ -34,12 +32,11 @@
 					<%= check_box_tag feed.dom_id("subscribe"), "1", current_user.subscribed?(feed),
 								:onclick => remote_function(:url => subscribe_feed_path(feed), :method => 'put', :with => "{ subscribe: this.checked, remove: true }") %>
 				</td>
-    		<td class="view_state"><%= always_include_feed_filter_control(feed) %></td>
   	    <td><%= globally_exclude_check_box(feed) %></td>
     		<td class="number"><%= feed.feed_items_count %></td>
     		<td class="date"><%= format_date(feed.updated_on) %></td>
     		<td class="controls">
-    			<%= control_link image_tag("show.gif"), feed_items_path(:feed_filter => feed, :show_untagged => true, :view_id => :new) %>
+    			<%= control_link image_tag("show.gif"), feed_items_path(:anchor => "feed_ids=#{feed.id}") %>
     		</td>
       </tr>
     <% end %>

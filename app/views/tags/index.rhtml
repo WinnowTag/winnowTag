@@ -2,7 +2,6 @@
 
 <% content_for :header_controls do -%>
   <% form_tag(tags_path, :method => :get) do -%>
-  	<%= hidden_field_tag :view_id, @view.id %>
 	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{tags_path}';" } %>
   <% end -%>
 <% end -%>
@@ -12,7 +11,6 @@
     <thead>
       <tr>
       	<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => 'name') %></th>
-      	<th class="view_state"><%= link_to "View State", sort_param('tags', :alias => "view_state") %></th>
   		  <th class="view_state"><%= link_to "Globally Exclude", sort_param('tags', :alias => 'globally_exclude') %></th>
       	<th class="control_icons"><%= link_to "Public", sort_param('tags', :alias => "public") %></th>
       	<th class="control_icons">Actions</th>
