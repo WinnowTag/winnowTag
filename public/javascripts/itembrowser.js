@@ -369,8 +369,8 @@ ItemBrowser.prototype = {
 	}, 
 	
 	/** Creates the update URL from a list of options. */
-	buildUpdateURL: function() {
-		return '/feed_items?' + location.hash.gsub('#', '');
+	buildUpdateURL: function(parameters) {
+		return '/feed_items?' + $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters)).toQueryString();
 	},
 	
 	updateFromQueue: function() {
@@ -450,7 +450,7 @@ ItemBrowser.prototype = {
 	 */
 	doUpdate: function(options) {
 	  options = options || {};
-    new Ajax.Request(this.buildUpdateURL(), {evalScripts: true, method: 'get',
+    new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
 			onComplete: function() {
 				this.updateFeedItemCount();
 				if (!options.count_only) {
