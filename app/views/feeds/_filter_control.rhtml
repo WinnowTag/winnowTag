@@ -7,6 +7,6 @@
     <%= link_to feed.title, "#feed_ids=#{feed.id}", :onclick => "itemBrowser.reload({feed_ids: #{feed.id}});" %>
   </div>
   <span class="feed_name">
-    <%= highlight(truncate(feed.title), @q, '<span class="highlight">\1</span>') %>
+    <%= highlight(feed.title, @q, '<span class="highlight">\1</span>') %>
   </span>
 </li>
