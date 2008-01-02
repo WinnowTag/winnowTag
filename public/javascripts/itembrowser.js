@@ -265,7 +265,7 @@ ItemBrowser.prototype = {
 		var self = this;
 		Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
 		
-		this.reload(location.hash.gsub('#', '').toQueryParams());
+		this.reload();
 	},
 	
 	/** Called to initialize the internal list of items from the items loaded into the feed_item_container.
@@ -369,8 +369,8 @@ ItemBrowser.prototype = {
 	}, 
 	
 	/** Creates the update URL from a list of options. */
-	buildUpdateURL: function(options) {
-		return '/feed_items?' + $H(options).toQueryString();
+	buildUpdateURL: function() {
+		return '/feed_items?' + location.hash.gsub('#', '');
 	},
 	
 	updateFromQueue: function() {
@@ -449,7 +449,8 @@ ItemBrowser.prototype = {
 	/** Issues the request to get new items.
 	 */
 	doUpdate: function(options) {
-    new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
+	  options = options || {};
+    new Ajax.Request(this.buildUpdateURL(), {evalScripts: true, method: 'get',
 			onComplete: function() {
 				this.updateFeedItemCount();
 				if (!options.count_only) {
@@ -624,21 +625,39 @@ ItemBrowser.prototype = {
 		this.initializeItemList();
 	},
 	
-	reload: function(parameters) {
+	reload: function() {
 		if (this.loading) {
 		  var self = this;
       this.update_queue.push(function() {
         self.loading = true;
         self.showLoadingIndicator();
         self.clear();
-        self.doUpdate(parameters);
+        self.doUpdate();
       });
 		} else {
 		  this.loading = true;
       this.showLoadingIndicator();
       this.clear();
-			this.doUpdate(parameters);
+			this.doUpdate();
 		}
+	},
+	
+	setFilters: function(parameters) {
+	  location.hash = "#";
+	  this.addFilters(parameters);
+	},
+	
+	addFilters: function(parameters) {
+	  var new_parameters = $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters));
+	  new_parameters.each(function(key_value) {
+      var key = key_value[0];
+      var value = key_value[1];
+	    if(value == null || Object.isUndefined(value) || (typeof(value) == 'string' && value.blank())) {
+	      new_parameters.unset(key);
+	    }
+	  });
+	  location.hash = "#" + new_parameters.toQueryString();
+	  this.reload();
 	},
 	
 	showLoadingIndicator: function(message) {

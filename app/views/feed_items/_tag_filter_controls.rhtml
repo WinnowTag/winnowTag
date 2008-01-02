@@ -2,6 +2,6 @@
   <li class="clearfix<%= tag.user_id == current_user.id ? '' : " public" %>">
 	  <%#= filter_control "Only Include This Tag", :include, @view.tag_filters.includes?(:include, tag), 
 	        :onclick => "itemBrowser.reload({tag_filter: #{tag.id}, tag_filter_state: 'include', tag_filter_action: this.hasClassName('selected') ? 'add' : 'remove'})" %>
-    <%= link_to tag_name_with_tooltip(tag), "#tag_ids=#{tag.id}", :onclick => "itemBrowser.reload({tag_ids: #{tag.id}});" %>
+    <%= link_to_function tag_name_with_tooltip(tag), "itemBrowser.setFilters({tag_ids: #{tag.id}});" %>
   </li>
 <% end -%>
