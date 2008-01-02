@@ -61,6 +61,8 @@ ActionController::Routing::Routes.draw do |map|
                 :member => {
                   :rebuild => :post
                 }
+
+  map.resources :folders
                 
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit", :action => "edit"

@@ -994,3 +994,54 @@ a.bookmarklet:hover {
 .unread_count {
   float: right;
 }
+
+.folder {
+  position: relative;
+  border-bottom: 1px dashed #ccc;
+}
+
+.folder.open {
+  padding: 0 0 5px 0;
+}
+
+.folder ul.actions {
+  float: right;
+  list-style: none;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.folder ul.actions li {
+  float: left;
+  margin: 0;
+  padding: 3px;
+  border-right: 1px dotted #ccc;
+}
+
+.folder ul.actions li:last-child {
+  border-right: none;
+}
+
+.folder .name {
+  padding: 5px 0 5px 17px;
+  background: transparent url(../images/expansion_arrows.gif) no-repeat 5px -52px;
+  cursor: pointer;
+}
+
+.folder.open .name {
+  background-position: 5px 11px;
+}
+
+.folder .name:hover {
+  background-color: #eee;
+}
+
+.folder .items { 
+  padding: 5px;
+  display: none;
+}
+
+.folder.open .items { 
+  display: block;
+}

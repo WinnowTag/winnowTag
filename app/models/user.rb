@@ -73,6 +73,8 @@ class User < ActiveRecord::Base
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
   has_many :tag_exclusions
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
+  
+  has_many :folders
  
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)

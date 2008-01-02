@@ -195,4 +195,8 @@ module ApplicationHelper
     check_box_tag tag_or_feed.dom_id("globally_exclude"), "1",current_user.globally_excluded?(tag_or_feed), 
       :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
   end
+  
+  def tag_name_with_tooltip(tag, options = {})
+    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
+  end
 end
