@@ -35,6 +35,8 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 #
 
 class Feed < ActiveRecord::Base
+  alias_attribute :name, :title
+
   def self.search options = {}
     joins = []
     conditions, values = ['is_duplicate = ?'], [false]
