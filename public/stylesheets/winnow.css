@@ -481,8 +481,8 @@ a.editor_cancel {
   display: none;
 }
 
-#feed_filters li .feed_name {
-  display: none;
+.auto_complete ul li .feed_name  {
+  display: block;
 }
 
 .loading {
@@ -825,8 +825,8 @@ ul.tag_list li.user_tagging.negative_tagging .user {
   overflow: hidden;
 }
 
-.filter_list#feed_filters li {
-	padding-left: 0;
+.filter_list.feeds li {
+  padding-left: 0;
 }
 
 .filter_list li.public {
