@@ -11,12 +11,7 @@
       <i>Nothing here yet...</i>
     <% else -%>
       <%= render :partial => "feed_items/folder_item", :collection => folder.tags %>
-
-      <ul id="feed_filters" class="filter_list">
-      <% folder.feeds.each do |feed| -%>
-        <%= render :partial => "feeds/filter_control", :locals => { :feed => feed, :last => false, :draggable => false } %>
-      <% end -%>
-      </ul>
+      <%= feed_filter_controls(folder.feeds, :ul_options => { :id => "feed_filters", :class => "filter_list" }) %>
     <% end -%>
   </div>
 </div>

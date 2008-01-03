@@ -199,4 +199,21 @@ module ApplicationHelper
   def tag_name_with_tooltip(tag, options = {})
     content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
   end
+  
+  def feed_filter_controls(feeds, options = {})
+    content_tag :ul, feeds.map { |feed| feed_filter_control(feed, options) }.join, options.delete(:ul_options) || {}
+  end
+  
+  def feed_filter_control(feed, options = {})
+    html =  content_tag(:span, "(#{current_user.unread_items.for(feed).size})", :class => "unread_count", :title => "#{current_user.unread_items.for(feed).size} unread items in this feed")
+    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => subscribe_feed_path(feed, :subscribe => false), :method => :put)}") << " "
+    html << link_to_function(feed.title, "itemBrowser.setFilters({feed_ids: #{feed.id}})", :title => "#{feed.feed_items.size} items in this feed")
+    
+    html =  content_tag(:div, html, :class => "show_feed_control")
+    html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
+    
+    html =  content_tag(:li, html, :id => dom_id(feed), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
+    html << draggable_element(dom_id(feed), :ghosting => true, :revert => true, :constraint => "'vertical'") if options[:draggable]
+    html
+  end
 end
