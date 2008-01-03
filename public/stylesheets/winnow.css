@@ -1025,17 +1025,17 @@ a.bookmarklet:hover {
   display: inline;
 }
 
-.folder .name {
+.folder .header {
   padding: 5px 0 5px 17px;
   background: transparent url(../images/expansion_arrows.gif) no-repeat 5px -52px;
   cursor: pointer;
 }
 
-.folder.open .name {
+.folder.open .header {
   background-position: 5px 11px;
 }
 
-.folder .name:hover {
+.folder .header:hover {
   background-color: #eee;
 }
 

@@ -8,14 +8,14 @@
   
   <div id="folders">
     <div class="folder">
-      <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">Tags</div>
+      <div class="header" onclick="$(this).up('.folder').toggleClassName('open');">Tags</div>
       <div class="items">
         <ul id="tag_filters" class="filter_list"><%= render :partial => "feed_items/tag_filter_controls" %></ul>
       </div>
     </div>
   
     <div class="folder">
-      <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">Feeds</div>
+      <div class="header" onclick="$(this).up('.folder').toggleClassName('open');">Feeds</div>
       <div class="items">
         <%= text_field_tag 'feed_title', 'find feeds...', :class => "feed_filter_search example",
               :onclick => "if(this.value == 'find feeds...') { this.value = ''; this.removeClassName('example'); }",

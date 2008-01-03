@@ -1,2 +1,2 @@
 page.select("##{dom_id(@folder)} .name").first.update @folder.name
-page.select("##{dom_id(@folder)} .name").first.visual_effect :highlight
+page.select("##{dom_id(@folder)} .header").first.visual_effect :highlight
