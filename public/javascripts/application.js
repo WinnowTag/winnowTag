@@ -166,6 +166,7 @@ function updateFilterControl(control, add_url, remove_url) {
 
 function update_feed_filters(element, value) {
 	$('feed_filters').appendChild(value);
+	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true});
 	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
 
 	// TODO: Need to unbind these listeners...

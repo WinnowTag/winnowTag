@@ -6,13 +6,9 @@
   <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">
     <%= link_to_function folder.name, "itemBrowser.setFilters({feed_ids: #{folder.feed_ids.join(",").to_json}, tag_ids: #{folder.tag_ids.join(",").to_json}}); event.stop()" %>
   </div>
-  <div class="items" id="<%= dom_id(folder) %>_items">
-    <% if folder.tag_ids.blank? && folder.feed_ids.blank? -%>
-      <i>Nothing here yet...</i>
-    <% else -%>
-      <%= render :partial => "feed_items/folder_item", :collection => folder.tags %>
-      <%= feed_filter_controls(folder.feeds, :ul_options => { :class => "filter_list feeds" }) %>
-    <% end -%>
+  <div class="items">
+    <%= render :partial => "feed_items/folder_item", :collection => folder.tags %>
+    <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_items", :class => "filter_list feeds" }) %>
   </div>
 </div>
 <%= drop_receiving_element(dom_id(folder) + "_items", :hoverclass => "hover", :url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") %>

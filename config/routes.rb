@@ -64,7 +64,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :folders, 
                 :member => {
-                  :add_item => :put
+                  :add_item => :put,
+                  :remove_item => :put
                 }
                 
   map.with_options :controller => "account" do |account_map|

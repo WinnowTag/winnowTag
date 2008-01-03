@@ -1040,14 +1040,17 @@ a.bookmarklet:hover {
 }
 
 .folder .items { 
-  padding: 5px;
   display: none;
-}
-
-.folder .items.hover { 
-  background-color: #eee;
 }
 
 .folder.open .items { 
   display: block;
+}
+
+.folder .items ul { 
+  padding: 5px;
+}
+
+.folder .items ul.hover { 
+  background-color: #eee;
 }

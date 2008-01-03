@@ -206,7 +206,11 @@ module ApplicationHelper
   
   def feed_filter_control(feed, options = {})
     html =  content_tag(:span, "(#{current_user.unread_items.for(feed).size})", :class => "unread_count", :title => "#{current_user.unread_items.for(feed).size} unread items in this feed")
-    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => subscribe_feed_path(feed, :subscribe => false), :method => :put)}") << " "
+    url  =  case options[:remove]
+      when :subscription then subscribe_feed_path(feed, :subscribe => false)
+      when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
+    end
+    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}") << " "
     html << link_to_function(feed.title, "itemBrowser.setFilters({feed_ids: #{feed.id}})", :title => "#{feed.feed_items.size} items in this feed")
     
     html =  content_tag(:div, html, :class => "show_feed_control")

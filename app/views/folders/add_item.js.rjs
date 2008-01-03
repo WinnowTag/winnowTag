@@ -1,0 +1,1 @@
+page.insert_html :bottom, dom_id(@folder) + "_items", feed_filter_control(@feed, :remove => @folder) if @feed
