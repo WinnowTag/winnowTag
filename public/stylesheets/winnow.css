@@ -996,7 +996,7 @@ a.bookmarklet:hover {
 
 .folder {
   position: relative;
-  border-bottom: 1px dashed #ccc;
+  border-bottom: 1px dashed #666;
 }
 
 .folder.open {
