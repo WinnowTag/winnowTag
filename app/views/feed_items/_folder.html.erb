@@ -4,7 +4,7 @@
     <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => "Are you sure?", :html => { :class => "destroy replace destroy_icon" } %></li>
   </ul>
   <div class="header" onclick="$(this).up('.folder').toggleClassName('open');">
-    <%= link_to_function folder.name, "itemBrowser.setFilters({feed_ids: this.up('.folder').select('.feeds li').map(function(element) { return element.getAttribute('id').gsub('feed_', ''); }).join(',') }); event.stop()", :class => "name" %>
+    <%= link_to_function folder.name, "itemBrowser.setFilters({folder_id: #{folder.id}}); event.stop()", :class => "name" %>
   </div>
   <div class="items">
     <%= render :partial => "feed_items/folder_item", :collection => folder.tags %>

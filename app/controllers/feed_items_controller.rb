@@ -42,6 +42,11 @@ class FeedItemsController < ApplicationController
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
 
+        if folder = Folder.find_by_id(params[:folder_id])
+          params[:feed_ids] = folder.feed_ids.join(",")
+          params[:tag_ids] = folder.tag_ids.join(",")
+        end
+
         filters = { :order => 'feed_items.time DESC',
                     :limit => limit,
                     :offset => params[:offset],
