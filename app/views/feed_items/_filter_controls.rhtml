@@ -1,39 +1,38 @@
 <div class="section">
-  <h4>Tag Filters</h4>
-
-  <ul id="tag_filters" class="filter_list"><%= render :partial => "feed_items/tag_filter_controls" %></ul>
-  
-  <!-- <div class="show_untagged">
-    <%#= check_box_tag "show_untagged", true, @view.show_untagged?, :onclick => "itemBrowser.reload({show_untagged: this.checked})" %>
-    <label for="show_untagged">Show Untagged</label>
-  </div> -->
-</div>
-
-<div class="section">
-  <h4>Feed Filters</h4>
-
-  <%= text_field_tag 'feed_title', 'find feeds...', :class => "feed_filter_search example",
-        :onclick => "if(this.value == 'find feeds...') { this.value = ''; this.removeClassName('example'); }",
-        :onblur => "if(this.value == '') { this.value = 'find feeds...'; this.addClassName('example'); }" %>
-  <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
-  <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
-        :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
-        :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
-
-  <ul id="feed_filters" class="filter_list">
-  <% (current_user.subscribed_feeds - current_user.excluded_feeds).each do |feed| -%>
-    <%= render :partial => "feeds/filter_control", :locals => { :feed => feed, :last => false } %>
-  <% end -%>
-  </ul>
-</div>
-
-<div class="section">
-  <h4>Folders</h4>
+  <h4>
+    Folders &ndash;
+    <%= link_to_remote "New", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name?")| %> &ndash;
+    <%= link_to_function "edit", "$('folders').toggleClassName('editing')" %> &ndash;
+    <%= link_to_function "expand", "$$('.folder').invoke('toggleClassName', 'open')" %>
+  </h4>
   
   <div id="folders">
+    <div class="folder closed">
+      <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">Tags</div>
+      <div class="items">
+        <ul id="tag_filters" class="filter_list"><%= render :partial => "feed_items/tag_filter_controls" %></ul>
+      </div>
+    </div>
+  
+    <div class="folder closed">
+      <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">Feeds</div>
+      <div class="items">
+        <%= text_field_tag 'feed_title', 'find feeds...', :class => "feed_filter_search example",
+              :onclick => "if(this.value == 'find feeds...') { this.value = ''; this.removeClassName('example'); }",
+              :onblur => "if(this.value == '') { this.value = 'find feeds...'; this.addClassName('example'); }" %>
+        <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
+        <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
+              :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
+              :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
+
+        <ul id="feed_filters" class="filter_list">
+        <% (current_user.subscribed_feeds - current_user.excluded_feeds).each do |feed| -%>
+          <%= render :partial => "feeds/filter_control", :locals => { :feed => feed, :last => false } %>
+        <% end -%>
+        </ul>
+      </div>
+    </div>
+  
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
-  
-  <%= link_to_remote "New Folder", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name?")| %>
 </div>
-
