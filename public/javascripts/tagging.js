@@ -129,17 +129,7 @@ function add_tag_control(taggable_id, tag) {
 		'<span class="remove" onclick="remove_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\');" onmouseover="show_control_tooltip(this, this.ParentNode, \'' + escape_javascript(tag) + '\');"></span>' + 
 	'</li>';
 
-	var inserted = false;
-	tag_controls.getElementsBySelector("li").each(function(element) {
-		if(!inserted && element.getElementsBySelector("span.name").first().innerHTML.toLowerCase() > tag.toLowerCase()) {
-			new Insertion.Before(element, tag_control + " ");
-			inserted = true;
-		}
-	});
-	
-	if(!inserted) {
-		new Insertion.Bottom(tag_controls, " " + tag_control);
-	}
+  insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
 	
 	Effect.Appear(tag_control_id);
 	if($(unused_tag_control_id)) {
@@ -162,17 +152,8 @@ function remove_tag_control(taggable_id, tag) {
 		'<span class="name">' + tag + '</span>' + 
 	'</li>';
 
-	var inserted = false;
-	unused_tag_controls.getElementsBySelector("li").each(function(element) {
-		if(!inserted && element.getElementsBySelector("span.name").first().innerHTML.toLowerCase() > tag.toLowerCase()) {
-			new Insertion.Before(element, unused_tag_control + " ");
-			inserted = true;
-		}
-	});
-	
-	if(!inserted) {
-		new Insertion.Bottom(unused_tag_controls, " " + unused_tag_control);
-	}
+
+  insert_in_order(unused_tag_controls, "li", "span.name", unused_tag_control, tag);
 	
 	Effect.Appear(unused_tag_control_id);
 	Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });

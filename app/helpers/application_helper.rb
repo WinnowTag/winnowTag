@@ -211,7 +211,7 @@ module ApplicationHelper
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
     html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}") << " "
-    html << link_to_function(feed.title, "itemBrowser.setFilters({feed_ids: #{feed.id}})", :title => "#{feed.feed_items.size} items in this feed")
+    html << link_to_function(feed.title, "itemBrowser.setFilters({feed_ids: #{feed.id}})", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
     
     html =  content_tag(:div, html, :class => "show_feed_control")
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]

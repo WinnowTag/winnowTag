@@ -18,10 +18,10 @@ class Folder < ActiveRecord::Base
   end
   
   def feeds
-    Feed.find_all_by_id(feed_ids)
+    Feed.find_all_by_id(feed_ids, :order => :title)
   end
   
   def tags
-    Tag.find_all_by_id(tag_ids)
+    Tag.find_all_by_id(tag_ids, :order => :name)
   end
 end

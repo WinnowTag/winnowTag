@@ -25,7 +25,7 @@
               :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
               :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
 
-        <%= feed_filter_controls(current_user.subscribed_feeds - current_user.excluded_feeds, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list feeds" }) %>
+        <%= feed_filter_controls(current_user.feeds, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list feeds" }) %>
       </div>
     </div>
   
