@@ -5,7 +5,7 @@ javascripts:
   - effects
   - controls
   - slider
-  - builder
+  - dragdrop
   - application
   - tagging
   - itembrowser
