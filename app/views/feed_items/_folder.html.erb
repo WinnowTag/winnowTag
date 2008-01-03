@@ -11,4 +11,4 @@
     <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_items", :class => "filter_list feeds" }) %>
   </div>
 </div>
-<%= drop_receiving_element(dom_id(folder) + "_items", :hoverclass => "hover", :url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") %>
+<%= drop_receiving_element(dom_id(folder), :hoverclass => "hover", :url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") %>

@@ -999,6 +999,10 @@ a.bookmarklet:hover {
   border-bottom: 1px dashed #666;
 }
 
+.folder.hover { 
+  background-color: #eee;
+}
+
 .folder.open {
   padding: 0 0 5px 0;
 }
@@ -1049,8 +1053,4 @@ a.bookmarklet:hover {
 
 .folder .items ul { 
   padding: 5px;
-}
-
-.folder .items ul.hover { 
-  background-color: #eee;
 }
