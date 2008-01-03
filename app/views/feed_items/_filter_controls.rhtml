@@ -3,18 +3,18 @@
     Folders &ndash;
     <%= link_to_remote "New", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name?")| %> &ndash;
     <%= link_to_function "edit", "$('folders').toggleClassName('editing')" %> &ndash;
-    <%= link_to_function "expand", "$$('.folder').invoke('toggleClassName', 'open')" %>
+    <%= link_to_function "+", "$$('.folder').invoke('addClassName', 'open')" %>/<%= link_to_function "-", "$$('.folder').invoke('removeClassName', 'open')" %>
   </h4>
   
   <div id="folders">
-    <div class="folder closed">
+    <div class="folder open">
       <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">Tags</div>
       <div class="items">
         <ul id="tag_filters" class="filter_list"><%= render :partial => "feed_items/tag_filter_controls" %></ul>
       </div>
     </div>
   
-    <div class="folder closed">
+    <div class="folder open">
       <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">Feeds</div>
       <div class="items">
         <%= text_field_tag 'feed_title', 'find feeds...', :class => "feed_filter_search example",

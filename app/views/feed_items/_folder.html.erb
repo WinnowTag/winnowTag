@@ -1,4 +1,4 @@
-<div class="folder closed" id="<%= dom_id(folder) %>">
+<div class="folder" id="<%= dom_id(folder) %>">
   <ul class="actions">
     <li><%= link_to_remote "Rename", :url => folder_path(folder), :method => :put, :with => %w|'folder[name]=' + name|, :condition => %W|name = prompt("Name?", $(this).up('.folder').down('.name').innerHTML)|, :html => { :class => "edit replace edit_icon" } %></li>
     <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => "Are you sure?", :html => { :class => "destroy replace destroy_icon" } %></li>
