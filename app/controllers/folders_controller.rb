@@ -16,4 +16,16 @@ class FoldersController < ApplicationController
     @folder = current_user.folders.destroy(params[:id])
     respond_to :js
   end
+  
+  def add_item
+    @folder = current_user.folders.find(params[:id])
+    case params[:item_id]
+      when /^feed_(\d+)$/
+        @folder.feed_ids += [$1]
+      when /^tag_(\d+)$/
+        @folder.tag_ids += [$1]
+    end
+    @folder.save!
+    respond_to :js
+  end
 end

@@ -3,8 +3,21 @@
     <li><%= link_to_remote "Rename", :url => folder_path(folder), :method => :put, :with => %w|'folder[name]=' + name|, :condition => %W|name = prompt("Name?", $(this).up('.folder').down('.name').innerHTML)|, :html => { :class => "edit replace edit_icon" } %></li>
     <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => "Are you sure?", :html => { :class => "destroy replace destroy_icon" } %></li>
   </ul>
-  <div class="name" onclick="$(this).up('.folder').toggleClassName('open');"><%= folder.name %></div>
-  <div class="items">
-    <i>Nothing here yet...</i>
+  <div class="name" onclick="$(this).up('.folder').toggleClassName('open');">
+    <%= link_to_function folder.name, "itemBrowser.setFilters({feed_ids: #{folder.feed_ids.join(",").to_json}, tag_ids: #{folder.tag_ids.join(",").to_json}}); event.stop()" %>
+  </div>
+  <div class="items" id="<%= dom_id(folder) %>_items">
+    <% if folder.tag_ids.blank? && folder.feed_ids.blank? -%>
+      <i>Nothing here yet...</i>
+    <% else -%>
+      <%= render :partial => "feed_items/folder_item", :collection => folder.tags %>
+
+      <ul id="feed_filters" class="filter_list">
+      <% folder.feeds.each do |feed| -%>
+        <%= render :partial => "feeds/filter_control", :locals => { :feed => feed, :last => false, :draggable => false } %>
+      <% end -%>
+      </ul>
+    <% end -%>
   </div>
 </div>
+<%= drop_receiving_element(dom_id(folder) + "_items", :hoverclass => "hover", :url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") %>

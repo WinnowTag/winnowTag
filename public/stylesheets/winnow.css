@@ -1046,6 +1046,10 @@ a.bookmarklet:hover {
   display: none;
 }
 
+.folder .items.hover { 
+  background-color: #eee;
+}
+
 .folder.open .items { 
   display: block;
 }
