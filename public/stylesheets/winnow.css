@@ -1054,3 +1054,11 @@ a.bookmarklet:hover {
 .folder .items ul { 
   padding: 5px;
 }
+
+.folder .items ul li { 
+  cursor: move;
+}
+
+.folder .items ul li:hover { 
+  background-color: #eee;
+}
