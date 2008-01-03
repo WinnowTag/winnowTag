@@ -999,7 +999,7 @@ a.bookmarklet:hover {
   border-bottom: 1px dashed #666;
 }
 
-.folder.hover { 
+.folder.hover, .folder.selected { 
   background-color: #eee;
 }
 
@@ -1060,5 +1060,9 @@ a.bookmarklet:hover {
 }
 
 .folder .items ul li:hover { 
+  background-color: #eee;
+}
+
+.folder .items ul li.selected { 
   background-color: #eee;
 }

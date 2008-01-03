@@ -449,6 +449,22 @@ ItemBrowser.prototype = {
 	/** Issues the request to get new items.
 	 */
 	doUpdate: function(options) {
+	  $$(".feeds li").invoke("removeClassName", "selected");
+	  $$(".folder").invoke("removeClassName", "selected");
+	  
+	  var params = location.hash.gsub('#', '').toQueryParams();
+	  if(params.feed_ids) {
+	    params.feed_ids.split(",").each(function(feed_id) {
+	      $$("#feed_" + feed_id).invoke("addClassName", "selected");
+	    });
+	  }
+	  if(params.folder_id) {
+	    $('folder_' + params.folder_id).addClassName("selected");
+      // $('folder_' + params.folder_id).select(".feeds li").each(function(element) {
+      //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
+      // });
+	  }
+	  
 	  options = options || {};
     new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
 			onComplete: function() {
