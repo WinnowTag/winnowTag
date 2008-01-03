@@ -187,7 +187,6 @@ function insert_in_order(container, sibling_selector, sibling_value_selector, el
   
 	var inserted = false;
 	container.select(sibling_selector).each(function(element) {
-	  console.log(element);
 		if(!inserted && element.down(sibling_value_selector).innerHTML.toLowerCase() > element_value.toLowerCase()) {
 			new Insertion.Before(element, element_html + " ");
 			inserted = true;
