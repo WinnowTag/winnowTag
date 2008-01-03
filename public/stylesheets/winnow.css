@@ -193,8 +193,6 @@ optgroup {
 }
 
 #sidebar_control:hover {
-	border: 1px solid #999;
-	border-width: 0 1px 10px 0;
   background-color: #E8EEF7;
   background-position: 2px center;
 }
