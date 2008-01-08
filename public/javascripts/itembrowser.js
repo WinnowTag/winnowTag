@@ -45,8 +45,6 @@ Classification.createItemBrowserClassification = function(classifier_url) {
 			onStarted: function(c) {				
 				$('progress_bar').style.width = "0%";
 				$('progress_title').update("Classifying changed tags");
-				itemBrowser.showLoadingIndicator("Waiting for Classifier...");
-				itemBrowser.clear();
 			},
 			onStartProgressUpdater: function(c) {
 				c.classifier_items_loaded = 0;
@@ -76,17 +74,12 @@ Classification.createItemBrowserClassification = function(classifier_url) {
 				c.options.onCancelled(c);
 				$('progress_title').update("Classification Complete");
 				$('classification_button').disabled = true;
+				if (confirm("Classification has completed.\nDo you want to reload the items?")) {
+				  itemBrowser.reload();
+				}
 			},
 			onProgressUpdated: function(c, progress) {
-				$('progress_bar').setStyle({width: progress.progress + '%'});
-					
-				// Only update every second loop
-				if (!c.skipUpdate) {
-					itemBrowser.updateFeedItems({offset: c.classifier_items_loaded, incremental: true, only_tagger: 'classifier'});
-					c.skipUpdate = true;
-				} else {
-					c.updateItems = false;
-				}
+				$('progress_bar').setStyle({width: progress.progress + '%'});			
 			}						
 		});
 };
