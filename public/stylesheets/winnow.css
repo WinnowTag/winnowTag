@@ -1001,8 +1001,13 @@ a.bookmarklet:hover {
   border-bottom: 1px dashed #666;
 }
 
-.folder.hover, .folder.selected { 
+.folder.hover { 
   background-color: #eee;
+}
+
+.folder.selected {
+  background-color: #eee;
+  font-weight: bold;
 }
 
 .folder.open {
@@ -1067,4 +1072,5 @@ a.bookmarklet:hover {
 
 .folder .items ul li.selected { 
   background-color: #eee;
+  font-weight: bold;
 }
