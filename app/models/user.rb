@@ -79,6 +79,10 @@ class User < ActiveRecord::Base
   def feeds
     (subscribed_feeds - excluded_feeds).sort_by(&:name)
   end
+  
+  def feed_ids
+    subscribed_feed_ids - excluded_feed_ids
+  end
  
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)

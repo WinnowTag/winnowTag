@@ -198,11 +198,10 @@ class FeedItem < ActiveRecord::Base
     # Feed filtering (include)
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
-    include_conditions = filters[:tag_ids].to_s.split(',').map do |tag_id|
-      if tag = Tag.find_by_id(tag_id)
-        build_tag_inclusion_filter(tag, filters[:include_negative])
-      end
-    end.compact
+    tags = Tag.find_all_by_id(filters[:tag_ids].to_s.split(','))
+    include_conditions = tags.map do |tag|
+      build_tag_inclusion_filter(tag, filters[:include_negative])
+    end
     
     exclude_conditions = filters[:user].excluded_tags.map do |tag|
       build_tag_exclusion_filter(tag)

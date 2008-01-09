@@ -188,13 +188,12 @@ optgroup {
 	width: 10px;
 	height: auto;
 	float: left;
-	background: #E1ECFE url(../images/right_aarow.png) 2px center no-repeat;
+	background: #E1ECFE url(../images/right_aarow.png) 3px center no-repeat;
 	border-right: 1px solid #999;
 }
 
 #sidebar_control:hover {
   background-color: #E8EEF7;
-  background-position: 2px center;
 }
 
 #sidebar_control.open {
@@ -204,7 +203,6 @@ optgroup {
 
 #sidebar_control.open:hover {
   background-color: #E8EEF7;
-  background-position: 2px center;
   border-right-color: #999;
 }
 
@@ -692,23 +690,23 @@ a.editor_cancel {
 
 /* =footer */
 #footer {
-	position: relative;
-	height: 25px;
-	padding: 5px 5px;
-	text-align: right;
+  height: 25px;
+  padding: 5px;
 	background-color: #E1ECFE;
+	border-top: 1px solid #999;
 }
 
 #footer #previous-next-buttons {
-	float: left;
+  float: left;
+  margin-left: 5px;
 }
 
 #footer #feed_item_count {
-	float: right;
+  float: right;
 }
 
 #footer #feed_items_indicator {
-	float: left;
+  float: left;
   background: url(../images/indicator.gif) center left no-repeat;
   padding-left: 20px;
 	margin-left: 1em;

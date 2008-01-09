@@ -42,7 +42,11 @@ class FeedItemsController < ApplicationController
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
 
-        if folder = Folder.find_by_id(params[:folder_id])
+        if params[:folder_id] =~ /tags/
+          params[:tag_ids] = (current_user.tag_ids + current_user.subscribed_tag_ids - current_user.excluded_tag_ids).join(",")
+        elsif params[:folder_id] =~ /feeds/
+          params[:feed_ids] = current_user.feed_ids.join(",")
+        elsif folder = Folder.find_by_id(params[:folder_id])
           params[:feed_ids] = folder.feed_ids.join(",")
           params[:tag_ids] = folder.tag_ids.join(",")
         end

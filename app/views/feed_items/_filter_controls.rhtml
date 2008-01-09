@@ -7,15 +7,19 @@
   </h4>
   
   <div id="folders">
-    <div class="folder<%= open_tags? ? " open" : "" %>">
-      <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('tags', $(this).up('.folder').hasClassName('open'), 365);">Tags</div>
+    <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
+      <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('tags', $(this).up('.folder').hasClassName('open'), 365);">
+        <%= link_to_function "Tags", "itemBrowser.setFilters({folder_id: 'tags'}); event.stop()" %>
+      </div>
       <div class="items">
         <ul id="tag_filters" class="filter_list"><%= render :partial => "feed_items/tag_filter_controls" %></ul>
       </div>
     </div>
   
-    <div class="folder<%= open_feeds? ? " open" : "" %>">
-      <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('feeds', $(this).up('.folder').hasClassName('open'), 365);">Feeds</div>
+    <div id="folder_feeds" class="folder<%= open_feeds? ? " open" : "" %>">
+      <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('feeds', $(this).up('.folder').hasClassName('open'), 365);">
+        <%= link_to_function "Feeds", "itemBrowser.setFilters({folder_id: 'feeds'}); event.stop()" %>
+      </div>
       <div class="items">
         <%= text_field_tag 'feed_title', 'find feeds...', :class => "feed_filter_search example",
               :onclick => "if(this.value == 'find feeds...') { this.value = ''; this.removeClassName('example'); }",
