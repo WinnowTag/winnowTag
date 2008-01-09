@@ -217,7 +217,12 @@ module ApplicationHelper
   end
   
   def feed_filter_control(feed, options = {})
-    html =  content_tag(:span, "(#{current_user.unread_items.for(feed).size})", :class => "unread_count", :title => "#{current_user.unread_items.for(feed).size} unread items in this feed")
+    unread_item_count = current_user.unread_items.for(feed).size
+    if unread_item_count.zero?
+      html = ""
+    else
+      html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items in this feed")
+    end
     url  =  case options[:remove]
       when :subscription then subscribe_feed_path(feed, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
