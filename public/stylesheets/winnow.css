@@ -188,7 +188,7 @@ optgroup {
 	width: 10px;
 	height: auto;
 	float: left;
-	background: #fff url(../images/right_aarow.png) 2px center no-repeat;
+	background: #E1ECFE url(../images/right_aarow.png) 2px center no-repeat;
 	border-right: 1px solid #999;
 }
 
@@ -198,12 +198,14 @@ optgroup {
 }
 
 #sidebar_control.open {
-	background: #fff url(../images/left_aarow.png) 2px center no-repeat;
+	background: #E1ECFE url(../images/left_aarow.png) 2px center no-repeat;
+	border-right-color: #E1ECFE;
 }
 
 #sidebar_control.open:hover {
   background-color: #E8EEF7;
   background-position: 2px center;
+  border-right-color: #999;
 }
 
 #sidebar h4 {
