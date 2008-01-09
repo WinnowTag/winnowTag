@@ -12,7 +12,7 @@
         <%= link_to_function "Tags", "itemBrowser.setFilters({folder_id: 'tags'}); event.stop()" %>
       </div>
       <div class="items">
-        <ul id="tag_filters" class="filter_list"><%= render :partial => "feed_items/tag_filter_controls" %></ul>
+        <%= tag_filter_controls(current_user.tags + current_user.subscribed_tags - current_user.excluded_tags, :draggable => true, :remove => nil, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
       </div>
     </div>
   

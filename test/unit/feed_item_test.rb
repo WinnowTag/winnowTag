@@ -260,13 +260,13 @@ class FeedItemTest < Test::Unit::TestCase
   #   assert_equal FeedItem.find(1, 2, 3, 4), FeedItem.find_with_filters(:view => view, :order => 'feed_items.id ASC')
   # end
   
-  def test_find_with_tag_filter_and_feed_filter_should_only_return_items_with_that_tag_in_that_feed
+  def test_find_with_tag_filter_and_feed_filter_should_only_return_items_with_that_tag_or_in_that_feed
     user = users(:quentin)
     tag = Tag(user, 'tag1')
     Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag)
   
-    assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :feed_ids => "1", :tag_ids => tag.id.to_s)
+    assert_equal FeedItem.find(2, 4), FeedItem.find_with_filters(:user => user, :feed_ids => "2", :tag_ids => tag.id.to_s)
   end
   
   def test_options_for_filters_creates_text_filter

@@ -439,16 +439,21 @@ ItemBrowser.prototype = {
 		}
 	},
 	
-	/** Issues the request to get new items.
-	 */
+  // Issues the request to get new items. 
 	doUpdate: function(options) {
 	  $$(".feeds li").invoke("removeClassName", "selected");
+	  $$(".tags li").invoke("removeClassName", "selected");
 	  $$(".folder").invoke("removeClassName", "selected");
 	  
 	  var params = location.hash.gsub('#', '').toQueryParams();
 	  if(params.feed_ids) {
 	    params.feed_ids.split(",").each(function(feed_id) {
 	      $$("#feed_" + feed_id).invoke("addClassName", "selected");
+	    });
+	  }
+	  if(params.tag_ids) {
+	    params.tag_ids.split(",").each(function(tag_id) {
+	      $$("#tag_" + tag_id).invoke("addClassName", "selected");
 	    });
 	  }
 	  if(params.folder_id) {

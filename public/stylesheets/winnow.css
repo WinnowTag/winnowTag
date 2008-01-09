@@ -726,7 +726,7 @@ a.editor_cancel {
 
 .item .closed .tags .public {
 	background: url(../images/public.png) center right no-repeat;
-	padding-right: 14px;
+  padding-right: 14px;
 }
 
 ul.tag_list {
@@ -750,7 +750,7 @@ ul.tag_list li {
 }
 
 ul.tag_list li .public {
-	background: url(../images/public.png) right center no-repeat;
+  background: url(../images/public.png) right center no-repeat;
 	padding: 1px 16px 2px 0;
 	margin-left: 3px;
 }
@@ -820,17 +820,12 @@ ul.tag_list li.user_tagging.negative_tagging .user {
 }
 
 .filter_list li {
-	padding-left: 14px;
   height: 1.4em;
   overflow: hidden;
 }
 
-.filter_list.feeds li {
-  padding-left: 0;
-}
-
 .filter_list li.public {
-	background: url(../images/public.png) left center no-repeat;
+  background: url(../images/public.png) right center no-repeat;
 }
 
 .filter_list .filter_control {
@@ -1059,10 +1054,13 @@ a.bookmarklet:hover {
 }
 
 .folder .items ul { 
-  padding: 5px;
+  margin: 0;
+  padding: 0;
 }
 
 .folder .items ul li { 
+  margin: 0;
+  padding: 0;
   cursor: move;
 }
 

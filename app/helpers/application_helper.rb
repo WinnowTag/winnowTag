@@ -237,4 +237,31 @@ module ApplicationHelper
     html << draggable_element(dom_id(feed), :ghosting => true, :revert => true, :constraint => "'vertical'") if options[:draggable]
     html
   end
+  
+  def tag_filter_controls(tags, options = {})
+    content_tag :ul, tags.map { |tag| tag_filter_control(tag, options) }.join, options.delete(:ul_options) || {}
+  end
+  
+  
+  def tag_filter_control(tag, options = {})
+    unread_item_count = current_user.unread_items.for(tag).size
+    if true or unread_item_count.zero?
+      html = ""
+    else
+      html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items with this tag")
+    end
+    url  =  case options[:remove]
+      when :subscription then subscribe_tag_path(tag, :subscribe => false)
+      when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
+    end
+    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}") << " " if options[:remove]
+    html << link_to_function(tag_name_with_tooltip(tag), "itemBrowser.setFilters({tag_ids: #{tag.id}})", :class => "name")
+    
+    html =  content_tag(:div, html, :class => "show_tag_control")
+    html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
+    
+    html =  content_tag(:li, html, :id => dom_id(tag), :class => tag.user_id == current_user.id ? nil : "public") #, :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
+    html << draggable_element(dom_id(tag), :ghosting => true, :revert => true, :constraint => "'vertical'") if options[:draggable]
+    html
+  end
 end

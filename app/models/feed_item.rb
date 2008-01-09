@@ -199,22 +199,19 @@ class FeedItem < ActiveRecord::Base
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
     tags = Tag.find_all_by_id(filters[:tag_ids].to_s.split(','))
-    include_conditions = tags.map do |tag|
+    conditions += tags.map do |tag|
       build_tag_inclusion_filter(tag, filters[:include_negative])
     end
+    conditions = [conditions.join(" OR ")] unless conditions.blank?
     
-    exclude_conditions = filters[:user].excluded_tags.map do |tag|
+    conditions += filters[:user].excluded_tags.map do |tag|
       build_tag_exclusion_filter(tag)
     end
-
-    # If these are blank add 1=1 so it is easier to combine them
-    include_conditions_sql = include_conditions.blank? ? nil : include_conditions.join(" OR ")
-    exclude_conditions_sql = exclude_conditions.blank? ? nil : exclude_conditions.join(" AND ")
     
     # if !view.show_untagged?
       # untagged = build_show_tagged_filter(filters[:user], filters[:include_negative])
-      tag_conditions = [include_conditions_sql, exclude_conditions_sql].compact
-      conditions << tag_conditions.join(" AND ") unless tag_conditions.blank?
+      # tag_conditions = [include_conditions_sql, exclude_conditions_sql].compact
+      # conditions << tag_conditions.join(" AND ") unless tag_conditions.blank?
     # else
     #   untagged = build_show_untagged_filter(filters[:user], filters[:include_negative])
     #   conditions << "(#{[[include_conditions_sql, exclude_conditions_sql].join(" AND "), untagged].join(" OR ")})"

@@ -14,7 +14,7 @@ class Folder < ActiveRecord::Base
   end
   
   def tag_ids=(tag_ids)
-    write_attribute(:tag_ids, feed_ids.map(&:to_s).join(","))
+    write_attribute(:tag_ids, tag_ids.map(&:to_s).uniq.join(","))
   end
   
   def feeds
