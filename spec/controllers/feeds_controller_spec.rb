@@ -50,7 +50,7 @@ describe FeedsController do
     feed.should_receive(:collect)
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
-    FeedSubscription.should_receive(:create!).with(:feed_id => feed.id, :user_id => @user.id)
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed, @user)
     
     post 'create', :feed => {:url => 'http://example.com'}
     response.should redirect_to(feed_path(feed))
@@ -88,8 +88,8 @@ describe FeedsController do
     mock_feed1.should_receive(:collect)
     mock_feed2.should_receive(:collect)
     
-    FeedSubscription.should_receive(:create!).with(:feed_id => mock_feed1.id, :user_id => @user.id)
-    FeedSubscription.should_receive(:create!).with(:feed_id => mock_feed2.id, :user_id => @user.id)
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed1, @user)
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed2, @user)
     
     Remote::Feed.should_receive(:import_opml).
                  with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml"))).
