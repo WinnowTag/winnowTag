@@ -173,7 +173,19 @@ module ApplicationHelper
   end
   
   def show_sidebar?
-    cookies[:show_sidebar].to_s =~ /true/i
+    cookies[:show_sidebar] =~ /true/i
+  end
+  
+  def open_folder?(folder)
+    cookies[dom_id(folder)] =~ /true/i
+  end
+  
+  def open_tags?
+    cookies[:tags] =~ /true/i
+  end
+  
+  def open_feeds?
+    cookies[:feeds] =~ /true/i
   end
   
   def search_field_tag(name, value = nil, options = {})

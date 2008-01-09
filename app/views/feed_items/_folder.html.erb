@@ -1,9 +1,9 @@
-<div class="folder" id="<%= dom_id(folder) %>">
+<div class="folder<%= open_folder?(folder) ? " open" : "" %>" id="<%= dom_id(folder) %>">
   <ul class="actions">
     <li><%= link_to_remote "Rename", :url => folder_path(folder), :method => :put, :with => %w|'folder[name]=' + name|, :condition => %W|name = prompt("Name?", $(this).up('.folder').down('.name').innerHTML)|, :html => { :class => "edit replace edit_icon" } %></li>
     <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => "Are you sure?", :html => { :class => "destroy replace destroy_icon" } %></li>
   </ul>
-  <div class="header" onclick="$(this).up('.folder').toggleClassName('open');">
+  <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('<%= dom_id(folder) %>', $(this).up('.folder').hasClassName('open'), 365);">
     <%= link_to_function folder.name, "itemBrowser.setFilters({folder_id: #{folder.id}}); event.stop()", :class => "name" %>
   </div>
   <div class="items">
