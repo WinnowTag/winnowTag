@@ -1,18 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'account_controller'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-# Re-raise errors caught by the controller.
-class AccountController; def rescue_action(e) raise e end; end
-
-class AccountControllerTest < Test::Unit::TestCase
-
+describe AccountController do
   fixtures :users
 
-  def setup
-    @controller = AccountController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-    # for testing action mailer
+  before(:each) do
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
     @emails = ActionMailer::Base.deliveries 
@@ -32,7 +23,7 @@ class AccountControllerTest < Test::Unit::TestCase
   end
 
   def test_should_allow_signup
-    assert_difference User, :count do
+    assert_difference "User.count" do
       create_user
       assert_response :redirect
       assert session[:user]
@@ -40,7 +31,7 @@ class AccountControllerTest < Test::Unit::TestCase
   end
 
   def test_should_require_login_on_signup
-    assert_no_difference User, :count do
+    assert_no_difference "User.count" do
       create_user(:login => nil)
       assert assigns(:user).errors.on(:login)
       assert_response :success
@@ -48,7 +39,7 @@ class AccountControllerTest < Test::Unit::TestCase
   end
 
   def test_should_require_password_on_signup
-    assert_no_difference User, :count do
+    assert_no_difference "User.count" do
       create_user(:password => nil)
       assert assigns(:user).errors.on(:password)
       assert_response :success
@@ -56,7 +47,7 @@ class AccountControllerTest < Test::Unit::TestCase
   end
 
   def test_should_require_email_on_signup
-    assert_no_difference User, :count do
+    assert_no_difference "User.count" do
       create_user(:email => nil)
       assert assigns(:user).errors.on(:email)
       assert_response :success
@@ -156,14 +147,15 @@ class AccountControllerTest < Test::Unit::TestCase
     assert_equal users(:quentin).login, u.login
     assert_redirected_to ''
   end
-  
-  def test_edit_shows_timezone_select_set_to_current_timezone
-    login_as(:quentin)
-    get :edit
-    assert_select "select[name='current_user[time_zone]']", true do
-      assert_select "option[value='#{users(:quentin).time_zone}']", true
-    end
-  end
+
+  # TODO: Move to view test
+  # def test_edit_shows_timezone_select_set_to_current_timezone
+  #   login_as(:quentin)
+  #   get :edit
+  #   assert_select "select[name='current_user[time_zone]']", true do
+  #     assert_select "option[value='#{users(:quentin).time_zone}']", true
+  #   end
+  # end
   
   def test_get_edit_returns_the_form
     login_as(:quentin)

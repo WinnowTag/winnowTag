@@ -1,0 +1,34 @@
+# == Schema Information
+# Schema version: 57
+#
+# Table name: roles
+#
+#  id                :integer(11)   not null, primary key
+#  name              :string(40)    
+#  authorizable_type :string(30)    
+#  authorizable_id   :integer(11)   
+#  created_at        :datetime      
+#  updated_at        :datetime      
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+admin:
+  id: 1
+  name: admin
+owner:
+  id: 2
+  name: owner
+owner_of_classifier_1:
+  id: 3
+  name: owner
+  authorizable_type: Classifier
+  authorizable_id: 1
+owner_of_quentin:
+  id: 4
+  name: owner
+  authorizable_type: User
+  authorizable_id: 1
+viewer_of_classifiers:
+  id: 5
+  name: viewer
+  authorizable_type: BayesClassifier

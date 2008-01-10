@@ -1,17 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'item_protection_controller'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-# Re-raise errors caught by the controller.
-class ItemProtectionController; def rescue_action(e) raise e end; end
-
-class ItemProtectionControllerTest < Test::Unit::TestCase
+describe ItemProtectionController do
   fixtures :users
 
-  def setup
-    @controller = ItemProtectionController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-    
+  before(:each) do
     login_as(:admin)
     Protector.create(:protector_id => 1)
     ActiveResource::HttpMock.respond_to do |mock|
@@ -33,17 +25,18 @@ class ItemProtectionControllerTest < Test::Unit::TestCase
   end
   
   def test_rebuild_calls_rebuild_on_protector_and_redirects_to_show
-    Remote::ProtectedItem.expects(:rebuild)
+    Remote::ProtectedItem.should_receive(:rebuild)
     post :rebuild
     assert_redirected_to item_protection_path
   end
-  
-  def test_cant_fetch_protector_should_display_error
-    ActiveResource::HttpMock.respond_to do |mock|
-      mock.get "/protectors/1.xml", {}, nil, 500
-    end
-    get :show
-    assert_response :not_found
-    assert_select "div#error", "Unable to fetch protection status from the collector"
-  end
+
+  # TODO: Needs to be moved to a view test
+  # def test_cant_fetch_protector_should_display_error
+  #   ActiveResource::HttpMock.respond_to do |mock|
+  #     mock.get "/protectors/1.xml", {}, nil, 500
+  #   end
+  #   get :show
+  #   assert_response :not_found
+  #   assert_select "div#error", "Unable to fetch protection status from the collector"
+  # end
 end

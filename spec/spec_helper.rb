@@ -4,6 +4,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'spec'
 require 'spec/rails'
+require 'authenticated_test_helper'
 
 Spec::Runner.configure do |config|
   config.use_transactional_fixtures = true
@@ -58,8 +59,11 @@ Spec::Runner.configure do |config|
     }.merge(attributes)
   end
   
-  def login_as(user_id)
-    session[:user] = user_id
+  def login_as(user_id_or_fixture_name)
+    session[:user] = case user_id_or_fixture_name
+      when Numeric; user_id_or_fixture_name
+      when Symbol; users(user_id_or_fixture_name).id
+    end
   end
   
   def mock_new_model(model_class, options_and_stubs = {})
@@ -79,5 +83,20 @@ Spec::Runner.configure do |config|
     m.stub!(:dom_id).with(no_args()).and_return("#{cls.name.underscore}_#{m.id}")
     m.should_receive(:dom_id).with(an_instance_of(String)).any_number_of_times.and_return {|p| "#{p}_#{cls.name.underscore}_#{m.id}"}
     m
+  end
+  
+  def referer(referer)
+    @request.env['HTTP_REFERER'] = referer
+  end
+
+  def cannot_access(user, method, action, args = {})
+    login_as(user)
+    self.send(method, action, args)
+    assert_response :redirect
+    assert_redirected_to "/account/login"
+  end
+  
+  def assert_requires_login(login = nil)
+    yield HttpLoginProxy.new(self, login)
   end
 end
