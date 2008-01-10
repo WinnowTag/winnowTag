@@ -4,11 +4,9 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
+require File.dirname(__FILE__) + '/../spec_helper'
 
-require File.dirname(__FILE__) + '/../../test_helper'
-
-class DateHelperTest < HelperTestCase
-  include DateHelper
+describe DateHelper do
   attr_accessor :current_user
 
   def test_format_date_uses_users_time_zone

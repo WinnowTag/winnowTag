@@ -4,17 +4,18 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-require File.dirname(__FILE__) + '/../../test_helper'
-Tag
+require File.dirname(__FILE__) + '/../spec_helper'
 
-class FeedItemsHelperTest < HelperTestCase
-  fixtures :users, :roles, :roles_users, :feed_items, :unread_items
-  include FeedItemsHelper
+# Need to explicitly require tag for the Tag() method
+require 'tag'
+
+describe FeedItemsHelper do
+  # fixtures :roles, :roles_users, :feed_items, :unread_items
   attr_reader :current_user, :session
 
   def setup
     @output = ""
-    @current_user = users(:quentin)
+    @current_user = User.create! valid_user_attributes
     @min_train_count = 1
     @session = {}
     @feed_item_count = nil
@@ -37,7 +38,7 @@ class FeedItemsHelperTest < HelperTestCase
   end
 
   def test_tag_controls_helper_when_untagged
-    @current_user.stubs(:tags).returns([Tag(current_user, 'tag1'), Tag(current_user, 'tag2'), Tag(current_user, 'tag3')])
+    @current_user.stub!(:tags).and_return([Tag(current_user, 'tag1'), Tag(current_user, 'tag2'), Tag(current_user, 'tag3')])
     fi = FeedItem.find(1)
     @response.body = tag_controls(fi)
     
@@ -169,17 +170,17 @@ class FeedItemsHelperTest < HelperTestCase
   end
   
   def test_feed_link_without_link
-    feed_item = stub( :feed => stub( :title => "Feed Title", :link => nil ) )
-    assert_equal "Feed Title", feed_link( feed_item )
+    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :link => nil))
+    assert_equal "Feed Title", feed_link(feed_item)
   end
   
   def test_feed_link_with_link
-    feed_item = stub( :feed => stub( :title => "Feed Title", :link => "http://example.com" ) )
-    assert_equal '<a href="http://example.com">Feed Title</a>', feed_link( feed_item )
+    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :link => "http://example.com"))
+    assert_equal '<a href="http://example.com">Feed Title</a>', feed_link(feed_item)
   end
   
   def test_feed_link_with_link_and_options
-    feed_item = stub( :feed => stub( :title => "Feed Title", :link => "http://example.com" ) )
-    assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', feed_link( feed_item, :target => "_blank" )
+    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :link => "http://example.com"))
+    assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', feed_link(feed_item, :target => "_blank")
   end
 end
