@@ -106,11 +106,12 @@ var Droppables = {
     }
   },
 
-  fire: function(event, element) {
+  fire: function(event, element, pointer) {
     if(!this.last_active) return;
     Position.prepare();
 
-    if (this.isAffected([Event.pointerX(event), Event.pointerY(event)], element, this.last_active))
+    if(!pointer) pointer = [Event.pointerX(event), Event.pointerY(event)];
+    if (this.isAffected(pointer, element, this.last_active))
       if (this.last_active.onDrop) {
         this.last_active.onDrop(element, this.last_active.element, event); 
         return true; 
@@ -358,7 +359,13 @@ var Draggable = Class.create({
     
     if(!this.options.quiet){
       Position.prepare();
-      Droppables.show(pointer, this.element);
+      
+      var pos = [pointer[0], pointer[1]];
+      if(this.options.scroll && (this.options.scroll != window && this._isScrollChild)) {
+        pos[0] += this.options.scroll.scrollLeft;
+        pos[1] += this.options.scroll.scrollTop;
+      }
+      Droppables.show(pos, this.element);
     }
     
     Draggables.notify('onDrag', this, event);
@@ -395,10 +402,15 @@ var Draggable = Class.create({
   
   finishDrag: function(event, success) {
     this.dragging = false;
-    
+        
+    var pointer = [Event.pointerX(event), Event.pointerY(event)];
+    if(this.options.scroll && (this.options.scroll != window && this._isScrollChild)) {
+      pointer[0] += this.options.scroll.scrollLeft;
+      pointer[1] += this.options.scroll.scrollTop;
+    }
+
     if(this.options.quiet){
       Position.prepare();
-      var pointer = [Event.pointerX(event), Event.pointerY(event)];
       Droppables.show(pointer, this.element);
     }
 
@@ -412,7 +424,7 @@ var Draggable = Class.create({
 
     var dropped = false; 
     if(success) { 
-      dropped = Droppables.fire(event, this.element); 
+      dropped = Droppables.fire(event, this.element, pointer); 
       if (!dropped) dropped = false; 
     }
     if(dropped && this.options.onDropped) this.options.onDropped(this.element);
@@ -455,10 +467,10 @@ var Draggable = Class.create({
   
   draw: function(point) {
     var pos = Position.cumulativeOffset(this.element);
-    if(this.options.ghosting) {
-      var r   = Position.realOffset(this.element);
-      pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
-    }
+    // if(this.options.ghosting) {
+    //   var r   = Position.realOffset(this.element);
+    //   pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
+    // }
     
     var d = this.currentDelta();
     pos[0] -= d[0]; pos[1] -= d[1];
@@ -530,8 +542,8 @@ var Draggable = Class.create({
     Draggables.notify('onDrag', this);
     if (this._isScrollChild) {
       Draggables._lastScrollPointer = Draggables._lastScrollPointer || $A(Draggables._lastPointer);
-      Draggables._lastScrollPointer[0] += this.scrollSpeed[0] * delta / 1000;
-      Draggables._lastScrollPointer[1] += this.scrollSpeed[1] * delta / 1000;
+      // Draggables._lastScrollPointer[0] += this.scrollSpeed[0] * delta / 1000;
+      // Draggables._lastScrollPointer[1] += this.scrollSpeed[1] * delta / 1000;
       if (Draggables._lastScrollPointer[0] < 0)
         Draggables._lastScrollPointer[0] = 0;
       if (Draggables._lastScrollPointer[1] < 0)
