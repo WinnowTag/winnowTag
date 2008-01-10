@@ -234,7 +234,7 @@ module ApplicationHelper
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
     
     html =  content_tag(:li, html, :id => dom_id(feed), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-    html << draggable_element(dom_id(feed), :ghosting => true, :revert => true, :constraint => "'vertical'") if options[:draggable]
+    html << draggable_element(dom_id(feed), :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
   end
   
@@ -261,7 +261,7 @@ module ApplicationHelper
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
     
     html =  content_tag(:li, html, :id => dom_id(tag), :class => tag.user_id == current_user.id ? nil : "public") #, :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-    html << draggable_element(dom_id(tag), :ghosting => true, :revert => true, :constraint => "'vertical'") if options[:draggable]
+    html << draggable_element(dom_id(tag), :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
   end
 end
