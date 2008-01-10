@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 Tag
 
 class TaggingTest < Test::Unit::TestCase
-  fixtures :taggings, :feeds, :feed_items, :users
+  fixtures :feeds, :feed_items, :users
 
   def test_create_tagging
     user = User.find(1)

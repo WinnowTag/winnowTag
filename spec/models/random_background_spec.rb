@@ -5,7 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
 
 class RandomBackgroundTest < Test::Unit::TestCase
   # Replace this with your real tests

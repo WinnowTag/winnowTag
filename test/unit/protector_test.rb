@@ -8,9 +8,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ProtectorTest < Test::Unit::TestCase
-  fixtures :protectors
-
-  # Replace this with your real tests.
   def test_can_create_protector
     assert_valid Protector.create(:protector_id => 1)
   end
