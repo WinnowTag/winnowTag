@@ -455,17 +455,17 @@ var Draggable = Class.create({
   
   draw: function(point) {
     var pos = Position.cumulativeOffset(this.element);
-    if(this.options.ghosting) {
-      var r   = Position.realOffset(this.element);
-      pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
-    }
+    // if(this.options.ghosting) {
+    //   var r   = Position.realOffset(this.element);
+    //   pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
+    // }
     
     var d = this.currentDelta();
     pos[0] -= d[0]; pos[1] -= d[1];
     
     if(this.options.scroll && (this.options.scroll != window && this._isScrollChild)) {
-      pos[0] -= this.options.scroll.scrollLeft-this.originalScrollLeft;
-      pos[1] -= this.options.scroll.scrollTop-this.originalScrollTop;
+      pos[0] -= this.options.scroll.scrollLeft;//-this.originalScrollLeft;
+      pos[1] -= this.options.scroll.scrollTop;//-this.originalScrollTop;
     }
     
     var p = [0,1].map(function(i){ 
@@ -530,8 +530,8 @@ var Draggable = Class.create({
     Draggables.notify('onDrag', this);
     if (this._isScrollChild) {
       Draggables._lastScrollPointer = Draggables._lastScrollPointer || $A(Draggables._lastPointer);
-      Draggables._lastScrollPointer[0] += this.scrollSpeed[0] * delta / 1000;
-      Draggables._lastScrollPointer[1] += this.scrollSpeed[1] * delta / 1000;
+      // Draggables._lastScrollPointer[0] += this.scrollSpeed[0] * delta / 1000;
+      // Draggables._lastScrollPointer[1] += this.scrollSpeed[1] * delta / 1000;
       if (Draggables._lastScrollPointer[0] < 0)
         Draggables._lastScrollPointer[0] = 0;
       if (Draggables._lastScrollPointer[1] < 0)
