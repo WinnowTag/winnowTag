@@ -242,7 +242,6 @@ module ApplicationHelper
     content_tag :ul, tags.map { |tag| tag_filter_control(tag, options) }.join, options.delete(:ul_options) || {}
   end
   
-  
   def tag_filter_control(tag, options = {})
     unread_item_count = current_user.unread_items.for(tag).size
     if true or unread_item_count.zero?
