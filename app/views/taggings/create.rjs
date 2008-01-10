@@ -1,4 +1,4 @@
-page[:tag_filters].replace_html :partial => "feed_items/tag_filter_controls"
+page[:tag_filters].replace tag_filter_controls(current_user.tags + current_user.subscribed_tags - current_user.excluded_tags, :draggable => true, :remove => nil, :ul_options => { :id => "tag_filters", :class => "filter_list tags" })
 page.replace @feed_item.dom_id("open_tags"), display_tags_for(@feed_item)
 
 page << "if ($('classification_button')) {"

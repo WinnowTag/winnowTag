@@ -812,46 +812,6 @@ ul.tag_list li.user_tagging.negative_tagging .user {
   cursor: pointer;
 }
 
-.filter_list {
-  margin: 0;
-  padding: 0;
-}
-
-.filter_list li {
-  height: 1.4em;
-  overflow: hidden;
-}
-
-.filter_list li.public {
-  background: url(../images/public.png) right center no-repeat;
-}
-
-.filter_list .filter_control {
-  float: right;
-}
-
-.property_table .filter_control {
-  float: right;
-}
-
-.filter_control {
-  float: left;
-  cursor: pointer;
-  display: block;
-  width: 16px;
-  height: 16px;
-}
-
-.filter_control.include {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -32px;
-}
-
-.filter_control.include.selected {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 0;
-}
-
 .inplaceeditor-form {
   display: inline;
 }
@@ -1056,7 +1016,9 @@ a.bookmarklet:hover {
 .folder ul.filter_list li {
   margin: 0;
   padding: 0;
-  cursor: move;
+/*  cursor: move;*/
+  height: 1.4em;
+  overflow: hidden;
 }
 
 .folder ul.filter_list li:hover {
@@ -1065,6 +1027,10 @@ a.bookmarklet:hover {
 
 .folder ul.filter_list li.selected {
   font-weight: bold;
+}
+
+.folder ul.filter_list li.public {
+  background: url(../images/public.png) right center no-repeat;
 }
 
 .folder ul.filter_list li a.remove {

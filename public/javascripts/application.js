@@ -147,22 +147,6 @@ function toggleSidebar() {
 })();
 
 
-function updateFilterControl(control, add_url, remove_url) {
-  control = $(control);
-  if(control.hasClassName('disabled')) {
-    return;
-  } else if(control.hasClassName('selected')) {
-	  if(remove_url) { new Ajax.Request(remove_url, {evalScripts:true}); }
-		control.removeClassName('selected');
-	} else { 
-	  if(add_url) { new Ajax.Request(add_url, {evalScripts:true}); }
-		control.up().getElementsBySelector(".filter_control").each(function(other_control) {
-			other_control.removeClassName('selected');
-		});
-		control.addClassName('selected');
-	}
-}
-
 function update_feed_filters(element, value) {
 	$('feed_filters').appendChild(value);
 	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true});
