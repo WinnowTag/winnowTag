@@ -19,8 +19,8 @@ describe FeedsController do
     Feed.stub!(:search).and_return(@feeds)
   end
   
-  it "should assign feeds on index" do    
-    get 'index'
+  it "should assign feeds on all" do    
+    get 'all'
     assigns[:feeds].should == @feeds
   end
   
@@ -62,7 +62,7 @@ describe FeedsController do
     job.should_receive(:update_attribute).with(:user_notified, true)
     @user.should_receive(:collection_job_result_to_display).and_return(job)
     
-    get :index
+    get :all
     flash[:notice].should =~ /Collection Job for #{feed.title} completed with result: Message/
   end
   
@@ -72,7 +72,7 @@ describe FeedsController do
     job.should_receive(:update_attribute).with(:user_notified, true)
     @user.should_receive(:collection_job_result_to_display).and_return(job)
     
-    get :index
+    get :all
     flash[:warning].should =~ /Collection Job for #{feed.title} failed with result: Message/
   end
   

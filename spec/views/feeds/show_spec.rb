@@ -19,8 +19,6 @@ describe '/feeds/show' do
     @feed_items.stub!(:size).and_return(23)
     @feed.stub!(:feed_items).and_return(@feed_items)
 
-    @user.should_receive(:subscribed?).with(@feed).and_return(true)
-    
     assigns[:feed] = @feed
   end
   
