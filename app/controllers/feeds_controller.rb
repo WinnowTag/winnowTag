@@ -10,22 +10,10 @@ class FeedsController < ApplicationController
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :flash_collection_job_result
   
-  def index
-    respond_to do |wants|
-      wants.html do
-        setup_sortable_columns
-        @search_term = params[:search_term]
-        @feeds = Feed.search :search_term => @search_term, :subscribed_by => current_user, :excluder => current_user, 
-                             :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
-      end
-      wants.xml { render :xml => Feed.find(:all).to_xml }
-    end
-  end
-  
   def all
     setup_sortable_columns
     @search_term = params[:search_term]
-    @feeds = Feed.search :search_term => @search_term,
+    @feeds = Feed.search :search_term => @search_term, :excluder => current_user, 
                          :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
   end
   

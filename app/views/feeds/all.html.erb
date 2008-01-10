@@ -17,7 +17,7 @@
   <thead>
     <tr>
   		<th><%= link_to "Title", sort_param('feeds', :alias => 'title') %></th>
-			<th class="subscribe"><%= "Subscribe" %></th>
+  		<th class="view_state"><%= link_to "Globally Exclude", sort_param('feeds', :alias => 'globally_exclude') %></th>
   		<th class="number"><%= link_to "Items", sort_param('feeds', :alias => 'item_count') %></th>
   		<th class="date"><%= link_to "Last Updated", sort_param('feeds', :alias => 'updated_on') %></th>
   		<th></th>
@@ -27,10 +27,7 @@
     <% for feed in @feeds %>
       <tr id="<%= "feed_#{feed.id}" %>" class="<%= cycle("odd", "even") %>">
     		<td><%= feed_link(feed) %></td>
-				<td>
-					<%= check_box_tag feed.dom_id("subscribe"), "1", current_user.subscribed?(feed),
-								:onclick => remote_function(:url => subscribe_feed_path(feed), :method => 'put', :with => "{ subscribe: this.checked }") %>
-				</td>
+  	    <td><%= globally_exclude_check_box(feed) %></td>
     		<td class="number"><%= feed.feed_items_count %></td>
     		<td class="date"><%= format_date(feed.updated_on) %></td>
     		<td class="controls">

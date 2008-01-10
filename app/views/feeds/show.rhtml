@@ -15,11 +15,9 @@
 	  <th>Last Collected</th>
 	  <td><%= format_date @feed.updated_on %></td>
 	</tr>
-	<% if current_user.subscribed?(@feed) -%>
   <tr>
     <th>Globally Excluded</th>
     <td><%= globally_exclude_check_box(@feed) %></td>
   </tr>
-  <% end -%>
 </table>
 
