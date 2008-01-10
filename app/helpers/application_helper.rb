@@ -218,7 +218,7 @@ module ApplicationHelper
   
   def feed_filter_control(feed, options = {})
     unread_item_count = current_user.unread_items.for(feed).size
-    if unread_item_count.zero?
+    if true or unread_item_count.zero?
       html = ""
     else
       html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items in this feed")
@@ -227,7 +227,7 @@ module ApplicationHelper
       when :subscription then subscribe_feed_path(feed, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
-    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}") << " "
+    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
     html << link_to_function(feed.title, "itemBrowser.setFilters({feed_ids: #{feed.id}})", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
     
     html =  content_tag(:div, html, :class => "show_feed_control")
@@ -254,7 +254,7 @@ module ApplicationHelper
       when :subscription then subscribe_tag_path(tag, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
-    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}") << " " if options[:remove]
+    html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " " if options[:remove]
     html << link_to_function(tag_name_with_tooltip(tag), "itemBrowser.setFilters({tag_ids: #{tag.id}})", :class => "name")
     
     html =  content_tag(:div, html, :class => "show_tag_control")

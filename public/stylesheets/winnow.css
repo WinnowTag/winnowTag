@@ -1037,11 +1037,16 @@ a.bookmarklet:hover {
 }
 
 .folder.open .header {
-  background-position: 0px 11px;
+  background-position: 2px 11px;
 }
 
 .folder .header:hover {
   background-color: #eee;
+}
+
+.folder .header a {
+  display: block;
+  outline: none;
 }
 
 .folder .items { 
@@ -1069,4 +1074,20 @@ a.bookmarklet:hover {
 
 .folder .items ul li.selected { 
   font-weight: bold;
+}
+
+.folder .items ul li a.remove {
+  float: right;
+  margin: 3px 0 0 0;
+  display: none;
+}
+
+.folder .items ul li:hover a.remove { 
+  display: block;
+}
+
+.folder .items ul li a.name {
+  display: block;
+  margin-left: 3px;
+  outline: none;
 }
