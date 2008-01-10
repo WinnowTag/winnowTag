@@ -231,21 +231,3 @@ Object.extend(Object.extend(Effect.ScrollToInDiv.prototype, Effect.Base.prototyp
     this.container.scrollTop = this.scrollStart + (factor * this.delta);
   }
 });
-
-
-/* TODO: Move into itembrowser.js */
-function checkNewTag(item_id) {
-	var newTagField = $('new_tag_field_' + item_id);
-	if (newTagField && newTagField.value != "") {		
-	 	if (confirm('Do you want to add ' + newTagField.value + ' to this item?')) {
-			// add_tag_control($('global_tag_list_for_' + item_id),
-			// 				newTagField, 
-			// 				item_id);			
-			//TODO: Change to toggle_tag
-		}
-	}
-}
-
-function closeItem(item_id) {
-		checkNewTag(item_id);	
-}

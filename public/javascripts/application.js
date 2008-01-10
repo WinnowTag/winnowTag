@@ -1,11 +1,3 @@
-function enable_control(control) {
-	$(control).removeClassName("disabled");
-}
-
-function disable_control(control) {
-	$(control).addClassName("disabled");
-}
-
 var errorTimeout = null;
 var ErrorMessage = Class.create();
 ErrorMessage.prototype = {
@@ -87,15 +79,6 @@ Ajax.Responders.register({
 		}
 	}
 });
-
-function selected_value_of(control_id) {
-	var control = $(control_id);
-	return control.options[control.selectedIndex].value;
-}
-function selected_display_of(control_id) {
-	var control = $(control_id);
-	return control.options[control.selectedIndex].innerHTML;
-}
 
 function resizeContent() {
 	var content = $('content');
