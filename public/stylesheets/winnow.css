@@ -225,9 +225,7 @@ optgroup {
 }
 
 #sidebar .feed_filter_search {
-  width: 90%;
-  display: block;
-  margin: 0 auto;
+  width: 98%;
 }
 
 .progress_bar_container {
@@ -1045,44 +1043,44 @@ a.bookmarklet:hover {
   outline: none;
 }
 
-.folder .items { 
+.folder ul.filter_list { 
   display: none;
 }
 
-.folder.open .items { 
+.folder.open ul.filter_list { 
   display: block;
 }
 
-.folder .items ul { 
+.folder ul.filter_list { 
   margin: 0;
   padding: 0;
 }
 
-.folder .items ul li { 
+.folder ul.filter_list li { 
   margin: 0;
   padding: 0;
   cursor: move;
 }
 
-.folder .items ul li:hover { 
+.folder ul.filter_list li:hover { 
   background-color: #eee;
 }
 
-.folder .items ul li.selected { 
+.folder ul.filter_list li.selected { 
   font-weight: bold;
 }
 
-.folder .items ul li a.remove {
+.folder ul.filter_list li a.remove {
   float: right;
   margin: 3px 0 0 0;
   display: none;
 }
 
-.folder .items ul li:hover a.remove { 
+.folder ul.filter_list li:hover a.remove { 
   display: block;
 }
 
-.folder .items ul li a.name {
+.folder ul.filter_list li a.name {
   display: block;
   margin-left: 3px;
   outline: none;
