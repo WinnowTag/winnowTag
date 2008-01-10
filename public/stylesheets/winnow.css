@@ -1008,26 +1008,22 @@ a.bookmarklet:hover {
   padding: 0 0 5px 0;
 }
 
-.folder ul.actions {
-  display: inline;
+.folder .header ul.actions {
+  display: none;
   float: right;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.folder ul.actions li {
-  float: left;
-  margin: 0.3em 0 0 0;
-  padding: 0;
-}
-
-.folder ul.actions {
-  display: none;
-}
-
-.folder.editing ul.actions {
+.folder .header:hover ul.actions {
   display: inline;
+}
+
+.folder .header ul.actions li {
+  float: left;
+  padding: 0;
+  margin: 0;
 }
 
 .folder .header {
