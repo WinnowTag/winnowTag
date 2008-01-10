@@ -152,14 +152,6 @@ function update_feed_filters(element, value) {
 	$('feed_filters').appendChild(value);
 	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
 	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
-
-	// TODO: Need to unbind these listeners...
-  // for (var i = 0, length = Event.observers.length; i < length; i++) {
-  //   var event_information = Event.observers[i];
-  //   if(event_information[0] == element) {
-  //    Event.stopObserving(event_information[0], event_information[1], event_information[2], event_information[3]);
-  //   }
-  // }
 }
 
 function clear_auto_complete(element, list) {
