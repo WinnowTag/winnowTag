@@ -464,8 +464,8 @@ var Draggable = Class.create({
     pos[0] -= d[0]; pos[1] -= d[1];
     
     if(this.options.scroll && (this.options.scroll != window && this._isScrollChild)) {
-      pos[0] -= this.options.scroll.scrollLeft;//-this.originalScrollLeft;
-      pos[1] -= this.options.scroll.scrollTop;//-this.originalScrollTop;
+      pos[0] -= this.options.scroll.scrollLeft-this.originalScrollLeft;
+      pos[1] -= this.options.scroll.scrollTop-this.originalScrollTop;
     }
     
     var p = [0,1].map(function(i){ 
