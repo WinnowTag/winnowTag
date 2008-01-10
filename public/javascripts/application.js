@@ -1,6 +1,3 @@
-// Place your application-specific JavaScript functions and classes here
-// This file is automatically included by javascript_include_tag :defaults
-
 function enable_control(control) {
 	$(control).removeClassName("disabled");
 }

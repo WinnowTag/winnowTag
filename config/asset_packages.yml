@@ -6,11 +6,11 @@ javascripts:
   - controls
   - slider
   - dragdrop
-  - application
   - tagging
   - itembrowser
   - in_place_completer
   - cookies
+  - application
 stylesheets: 
 - base: 
   - winnow
