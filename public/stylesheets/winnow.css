@@ -730,7 +730,7 @@ a.editor_cancel {
 ul.tag_list {
 	margin: 0;
 	padding: 0;
-	list-style: none;
+  list-style: none;
 	font-size: .98em;
 }
 
@@ -1045,15 +1045,12 @@ a.bookmarklet:hover {
 
 .folder ul.filter_list { 
   display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .folder.open ul.filter_list { 
   display: block;
-}
-
-.folder ul.filter_list { 
-  margin: 0;
-  padding: 0;
 }
 
 .folder ul.filter_list li { 
