@@ -2,7 +2,6 @@
   <h4>
     Folders &ndash;
     <%= link_to_remote "New", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name?")| %> &ndash;
-    <%= link_to_function "edit", "$('folders').toggleClassName('editing')" %> &ndash;
     <%= link_to_function "+", "$$('.folder').invoke('addClassName', 'open')" %>/<%= link_to_function "-", "$$('.folder').invoke('removeClassName', 'open')" %>
   </h4>
   
