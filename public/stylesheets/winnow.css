@@ -1015,10 +1015,18 @@ a.bookmarklet:hover {
 
 .folder ul.filter_list li {
   margin: 0;
-  padding: 0;
-/*  cursor: move;*/
+  padding: 0 0 0 15px;
   height: 1.4em;
   overflow: hidden;
+  cursor: move;
+}
+
+.folder ul.filter_list.tags li {
+  background: url(../images/tag.png) 0 2px no-repeat;
+}
+
+.folder ul.filter_list.feeds li {
+  background: url(../images/vertical_sprite.png) 0 -608px no-repeat;  
 }
 
 .folder ul.filter_list li:hover {
@@ -1030,7 +1038,9 @@ a.bookmarklet:hover {
 }
 
 .folder ul.filter_list li.public {
-  background: url(../images/public.png) right center no-repeat;
+  background-image: url(../images/public.png);
+  background-position: 1px 2px;
+  background-repeat: no-repeat;
 }
 
 .folder ul.filter_list li a.remove {
