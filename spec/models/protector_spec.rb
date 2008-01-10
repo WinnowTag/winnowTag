@@ -5,7 +5,7 @@
 # Please contact info@peerworks.org for further information.
 #
 
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
 
 class ProtectorTest < Test::Unit::TestCase
   def test_can_create_protector
@@ -14,7 +14,7 @@ class ProtectorTest < Test::Unit::TestCase
   
   def test_can_only_create_one_protector
     Protector.create(:protector_id => 1)
-    assert_invalid(Protector.create(:protector_id => 2))
+    Protector.create(:protector_id => 2).should_not be_valid
   end
   
   def test_get_protector_id_returns_id
