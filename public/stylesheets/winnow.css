@@ -1001,7 +1001,6 @@ a.bookmarklet:hover {
 }
 
 .folder.selected {
-  background-color: #eee;
   font-weight: bold;
 }
 
@@ -1032,13 +1031,13 @@ a.bookmarklet:hover {
 }
 
 .folder .header {
-  padding: 5px 0 5px 17px;
-  background: transparent url(../images/expansion_arrows.gif) no-repeat 5px -52px;
+  padding: 5px 0 5px 15px;
+  background: transparent url(../images/expansion_arrows.gif) no-repeat 3px -52px;
   cursor: pointer;
 }
 
 .folder.open .header {
-  background-position: 5px 11px;
+  background-position: 0px 11px;
 }
 
 .folder .header:hover {
@@ -1069,6 +1068,5 @@ a.bookmarklet:hover {
 }
 
 .folder .items ul li.selected { 
-  background-color: #eee;
   font-weight: bold;
 }
