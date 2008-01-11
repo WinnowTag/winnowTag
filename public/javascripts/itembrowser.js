@@ -657,7 +657,7 @@ ItemBrowser.prototype = {
 	},
 	
 	setFilters: function(parameters) {
-	  location.hash = "#";
+	  location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
 	  this.addFilters(parameters);
 	},
 	
