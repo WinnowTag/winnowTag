@@ -1047,6 +1047,7 @@ a.bookmarklet:hover {
   float: right;
   margin: 3px 0 0 0;
   display: none;
+  cursor: pointer;
 }
 
 .folder ul.filter_list li:hover a.remove {
@@ -1057,4 +1058,5 @@ a.bookmarklet:hover {
   display: block;
   margin-left: 3px;
   outline: none;
+  cursor: pointer;
 }
