@@ -50,7 +50,7 @@ describe FeedsController do
     feed.should_receive(:collect)
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
-    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed, @user)
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
     
     post 'create', :feed => {:url => 'http://example.com'}
     response.should redirect_to(feed_path(feed))
@@ -88,8 +88,8 @@ describe FeedsController do
     mock_feed1.should_receive(:collect)
     mock_feed2.should_receive(:collect)
     
-    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed1, @user)
-    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed2, @user)
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed1.id, @user.id)
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed2.id, @user.id)
     
     Remote::Feed.should_receive(:import_opml).
                  with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml"))).
@@ -99,9 +99,29 @@ describe FeedsController do
     flash[:notice].should == "Imported 2 feeds from your OPML file"
   end 
   
-  it "should create a feed subscription when for the subscribe action" do
+  it "should create a feed subscription for the subscribe action" do
     subscriptions = mock('subscriptions')
-    subscriptions.should_receive(:create!).with(:feed_id => @feed.id)
+    subscriptions.should_receive(:create).with(:feed_id => @feed.id)
+    @user.should_receive(:feed_subscriptions).and_return(subscriptions)
+    
+    post :subscribe, :id => @feed.id, :subscribe => 'true'
+  end
+  
+  it "should ignore duplicate subscription errors if the user attempts to add a feed more than once" do
+    feed = mock_model(Remote::Feed, :url => 'http://example.com')
+    feed.errors.should_receive(:empty?).and_return(true)
+    feed.should_receive(:collect)
+    Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
+    
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id).and_raise(ActiveRecord::StatementInvalid)
+    
+    post 'create', :feed => {:url => 'http://example.com'}
+    response.should redirect_to(feed_path(feed))
+  end
+  
+  it "should ignore double subscriptions" do
+    subscriptions = mock('subscriptions')
+    subscriptions.should_receive(:create).with(:feed_id => @feed.id).and_raise(ActiveRecord::StatementInvalid)
     @user.should_receive(:feed_subscriptions).and_return(subscriptions)
     
     post :subscribe, :id => @feed.id, :subscribe => 'true'

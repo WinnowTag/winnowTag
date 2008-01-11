@@ -24,7 +24,7 @@ class FeedsController < ApplicationController
   def create
     @feed = Remote::Feed.find_or_create_by_url(params[:feed][:url])
     if @feed.errors.empty?
-      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed, current_user)
+      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
       flash[:notice] = "Added feed from '#{@feed.url}'. " +
@@ -41,7 +41,7 @@ class FeedsController < ApplicationController
     if params[:opml]
       @feeds = Remote::Feed.import_opml(params[:opml].read)
       @feeds.each do |feed|
-        FeedSubscription.find_or_create_by_feed_id_and_user_id(feed, current_user)
+        FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
         feed.collect(:created_by   => current_user.login, 
                      :callback_url => collection_job_results_url(current_user))
       end
@@ -86,7 +86,7 @@ class FeedsController < ApplicationController
   def subscribe
     if feed = Feed.find_by_id(params[:id])
       if params[:subscribe] =~ /true/i
-        current_user.feed_subscriptions.create! :feed_id => feed.id
+        current_user.feed_subscriptions.create(:feed_id => feed.id) rescue nil
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
