@@ -1,3 +1,5 @@
+Position.includeScrollOffsets = true;
+
 var errorTimeout = null;
 var ErrorMessage = Class.create();
 ErrorMessage.prototype = {
