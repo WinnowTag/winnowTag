@@ -1,5 +1,23 @@
 Position.includeScrollOffsets = true;
 
+document.observe('dom:loaded', function() {
+  $$("input.example[type=text]").each(function(element) {
+    var example_value = element.value;
+    element.observe("focus", function() {
+      if(element.value == example_value) {
+        element.value = "";
+        element.removeClassName("example");
+      }
+    });
+    element.observe("blur", function() {
+      if(element.value == "") {
+        element.value = example_value;
+        element.addClassName("example");
+      }
+    });
+  });
+});
+
 var errorTimeout = null;
 var ErrorMessage = Class.create();
 ErrorMessage.prototype = {
@@ -139,9 +157,18 @@ function update_feed_filters(element, value) {
 	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
 }
 
+function update_tag_filters(element, value) {
+  value.removeClassName('selected');
+	$('tag_filters').appendChild(value);
+	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
+	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
+}
+
 function clear_auto_complete(element, list) {
-  element.value = "";
-	list.update('');
+  if(!element.value.match(/add (tags|feeds)\.\.\./)) {
+    element.value = "";
+	  list.update('');
+  }
 }
 
 function insert_in_order(container, sibling_selector, sibling_value_selector, element_html, element_value) {

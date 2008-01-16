@@ -5,14 +5,13 @@
     <%= link_to_function "+", "$$('.folder').invoke('addClassName', 'open')" %>/<%= link_to_function "-", "$$('.folder').invoke('removeClassName', 'open')" %>
   </h4>
 
-  <%= text_field_tag 'feed_title', 'add feeds...', :class => "feed_filter_search example",
-        :onclick => "if(this.value == 'add feeds...') { this.value = ''; this.removeClassName('example'); }",
-        :onblur => "if(this.value == '') { this.value = 'add feeds...'; this.addClassName('example'); }" %>
-  <div id="<%= "feed_title_auto_complete" %>" class="auto_complete"></div>
-  <%= auto_complete_field 'feed_title', :param_name => 'feed[title]', 
-        :url => { :controller => "feeds", :action => "auto_complete_for_feed_title" },
-        :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete" %>
-  <hr>
+  <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search example", :value => "add feeds..." }, 
+        :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
+        :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete") %>
+
+  <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search example", :value => "add tags..." }, 
+        :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
+        :after_update_element => "update_tag_filters", :on_hide => "clear_auto_complete") %>
 
   <div id="folders">
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
