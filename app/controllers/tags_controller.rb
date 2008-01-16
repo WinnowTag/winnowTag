@@ -18,7 +18,7 @@
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => :show
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude]
+  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
   
   def index
     respond_to do |wants|
@@ -140,15 +140,30 @@ class TagsController < ApplicationController
   end
   
   # Action to get tag names for the auto-complete tag field on the merge/rename form.
-  #
   def auto_complete_for_tag_name
     @tag = current_user.tags.find_by_name(params[:id])
     
     @q = params[:tag][:name]
     @tags = current_user.tags.find(:all, 
-          :conditions => ['lower(name) LIKE lower(?)', "%#{@q}%"])
+          :conditions => ['LOWER(name) LIKE LOWER(?)', "%#{@q}%"])
     @tags -= Array(@tag)
     render :inline => '<%= auto_complete_result(@tags, :name, @q) %>'
+  end
+  
+  def auto_complete_for_sidebar
+    @q = params[:tag][:name]
+    
+    conditions = ["LOWER(name) LIKE LOWER(?)", "public = ?", "user_id != ?"]
+    values = ["%#{@q}%", true, current_user.id]
+    
+    tag_ids = current_user.subscribed_tags.map(&:id)
+    if !tag_ids.blank?
+      conditions << "id NOT IN (?)"
+      values << tag_ids
+    end
+    
+    @tags = Tag.find(:all, :conditions => [conditions.join(" AND "), *values], :limit => 30)
+    render :layout => false
   end
   
   def publicize

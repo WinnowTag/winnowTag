@@ -69,7 +69,7 @@ class FeedsController < ApplicationController
       values << feed_ids
     end
     
-    @feeds = Feed.find(:all, :conditions => [conditions.join(" AND "), *values])
+    @feeds = Feed.find(:all, :conditions => [conditions.join(" AND "), *values], :limit => 30)
     render :layout => false
   end
   
