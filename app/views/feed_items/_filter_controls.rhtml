@@ -19,7 +19,7 @@
       <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('tags', $(this).up('.folder').hasClassName('open'), 365);">
         <%= link_to_function "Tags", "itemBrowser.setFilters({folder_id: 'tags'}); event.stop()" %>
       </div>
-      <%= tag_filter_controls(current_user.tags + current_user.subscribed_tags - current_user.excluded_tags, :draggable => true, :remove => nil, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
+      <%= tag_filter_controls(current_user.tags + current_user.subscribed_tags - current_user.excluded_tags, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
     </div>
   
     <div id="folder_feeds" class="folder<%= open_feeds? ? " open" : "" %>">

@@ -235,6 +235,9 @@ module ApplicationHelper
     else
       html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items with this tag")
     end
+    if options[:remove] == :subscription && !current_user.subscribed_tags.include?(tag)
+      options = options.except(:remove)
+    end
     url  =  case options[:remove]
       when :subscription then subscribe_tag_path(tag, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
