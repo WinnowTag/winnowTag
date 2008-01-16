@@ -1028,6 +1028,9 @@ a.bookmarklet:hover {
   padding: 0 0 0 15px;
   height: 1.4em;
   overflow: hidden;
+}
+
+.folder ul.filter_list li.draggable {
   cursor: move;
 }
 

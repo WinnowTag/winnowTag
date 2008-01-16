@@ -218,8 +218,10 @@ module ApplicationHelper
     
     html =  content_tag(:div, html, :class => "show_feed_control")
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
-    
-    html =  content_tag(:li, html, :id => dom_id(feed), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
+
+    class_names = []
+    class_names << "draggable" if options[:draggable]
+    html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
     html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
   end
@@ -249,7 +251,10 @@ module ApplicationHelper
     html =  content_tag(:div, html, :class => "show_tag_control")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
     
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => tag.user_id == current_user.id ? nil : "public", :subscribe_url => subscribe_tag_path(tag, :subscribe => true))
+    class_names = []
+    class_names << "public" if tag.user_id != current_user.id
+    class_names << "draggable" if options[:draggable]
+    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => subscribe_tag_path(tag, :subscribe => true))
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
   end
