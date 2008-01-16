@@ -928,6 +928,15 @@ input.example {
   margin-right: 5px;
 }
 
+.cross_icon {
+  background: url(../images/cross.gif) 0 center no-repeat;
+}
+
+.pencil_icon {
+  background: url(../images/pencil.png) 0 center no-repeat;
+  background-position: 0 0;
+}
+
 a.bookmarklet {
   background-color:#EBEBEB;
   color:#565656;
@@ -999,7 +1008,6 @@ a.bookmarklet:hover {
 }
 
 .folder .header a {
-  display: block;
   outline: none;
 }
 
