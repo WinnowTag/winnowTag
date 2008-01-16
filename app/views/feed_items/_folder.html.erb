@@ -4,7 +4,7 @@
       <li><%= link_to_remote "Rename", :url => folder_path(folder), :method => :put, :with => %w|'folder[name]=' + name|, :condition => %W|name = prompt("Name?", $(this).up('.folder').down('.name').innerHTML)|, :html => { :class => "edit replace pencil_icon" } %></li>
       <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => "Are you sure?", :html => { :class => "destroy replace cross_icon" } %></li>
     </ul>
-    <%= link_to_function folder.name, "itemBrowser.setFilters({folder_id: #{folder.id}}); event.stop()", :class => "name" %>
+    <%= link_to_function folder.name, "itemBrowser.toggleSetFilters({tag_ids: '#{folder.tag_ids.join(',')}', feed_ids: '#{folder.feed_ids.join(',')}'}); event.stop()", :class => "name" %>
   </div>
   <%= tag_filter_controls(folder.tags, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_tag_items", :class => "filter_list tags" }) %>
   <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list feeds" }) %>

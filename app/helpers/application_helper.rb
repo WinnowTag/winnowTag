@@ -214,7 +214,7 @@ module ApplicationHelper
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
     html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
-    html << link_to_function(feed.title, "itemBrowser.setFilters({feed_ids: #{feed.id}})", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
+    html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'})", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
     
     html =  content_tag(:div, html, :class => "show_feed_control")
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
@@ -246,7 +246,7 @@ module ApplicationHelper
     end
     html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " " if options[:remove]
     html << link_to_function(image_tag("pencil.png"), "alert('TODO: Implement editing...');", :class => "edit") << " " if current_user == tag.user
-    html << link_to_function(tag_name_with_tooltip(tag), "itemBrowser.setFilters({tag_ids: #{tag.id}})", :class => "name")
+    html << link_to_function(tag_name_with_tooltip(tag), "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})", :class => "name")
     
     html =  content_tag(:div, html, :class => "show_tag_control")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]

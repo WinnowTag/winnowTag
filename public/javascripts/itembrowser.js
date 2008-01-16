@@ -638,10 +638,46 @@ ItemBrowser.prototype = {
 		}
 	},
 	
+	toggleSetFilters: function(parameters) {
+	  var selected = true;
+
+	  if(parameters.feed_ids) {
+	    parameters.feed_ids.split(",").each(function(feed_id) {
+	      selected = selected && $("feed_" + feed_id).hasClassName("selected");
+	    });
+	  }
+	  if(parameters.tag_ids) {
+	    parameters.tag_ids.split(",").each(function(tag_id) {
+	      selected = selected && $("tag_" + tag_id).hasClassName("selected");
+	    });
+	  }
+
+    if(selected) {
+      this.removeFilters(parameters);
+    } else {
+      this.setFilters(parameters);
+    }
+	},
+	
+	removeFilters: function(parameters) {
+    var new_parameters = location.hash.gsub('#', '').toQueryParams();
+    if(parameters.feed_ids) {
+      new_parameters.feed_ids = new_parameters.feed_ids.split(",").reject(function(feed_id) {
+        return parameters.feed_ids.split(",").include(feed_id);
+      }).join(",");
+    }
+    if(parameters.tag_ids) {
+      new_parameters.tag_ids = new_parameters.tag_ids.split(",").reject(function(tag_id) {
+        return parameters.tag_ids.split(",").include(tag_id);
+      }).join(",");
+    }
+    this.setFilters(new_parameters);
+	},
+	
 	setFilters: function(parameters) {
 	  $$(".feeds li").invoke("removeClassName", "selected");
 	  $$(".tags li").invoke("removeClassName", "selected");
-	  $$(".folder").invoke("removeClassName", "selected");
+    $$(".folder").invoke("removeClassName", "selected");
     $("text_filter").focus();
     $("text_filter").value = "";
     $("text_filter").blur();
@@ -661,7 +697,7 @@ ItemBrowser.prototype = {
 	    }
 	  });
 	  location.hash = "#" + new_parameters.toQueryString();
-
+    
     // Update styles on selected items
     var params = new_parameters.toQueryString().toQueryParams();
 	  if(params.feed_ids) {
@@ -674,12 +710,23 @@ ItemBrowser.prototype = {
 	      $$("#tag_" + tag_id).invoke("addClassName", "selected");
 	    });
 	  }
-	  if(params.folder_id) {
-	    $('folder_' + params.folder_id).addClassName("selected");
-      // $('folder_' + params.folder_id).select(".feeds li").each(function(element) {
-      //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
-      // });
-	  }
+	  $$(".folder").each(function(folder) {
+	    var items = folder.select(".filter_list li");
+	    var all_selected = items.size() > 0;
+	    items.each(function(item) {
+	      all_selected = all_selected && item.hasClassName("selected");
+	    });
+	    if(all_selected) {
+	      folder.addClassName("selected");
+	    }
+	  });
+	  
+    // if(params.folder_id) {
+    //   $('folder_' + params.folder_id).addClassName("selected");
+    //       // $('folder_' + params.folder_id).select(".feeds li").each(function(element) {
+    //       //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
+    //       // });
+    // }
 	  if(params.text_filter) {
       $("text_filter").value = params.text_filter;
 	  }
