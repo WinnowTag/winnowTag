@@ -258,7 +258,7 @@ ItemBrowser.prototype = {
 		var self = this;
 		Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
 		
-		if(location.hash.gsub('#', '').blank()) {
+		if(location.hash.gsub('#', '').blank() && Cookie.get("filters")) {
 		  this.setFilters(Cookie.get("filters").toQueryParams());
 		} else {
 		  this.setFilters(location.hash.gsub('#', '').toQueryParams());
