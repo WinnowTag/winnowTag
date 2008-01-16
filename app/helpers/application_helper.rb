@@ -235,7 +235,7 @@ module ApplicationHelper
     else
       html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items with this tag")
     end
-    if options[:remove] == :subscription && current_user == tag.user #!current_user.subscribed_tags.include?(tag)
+    if options[:remove] == :subscription && current_user == tag.user
       options = options.except(:remove)
     end
     url  =  case options[:remove]
@@ -243,6 +243,7 @@ module ApplicationHelper
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
     html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " " if options[:remove]
+    html << link_to_function(image_tag("pencil.png"), "alert('TODO: Implement editing...');", :class => "edit") << " " if current_user == tag.user
     html << link_to_function(tag_name_with_tooltip(tag), "itemBrowser.setFilters({tag_ids: #{tag.id}})", :class => "name")
     
     html =  content_tag(:div, html, :class => "show_tag_control")

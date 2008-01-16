@@ -1009,7 +1009,7 @@ a.bookmarklet:hover {
   background-color: #eee;
 }
 
-.folder .header a {
+.folder a {
   outline: none;
 }
 
@@ -1053,20 +1053,22 @@ a.bookmarklet:hover {
   background-repeat: no-repeat;
 }
 
-.folder ul.filter_list li a.remove {
+.folder ul.filter_list li a.remove, .folder ul.filter_list li a.edit {
   float: right;
-  margin: 3px 0 0 0;
   display: none;
   cursor: pointer;
 }
 
-.folder ul.filter_list li:hover a.remove {
+.folder ul.filter_list li a.remove {
+  margin: 3px 0 0 0;
+}
+
+.folder ul.filter_list li:hover a.remove, .folder ul.filter_list li:hover a.edit {
   display: block;
 }
 
 .folder ul.filter_list li a.name {
   display: block;
   margin-left: 3px;
-  outline: none;
   cursor: pointer;
 }
