@@ -259,9 +259,10 @@ ItemBrowser.prototype = {
 		Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
 		
 		if(location.hash.gsub('#', '').blank()) {
-		  location.hash = Cookie.get("filters");
+		  this.setFilters(Cookie.get("filters").toQueryParams());
+		} else {
+		  this.setFilters(location.hash.gsub('#', '').toQueryParams());
 		}
-		this.reload();
 	},
 	
 	/** Called to initialize the internal list of items from the items loaded into the feed_item_container.
@@ -444,30 +445,6 @@ ItemBrowser.prototype = {
 	
   // Issues the request to get new items. 
 	doUpdate: function(options) {
-	  $$(".feeds li").invoke("removeClassName", "selected");
-	  $$(".tags li").invoke("removeClassName", "selected");
-	  $$(".folder").invoke("removeClassName", "selected");
-	  
-	  var params = location.hash.gsub('#', '').toQueryParams();
-	  if(params.feed_ids) {
-	    params.feed_ids.split(",").each(function(feed_id) {
-	      $$("#feed_" + feed_id).invoke("addClassName", "selected");
-	    });
-	  }
-	  if(params.tag_ids) {
-	    params.tag_ids.split(",").each(function(tag_id) {
-	      $$("#tag_" + tag_id).invoke("addClassName", "selected");
-	    });
-	  }
-	  if(params.folder_id) {
-	    $('folder_' + params.folder_id).addClassName("selected");
-      // $('folder_' + params.folder_id).select(".feeds li").each(function(element) {
-      //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
-      // });
-	  }
-	  
-	  Cookie.set("filters", location.hash, 365);
-	  
 	  options = options || {};
     new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
 			onComplete: function() {
@@ -662,11 +639,16 @@ ItemBrowser.prototype = {
 	},
 	
 	setFilters: function(parameters) {
+	  $$(".feeds li").invoke("removeClassName", "selected");
+	  $$(".tags li").invoke("removeClassName", "selected");
+	  $$(".folder").invoke("removeClassName", "selected");
+	  
 	  location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
 	  this.addFilters(parameters);
 	},
 	
 	addFilters: function(parameters) {
+	  // Update location.hash
 	  var new_parameters = $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters));
 	  new_parameters.each(function(key_value) {
       var key = key_value[0];
@@ -676,6 +658,30 @@ ItemBrowser.prototype = {
 	    }
 	  });
 	  location.hash = "#" + new_parameters.toQueryString();
+
+    // Update styles on selected items
+    var params = new_parameters.toQueryString().toQueryParams();
+	  if(params.feed_ids) {
+	    params.feed_ids.split(",").each(function(feed_id) {
+	      $$("#feed_" + feed_id).invoke("addClassName", "selected");
+	    });
+	  }
+	  if(params.tag_ids) {
+	    params.tag_ids.split(",").each(function(tag_id) {
+	      $$("#tag_" + tag_id).invoke("addClassName", "selected");
+	    });
+	  }
+	  if(params.folder_id) {
+	    $('folder_' + params.folder_id).addClassName("selected");
+      // $('folder_' + params.folder_id).select(".feeds li").each(function(element) {
+      //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
+      // });
+	  }
+	  
+	  // Store filters for page reload
+	  Cookie.set("filters", new_parameters.toQueryString(), 365);
+	  
+	  // Reload the item browser
 	  this.reload();
 	},
 	
