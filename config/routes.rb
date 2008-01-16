@@ -31,7 +31,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :tags,
                 :collection => { 
                   :public => :get,
-                  :auto_complete_for_tag_name => :any
+                  :auto_complete_for_tag_name => :any,
+                  :auto_complete_for_sidebar => :any
                 },
                 :member => { 
                   :globally_exclude => :post,
