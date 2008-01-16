@@ -642,6 +642,9 @@ ItemBrowser.prototype = {
 	  $$(".feeds li").invoke("removeClassName", "selected");
 	  $$(".tags li").invoke("removeClassName", "selected");
 	  $$(".folder").invoke("removeClassName", "selected");
+    $("text_filter").focus();
+    $("text_filter").value = "";
+    $("text_filter").blur();
 	  
 	  location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
 	  this.addFilters(parameters);
@@ -676,6 +679,9 @@ ItemBrowser.prototype = {
       // $('folder_' + params.folder_id).select(".feeds li").each(function(element) {
       //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
       // });
+	  }
+	  if(params.text_filter) {
+      $("text_filter").value = params.text_filter;
 	  }
 	  
 	  // Store filters for page reload

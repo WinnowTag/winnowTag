@@ -205,6 +205,7 @@ applesearch.init = function () {
 		    applesearch.removePlaceholder(text_input);
 	    });
 		  Event.observe(text_input, 'blur', function() {
+		    applesearch.onChange(text_input, clear_button);
 		    applesearch.insertPlaceholder(text_input);
 	    });
 		  Event.observe(clear_button, 'click', function() {
