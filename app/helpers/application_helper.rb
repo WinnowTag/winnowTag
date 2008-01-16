@@ -235,7 +235,7 @@ module ApplicationHelper
     else
       html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items with this tag")
     end
-    if options[:remove] == :subscription && !current_user.subscribed_tags.include?(tag)
+    if options[:remove] == :subscription && current_user == tag.user #!current_user.subscribed_tags.include?(tag)
       options = options.except(:remove)
     end
     url  =  case options[:remove]
@@ -248,7 +248,7 @@ module ApplicationHelper
     html =  content_tag(:div, html, :class => "show_tag_control")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
     
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => tag.user_id == current_user.id ? nil : "public") #, :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
+    html =  content_tag(:li, html, :id => dom_id(tag), :class => tag.user_id == current_user.id ? nil : "public", :subscribe_url => subscribe_tag_path(tag, :subscribe => true))
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
   end
