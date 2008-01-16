@@ -258,6 +258,9 @@ ItemBrowser.prototype = {
 		var self = this;
 		Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
 		
+		if(location.hash.gsub('#', '').blank()) {
+		  location.hash = Cookie.get("filters");
+		}
 		this.reload();
 	},
 	
@@ -462,6 +465,8 @@ ItemBrowser.prototype = {
       //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
       // });
 	  }
+	  
+	  Cookie.set("filters", location.hash, 365);
 	  
 	  options = options || {};
     new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
