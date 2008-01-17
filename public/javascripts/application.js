@@ -152,14 +152,14 @@ function toggleSidebar() {
 
 function update_feed_filters(element, value) {
   value.removeClassName('selected');
-	$('feed_filters').appendChild(value);
+  insert_in_order('feed_filters', 'li', '.name', value, $(value).down(".name").innerHTML);
 	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
 	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
 }
 
 function update_tag_filters(element, value) {
   value.removeClassName('selected');
-	$('tag_filters').appendChild(value);
+  insert_in_order('tag_filters', 'li', '.name span', value, $(value).down(".name").innerHTML);
 	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
 	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
 }
@@ -177,13 +177,13 @@ function insert_in_order(container, sibling_selector, sibling_value_selector, el
 	var inserted = false;
 	container.select(sibling_selector).each(function(element) {
 		if(!inserted && element.down(sibling_value_selector).innerHTML.toLowerCase() > element_value.toLowerCase()) {
-			new Insertion.Before(element, element_html + " ");
+			new Insertion.Before(element, element_html);
 			inserted = true;
 		}
 	});
 	
 	if(!inserted) {
-		new Insertion.Bottom(container, " " + element_html);
+		new Insertion.Bottom(container, element_html);
 	}
 }
 
