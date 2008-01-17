@@ -681,6 +681,7 @@ ItemBrowser.prototype = {
     $("text_filter").focus();
     $("text_filter").value = "";
     $("text_filter").blur();
+    $("manual_taggings").checked = false;
 	  
 	  location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
 	  this.addFilters(parameters);
@@ -729,6 +730,10 @@ ItemBrowser.prototype = {
     // }
 	  if(params.text_filter) {
       $("text_filter").value = params.text_filter;
+	  }
+	  
+	  if(params.manual_taggings) {
+      $("manual_taggings").checked = true;
 	  }
 	  
 	  // Store filters for page reload
