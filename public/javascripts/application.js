@@ -159,7 +159,7 @@ function update_feed_filters(element, value) {
 
 function update_tag_filters(element, value) {
   value.removeClassName('selected');
-  insert_in_order('tag_filters', 'li', '.name span', value, $(value).down(".name").innerHTML);
+  insert_in_order('tag_filters', 'li', '.name span', value, $(value).down(".name span").innerHTML);
 	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
 	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
 }
