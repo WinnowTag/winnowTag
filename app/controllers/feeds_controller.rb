@@ -95,7 +95,7 @@ class FeedsController < ApplicationController
       
     if params[:remove] =~ /true/i
       render :update do |page|
-        page[feed.dom_id].remove
+        page[dom_id(feed)].remove
       end
     else
       render :nothing => true

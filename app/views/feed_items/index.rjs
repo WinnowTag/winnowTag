@@ -5,7 +5,7 @@ if params[:incremental]
   
   unless params[:count_only]
     @feed_items.each_with_index do |feed_item, index|
-      page.call 'itemBrowser.insertInOrder', feed_item.dom_id, feed_item.time.to_i, 
+      page.call 'itemBrowser.insertInOrder', dom_id(feed_item), feed_item.time.to_i, 
                     render_to_string(:partial => 'feed_item', :locals => {:feed_item => feed_item})
     end
   end
@@ -13,7 +13,7 @@ else
   page.call "itemBrowser.setTotalItems", @feed_item_count
   
   @feed_items.each_with_index do |feed_item, index|
-    page.call 'itemBrowser.insertItem', feed_item.dom_id, params[:offset].to_i + index, 
+    page.call 'itemBrowser.insertItem', dom_id(feed_item), params[:offset].to_i + index, 
                   render_to_string(:partial => 'feed_item', :locals => {:feed_item => feed_item})
   end
 end

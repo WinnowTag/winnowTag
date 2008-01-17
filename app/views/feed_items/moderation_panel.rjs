@@ -1,2 +1,2 @@
-page.replace_html @feed_item.dom_id('new_tag_form'), :partial => 'moderation_panel', :locals => { :feed_item => @feed_item }
-page[@feed_item.dom_id('new_tag_field')].focus
+page.replace_html dom_id(@feed_item, 'new_tag_form'), :partial => 'moderation_panel', :locals => { :feed_item => @feed_item }
+page[dom_id(@feed_item, 'new_tag_field')].focus

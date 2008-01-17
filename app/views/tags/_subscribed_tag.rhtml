@@ -1,14 +1,14 @@
-<tr id="<%= subscribed_tag.dom_id %>" class="subscribed_tag">
+<tr id="<%= dom_id(subscribed_tag) %>" class="subscribed_tag">
 	<td class="tag">
     <%= link_to "Feed", formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom), :class => "feed_icon replace" %>
 	  <%= subscribed_tag.name -%><br />
 	</td>
   <td><%= globally_exclude_check_box(subscribed_tag) %></td>
-	<td><%= check_box_tag subscribed_tag.dom_id("public"), nil, true, :disabled => true %></td>
- 	<td class="control_icons" id="<%= subscribed_tag.dom_id("controls") %>">
+	<td><%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %></td>
+ 	<td class="control_icons" id="<%= dom_id(subscribed_tag, "controls") %>">
     <%= link_to_remote image_tag('copy.gif', :title => "Copy #{subscribed_tag.name}"), :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}" %>
     <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => subscribed_tag}, 
-    			:method => 'put', :title => "Unsubscribe #{subscribed_tag.name}", :id => subscribed_tag.dom_id("unsubscribe") %>
+    			:method => 'put', :title => "Unsubscribe #{subscribed_tag.name}", :id => dom_id(subscribed_tag, "unsubscribe") %>
 	</td>
   <td class="number">
     <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 

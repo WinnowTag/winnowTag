@@ -9,7 +9,7 @@ module TagsHelper
   include BiasSliderHelper  
   def cancel_link
     if request.xhr?
-      link_to_function 'Cancel', visual_effect(:blind_up, @tag.dom_id('form'), :duration => 0.3)
+      link_to_function 'Cancel', visual_effect(:blind_up, dom_id(@tag, 'form'), :duration => 0.3)
     else
       link_to "Cancel", tags_url
     end

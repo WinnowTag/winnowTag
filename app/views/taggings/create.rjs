@@ -1,5 +1,5 @@
 page[:tag_filters].replace tag_filter_controls(current_user.tags + current_user.subscribed_tags - current_user.excluded_tags, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" })
-page.replace @feed_item.dom_id("open_tags"), display_tags_for(@feed_item)
+page.replace dom_id(@feed_item, "open_tags"), display_tags_for(@feed_item)
 
 page << "if ($('classification_button')) {"
   page['classification_button'].disabled = false

@@ -6,9 +6,9 @@
 	</td>
   <td><%= globally_exclude_check_box(tag) %></td>
 	<td>
-	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
+	  <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
   </td>
-	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
+	<td class="control_icons" id="<%= dom_id(tag, "controls") %>">
     <%= link_to_remote "Edit", :url => tag_path(tag), :method => :put, :with => "{'tag[name]': name}", :condition => %W|name = prompt("Name:", "#{tag.name}")|, :html => { :title => "Rename #{tag.name}", :class => "replace edit_icon" } %>
     <%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "replace duplicate_icon" } %>
     <%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "replace destroy_icon" } %>
@@ -26,9 +26,9 @@
 </tr>
 <tr id="<%= dom_id(tag, :comment) %>" class="comment">
   <td colspan="9">
-    <span class="comment_icon replace" id="<%= tag.dom_id("edit_comment") %>">Edit</span>
+    <span class="comment_icon replace" id="<%= dom_id(tag, "edit_comment") %>">Edit</span>
     <%= @tag = tag %>
     <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
-          :click_to_edit_text => "Click to edit tag comment", :external_control => tag.dom_id("edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
+          :click_to_edit_text => "Click to edit tag comment", :external_control => dom_id(tag, "edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
   </td>
 </tr>

@@ -20,13 +20,13 @@
   	</thead>
   	<tbody id="content">
   		<% for tag in @tags -%>
-    		<tr id="<%= tag.dom_id %>">
+    		<tr id="<%= dom_id(tag) %>">
         	<td class="tag">
   		      <%= link_to "Feed", formatted_public_tag_path(tag.user, tag, :atom), :class => "feed_icon replace" %>
         	  <%= tag.name -%>
         	</td>
   				<td>
-  					<%= check_box_tag tag.dom_id("subscribe"), "1", current_user.subscribed?(tag), :disabled => current_user == tag.user,
+  					<%= check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :disabled => current_user == tag.user,
   														:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }") %>
   				</td>
         	<td class="number">

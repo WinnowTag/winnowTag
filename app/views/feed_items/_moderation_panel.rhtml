@@ -1,8 +1,8 @@
-<% form_tag "", :onsubmit => "add_tag('#{feed_item.dom_id}', $('#{feed_item.dom_id('new_tag_field')}').value); this.reset(); return false;" do -%>
+<% form_tag "", :onsubmit => "add_tag('#{dom_id(feed_item)}', $('#{dom_id(feed_item, 'new_tag_field')}').value); this.reset(); return false;" do -%>
   <h4>Create a new tag...</h4>
-  <%= text_field_tag 'tag', nil, :id => feed_item.dom_id('new_tag_field') %>
-  <div id="<%= "#{feed_item.dom_id('new_tag_field')}_auto_complete" %>" class="auto_complete"></div>
-  <%= auto_complete_field feed_item.dom_id('new_tag_field'), :param_name => 'tag[name]',
+  <%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
+  <div id="<%= "#{dom_id(feed_item, 'new_tag_field')}_auto_complete" %>" class="auto_complete"></div>
+  <%= auto_complete_field dom_id(feed_item, 'new_tag_field'), :param_name => 'tag[name]',
       :url => { :controller => "tags", :action => "auto_complete_for_tag_name" } %>
   <%= submit_tag "Create Tag" %>
 <% end -%>

@@ -14,7 +14,6 @@ describe '/feeds/show' do
     User.should_receive(:find_by_id).with(1).and_return(@user)
     
     @feed = mock_model_with_dom_id(Feed, valid_feed_attributes)
-    @feed.class.send(:include, DomId)  
     @feed_items = mock('feed_items')
     @feed_items.stub!(:size).and_return(23)
     @feed.stub!(:feed_items).and_return(@feed_items)

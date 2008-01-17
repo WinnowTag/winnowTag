@@ -23,7 +23,7 @@ module BiasSliderHelper
     # Don't let it go over 1.3
     max_bias_value = [bias, 1.3].max     
     slider_disabled = options[:disabled] ? true : false
-    prefix = tag.dom_id('slider')
+    prefix = dom_id(tag, 'slider')
     variable = "#{prefix}_var"
         
     js = "var #{variable} = new BiasSlider('#{prefix}_handle', '#{prefix}_track', {" + 

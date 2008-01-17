@@ -1,1 +1,1 @@
-page.replace_html @feed_item.dom_id('body'), :partial => 'description', :locals => { :feed_item => @feed_item }
+page.replace_html dom_id(@feed_item, 'body'), :partial => 'description', :locals => { :feed_item => @feed_item }

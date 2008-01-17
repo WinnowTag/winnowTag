@@ -132,8 +132,8 @@ module FeedItemsHelper
     end
     
     content_tag(:span, html, 
-      :class => "tags", :id => taggable.dom_id("open_tags"), 
-      :onclick => "itemBrowser.toggleOpenCloseModerationPanel('#{taggable.dom_id}'); Event.stop(event);")
+      :class => "tags", :id => dom_id(taggable, "open_tags"), 
+      :onclick => "itemBrowser.toggleOpenCloseModerationPanel('#{dom_id(taggable)}'); Event.stop(event);")
   end
  
   # Builds tagging controls for a feed item
@@ -145,13 +145,13 @@ module FeedItemsHelper
     html = ""
     tags.each do |tag, taggings|
       content = content_tag("span", h(tag.name), :class => "name")
-      content << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{feed_item.dom_id}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
+      content << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
       content << content_tag("span", nil, :class => "user")
-      content << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{feed_item.dom_id}', '#{escape_javascript(tag.name)}');", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
+      content << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}');", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
       classes = classes_for_taggings(taggings).join(' ')
       unless classes.blank?
         html << content_tag('li', content, 
-          :id => feed_item.dom_id("tag_control_for_#{tag.name}_on"), :class => classes, 
+          :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes, 
           :style => options[:hide].include?(tag.name) ? "display: none;" : nil, 
           :onmouseover => "show_tag_tooltip(this, '#{escape_javascript(tag.name)}');") + " "
       end
@@ -168,7 +168,7 @@ module FeedItemsHelper
       end
     end
     
-    content_tag "ul", html, :class => "tag_list clearfix", :id => feed_item.dom_id("tag_controls")
+    content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "tag_controls")
   end
   
   def unused_tag_controls(feed_item, options = {})
@@ -196,12 +196,12 @@ module FeedItemsHelper
     html = ""
     unused_tags.each do |tag|
       html << content_tag('li', content_tag("span", h(tag.name), :class => "name"),
-        :id => feed_item.dom_id("unused_tag_control_for_#{tag.name}_on"), :class => "cursor", 
+        :id => dom_id(feed_item, "unused_tag_control_for_#{tag.name}_on"), :class => "cursor", 
         :style => options[:hide].include?(tag.name) ? "display: none;" : nil,
-        :onclick => "add_tag('#{feed_item.dom_id}', '#{escape_javascript(tag.name)}');", 
+        :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}');", 
         :onmouseover => "show_tag_tooltip(this, '#{escape_javascript(tag.name)}');") + " "
     end
-    content_tag "ul", html, :class => "tag_list clearfix", :id => feed_item.dom_id("unused_tag_controls")
+    content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "unused_tag_controls")
   end
 
 	# Creates an array of CSS class names for a list of taggings.

@@ -1,11 +1,11 @@
-<div class="item<%= current_user.has_read_item?(feed_item) ? " read" : " unread" %>" id="<%= feed_item.dom_id %>">
+<div class="item<%= current_user.has_read_item?(feed_item) ? " read" : " unread" %>" id="<%= dom_id(feed_item) %>">
   <div class="closed clearfix">
-    <span id="<%= feed_item.dom_id('status') %>" class="status"><%= toggle_read_unread_button %></span>
-    <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= feed_item.dom_id %>');">
+    <span id="<%= dom_id(feed_item, 'status') %>" class="status"><%= toggle_read_unread_button %></span>
+    <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>');">
       <span class="feed_title">
-        <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => feed_item.dom_id("feed_link_for") %>
+        <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => dom_id(feed_item, "feed_link_for") %>
         <%# Prevent the item from opening when the feed title is clicked %>
-        <%= javascript_tag "Event.observe('#{feed_item.dom_id('feed_link_for')}','click', function(e) {e.stopPropagation();});" %>
+        <%= javascript_tag "Event.observe('#{dom_id(feed_item, 'feed_link_for')}','click', function(e) {e.stopPropagation();});" %>
       </span>
       <div class="title_and_tags clearfix">
         <span class="title"><%= feed_item.title %></span>
@@ -14,10 +14,10 @@
       <span class="date"><%= format_date(feed_item.time) %></span>
     </div>
   </div>  
-  <div id="<%= feed_item.dom_id('new_tag_form') %>" class="new_tag_form" style="display: none;" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div>
-  <div id="<%= feed_item.dom_id('open') %>" class="open" style="display: none;">
-    <%= link_to_function "Info", "itemBrowser.toggleOpenCloseTagInformationPanel('#{feed_item.dom_id}');", :class => "info" %>
-    <div id="<%= feed_item.dom_id('tag_information') %>" style="display: none;" url="<%= info_feed_item_path(feed_item) %>" class="tag_information"></div>
-    <div id="<%= feed_item.dom_id('body') %>" class="body clearfix" url="<%= description_feed_item_path(feed_item) %>"></div>
+  <div id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form" style="display: none;" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div>
+  <div id="<%= dom_id(feed_item, 'open') %>" class="open" style="display: none;">
+    <%= link_to_function "Info", "itemBrowser.toggleOpenCloseTagInformationPanel('#{dom_id(feed_item)}');", :class => "info" %>
+    <div id="<%= dom_id(feed_item, 'tag_information') %>" style="display: none;" url="<%= info_feed_item_path(feed_item) %>" class="tag_information"></div>
+    <div id="<%= dom_id(feed_item, 'body') %>" class="body clearfix" url="<%= description_feed_item_path(feed_item) %>"></div>
   </div>
 </div>
