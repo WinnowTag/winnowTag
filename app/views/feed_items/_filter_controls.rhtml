@@ -30,4 +30,7 @@
   
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
+  
+  <%= check_box_tag :manual_taggings, true, false, :onclick => "itemBrowser.addFilters({manual_taggings: this.checked ? true : null})" %>
+  <label for="manual_taggings">Only Show Manual Taggings</label>
 </div>

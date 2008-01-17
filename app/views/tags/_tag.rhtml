@@ -20,7 +20,7 @@
     			:confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone." %>
 	</td>
 	<td class="number">
-    <%= link_to "#{tag.positive_count} / #{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}", :mode => 'tag_inspect'), 
+    <%= link_to "#{tag.positive_count} / #{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&manual_taggings=true"), 
                 :title => "Inspect #{tag.name}" %>
 	</td>
 	<td class="number"><%= tag.classifier_count %></td>

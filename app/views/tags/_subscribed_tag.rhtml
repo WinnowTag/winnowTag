@@ -12,7 +12,7 @@
 	</td>
   <td class="number">
     <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
-                feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}", :mode => 'tag_inspect'), 
+                feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&manual_taggings=true"), 
                 :title => "Inspect #{subscribed_tag.name}" %>
   </td>
   <td class="number"><%= subscribed_tag.classifier_count %></td>
