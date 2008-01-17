@@ -1,23 +1,17 @@
-<tr id="<%= tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %>">
+<tr id="<%= dom_id(tag) %>" class="<%= css_class = cycle('odd', 'even') %>">
 	<td class="tag">
 		<%= link_to image_tag('show.gif'), feed_items_path(:anchor => "tag_ids=#{tag.id}"), 
 									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
-		<% @tag = tag -%><%# TODO: This is a hack to get the below line to work... %>
-		<%= in_place_completing_editor_field(:tag, :name, {:id => tag.dom_id('editor')}, 
-							{:param_name => '"tag[name]"', :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false,
-							 :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'),
-							 :click_to_edit_text => "Click to edit tag name", :save_text => "Save"}, 
-							:skip_style => true, :update => tag.dom_id('auto_complete'),
-							:url => auto_complete_for_tag_name_tag_path(tag)) %>
+    <%= tag.name %>
 	</td>
   <td><%= globally_exclude_check_box(tag) %></td>
 	<td>
 	  <%= check_box_tag tag.dom_id("public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
   </td>
 	<td class="control_icons" id="<%= tag.dom_id("controls") %>">
-    <%= link_to_remote image_tag('copy.gif', :title => "Copy #{tag.name}"), :url => tags_path(:copy => tag), :with => "{name: prompt('New tag name', '#{tag.name} - copy')}" %>
-    <%= link_to image_tag('trash.gif'), tag_path(tag), :method => 'delete', :title => "Destroy #{tag.name}", :id => tag.dom_id("destroy"),
-    			:confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone." %>
+    <%= link_to_remote "Edit", :url => tag_path(tag), :method => :put, :with => "{'tag[name]': name}", :condition => %W|name = prompt("Name:", "#{tag.name}")|, :html => { :title => "Rename #{tag.name}", :class => "replace edit_icon" } %>
+    <%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "replace duplicate_icon" } %>
+    <%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "replace destroy_icon" } %>
 	</td>
 	<td class="number">
     <%= link_to "#{tag.positive_count} / #{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&manual_taggings=true"), 
@@ -30,9 +24,10 @@
 		<%= bias_slider(tag) %>
 	</td>
 </tr>
-<tr class="comment <%= css_class %>">
+<tr id="<%= dom_id(tag, :comment) %>" class="comment <%= css_class %>">
   <td colspan="9">
     <span class="comment_icon replace" id="<%= tag.dom_id("edit_comment") %>">Edit</span>
+    <%= @tag = tag %>
     <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
           :click_to_edit_text => "Click to edit tag comment", :external_control => tag.dom_id("edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>
   </td>

@@ -1,7 +1,7 @@
 <div class="section">
   <h4>
     Folders &ndash;
-    <%= link_to_remote "New", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name?")| %>
+    <%= link_to_remote "New", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name:")| %>
   </h4>
 
   <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search example", :value => "add feeds..." }, 

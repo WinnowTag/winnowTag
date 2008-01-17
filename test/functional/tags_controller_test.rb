@@ -142,7 +142,6 @@ class TagsControllerTest < Test::Unit::TestCase
   end
   
   def test_destroy_by_tag
-    referer("/")
     login_as(:quentin)
     user = users(:quentin)
     to_destroy = Tag(user, 'to_destroy')
@@ -155,14 +154,12 @@ class TagsControllerTest < Test::Unit::TestCase
     assert_equal [@tag, to_destroy, to_keep], user.tags
     
     post :destroy, :id => to_destroy
-    assert_redirected_to '/'
+    assert_response :success
     assert_equal [@tag, to_keep], users(:quentin).tags(true)
     assert_equal([@tagging, keep], user.taggings(true))
-    assert_equal 'Deleted to_destroy.', flash[:notice]
   end
   
   def test_destroy_by_tag_destroys_classifier_taggings
-    referer('/')
     login_as(:quentin)
     user = users(:quentin)
     to_destroy = Tag(user, 'to_destroy')
@@ -174,10 +171,9 @@ class TagsControllerTest < Test::Unit::TestCase
     keep = user.taggings.create(:tag => to_keep, :feed_item => FeedItem.find(1), :classifier_tagging => true)
     
     post :destroy, :id => to_destroy
-    assert_redirected_to '/'
+    assert_response :success
     assert_equal [@tagging, keep], user.taggings(true)
     assert_equal [@tag, to_keep], user.tagging_tags(true)
-    assert_equal 'Deleted to_destroy.', flash[:notice]
   end
   
   def test_destroy_by_unused_tag

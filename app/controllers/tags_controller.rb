@@ -119,8 +119,8 @@ class TagsController < ApplicationController
         end
       end
       respond_to do |format|
-        format.html{ redirect_to tags_path }
-        format.js { render(:update) { |p| p.redirect_to tags_path } }
+        format.html { redirect_to tags_path }
+        format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
       end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
@@ -134,9 +134,7 @@ class TagsController < ApplicationController
   def destroy
     @tag.destroy
     TagSubscription.delete_all(:tag_id => @tag)
-
-    flash[:notice] = "Deleted #{@tag.name}."
-    redirect_to :back
+    respond_to :js
   end
   
   # Action to get tag names for the auto-complete tag field on the merge/rename form.
