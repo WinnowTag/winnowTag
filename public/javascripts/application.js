@@ -179,6 +179,7 @@ function toggleSidebar() {
 
 
 function update_feed_filters(element, value) {
+  element.value = "";
   value.removeClassName('selected');
   insert_in_order('feed_filters', 'li', '.name', value, $(value).down(".name").innerHTML);
 	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
@@ -186,6 +187,7 @@ function update_feed_filters(element, value) {
 }
 
 function update_tag_filters(element, value) {
+  element.value = "";
   value.removeClassName('selected');
   insert_in_order('tag_filters', 'li', '.name span', value, $(value).down(".name span").innerHTML);
 	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
@@ -193,10 +195,7 @@ function update_tag_filters(element, value) {
 }
 
 function clear_auto_complete(element, list) {
-  if(!element.value.match(/add (tags|feeds)\.\.\./)) {
-    element.value = "";
-	  list.update('');
-  }
+  list.update('');
 }
 
 function insert_in_order(container, sibling_selector, sibling_value_selector, element_html, element_value) {

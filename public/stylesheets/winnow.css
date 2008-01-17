@@ -1079,3 +1079,7 @@ a.bookmarklet:hover {
   margin-left: 3px;
   cursor: pointer;
 }
+
+#add_tag, #add_feed {
+  margin-top: 5px;
+}
