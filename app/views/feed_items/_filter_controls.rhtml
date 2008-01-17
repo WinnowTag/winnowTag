@@ -9,21 +9,21 @@
   </h4>
   
   <div id="add_folder" class="add_section" style="display: none">
-    <h4>Add another folder or <%= link_to_function "cancel", "$('add_folder').hide()" %></h4>
+    <h4>Add another folder or <%= link_to_function "close", "$('add_folder').hide()" %></h4>
     <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('folder_name').value = ''" do |form| -%>
       <%= form.text_field :name, :class => "filter_search" %>
     <% end -%>
   </div>
   
   <div id="add_feed" class="add_section" style="display: none">
-    <h4>Add another feed or <%= link_to_function "cancel", "$('add_feed').hide()" %></h4>
+    <h4>Add another feed or <%= link_to_function "close", "$('add_feed').hide()" %></h4>
     <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
           :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
           :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete") %>
   </div>
 
   <div id="add_tag" class="add_section" style="display: none">
-    <h4>Add another tag or <%= link_to_function "cancel", "$('add_tag').hide()" %></h4>
+    <h4>Add another tag or <%= link_to_function "close", "$('add_tag').hide()" %></h4>
     <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
           :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
           :after_update_element => "update_tag_filters", :on_hide => "clear_auto_complete") %>
