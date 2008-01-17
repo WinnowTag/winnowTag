@@ -16,7 +16,35 @@ document.observe('dom:loaded', function() {
       }
     });
   });
+  
+  $$("table.recordset").each(function(table) {
+    Table.stripe(table);
+  });
 });
+
+var Table = {
+  stripe: function(table) {
+    table = $(table);
+    var skip = parseInt(table.getAttribute("skip")) || 1;
+    var next = skip;
+    var className = "odd";
+    var first = true;
+    table.select("tr").each(function(element) {
+      element.removeClassName("odd");
+      element.removeClassName("even");
+      if(first) {
+        first = false;
+        return;
+      } else if(next == 0) {
+        className = (className == "odd" ? "even" : "odd");
+        next = skip - 1;
+      } else {
+        next -= 1;
+      }
+      element.addClassName(className);
+    });
+  }
+}
 
 var errorTimeout = null;
 var ErrorMessage = Class.create();

@@ -1,4 +1,4 @@
-<tr id="<%= dom_id(tag) %>" class="<%= css_class = cycle('odd', 'even') %>">
+<tr id="<%= dom_id(tag) %>">
 	<td class="tag">
 		<%= link_to image_tag('show.gif'), feed_items_path(:anchor => "tag_ids=#{tag.id}"), 
 									:class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
@@ -24,7 +24,7 @@
 		<%= bias_slider(tag) %>
 	</td>
 </tr>
-<tr id="<%= dom_id(tag, :comment) %>" class="comment <%= css_class %>">
+<tr id="<%= dom_id(tag, :comment) %>" class="comment">
   <td colspan="9">
     <span class="comment_icon replace" id="<%= tag.dom_id("edit_comment") %>">Edit</span>
     <%= @tag = tag %>

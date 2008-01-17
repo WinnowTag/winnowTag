@@ -2,3 +2,4 @@ page[:notice].update "Deleted #{@tag.name}"
 page[:notice].show
 page[@tag].remove
 page[dom_id(@tag, :comment)].remove
+page << "Table.stripe('tags');"

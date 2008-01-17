@@ -6,7 +6,7 @@
 <% end -%>
 
 <div id="tags">
-	<table class="data_table">	
+	<table class="data_table recordset" skip="2">	
 	  <thead>	
   		<tr>
   			<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => "name") %></th>
@@ -20,7 +20,7 @@
   	</thead>
   	<tbody id="content">
   		<% for tag in @tags -%>
-    		<tr id="<%= tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %>">
+    		<tr id="<%= tag.dom_id %>">
         	<td class="tag">
   		      <%= link_to "Feed", formatted_public_tag_path(tag.user, tag, :atom), :class => "feed_icon replace" %>
         	  <%= tag.name -%>
@@ -37,7 +37,7 @@
     	    <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
   	      <td><%= bias_slider(tag, :disabled => true) %></td>
         </tr>
-        <tr class="comment <%= css_class %>">
+        <tr class="comment">
   	  		<td colspan="7"><%= tag.comment %></td>
         </tr>
   		<% end -%>

@@ -37,11 +37,11 @@ table.data_table td {
 	vertical-align: top;
 }
 
-#tags table.data_table td {
+table#tags.data_table td {
   padding: 5px 5px 0 5px;
 }
 
-#tags table.data_table tr.comment td {
+table#tags.data_table tr.comment td {
   padding: 0px 5px 5px 5px;
 }
 

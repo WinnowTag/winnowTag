@@ -4,7 +4,7 @@
     <li><%= will_paginate(@users) %></li>
   </ul>
 <% end -%>
-<table class="data_table">
+<table class="data_table recordset">
 	<tr>
 		<th>User</th>
 		<th class="date">Last Logged In</th>
@@ -15,7 +15,7 @@
 	</tr>
 		
 	<% for user in @users -%>
-	<tr class="<%= cycle("odd", "even") %>">
+	<tr>
 		<td><%= control_link user.display_name, user_url(user) %></td>
 		<td class="date"><%= format_date(user.logged_in_at) %></td>
 		<td class="date"><%= format_date(user.last_accessed_at) %></td>

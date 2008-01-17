@@ -1,4 +1,4 @@
-<tr id="<%= subscribed_tag.dom_id %>" class="<%= css_class = cycle('odd', 'even') %> subscribed_tag">
+<tr id="<%= subscribed_tag.dom_id %>" class="subscribed_tag">
 	<td class="tag">
     <%= link_to "Feed", formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom), :class => "feed_icon replace" %>
 	  <%= subscribed_tag.name -%><br />
@@ -20,7 +20,7 @@
   <td class="indented" nowrap="nowrap"><%= subscribed_tag.user.display_name %></td>
   <td><%= bias_slider(subscribed_tag, :disabled => true) %></td>
 </tr>
-<tr class="comment <%= css_class %>">
+<tr class="comment">
   <td colspan="9">
     <%= subscribed_tag.comment %>
   </td>

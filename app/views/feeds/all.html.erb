@@ -13,7 +13,7 @@
   </ul>
 <% end -%>
 
-<table class="data_table">
+<table class="data_table recordset">
   <thead>
     <tr>
   		<th><%= link_to "Title", sort_param('feeds', :alias => 'title') %></th>
@@ -25,7 +25,7 @@
   </thead>
   <tbody id="content">
     <% for feed in @feeds %>
-      <tr id="<%= "feed_#{feed.id}" %>" class="<%= cycle("odd", "even") %>">
+      <tr id="<%= "feed_#{feed.id}" %>">
     		<td><%= feed_link(feed) %></td>
   	    <td><%= globally_exclude_check_box(feed) %></td>
     		<td class="number"><%= feed.feed_items_count %></td>
