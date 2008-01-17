@@ -1,5 +1,5 @@
 <% @skip_content_container = true %>
-<% content_for :header_controls do -%>
+<% content_for :page_controls do -%>
   <ul class="control_bar">
     <li><%= control_link 'Create User', new_user_url, :requires => 'admin', :html => {:class => "add"} %></li>
     <li><%= will_paginate(@users) %></li>

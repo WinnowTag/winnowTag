@@ -277,13 +277,8 @@ optgroup {
   margin-right: .5em;
 }
 
-#page_controls {
-  border-bottom: 1px solid #999;
-  background-color: #E1ECFE;
-}
-
-#page_controls .custom_controls {
-  float: right;
+#header_controls .page_controls {
+  float: left;
 }
 
 a { color: #2c50e8; text-decoration: none; }
@@ -330,16 +325,17 @@ ul.tabs li a.active {
 
 ul.control_bar {
   list-style: none;
-  margin: 0;
+  margin: 2px 0 0 0;
   padding: 0;
   white-space: nowrap;
 }
 
 ul.control_bar li {
   display: inline;
-  margin: 0 0 0 2em;
+  margin: 0 1em 0 0;
   padding: 0;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 .current_page {

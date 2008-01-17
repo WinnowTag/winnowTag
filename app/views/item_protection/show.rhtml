@@ -7,10 +7,12 @@
 	    collector, typically the instance URL.</p>
 	<p>All item protection information is stored in the collector application.</p>
 </div>
-<div class="control_bar">
-	<%= link_to "Return to Admin", :controller => 'admin' %>
-	<%= link_to "Rebuild", rebuild_item_protection_path, :method => :post %>
-</div>
+<% content_for :page_controls do -%>
+  <ul class="control_bar">
+  	<li><%= link_to "Return to Admin", :controller => 'admin' %></li>
+  	<li><%= link_to "Rebuild", rebuild_item_protection_path, :method => :post %></li>
+  </div>
+<% end -%>
 <table class="property_table">
 	<tr>
 		<th>Protector Name</th>
