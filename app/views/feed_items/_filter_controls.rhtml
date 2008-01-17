@@ -7,14 +7,14 @@
 
   <div id="add_feed" style="display: none">
     <h4>Add another feed or <%= link_to_function "cancel", "$('add_feed').hide()" %></h4>
-    <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search example", :value => "add feeds..." }, 
+    <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
           :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
           :after_update_element => "update_feed_filters", :on_hide => "clear_auto_complete") %>
   </div>
 
   <div id="add_tag" style="display: none">
     <h4>Add another tag or <%= link_to_function "cancel", "$('add_tag').hide()" %></h4>
-    <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search example", :value => "add tags..." }, 
+    <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
           :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
           :after_update_element => "update_tag_filters", :on_hide => "clear_auto_complete") %>
   </div>
