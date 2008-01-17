@@ -41,7 +41,7 @@ class FeedItemTest < Test::Unit::TestCase
     Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag, :strength => 0)
     
     expected = FeedItem.find(2, 4)
-    assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :only_tagger => 'user', :include_negative => true, :order => 'feed_items.id asc'))
+    assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :manual_taggings => true, :order => 'feed_items.id asc'))
   end
   
   def test_find_with_tag_filter_should_only_return_items_with_that_tag

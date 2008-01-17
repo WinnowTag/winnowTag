@@ -1,11 +1,6 @@
 page.call 'itemBrowser.hideLoadingIndicator'
 
 if params[:incremental]
-  # page.replace_html 'tag_filters', tag_filter_options
-  
-  if params[:only_tagger] == 'classifier'
-    page << "if (classification) classification.classifier_items_loaded += #{@feed_items.size};" 
-  end
   page << "itemBrowser.setTotalItems(#{@feed_item_count})"
   
   unless params[:count_only]

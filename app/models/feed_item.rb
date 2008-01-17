@@ -181,15 +181,14 @@ class FeedItem < ActiveRecord::Base
   # A Hash with these keys (all optional):
   #
   # <tt>:view</tt>:: Constrains returned items to the parameters defined in the view
-  # <tt>:only_tagger</tt>:: Can be 'user' or 'classifier'.  Constrains the type of tagger in a tag filter to user or classifier.
-  # <tt>:include_negative</tt>:: (true|false) If true negative taggings will be included in a tag_filters results. Default is false.
+  # <tt>:manual_taggings</tt>:: (true|false) If true negative taggings will be included in a tag_filters results. Default is false.
   # 
   # Also supports <tt>:limit</tt>, <tt>:offset</tt> and <tt>:order</tt> as defined by ActiveRecord::Base.find
   #
   # This will return a Hash of options suitable for passing to FeedItem.find.
   # 
   def self.options_for_filters(filters) # :doc:
-    filters.assert_valid_keys(:limit, :order, :offset, :only_tagger, :include_negative, :user, :feed_ids, :tag_ids, :text_filter)
+    filters.assert_valid_keys(:limit, :order, :offset, :manual_taggings, :user, :feed_ids, :tag_ids, :text_filter)
     options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}
 
     joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
@@ -200,25 +199,15 @@ class FeedItem < ActiveRecord::Base
     
     tags = Tag.find_all_by_id(filters[:tag_ids].to_s.split(','))
     conditions += tags.map do |tag|
-      build_tag_inclusion_filter(tag, filters[:include_negative])
+      build_tag_inclusion_filter(tag, filters[:manual_taggings])
     end
     conditions = [conditions.join(" OR ")] unless conditions.blank?
     
     conditions += filters[:user].excluded_tags.map do |tag|
       build_tag_exclusion_filter(tag)
     end
-    
-    # if !view.show_untagged?
-      # untagged = build_show_tagged_filter(filters[:user], filters[:include_negative])
-      # tag_conditions = [include_conditions_sql, exclude_conditions_sql].compact
-      # conditions << tag_conditions.join(" AND ") unless tag_conditions.blank?
-    # else
-    #   untagged = build_show_untagged_filter(filters[:user], filters[:include_negative])
-    #   conditions << "(#{[[include_conditions_sql, exclude_conditions_sql].join(" AND "), untagged].join(" OR ")})"
-    # end
-    
+        
     options[:conditions] = conditions.join(" AND ")
-    # add_always_include_feed_filter_conditions!(view.feed_filters.always_include, options[:conditions])
     add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
 
     # Text filtering
@@ -246,9 +235,11 @@ class FeedItem < ActiveRecord::Base
     end
   end
 
-  def self.build_tag_inclusion_filter(tag, include_negative)
+  def self.build_tag_inclusion_filter(tag, manual_taggings)
     negative_condition = ""
-    unless include_negative
+    if manual_taggings
+      "AND classifier_tagging = 0"
+    else
       negative_condition = "AND strength >= 0.88 "                +
                            "AND NOT EXISTS ("                     +
                               "SELECT 1 FROM taggings WHERE "     +
@@ -274,36 +265,6 @@ class FeedItem < ActiveRecord::Base
         "feed_item_id = feed_items.id AND " +
         "strength >= 0.88"                  +
     ")"
-  end
-  
-  def self.build_show_untagged_filter(user, include_negative)
-    negative_condition = ""
-    unless include_negative
-      negative_condtion = " AND strength >= 0.88"
-    end
-    
-    "NOT EXISTS (" +
-      "SELECT 1 FROM taggings WHERE " + 
-        "user_id = #{user.id} AND " +
-        "feed_item_id = feed_items.id" +
-        negative_condition +
-      ")"
-  end
-  
-  def self.build_show_tagged_filter(user, include_negative)
-    negative_condition = ""
-    unless include_negative
-      negative_condition = " AND strength >= 0.88"
-    end
-    
-    users = [user.id] + user.subscribed_tags.map {|t| t.user_id}
-    
-    "EXISTS (" +
-      "SELECT 1 FROM taggings WHERE " + 
-        "user_id IN (#{users.join(",")}) AND " +
-        "feed_item_id = feed_items.id" +
-        negative_condition +
-      ")"
   end
   
   def self.add_always_include_feed_filter_conditions!(feed_filters, conditions)

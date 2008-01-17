@@ -24,16 +24,8 @@ class FeedItemsController < ApplicationController
   #
   # === The parameters are passed through to +FeedItem.find_with_filters+.
   #
-  # <tt>only_tagger</tt>:: Defines which tagger is used for the tag_filter. Can be 'user', 'classifier', or nil, in which case both are used.
-  # <tt>mode</tt>:: When set to 'tag_inspect' the tag inspect mode is turned on. Any other value resets the mode to normal.
   # <tt>limit</tt>:: The number of items to fetch. Default is 40, max is 100.
   # <tt>offset</tt>:: The offset within the items to fetch from.
-  #
-  # == Tag Inspect Mode
-  #
-  # When tag inspect mode is on <tt>:only_tagger</tt> is forced to 'user' and :include_negative => true is
-  # added to the parameters to +FeedItem.find_with_filters+. This forces only items tagged by the user,
-  # either negatively or positively, to be shown.
   #
   # See also +FeedItem.find_with_filters+.
   def index
@@ -54,16 +46,11 @@ class FeedItemsController < ApplicationController
         filters = { :order => 'feed_items.time DESC',
                     :limit => limit,
                     :offset => params[:offset],
-                    :only_tagger => params[:only_tagger],
                     :feed_ids => params[:feed_ids],
                     :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
+                    :manual_taggings => params[:manual_taggings],
                     :user => current_user }
-    
-        if params[:manual_taggings]
-          filters[:only_tagger] = 'user'
-          filters[:include_negative] = true
-        end
   
         @feed_items = FeedItem.find_with_filters(filters)    
         @feed_item_count = FeedItem.count_with_filters(filters)
@@ -91,12 +78,11 @@ class FeedItemsController < ApplicationController
       @feed_item_id = params[:id]
       FeedItem.mark_read_for(current_user.id, @feed_item_id)
     else
-      filters = { :only_tagger => params[:only_tagger], :user => current_user }
-
-      # if @view.tag_inspect_mode?
-      #   filters[:only_tagger] = 'user'
-      #   filters[:include_negative] = true
-      # end
+      filters = { :feed_ids => params[:feed_ids],
+                  :tag_ids => params[:tag_ids],
+                  :text_filter => params[:text_filter],
+                  :manual_taggings => params[:manual_taggings],
+                  :user => current_user }
       
       FeedItem.mark_read(filters)
     end
