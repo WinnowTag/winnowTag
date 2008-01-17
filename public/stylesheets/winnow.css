@@ -1080,6 +1080,6 @@ a.bookmarklet:hover {
   cursor: pointer;
 }
 
-#add_tag, #add_feed {
+.add_section {
   margin-top: 5px;
 }
