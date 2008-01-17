@@ -678,6 +678,7 @@ ItemBrowser.prototype = {
 	  $$(".feeds li").invoke("removeClassName", "selected");
 	  $$(".tags li").invoke("removeClassName", "selected");
     $$(".folder").invoke("removeClassName", "selected");
+    $$(".folder").invoke("removeClassName", "some_selected");
     $("text_filter").focus();
     $("text_filter").value = "";
     $("text_filter").blur();
@@ -713,12 +714,16 @@ ItemBrowser.prototype = {
 	  }
 	  $$(".folder").each(function(folder) {
 	    var items = folder.select(".filter_list li");
-	    var all_selected = items.size() > 0;
+	    var selected = 0;
 	    items.each(function(item) {
-	      all_selected = all_selected && item.hasClassName("selected");
+	      if(item.hasClassName("selected")) {
+	        selected += 1;
+	      }
 	    });
-	    if(all_selected) {
+	    if(selected == items.size()) {
 	      folder.addClassName("selected");
+	    } else if(selected > 0) {
+	      folder.addClassName("some_selected");
 	    }
 	  });
 	  

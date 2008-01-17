@@ -977,6 +977,10 @@ a.bookmarklet:hover {
   font-weight: bold;
 }
 
+.folder.some_selected {
+  font-style: italic;
+}
+
 .folder.open {
   padding: 0 0 5px 0;
 }
@@ -1032,6 +1036,7 @@ a.bookmarklet:hover {
   padding: 0 0 0 15px;
   height: 1.4em;
   overflow: hidden;
+  font-style: normal;
 }
 
 .folder ul.filter_list li.draggable {
