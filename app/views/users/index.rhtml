@@ -1,3 +1,4 @@
+<% @skip_content_container = true %>
 <% content_for :header_controls do -%>
   <ul class="control_bar">
     <li><%= control_link 'Create User', new_user_url, :requires => 'admin', :html => {:class => "add"} %></li>
@@ -5,33 +6,36 @@
   </ul>
 <% end -%>
 <table class="data_table recordset">
-	<tr>
-		<th>User</th>
-		<th class="date">Last Logged In</th>
-		<th class="date">Last Accessed</th>
-		<th class="date">Last Moderated</th>
-		<th class="number">Number of Tags</th>
-		<th>&nbsp;</th>
-	</tr>
-		
-	<% for user in @users -%>
-	<tr>
-		<td><%= control_link user.display_name, user_url(user) %></td>
-		<td class="date"><%= format_date(user.logged_in_at) %></td>
-		<td class="date"><%= format_date(user.last_accessed_at) %></td>
-		<td class="date"><%= format_date(user.last_tagging_on) %></td>
-		<td class="number"><%= user.tags.size %></td>
-		<td class="control_icons">
-		<nobr>
-			<%= control_link 'Login', login_as_user_url(user), :disabled => user == current_user,
-										:method => :post, :confirm => "This will log you in as #{user.display_name}. " +
-											"You will need to log out and login as yourself to use your own account again.\n\n" +
-											'Are you sure you want to continue?'%>&nbsp;
-			<%= control_link 'Destroy', user_url(user), :method => :delete, 
-											:disabled => user == current_user,
-											:confirm => "Really delete #{user.display_name}?"%>
-		</nobr>
-		</td>
-	</tr>
-	<% end -%>
+  <thead>
+  	<tr>
+  		<th>User</th>
+  		<th class="date">Last Logged In</th>
+  		<th class="date">Last Accessed</th>
+  		<th class="date">Last Moderated</th>
+  		<th class="number">Number of Tags</th>
+  		<th>&nbsp;</th>
+  	</tr>
+  </thead>		
+  <tbody id="content">
+  	<% for user in @users -%>
+  	<tr>
+  		<td><%= control_link user.display_name, user_url(user) %></td>
+  		<td class="date"><%= format_date(user.logged_in_at) %></td>
+  		<td class="date"><%= format_date(user.last_accessed_at) %></td>
+  		<td class="date"><%= format_date(user.last_tagging_on) %></td>
+  		<td class="number"><%= user.tags.size %></td>
+  		<td class="control_icons">
+  		<nobr>
+  			<%= control_link 'Login', login_as_user_url(user), :disabled => user == current_user,
+  										:method => :post, :confirm => "This will log you in as #{user.display_name}. " +
+  											"You will need to log out and login as yourself to use your own account again.\n\n" +
+  											'Are you sure you want to continue?'%>&nbsp;
+  			<%= control_link 'Destroy', user_url(user), :method => :delete, 
+  											:disabled => user == current_user,
+  											:confirm => "Really delete #{user.display_name}?"%>
+  		</nobr>
+  		</td>
+  	</tr>
+	  <% end -%>
+	</tbody>
 </table>
