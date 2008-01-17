@@ -238,7 +238,7 @@ class FeedItem < ActiveRecord::Base
   def self.build_tag_inclusion_filter(tag, manual_taggings)
     negative_condition = ""
     if manual_taggings
-      "AND classifier_tagging = 0"
+      negative_condition = "AND classifier_tagging = 0"
     else
       negative_condition = "AND strength >= 0.88 "                +
                            "AND NOT EXISTS ("                     +
