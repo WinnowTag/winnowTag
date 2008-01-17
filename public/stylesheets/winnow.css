@@ -1029,6 +1029,7 @@ a.bookmarklet:hover {
 
 .folder.open ul.filter_list {
   display: block;
+  margin-left: 15px;
 }
 
 .folder ul.filter_list li {
