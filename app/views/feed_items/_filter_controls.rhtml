@@ -14,7 +14,7 @@
 
   <div id="folders">
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
-      <% tags = current_user.tags + current_user.subscribed_tags - current_user.excluded_tags %>
+      <% tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags %>
       <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('tags', $(this).up('.folder').hasClassName('open'), 365);">
         <%= link_to_function "Tags", "itemBrowser.toggleSetFilters({tag_ids: '#{tags.map(&:id).join(',')}'}); event.stop()" %>
       </div>

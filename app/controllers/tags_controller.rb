@@ -153,8 +153,8 @@ class TagsController < ApplicationController
   def auto_complete_for_sidebar
     @q = params[:tag][:name]
     
-    conditions = ["LOWER(name) LIKE LOWER(?)", "public = ?", "user_id != ?"]
-    values = ["%#{@q}%", true, current_user.id]
+    conditions = ["LOWER(name) LIKE LOWER(?) AND ((public = ? AND user_id != ?) OR (user_id = ? AND show_in_sidebar = ?))"]
+    values = ["%#{@q}%", true, current_user.id, current_user.id, false]
     
     tag_ids = current_user.subscribed_tags.map(&:id)
     if !tag_ids.blank?
@@ -208,6 +208,13 @@ class TagsController < ApplicationController
       TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
     end
     redirect_to :back
+  end
+  
+  def sidebar
+    if tag = current_user.tags.find(params[:id])
+      tag.update_attribute :show_in_sidebar, params[:sidebar]
+    end
+    render :nothing => true
   end
   
 private

@@ -239,9 +239,11 @@ module ApplicationHelper
     end
     if options[:remove] == :subscription && current_user == tag.user
       options = options.except(:remove)
+      options[:remove] = :sidebar
     end
     url  =  case options[:remove]
       when :subscription then subscribe_tag_path(tag, :subscribe => false)
+      when :sidebar      then sidebar_tag_path(tag, :sidebar => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
     html << link_to_function(image_tag("cross.gif"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " " if options[:remove]
@@ -254,7 +256,11 @@ module ApplicationHelper
     class_names = []
     class_names << "public" if tag.user_id != current_user.id
     class_names << "draggable" if options[:draggable]
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => subscribe_tag_path(tag, :subscribe => true))
+    url  =  case options[:remove]
+      when :subscription then subscribe_tag_path(tag, :subscribe => true)
+      when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
+    end
+    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url)
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
   end

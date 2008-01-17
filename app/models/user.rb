@@ -53,6 +53,7 @@ class User < ActiveRecord::Base
               :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on asc', 
               :include => :feed
   has_many :tags
+  has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
   has_many :taggings, :dependent => :delete_all, :extend => FindByFeedItem
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true],
