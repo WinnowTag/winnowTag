@@ -17,7 +17,10 @@ result = RubyProf.profile do
   app.get '/feed_items/index/0.js?tag_filter=all'
 end
 
-exit(1, "Error") if app.status != 200
+if app.status != 200
+  puts app.status
+  exit(1)
+end
 
 # Print a graph profile to text
 printer = RubyProf::GraphHtmlPrinter.new(result)
