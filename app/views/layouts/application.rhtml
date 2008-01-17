@@ -19,7 +19,7 @@
 </head>
 <body id="<%= controller_name %>_controller">
 	<%= render :partial => 'layouts/navbar' %>
-	<div id="header_controls" class="clearfix">
+	<div id="header_controls">
 		<% if header_controls = yield(:header_controls) -%>
   		<div class="custom_controls">
   			<%= header_controls %>
@@ -28,7 +28,7 @@
 	</div>
 	
 	<% if page_controls = yield(:page_controls) -%>
-    <div id="page_controls" class="clearfix">
+    <div id="page_controls">
       <div class="custom_controls">
         <%= page_controls %>
       </div>
