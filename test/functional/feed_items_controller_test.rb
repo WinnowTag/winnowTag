@@ -60,7 +60,8 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     login_as(:quentin)
     get :description, :id => 1
     assert_response :success
-    assert_rjs :replace_html, 'body_feed_item_1'
+    # TODO: Move the view test
+    # assert_rjs :replace_html, 'body_feed_item_1'
   end
   
   # TODO: Fix to use C classifier
