@@ -10,6 +10,8 @@ rescue(MissingSourceFile)
   true 
 end
 
+require 'mocha'
+
 class Test::Unit::TestCase
   include AuthenticatedTestHelper
   # Transactional fixtures accelerate your tests by wrapping each test method
