@@ -485,6 +485,10 @@ a.editor_cancel {
   display: block;
 }
 
+.auto_complete ul li.public .feed_name, .auto_complete ul li.public .tag_name {
+  background: url(../images/public.png) center right no-repeat;
+}
+
 .loading {
   background: url(../images/indicator_medium.gif) center center no-repeat;
   height: 32px;
