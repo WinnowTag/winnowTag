@@ -1,8 +1,11 @@
 <div class="section">
   <h4>
-    <%= link_to_remote "New Folder", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name:")| %> |
-    <%= link_to_function "Add Feed", "$('add_tag').hide(); $('add_feed').show(); $('feed_title').focus()" %> |
-    <%= link_to_function "Add Tag", "$('add_feed').hide(); $('add_tag').show(); $('tag_name').focus()" %>
+    Add
+    <%= link_to_remote "Folder", :url => folders_path, :method => :post, :with => %w|'folder[name]=' + name|, :condition => %w|name = prompt("Name:")| %>
+    or
+    <%= link_to_function "Feed", "$('add_tag').hide(); $('add_feed').show(); $('feed_title').focus()" %>
+    or
+    <%= link_to_function "Tag", "$('add_feed').hide(); $('add_tag').show(); $('tag_name').focus()" %>
   </h4>
 
   <div id="add_feed" style="display: none">
