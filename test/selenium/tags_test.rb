@@ -40,7 +40,7 @@ class TagsTest < Test::Unit::SeleniumTestCase
   def test_destroying_a_tag
     tag = Tag.find(1)
     see_element "#destroy_tag_#{tag.id}"
-    click_and_wait "destroy_tag_#{tag.id}"
+    click "destroy_tag_#{tag.id}"
     assert is_confirmation_present
     get_confirmation
     dont_see_element "#destroy_tag_#{tag.id}"
