@@ -8,6 +8,10 @@
 		</td>		
 	</tr>
 	<tr>
+	    <th>Created On</th>
+	    <td><%= format_date(@feed.created_on) %></td>
+	</tr>
+	<tr>
 	  <th>Number of Items</th>
 		<td><span class="item_count"><%= @feed.feed_items.size %></span></td>
 	</tr>

@@ -13,7 +13,7 @@ describe DateHelper do
     self.current_user = User.new
     self.current_user.time_zone = "Australia/Adelaide"
     time = Time.now.ago(3.days)
-    assert_match(current_user.tz.utc_to_local(time).strftime("%b %d"), format_date(time))
+    assert_match(current_user.tz.utc_to_local(time).strftime("%e %b, %y"), format_date(time))
   end
   
   def test_format_todays_date_uses_users_time_zone

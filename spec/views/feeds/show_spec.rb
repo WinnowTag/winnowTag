@@ -8,12 +8,14 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feeds/show' do
+  include DateHelper
+  
   before(:each) do
     login_as(1)
     @user = User.find(1)
     User.should_receive(:find_by_id).with(1).and_return(@user)
     
-    @feed = mock_model_with_dom_id(Feed, valid_feed_attributes)
+    @feed = mock_model_with_dom_id(Feed, valid_feed_attributes(:created_on => Time.now))
     @feed_items = mock('feed_items')
     @feed_items.stub!(:size).and_return(23)
     @feed.stub!(:feed_items).and_return(@feed_items)
@@ -24,6 +26,12 @@ describe '/feeds/show' do
   it "should show the title of the feed" do
     render '/feeds/show'
     response.should have_text(/#{@feed.title}/)
+  end
+  
+  it "should show the created on date" do
+    render '/feeds/show'
+    response.should have_tag('th', 'Created On')
+    response.should have_tag('td nobr', @feed.created_on.strftime("%e %b, %y"))
   end
   
   it "should show the url of the feed as a feed icon link" do
