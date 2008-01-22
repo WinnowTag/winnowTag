@@ -44,10 +44,22 @@ describe FeedsController do
     flash[:error].should == "Error"
   end
   
-  it "should create resource" do    
-    feed = mock_model(Remote::Feed, :url => 'http://example.com')
+  it "should create resource and then collect it if it hasn't been collected before" do    
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
     feed.errors.should_receive(:empty?).and_return(true)
     feed.should_receive(:collect)
+    Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
+    
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
+    
+    post 'create', :feed => {:url => 'http://example.com'}
+    response.should redirect_to(feed_path(feed))
+  end
+    
+  it "should create resource but not collect it if it has been collected before" do    
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now.yesterday)
+    feed.errors.should_receive(:empty?).and_return(true)
+    feed.should_receive(:collect).never
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
     FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
@@ -108,9 +120,9 @@ describe FeedsController do
   end
   
   it "should ignore duplicate subscription errors if the user attempts to add a feed more than once" do
-    feed = mock_model(Remote::Feed, :url => 'http://example.com')
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now)
     feed.errors.should_receive(:empty?).and_return(true)
-    feed.should_receive(:collect)
+    feed.should_receive(:collect).never
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
     
     FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id).and_raise(ActiveRecord::StatementInvalid)

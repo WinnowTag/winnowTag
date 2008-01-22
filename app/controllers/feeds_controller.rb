@@ -24,12 +24,16 @@ class FeedsController < ApplicationController
   def create
     @feed = Remote::Feed.find_or_create_by_url(params[:feed][:url])
     if @feed.errors.empty?
+      flash[:notice] = "Added feed from '#{@feed.url}'."
       FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil
-      @collection_job = @feed.collect(:created_by => current_user.login, 
+      
+      if !@feed.respond_to?(:updated_on) || @feed.updated_on.nil?
+        @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
-      flash[:notice] = "Added feed from '#{@feed.url}'. " +
-                       "Collection has been scheduled for this feed, " +
-                       "we'll let you know when it's done."
+        flash[:notice] += " Collection has been scheduled for this feed, " +
+                          "we'll let you know when it's done."
+      end
+      
       redirect_to feed_url(@feed)
     else
       flash[:error] = @feed.errors.on(:url)
