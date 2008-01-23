@@ -159,7 +159,7 @@ module ApplicationHelper
   end
   
   def show_sidebar?
-    cookies[:show_sidebar] =~ /true/i
+    cookies[:show_sidebar] !~ /false/i
   end
   
   def open_folder?(folder)

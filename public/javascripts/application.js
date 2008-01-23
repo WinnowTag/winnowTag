@@ -154,10 +154,10 @@ function toggleSidebar() {
   sidebar.toggle();
   if(sidebar.visible()) {
     sidebar_control.addClassName('open');
-    Cookie.set("show_sidebar", true, 365);
+    Cookie.set("show_sidebar", "true", 365);
   } else {
     sidebar_control.removeClassName('open');
-    Cookie.set("show_sidebar", false, 365);
+    Cookie.set("show_sidebar", "false", 365);
   }
 }
 
