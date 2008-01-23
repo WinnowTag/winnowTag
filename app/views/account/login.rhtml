@@ -38,10 +38,12 @@
   	</p>
   <% end -%>
 
+<% if @invite and @invite.code? -%>
   <% form_for :user, :url => signup_path, :id => "signup_form" do |f| -%>
     <h1>Signup</h1>
     
     <%= error_messages_for :user %>
+    <%= hidden_field_tag :invite, @invite.code %>
 
     <p>
       <label for="login">Login</label>
@@ -60,11 +62,25 @@
 
     <p>
       <label for="email">Email</label>
+      <%= f.text_field :email, :value => @invite.email %>
+    </p>
+
+    <p><%= submit_tag 'Signup' %></p>
+  <% end -%>
+<% else -%>
+  <% form_for :invite, :url => signup_invite_path, :id => "invite_form" do |f| -%>
+    <h1>Signup</h1>
+
+    <%= error_messages_for :invite %>
+
+    <p>
+      <label for="email">Email</label>
       <%= f.text_field :email %>
     </p>
 
     <p><%= submit_tag 'Signup' %></p>
   <% end -%>
+<% end -%>
 </div>
 
 <h3>Welcome to Winnow</h3>

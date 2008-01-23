@@ -1,0 +1,40 @@
+<% @skip_content_container = true %>
+<% content_for :page_controls do -%>
+  <ul class="control_bar">
+    <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
+    <li><%= will_paginate(@invites) %></li>
+  </ul>
+<% end -%>
+<table class="data_table recordset">
+  <thead>
+  	<tr>
+  		<th>Email</th>
+  		<th>Created</th>
+  		<th>Status</th>
+  		<th>&nbsp;</th>
+  	</tr>
+  </thead>		
+  <tbody id="content">
+  	<% for invite in @invites -%>
+  	<tr>
+  		<td><%= invite.email %></td>
+  		<td><%= format_date(invite.created_at) %></td>
+  		<td>
+  		  <% if invite.user -%>
+  		    Accepted: <%= link_to invite.user.login, invite.user %>
+  		  <% elsif invite.code? -%>
+  		    Activated: <%= invite.code %>
+  		  <% else -%>
+  		    Requested
+  		  <% end -%>
+  		</td>
+  		<td nowrap="nowrap">
+		  <% unless invite.code? -%>
+        <%= link_to "Activate", activate_invite_path(invite), :method => :put %> or
+        <%= link_to "Destroy", invite, :method => :delete, :confirm => "Are you sure?" %>
+      <% end -%>
+  		</td>
+  	</tr>
+	  <% end -%>
+	</tbody>
+</table>

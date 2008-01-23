@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :invites, 
+                :member => {
+                  :activate => :put
+                }
   map.resources :users,
                 :member => { 
                   :login_as => :post
@@ -74,6 +78,7 @@ ActionController::Routing::Routes.draw do |map|
     account_map.edit_account "account/edit", :action => "edit"
     account_map.login "account/login/:code", :action => "login", :code => nil
     account_map.signup "account/signup", :action => "signup", :conditions => { :method => :post }
+    account_map.signup_invite "account/invite", :action => "invite", :conditions => { :method => :post }
     account_map.logout "account/logout", :action => "logout"
     account_map.activate "account/activate", :action => "activate"
     account_map.reminder "account/reminder", :action => "reminder", :conditions => { :method => :post }

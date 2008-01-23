@@ -31,11 +31,7 @@ class AccountController < ApplicationController
         end
         redirect_back_or_default feed_items_path
       else
-        if user = User.find_by_login(params[:login]) and user.activated_at
-          flash[:warning] = "Invalid credentials. Please try again."
-        else
-          flash[:notice] = "Your account has not been activated.  Please check your email for an activation link."
-        end
+        flash[:warning] = "Invalid credentials. Please try again."
       end
     elsif params[:code]
       self.current_user = User.find(:first, :conditions => ["reminder_code = ? AND reminder_expires_at > ?", params[:code], Time.now])
@@ -47,16 +43,33 @@ class AccountController < ApplicationController
         flash[:error] = "Invalid reminder code"
         redirect_to login_path(:code => nil)
       end
+    elsif params[:invite]
+      @invite = Invite.find_active(params[:invite])
     end
   end
 
   def signup
-    @user = User.new(params[:user])
-    if @user.save && @user.activate
-      self.current_user = @user
-      redirect_back_or_default feed_items_path
+    if @invite = Invite.find_active(params[:invite])
+      @user = User.new(params[:user])
+      if @user.save && @user.activate
+        @invite.update_attribute :user_id, @user.id
+        self.current_user = @user
+        redirect_back_or_default feed_items_path
+      else
+        render :action => 'login'
+      end
     else
-      render :action => 'login'
+      redirect_to login_path
+    end
+  end
+  
+  def invite
+    @invite = Invite.new(params[:invite])
+    if @invite.save
+      flash[:notice] = "Your invitation request has been submitted"
+      redirect_to login_path
+    else
+      render :action => "login"
     end
   end
   

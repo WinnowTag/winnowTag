@@ -180,8 +180,11 @@ describe AccountController do
     
 protected
   def create_user(options = {})
-    post :signup, :user => { :login => 'quire', :email => 'quire@example.com', :firstname => 'Qu', :lastname => 'Ire',
-      :password => 'quire', :password_confirmation => 'quire' }.merge(options)
+    attributes = { :login => 'quire', :email => 'quire@example.com', :firstname => 'Qu', :lastname => 'Ire', 
+                   :password => 'quire', :password_confirmation => 'quire' }.merge(options)
+    invite = Invite.create!(:email => 'user@example.com')
+    invite.activate!
+    post :signup, :invite => invite.code, :user => attributes
   end
 
   def auth_token(token)

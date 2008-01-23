@@ -59,6 +59,13 @@ Spec::Runner.configure do |config|
     }.merge(attributes)
   end
   
+  def valid_invite_attributes(attributes = {})
+    unique_id = rand(1000)
+    {
+      :email => "user_#{unique_id}@example.com"
+    }.merge(attributes)
+  end
+  
   def login_as(user_id_or_fixture_name)
     session[:user] = case user_id_or_fixture_name
       when Numeric; user_id_or_fixture_name

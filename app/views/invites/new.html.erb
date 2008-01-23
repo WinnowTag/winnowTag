@@ -1,0 +1,22 @@
+<%= error_messages_for :invite %>
+
+<% form_for @invite do |form| -%>
+	<fieldset>
+		<legend>Create Invite</legend>
+		
+		<p>
+		  <%= form.label(:email) %>
+		  <%= form.text_field :email %>
+		</p>
+		
+		<p>
+		  <label for="activate">Activate?</label>
+		  <%= check_box_tag :activate, true, true %>
+		</p>
+		
+		<p>
+			<label>&nbsp;</label>
+			<%= submit_tag "Create" %>
+		</p>
+	</fieldset>
+<%  end -%>
