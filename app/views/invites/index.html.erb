@@ -29,10 +29,10 @@
   		  <% end -%>
   		</td>
   		<td nowrap="nowrap">
-		  <% unless invite.code? -%>
-        <%= link_to "Activate", activate_invite_path(invite), :method => :put %> or
+		    <% unless invite.code? -%>
+          <%= link_to "Activate", activate_invite_path(invite), :method => :put %> or
+        <% end -%>
         <%= link_to "Destroy", invite, :method => :delete, :confirm => "Are you sure?" %>
-      <% end -%>
   		</td>
   	</tr>
 	  <% end -%>
