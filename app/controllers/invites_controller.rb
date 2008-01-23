@@ -16,7 +16,10 @@ class InvitesController < ApplicationController
   
   def create
     @invite = Invite.create!(params[:invite])
-    @invite.activate! if activate?
+    if activate?
+      @invite.activate!
+      UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+    end
     redirect_to invites_path
   rescue ActiveRecord::RecordInvalid
     render :action => 'new'
