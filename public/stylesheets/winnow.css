@@ -585,6 +585,7 @@ a.editor_cancel {
   -moz-border-radius: 1em;
   -webkit-border-radius: 0.7em;
   padding: 2px 0.4em;
+  margin-right: 2px;
 }
 
 .item .closed .tags i {
