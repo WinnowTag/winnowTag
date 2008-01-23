@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 class InvitesController < ApplicationController
   permit 'admin'
   
@@ -27,6 +25,7 @@ class InvitesController < ApplicationController
   def activate
     @invite = Invite.find(params[:id])
     @invite.activate!
+    UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
     redirect_to invites_path
   end
   

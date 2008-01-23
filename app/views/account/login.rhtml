@@ -69,7 +69,7 @@
   <% end -%>
 <% else -%>
   <% form_for :invite, :url => signup_invite_path, :id => "invite_form" do |f| -%>
-    <h1>Signup</h1>
+    <h1>Request Invitation</h1>
 
     <%= error_messages_for :invite %>
 
@@ -78,7 +78,7 @@
       <%= f.text_field :email %>
     </p>
 
-    <p><%= submit_tag 'Signup' %></p>
+    <p><%= submit_tag 'Request Invitation' %></p>
   <% end -%>
 <% end -%>
 </div>

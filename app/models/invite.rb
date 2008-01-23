@@ -2,7 +2,7 @@ class Invite < ActiveRecord::Base
   belongs_to :user
   
   validates_presence_of :email
-  validates_uniqueness_of :email
+  validates_uniqueness_of :email, :message => "has already been submitted"
   
   def activate!
     require 'md5'

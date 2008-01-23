@@ -6,7 +6,7 @@
 #
 
 class AccountController < ApplicationController
-  before_filter :setup_mailer_site_url
+  # before_filter :setup_mailer_site_url
   skip_before_filter :login_required, :except => [:edit]
   
   def edit
@@ -66,6 +66,8 @@ class AccountController < ApplicationController
   def invite
     @invite = Invite.new(params[:invite])
     if @invite.save
+      UserNotifier.deliver_invite_requested(@invite)
+      Notifier.deliver_invite_requested(@invite)
       flash[:notice] = "Your invitation request has been submitted"
       redirect_to login_path
     else
@@ -114,9 +116,9 @@ class AccountController < ApplicationController
     end
   end 
   
-private
-
-  def setup_mailer_site_url
-    UserNotifier.site_url = request.host_with_port    
-  end
+# private
+# 
+#   def setup_mailer_site_url
+#     UserNotifier.site_url = request.host_with_port    
+#   end
 end

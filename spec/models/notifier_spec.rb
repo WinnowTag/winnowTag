@@ -3,38 +3,63 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Notifier do
-  def setup
-    ActiveRecord::Base.logger.info("NotifierTest")
-    ActionMailer::Base.delivery_method = :test
-    ActionMailer::Base.perform_deliveries = true
-    ActionMailer::Base.deliveries = []
+  describe "deployment email" do
+    before(:each) do
+      @email = Notifier.create_deployed("mh", "the beast", "666", "mark", "go team")
+    end
 
-    @expected = TMail::Mail.new
-    @expected.set_content_type "text", "plain", { "charset" => "utf-8" }
-    @expected.mime_version = '1.0'
+    it "is sent to wizzadmin" do
+      @email.to.should == ["wizzadmin@peerworks.org"]
+    end
+
+    it "is sent from wizzadmin" do
+      @email.from.should == ["wizzadmin@peerworks.org"]
+    end
+
+    it "has a subect with revision info" do
+      @email.subject.should =~ /r666/
+    end
+    
+    it "contains the revision in the email body" do
+      @email.body.should =~ /666/
+    end
+    
+    it "contains the repository in the email body" do
+      @email.body.should =~ /the beast/
+    end
+    
+    it "contains the host in the email body" do
+      @email.body.should =~ /mh/
+    end
+    
+    it "contains the deployer in the email body" do
+      @email.body.should =~ /mark/
+    end
+    
+    it "contains the comment in the email body" do
+      @email.body.should =~ /go team/
+    end
   end
 
-  def test_deployed
-    @expected.subject = '[DEPLOYMENT] r666 deployed'
-    @expected.from    = "wizzadmin@peerworks.org"
-    @expected.to      = "wizzadmin@peerworks.org"
-    @expected.body    = <<-EOMAIL
-Hello Peerworks folk,
+  describe "invite requested email" do
+    before(:each) do
+      @invite = mock_model(Invite, :email => "user@example.com")
+      @email = Notifier.create_invite_requested(@invite)
+    end
 
-Revision 666 of "the beast" has just be deployed to  by .
+    it "is sent to wizzadmin" do
+      @email.to.should == ["wizzadmin@peerworks.org"]
+    end
 
-Comment: 
-
-Regards,
-
-Winnow Deployment Notifier
-EOMAIL
-    @expected.date    = Time.now
-
-    assert_equal @expected.encoded, Notifier.create_deployed("", "the beast", "666", "", "", @expected.date).encoded
+    it "is sent from wizzadmin" do
+      @email.from.should == ["wizzadmin@peerworks.org"]
+    end
+    
+    it "contains the invite email in the email body" do
+      @email.body.should =~ /user@example.com/
+    end
   end
 end
