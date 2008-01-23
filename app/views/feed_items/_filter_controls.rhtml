@@ -29,6 +29,8 @@
           :after_update_element => "update_tag_filters", :on_hide => "clear_auto_complete") %>
   </div>
 
+  <%= link_to_function "Show All Items", "itemBrowser.setFilters({})" %>
+
   <div id="folders">
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
       <% tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags %>
