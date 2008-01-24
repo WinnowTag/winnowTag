@@ -1,5 +1,0 @@
-if @feed
-  page.call :insert_in_order, dom_id(@folder) + "_feed_items", "li", ".name", feed_filter_control(@feed, :remove => @folder), @feed.title
-elsif @tag
-  page.call :insert_in_order, dom_id(@folder) + "_tag_items", "li", ".name span", tag_filter_control(@tag, :remove => @folder), @tag.name
-end

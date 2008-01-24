@@ -32,7 +32,7 @@ class FoldersController < ApplicationController
         end
     end
     @folder.save!
-    respond_to :js
+    render :nothing => true
   end
   
   def remove_item

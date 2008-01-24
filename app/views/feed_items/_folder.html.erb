@@ -9,4 +9,12 @@
   <%= tag_filter_controls(folder.tags, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_tag_items", :class => "filter_list tags" }) %>
   <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list feeds" }) %>
 </div>
-<%= drop_receiving_element(dom_id(folder), :hoverclass => "hover", :url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") %>
+<%= drop_receiving_element(dom_id(folder), :hoverclass => "hover",
+      :onDrop => "function(element, folder) {" <<
+        "if(folder.down('#' + element.getAttribute('id'))) { return; }" <<  
+        "var new_element = element.cloneNode(true); new_element.setAttribute('style', '');" <<
+        "insert_in_order('#{dom_id(folder)}_' + (element.hasClassName('feed') ? 'feed' : 'tag') + '_items', 'li', " <<
+          "'.name' + (element.hasClassName('feed') ? '' : ' span'), new_element, " <<
+          "element.down('.name' + (element.hasClassName('feed') ? '' : ' span')).innerHTML);" << 
+        remote_function(:url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") <<
+        "}") %>
