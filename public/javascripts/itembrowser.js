@@ -689,6 +689,18 @@ ItemBrowser.prototype = {
 	},
 	
 	addFilters: function(parameters) {
+	  if (parameters.text_filter) {
+	    if (parameters.text_filter.length > 0 && parameters.text_filter.length < 4) {
+	      new ErrorMessage("Search requires a word with at least 4 characters.");
+	      return;
+      } else {
+        if ($('error')) {
+          $('error').hide(); 
+          resizeContent();
+        }
+      }
+	  }
+	  
 	  // Update location.hash
 	  var new_parameters = $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters));
 	  new_parameters.each(function(key_value) {
