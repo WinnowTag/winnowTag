@@ -8,7 +8,9 @@
 <table class="data_table recordset">
   <thead>
   	<tr>
-  		<th>User</th>
+  		<th>Login</th>
+  		<th>Name</th>
+  		<th>Email</th>
   		<th class="date">Last Logged In</th>
   		<th class="date">Last Accessed</th>
   		<th class="date">Last Moderated</th>
@@ -19,7 +21,9 @@
   <tbody id="content">
   	<% for user in @users -%>
   	<tr>
-  		<td><%= control_link user.display_name, user_url(user) %></td>
+  		<td><%= control_link user.login, user_url(user) %></td>
+  		<td><%= user.display_name %></td>
+  		<td><%= user.email %></td>
   		<td class="date"><%= format_date(user.logged_in_at) %></td>
   		<td class="date"><%= format_date(user.last_accessed_at) %></td>
   		<td class="date"><%= format_date(user.last_tagging_on) %></td>

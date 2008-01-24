@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
 
   # Gets the date the tagger last created a tagging.
   def last_tagging_on
-    last_tagging = self.taggings.find(:first, :order => 'taggings.created_on DESC')
+    last_tagging = self.manual_taggings.find(:first, :order => 'taggings.created_on DESC')
 
     last_tagging ? last_tagging.created_on : nil
   end
