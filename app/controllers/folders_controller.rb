@@ -9,7 +9,7 @@ class FoldersController < ApplicationController
     @folder = current_user.folders.find(params[:id])
     @folder.attributes = params[:folder]
     @folder.save!
-    respond_to :js
+    render :text => @folder.name
   end
   
   def destroy

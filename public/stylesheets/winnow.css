@@ -1068,13 +1068,13 @@ a.bookmarklet:hover {
   background-repeat: no-repeat;
 }
 
-.folder ul.filter_list li a.remove, .folder ul.filter_list li a.edit {
+.folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
   float: right;
   display: none;
   cursor: pointer;
 }
 
-.folder ul.filter_list li:hover a.remove, .folder ul.filter_list li:hover a.edit {
+.folder ul.filter_list li:hover .remove, .folder ul.filter_list li:hover .edit {
   display: block;
 }
 

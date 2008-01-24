@@ -554,6 +554,7 @@ Ajax.InPlaceEditor = Class.create({
     this._controls.editor = fld;
     if (this.options.loadTextURL)
       this.loadExternalText();
+    fld.observe("keydown", this.checkForEscapeOrReturn.bind(this));
     this._form.appendChild(this._controls.editor);
   },
   createForm: function() {

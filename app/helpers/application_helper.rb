@@ -138,12 +138,15 @@ module ApplicationHelper
     js_options = {}
     js_options['cancelText'] = %('#{options[:cancel_text]}') if options[:cancel_text]
     js_options['okText'] = %('#{options[:save_text]}') if options[:save_text]
+    js_options['cancelControl'] = options[:cancel_control].inspect if options.has_key?(:cancel_control)
+    js_options['okControl'] = options[:save_control].inspect if options.has_key?(:save_control)
     js_options['loadingText'] = %('#{options[:loading_text]}') if options[:loading_text]
     js_options['savingText'] = %('#{options[:saving_text]}') if options[:saving_text]
     js_options['rows'] = options[:rows] if options[:rows]
     js_options['cols'] = options[:cols] if options[:cols]
     js_options['size'] = options[:size] if options[:size]
     js_options['externalControl'] = "'#{options[:external_control]}'" if options[:external_control]
+    js_options['externalControlOnly'] = "true" if options[:external_control_only]
     js_options['loadTextURL'] = "'#{url_for(options[:load_text_url])}'" if options[:load_text_url]        
     js_options['ajaxOptions'] = options[:options] if options[:options]
     js_options['evalScripts'] = options[:script] if options[:script]
@@ -151,6 +154,9 @@ module ApplicationHelper
     js_options['clickToEditText'] = %('#{options[:click_to_edit_text]}') if options[:click_to_edit_text]
     js_options['paramName'] = %('#{options[:param_name]}') if options[:param_name]
     js_options['method'] = %('#{options[:method]}') if options[:method]
+    js_options['onEnterHover'] = %('#{options[:on_enter_hover]}') if options[:on_enter_hover]
+    js_options['onLeaveHover'] = %('#{options[:on_leave_hover]}') if options[:on_leave_hover]
+    js_options['onComplete'] = %('#{options[:on_complete]}') if options[:on_complete]
     function << (', ' + options_for_javascript(js_options)) unless js_options.empty?
     
     function << ')'
@@ -247,8 +253,12 @@ module ApplicationHelper
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
     html << link_to_function(image_tag("cross.png"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " " if options[:remove]
-    html << link_to_remote(image_tag("pencil.png"), :url => tag_path(tag), :method => :put, :with => "{'tag[name]': name}", :condition => %W|name = prompt("Name:", "#{tag.name}")|, :html => { :class => "edit" }) if current_user == tag.user
-    html << link_to_function(tag_name_with_tooltip(tag), "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})", :class => "name")
+    html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
+    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
+    html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
+              :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
+              :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
+              :save_control => false, :cancel_control => false)
     
     html =  content_tag(:div, html, :class => "show_tag_control")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
