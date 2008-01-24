@@ -52,30 +52,26 @@ class User < ActiveRecord::Base
   has_one :collection_job_result_to_display, :class_name => "CollectionJobResult", :foreign_key => 'user_id',
               :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on asc', 
               :include => :feed
-  has_many :tags
+  has_many :tags, :dependent => :delete_all
   has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
-  has_many :taggings, :dependent => :delete_all, :extend => FindByFeedItem
+  has_many :taggings, :extend => FindByFeedItem, :dependent => :delete_all
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
-  has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true],
-            :dependent => :delete_all
+  has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true]
   has_many :deleted_taggings, :dependent => :delete_all
-  has_many :tagging_tags, :through => :taggings, :select => 'DISTINCT tags.*', 
-                :order => 'tags.name ASC', :source => :tag
   has_many :unread_items, :dependent => :delete_all do
     def for(feed)
       find(:all, :joins => :feed_item, :conditions => { "feed_items.feed_id" => feed })
     end
   end
-  has_many :tag_subscriptions
+  has_many :tag_subscriptions, :dependent => :delete_all
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
-  has_many :feed_subscriptions
+  has_many :feed_subscriptions, :dependent => :delete_all
   has_many :subscribed_feeds, :through => :feed_subscriptions, :source => :feed
-  has_many :feed_exclusions
+  has_many :feed_exclusions, :dependent => :delete_all
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
-  has_many :tag_exclusions
+  has_many :tag_exclusions, :dependent => :delete_all
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
-  
-  has_many :folders
+  has_many :folders, :dependent => :delete_all
  
   def feeds
     (subscribed_feeds - excluded_feeds).sort_by(&:name)

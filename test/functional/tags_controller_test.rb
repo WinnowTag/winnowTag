@@ -174,7 +174,6 @@ class TagsControllerTest < Test::Unit::TestCase
     post :destroy, :id => to_destroy
     assert_response :success
     assert_equal [@tagging, keep], user.taggings(true)
-    assert_equal [@tag, to_keep], user.tagging_tags(true)
   end
   
   def test_destroy_by_unused_tag
