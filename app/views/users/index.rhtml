@@ -8,13 +8,13 @@
 <table class="data_table recordset">
   <thead>
   	<tr>
-  		<th>Login</th>
-  		<th>Name</th>
-  		<th>Email</th>
-  		<th class="date">Last Logged In</th>
-  		<th class="date">Last Accessed</th>
-  		<th class="date">Last Moderated</th>
-  		<th class="number">Number of Tags</th>
+  		<th><%= link_to "Login", sort_param('users', :alias => 'login') %></th>
+  		<th><%= link_to "Name", sort_param('users', :alias => 'name') %></th>
+  		<th><%= link_to "Email", sort_param('users', :alias => 'email') %></th>
+  		<th class="date"><%= link_to "Last Logged In", sort_param('users', :alias => 'logged_in_at') %></th>
+  		<th class="date"><%= link_to "Last Accessed", sort_param('users', :alias => 'last_accessed_at') %></th>
+  		<th class="date"><%= link_to "Last Moderated", sort_param('users', :alias => 'last_tagging_on') %></th>
+  		<th class="number"><%= link_to "Number of Tags", sort_param('users', :alias => 'tag_count') %></th>
   		<th>&nbsp;</th>
   	</tr>
   </thead>		

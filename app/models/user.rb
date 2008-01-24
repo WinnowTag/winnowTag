@@ -89,6 +89,24 @@ class User < ActiveRecord::Base
     end
   end
   
+  class << self
+    def search(options = {})
+      paginate(options.merge(:select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
+                             :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
+                             :group => "users.id"))
+    end
+  end
+  
+  # Gets the date the tagger last created a tagging.
+  def last_tagging_on
+    if last_tagging_on = read_attribute(:last_tagging_on)
+      Time.parse(last_tagging_on)
+    else
+      last_tagging = self.manual_taggings.find(:first, :order => 'taggings.created_on DESC')
+      last_tagging ? last_tagging.created_on : nil
+    end
+  end
+  
   # Updates any feed state between this feed and the user.
   #
   # Only makes changes if the feed is a duplicate
@@ -122,13 +140,6 @@ class User < ActiveRecord::Base
   # Gets the percentage of items tagged by this tagger
   def tagging_percentage(klass = FeedItem)
     100 * number_of_tagged_items.to_f / klass.count
-  end
-
-  # Gets the date the tagger last created a tagging.
-  def last_tagging_on
-    last_tagging = self.manual_taggings.find(:first, :order => 'taggings.created_on DESC')
-
-    last_tagging ? last_tagging.created_on : nil
   end
 
   # Gets the average number of tags a user has applied to an item.

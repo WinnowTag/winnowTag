@@ -10,7 +10,15 @@ class UsersController < ApplicationController
   before_filter :setup_user, :except => [:create, :new]
   
   def index
-    @users = User.paginate(:order => 'lastname, firstname', :per_page => 20, :page => params[:page])
+    add_to_sortable_columns('users', :field => 'login')
+    add_to_sortable_columns('users', :field => 'lastname, firstname', :alias => "name")
+    add_to_sortable_columns('users', :field => 'email')
+    add_to_sortable_columns('users', :field => 'logged_in_at')
+    add_to_sortable_columns('users', :field => 'last_accessed_at')
+    add_to_sortable_columns('users', :field => 'last_tagging_on')
+    add_to_sortable_columns('users', :field => 'tag_count')
+
+    @users = User.search(:per_page => 20, :page => params[:page], :order => sortable_order('users', :alias => 'login', :sort_direction => :asc))
   end
 
   def new
