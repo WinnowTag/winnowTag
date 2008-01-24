@@ -933,7 +933,7 @@ input.example {
 }
 
 .cross_icon {
-  background: url(../images/cross.gif) 0 center no-repeat;
+  background: url(../images/cross.png) 0 center no-repeat;
 }
 
 .pencil_icon {
@@ -1072,10 +1072,6 @@ a.bookmarklet:hover {
   float: right;
   display: none;
   cursor: pointer;
-}
-
-.folder ul.filter_list li a.remove {
-  margin: 3px 0 0 0;
 }
 
 .folder ul.filter_list li:hover a.remove, .folder ul.filter_list li:hover a.edit {
