@@ -29,7 +29,7 @@
           :after_update_element => "update_tag_filters", :on_hide => "clear_auto_complete") %>
   </div>
 
-  <%= link_to_function "Show All Items", "itemBrowser.setFilters({})" %>
+  <%= link_to_function "Show All Items", "itemBrowser.setFilters({})", :id => "show_all" %>
 
   <div id="folders">
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">

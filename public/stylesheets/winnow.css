@@ -962,6 +962,10 @@ a.bookmarklet:hover {
   float: right;
 }
 
+#show_all.selected {
+  font-weight: bold;
+}
+
 .folder {
   position: relative;
   border-bottom: 1px dashed #666;

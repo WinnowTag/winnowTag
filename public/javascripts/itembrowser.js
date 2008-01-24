@@ -683,6 +683,7 @@ ItemBrowser.prototype = {
     $("text_filter").value = "";
     $("text_filter").blur();
     $("manual_taggings").checked = false;
+    $("show_all").removeClassName("selected");
 	  
 	  location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
 	  this.addFilters(parameters);
@@ -714,6 +715,10 @@ ItemBrowser.prototype = {
     
     // Update styles on selected items
     var params = new_parameters.toQueryString().toQueryParams();
+    if($H(params).keys().size() == 0) {
+      $("show_all").addClassName("selected");
+    }
+    
 	  if(params.feed_ids) {
 	    params.feed_ids.split(",").each(function(feed_id) {
 	      $$("#feed_" + feed_id).invoke("addClassName", "selected");
