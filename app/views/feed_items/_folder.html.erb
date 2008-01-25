@@ -18,6 +18,6 @@
         "if(folder.down('#' + element.getAttribute('id'))) { return; }" <<  
         "var new_element = element.cloneNode(true); new_element.setAttribute('style', '');" <<
         "insert_in_order('#{dom_id(folder)}_' + (element.hasClassName('feed') ? 'feed' : 'tag') + '_items', 'li', " <<
-          "'.name' + (element.hasClassName('feed') ? '' : ' span'), new_element, element.down('.name').innerHTML);" << 
+          "'.name', new_element, element.down('.name').innerHTML);" << 
         remote_function(:url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") <<
         "}") %>
