@@ -638,9 +638,32 @@ ItemBrowser.prototype = {
 		}
 	},
 	
+	expandFolderParameters:function(parameters) {
+	  var tag_ids = parameters.tag_ids ? parameters.tag_ids.split(",") : [];
+	  var feed_ids = parameters.feed_ids ? parameters.feed_ids.split(",") : [];
+	  
+	  if(parameters.folder_ids) {
+	    parameters.folder_ids.split(",").each(function(folder_id) {
+	      var folder = $("folder_" + folder_id);
+  	    folder.select(".tags li").each(function(element) {
+          tag_ids.push(element.getAttribute("id").gsub("tag_", ""));
+        });
+	      folder.select(".feeds li").each(function(element) {
+          feed_ids.push(element.getAttribute("id").gsub("feed_", ""));	      
+	      });
+	    });
+	  }
+	  
+	  parameters.folder_ids = null;
+	  parameters.tag_ids = tag_ids.join(",");
+	  parameters.feed_ids = feed_ids.join(",");
+	},
+	
 	toggleSetFilters: function(parameters) {
-	  var selected = true;
+	  this.expandFolderParameters(parameters);
 
+	  var selected = true;
+	  
 	  if(parameters.feed_ids) {
 	    parameters.feed_ids.split(",").each(function(feed_id) {
 	      selected = selected && $("feed_" + feed_id).hasClassName("selected");
@@ -660,6 +683,8 @@ ItemBrowser.prototype = {
 	},
 	
 	removeFilters: function(parameters) {
+	  this.expandFolderParameters(parameters);
+	  
     var new_parameters = location.hash.gsub('#', '').toQueryParams();
     if(parameters.feed_ids) {
       new_parameters.feed_ids = new_parameters.feed_ids.split(",").reject(function(feed_id) {
@@ -675,6 +700,8 @@ ItemBrowser.prototype = {
 	},
 	
 	setFilters: function(parameters) {
+	  this.expandFolderParameters(parameters);
+
 	  $$(".feeds li").invoke("removeClassName", "selected");
 	  $$(".tags li").invoke("removeClassName", "selected");
     $$(".folder").invoke("removeClassName", "selected");
@@ -690,6 +717,8 @@ ItemBrowser.prototype = {
 	},
 	
 	addFilters: function(parameters) {
+	  this.expandFolderParameters(parameters);
+
 	  if (parameters.text_filter) {
 	    if (parameters.text_filter.length > 0 && parameters.text_filter.length < 4) {
 	      new ErrorMessage("Search requires a word with at least 4 characters.");

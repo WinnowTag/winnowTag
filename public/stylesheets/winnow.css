@@ -1040,6 +1040,7 @@ a.bookmarklet:hover {
   height: 1.4em;
   overflow: hidden;
   font-style: normal;
+  font-weight: normal;
 }
 
 .folder ul.filter_list li.draggable {

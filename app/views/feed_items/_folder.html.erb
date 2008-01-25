@@ -4,7 +4,7 @@
       <li><%= image_tag "pencil.png", :id => dom_id(folder, "edit"), :class => "edit" %></li>
       <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => "Are you sure?", :html => { :class => "destroy replace cross_icon" } %></li>
     </ul>
-    <%= link_to_function folder.name, "itemBrowser.toggleSetFilters({tag_ids: '#{folder.tag_ids.join(',')}', feed_ids: '#{folder.feed_ids.join(',')}'}); event.stop()", :class => "name", :id => dom_id(folder, "name") %>
+    <%= link_to_function folder.name, "itemBrowser.toggleSetFilters({folder_ids: '#{folder.id}'}); event.stop()", :class => "name", :id => dom_id(folder, "name") %>
     <%= in_place_editor(dom_id(folder, "name"), :url => folder_path(folder), :options => "{method: 'put'}", :param_name => "folder[name]",
               :external_control => dom_id(folder, "edit"), :external_control_only => true, :click_to_edit_text => "", 
               :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
