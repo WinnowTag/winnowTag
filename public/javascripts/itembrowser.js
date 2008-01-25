@@ -737,7 +737,7 @@ ItemBrowser.prototype = {
 	        selected += 1;
 	      }
 	    });
-	    if(items > 0 && selected == items.size()) {
+	    if(items.size() > 0 && selected == items.size()) {
 	      folder.addClassName("selected");
 	    } else if(selected > 0) {
 	      folder.addClassName("some_selected");
