@@ -701,17 +701,6 @@ ItemBrowser.prototype = {
 	
 	setFilters: function(parameters) {
 	  this.expandFolderParameters(parameters);
-
-	  $$(".feeds li").invoke("removeClassName", "selected");
-	  $$(".tags li").invoke("removeClassName", "selected");
-    $$(".folder").invoke("removeClassName", "selected");
-    $$(".folder").invoke("removeClassName", "some_selected");
-    $("text_filter").focus();
-    $("text_filter").value = "";
-    $("text_filter").blur();
-    $("manual_taggings").checked = false;
-    $("show_all").removeClassName("selected");
-	  
 	  location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
 	  this.addFilters(parameters);
 	},
@@ -741,23 +730,36 @@ ItemBrowser.prototype = {
 	    }
 	  });
 	  location.hash = "#" + new_parameters.toQueryString();
-    
+
     // Update styles on selected items
     var params = new_parameters.toQueryString().toQueryParams();
     if($H(params).keys().size() == 0) {
       $("show_all").addClassName("selected");
+    } else {
+      $("show_all").removeClassName("selected");
     }
     
-	  if(params.feed_ids) {
-	    params.feed_ids.split(",").each(function(feed_id) {
-	      $$("#feed_" + feed_id).invoke("addClassName", "selected");
-	    });
-	  }
-	  if(params.tag_ids) {
-	    params.tag_ids.split(",").each(function(tag_id) {
-	      $$("#tag_" + tag_id).invoke("addClassName", "selected");
-	    });
-	  }
+	  
+    var feed_ids = params.feed_ids ? params.feed_ids.split(",") : [];
+    $$(".feeds li").each(function(element) {
+      var feed_id = element.getAttribute("id").gsub("feed_", "");
+      if(feed_ids.include(feed_id)) {
+        element.addClassName("selected");
+      } else {
+        element.removeClassName("selected");
+      }
+    });
+	  
+    var tag_ids = params.tag_ids ? params.tag_ids.split(",") : [];
+    $$(".tags li").each(function(element) {
+      var tag_id = element.getAttribute("id").gsub("tag_", "");
+      if(tag_ids.include(tag_id)) {
+        element.addClassName("selected");
+      } else {
+        element.removeClassName("selected");
+      }
+    });
+
 	  $$(".folder").each(function(folder) {
 	    var items = folder.select(".filter_list li");
 	    var selected = 0;
@@ -766,25 +768,31 @@ ItemBrowser.prototype = {
 	        selected += 1;
 	      }
 	    });
+	    
 	    if(items.size() > 0 && selected == items.size()) {
+	      folder.removeClassName("some_selected");
 	      folder.addClassName("selected");
 	    } else if(selected > 0) {
+	      folder.removeClassName("selected");
 	      folder.addClassName("some_selected");
+	    } else {
+	      folder.removeClassName("selected");
+	      folder.removeClassName("some_selected");	      
 	    }
 	  });
-	  
-    // if(params.folder_id) {
-    //   $('folder_' + params.folder_id).addClassName("selected");
-    //       // $('folder_' + params.folder_id).select(".feeds li").each(function(element) {
-    //       //   $$("#" + element.getAttribute("id")).invoke("addClassName", "selected");
-    //       // });
-    // }
+
 	  if(params.text_filter) {
       $("text_filter").value = params.text_filter;
+	  } else {
+      $("text_filter").focus();
+      $("text_filter").value = "";
+      $("text_filter").blur();
 	  }
 	  
 	  if(params.manual_taggings) {
       $("manual_taggings").checked = true;
+	  } else {
+      $("manual_taggings").checked = false;
 	  }
 	  
 	  // Store filters for page reload
