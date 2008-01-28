@@ -74,7 +74,7 @@ class User < ActiveRecord::Base
   has_many :folders, :dependent => :delete_all
  
   def feeds
-    (subscribed_feeds - excluded_feeds).sort_by(&:name)
+    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.name.to_s }
   end
   
   def feed_ids
