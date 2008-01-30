@@ -9,7 +9,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 require "tag"
 
 class FeedItemTest < Test::Unit::TestCase
-  fixtures :feed_items, :users, :roles, :roles_users
+  fixtures :feed_items, :users
     
   def test_getting_content_when_content_returns_empty_content
     feed_item = FeedItem.new    
