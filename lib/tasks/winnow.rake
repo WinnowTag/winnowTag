@@ -86,6 +86,12 @@ namespace :test do
   end
 end
 
+# Replace test task dependency on db:test:prepare with our own db:test:initialize
+[:'test:recent', :'test:units', :'test:functionals', :'test:integration'].each do |task|
+  Rake::Task[task].prerequisites.delete('db:test:prepare')
+  Rake::Task[task].prerequisites << 'test:db:initialize'
+end
+
 desc "Task for CruiseControl.rb"
 task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
