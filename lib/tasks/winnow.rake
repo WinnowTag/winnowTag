@@ -67,8 +67,6 @@ namespace :winnow do
   directory 'corpus'
 end
 
-directory "tmp/imported_corpus"
-
 namespace :test do
   desc 'Test all custom plugins'
   task :pw_plugins do
@@ -83,7 +81,6 @@ namespace :test do
     desc "Replacement for db structure cloning that uses migrations for the test schema"
     task :initialize do
       ENV['RAILS_ENV'] = RAILS_ENV = 'test'   
-      #Rake::Task['db:test:prepare'].invoke
       Rake::Task['db:migrate'].invoke
     end
   end
