@@ -6,7 +6,7 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
   def setup
     delete_cookie "show_sidebar", "/"
     login
-    open feed_items_path
+    open_and_wait feed_items_path
   end
 
   def test_mark_read_unread
@@ -52,19 +52,19 @@ class FeedItemsTest < Test::Unit::SeleniumTestCase
   end
   
   def test_open_close_sidebar
-    assert_not_visible "sidebar"
+    assert_visible "sidebar"
     
     click "sidebar_control"
-    assert_visible "sidebar"
+    assert_not_visible "sidebar"
     
     refresh_and_wait
-    assert_visible "sidebar"
+    assert_not_visible "sidebar"
 
     click "sidebar_control"
-    assert_not_visible "sidebar"
+    assert_visible "sidebar"
     
     refresh_and_wait
-    assert_not_visible "sidebar"
+    assert_visible "sidebar"
   end
   
   def test_opening_item_marks_it_read

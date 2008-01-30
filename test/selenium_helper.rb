@@ -6,6 +6,11 @@ module SeleniumHelper
     click_and_wait "commit"
   end
   
+  def open_and_wait(url, timeout = 30)
+    open url
+    wait_for_page_to_load(timeout)
+  end
+  
   def click_and_wait(locator, timeout = 30)
     click locator
     wait_for_page_to_load(timeout)
