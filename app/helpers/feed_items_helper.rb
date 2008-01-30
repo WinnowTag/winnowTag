@@ -99,15 +99,8 @@ module FeedItemsHelper
   # * Users tags take precedence over classifier tags.
   #
   def display_tags_for(taggable)
-    tags = taggable.taggings_by_user(current_user, :all_taggings => true)
+    tags = taggable.taggings_by_user(current_user, :all_taggings => show_manual_taggings?)
     
-    # Strip out tags that only have a classifier tagging below cutoff
-    tags = tags.select do |tags, taggings|
-      taggings.detect do |tagging| 
-        !tagging.classifier_tagging? || tagging.positive? || tagging.borderline?
-      end
-    end
-
     tag_display = tags.collect do |tag, taggings|
       if tagging = Array(taggings).first
         content_tag('span', 
@@ -117,7 +110,7 @@ module FeedItemsHelper
     end.compact
 
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
-      more_tags = taggable.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+      more_tags = taggable.taggings_by_user(user, :all_taggings => show_manual_taggings?, :tags => subscribed_tags)
       tag_display += more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
           tag_name_with_tooltip(tag, :class => classes_for_taggings(tagging, [:public]).join(" "))
@@ -134,6 +127,10 @@ module FeedItemsHelper
     content_tag(:span, html, 
       :class => "tags", :id => dom_id(taggable, "open_tags"), 
       :onclick => "itemBrowser.toggleOpenCloseModerationPanel('#{dom_id(taggable)}'); Event.stop(event);")
+  end
+  
+  def show_manual_taggings?
+    params[:manual_taggings] =~ /true/i ? true : false 
   end
  
   # Builds tagging controls for a feed item
