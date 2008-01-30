@@ -154,7 +154,7 @@ module FeedItemsHelper
 
     html = ""
     tags.each do |tag, taggings|
-      taggings.delete_if(&:negative?)
+      taggings.delete_if(&:negative?) unless show_manual_taggings?
       content = content_tag("span", h(tag.name), :class => "name")
       content << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
       content << content_tag("span", nil, :class => "user")
