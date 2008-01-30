@@ -87,6 +87,8 @@ describe TaggingsController do
   end
   
   def test_destroy_does_not_destroy_classifier_taggings
+    Tagging.delete_all
+    
     login_as(:quentin)
 
     user = User.find(1)

@@ -59,6 +59,7 @@ describe TagsController do
     fixtures :users
 
     before(:each) do
+      Tag.delete_all
       login_as(:quentin)
       @tag = Tag(users(:quentin), 'tag')
       @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))

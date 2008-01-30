@@ -69,27 +69,7 @@ end
 
 directory "tmp/imported_corpus"
 
-
 namespace :test do
-  task :functionals => "tmp/imported_corpus"
-  
-  desc "Run rcov on current app"
-  task :rcov do
-    test_dir    = "#{RAILS_ROOT}/test"
-    dirs        = [ "#{test_dir}/functional/*.rb",
-                    "#{test_dir}/integration/*.rb",
-                    "#{test_dir}/unit/*.rb",
-                    "#{test_dir}/unit/helpers/*.rb",]
-
-    output_dir = (ENV['CC_BUILD_ARTIFACTS'] or 'test')
-    command = "rcov --rails -o #{output_dir}/coverage"
-
-    dirs.each do |dir|
-      command += " #{dir}" unless Dir[dir].empty?
-    end
-    sh command
-  end
-    
   desc 'Test all custom plugins'
   task :pw_plugins do
     %w(winnow_feed).each do |plugin|
@@ -109,20 +89,11 @@ namespace :test do
   end
 end
 
-task :test => ['test:pw_plugins']
-
-# Replace test task dependency on db:test:prepare with our own db:test:initialize
-[:'test:recent', :'test:units', :'test:functionals', :'test:integration'].each do |task|
-  Rake::Task[task].prerequisites.delete('db:test:prepare')
-  Rake::Task[task].prerequisites << 'test:db:initialize'
-end
-
 desc "Task for CruiseControl.rb"
 task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
   Rake::Task['test:db:initialize'].invoke
-  Rake::Task['test'].invoke
+  Rake::Task['test:pw_plugins'].invoke
   Rake::Task['spec'].invoke
-  Rake::Task['test:rcov'].invoke
-  # Rake::Task['test:selenium'].invoke
+  Rake::Task['spec:rcov'].invoke
 end

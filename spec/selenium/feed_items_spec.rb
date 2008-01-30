@@ -1,15 +1,16 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-class FeedItemsTest < Test::Unit::SeleniumTestCase
+describe "FeedItemsTest" do
   fixtures :users, :feed_items, :feeds
 
-  def setup
+  before(:each) do
     UnreadItem.delete_all
     UnreadItem.create! :user_id => 1, :feed_item_id => 1
     
     delete_cookie "show_sidebar", "/"
     login
-    open_and_wait feed_items_path
+    open feed_items_path
+    sleep(3)
   end
 
   def test_mark_read_unread

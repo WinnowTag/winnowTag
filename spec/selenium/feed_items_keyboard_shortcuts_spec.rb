@@ -1,11 +1,12 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-class FeedItemsKeyboardShortcutsTest < Test::Unit::SeleniumTestCase
+describe "FeedItemsKeyboardShortcutsTest" do
   fixtures :users, :feed_items, :feeds
 
-  def setup
+  before(:each) do
     login
     open feed_items_path
+    sleep(3)
   end
   
   def test_change_item

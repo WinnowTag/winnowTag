@@ -8,6 +8,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe UnreadItem do
+  before(:each) do
+    UnreadItem.delete_all
+  end
+
   def test_user_must_exist
     UnreadItem.new(:feed_item => FeedItem.find(1)).should_not be_valid
   end

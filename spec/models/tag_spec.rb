@@ -86,6 +86,10 @@ describe Tag do
   describe "from test/unit" do
     fixtures :users
 
+    before(:each) do
+      Tag.delete_all
+    end
+
     def test_cant_create_duplicate_tags
       Tag.create!(:user => users(:quentin), :name => 'foo')
       Tag.new(:user => users(:quentin), :name => 'foo').should_not be_valid

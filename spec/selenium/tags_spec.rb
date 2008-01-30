@@ -1,9 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-class TagsTest < Test::Unit::SeleniumTestCase
+describe "Tags" do
   fixtures :users, :tags
   
-  def setup
+  before(:each) do
     TagSubscription.delete_all
     TagSubscription.create! :user_id => 1, :tag_id => 2
     

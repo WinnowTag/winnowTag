@@ -48,7 +48,8 @@ describe Remote::ProtectedItem do
     ActiveResource::HttpMock.respond_to do |mock|
       mock.delete delete_all_path,    {}, nil
     end
-    
+
+    Remote::ProtectedItem.should_receive(:update)
     Remote::ProtectedItem.rebuild
     
     ActiveResource::HttpMock.requests.should include(ActiveResource::Request.new(:delete, delete_all_path))

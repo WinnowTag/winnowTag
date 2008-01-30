@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-class LoginTest < Test::Unit::SeleniumTestCase
+describe "Login" do
   fixtures :users
   
   def test_successful_login
