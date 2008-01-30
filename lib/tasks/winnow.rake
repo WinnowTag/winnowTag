@@ -97,6 +97,8 @@ task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
   Rake::Task['test:db:initialize'].invoke
   Rake::Task['test:pw_plugins'].invoke
-  Rake::Task['spec'].invoke
-  Rake::Task['spec:rcov'].invoke
+  Rake::Task['spec:controllers'].invoke
+  Rake::Task['spec:helpers'].invoke
+  Rake::Task['spec:models'].invoke
+  Rake::Task['spec:views'].invoke
 end

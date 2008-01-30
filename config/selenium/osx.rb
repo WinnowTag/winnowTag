@@ -1,5 +1,5 @@
 Selenium::configure do |config|
-  # config.browser 'firefox'
+  config.browser 'firefox'
   # config.browser 'safari'
   # config.browser 'iexplore'
 
