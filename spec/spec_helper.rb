@@ -13,6 +13,9 @@ Spec::Runner.configure do |config|
   config.use_instantiated_fixtures  = false
   config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
 
+  # TODO: Pull this call into lwt_testing
+  config.include ValidationMatchers, AssociationMatchers
+
   # You can declare fixtures for each behaviour like this:
   #   describe "...." do
   #     fixtures :table_a, :table_b
@@ -107,26 +110,8 @@ Spec::Runner.configure do |config|
     assert_redirected_to "/account/login"
   end
   
-  
   include AuthenticatedTestHelper
   def assert_requires_login(login = nil)
     yield HttpLoginProxy.new(self, login)
-  end
-
-  def assert_association(source, macro, name, options = {})
-    options[:class_name] ||= case macro
-      when :belongs_to, :has_one: name.to_s.camelize
-      when :has_many, :has_and_belongs_to_many: name.to_s.singularize.camelize
-    end
-    
-    if options[:polymorphic]
-      options[:foreign_type] = "#{name}_type"
-    end
-    
-    reflection = source.reflect_on_association( name )
-    assert_not_nil reflection, "#{source}.#{macro} #{name.inspect} is not defined"
-    assert_equal options[:class_name].constantize, reflection.klass, 'associated to wrong class'  unless options[:polymorphic]
-    assert_equal macro, reflection.macro, 'wrong type of association'
-    # assert_equal options, reflection.options, 'incorrect association options'
   end
 end

@@ -1,6 +1,20 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe User do
+  describe "associations" do
+    before(:each) do
+      @user = User.new
+    end
+
+    it "has many tag subscriptions" do
+      @user.should have_many(:tag_subscriptions)
+    end
+    
+    it "has many feed subscriptions" do
+      @user.should have_many(:feed_subscriptions)      
+    end
+  end
+  
   describe "logging login" do 
     before(:each) do
       @user = User.create! valid_user_attributes
@@ -70,14 +84,6 @@ describe User do
   describe "from test/unit" do
     fixtures :users
     
-    def test_has_many_tag_subscriptions
-      assert_association User, :has_many, :tag_subscriptions
-    end
-  
-    def test_has_many_tag_subscriptions
-      assert_association User, :has_many, :feed_subscriptions
-    end
-
     def test_should_be_owner_of_self
       u = create_user
       assert u.has_role?('owner', u)

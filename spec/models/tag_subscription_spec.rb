@@ -7,13 +7,19 @@
 
 require File.dirname(__FILE__) + '/../spec_helper'
 
-class TagSubscriptionTest < Test::Unit::TestCase
-  # TODO: Added association matchers
-  # def test_has_many_users
-  #   assert_association TagSubscription, :belongs_to, :user
-  # end
-  # 
-  # def test_has_many_tags
-  #   assert_association TagSubscription, :belongs_to, :tag
-  # end
+describe  TagSubscription do
+  describe "associations" do
+    
+    before(:each) do
+      @tag_subscription = TagSubscription.new
+    end
+    
+    it "belong to user" do
+      @tag_subscription.should belong_to(:user)
+    end
+    
+    it "belongs to tag" do
+      @tag_subscription.should belong_to(:tag)      
+    end
+  end
 end
