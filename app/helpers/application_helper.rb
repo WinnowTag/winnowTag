@@ -258,7 +258,7 @@ module ApplicationHelper
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
               :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
               :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
-              :save_control => false, :cancel_control => false)
+              :save_control => false, :cancel_control => false) if tag.user_id == current_user.id
     
     html =  content_tag(:div, html, :class => "show_tag_control")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
