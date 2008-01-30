@@ -5,11 +5,13 @@
 # Please contact info@peerworks.org for further information.
 #
 
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../spec_helper'
+require 'active_resource/http_mock'
 
-class RemoteProtectedItemsTest < Test::Unit::TestCase  
+describe Remote::ProtectedItem do
   fixtures :users
-  def setup
+
+  before(:each) do
     Protector.create(:protector_id => 1)
     ActiveResource::HttpMock.respond_to do |http|
       http.post "/protectors/1/protected_items.xml", {}, nil, 201, 'Location' => '/protectors/1/protected_items/2'
@@ -49,8 +51,8 @@ class RemoteProtectedItemsTest < Test::Unit::TestCase
     end
     
     Remote::ProtectedItem.rebuild
-    assert_include ActiveResource::Request.new(:delete, delete_all_path),
-                   ActiveResource::HttpMock.requests
+    
+    ActiveResource::HttpMock.requests.should include(ActiveResource::Request.new(:delete, delete_all_path))
   end
   
   def test_rebuild_sends_create_with_each_user_tagging

@@ -98,14 +98,6 @@ class Test::Unit::TestCase
   def referer(referer)
     @request.env['HTTP_REFERER'] = referer
   end
-  
-  def assert_include(o, arr, msg = "#{o.to_s} not found in #{arr.inspect}")
-    assert arr.include?(o), msg
-  end
-  
-  def assert_not_include(o, arr, msg = "#{o.to_s} not found in #{arr.inspect}")
-    assert !arr.include?(o), msg
-  end
 end
 
 Test::Unit::SeleniumTestCase # auto-requires this class
