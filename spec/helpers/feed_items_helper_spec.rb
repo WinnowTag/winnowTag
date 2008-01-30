@@ -57,7 +57,9 @@ describe FeedItemsHelper do
   def test_tag_controls_when_negative_tagging_exists
     Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :strength => 0)
     Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :classifier_tagging => true)
-    @response.body = tag_controls(FeedItem.find(1))
+    
+    params[:manual_taggings] = "true"
+    response.body = tag_controls(FeedItem.find(1))
     
     assert_select('li#tag_control_for_tag1_on_feed_item_1.bayes_classifier_tagging.user_tagging.negative_tagging', true, @response.body)
   end

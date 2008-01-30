@@ -100,7 +100,7 @@ module FeedItemsHelper
   #
   def display_tags_for(taggable)
     if show_manual_taggings?
-      tags = taggable.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+      tags = taggable.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
     else
       tags = taggable.taggings_by_user(current_user, :all_taggings => false)
     end
@@ -115,10 +115,11 @@ module FeedItemsHelper
 
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
       if show_manual_taggings?
-        more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+        more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
         more_tags = taggable.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
       end
+            
       tag_display += more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
           tag_name_with_tooltip(tag, :class => classes_for_taggings(tagging, [:public]).join(" "))
@@ -146,13 +147,14 @@ module FeedItemsHelper
   def tag_controls(feed_item, options = {})
     options[:hide] = Array(options[:hide])    
     if show_manual_taggings?
-      tags = feed_item.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+      tags = feed_item.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
     else
-      tags = feed_item.taggings_by_user(current_user, :all_taggings => false)
+      tags = feed_item.taggings_by_user(current_user, :all_taggings => true)
     end
 
     html = ""
     tags.each do |tag, taggings|
+      taggings.delete_if(&:negative?)
       content = content_tag("span", h(tag.name), :class => "name")
       content << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
       content << content_tag("span", nil, :class => "user")
@@ -168,7 +170,7 @@ module FeedItemsHelper
     
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
       if show_manual_taggings?
-        more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+        more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
         more_tags = feed_item.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
       end
