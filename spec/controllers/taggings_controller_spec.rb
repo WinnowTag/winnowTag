@@ -1,15 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'taggings_controller'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-# Re-raise errors caught by the controller.
-class TaggingsController; def rescue_action(e) raise e end; end
+describe TaggingsController do
+  fixtures :users
 
-class TaggingsControllerTest < Test::Unit::TestCase
-  fixtures :users, :feed_items, :tags
-  def setup
-    @controller = TaggingsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+  before(:each) do
     @request.env['HTTP_REFERER'] = '/feed_items'
   end
 
@@ -40,14 +34,14 @@ class TaggingsControllerTest < Test::Unit::TestCase
   
   def test_create_without_tag_doesnt_create_tagging
     login_as(:quentin)
-    assert_no_difference(Tagging, :count) do
+    assert_no_difference("Tagging.count") do
       post :create, :tagging => {:feed_item_id => '1'}
     end
   end
   
   def test_create_with_blank_tag_doesnt_create_tagging
     login_as(:quentin)
-    assert_no_difference(Tagging, :count) do
+    assert_no_difference("Tagging.count") do
       post :create, :tagging => {:feed_item_id => '1', :tag => ''}
     end
   end

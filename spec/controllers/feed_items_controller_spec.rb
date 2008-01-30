@@ -1,16 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'feed_items_controller'
+require File.dirname(__FILE__) + '/../spec_helper'
 
-# Re-raise errors caught by the controller.
-class FeedItemsController; def rescue_action(e) raise e end; end
-
-class FeedItemsControllerTest < Test::Unit::TestCase
-  fixtures :users, :feeds, :feed_items, :tags
-  def setup
-    @controller = FeedItemsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+describe FeedItemsController do
+  fixtures :users #, :feeds, :feed_items, :tags
 
   def test_requires_login
     assert_requires_login {|c| c.get :index, {}}
@@ -33,8 +24,7 @@ class FeedItemsControllerTest < Test::Unit::TestCase
   
   def test_index_with_ajax
     login_as(:quentin)
-    accept('text/javascript')
-    get :index, :offset => '1', :limit => '1', :show_untagged => true
+    get :index, :offset => '1', :limit => '1', :show_untagged => true, :format => "js"
     assert_response :success
     assert_equal 'text/javascript; charset=utf-8', @response.headers['type']
     assert_not_nil assigns(:feed_items)
@@ -50,15 +40,13 @@ class FeedItemsControllerTest < Test::Unit::TestCase
     fi = FeedItem.find(1)
     Tagging.create(:tag => Tag(user, 'tag1'), :user => user, :feed_item => fi, :strength => 0.8, :classifier_tagging => true)
     
-    accept('text/javascript')
-    get :show, :id => 1
+    get :show, :id => 1, :format => "js"
     assert_select("span#tag_control_for_tag1_on_feed_item_1.bayes_classifier_tagging.negative_tagging", false, @response.body)
   end
   
-  def test_description
-    accept('text/javascript')
+  it "/description" do
     login_as(:quentin)
-    get :description, :id => 1
+    get :description, :id => 1, :format => "js"
     assert_response :success
     # TODO: Move the view test
     # assert_rjs :replace_html, 'body_feed_item_1'
@@ -108,10 +96,9 @@ class FeedItemsControllerTest < Test::Unit::TestCase
   
   def test_mark_read
     users(:quentin).unread_items.create(:feed_item_id => 1)
-    assert_difference(UnreadItem, :count, -1) do
-      accept('text/javascript')
+    assert_difference("UnreadItem.count", -1) do
       login_as(:quentin)
-      put :mark_read, :id => 1
+      put :mark_read, :id => 1, :format => "js"
       assert_response :success
     end
   end
@@ -119,19 +106,17 @@ class FeedItemsControllerTest < Test::Unit::TestCase
   def test_mark_many_read
     users(:quentin).unread_items.create(:feed_item_id => 1)
     users(:quentin).unread_items.create(:feed_item_id => 2)
-    assert_difference(UnreadItem, :count, -2) do
-      accept('text/javascript')
+    assert_difference("UnreadItem.count", -2) do
       login_as(:quentin)
-      put :mark_read
+      put :mark_read, :format => "js"
       assert_response :success
     end
   end
   
   def test_mark_unread
-    assert_difference(UnreadItem, :count, 1) do
-      accept('text/javascript')
+    assert_difference("UnreadItem.count", 1) do
       login_as(:quentin)
-      put :mark_unread, :id => 2
+      put :mark_unread, :id => 2, :format => "js"
       assert_response :success
     end
   end

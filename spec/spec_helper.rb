@@ -5,6 +5,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'spec'
 require 'spec/rails'
 require 'authenticated_test_helper'
+require 'active_resource/http_mock'
 
 Spec::Runner.configure do |config|
   config.use_transactional_fixtures = true
@@ -96,6 +97,8 @@ Spec::Runner.configure do |config|
     @request.env['HTTP_REFERER'] = referer
   end
 
+  # This helper was inspired by the authorize plugin Integration Tests
+  # See: http://svn.writertopia.com/svn/testapps/object_roles_test/test/integration/stories_test.rb
   def cannot_access(user, method, action, args = {})
     login_as(user)
     self.send(method, action, args)
@@ -103,6 +106,8 @@ Spec::Runner.configure do |config|
     assert_redirected_to "/account/login"
   end
   
+  
+  include AuthenticatedTestHelper
   def assert_requires_login(login = nil)
     yield HttpLoginProxy.new(self, login)
   end

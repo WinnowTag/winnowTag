@@ -6,7 +6,6 @@
 #
 
 require File.dirname(__FILE__) + '/../spec_helper'
-require 'active_resource/http_mock'
 
 describe Remote::ProtectedItem do
   fixtures :users

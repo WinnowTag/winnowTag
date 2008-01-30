@@ -9,7 +9,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 class ProtectorTest < Test::Unit::TestCase
   def test_can_create_protector
-    assert_valid Protector.create(:protector_id => 1)
+    Protector.new(:protector_id => 1).should be_valid
   end
   
   def test_can_only_create_one_protector
