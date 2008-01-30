@@ -4,15 +4,28 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-require File.dirname(__FILE__) + '/../test_helper'
-Tag
+require File.dirname(__FILE__) + '/../spec_helper'
+Tag # auto-requires this class
 
-class TaggingTest < Test::Unit::TestCase
-  fixtures :feeds, :feed_items, :users
+describe Tagging do
+  fixtures :users
+
+  before(:each) do
+    FeedItem.delete_all
+    @feed_item = FeedItem.create! :feed_id => 1,
+                                  :time_source => FeedItem::FeedItemTime,
+                                  :time => Time.now.yesterday.yesterday.to_formatted_s(:db),
+                                  :unique_id => "first",
+                                  :xml_data_size => 10,
+                                  :link => "http://first",
+                                  :content_length => 5,
+                                  :created_on => Time.now.yesterday.yesterday.to_formatted_s(:db),
+                                  :title => "This is a test"
+  end
 
   def test_create_tagging
     user = User.find(1)
-    feed_item = FeedItem.find(1)
+    feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag)
     assert_not_nil tagging
@@ -35,7 +48,7 @@ class TaggingTest < Test::Unit::TestCase
   
   def test_tagging_strength_is_set
     user = User.find(1)
-    feed_item = FeedItem.find(1)
+    feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0)
     assert_valid tagging
@@ -44,26 +57,26 @@ class TaggingTest < Test::Unit::TestCase
   
   def test_strength_outside_0_to_1_is_invalid
     user = User.find(1)
-    feed_item = FeedItem.find(1)
+    feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     assert_valid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0.5)
-    assert_invalid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 1.1)
-    assert_invalid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => -0.1)
+    Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 1.1).should_not be_valid
+    Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => -0.1).should_not be_valid
     # boundaries
-    assert_valid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 1)
-    assert_valid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0)
+    Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 1).should be_valid
+    Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0).should be_valid
   end
   
   def test_strength_must_be_a_number
     user = User.find(1)
-    feed_item = FeedItem.find(1)
+    feed_item = @feed_item
     tag = Tag(user, 'peerworks')
-    assert_invalid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 'string')
+    Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 'string').should_not be_valid
   end
   
   def test_creating_duplicate_deletes_existing
     user = users(:quentin)
-    item = FeedItem.find(1)
+    item = @feed_item
     tag = Tag(user, 'tag')
     first_tagging = user.taggings.create(:feed_item => item, :tag => tag)
     assert_valid first_tagging
@@ -74,7 +87,7 @@ class TaggingTest < Test::Unit::TestCase
   
   def test_users_is_allowed_manual_and_classifier_taggings_on_an_item
     user = users(:quentin)
-    item = FeedItem.find(1)
+    item = @feed_item
     tag  = Tag(user, 'tag')
     
     assert_valid first = user.taggings.create(:feed_item => item, :tag => tag)
@@ -85,28 +98,28 @@ class TaggingTest < Test::Unit::TestCase
   end
   
   def test_cannot_create_taggings_without_user
-    assert_invalid Tagging.new(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'peerworks'))
+    Tagging.new(:feed_item => @feed_item, :tag => Tag(users(:quentin), 'peerworks')).should_not be_valid
   end
   
   def test_cannot_create_taggings_without_feed_item
-    assert_invalid Tagging.new(:user => User.find(1), :tag => Tag(users(:quentin), 'peerworks'))
+    Tagging.new(:user => User.find(1), :tag => Tag(users(:quentin), 'peerworks')).should_not be_valid
   end
   
   def test_cannot_create_taggings_without_tag
-    assert_invalid Tagging.new(:feed_item => FeedItem.find(1), :user => User.find(1))
+    Tagging.new(:feed_item => @feed_item, :user => User.find(1)).should_not be_valid
   end
   
   def test_cannot_create_tagging_with_invalid_tag
-    assert_invalid Tagging.new(:feed_item => FeedItem.find(1), :user => User.find(1), :tag => Tag(users(:quentin), ''))
+    Tagging.new(:feed_item => @feed_item, :user => User.find(1), :tag => Tag(users(:quentin), '')).should_not be_valid
   end
   
   def test_create_with_tag_user_feed_item_is_valid
-    assert_valid Tagging.new(:user => User.find(1), :feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'peerworks'))
+    Tagging.new(:user => User.find(1), :feed_item => @feed_item, :tag => Tag(users(:quentin), 'peerworks')).should be_valid
   end
   
   def test_deletion_of_feed_item_deletes_taggings
     user = User.find(1)
-    feed_item = FeedItem.find(1)
+    feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag)
     feed_item.destroy
@@ -115,13 +128,13 @@ class TaggingTest < Test::Unit::TestCase
 
   def test_deletion_copies_tagging_to_deleted_taggings_table
     user = User.find(1)
-    feed_item = FeedItem.find(1)
+    feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0.75)
     assert_not_nil tagging
     assert_not_nil Tagging.find(tagging.id)
     
-    assert_difference(DeletedTagging, :count) do
+    assert_difference("DeletedTagging.count") do
       tagging.destroy
     end
     
@@ -132,7 +145,7 @@ class TaggingTest < Test::Unit::TestCase
   
   def test_taggings_are_immutable
     user = users(:quentin)
-    item = FeedItem.find(1)
+    item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => item, :tag => tag)
     assert_not_nil tagging
@@ -149,7 +162,7 @@ class TaggingTest < Test::Unit::TestCase
   def test_borderline_true_for_classifier_tagging_near_0_9
     user = users(:quentin)
     tagging = Tagging.new(:user => user, :tag => Tag(user, 'Tag'), 
-                        :feed_item => FeedItem.find(1), :strength => 0.9, 
+                        :feed_item => @feed_item, :strength => 0.9, 
                         :classifier_tagging => true)
     assert_equal(true, tagging.borderline?)
   end
@@ -157,11 +170,11 @@ class TaggingTest < Test::Unit::TestCase
   def test_borderline_requires_classifier_tagging
     user = users(:quentin)
     tagging = Tagging.new(:user => user, :tag => Tag(user, 'Tag'), 
-                        :feed_item => FeedItem.find(1), :strength => 0.9)
+                        :feed_item => @feed_item, :strength => 0.9)
     assert_equal(false, tagging.borderline?)
   end
   
   def test_classifier_tagging_defaults_to_false
-    assert !users(:quentin).taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(users(:quentin), 'tag')).classifier_tagging?  
+    assert !users(:quentin).taggings.create(:feed_item => @feed_item, :tag => Tag(users(:quentin), 'tag')).classifier_tagging?  
   end
 end

@@ -21,6 +21,7 @@ describe UnreadItem do
   end
   
   def test_user_and_feed_item_must_be_unique
+    UnreadItem.create!(:user => User.find(1), :feed_item => FeedItem.find(1))
     UnreadItem.new(:user => User.find(1), :feed_item => FeedItem.find(1)).should_not be_valid
   end
 end
