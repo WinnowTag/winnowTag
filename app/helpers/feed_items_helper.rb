@@ -99,7 +99,11 @@ module FeedItemsHelper
   # * Users tags take precedence over classifier tags.
   #
   def display_tags_for(taggable)
-    tags = taggable.taggings_by_user(current_user, :all_taggings => show_manual_taggings?)
+    if show_manual_taggings?
+      tags = taggable.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+    else
+      tags = taggable.taggings_by_user(current_user, :all_taggings => false)
+    end
     
     tag_display = tags.collect do |tag, taggings|
       if tagging = Array(taggings).first
@@ -110,7 +114,11 @@ module FeedItemsHelper
     end.compact
 
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
-      more_tags = taggable.taggings_by_user(user, :all_taggings => show_manual_taggings?, :tags => subscribed_tags)
+      if show_manual_taggings?
+        more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+      else
+        more_tags = taggable.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+      end
       tag_display += more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
           tag_name_with_tooltip(tag, :class => classes_for_taggings(tagging, [:public]).join(" "))
@@ -137,7 +145,7 @@ module FeedItemsHelper
   #
   def tag_controls(feed_item, options = {})
     options[:hide] = Array(options[:hide])    
-    tags = feed_item.taggings_by_user(current_user, :all_taggings => true)
+    tags = feed_item.taggings_by_user(current_user, :all_taggings => show_manual_taggings?)
 
     html = ""
     tags.each do |tag, taggings|

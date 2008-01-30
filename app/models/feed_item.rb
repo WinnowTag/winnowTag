@@ -343,7 +343,7 @@ class FeedItem < ActiveRecord::Base
       end
     else
       # First put all the classifier ones down
-      tagging_hash =  taggings.select{|t| t.classifier_tagging?}.inject({}) do |hash, tagging|
+      tagging_hash = taggings.select{|t| t.classifier_tagging?}.inject({}) do |hash, tagging|
         if tagging.positive? || tagging.borderline?
           hash[tagging.tag] = tagging
         end
