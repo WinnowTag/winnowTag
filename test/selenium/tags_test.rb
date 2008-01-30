@@ -1,9 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class TagsTest < Test::Unit::SeleniumTestCase
-  fixtures :users, :tags, :tag_subscriptions
+  fixtures :users, :tags
   
   def setup
+    TagSubscription.delete_all
+    TagSubscription.create! :user_id => 1, :tag_id => 2
+    
     login
     open tags_path
   end

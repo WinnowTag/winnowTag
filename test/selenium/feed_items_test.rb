@@ -1,9 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class FeedItemsTest < Test::Unit::SeleniumTestCase
-  fixtures :users, :feed_items, :feeds, :unread_items
+  fixtures :users, :feed_items, :feeds
 
   def setup
+    UnreadItem.delete_all
+    UnreadItem.create! :user_id => 1, :feed_item_id => 1
+    
     delete_cookie "show_sidebar", "/"
     login
     open_and_wait feed_items_path

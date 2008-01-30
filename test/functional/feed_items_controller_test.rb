@@ -5,7 +5,7 @@ require 'feed_items_controller'
 class FeedItemsController; def rescue_action(e) raise e end; end
 
 class FeedItemsControllerTest < Test::Unit::TestCase
-  fixtures :users, :feeds, :feed_items, :feed_item_contents, :tags
+  fixtures :users, :feeds, :feed_items, :tags
   def setup
     @controller = FeedItemsController.new
     @request    = ActionController::TestRequest.new
