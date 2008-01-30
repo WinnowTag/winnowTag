@@ -639,10 +639,10 @@ ItemBrowser.prototype = {
 	},
 	
 	expandFolderParameters:function(parameters) {
-	  var tag_ids = parameters.tag_ids ? parameters.tag_ids.split(",") : [];
-	  var feed_ids = parameters.feed_ids ? parameters.feed_ids.split(",") : [];
-	  
 	  if(parameters.folder_ids) {
+	    var tag_ids = parameters.tag_ids ? parameters.tag_ids.split(",") : [];
+	    var feed_ids = parameters.feed_ids ? parameters.feed_ids.split(",") : [];
+	  
 	    parameters.folder_ids.split(",").each(function(folder_id) {
 	      var folder = $("folder_" + folder_id);
   	    folder.select(".tags li").each(function(element) {
@@ -652,11 +652,11 @@ ItemBrowser.prototype = {
           feed_ids.push(element.getAttribute("id").gsub("feed_", ""));	      
 	      });
 	    });
+	    
+	    parameters.folder_ids = null;
+	    parameters.tag_ids = tag_ids.join(",");
+	    parameters.feed_ids = feed_ids.join(",");
 	  }
-	  
-	  parameters.folder_ids = null;
-	  parameters.tag_ids = tag_ids.join(",");
-	  parameters.feed_ids = feed_ids.join(",");
 	},
 	
 	toggleSetFilters: function(parameters) {
