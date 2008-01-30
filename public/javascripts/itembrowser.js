@@ -968,7 +968,7 @@ ItemBrowser.prototype = {
 	
 	loadItemModerationPanel: function(item) {
 		var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id'));
-		var url = moderation_panel.getAttribute('url');
+		var url = moderation_panel.getAttribute('url') + "?" + location.hash.gsub("#", "");
 		this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
 	},
 	

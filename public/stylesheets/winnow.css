@@ -751,7 +751,7 @@ ul.tag_list li {
   white-space: nowrap;
 }
 
-ul.tag_list li .public {
+ul.tag_list li.public span {
   background: url(../images/public.png) right center no-repeat;
   padding: 1px 16px 2px 0;
   margin-left: 3px;
@@ -796,6 +796,11 @@ ul.tag_list li.user_tagging.tagged .user {
 }
 
 /* Negative user tagging */
+
+ul.tag_list li.public.user_tagging.negative_tagging {
+  color: #B2563F;
+}
+
 ul.tag_list li.user_tagging.negative_tagging .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -32px;

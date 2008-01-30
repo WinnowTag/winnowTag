@@ -145,7 +145,11 @@ module FeedItemsHelper
   #
   def tag_controls(feed_item, options = {})
     options[:hide] = Array(options[:hide])    
-    tags = feed_item.taggings_by_user(current_user, :all_taggings => show_manual_taggings?)
+    if show_manual_taggings?
+      tags = feed_item.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+    else
+      tags = feed_item.taggings_by_user(current_user, :all_taggings => false)
+    end
 
     html = ""
     tags.each do |tag, taggings|
@@ -163,13 +167,16 @@ module FeedItemsHelper
     end
     
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
-      more_tags = feed_item.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+      if show_manual_taggings?
+        more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids].split(","))
+      else
+        more_tags = feed_item.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+      end
       more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
-          tag_name_with_tooltip(tag, :class => classes_for_taggings(tagging, [:public, :name]).join(" "))
+          tag_span = tag_name_with_tooltip(tag)
+          html << content_tag(:li, tag_span, :class => classes_for_taggings(tagging, [:public, :name]).join(" "))
         end
-      end.compact.each do |tag_span|
-        html << content_tag(:li, tag_span)
       end
     end
     
