@@ -31,17 +31,6 @@ module Selenium
       configuration = Configuration.default.merge(options)
       
       unless @selenium
-        if configuration.start_test_server?
-          @test_server = SubProcess.start "mongrel_rails start -c #{RAILS_ROOT} -e test -p #{configuration.test_server_port}"
-          # sleep(5)
-        end
-        
-        if configuration.start_selenium_server?
-          server_path = File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. selenium-server.jar]))
-          @selenium_server = SubProcess.start "java -jar #{server_path} -port #{configuration.selenium_server_port}"
-          sleep(1)
-        end
-        
         @selenium = SeleneseInterpreter.new(configuration.selenium_server_host, configuration.selenium_server_port,
           command, "http://#{configuration.test_server_host}:#{configuration.test_server_port}/")
         
