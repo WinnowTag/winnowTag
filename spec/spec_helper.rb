@@ -6,7 +6,7 @@ require 'spec'
 require 'spec/rails'
 require 'authenticated_test_helper'
 require 'active_resource/http_mock'
-require File.join(RAILS_ROOT, *%w[vendor plugins selenium_jelly lib selenium_example_group])
+require File.join(RAILS_ROOT, *%w[vendor plugins lwt_testing lib selenium example_group])
 
 Spec::Runner.configure do |config|
   config.use_transactional_fixtures = true
