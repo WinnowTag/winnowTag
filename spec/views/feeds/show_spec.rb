@@ -8,6 +8,8 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feeds/show' do
+  fixtures :users
+  
   include DateHelper
   
   before(:each) do

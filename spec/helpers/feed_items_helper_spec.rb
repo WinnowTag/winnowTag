@@ -10,10 +10,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 require 'tag'
 
 describe FeedItemsHelper do
-  # fixtures :roles, :roles_users, :feed_items, :unread_items
   attr_reader :current_user, :session
 
   def setup
+    User.delete_all
     @output = ""
     @current_user = User.create! valid_user_attributes
     @min_train_count = 1
