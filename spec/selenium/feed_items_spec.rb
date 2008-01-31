@@ -54,23 +54,7 @@ describe "FeedItemsTest" do
     click "open_tags_feed_item_#{feed_item.id}"
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}"
   end
-  
-  def test_open_close_sidebar
-    assert_visible "sidebar"
-    
-    click "sidebar_control"
-    assert_not_visible "sidebar"
-    
-    refresh_and_wait
-    assert_not_visible "sidebar"
 
-    click "sidebar_control"
-    assert_visible "sidebar"
-    
-    refresh_and_wait
-    assert_visible "sidebar"
-  end
-  
   def test_opening_item_marks_it_read
     feed_item_1 = FeedItem.find(1)
 
