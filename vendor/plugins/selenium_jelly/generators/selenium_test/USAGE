@@ -1,8 +1,0 @@
-Description:
-    Generates a Selenium test file
-
-Examples:
-    ./script/generate selenium_test person
-
-    creates:
-      test/selenium/person_selenium_test.rb
