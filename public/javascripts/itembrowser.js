@@ -687,12 +687,12 @@ ItemBrowser.prototype = {
 	  
     var new_parameters = location.hash.gsub('#', '').toQueryParams();
     if(parameters.feed_ids) {
-      new_parameters.feed_ids = new_parameters.feed_ids.split(",").reject(function(feed_id) {
+      new_parameters.feed_ids = (new_parameters.feed_ids || "").split(",").reject(function(feed_id) {
         return parameters.feed_ids.split(",").include(feed_id);
       }).join(",");
     }
     if(parameters.tag_ids) {
-      new_parameters.tag_ids = new_parameters.tag_ids.split(",").reject(function(tag_id) {
+      new_parameters.tag_ids = (new_parameters.tag_ids || "").split(",").reject(function(tag_id) {
         return parameters.tag_ids.split(",").include(tag_id);
       }).join(",");
     }
