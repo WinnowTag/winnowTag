@@ -8,6 +8,49 @@ require 'authenticated_test_helper'
 require 'active_resource/http_mock'
 require File.join(RAILS_ROOT, *%w[vendor plugins lwt_testing lib selenium example_group])
 
+module CustomSeleniumHelpers
+  def login(login = "quentin", password = "test")
+    open login_path
+    type "login", login
+    type "password", password
+    click_and_wait "commit"
+  end
+
+  def click_and_wait(locator, timeout = 30000)
+    click locator
+    wait_for_page_to_load(timeout)
+  end
+
+  def refresh_and_wait(timeout = 30000)
+    refresh
+    wait_for_page_to_load(timeout)
+  end
+
+  def see_element(*args)
+    assert is_element_present("css=#{args.join}")
+  end
+
+  def dont_see_element(*args)
+    assert !is_element_present("css=#{args.join}")
+  end
+
+  def assert_visible(locator)
+    assert is_visible(locator)
+  end
+
+  def assert_not_visible(locator)
+    assert !is_visible(locator)
+  end
+
+  def assert_element_disabled(selector)
+    see_element("#{selector}[disabled]")
+  end
+
+  def assert_element_enabled(selector)
+    dont_see_element("#{selector}[disabled]")
+  end
+end
+
 Spec::Runner.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
@@ -15,6 +58,7 @@ Spec::Runner.configure do |config|
 
   # TODO: Pull this call into lwt_testing
   config.include ValidationMatchers, AssociationMatchers
+  config.include CustomSeleniumHelpers, :type => :selenium
 
   # You can declare fixtures for each behaviour like this:
   #   describe "...." do
