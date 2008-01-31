@@ -1,74 +1,30 @@
 module Selenium
   class Browser
-    cattr_accessor :browsers
-    self.browsers = []
+    attr_reader :name, :command
     
-    attr_reader :name, :default, :command, :selenium, :version
-    
-    # Remove Ruby definitions so they get passed to Selenium
-    %w{select open eval type}.each { |m| undef_method m }
-    
-    # Define new browsers. The name must be unique.
-    # 
-    # == Options
-    # * +command+ - The command to launch the browser. Defaults to "*#{name}".
-    # * +default+ - Should this browser be tested by default? Defaults to true
     def initialize(name, options = {})
-      @name = name
-      
-      options.reverse_merge!(:default => true, :command => "*#{name}")
-      options.assert_valid_keys :default, :command
-      
-      raise DuplicateBrowser, name if self.class[name]
-      
-      @command, @default = options[:command], options[:default]
-      
-      browsers << self
+      options = options.reverse_merge(:command => "*#{name}")
+      @name, @command = name, options[:command]
     end
     
-    # Connect to the Selenium server. Reuse existing connection if it exists
-    def connect!(options = {})
-      configuration = Configuration.default.merge(options)
-      
+    def connect!
       unless @selenium
+        configuration = Selenium.configuration
         @selenium = SeleneseInterpreter.new(configuration.selenium_server_host, configuration.selenium_server_port,
           command, "http://#{configuration.test_server_host}:#{configuration.test_server_port}/")
-        
         @selenium.start
-        
-        @version = eval("navigator.userAgent")
       end
-      
-      self
-    rescue Errno::EBADF
-      @selenium = nil
-      raise ServerError, "Could not connect to the Selenium server on #{configuration.selenium_server_host}:#{configuration.selenium_server_port}"
     end
     
-    # Close the open browser window and disconnect from the Selenium server
     def disconnect!
-      configuration = Configuration.default
-      
-      @selenium.stop rescue nil
+      configuration = Selenium.configuration
+      @selenium.stop
       @selenium = nil
-      
-      if configuration.start_test_server?
-        @test_server.stop
-        @test_server = nil
-      end
-      
-      if configuration.start_selenium_server?
-        @selenium_servet.stop
-        @selenium_server = nil
-      end
     end
-    
-    # Restart the browser
-    def reconnect!
-      disconnect!
-      connect!
-    end
-    
+        
+    # %w{select eval}.each { |m| undef_method m }
+    %w{open type}.each { |method| undef_method(method) }
+
     def method_missing(method_id, *arguments)
       command = selenium_command(method_id)
       execute(command, *arguments)
@@ -100,26 +56,6 @@ module Selenium
         
       else
         raise InvalidCommand, method
-      end
-    end
-    
-    class << self
-      def [](name)
-        browsers.find { |b| b.name == name }
-      end
-      
-      def selected
-        env_browser_names = (ENV['BROWSERS'] || '').split(',')
-        
-        browsers.select do |browser|
-          browser.default || env_browser_names.include?(browser.name)
-        end
-      end
-      
-      def disconnect_all!
-        browsers.each do |browser|
-          browser.disconnect! rescue nil
-        end
       end
     end
   end
