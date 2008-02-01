@@ -28,6 +28,11 @@ describe "filter controls" do
       click "css=#folder_feeds .header"
       assert_visible "css=#folder_feeds .filter_list"
     end
+    
+    it "is gray when ..." do
+      mouse_over "css=#folder_tags .header"
+      get_style('#folder_tags .header', 'background-color').should == "#eee"
+    end
   end
   
   describe "tags" do
