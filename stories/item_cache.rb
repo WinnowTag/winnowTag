@@ -34,11 +34,15 @@ steps_for(:item_cache) do
   end
   
   Given("item $i in the system") do |i|
-    @item = FeedItem.new(:link => "http://example.org/item/#{i}")
-    @item.id = i
-    @item.save!
-    @item_id = i
     @item_count = FeedItem.count
+    @item_id = i
+    begin
+      @item = FeedItem.find(i)
+    rescue ActiveRecord::RecordNotFound
+      @item = FeedItem.new(:link => "http://example.org/item/#{i}")
+      @item.id = i
+      @item.save!
+    end
   end
   
   When("I add the feed") do

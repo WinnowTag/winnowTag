@@ -84,5 +84,6 @@ task :cruise do
   Rake::Task['spec:helpers'].invoke
   Rake::Task['spec:models'].invoke
   Rake::Task['spec:views'].invoke
+  Rake::Task['test:stories'].invoke
   Rake::Task['rcov_for_cc'].invoke
 end
