@@ -38,16 +38,16 @@ describe '/feeds/show' do
   
   it "should show the url of the feed as a feed icon link" do
     render '/feeds/show'
-    response.should have_tag("a[href='#{@feed.url}'][class='feed_icon replace']")
+    response.should have_tag("a[href='#{@feed.via}'][class='feed_icon replace']")
   end
   
   it "should show the link of the feed as a home icon link" do
     render '/feeds/show'
-    response.should have_tag("a[href='#{@feed.link}'][class='home_icon replace']")
+    response.should have_tag("a[href='#{@feed.alternate}'][class='home_icon replace']")
   end
   
   it "should skip the link of the feed if it is blank" do 
-    @feed.should_receive(:link).and_return(nil)
+    @feed.should_receive(:alternate).and_return(nil)
     render '/feeds/show'
     response.should_not have_tag("a[class='home_icon replace']")
   end

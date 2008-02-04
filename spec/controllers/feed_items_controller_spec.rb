@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FeedItemsController do
-  fixtures :users #, :feeds, :feed_items, :tags
+  fixtures :users, :feeds, :feed_items, :tags
 
   def test_requires_login
     assert_requires_login {|c| c.get :index, {}}

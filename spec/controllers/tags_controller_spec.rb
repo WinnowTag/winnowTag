@@ -8,6 +8,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TagsController do
+  fixtures :feed_items
+  
   describe "specs" do
     before(:each) do
       login_as(1)

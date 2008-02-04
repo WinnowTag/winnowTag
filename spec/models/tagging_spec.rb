@@ -13,12 +13,8 @@ describe Tagging do
   before(:each) do
     FeedItem.delete_all
     @feed_item = FeedItem.create! :feed_id => 1,
-                                  :time_source => FeedItem::FeedItemTime,
-                                  :time => Time.now.yesterday.yesterday.to_formatted_s(:db),
-                                  :unique_id => "first",
-                                  :xml_data_size => 10,
+                                  :updated => Time.now.yesterday.yesterday.to_formatted_s(:db),
                                   :link => "http://first",
-                                  :content_length => 5,
                                   :created_on => Time.now.yesterday.yesterday.to_formatted_s(:db),
                                   :title => "This is a test"
   end

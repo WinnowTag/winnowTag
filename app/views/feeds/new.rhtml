@@ -1,11 +1,11 @@
-<% form_for @feed do |f| %>
+<% form_for :feed, @feed, :url => feeds_path do |f| %>
 	<fieldset>
 		<legend>Enter a new Feed URL</legend>
 		<p>Only items with enough text for the classifier to use will be collected from the feed.</p>
 		<p><%= f.label(:url, "FeedURL") %><%= f.text_field :url, :size => 70 %></p>
 		<p><label>&nbsp;</label>
 			<%= submit_tag "Create Feed" %> 
-			<%= link_to "Cancel", feeds_url %>
+			<%= link_to "Cancel", feeds_path %>
 		</p>
 	</fieldset>
 <% end %>

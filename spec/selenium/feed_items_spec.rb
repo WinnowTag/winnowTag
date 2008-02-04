@@ -15,7 +15,7 @@ describe "FeedItemsTest" do
 
   def test_mark_read_unread
     feed_item_1 = FeedItem.find(2)
-    
+        
     see_element "#feed_item_#{feed_item_1.id}.read"
 
     click "css=#feed_item_#{feed_item_1.id} .status a"
@@ -73,5 +73,6 @@ describe "FeedItemsTest" do
     see_element "#feed_link_for_feed_item_#{feed_item_1.id}"
     click_and_wait "css=#feed_link_for_feed_item_#{feed_item_1.id}"
     assert_match feed_url(feed1), get_location
+    see_element "#feed_1"
   end
 end

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TaggingsController do
-  fixtures :users
+  fixtures :users, :feed_items
 
   before(:each) do
     @request.env['HTTP_REFERER'] = '/feed_items'

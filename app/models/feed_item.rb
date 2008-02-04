@@ -5,11 +5,6 @@
 # Please contact info@peerworks.org for further information.
 #
 
-# Need to manually require feed_item since the winnow_feed plugin  defines
-# these classes the auto-require functionality of Rails doesn't try to load the Winnow 
-# additions to these classes.
-load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'winnow_feed', 'lib', 'feed_item.rb')
-
 # Provides a representation of an item from an RSS/Atom feed.
 #
 # This class includes methods for:
@@ -25,9 +20,8 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 #
 # Tokens are stored in a FeedItemTokensContainer.
 #
-# The original XML data is stored in a FeedItemXmlData.
 #
-# See also FeedItemContent, FeedItemXmlData and FeedItemTokensContainer.
+# See also FeedItemContent and FeedItemTokensContainer.
 # 
 # == Schema Information
 # Schema version: 57
@@ -48,6 +42,12 @@ load_without_new_constant_marking File.join(RAILS_ROOT, 'vendor', 'plugins', 'wi
 #
 
 class FeedItem < ActiveRecord::Base
+  validates_presence_of :link
+  validates_uniqueness_of :link
+  belongs_to :feed, :counter_cache => true
+  has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
+  has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
+  
   # Extends tagging associations with a find_by_tagger method.
   #
   # This also adds some trickery that allows us to cache some taggings so we can
@@ -111,6 +111,48 @@ class FeedItem < ActiveRecord::Base
       :limit => size)
   end
   
+  def self.find_or_create_from_atom(entry)
+    raise ActiveRecord::RecordNotSaved, 'Atom::Entry missing id' if entry.id.nil?
+    id = self.parse_id_uri(entry)
+    
+    unless item = FeedItem.find_by_id(id)
+      item = FeedItem.new
+      item.id = id
+    end
+    
+    item.update_from_atom(entry)
+    item.save!
+    item
+  end
+  
+  def update_from_atom(entry)
+    raise ArgumentError, "Atom entry has different id" if self.id != self.class.parse_id_uri(entry)
+    
+    self.attributes = {
+      :title   => (entry.title or 'Unknown Title'),
+      :link    => (entry.alternate and entry.alternate.href),
+      :author  => (entry.authors.empty? ? nil : entry.authors.first.name),
+      :updated => entry.updated,
+      :collector_link => (entry.self and entry.self.href)
+    }
+        
+    self.content = FeedItemContent.new(:content => entry.content.to_s)
+    
+    self.save!
+    self
+  end
+  
+  # Override count to use feed_id because InnoDB tables are slow with count(*)
+  def self.count(*args)
+    if args.first.is_a? String
+      super(*args)
+    elsif args.first.is_a? Hash
+      super('id', args.first)
+    elsif args.size == 0
+      super('id', {})
+    end
+  end
+  
   # Gets a count of the number of items that meet conditions applied by the filters.
   #
   # See options_for_filters.
@@ -135,9 +177,9 @@ class FeedItem < ActiveRecord::Base
   # of the complexity of the joining in the query produced by options_with_filters.
   #
   def self.find_with_filters(filters = {})    
-    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => 'feed_items.id, feed_items.time, feed_items.title,' +
-                                                                      ' feed_items.link, feed_items.sort_title,' +
-                                                                      ' feed_items.feed_id, feed_items.created_on, feeds.title AS feed_title'))
+    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(
+                                                  :select => 'feed_items.id, feed_items.updated, feed_items.title, feed_items.link, ' +
+                                                             'feed_items.feed_id, feed_items.created_on, feeds.title AS feed_title'))
     
     if user = filters[:user]
       feed_item_ids = feed_items.map(&:id)
@@ -230,7 +272,7 @@ class FeedItem < ActiveRecord::Base
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
     if !text_filter.blank?
-      joins << "INNER JOIN feed_item_contents_full_text ON feed_items.id = feed_item_contents_full_text.id" +
+      joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
                " and MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
     end
   end
@@ -288,16 +330,6 @@ class FeedItem < ActiveRecord::Base
   # Gets a UID suitable for use within the classifier
   def uid 
     "Winnow::FeedItem::#{self.id}"
-  end
-  
-  # Gets the content of this feed.
-  # This method will handle generating the feed item content from the xml data
-  # if it doesnt already exist on the feed_item_content association.
-  def content(force = false)
-    unless self.feed_item_content
-      self.build_feed_item_content
-    end
-    self.feed_item_content(force)
   end
   
   # Gets taggings between a list of taggers and this taggable.
@@ -360,5 +392,21 @@ class FeedItem < ActiveRecord::Base
         hash
       end
     end.to_a.sort
+  end
+    
+  def self.parse_id_uri(entry)
+    begin
+      uri = URI.parse(entry.id)
+    
+      if uri.fragment.nil?
+        raise ActiveRecord::RecordNotSaved, "Atom::Entry id is missing fragment: '#{entry.id}'"
+      end
+    
+      uri.fragment.to_i
+    rescue ActiveRecord::RecordNotSaved => e
+      raise e
+    rescue 
+      raise ActiveRecord::RecordNotSaved, "Atom::Entry has missing or invalid id: '#{entry.id}'" 
+    end
   end
 end

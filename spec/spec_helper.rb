@@ -74,15 +74,23 @@ Spec::Runner.configure do |config|
   
   def valid_feed_item_attributes(attributes = {})
     unique_id = rand(10000)
-    { :link => "http://#{unique_id}.example.com", 
-      :unique_id => unique_id
+    { :link => "http://#{unique_id}.example.com",
+      :id => unique_id # Add this since it is no longer an autoincrement column
     }.merge(attributes)
+  end
+  
+  def valid_feed_item!(attributes = {})
+    attributes = valid_feed_item_attributes(attributes)
+    fi = FeedItem.new(attributes)
+    fi.id = attributes[:id]
+    fi.save!
+    fi
   end
   
   def valid_feed_attributes(attributes = {})
     unique_id = rand(1000)
-    { :url => "http://#{unique_id}.example.com/index.xml",
-      :link => "http://#{unique_id}.example.com",
+    { :via => "http://#{unique_id}.example.com/index.xml",
+      :alternate => "http://#{unique_id}.example.com",
       :title => "#{unique_id} Example",
       :feed_items_count => 0,
       :updated_on => Time.now

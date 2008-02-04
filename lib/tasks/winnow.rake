@@ -67,38 +67,22 @@ namespace :winnow do
   directory 'corpus'
 end
 
-namespace :test do
-  desc 'Test all custom plugins'
-  task :pw_plugins do
-    %w(winnow_feed).each do |plugin|
-      cd "vendor/plugins/#{plugin}" do
-        sh "rake"
-      end
-    end
-  end
-  
-  namespace :db do
-    desc "Replacement for db structure cloning that uses migrations for the test schema"
-    task :initialize do
-      ENV['RAILS_ENV'] = RAILS_ENV = 'test'   
-      Rake::Task['db:migrate'].invoke
-    end
-  end
-end
+require File.dirname(__FILE__) + '/../../vendor/plugins/rspec/lib/spec/rake/spectask'
 
-# Replace test task dependency on db:test:prepare with our own db:test:initialize
-[:'test:recent', :'test:units', :'test:functionals', :'test:integration'].each do |task|
-  Rake::Task[task].prerequisites.delete('db:test:prepare')
-  Rake::Task[task].prerequisites << 'test:db:initialize'
+desc "Run all examples with RCov"
+Spec::Rake::SpecTask.new('rcov_for_cc') do |t|
+  t.spec_files = FileList['spec/controllers/**/*.rb', 'spec/helpers/*.rb', 'spec/models/*.rb', 'spec/views/*.rb']
+  t.rcov = true
+  t.rcov_opts = ['--exclude', 'spec']
 end
 
 desc "Task for CruiseControl.rb"
 task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
-  Rake::Task['test:db:initialize'].invoke
-  Rake::Task['test:pw_plugins'].invoke
+  Rake::Task['db:migrate'].invoke
   Rake::Task['spec:controllers'].invoke
   Rake::Task['spec:helpers'].invoke
   Rake::Task['spec:models'].invoke
   Rake::Task['spec:views'].invoke
+  Rake::Task['rcov_for_cc'].invoke
 end

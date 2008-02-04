@@ -10,10 +10,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 require 'tag'
 
 describe FeedItemsHelper do
+  fixtures :feed_items
   attr_reader :current_user, :session
 
   def setup
-    User.delete_all
     @output = ""
     @current_user = User.create! valid_user_attributes
     @min_train_count = 1
@@ -172,17 +172,17 @@ describe FeedItemsHelper do
   end
   
   def test_feed_link_without_link
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :link => nil))
+    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => nil))
     assert_equal "Feed Title", feed_link(feed_item)
   end
   
   def test_feed_link_with_link
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :link => "http://example.com"))
+    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com"))
     assert_equal '<a href="http://example.com">Feed Title</a>', feed_link(feed_item)
   end
   
   def test_feed_link_with_link_and_options
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :link => "http://example.com"))
+    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com"))
     assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', feed_link(feed_item, :target => "_blank")
   end
 end

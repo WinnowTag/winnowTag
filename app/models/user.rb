@@ -111,7 +111,7 @@ class User < ActiveRecord::Base
   #
   # Only makes changes if the feed is a duplicate
   def update_feed_state(feed)
-    if feed.is_duplicate? && feed.duplicate_id
+    if feed.duplicate_id
       if feed_subscriptions.update_all(["feed_id = ?", feed.duplicate_id], ["feed_id = ?", feed.id]) > 0
         subscribed_feeds.reload
       end

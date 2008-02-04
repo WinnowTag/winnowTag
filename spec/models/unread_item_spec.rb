@@ -8,6 +8,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe UnreadItem do
+  fixtures :feed_items, :users
+  
   before(:each) do
     UnreadItem.delete_all
   end

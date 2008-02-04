@@ -2,8 +2,8 @@
 	<tr>
 		<th>Title</th>
 		<td>
-		  <%= link_to("Feed Home", @feed.link, :class => "home_icon replace", :style => 'float: right') if @feed.link %>
-		  <%= link_to("Feed", @feed.url, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
+		  <%= link_to("Feed Home", @feed.alternate, :class => "home_icon replace", :style => 'float: right') if @feed.alternate %>
+		  <%= link_to("Feed", @feed.via, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
 		  <%= @feed.title %>
 		</td>		
 	</tr>

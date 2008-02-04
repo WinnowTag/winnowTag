@@ -9,12 +9,17 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feeds/new' do
   before(:each) do
-    @feed = mock_new_model(Feed, valid_feed_attributes)
+    @feed = mock_new_model(Remote::Feed, :url => nil)
     assigns[:feed] = @feed
   end
   
   it "should show form" do
     render '/feeds/new'
     response.should have_tag("form[action='/feeds']")
+  end
+  
+  it "should have a url field" do
+    render '/feeds/new'
+    response.should have_tag("input[name = 'feed[url]']", 1, response.body)
   end
 end

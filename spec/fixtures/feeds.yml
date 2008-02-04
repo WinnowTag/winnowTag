@@ -17,20 +17,17 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 dummy_feed:
   id: 1
-  url: http://ruby-lang.org/en/index.rdf
+  via: http://ruby-lang.org/en/index.rdf
   title: Ruby Language
   sort_title: ruby language
-  active: true
   updated_on: <%= Time.now.to_formatted_s(:db) %>
 another_dummy_feed:
   id: 2
-  url: http://ruby-doc.org/en/index.rdf
+  via: http://ruby-doc.org/en/index.rdf
   title: Ruby Documentation
   sort_title: ruby documentation
-  active: true
 inactive_feed:
   id: 3
-  url: http://rss.slashdot.org/Slashdot
+  via: http://rss.slashdot.org/Slashdot
   title: Slashdot
   sort_title: slashdot
-  active: false

@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+    <title>Feed</title>
+    <link rel="alternate" type="text/html"  href="http://example.org/"/>
+    <link rel="via" type="application/atom+xml" href="http://example.org/feed"/>
+    <link rel="self" href="http://collector.wizztag.org/feeds/1337"/>
+    <id>urn:peerworks.org:feed#1337</id>
+    <updated>2005-07-31T12:29:29Z</updated>
+    <published>2003-12-13T08:29:29-04:00</published>    
+</entry>

@@ -40,7 +40,7 @@ class CollectionJobResultsController < ApplicationController
                                       :failed  => params[:collection_job_result][:failed],
                                       :feed_id => params[:collection_job_result][:feed_id])
     
-    if (feed = @collection_job_result.feed) && feed.is_duplicate?
+    if (feed = @collection_job_result.feed) && !feed.duplicate.nil?
       @user.update_feed_state(feed)
     end
     

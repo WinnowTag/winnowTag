@@ -9,6 +9,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 require 'active_resource/http_mock'
 
 describe Remote::Feed do
+  fixtures :feeds
   it "should send import_opml messages" do
     ActiveResource::HttpMock.respond_to do |http|
       http.post '/feeds/import_opml.xml', {}, [Feed.find(1)].to_xml, 200

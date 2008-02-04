@@ -23,8 +23,8 @@ describe Tag do
       tag = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
       tag_subscription = TagSubscription.create! :user_id => user_1.id, :tag_id => tag.id
     
-      feed_item_1 = FeedItem.create! valid_feed_item_attributes
-      feed_item_2 = FeedItem.create! valid_feed_item_attributes
+      feed_item_1 = valid_feed_item!
+      feed_item_2 = valid_feed_item!
     
       tagging_1 = Tagging.create! :tag_id => tag.id, :user_id => user_2.id, :feed_item_id => feed_item_1.id
       tagging_2 = Tagging.create! :tag_id => tag.id, :user_id => user_2.id, :feed_item_id => feed_item_2.id, :strength => 0.95, :classifier_tagging => true
@@ -73,7 +73,7 @@ describe Tag do
   
     it "should update it's timestamp when a new tag is created" do
       user = User.create! valid_user_attributes
-      feed_item = FeedItem.create! valid_feed_item_attributes
+      feed_item = valid_feed_item!
     
       tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "No this tag is the best tag in the world")
       updated_on = tag.updated_on
@@ -85,8 +85,8 @@ describe Tag do
   
     it "should delete classifier taggings" do
       user = User.create! valid_user_attributes
-      feed_item_1 = FeedItem.create! valid_feed_item_attributes
-      feed_item_2 = FeedItem.create! valid_feed_item_attributes
+      feed_item_1 = valid_feed_item!
+      feed_item_2 = valid_feed_item!
       tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "mytag")
     
       t1 = Tagging.create! :user => user, :feed_item => feed_item_1, :tag => tag
@@ -125,8 +125,7 @@ describe Tag do
       tag = Tag(users(:quentin), 'tag1')
       assert tag.is_a?(Tag)
       assert_equal 'tag1', tag.name
-      assert !tag.new_record?
-    
+      assert !tag.new_record?    
       tag2 = Tag(users(:quentin), tag)
       assert_equal tag, tag2
     end

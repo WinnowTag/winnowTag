@@ -43,7 +43,7 @@ class FeedItemsController < ApplicationController
         #   params[:tag_ids] = folder.tag_ids.join(",")
         # end
 
-        filters = { :order => 'feed_items.time DESC',
+        filters = { :order => 'feed_items.updated DESC',
                     :limit => limit,
                     :offset => params[:offset],
                     :feed_ids => params[:feed_ids],

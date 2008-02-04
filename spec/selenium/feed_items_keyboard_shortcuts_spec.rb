@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "FeedItemsKeyboardShortcutsTest" do
-  fixtures :users, :feed_items, :feeds
+  fixtures :users, :feed_items, :feeds, :feed_item_contents
 
   before(:each) do
     login

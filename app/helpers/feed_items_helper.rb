@@ -23,8 +23,8 @@ module FeedItemsHelper
   end
   
   def feed_link(feed_item, options = {})
-    if feed_item.feed.link 
-      link_to(feed_item.feed.title, feed_item.feed.link, options) 
+    if feed_item.feed.alternate 
+      link_to(feed_item.feed.title, feed_item.feed.alternate, options) 
     else
       feed_item.feed.title
     end

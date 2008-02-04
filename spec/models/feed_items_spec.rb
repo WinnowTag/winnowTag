@@ -6,82 +6,255 @@
 #
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe FeedItem do
-
-  it "Properly filters feed items with included private tag and excluded public tag" do
-    user_1 = User.create! valid_user_attributes
-    user_2 = User.create! valid_user_attributes
-        
-    tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-    tag_2 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
-    tag_3 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-    
-    tag_subscription = TagSubscription.create! :tag_id => tag_1.id, :user_id => user_1.id
-    
-    feed_item_1 = FeedItem.create! valid_feed_item_attributes
-    feed_item_2 = FeedItem.create! valid_feed_item_attributes
-    feed_item_3 = FeedItem.create! valid_feed_item_attributes
-    
-    tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
-    tagging_2 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id
-    tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_3.id, :tag_id => tag_3.id
-    
-    user_1.tag_exclusions.create! :tag_id => tag_2.id
-    
-    FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'feed_items.id').should == [feed_item_1]
-  end
-
-  it "Properly filters feed items with included private tag, excluded private tag, and excluded public tag" do
-    user_1 = User.create! valid_user_attributes
-    user_2 = User.create! valid_user_attributes
-        
-    tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-    tag_2 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
-    tag_3 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-    
-    tag_subscription = TagSubscription.create! :tag_id => tag_1.id, :user_id => user_1.id
-    
-    feed_item_1 = FeedItem.create! valid_feed_item_attributes
-    feed_item_2 = FeedItem.create! valid_feed_item_attributes
-    feed_item_3 = FeedItem.create! valid_feed_item_attributes
-    feed_item_4 = FeedItem.create! valid_feed_item_attributes
-    
-    tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
-    tagging_2 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id
-    tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_3.id, :tag_id => tag_3.id
-    tagging_4 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_4.id, :tag_id => tag_1.id
-    tagging_5 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_4.id, :tag_id => tag_2.id
-    
-    user_1.tag_exclusions.create! :tag_id => tag_2.id
-    user_1.tag_exclusions.create! :tag_id => tag_3.id
-    
-    FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'feed_items.id').should == [feed_item_1]
+shared_examples_for "FeedItem update attributes from atom" do
+  it "should set the title" do
+    @item.title.should == @atom.title
   end
   
-  it "properly filters on globally excluded feeds" do
-    user_1 = User.create! valid_user_attributes
+  it "should set the updated date" do
+    @item.updated.should == @atom.updated
+  end
+  
+  it "should set the link to alternate" do
+    @item.link.should == @atom.alternate.href
+  end
+  
+  it "should set the collector link to self" do
+    @item.collector_link.should == @atom.self.href
+  end
+  
+  it "should set the author" do
+    @item.author.should == @atom.authors.first.name
+  end
+  
+  it "should set the content" do
+    @item.content.content.should == @atom.content.to_s
+  end
+end
+
+describe FeedItem do
+  fixtures :users
+  describe ".find_with_filters" do
+    it "Properly filters feed items with included private tag and excluded public tag" do
+      user_1 = User.create! valid_user_attributes
+      user_2 = User.create! valid_user_attributes
+        
+      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
+      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
     
-    feed_1 = Feed.create! :url => "http://feedone.com"
+      tag_subscription = TagSubscription.create! :tag_id => tag_1.id, :user_id => user_1.id
     
-    FeedItem.delete_all # :(
-    feed_item_1 = FeedItem.create! valid_feed_item_attributes(:feed_id => feed_1.id)
-    feed_item_2 = FeedItem.create! valid_feed_item_attributes(:feed_id => feed_1.id)
-    feed_item_3 = FeedItem.create! valid_feed_item_attributes(:feed_id => 2)
-    feed_item_4 = FeedItem.create! valid_feed_item_attributes(:feed_id => 3)
+      feed_item_1 = valid_feed_item!
+      feed_item_2 = valid_feed_item!
+      feed_item_3 = valid_feed_item!
     
-    user_1.excluded_feeds << feed_1
+      tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
+      tagging_2 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id
+      tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_3.id, :tag_id => tag_3.id
     
-    FeedItem.find_with_filters(:user => user_1, :order => 'feed_items.id').should == [feed_item_3, feed_item_4]
+      user_1.tag_exclusions.create! :tag_id => tag_2.id
+    
+      FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'feed_items.id').should == [feed_item_1]
+    end
+
+    it "Properly filters feed items with included private tag, excluded private tag, and excluded public tag" do
+      user_1 = User.create! valid_user_attributes
+      user_2 = User.create! valid_user_attributes
+        
+      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
+      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+    
+      tag_subscription = TagSubscription.create! :tag_id => tag_1.id, :user_id => user_1.id
+    
+      feed_item_1 = valid_feed_item!
+      feed_item_2 = valid_feed_item!
+      feed_item_3 = valid_feed_item!
+      feed_item_4 = valid_feed_item!
+    
+      tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
+      tagging_2 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id
+      tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_3.id, :tag_id => tag_3.id
+      tagging_4 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_4.id, :tag_id => tag_1.id
+      tagging_5 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_4.id, :tag_id => tag_2.id
+    
+      user_1.tag_exclusions.create! :tag_id => tag_2.id
+      user_1.tag_exclusions.create! :tag_id => tag_3.id
+    
+      FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'feed_items.id').should == [feed_item_1]
+    end
+  
+    it "properly filters on globally excluded feeds" do
+      user_1 = User.create! valid_user_attributes
+    
+      feed_1 = Feed.create! :via => "http://feedone.com"
+    
+      FeedItem.delete_all # :(
+      feed_item_1 = valid_feed_item!(:feed_id => feed_1.id)
+      feed_item_2 = valid_feed_item!(:feed_id => feed_1.id)
+      feed_item_3 = valid_feed_item!(:feed_id => 2, :id => 3)
+      feed_item_4 = valid_feed_item!(:feed_id => 3, :id => 4)
+    
+      user_1.excluded_feeds << feed_1
+    
+      FeedItem.find_with_filters(:user => user_1, :order => 'feed_items.id').should == [feed_item_3, feed_item_4]
+    end
+    
+    it "should work with a text filter" do
+      user_1 = User.create! valid_user_attributes
+      lambda { FeedItem.find_with_filters(:user => user_1, :text_filter => 'text')}.should_not raise_error
+    end
+  end  
+  
+  describe "update_from_atom" do
+    before(:each) do
+      @before_count = FeedItem.count
+      @atom = Atom::Entry.new do |atom|
+        atom.title = "Item Title"
+        atom.updated = Time.now
+        atom.id = "urn:peerworks.org:feed_item#1"
+        atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
+        atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
+        atom.authors << Atom::Person.new(:name => 'Author')
+        atom.content = Atom::Content::Html.new('<p>content</p>')
+      end
+      
+      @item = FeedItem.find(1)
+      @item.update_from_atom(@atom)
+    end
+    
+    it_should_behave_like "FeedItem update attributes from atom"
+    
+    it "should not create a new item" do
+      FeedItem.count.should == @before_count
+    end
+    
+    describe "with different id" do
+      it "should not update the attributes" do
+        lambda { FeedItem.find(2).update_from_atom(@atom) }.should raise_error(ArgumentError)
+        FeedItem.find(2).title.should_not == @atom.title
+      end
+      
+      it "should raise ArgumentError" do
+        lambda { FeedItem.find(2).update_from_atom(@atom) }.should raise_error(ArgumentError)
+      end
+    end
+  end
+  
+  describe "find_or_create_from_atom" do
+    before(:each) do
+      @before_count = FeedItem.count
+      @atom = Atom::Entry.new do |atom|
+        atom.title = "Item Title"
+        atom.updated = Time.now
+        atom.id = "urn:peerworks.org:feed_item#333"
+        atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
+        atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
+        atom.authors << Atom::Person.new(:name => 'Author')
+        atom.content = Atom::Content::Html.new('<p>content</p>')
+      end
+    end
+    
+    describe "with a complete entry" do
+      before(:each) do
+        @item = FeedItem.find_or_create_from_atom(@atom)
+      end
+    
+      it_should_behave_like "FeedItem update attributes from atom"
+      
+      it "should set the id" do
+        @item.id.should == 333
+      end
+          
+      it "should create a new feed item" do
+        FeedItem.count.should == (@before_count + 1)
+      end
+    end
+    
+    describe "with a complete entry and an existing id" do
+      before(:each) do
+        @atom.id = "urn:peerworks.org:feed_item#1"
+        @item = FeedItem.find_or_create_from_atom(@atom)        
+      end
+      
+      it "should not be a new record" do
+        @item.should_not be_new_record
+      end
+      
+      it "should not create a new record" do
+        FeedItem.count.should == @before_count
+      end
+      
+      it_should_behave_like "FeedItem update attributes from atom"
+    end
+    
+    describe "without an id" do
+      before(:each) do
+        @atom.id = nil
+      end
+      
+      it "should reject the item" do
+        lambda { FeedItem.find_or_create_from_atom(@atom) }.should raise_error(ActiveRecord::RecordNotSaved)
+      end      
+    end
+    
+    describe "with an invalid id" do
+      before(:each) do
+        @atom.id = "urn:peerworks.org:feed_item"
+      end
+      
+      it "should reject the item" do
+        lambda { FeedItem.find_or_create_from_atom(@atom) }.should raise_error(ActiveRecord::RecordNotSaved)
+      end
+    end
+    
+    describe "without a title" do
+      before(:each) do
+        @atom.title = nil
+        @item = FeedItem.find_or_create_from_atom(@atom)
+      end
+      
+      it "should set the title to 'Unknown Title'" do
+        @item.title.should == 'Unknown Title'
+      end
+    end
+    
+    describe "without an author" do
+      before(:each) do
+        @atom.authors.clear
+        @item = FeedItem.find_or_create_from_atom(@atom)
+      end
+      
+      it "should set the author to nil" do
+        @item.author.should be_nil
+      end
+    end    
+    
+    describe "without alternate link" do
+      before(:each) do
+        @atom.links.delete(@atom.alternate)
+      end
+      
+      it "should reject the item" do
+        lambda { FeedItem.find_or_create_from_atom(@atom) }.should raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+    
+    describe "without collector link" do
+      before(:each) do
+        @atom.links.delete(@atom.self)
+        @item = FeedItem.find_or_create_from_atom(@atom)
+      end
+            
+      it "should set the collector link to nil" do
+        @item.collector_link.should be_nil
+      end
+    end
   end
   
   describe "from test/unit" do
-    fixtures :users
-    
-    def test_getting_content_when_content_returns_empty_content
-      feed_item = FeedItem.new    
-      assert_nil feed_item.content.title
-      assert_nil feed_item.content.link
-    end
+    fixtures :users    
   
     # Tests for the find_with_filters method
     def test_find_with_show_untagged_returns_all_items
@@ -236,7 +409,7 @@ describe FeedItem do
     end
   
     def test_find_with_multiple_feed_filters_and_show_untagged_should_return_only_items_from_the_included_feeds
-      feed_item5 = FeedItem.create!(:feed_id => 3, :unique_id => "fifth", :link => "http://fifth")
+      feed_item5 = FeedItem.create!(:feed_id => 3, :link => "http://fifth")
     
       expected = FeedItem.find(1, 2, 3, 4)
       actual = FeedItem.find_with_filters(:user => users(:quentin), :feed_ids => "1,2", :order => 'feed_items.id ASC')

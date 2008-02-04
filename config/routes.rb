@@ -1,4 +1,11 @@
 ActionController::Routing::Routes.draw do |map|
+  map.namespace :item_cache do |item_cache|
+    item_cache.resources :feed_items
+    item_cache.resources :feeds do |feeds|
+      feeds.resources :feed_items
+    end
+  end
+  
   map.resources :invites, 
                 :member => {
                   :activate => :put

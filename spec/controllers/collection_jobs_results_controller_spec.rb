@@ -29,7 +29,7 @@ describe CollectionJobResultsController do
     @user.should_receive(:collection_job_results).and_return(results)
     results.should_receive(:build).with({:message => "msg", :failed => 0, :feed_id => nil }).and_return(result)
     result.should_receive(:save).and_return(true)
-    result.stub!(:feed).and_return(mock_model(Feed, :is_duplicate? => false))
+    result.stub!(:feed).and_return(mock_model(Feed, :duplicate => nil))
     
     post :create, :collection_job_result => {:message => "msg", :failed => 0 }, :user_id => @user.id
     
@@ -52,7 +52,7 @@ describe CollectionJobResultsController do
   end
   
   it "should update user's feed state if the feed is a duplicate" do
-    feed = mock_model(Feed, :is_duplicate? => true)
+    feed = mock_model(Feed, :duplicate => mock('dup'))
         
     result = mock_model(CollectionJobResult)
     results = mock('collection_job_results')

@@ -19,13 +19,13 @@ class ApplicationController < ActionController::Base
                  'Please report this bug. Make ' +
                  'sure you have Javascript enabled too! ', 
         :status => 400
-      }
+      } unless defined?(SHOULD_BE_POST)
   MISSING_PARAMS = {
         :text => 'Bad Request. Missing Parameters. ' +
                  'Please report this bug. Make ' +
                  'sure you have Javascript enabled too! ', 
         :status => 400
-      }
+      } unless defined?(MISSING_PARAMS)
       
 protected
   def local_request?

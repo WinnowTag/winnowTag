@@ -2,9 +2,9 @@
 	<h3><%= link_to_feed_item(feed_item) %></h3>
 	<p class="metadata">
 		from <%= feed_link(feed_item, :target => "_blank") %>
-		<% if not feed_item.content.author.blank? %>
-			by <%= feed_item.content.author %>
+		<% if not feed_item.author.blank? %>
+			by <%= feed_item.author %>
 		<% end -%>
 	</p>
-	<%= clean_html(feed_item.content.encoded_content) %>
+	<%= clean_html(feed_item.content.content) %>
 <% end -%>

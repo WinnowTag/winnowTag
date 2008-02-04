@@ -8,7 +8,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Remote::ProtectedItem do
-  fixtures :users
+  fixtures :users, :feed_items
 
   before(:each) do
     Protector.create(:protector_id => 1)

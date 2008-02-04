@@ -4,6 +4,10 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
+
+# This controller doesn't create feeds directly. Instead it forwards
+# feed creation requests on to the collector using Remote::Feed.
+#
 class FeedsController < ApplicationController
   include CollectionJobResultsHelper
   include ActionView::Helpers::TextHelper
@@ -18,7 +22,7 @@ class FeedsController < ApplicationController
   end
   
   def new
-    @feed = Feed.new(params[:feed])
+    @feed = Remote::Feed.new((params[:feed] or {:url => nil}))
   end
   
   def create

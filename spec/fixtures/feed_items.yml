@@ -20,44 +20,32 @@
 first:
   id: 1
   feed_id: 1
-  time_source: <%= FeedItem::FeedItemTime %>
-  time: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
-  unique_id: first
-  xml_data_size: 10
+  updated: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
   link: http://first
-  content_length: 5
   created_on: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
   title: This is a test
+  author: 'Author'
 another:
   id: 2
   feed_id: 1
-  time_source: <%= FeedItem::FeedItemTime %>
-  time: <%= Time.now.to_formatted_s(:db)%>
-  unique_id: second
-  xml_data_size: 15
-  content_length: 11
+  updated: <%= Time.now.to_formatted_s(:db)%>
   link: http://second
   created_on: <%= Time.now.to_formatted_s(:db)%>
   title: This is another test
+  author: 'Author'
 third:
   id: 3
   feed_id: 1
-  time_source: <%= FeedItem::FeedItemTime %>
-  time: <%= Time.now.to_formatted_s(:db)%>
-  unique_id: third
-  xml_data_size: 5
-  content_length: 5
+  updated: <%= Time.now.to_formatted_s(:db)%>
   link: http://third
   created_on: <%= Time.now.to_formatted_s(:db)%>
   title: Yet another test
+  author: 'Author'
 forth:
   id: 4
   feed_id: 2
-  time_source: <%= FeedItem::FeedCollectionTime %>
-  time: <%= Time.now.to_formatted_s(:db)%>
-  unique_id: forth
-  xml_data_size: 20
-  content_length: 10
+  updated: <%= Time.now.to_formatted_s(:db)%>
   link: http://forth
   created_on: <%= Time.now.tomorrow.to_formatted_s(:db)%>
   title: fourth
+  author: 'Author'

@@ -31,6 +31,11 @@ describe FeedsController do
     get 'show', :id => 1
     assigns[:feed].should == feed
   end
+  
+  it "should provide blank url on new" do
+    get 'new'
+    assigns[:feed].url.should be_nil
+  end
 
   it "should re-render form on resource error" do
     feed = mock_model(Remote::Feed)
@@ -41,6 +46,7 @@ describe FeedsController do
     post 'create', :feed => {:url => 'http://example.com'}
     response.should be_success
     response.should render_template(:new)
+    assigns[:feed].should == feed
     flash[:error].should == "Error"
   end
   
