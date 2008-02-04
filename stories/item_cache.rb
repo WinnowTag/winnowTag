@@ -19,18 +19,24 @@ steps_for(:item_cache) do
   end
   
   Given("a feed in the system") do
-    @feed = Feed.find(:first)
+    @feed = Feed.new(:via => 'http://example.org/feed')
+    @feed.id = rand(1000)
+    @feed.save!
     @feed_id = @feed.id
   end
   
-  Given("an item in the system") do
-    @item = FeedItem.find(:first)
-    @item_id = @item.id
+  Given("an item in the system") do    
+    @item_id = rand(1000)
+    @item = FeedItem.new(:link => "http://example.org/item/#{@item_id}")
+    @item.id = @item_id
+    @item.save!
     @item_count = FeedItem.count
   end
   
   Given("item $i in the system") do |i|
-    @item = FeedItem.find(i)
+    @item = FeedItem.new(:link => "http://example.org/item/#{i}")
+    @item.id = i
+    @item.save!
     @item_id = i
     @item_count = FeedItem.count
   end
@@ -74,7 +80,7 @@ steps_for(:item_cache) do
   end
   
   Then("the item has not been updated") do
-    @item.attributes.should == FeedItem.find(@item_id).attributes    
+    @item.attributes.inspect.should == FeedItem.find(@item.id).attributes.inspect
   end
 end
 
