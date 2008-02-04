@@ -36,15 +36,15 @@ set :checkout, "checkout"
 # be used to single out a specific subset of boxes in a particular role, like
 # :primary => true.
 
-if ENV['STAGE'] == 'seangeo' or ENV['STAGE'] == 'mh'
-  set :subdomain, ENV['STAGE']
-  set :domain, "#{ENV['STAGE']}.wizztag.org"
-  set :repository, get_working_directory_repository
+if ENV['STAGE'] == 'beta'
+  set :subdomain, 'beta'
+  set :repository, 'http://svn.winnow.peerworks.org/tags/winnow_BETA'
+  set :domain, "mindloom.org"
   role :web, domain
   role :app, domain
   role :db,  domain, :primary => true
-  set :deploy_to, "/home/#{ENV['STAGE']}/www/#{ENV['STAGE']}.deploy"
-  set :user, ENV['STAGE']
+  set :user, 'winnow'
+  set :deploy_to, "/home/winnow/winnow.deploy"
 elsif ENV['STAGE'] =~ /^set[\d]$/ or %w(trunk alpha).include?(ENV['STAGE'])
   if ENV['STAGE'] == 'alpha'
     set :repository, "http://svn.winnow.peerworks.org/tags/winnow_ALPHA"
@@ -161,22 +161,6 @@ development:
 
 END
 
-  bgyaml =<<-END
----
-cwd: #{current_path}
-user: #{user}
-port: #{ENV['bg_port']}
-timer_sleep: 60
-load_rails: true
-environment: development
-host: localhost
-database_yml: config/database.yml
-acl:
-  deny: all
-  allow: localhost 127.0.0.1
-  order: deny,allow
-END
-
   cluster_config =<<-END
 --- 
 user: #{user}
@@ -190,9 +174,7 @@ servers: 4
 END
 
   put(dbyaml, "#{shared_path}/database.yml")
-  put(bgyaml, "#{shared_path}/backgroundrb.yml")
   put(cluster_config, "#{shared_path}/mongrel_cluster.yml")
   
   run "mkdir -p #{shared_path}/tmp"
-  run "mkdir -p #{shared_path}/exported_corpus"
 end
