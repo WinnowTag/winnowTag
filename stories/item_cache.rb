@@ -45,6 +45,10 @@ steps_for(:item_cache) do
     end
   end
   
+  Given("the unread item observer is active") do
+    FeedItem.old_add_observer(UnreadItemObserver.instance)
+  end
+  
   When("I add the feed") do
     post item_cache_feeds_url, @feed_entry, 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
     @feed_id = response.headers['Location'].split('/').last
@@ -85,6 +89,12 @@ steps_for(:item_cache) do
   
   Then("the item has not been updated") do
     @item.attributes.inspect.should == FeedItem.find(@item.id).attributes.inspect
+  end
+  
+  Then("the item is marked unread for every user") do
+    User.find(:all).each do |u|
+      u.should_not be_has_read_item(FeedItem.find(@item_id))
+    end
   end
 end
 
