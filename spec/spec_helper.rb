@@ -88,7 +88,7 @@ Spec::Runner.configure do |config|
   end
   
   def valid_feed_attributes(attributes = {})
-    unique_id = rand(1000)
+    unique_id = rand(100000)
     { :via => "http://#{unique_id}.example.com/index.xml",
       :alternate => "http://#{unique_id}.example.com",
       :title => "#{unique_id} Example",
@@ -98,7 +98,7 @@ Spec::Runner.configure do |config|
   end
   
   def valid_user_attributes(attributes = {})
-    unique_id = rand(1000)
+    unique_id = rand(100000)
     { :login => "user_#{unique_id}",
       :email => "user_#{unique_id}@example.com",
       :password => "password",

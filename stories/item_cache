@@ -40,11 +40,13 @@ Story: Item Cache Access
   
     Given a feed in the system
     And the item entry at 'item_entry1.atom'
+    And the unread item observer is active
     
     When I add the item to the feed
     
     Then there is 1 new item in the system
     And the new item belongs to the feed
+    And the item is marked unread for every user
 
   Scenario: Deleting an existing item
   
@@ -73,3 +75,4 @@ Story: Item Cache Access
 
     Then there is 0 new items in the system
     And the item has been updated
+    
