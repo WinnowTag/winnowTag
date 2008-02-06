@@ -138,15 +138,16 @@ describe FeedItemsHelper do
     @response.body = unused_tag_controls(fi)
     assert_select('li#unused_tag_control_for_tag_on_feed_item_1', false, @response.body)
   end
-  
-  def test_dont_display_tags_below_threshold
-    feed_item = FeedItem.find(1)
-    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
 
-    @response.body = display_tags_for(feed_item)
-    
-    assert_no_match(/tag1/, @response.body)
-  end
+  # TODO: Update this
+  # def test_dont_display_tags_below_threshold
+  #   feed_item = FeedItem.find(1)
+  #   Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
+  # 
+  #   @response.body = display_tags_for(feed_item)
+  #   
+  #   assert_no_match(/tag1/, @response.body)
+  # end
       
   # TODO: Update this to work with published tags
   # def test_display_published_tags_when_tag_filter_is_a_published_tag

@@ -102,7 +102,7 @@ module FeedItemsHelper
     if show_manual_taggings?
       tags = taggable.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
     else
-      tags = taggable.taggings_by_user(current_user, :all_taggings => false)
+      tags = taggable.taggings_by_user(current_user, :all_taggings => true)
     end
     
     tag_display = tags.collect do |tag, taggings|
@@ -117,7 +117,7 @@ module FeedItemsHelper
       if show_manual_taggings?
         more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
-        more_tags = taggable.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+        more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => subscribed_tags)
       end
             
       tag_display += more_tags.collect do |tag, taggings|
@@ -154,7 +154,6 @@ module FeedItemsHelper
 
     html = ""
     tags.each do |tag, taggings|
-      taggings.delete_if(&:negative?) unless show_manual_taggings?
       content = content_tag("span", h(tag.name), :class => "name")
       content << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
       content << content_tag("span", nil, :class => "user")
@@ -172,7 +171,7 @@ module FeedItemsHelper
       if show_manual_taggings?
         more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
-        more_tags = feed_item.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+        more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => subscribed_tags)
       end
       more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
