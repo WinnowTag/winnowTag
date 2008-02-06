@@ -718,11 +718,11 @@ a.editor_cancel {
   background: #888;
 }
 
-.item .closed .tags .user_tagging.tagged {
+.item .closed .tags .positive {
   color: #498740;
 }
 
-.item .closed .tags .user_tagging.negative_tagging {
+.item .closed .tags .negative {
   color: #B2563F;
 }
 
@@ -769,52 +769,35 @@ ul.tag_list li .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
   padding: 1px 16px 2px 0;
+  margin-left: 3px;
   cursor: pointer;
 }
 
-ul.tag_list li.user_tagging .user {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -512px;
-  padding: 1px 16px 2px 0;
-  display: none;
-}
-
 /* Positive user tagging */
-ul.tag_list li.user_tagging.tagged .add {
+ul.tag_list li.positive .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 0;
 }
 
-ul.tag_list li.user_tagging.tagged .remove {
+ul.tag_list li.positive .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
-  display: none;
-}
-
-ul.tag_list li.user_tagging.tagged .user {
-  display: inline;
 }
 
 /* Negative user tagging */
 
-ul.tag_list li.public.user_tagging.negative_tagging {
+ul.tag_list li.public.negative {
   color: #B2563F;
 }
 
-ul.tag_list li.user_tagging.negative_tagging .add {
+ul.tag_list li.negative .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -32px;
-  display: none;
 }
 
-ul.tag_list li.user_tagging.negative_tagging .remove {
+ul.tag_list li.negative .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -64px;
-}
-
-ul.tag_list li.user_tagging.negative_tagging .user {
-  margin-left: 3px;
-  display: inline;
 }
 
 .cursor {

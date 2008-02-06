@@ -41,7 +41,6 @@ function add_tag(taggable_id, tag_name, allow_remove) {
 	var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
 	var url = '/taggings/create';
 	var parameters = {};
-	var revert_callback;
 	parameters["tagging[feed_item_id]"] = taggable_id.match(/(\d+)$/)[1];
 	parameters["tagging[tag]"] = tag_name;
 	parameters["tagging[strength]"] = "1";
@@ -49,60 +48,61 @@ function add_tag(taggable_id, tag_name, allow_remove) {
 
 	if (!tag_control) {
 		add_tag_control(taggable_id, tag_name);
-	} else if (tag_control.match('.user_tagging.negative_tagging')) {
-		tag_control.removeClassName('negative_tagging');
-		tag_control.addClassName('tagged');
-	} else if (tag_control.match('.tagged.user_tagging.bayes_classifier_tagging')) {
-		tag_control.removeClassName('user_tagging');
+	} else if (tag_control.match('.classifier')) {
+		tag_control.addClassName('positive'); 
+	} else if (tag_control.match('.negative')) {
+		tag_control.removeClassName('negative');
+		tag_control.addClassName('positive');
+	} else if (tag_control.match('.positive') && allow_remove) {
+		tag_control.removeClassName('positive');
 		url = '/taggings/destroy';
-	} else if (tag_control.match('.tagged.bayes_classifier_tagging')) {
-		tag_control.addClassName('user_tagging'); 
-	} else if (tag_control.match('.tagged.user_tagging') && allow_remove) {
-		tag_control.removeClassName('user_tagging');
-		tag_control.removeClassName('tagged');
-		remove_tag_control(taggable_id, tag_name); 
-		url = '/taggings/destroy';
+		if(!tag_control.match('.classifier')) {
+	    remove_tag_control(taggable_id, tag_name); 
+		}
 	} else {
 		console.log("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
 	}
 
-	sendTagRequest(url, parameters, revert_callback);
+	sendTagRequest(url, parameters);
 }
 
 function remove_tag(taggable_id, tag_name) {
+	if( tag_name.match(/^\s*$/) ) { return; }
+
 	var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
-	var url = '/taggings/destroy';
+	var url = '/taggings/create';
 	var parameters = {};
-	var revert_callback;
 	parameters["tagging[feed_item_id]"] = taggable_id.match(/(\d+)$/)[1];
 	parameters["tagging[tag]"] = tag_name;
+	parameters["tagging[strength]"] = "0";
 	
-	if (tag_control.match('.user_tagging.negative_tagging')) { 
-		tag_control.removeClassName('user_tagging');
-		tag_control.removeClassName('negative_tagging');
-		tag_control.addClassName('tagged');
-	} else if (tag_control.match('.tagged.bayes_classifier_tagging')) {
-		tag_control.removeClassName('tagged');
-		tag_control.addClassName('negative_tagging');
-		tag_control.addClassName('user_tagging');
-		parameters['tagging[strength]'] = "0";
-		url = '/taggings/create';
+
+	if (tag_control.match('.classifier')) {
+		tag_control.addClassName('negative'); 
+	} else if (tag_control.match('.positive')) {
+		tag_control.removeClassName('positive');
+		tag_control.addClassName('negative');
+	} else if (tag_control.match('.negative')) {
+		tag_control.removeClassName('negative');
+		url = '/taggings/destroy';
+		if(!tag_control.match('.classifier')) {
+	    remove_tag_control(taggable_id, tag_name); 
+		}
 	} else {
 		console.log("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
 	}
 
-	sendTagRequest(url, parameters, revert_callback);
+	sendTagRequest(url, parameters);
 }
 
 
 /** Sends the tag request to the server.
  */
-function sendTagRequest(url, parameters, revert_callback) {
+function sendTagRequest(url, parameters) {
 	new Ajax.Request(url, {parameters: $H(parameters).toQueryString(),
 		method: 'post',
 		onFailure: function(transport) {
 			alert("Error contacting server.  You're changes have not been saved.");
-			// revert_callback();
 		}
 	});
 }
@@ -122,10 +122,9 @@ function add_tag_control(taggable_id, tag) {
 	var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
 	var unused_tag_control_id = 'unused_tag_control_for_' + tag + '_on_' + taggable_id;
 	
-	var tag_control = '<li id="' + tag_control_id + '" class="tagged user_tagging" style="display: none;" onmouseover="show_tag_tooltip(this, \'' + escape_javascript(tag) + '\');">' + 
+	var tag_control = '<li id="' + tag_control_id + '" class="positive" style="display: none;" onmouseover="show_tag_tooltip(this, \'' + escape_javascript(tag) + '\');">' + 
 		'<span class="name">' + tag + '</span>' + 
 		'<span class="add" onclick="add_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', true);" onmouseover="show_control_tooltip(this, this.parentNode, \'' + escape_javascript(tag) + '\');"></span>' + 
-		'<span class="user"></span>' + 
 		'<span class="remove" onclick="remove_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\');" onmouseover="show_control_tooltip(this, this.ParentNode, \'' + escape_javascript(tag) + '\');"></span>' + 
 	'</li>';
 
@@ -162,11 +161,19 @@ function remove_tag_control(taggable_id, tag) {
 function show_control_tooltip(control, tag, tag_name) {
 	var control_tooltip = "";
 	
-	if (tag.match('.user_tagging.negative_tagging')) {
-		control_tooltip = "Click to remove this negative example of " + tag_name;
-	} else if (tag.match('.user_tagging.tagged')) {
-		control_tooltip = "Click to remove this positive example of " + tag_name;
-	} else if (tag.match('.tagged.bayes_classifier_tagging')) {
+	if (tag.match('.negative')) {
+		if(control.match(".add")) {
+			control_tooltip = "Click if this is a very good example of " + tag_name;
+		}	else if(control.match(".remove")) {
+			control_tooltip = "Click to remove this negative example of " + tag_name;
+		}
+	} else if (tag.match('.positive')) {
+		if(control.match(".add")) {
+			control_tooltip = "Click to remove this positive example of " + tag_name;
+		}	else if(control.match(".remove")) {
+			control_tooltip = "Click if this is a bad example of " + tag_name;
+		}
+	} else if (tag.match('.classifier')) {
 		if(control.match(".add")) {
 			control_tooltip = "Click if this is a very good example of " + tag_name;
 		}	else if(control.match(".remove")) {
@@ -181,11 +188,11 @@ function show_tag_tooltip(tag, tag_name) {
   tag = $(tag);
 	var tag_tooltip = "";
 	
-	if (tag.match('.user_tagging.negative_tagging')) {
+	if (tag.match('.negative')) {
 		tag_tooltip = "Negative training example for Winnow";
-	} else if (tag.match('.tagged.user_tagging')) {
+	} else if (tag.match('.positive')) {
 		tag_tooltip = "Positive training example for Winnow";
-	} else if (tag.match('.tagged.bayes_classifier_tagging')) {
+	} else if (tag.match('.classifier')) {
 		tag_tooltip = "Winnow figured this item fit your examples";
 	} else {
 		tag_tooltip = "Click if this is a very good example of " + tag_name;
