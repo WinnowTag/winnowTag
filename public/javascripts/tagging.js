@@ -48,8 +48,6 @@ function add_tag(taggable_id, tag_name, allow_remove) {
 
 	if (!tag_control) {
 		add_tag_control(taggable_id, tag_name);
-	} else if (tag_control.match('.classifier')) {
-		tag_control.addClassName('positive'); 
 	} else if (tag_control.match('.negative')) {
 		tag_control.removeClassName('negative');
 		tag_control.addClassName('positive');
@@ -59,6 +57,8 @@ function add_tag(taggable_id, tag_name, allow_remove) {
 		if(!tag_control.match('.classifier')) {
 	    remove_tag_control(taggable_id, tag_name); 
 		}
+	} else if (tag_control.match('.classifier')) {
+		tag_control.addClassName('positive'); 
 	} else {
 		console.log("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
 	}
@@ -77,9 +77,7 @@ function remove_tag(taggable_id, tag_name) {
 	parameters["tagging[strength]"] = "0";
 	
 
-	if (tag_control.match('.classifier')) {
-		tag_control.addClassName('negative'); 
-	} else if (tag_control.match('.positive')) {
+	if (tag_control.match('.positive')) {
 		tag_control.removeClassName('positive');
 		tag_control.addClassName('negative');
 	} else if (tag_control.match('.negative')) {
@@ -88,6 +86,8 @@ function remove_tag(taggable_id, tag_name) {
 		if(!tag_control.match('.classifier')) {
 	    remove_tag_control(taggable_id, tag_name); 
 		}
+	} else if (tag_control.match('.classifier')) {
+		tag_control.addClassName('negative'); 
 	} else {
 		console.log("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
 	}
