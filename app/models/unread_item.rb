@@ -11,4 +11,9 @@ class UnreadItem < ActiveRecord::Base
   validates_presence_of :user
   validates_presence_of :feed_item
   validates_uniqueness_of :user_id, :scope => :feed_item_id
+  
+  def self.delete_orphans
+    connection.execute "delete from unread_items where user_id NOT IN (select id from users)"
+    connection.execute "delete from unread_items where feed_item_id NOT IN (select id from feed_items)"
+  end
 end
