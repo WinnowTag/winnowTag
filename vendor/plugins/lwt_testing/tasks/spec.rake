@@ -9,4 +9,16 @@ namespace :spec do
     t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
     t.spec_files = FileList["spec/selenium/**/*_spec.rb"]
   end
+  
+  namespace :selenium do
+    namespace :server do
+      task :start => :environment do
+        Selenium::Server.connect!
+      end
+      
+      task :stop => :environment do
+        Selenium::Server.disconnect!
+      end
+    end
+  end
 end
