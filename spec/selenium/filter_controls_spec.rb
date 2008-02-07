@@ -42,25 +42,25 @@ describe "filter controls" do
     # end
   end
   
-  describe "tags" do
-    before(:each) do
-      @rails_tag = Tag.create! :user => @user, :name => "rails"
-    end
-    
-    after(:each) do
-      @rails_tag.destroy
-    end
-    
-    it "is not selected by default" do
-      dont_see_element "#show_all.selected"
-    end
-    
-    it "is selected when clicked" do
-      click "css=#show_all.selected"
-      see_element "#show_all.selected"
-      
-      click "css=#show_all.selected"
-      dont_see_element "#show_all.selected"
-    end
-  end
+  # describe "tags" do
+  #   before(:each) do
+  #     @rails_tag = Tag.create! :user => @user, :name => "rails"
+  #   end
+  #   
+  #   after(:each) do
+  #     @rails_tag.destroy
+  #   end
+  #   
+  #   it "is not selected by default" do
+  #     dont_see_element "#show_all.selected"
+  #   end
+  #   
+  #   it "is selected when clicked" do
+  #     click "css=#show_all.selected"
+  #     see_element "#show_all.selected"
+  #     
+  #     click "css=#show_all.selected"
+  #     dont_see_element "#show_all.selected"
+  #   end
+  # end
 end
