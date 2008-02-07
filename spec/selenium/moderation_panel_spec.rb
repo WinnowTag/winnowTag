@@ -7,7 +7,7 @@ describe "moderation panel" do
     Tagging.delete_all
     Tag.delete_all
     
-    Tag.create! :user_id => 1, :name => "existing tag"
+    @existing_tag = Tag.create! :user_id => 1, :name => "existing tag"
     
     login
     open feed_items_path
@@ -41,5 +41,47 @@ describe "moderation panel" do
     see_element "#tag_controls_feed_item_4 li.positive"
     get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
     get_text("open_tags_feed_item_4").should =~ /existing tag/
+  end
+  
+  it "can change a positive tagging to a negative tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .positive"
+    dont_see_element "#open_tags_feed_item_4 .negative"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    
+    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "#open_tags_feed_item_4 .positive"
+    see_element "#open_tags_feed_item_4 .negative"
+  end
+  
+  it "can change a negative tagging to a positive tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .negative"
+    dont_see_element "#open_tags_feed_item_4 .positive"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    
+    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "#open_tags_feed_item_4 .negative"
+    see_element "#open_tags_feed_item_4 .positive"
   end
 end
