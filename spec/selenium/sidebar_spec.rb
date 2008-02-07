@@ -17,6 +17,9 @@ describe "sidebar" do
 
     click "sidebar_control"
     assert_not_visible "sidebar"
+    
+    click "sidebar_control"
+    assert_visible "sidebar"
   end
   
   it "opens when the control bar is clicked" do
@@ -34,6 +37,9 @@ describe "sidebar" do
     refresh_and_wait
     
     assert_not_visible "sidebar"
+    
+    click "sidebar_control"
+    assert_visible "sidebar"
   end
 
   it "remembers the sidebar is open when the page is refreshed" do
