@@ -128,4 +128,84 @@ describe "moderation panel" do
     see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
     see_element "#open_tags_feed_item_4 .negative"
   end
+  
+  it "can change a positive tagging to a classifier tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .positive"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .classifier"
+  end
+  
+  it "can change a negative tagging to a classifier tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .negative"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .classifier"
+  end
+  
+  it "can change a positive tagging to a nothing tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .positive"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    wait_for_ajax
+    wait_for_effects
+    
+    dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+    get_text("css=#open_tags_feed_item_4").should =~ /no tags/
+  end
+  
+  it "can change a negative tagging to a nothing tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .negative"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    wait_for_ajax
+    wait_for_effects
+    
+    dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+    get_text("css=#open_tags_feed_item_4").should =~ /no tags/
+  end
 end
