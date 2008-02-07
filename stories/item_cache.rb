@@ -71,6 +71,14 @@ steps_for(:item_cache) do
     delete item_cache_feed_item_url(FeedItem.find(@item_id)), 'Accept' => 'application/atom+xml'
   end
   
+  When("I submit invalid atom for an? $thing") do |thing|
+    url = case thing
+      when 'feed' then item_cache_feeds_url
+      when 'item' then item_cache_feed_feed_items_url(Feed.find(@feed_id))
+    end
+    post url, "<?xml version='1.0' ?>\n<entry>bad&nbsp;entry</entry>\n", 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
+  end
+  
   Then("there is $n new feeds? in the system") do |n|
     Feed.count.should == (@feed_count + n.to_i)
   end
@@ -95,6 +103,11 @@ steps_for(:item_cache) do
     User.find(:all).each do |u|
       u.should_not be_has_read_item(FeedItem.find(@item_id))
     end
+  end
+  
+  Then("the system should return a 400 error") do
+    response.should_not be_nil
+    response.code.should == "400"
   end
 end
 

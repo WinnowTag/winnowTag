@@ -8,7 +8,7 @@
 module ItemCache
   class FeedItemsController < ApplicationController
     skip_before_filter :login_required
-    before_filter :login_required_unless_local
+    before_filter :login_required_unless_local, :check_atom
     
     def create
       respond_to do |wants|
