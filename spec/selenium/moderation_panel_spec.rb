@@ -57,6 +57,7 @@ describe "moderation panel" do
     dont_see_element "#open_tags_feed_item_4 .negative"
     
     click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    wait_for_ajax
     
     dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -78,10 +79,53 @@ describe "moderation panel" do
     dont_see_element "#open_tags_feed_item_4 .positive"
     
     click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    wait_for_ajax
     
     dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
     see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     dont_see_element "#open_tags_feed_item_4 .negative"
     see_element "#open_tags_feed_item_4 .positive"
+  end
+  
+  it "can change a classifier tagging to a positive tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .classifier"
+    dont_see_element "#open_tags_feed_item_4 .positive"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .positive"
+  end
+  
+  it "can change a classifier tagging to a negative tagging" do
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
+
+    open feed_items_path
+    wait_for_ajax
+    click "open_tags_feed_item_4"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .classifier"
+    dont_see_element "#open_tags_feed_item_4 .negative"
+    
+    click  "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    wait_for_ajax
+    
+    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#open_tags_feed_item_4 .negative"
   end
 end
