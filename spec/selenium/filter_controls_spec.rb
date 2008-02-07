@@ -27,6 +27,13 @@ describe "filter controls" do
       
       click "css=#folder_feeds .header"
       assert_visible "css=#folder_feeds .filter_list"
+      
+      
+      click "css=#folder_tags .header"
+      assert_not_visible "css=#folder_tags .filter_list"
+      
+      click "css=#folder_feeds .header"
+      assert_not_visible "css=#folder_feeds .filter_list"
     end
     
     # it "is gray when ..." do
@@ -51,6 +58,9 @@ describe "filter controls" do
     it "is selected when clicked" do
       click "css=#show_all.selected"
       see_element "#show_all.selected"
+      
+      click "css=#show_all.selected"
+      dont_see_element "#show_all.selected"
     end
   end
 end
