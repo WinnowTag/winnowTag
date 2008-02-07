@@ -141,7 +141,7 @@ describe FeedItemsHelper do
     assert_select('li#unused_tag_control_for_tag_on_feed_item_1', false, @response.body)
   end
 
-  # TODO: Update this
+  # TODO: Determine if this should be displayed
   # def test_dont_display_tags_below_threshold
   #   feed_item = FeedItem.find(1)
   #   Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
