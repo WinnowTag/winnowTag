@@ -5,8 +5,17 @@ describe "folders" do
   
   before(:each) do
     Folder.delete_all
+    Feed.delete_all
+    FeedSubscription.delete_all
     
     @existing_folder = Folder.create! :user_id => 1, :name => "existing folder"
+    @example_feed = Feed.new :title => "Example Feed", :via => "http://example.com/atom"
+    @example_feed.id = 1
+    @example_feed.save!
+    @another_example_feed = Feed.new :title => "Another Example Feed", :via => "http://another.example.com/atom"
+    @another_example_feed.id = 2
+    @another_example_feed.save!
+    FeedSubscription.create! :feed_id => @another_example_feed.id, :user_id => 1
     
     login
     open feed_items_path
@@ -37,10 +46,32 @@ describe "folders" do
     wait_for_ajax
     
     dont_see_element "#folder_#{@existing_folder.id}"
+  end  
+  
+  # it "can have feeds added" do
+  #   assert_not_visible "add_feed"
+  # 
+  #   click "add_feed_link"
+  #   assert_visible "add_feed"
+  #   
+  #   dont_see_element "#feed_#{@example_feed.id}"
+  #   
+  #   type "feed_title", @example_feed.title
+  #   wait_for_ajax
+  #   hit_enter "feed_title"
+  #   wait_for_ajax
+  #   
+  #   see_element "#feed_#{@example_feed.id}"
+  # end
+  
+  it "can have feeds removed" do
+    see_element "#feed_#{@another_example_feed.id}"
+    
+    click "css=#feed_#{@another_example_feed.id} .show_feed_control .remove"
+    
+    dont_see_element "#feed_#{@another_example_feed.id}"
   end
   
-  it "can have feeds added"
-  it "can have feeds removed"
   it "can have private tags added"
   it "can have private tags removed"
   it "can have public tags added"
