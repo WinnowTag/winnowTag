@@ -49,6 +49,14 @@ module CustomSeleniumHelpers
   def assert_element_enabled(selector)
     dont_see_element("#{selector}[disabled]")
   end
+  
+  def hit_enter(locator)
+    key_press locator, '\13'
+  end
+  
+  def wait_for_ajax(timeout = 30000)
+    wait_for_condition "window.Ajax.activeRequestCount == 0", timeout
+  end
 end
 
 Spec::Runner.configure do |config|
