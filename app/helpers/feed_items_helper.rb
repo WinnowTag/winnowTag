@@ -102,7 +102,7 @@ module FeedItemsHelper
     if show_manual_taggings?
       tags = taggable.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
     else
-      tags = taggable.taggings_by_user(current_user, :all_taggings => false)
+      tags = taggable.taggings_by_user(current_user, :all_taggings => true)
     end
     
     tag_display = tags.collect do |tag, taggings|
@@ -117,7 +117,7 @@ module FeedItemsHelper
       if show_manual_taggings?
         more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
-        more_tags = taggable.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+        more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => subscribed_tags)
       end
             
       tag_display += more_tags.collect do |tag, taggings|
@@ -154,10 +154,8 @@ module FeedItemsHelper
 
     html = ""
     tags.each do |tag, taggings|
-      taggings.delete_if(&:negative?) unless show_manual_taggings?
       content = content_tag("span", h(tag.name), :class => "name")
       content << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
-      content << content_tag("span", nil, :class => "user")
       content << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}');", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
       classes = classes_for_taggings(taggings).join(' ')
       unless classes.blank?
@@ -172,7 +170,7 @@ module FeedItemsHelper
       if show_manual_taggings?
         more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
-        more_tags = feed_item.taggings_by_user(user, :all_taggings => false, :tags => subscribed_tags)
+        more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => subscribed_tags)
       end
       more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
@@ -224,35 +222,26 @@ module FeedItemsHelper
 	  taggings = Array(taggings)
     
     if taggings.size == 1 and tagging = taggings.first
-      classes << tagging_type_class(tagging)      
-      classes << "borderline" if tagging.borderline?
-      
-      if tagging.positive? or tagging.borderline?
-        classes << "tagged"
-      elsif !tagging.classifier_tagging?
-        classes << "negative_tagging"
-      else
-        # revert to 'untagged' since we don't display negative taggings for classifiers
-        classes = []
+      if tagging.classifier_tagging?
+        classes << "classifier"
+        if tagging.borderline?
+          classes << "borderline"
+        end
+      elsif tagging.positive?
+        classes << "positive"
+      elsif tagging.negative?
+        classes << "negative"
       end
     elsif taggings.size > 1
       classes += classes_for_taggings(taggings.first)
-      
-      # Add untagged classes for the remaining taggings
       taggings.last(taggings.size - 1).each do |tagging|
-        classes << tagging_type_class(tagging)
+        if tagging.classifier_tagging?
+          classes << "classifier"
+        end
       end
     end
     
     classes.uniq
-  end
-
-  def tagging_type_class(tagging)
-    if tagging.classifier_tagging?
-      "bayes_classifier_tagging"
-    else
-      "user_tagging"
-    end
   end
 
   def link_to_feed_item(feed_item)

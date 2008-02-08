@@ -26,8 +26,12 @@ class ApplicationController < ActionController::Base
                  'sure you have Javascript enabled too! ', 
         :status => 400
       } unless defined?(MISSING_PARAMS)
-      
+
 protected
+  def check_atom
+    render(:text => params[:atom_error].message, :status => 400) if params[:atom_error]
+  end
+  
   def local_request?
     ["216.176.191.98", "127.0.0.1"].include?(request.remote_ip)
   end

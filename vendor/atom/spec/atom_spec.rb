@@ -966,6 +966,12 @@ describe Atom do
       other = Atom::Entry.load_entry(@entry.to_xml)
       @entry.should == other
     end
+    
+    it "should properly escape titles" do
+      @entry.title = "Breaking&nbsp;Space"
+      other = Atom::Entry.load_entry(@entry.to_xml)
+      @entry.should == other
+    end
   end
   
   describe 'Atom::Feed initializer' do
@@ -995,6 +1001,12 @@ describe Atom do
           throw :yielded
         end
       end.should throw_symbol(:yielded)
+    end
+  end
+  
+  describe Atom::Content::Html do
+    it "should escape ampersands in entities" do
+      Atom::Content::Html.new("&nbsp;").to_xml.to_s.should == "<content type=\"html\">&amp;nbsp;</content>"
     end
   end
 end

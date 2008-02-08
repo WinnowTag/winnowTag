@@ -10,7 +10,6 @@ describe "FeedItemsTest" do
     delete_cookie "show_sidebar", "/"
     login
     open feed_items_path
-    sleep(3)
   end
 
   def test_mark_read_unread

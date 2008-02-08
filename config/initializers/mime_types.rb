@@ -5,5 +5,9 @@
 # Mime::Type.register_alias "text/html", :iphone
 
 ActionController::Base.param_parsers[Mime::Type.lookup("application/atom+xml")] = Proc.new do |body| 
-  { :atom => Atom::Entry.load_entry(body) } 
+  begin
+    { :atom => Atom::Entry.load_entry(body) } 
+  rescue Atom::ParseError => ape
+    { :atom_error => ape }
+  end
 end

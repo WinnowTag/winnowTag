@@ -1,11 +1,11 @@
 <div class="section">
   <h4>
     Add
-    <%= link_to_function "Folder", "$$('.add_section').invoke('hide'); $('add_folder').show(); $('folder_name').focus()" %>
+    <%= link_to_function "Folder", "$$('.add_section').invoke('hide'); $('add_folder').show(); $('folder_name').focus()", :id => "add_folder_link" %>
     or
-    <%= link_to_function "Feed", "$$('.add_section').invoke('hide'); $('add_feed').show(); $('feed_title').focus()" %>
+    <%= link_to_function "Feed", "$$('.add_section').invoke('hide'); $('add_feed').show(); $('feed_title').focus()", :id => "add_feed_link" %>
     or
-    <%= link_to_function "Tag", "$$('.add_section').invoke('hide'); $('add_tag').show(); $('tag_name').focus()" %>
+    <%= link_to_function "Tag", "$$('.add_section').invoke('hide'); $('add_tag').show(); $('tag_name').focus()", :id => "add_tag_link" %>
   </h4>
   
   <div id="add_folder" class="add_section" style="display: none">

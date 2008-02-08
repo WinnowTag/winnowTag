@@ -75,4 +75,15 @@ Story: Item Cache Access
 
     Then there is 0 new items in the system
     And the item has been updated
-    
+  
+  Scenario: Sending invalid atom as an item
+  
+    Given a feed in the system
+    When I submit invalid atom for an item
+    Then the system should return a 400 error
+  
+  Scenario: Sending invalid atom as a feed
+
+    When I submit invalid atom for a feed
+    Then the system should return a 400 error
+  
