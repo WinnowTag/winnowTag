@@ -9,6 +9,10 @@
 # feed creation requests on to the collector using Remote::Feed.
 #
 class FeedsController < ApplicationController
+  FEED_NOT_FOUND = "We couldn't find this feed in any of our databases.  Maybe it has been deleted or " +
+                   "never existed.  If you think this is an error, please contact us." unless defined?(FEED_NOT_FOUND)
+  COLLECTOR_DOWN = "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. " +
+                   "We are aware of this problem and will fix it soon. Please try again later." unless defined?(COLLECTOR_DOWN)
   include CollectionJobResultsHelper
   include ActionView::Helpers::TextHelper
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
@@ -58,10 +62,30 @@ class FeedsController < ApplicationController
     end
   end
   
+  # First we try and find the feed in the local item cache.
+  # If that fails we try and fetch it from the collector.
+  #
+  # If both of those fail, report a nice error message.
+  #
   def show
-    @feed = Feed.find(params[:id])
-    if @feed.duplicate
-      redirect_to feed_url(@feed.duplicate)
+    begin
+      @feed = Feed.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      begin
+        @feed = Remote::Feed.find(params[:id])
+      rescue Errno::ECONNREFUSED
+        flash[:error] = COLLECTOR_DOWN
+        render :action => 'error', :status => '503'
+      rescue ActiveResource::ResourceNotFound
+        flash[:error] = FEED_NOT_FOUND
+        render :action => 'error', :status => '404'
+      rescue ActiveResource::Redirection => redirect
+        if id = redirect.response['Location'][/\/([^\/]*?)(\.\w+)?$/, 1]
+          redirect_to :id => id
+        else
+          raise ActiveRecord::RecordNotFound
+        end
+      end        
     end
   end  
 

@@ -17,7 +17,7 @@
     Event.observe(window, 'resize', resizeContent);
 	</script>
 </head>
-<body id="<%= controller_name %>_controller">
+<body id="<%= controller.controller_name %>_controller">
 	<%= render :partial => 'layouts/navbar' %>
 	<div id="header_controls">
 	  <% if page_controls = yield(:page_controls) -%>

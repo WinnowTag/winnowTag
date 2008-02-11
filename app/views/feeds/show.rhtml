@@ -4,7 +4,7 @@
 		<td>
 		  <%= link_to("Feed Home", @feed.alternate, :class => "home_icon replace", :style => 'float: right') if @feed.alternate %>
 		  <%= link_to("Feed", @feed.via, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
-		  <%= @feed.title %>
+		  <%= @feed.title.blank? ? @feed.via : @feed.title  %>
 		</td>		
 	</tr>
 	<tr>
@@ -13,7 +13,7 @@
 	</tr>
 	<tr>
 	  <th>Number of Items</th>
-		<td><span class="item_count"><%= @feed.feed_items.size %></span></td>
+		<td><span class="item_count"><%= @feed.feed_items_count %></span></td>
 	</tr>
 	<tr>
 	  <th>Last Collected</th>

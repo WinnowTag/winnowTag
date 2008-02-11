@@ -24,12 +24,56 @@ describe FeedsController do
     assigns[:feeds].should == @feeds
   end
   
-  it "should assign feed on show" do
-    feed = mock('feed_1')
-    feed.stub!(:duplicate)
-    Feed.should_receive(:find).with("1").and_return(feed)
-    get 'show', :id => 1
-    assigns[:feed].should == feed
+  describe "#show" do
+    it "should assign feed on show" do
+      feed = mock('feed_1')
+      Feed.should_receive(:find).with("12").and_return(feed)
+      get 'show', :id => "12"
+      assigns[:feed].should == feed
+      response.should be_success
+    end
+  
+    it "should try the collector if it can't find the feed locally" do
+      Feed.should_receive(:find).with("12").and_raise(ActiveRecord::RecordNotFound)
+      feed = mock('feed_1')
+      Remote::Feed.should_receive(:find).with("12").and_return(feed)    
+      get 'show', :id => "12"
+      assigns[:feed].should == feed
+      response.should be_success
+    end
+  
+    it "should redirect if collector raises a redirection" do
+      Feed.should_receive(:find).with("1").and_raise(ActiveRecord::RecordNotFound)
+      collector_response = mock('response', :null_object => true)
+      collector_response.stub!(:[]).with('Location').and_return('http://collector/feeds/1234')
+      redirection = ActiveResource::Redirection.new(collector_response)
+      Remote::Feed.should_receive(:find).with("1").and_raise(redirection)
+    
+      get 'show', :id => 1
+      response.should redirect_to(feed_url(:id => '1234'))
+    end
+    
+    it "should render 404 if we can't find the feed locally and it can't be found in the collector" do
+      Feed.should_receive(:find).with("12").and_raise(ActiveRecord::RecordNotFound)
+      Remote::Feed.should_receive(:find).with("12").and_raise(ActiveResource::ResourceNotFound.new(mock('response', :null_object => true)))
+      
+      get 'show', :id => 12
+      flash[:error].should == "We couldn't find this feed in any of our databases.  Maybe it has been deleted or " +
+                              "never existed.  If you think this is an error, please contact us."
+      response.code.should == "404"
+      response.should render_template('feeds/error')
+    end
+    
+    it "should render 503 with nice message if we can't find it and the collector is down" do
+      Feed.should_receive(:find).with("12").and_raise(ActiveRecord::RecordNotFound)
+      Remote::Feed.should_receive(:find).with("12").and_raise(Errno::ECONNREFUSED)
+      
+      get 'show', :id => 12
+      flash[:error].should == "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. " +
+                              "We are aware of this problem and will fix it soon. Please try again later."
+      response.code.should == "503"
+      response.should render_template('feeds/error')
+    end
   end
   
   it "should provide blank url on new" do

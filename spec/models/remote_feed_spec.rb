@@ -43,6 +43,24 @@ describe Remote::Feed do
     assert_equal "http://localhost/callback", job.callback_url
   end
   
+  it "should map alternate to link" do
+    ActiveResource::HttpMock.respond_to do |http|
+      http.get  "/feeds/23.xml", {}, {:url => 'http://example.com', :link => 'http://example.com/html'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
+    end
+    
+    feed = Remote::Feed.find("23")
+    feed.alternate.should == 'http://example.com/html'
+  end
+  
+  it "should map via to url" do
+    ActiveResource::HttpMock.respond_to do |http|
+      http.get  "/feeds/23.xml", {}, {:url => 'http://example.com', :link => 'http://example.com/html'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
+    end
+    
+    feed = Remote::Feed.find("23")
+    feed.via.should == 'http://example.com'
+  end
+  
   def test_find_or_create_by_url
     ActiveResource::HttpMock.respond_to do |http|
       http.post  "/feeds.xml", {}, {:url => 'http://example.com'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
