@@ -153,6 +153,19 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
+  # Destroy feed items older that +since+.
+  #
+  # You could do this in the one SQL statement, however using ActiveRecord,
+  # while taking slightly longer, will break this up into multiple transactions
+  # and reduce the chance of getting a deadlock with a long transaction.
+  #
+  def self.archive_items(since = 30.days.ago.getutc)
+    conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
+    FeedItem.find(:all, :conditions => conditions).each do |item|
+      item.destroy
+    end
+  end
+  
   # Gets a count of the number of items that meet conditions applied by the filters.
   #
   # See options_for_filters.

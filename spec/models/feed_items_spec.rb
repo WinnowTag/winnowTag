@@ -6,6 +6,8 @@
 #
 require File.dirname(__FILE__) + '/../spec_helper'
 
+require 'tag'
+
 shared_examples_for "FeedItem update attributes from atom" do
   it "should set the title" do
     @item.title.should == @atom.title
@@ -250,6 +252,39 @@ describe FeedItem do
       it "should set the collector link to nil" do
         @item.collector_link.should be_nil
       end
+    end
+  end
+  
+  describe '.archive' do
+    before(:each) do
+      @before_count = FeedItem.count
+    end
+    
+    it "should delete items older than the parameter" do
+      item = valid_feed_item!(:updated => 10.days.ago.getutc)
+      FeedItem.archive_items(9.days.ago)
+      lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
+      FeedItem.count.should == @before_count
+    end
+    
+    it "should delete items older than 30 days by default" do
+      older = valid_feed_item!(:updated => 31.days.ago.getutc, :content => FeedItemContent.new(:content => 'this is content'))
+      newer = valid_feed_item!(:updated => 30.days.ago.getutc)
+      FeedItem.archive_items
+      lambda { older.reload }.should raise_error(ActiveRecord::RecordNotFound)
+      lambda { newer.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+      FeedItem.count.should == (@before_count + 1)
+    end
+    
+    it "should exclude items with taggings" do
+      item = valid_feed_item!(:updated => 31.days.ago.getutc)
+      user = User.find(1)
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      Tagging.create!(:tag => tag, :feed_item => item, :user => user)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+      FeedItem.count.should == (@before_count + 1)
     end
   end
   
