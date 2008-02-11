@@ -88,6 +88,7 @@ class Tagging < ActiveRecord::Base
   
   before_create :remove_preexisting_tagging
   after_create :update_tag_timestamp
+  before_destroy :update_tag_timestamp
   after_destroy do |tagging|
     DeletedTagging.create(tagging.attributes.merge(:deleted_at => Time.now.utc))
   end
