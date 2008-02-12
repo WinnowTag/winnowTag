@@ -10,7 +10,7 @@ module Remote
     begin
       self.site = File.read(File.join(RAILS_ROOT, 'config', 'collector.conf'))
     rescue
-      self.site = "http://collector.wizztag.org"
+      self.site = "http://collector.mindloom.org"
     end
     
     def self.with_redirect(limit = 5)      
