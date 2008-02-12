@@ -22,7 +22,6 @@ ActionController::Routing::Routes.draw do |map|
                   :unsubscribe => :put
                 },
                 :collection => {
-                  :all => :get,
                   :auto_complete_for_feed_title => :any,
                   :import => :any
                 }

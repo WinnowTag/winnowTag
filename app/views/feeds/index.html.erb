@@ -1,17 +1,11 @@
 <% @skip_content_container = true %>
 <% content_for :header_controls do -%>
-  <% form_tag(all_feeds_path, :method => :get) do -%>
-	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{all_feeds_path}';" } %>
+  <% form_tag(feeds_path, :method => :get) do -%>
+	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{feeds_path}';" } %>
   <% end -%>
 <% end -%>
 
-<% content_for :page_controls do -%>
-  <ul class="control_bar">
-    <li><%= link_to "Add Feed", new_feed_url %></li>
-    <li><%= link_to "Import OPML", import_feeds_url %></li>
-    <li><%= will_paginate(@feeds) %></li>
-  </ul>
-<% end -%>
+<%= render_partial 'page_controls' %>
 
 <table class="data_table recordset">
   <thead>

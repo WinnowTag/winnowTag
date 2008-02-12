@@ -17,7 +17,7 @@ describe '/feeds/show' do
     @user = User.find(1)
     User.should_receive(:find_by_id).with(1).and_return(@user)
     
-    @feed = mock_model_with_dom_id(Feed, valid_feed_attributes(:created_on => Time.now))
+    @feed = mock_model_with_dom_id(Feed, valid_feed_attributes(:created_on => Time.now, :feed_items_count => 23))
     @feed_items = mock('feed_items')
     @feed_items.stub!(:size).and_return(23)
     @feed.stub!(:feed_items).and_return(@feed_items)

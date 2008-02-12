@@ -9,7 +9,7 @@ module ApplicationHelper
   
   # Permit methods in the ApplicationController to be called from views.
   def method_missing(method, *args, &block)
-    if ApplicationController.instance_methods.include? method.to_s
+    if ApplicationController.instance_methods.include?(method.to_s) && defined?(controller)
       controller.send(method, *args, &block)
     else
       super
@@ -194,6 +194,8 @@ module ApplicationHelper
       globally_exclude_tag_path(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
       globally_exclude_feed_path(tag_or_feed)
+    elsif tag_or_feed.is_a?(Remote::Feed)
+      globally_exclude_feed_path(:id => tag_or_feed.id)
     end
     
     check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1",current_user.globally_excluded?(tag_or_feed), 

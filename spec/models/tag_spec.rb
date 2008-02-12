@@ -82,6 +82,20 @@ describe Tag do
       tag.reload
       tag.updated_on.should > updated_on
     end
+    
+    it "should update it's timestamp when a tag is deleted" do
+      user = User.create! valid_user_attributes
+      feed_item = valid_feed_item!
+    
+      tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "No this tag is the best tag in the world")
+      tagging = Tagging.create! :tag_id => tag.id, :user_id => user.id, :feed_item_id => feed_item.id, :strength => 1    
+      tag.reload
+      updated_on = tag.updated_on
+      sleep(1)
+      tagging.destroy
+      tag.reload
+      tag.updated_on.should > updated_on      
+    end
   
     it "should delete classifier taggings" do
       user = User.create! valid_user_attributes

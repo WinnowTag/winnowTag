@@ -7,7 +7,7 @@
 
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/feeds/all' do
+describe '/feeds/index' do
   before(:each) do
     login_as(1)
     @user = User.find(1)
@@ -19,7 +19,7 @@ describe '/feeds/all' do
   end
   
   it "should show table" do
-    render '/feeds/all'
+    render '/feeds/index'
     response.should have_tag("table")
   end
 end

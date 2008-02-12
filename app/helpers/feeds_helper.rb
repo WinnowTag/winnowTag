@@ -11,7 +11,7 @@ module FeedsHelper
     feed_home_link = feed.alternate ? 
                         link_to("Feed Home", feed.alternate, :class => "home_icon replace") : 
                         content_tag('span', '', :class => 'blank_icon replace')
-    feed_page_link = link_to((feed.title.blank? ? feed.via : feed.title), feed_path(feed))
+    feed_page_link = link_to((feed.title.blank? ? feed.via : feed.title), feed_path(feed), :id => "link_to_feed_#{feed.id}")
     
     feed_link + ' ' + feed_home_link + ' ' + feed_page_link
   end

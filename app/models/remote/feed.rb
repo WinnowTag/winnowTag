@@ -28,6 +28,10 @@ module Remote
      
     def collect(options = {})
       Remote::CollectionJob.create(options.merge(:feed_id => self.id))
-    end    
+    end  
+    
+    # some handy functions that map the collectors schema into the atom'ish schema used by Winnow
+    def alternate; self.link; end
+    def via;       self.url;  end
   end
 end
