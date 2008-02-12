@@ -210,18 +210,12 @@ module ApplicationHelper
     content_tag :ul, feeds.map { |feed| feed_filter_control(feed, options) }.join, options.delete(:ul_options) || {}
   end
   
-  def feed_filter_control(feed, options = {})
-    unread_item_count = current_user.unread_items.for(feed).size
-    if true or unread_item_count.zero?
-      html = ""
-    else
-      html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items in this feed")
-    end
+  def feed_filter_control(feed, options = {})   
     url  =  case options[:remove]
       when :subscription then subscribe_feed_path(feed, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
-    html << link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    html = link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'})", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
     
     html =  content_tag(:div, html, :class => "show_feed_control")
@@ -239,12 +233,6 @@ module ApplicationHelper
   end
   
   def tag_filter_control(tag, options = {})
-    unread_item_count = current_user.unread_items.for(tag).size
-    if true or unread_item_count.zero?
-      html = ""
-    else
-      html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items with this tag")
-    end
     if options[:remove] == :subscription && current_user == tag.user
       options = options.except(:remove)
       options[:remove] = :sidebar
@@ -254,7 +242,7 @@ module ApplicationHelper
       when :sidebar      then sidebar_tag_path(tag, :sidebar => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
-    html << link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({tag_ids: '#{tag.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    html =  link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({tag_ids: '#{tag.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
     html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
