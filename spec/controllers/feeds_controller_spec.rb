@@ -95,7 +95,7 @@ describe FeedsController do
   end
   
   it "should create resource and then collect it " do    
-    feed = mock_model(Remote::Feed, :url => 'http://example.com')
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
     feed.errors.should_receive(:empty?).and_return(true)
     feed.should_receive(:collect)
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
@@ -104,6 +104,23 @@ describe FeedsController do
     
     post 'create', :feed => {:url => 'http://example.com'}
     response.should redirect_to(feed_path(feed))
+    flash[:notice].should == "Thanks for adding the feed from 'http://example.com'. " +
+                             "We will fetch the items soon and we'll let you know when it is done. " +
+                             "The feed has also been added to your feeds folder in the sidebar."
+  end
+  
+  it "should collect it a feed even if it already exists" do    
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now)
+    feed.errors.should_receive(:empty?).and_return(true)
+    feed.should_receive(:collect)
+    Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
+    
+    FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
+    
+    post 'create', :feed => {:url => 'http://example.com'}
+    response.should redirect_to(feed_path(feed))
+    flash[:notice].should == "We already have the feed from 'http://example.com', however we will update it now and we'll let you know when it is done. " +
+                             "The feed has also been added to your feeds folder in the sidebar."
   end
       
   it "should flash collection result" do
@@ -158,7 +175,7 @@ describe FeedsController do
   end
   
   it "should ignore duplicate subscription errors if the user attempts to add a feed more than once" do
-    feed = mock_model(Remote::Feed, :url => 'http://example.com')
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
     feed.errors.should_receive(:empty?).and_return(true)
     feed.should_receive(:collect)
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
