@@ -36,7 +36,7 @@ class FeedsController < ApplicationController
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
                                       
-      if @feed.updated_on.nil?
+      if !@feed.respond_to?(:updated_on) || @feed.updated_on.nil?
         flash[:notice] = "Thanks for adding the feed from '#{@feed.url}'. " + 
                          "We will fetch the items soon and we'll let you know when it is done. " +
                          "The feed has also been added to your feeds folder in the sidebar."
