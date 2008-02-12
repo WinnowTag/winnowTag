@@ -9,11 +9,17 @@ class CollectionJobResult < ActiveRecord::Base
   belongs_to :feed
   
   def feed_title
-    if feed
-      if feed.title.blank?
-        feed.url
+    the_feed = if self.feed
+      self.feed
+    else
+      Remote::Feed.find(self.feed_id) rescue nil        
+    end
+    
+    if the_feed
+      if the_feed.title.blank?
+        the_feed.via
       else
-        feed.title
+        the_feed.title
       end
     else
       "Unknown Feed"

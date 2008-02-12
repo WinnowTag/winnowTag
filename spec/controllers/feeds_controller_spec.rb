@@ -125,12 +125,12 @@ describe FeedsController do
       
   it "should flash collection result" do
     feed = mock_model(Feed, valid_feed_attributes(:feed_items => mock('feed_items', :size => 10)))
-    job = mock_model(CollectionJobResult, :message => "Message", :feed => feed, :failed? => false, :feed_title => feed.title)
+    job = mock_model(CollectionJobResult, :message => "Message", :feed_id => feed.id, :failed? => false, :feed_title => feed.title)
     job.should_receive(:update_attribute).with(:user_notified, true)
     @user.should_receive(:collection_job_result_to_display).and_return(job)
     
     get :all
-    flash[:notice].should == "The feed you requested '#{feed.title}' now has 10 items."
+    flash[:notice].should == "We have finished fetching new items for '#{feed.title}'."
   end
   
   it "should flash failed collection result" do

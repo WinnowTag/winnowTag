@@ -21,17 +21,24 @@ describe CollectionJobResult do
     end
     
     it "displays the feeds url if the feed has no title but has a url" do 
-      feed = mock_model(Feed, :title => nil, :url => "http://feed.example.com")
+      feed = mock_model(Feed, :title => nil, :via => "http://feed.example.com")
       collection_job_result = CollectionJobResult.new
       collection_job_result.stub!(:feed).and_return(feed)
-      collection_job_result.feed_title.should == feed.url
+      collection_job_result.feed_title.should == feed.via
     end
     
     it "displays the feeds url if the feed has a blank title but has a url" do 
-      feed = mock_model(Feed, :title => "", :url => "http://feed.example.com")
+      feed = mock_model(Feed, :title => "", :via => "http://feed.example.com")
       collection_job_result = CollectionJobResult.new
       collection_job_result.stub!(:feed).and_return(feed)
-      collection_job_result.feed_title.should == feed.url
+      collection_job_result.feed_title.should == feed.via
+    end
+    
+    it "tries to get the resource from the collector if it can't find the feed" do
+      feed = mock_model(Remote::Feed, :title => "Remote Feed Title", :via => "http://feed.example.com")
+      Remote::Feed.should_receive(:find).with(55).and_return(feed)
+      collection_job_result = CollectionJobResult.new(:feed_id => 55)
+      collection_job_result.feed_title.should == feed.title
     end
   end
 end
