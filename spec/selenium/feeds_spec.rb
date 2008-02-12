@@ -5,7 +5,7 @@ describe "/feeds" do
   
   before(:each) do
     login
-    open all_feeds_path
+    open feeds_path
   end    
   
   it "should have an 'Add Feed' link on index" do

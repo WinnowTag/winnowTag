@@ -18,7 +18,7 @@ class FeedsController < ApplicationController
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :flash_collection_job_result
   
-  def all
+  def index
     setup_sortable_columns
     @search_term = params[:search_term]
     @feeds = Feed.search :search_term => @search_term, :excluder => current_user, 

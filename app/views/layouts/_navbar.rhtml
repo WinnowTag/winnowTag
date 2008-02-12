@@ -11,7 +11,7 @@
       <li><%= link_to('Items', feed_items_path, :class => tab_selected('feed_items')) %></li>
   	  <li><%= link_to('My Tags', tags_path, :class => tab_selected('tags', 'index')) %></li>
   	  <li><%= link_to('Public Tags', public_tags_path, :class => tab_selected('tags', 'public')) %></li>
-      <li><%= link_to('Feeds', all_feeds_path, :class => tab_selected('feeds', 'all')) %></li>
+      <li><%= link_to('Feeds', feeds_path, :class => tab_selected('feeds', 'all')) %></li>
       <% if is_admin? -%>
         <li><%= link_to('Admin', admin_path, :class => tab_selected('admin')) %></li>
       <% end -%>

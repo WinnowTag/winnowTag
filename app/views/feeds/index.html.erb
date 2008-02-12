@@ -1,7 +1,7 @@
 <% @skip_content_container = true %>
 <% content_for :header_controls do -%>
-  <% form_tag(all_feeds_path, :method => :get) do -%>
-	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{all_feeds_path}';" } %>
+  <% form_tag(feeds_path, :method => :get) do -%>
+	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{feeds_path}';" } %>
   <% end -%>
 <% end -%>
 
