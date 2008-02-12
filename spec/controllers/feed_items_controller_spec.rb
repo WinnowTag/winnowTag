@@ -95,8 +95,7 @@ describe FeedItemsController do
   end
   
   def test_mark_read
-    users(:quentin).unread_items.create(:feed_item_id => 1)
-    assert_difference("UnreadItem.count", -1) do
+    assert_difference("ReadItem.count", 1) do
       login_as(:quentin)
       put :mark_read, :id => 1, :format => "js"
       assert_response :success
@@ -104,9 +103,9 @@ describe FeedItemsController do
   end
   
   def test_mark_many_read
-    users(:quentin).unread_items.create(:feed_item_id => 1)
-    users(:quentin).unread_items.create(:feed_item_id => 2)
-    assert_difference("UnreadItem.count", -2) do
+    users(:quentin).read_items.create(:feed_item_id => 1)
+    users(:quentin).read_items.create(:feed_item_id => 2)
+    assert_difference("ReadItem.count", 2) do
       login_as(:quentin)
       put :mark_read, :format => "js"
       assert_response :success
@@ -114,7 +113,8 @@ describe FeedItemsController do
   end
   
   def test_mark_unread
-    assert_difference("UnreadItem.count", 1) do
+    users(:quentin).read_items.create(:feed_item_id => 2)
+    assert_difference("ReadItem.count", -1) do
       login_as(:quentin)
       put :mark_unread, :id => 2, :format => "js"
       assert_response :success

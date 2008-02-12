@@ -91,7 +91,7 @@ class FeedItemsController < ApplicationController
   
   def mark_unread
     @feed_item = FeedItem.find(params[:id])
-    current_user.unread_items.create(:feed_item => @feed_item)
+    current_user.read_items.find(:all, :conditions => {:feed_item_id => @feed_item}).each {|ri| ri.destroy}
     render :nothing => true
   end
   

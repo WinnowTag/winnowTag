@@ -157,16 +157,16 @@ describe User do
       user.should have(1).error_on(:time_zone)
     end
   
-    def test_has_read_item_when_unread_item_entry_exists
+    def test_has_read_item_when_read_item_entry_doesnt_exist
       u = User.find(1)
       f = FeedItem.find(1)
-      u.unread_items.create(:feed_item => f)
       assert !u.has_read_item?(f)
     end
   
-    def test_is_item_unread_when_it_doesnt_exist
+    def test_is_item_unread_when_it_exists
       u = User.find(1)
       f = FeedItem.find(2)
+      u.read_items.create(:feed_item => f)
       assert u.has_read_item?(f)
     end
   

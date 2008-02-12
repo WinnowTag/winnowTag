@@ -58,7 +58,7 @@ class User < ActiveRecord::Base
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true]
   has_many :deleted_taggings, :dependent => :delete_all
-  has_many :unread_items, :dependent => :delete_all do
+  has_many :read_items, :dependent => :delete_all do
     def for(feed)
       find(:all, :joins => :feed_item, :conditions => { "feed_items.feed_id" => feed })
     end
@@ -127,9 +127,7 @@ class User < ActiveRecord::Base
   end
 
   def has_read_item?(feed_item)
-    !self.unread_items.exists?(['feed_item_id = ?', feed_item])
-    # REALLY SLOW when the user has a lot of unread items
-    # unread_items.detect { |unread_item| unread_item.feed_item_id == feed_item.id }    
+    self.read_items.exists?(['feed_item_id = ?', feed_item])
   end
     
   # Gets the number of items tagged by this tagger

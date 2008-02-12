@@ -4,8 +4,10 @@ describe "FeedItemsTest" do
   fixtures :users, :feed_items, :feeds
 
   before(:each) do
-    UnreadItem.delete_all
-    UnreadItem.create! :user_id => 1, :feed_item_id => 1
+    ReadItem.delete_all
+    ReadItem.create! :user_id => 1, :feed_item_id => 2
+    ReadItem.create! :user_id => 1, :feed_item_id => 3
+    ReadItem.create! :user_id => 1, :feed_item_id => 4
     
     delete_cookie "show_sidebar", "/"
     login

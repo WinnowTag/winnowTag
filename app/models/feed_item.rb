@@ -213,15 +213,15 @@ class FeedItem < ActiveRecord::Base
   def self.mark_read(filters)
     options_for_find = options_for_filters(filters)   
 
-    feed_item_ids_sql = "SELECT DISTINCT feed_items.id FROM feed_items"
+    feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, UTC_TIMESTAMP() FROM feed_items"
     feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
     feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
 
-    UnreadItem.delete_all(["user_id = ? AND feed_item_id IN (#{feed_item_ids_sql})", filters[:user]])
+    ReadItem.connection.execute "INSERT IGNORE INTO read_items (user_id, feed_item_id, created_at) #{feed_item_ids_sql}"
   end
   
   def self.mark_read_for(user_id, feed_item_id)
-    UnreadItem.delete_all(["user_id = ? AND feed_item_id = ?", user_id, feed_item_id])
+    ReadItem.create!(:user_id => user_id, :feed_item_id => feed_item_id)
   end
   
   # This builds the SQL to use for the find_with_filters and count_with_filters methods.
