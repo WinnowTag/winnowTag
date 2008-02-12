@@ -39,7 +39,7 @@ set :checkout, "checkout"
 if ENV['STAGE'] == 'beta'
   set :subdomain, 'beta'
   set :repository, 'http://svn.winnow.peerworks.org/tags/winnow_BETA'
-  set :domain, "mindloom.org"
+  set :domain, "winnow.mindloom.org"
   role :web, domain
   role :app, domain
   role :db,  domain, :primary => true
@@ -55,7 +55,7 @@ elsif ENV['STAGE'] =~ /^set[\d]$/ or %w(trunk alpha).include?(ENV['STAGE'])
   end
   
   set :subdomain, ENV['STAGE']
-  set :domain, "#{subdomain}.wizztag.org"
+  set :domain, "#{subdomain}.mindloom.org"
   role :web, domain
   role :app, domain
   role :db, domain, :primary => true
@@ -119,7 +119,7 @@ task :package_assets, :role => :web do
 end
 
 task :config_collector do
-  put("http://collector.wizztag.org", "#{shared_path}/collector.conf")
+  put("http://collector.mindloom.org", "#{shared_path}/collector.conf")
 end
 
 task :after_update_code do
