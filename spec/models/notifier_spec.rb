@@ -46,7 +46,7 @@ describe Notifier do
 
   describe "invite requested email" do
     before(:each) do
-      @invite = mock_model(Invite, :email => "user@example.com")
+      @invite = mock_model(Invite, :email => "user@example.com", :hear => "found in google", :use => "feed reader")
       @email = Notifier.create_invite_requested(@invite)
     end
 
@@ -60,6 +60,11 @@ describe Notifier do
     
     it "contains the invite email in the email body" do
       @email.body.should =~ /user@example.com/
+    end
+    
+    it "contains the questions in the email body" do
+      @email.body.should =~ /found in google/
+      @email.body.should =~ /feed reader/
     end
   end
 end

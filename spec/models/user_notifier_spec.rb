@@ -38,7 +38,7 @@ describe UserNotifier do
   
   describe "invite accepted email" do
     before(:each) do
-      @invite = mock_model(Invite, :email => "user@example.com", :code => "somecode")
+      @invite = mock_model(Invite, :email => "user@example.com", :code => "somecode", :subject => "Invitation Accepted", :body => "Thanks for joining!")
       @url = "http://winnow.example.com/account/login?invite=somecode"
       @email = UserNotifier.create_invite_accepted(@invite, @url)
     end
@@ -53,6 +53,10 @@ describe UserNotifier do
     
     it "contains the signup url in the email body" do
       @email.body.should =~ /#{Regexp.escape(@url)}/
+    end
+    
+    it "contains the custom body in the email body" do
+      @email.body.should =~ /Thanks for joining!/
     end
   end
 end
