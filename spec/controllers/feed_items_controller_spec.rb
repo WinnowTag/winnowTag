@@ -41,7 +41,7 @@ describe FeedItemsController do
     Tagging.create(:tag => Tag(user, 'tag1'), :user => user, :feed_item => fi, :strength => 0.8, :classifier_tagging => true)
     
     get :show, :id => 1, :format => "js"
-    assert_select("span#tag_control_for_tag1_on_feed_item_1.bayes_classifier_tagging.negative_tagging", false, @response.body)
+    assert_select("span#tag_control_for_tag1_on_feed_item_1.negative.classifier", false, @response.body)
   end
   
   it "/description" do

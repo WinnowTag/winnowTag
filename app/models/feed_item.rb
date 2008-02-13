@@ -291,35 +291,12 @@ class FeedItem < ActiveRecord::Base
   end
 
   def self.build_tag_inclusion_filter(tag, manual_taggings)
-    negative_condition = ""
-    if manual_taggings
-      negative_condition = "AND classifier_tagging = 0"
-    else
-      negative_condition = "AND strength >= 0.88 "                +
-                           "AND NOT EXISTS ("                     +
-                              "SELECT 1 FROM taggings WHERE "     +
-                              "tag_id = #{tag.id} AND "           +
-                              "feed_item_id = feed_items.id AND " +
-                              "classifier_tagging = 0 AND "       +
-                              "strength = 0"                      +
-                            ")"                                   
-    end
-    
-    "EXISTS ("                                +
-        "SELECT 1 FROM taggings WHERE "       +
-        "tag_id = #{tag.id} AND "             +
-        "feed_item_id = feed_items.id "       +
-        negative_condition                    +
-      ")"
+    manual_taggings_sql = manual_taggings ? " AND classifier_tagging = 0" : nil
+    "EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id#{manual_taggings_sql})"
   end
 
   def self.build_tag_exclusion_filter(tag)
-    "NOT EXISTS ("                          +
-      "SELECT 1 FROM taggings WHERE "       +
-        "tag_id = #{tag.id} AND "           +
-        "feed_item_id = feed_items.id AND " +
-        "strength >= 0.88"                  +
-    ")"
+    "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id)"
   end
   
   def self.add_always_include_feed_filter_conditions!(feed_filters, conditions)
@@ -350,60 +327,27 @@ class FeedItem < ActiveRecord::Base
   # The priority functionality of this method is used to enforce the user taggings overriding classifier
   # taggings in the display.
   #
-  # === Parameters
-  #
-  # <tt>:all_taggings</tt> <em>(true|false)</em>:: 
-  #    If true return all taggings, not just the positive or priority ones. The default is false.
-  #
   # === Return Structure
   #
-  # The <tt>all_taggings</tt> option defines the struture of the returned object.
-  #
-  # The structure when true will be a 2D array where each element is an array with the first 
+  # The structure will be a 2D array where each element is an array with the first 
   # element being the tag and the second element being an array of taggings using that tag, 
   # in order of the taggers array.
-  #
-  # If false the structure will be a 2D array where the first element of each sub-array is the tag and the 
-  # second element is the the first tagging for the tag as it appears in the order of the taggers array, i.e.
-  # if the first tagger has a 'foo' tag and the second tagger also has a 'foo' tag, only the tagging from the
-  # first tagger will be returned.
-  #
   def taggings_by_user(user, options = {})
-    options.assert_valid_keys([:all_taggings, :tags])  
+    options.assert_valid_keys([:tags])  
     if options[:tags]
       taggings = self.taggings.find_all_by_user_id_and_tag_id(user, options[:tags])
     else
       taggings = self.taggings.find_by_user(user)
     end
 
-    if options[:all_taggings]
-      taggings.inject({}) do |hash, tagging|
-        hash[tagging.tag] ||= []
-        if tagging.classifier_tagging?
-          hash[tagging.tag] << tagging
-        else
-          hash[tagging.tag].unshift(tagging)
-        end
-        hash
+    taggings.inject({}) do |hash, tagging|
+      hash[tagging.tag] ||= []
+      if tagging.classifier_tagging?
+        hash[tagging.tag] << tagging
+      else
+        hash[tagging.tag].unshift(tagging)
       end
-    else
-      # First put all the classifier ones down
-      tagging_hash = taggings.select{|t| t.classifier_tagging?}.inject({}) do |hash, tagging|
-        if tagging.positive? || tagging.borderline?
-          hash[tagging.tag] = tagging
-        end
-        hash
-      end
-      
-      # Now do user taggings, that override them
-      taggings.select{|t| !t.classifier_tagging?}.inject(tagging_hash) do |hash, tagging|        
-        if tagging.positive?
-          hash[tagging.tag] = tagging
-        elsif
-          hash.delete(tagging.tag)
-        end
-        hash
-      end
+      hash
     end.to_a.sort
   end
     

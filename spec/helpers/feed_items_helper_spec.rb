@@ -71,35 +71,7 @@ describe FeedItemsHelper do
     
     assert_select('li#tag_control_for_tag1_on_feed_item_1.positive.classifier', true, @response.body)
   end
-  
-  def test_tag_controls_when_duplicate_tagging_exists
-    feed_item = FeedItem.find(1)
-    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :classifier_tagging => true)
-    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :classifier_tagging => true)
     
-    @response.body = tag_controls(feed_item)
-    
-    assert_select('li#tag_control_for_tag1_on_feed_item_1.classifier')
-  end
-  
-  def test_tag_controls_with_borderline_item
-    feed_item = FeedItem.find(1)
-    t1 = Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.89, :classifier_tagging => true)
-
-    @response.body = tag_controls(feed_item)
-    
-    assert_select('li#tag_control_for_tag1_on_feed_item_1.classifier.borderline', true, @response.body)
-  end
-
-  # TODO: Determine if these should be shown
-  # def test_assigned_tag_controls_should_not_display_item_below_threshold
-  #   feed_item = FeedItem.find(1)
-  #   Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
-  #   @response.body = tag_controls(feed_item)
-  #   
-  #   assert_select('li#tag_control_for_tag1_on_feed_item_1', false, @response.body)
-  # end
-  
   def test_display_tags_for_feed_item
     fi = FeedItem.find(1)
     Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag1'))
@@ -112,26 +84,6 @@ describe FeedItemsHelper do
     assert_select("span.classifier", "tag3")
   end
   
-  def test_display_borderline_tags
-    fi = FeedItem.find(1)
-    Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0.89, :classifier_tagging => true)
-    @response.body = display_tags_for(fi)
-
-    assert_select("span.classifier.borderline", "tag", @response.body)
-  end
-
-  # TODO: Determine if this should be displayed
-  # def test_item_tagged_below_threshold_gets_no_displayed_tag_but_the_tag_is_in_the_list_of_tags_to_add
-  #   @current_user.taggings.create(:tag => Tag(current_user, 'tag'), :feed_item => FeedItem.find(2))
-  #   fi = FeedItem.find(1)
-  #   Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0.81, :classifier_tagging => true)
-  #   
-  #   @response.body = display_tags_for(fi)
-  #   @response.body += unused_tag_controls(fi)
-  #   assert_select("span.classifier", false, @response.body)    
-  #   assert_select('li#unused_tag_control_for_tag_on_feed_item_1', true, @response.body)
-  # end
-    
   def test_ununsed_tag_control_not_added_for_negative_tag
     @current_user.taggings.create(:tag => Tag(current_user, 'tag'), :feed_item => FeedItem.find(2))
     fi = FeedItem.find(1)
@@ -140,16 +92,6 @@ describe FeedItemsHelper do
     @response.body = unused_tag_controls(fi)
     assert_select('li#unused_tag_control_for_tag_on_feed_item_1', false, @response.body)
   end
-
-  # TODO: Determine if this should be displayed
-  # def test_dont_display_tags_below_threshold
-  #   feed_item = FeedItem.find(1)
-  #   Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
-  # 
-  #   @response.body = display_tags_for(feed_item)
-  #   
-  #   assert_no_match(/tag1/, @response.body)
-  # end
       
   # TODO: Update this to work with published tags
   # def test_display_published_tags_when_tag_filter_is_a_published_tag

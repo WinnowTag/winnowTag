@@ -155,21 +155,6 @@ describe Tagging do
     assert_equal item, tagging.feed_item
   end
    
-  def test_borderline_true_for_classifier_tagging_near_0_9
-    user = users(:quentin)
-    tagging = Tagging.new(:user => user, :tag => Tag(user, 'Tag'), 
-                        :feed_item => @feed_item, :strength => 0.9, 
-                        :classifier_tagging => true)
-    assert_equal(true, tagging.borderline?)
-  end
-  
-  def test_borderline_requires_classifier_tagging
-    user = users(:quentin)
-    tagging = Tagging.new(:user => user, :tag => Tag(user, 'Tag'), 
-                        :feed_item => @feed_item, :strength => 0.9)
-    assert_equal(false, tagging.borderline?)
-  end
-  
   def test_classifier_tagging_defaults_to_false
     assert !users(:quentin).taggings.create(:feed_item => @feed_item, :tag => Tag(users(:quentin), 'tag')).classifier_tagging?  
   end

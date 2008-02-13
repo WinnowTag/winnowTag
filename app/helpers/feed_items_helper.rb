@@ -100,9 +100,9 @@ module FeedItemsHelper
   #
   def display_tags_for(taggable)
     if show_manual_taggings?
-      tags = taggable.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
+      tags = taggable.taggings_by_user(current_user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
     else
-      tags = taggable.taggings_by_user(current_user, :all_taggings => true)
+      tags = taggable.taggings_by_user(current_user)
     end
     
     tag_display = tags.collect do |tag, taggings|
@@ -115,9 +115,9 @@ module FeedItemsHelper
 
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
       if show_manual_taggings?
-        more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
+        more_tags = taggable.taggings_by_user(user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
-        more_tags = taggable.taggings_by_user(user, :all_taggings => true, :tags => subscribed_tags)
+        more_tags = taggable.taggings_by_user(user, :tags => subscribed_tags)
       end
             
       tag_display += more_tags.collect do |tag, taggings|
@@ -147,9 +147,9 @@ module FeedItemsHelper
   def tag_controls(feed_item, options = {})
     options[:hide] = Array(options[:hide])    
     if show_manual_taggings?
-      tags = feed_item.taggings_by_user(current_user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
+      tags = feed_item.taggings_by_user(current_user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
     else
-      tags = feed_item.taggings_by_user(current_user, :all_taggings => true)
+      tags = feed_item.taggings_by_user(current_user)
     end
 
     html = ""
@@ -168,9 +168,9 @@ module FeedItemsHelper
     
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
       if show_manual_taggings?
-        more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
+        more_tags = feed_item.taggings_by_user(user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
       else
-        more_tags = feed_item.taggings_by_user(user, :all_taggings => true, :tags => subscribed_tags)
+        more_tags = feed_item.taggings_by_user(user, :tags => subscribed_tags)
       end
       more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
@@ -185,7 +185,7 @@ module FeedItemsHelper
   
   def unused_tag_controls(feed_item, options = {})
     options[:hide] = Array(options[:hide])    
-    tags = feed_item.taggings_by_user(current_user, :all_taggings => true)
+    tags = feed_item.taggings_by_user(current_user)
 
     unused_tags = []
     current_user.tags.each do |tag|      
@@ -224,9 +224,6 @@ module FeedItemsHelper
     if taggings.size == 1 and tagging = taggings.first
       if tagging.classifier_tagging?
         classes << "classifier"
-        if tagging.borderline?
-          classes << "borderline"
-        end
       elsif tagging.positive?
         classes << "positive"
       elsif tagging.negative?

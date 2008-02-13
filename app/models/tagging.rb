@@ -97,19 +97,11 @@ class Tagging < ActiveRecord::Base
   # of positive defined by the Tagger.
   #
   def positive?
-    self.strength == 1 || (self.classifier_tagging? && strength > 0.9)
+    !negative?
   end
   
   def negative?
-    !positive? && !borderline?
-  end
-  
-  # Returns true if this tagging is borderline based on the definition
-  # of borderline defined by the Tagger.  Some taggers may not provide
-  # a borderline_tagging? method in which case this method returns false.
-  #
-  def borderline?
-    self.classifier_tagging? && (0.88..0.92).include?(self.strength)
+    self.strength == 0
   end
   
   def inspect
