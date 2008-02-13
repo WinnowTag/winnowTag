@@ -15,8 +15,8 @@ class UserNotifier < ActionMailer::Base
   end
   
   def invite_accepted(invite, url)
-    setup_email invite.email, :subject => "Invitation Accepted"
-    body        :url => url
+    setup_email invite.email, :subject => invite.subject
+    body        :url => url, :invite => invite
   end
 
   # include ActionController::UrlWriter
@@ -39,7 +39,7 @@ class UserNotifier < ActionMailer::Base
 protected
   def setup_email(email, options = {})
     recipients  email
-    from        "wizzadmin@peerworks.org"
+    from        "winnowadmin@mindloom.org"
     subject     "[Winnow] #{options[:subject]}"
   end
 end

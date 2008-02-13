@@ -16,7 +16,7 @@ class WinnowMailer < ActionMailer::Base
     @subject    = 'Winnow collect completed ' + sent_at.to_s
     @body["message"]       = 'Winnow collect completed. Daily log file: ' + log_url
     @recipients = 'sawtelle@stonecutter.com'
-    @from       = 'Winnow Admin <winnowadmin@peerworks.org>'
+    @from       = 'Winnow Admin <winnowadmin@mindloom.org>'
     @sent_on    = sent_at
     @headers    = {}
   end

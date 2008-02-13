@@ -15,10 +15,10 @@
   <thead>
   	<tr>
   		<th>Email</th>
-  		<th>How did you hear about Winnow?</th>
-  		<th>How/why do you want to use Winnow?</th>
+  		<th>Questions</th>
   		<th>Created</th>
   		<th>Status</th>
+  		<th>Email</th>
   		<th>&nbsp;</th>
   	</tr>
   </thead>		
@@ -26,8 +26,16 @@
   	<% for invite in @invites -%>
   	<tr>
   		<td><%= invite.email %></td>
-  		<td><%= invite.hear %></td>
-  		<td><%= invite.use %></td>
+  		<td>
+  		  <% unless invite.hear.blank? -%>
+		      <b>How did you hear about Winnow?</b><br/>
+		      <%= invite.hear %><br/>
+		    <% end -%>
+  		  <% unless invite.use.blank? -%>
+		      <b>How/why do you want to use Winnow?</b><br/>
+          <%= invite.use %><br/>
+		    <% end -%>
+  		</td>
   		<td><%= format_date(invite.created_at) %></td>
   		<td>
   		  <% if invite.user -%>
@@ -38,9 +46,18 @@
   		    Requested
   		  <% end -%>
   		</td>
+  		<td>
+		    <% unless invite.subject.blank? -%>
+  	      Subject: <%= invite.subject %><br/>
+  	    <% end -%>
+  	    <% unless invite.body.blank? -%>
+  	      Body: <%= invite.body %><br/>
+  	    <% end -%>
+  		</td>
   		<td nowrap="nowrap">
 		    <% unless invite.code? -%>
           <%= link_to "Activate", activate_invite_path(invite), :method => :put %> or
+          <%= link_to "Edit", edit_invite_path(invite) %> or
         <% end -%>
         <%= link_to "Destroy", invite, :method => :delete, :confirm => "Are you sure?" %>
   		</td>
