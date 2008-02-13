@@ -74,8 +74,21 @@
     <%= error_messages_for :invite %>
 
     <p>
-      <label for="email">Email</label>
+      <%= f.label :email %>
       <%= f.text_field :email %>
+    </p>
+
+    <h4>Questions</h4>
+    <span class="description">optional, answers may encourage a response</span>
+    
+    <p>
+      <%= f.label :hear, "How did you hear about Winnow?" %>
+      <%= f.text_field :hear %>
+    </p>
+    
+    <p>
+      <%= f.label :use, "How/why do you want to use Winnow?" %>
+      <%= f.text_field :use %>
     </p>
 
     <p><%= submit_tag 'Request Invitation' %></p>

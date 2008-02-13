@@ -15,6 +15,8 @@
   <thead>
   	<tr>
   		<th>Email</th>
+  		<th>How did you hear about Winnow?</th>
+  		<th>How/why do you want to use Winnow?</th>
   		<th>Created</th>
   		<th>Status</th>
   		<th>&nbsp;</th>
@@ -24,6 +26,8 @@
   	<% for invite in @invites -%>
   	<tr>
   		<td><%= invite.email %></td>
+  		<td><%= invite.hear %></td>
+  		<td><%= invite.use %></td>
   		<td><%= format_date(invite.created_at) %></td>
   		<td>
   		  <% if invite.user -%>
