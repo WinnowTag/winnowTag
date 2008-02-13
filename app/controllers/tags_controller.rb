@@ -29,7 +29,6 @@ class TagsController < ApplicationController
         @tags = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
         @subscribed_tags = Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
-      wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end
   end
   
