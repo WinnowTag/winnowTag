@@ -4,6 +4,11 @@ class Invite < ActiveRecord::Base
   validates_presence_of :email
   validates_uniqueness_of :email, :message => "has already been submitted"
   
+  def initialize(*args, &block)
+    super(*args, &block)
+    self.subject ||= "Invitation Accepted"
+  end
+  
   def activate!
     require 'md5'
     self.update_attribute :code, MD5.hexdigest("#{email}--#{Time.now}--#{rand}")
