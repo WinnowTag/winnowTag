@@ -81,6 +81,21 @@ describe User do
     end
   end
   
+  describe "searching" do
+    it "can find users by login, email, firstname, or lastname" do
+      user1 = User.create! valid_user_attributes(:login => "mark")
+      user2 = User.create! valid_user_attributes(:email => "mark@example.com")
+      user3 = User.create! valid_user_attributes(:firstname => "mark")
+      user4 = User.create! valid_user_attributes(:lastname => "mark")
+      user5 = User.create! valid_user_attributes
+      
+      expected_users = [user1, user2, user3, user4]
+      
+      users = User.search :q => "mark", :page => 1
+      users.should == expected_users
+    end
+  end
+  
   describe "from test/unit" do
     fixtures :users
     

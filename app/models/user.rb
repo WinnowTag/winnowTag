@@ -91,8 +91,23 @@ class User < ActiveRecord::Base
   
   class << self
     def search(options = {})
+      conditions, values = [], []
+      
+      q = options.delete(:q)
+      unless q.blank?
+        ored_conditions = []
+        [:login, :email, :firstname, :lastname].each do |attribute|
+          ored_conditions << "users.#{attribute} LIKE ?"
+          values          << "%#{q}%"
+        end
+        conditions << "(" + ored_conditions.join(" OR ") + ")"
+      end
+      
+      conditions = conditions.empty? ? nil : [conditions.join(" AND "), *values]
+      
       paginate(options.merge(:select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
                              :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
+                             :conditions => conditions,
                              :group => "users.id"))
     end
   end

@@ -7,7 +7,7 @@ class InvitesController < ApplicationController
   permit 'admin'
   
   def index
-    @invites = Invite.paginate(:per_page => 30, :page => params[:page])
+    @invites = Invite.search(:q => params[:q], :per_page => 30, :page => params[:page])
   end
 
   def new

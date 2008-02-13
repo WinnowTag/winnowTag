@@ -13,5 +13,23 @@ class Invite < ActiveRecord::Base
     def find_active(code)
       find(:first, :conditions => ["code = ? AND code IS NOT NULL AND code != '' AND user_id IS NULL", code.to_s])
     end
+
+    def search(options = {})
+      conditions, values = [], []
+      
+      q = options.delete(:q)
+      unless q.blank?
+        ored_conditions = []
+        [:email].each do |attribute|
+          ored_conditions << "invites.#{attribute} LIKE ?"
+          values          << "%#{q}%"
+        end
+        conditions << "(" + ored_conditions.join(" OR ") + ")"
+      end
+      
+      conditions = conditions.empty? ? nil : [conditions.join(" AND "), *values]
+      
+      paginate(options.merge(:conditions => conditions))
+    end
   end
 end

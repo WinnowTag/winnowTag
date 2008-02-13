@@ -59,4 +59,16 @@ describe Invite do
       Invite.find_active("some code").should_not be_nil
     end
   end
+
+  describe "searching" do
+    it "can find invites by email" do
+      invite1 = Invite.create! valid_invite_attributes(:email => "mark@example.com")
+      invite2 = Invite.create! valid_invite_attributes
+      
+      expected_invites = [invite1]
+      
+      invites = Invite.search :q => "mark", :page => 1
+      invites.should == expected_invites
+    end
+  end
 end
