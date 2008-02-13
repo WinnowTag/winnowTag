@@ -24,8 +24,4 @@ class AboutController < ApplicationController
       @classifier_info = nil
     end
   end
-  
-  def help
-    render :action => 'help', :layout => 'popup'
-  end
 end

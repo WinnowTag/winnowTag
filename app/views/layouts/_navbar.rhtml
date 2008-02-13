@@ -2,7 +2,7 @@
   <div id="navigation" class="navigation clearfix">
   	<ul class="extra">
       <li><%= link_to("About", about_path, :class => tab_selected('about')) %></li>
-      <li><%= link_to('Help', help_path, :popup => ['help', 'width=500,height=400']) %></li>
+      <li><%= link_to('Help', help_path) %></li>
       <li><%= link_to('My Info', edit_account_path(:id => current_user), :class => tab_selected('account', 'edit')) %></li>
       <li class="last"><%= link_to("Logout", logout_path) %></li>
     </ul>

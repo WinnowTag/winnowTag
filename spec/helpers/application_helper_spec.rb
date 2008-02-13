@@ -24,4 +24,20 @@ describe ApplicationHelper do
       globally_exclude_check_box(feed).should =~ /\/feeds\/#{feed.id}/
     end
   end
+  
+  describe "#help_path" do
+    def controller_name; @controller_name; end
+    def action_name; @action_name; end
+
+    it "points to the same controller on docs.mindloom.org" do
+      @controller_name = "feeds"
+      help_path.should == "http://docs.mindloom.org/feeds"
+    end
+
+    it "points to the same controller/action on docs.mindloom.org" do
+      @controller_name = "tags"
+      @action_name = "public"
+      help_path.should == "http://docs.mindloom.org/tags/public"
+    end
+  end
 end

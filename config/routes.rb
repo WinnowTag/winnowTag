@@ -92,7 +92,6 @@ ActionController::Routing::Routes.draw do |map|
   
   map.with_options :controller => "about" do |about_map|
     about_map.about "about"
-    about_map.help "about/help", :action => "help"
   end
   
   map.admin "admin", :controller => "admin"

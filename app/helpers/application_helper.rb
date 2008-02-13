@@ -264,4 +264,8 @@ module ApplicationHelper
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
   end
+  
+  def help_path
+    url_for(:controller => controller_name, :action => action_name, :host => "docs.mindloom.org")
+  end
 end
