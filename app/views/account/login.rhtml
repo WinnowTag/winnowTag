@@ -83,12 +83,12 @@
     
     <p>
       <%= f.label :hear, "How did you hear about Winnow?" %>
-      <%= f.text_field :hear %>
+      <%= f.text_area :hear, :size => "28x2" %>
     </p>
     
     <p>
       <%= f.label :use, "How/why do you want to use Winnow?" %>
-      <%= f.text_field :use %>
+      <%= f.text_area :use, :size => "28x2" %>
     </p>
 
     <p><%= submit_tag 'Request Invitation' %></p>
