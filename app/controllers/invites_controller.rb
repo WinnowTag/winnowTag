@@ -44,7 +44,7 @@ class InvitesController < ApplicationController
   
   def activate
     @invite = Invite.find(params[:id])
-    @invite.activate!(params[:invite])
+    @invite.activate!
     UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
     redirect_to invites_path
   end
