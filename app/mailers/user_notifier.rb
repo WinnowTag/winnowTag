@@ -39,7 +39,7 @@ class UserNotifier < ActionMailer::Base
 protected
   def setup_email(email, options = {})
     recipients  email
-    from        "winnowadmin@mindloom.org"
+    from        "wizzadmin@peerworks.org"
     subject     "[Winnow] #{options[:subject]}"
   end
 end

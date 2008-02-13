@@ -12,11 +12,11 @@ describe Notifier do
     end
 
     it "is sent to winnowadmin" do
-      @email.to.should == ["winnowadmin@mindloom.org"]
+      @email.to.should == ["wizzadmin@peerworks.org"]
     end
 
     it "is sent from winnowadmin" do
-      @email.from.should == ["winnowadmin@mindloom.org"]
+      @email.from.should == ["wizzadmin@peerworks.org"]
     end
 
     it "has a subect with revision info" do
@@ -51,11 +51,11 @@ describe Notifier do
     end
 
     it "is sent to winnowadmin" do
-      @email.to.should == ["winnowadmin@mindloom.org"]
+      @email.to.should == ["wizzadmin@peerworks.org"]
     end
 
     it "is sent from winnowadmin" do
-      @email.from.should == ["winnowadmin@mindloom.org"]
+      @email.from.should == ["wizzadmin@peerworks.org"]
     end
     
     it "contains the invite email in the email body" do
