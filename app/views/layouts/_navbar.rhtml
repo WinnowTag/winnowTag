@@ -8,6 +8,7 @@
     </ul>
 
   	<ul class="main clearfix">
+      <li><%= link_to('Welcome', welcome_path, :class => tab_selected('welcome')) %></li>
       <li><%= link_to('Items', feed_items_path, :class => tab_selected('feed_items')) %></li>
   	  <li><%= link_to('My Tags', tags_path, :class => tab_selected('tags', 'index')) %></li>
   	  <li><%= link_to('Public Tags', public_tags_path, :class => tab_selected('tags', 'public')) %></li>

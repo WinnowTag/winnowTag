@@ -97,5 +97,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.admin "admin", :controller => "admin"
   
+  map.welcome "welcome", :controller => "welcome"
+  
   map.root :controller => "feed_items"
 end
