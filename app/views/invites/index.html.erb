@@ -1,10 +1,12 @@
 <% @skip_content_container = true %>
-<% content_for :page_controls do -%>
+
+<% content_for :header_controls do -%>
   <ul class="control_bar">
-    <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
     <li><%= will_paginate(@invites) %></li>
+    <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
   </ul>
 <% end -%>
+
 <table class="data_table recordset">
   <thead>
   	<tr>

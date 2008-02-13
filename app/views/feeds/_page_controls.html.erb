@@ -1,7 +1,0 @@
-<% content_for :page_controls do -%>
-  <ul class="control_bar">
-    <li><%= link_to "Add Feed", new_feed_path %></li>
-    <li><%= link_to "Import OPML", import_feeds_path %></li>
-    <li><%= will_paginate(@feeds) if @feeds %></li>
-  </ul>
-<% end -%>

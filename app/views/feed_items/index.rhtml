@@ -9,11 +9,8 @@
 
 <noscript>Winnow requires Javascript to be enabled.  Please enable Javascript in your browser and refresh.</noscript>
 
-<% content_for :header_controls do -%>
-	<%= render :partial => "text_filter_controls" %>
-<% end -%>
-
 <% content_for :sidebar do -%>
+  <%= render :partial => "text_filter_controls" %>
   <%= render :partial => "filter_controls" %>
 	<%= render :partial => "classification_controls" %>
 <% end -%>

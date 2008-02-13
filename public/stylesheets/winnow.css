@@ -259,27 +259,14 @@ optgroup {
 }
 
 #header_controls {
-  padding: 3px 3px 1px 3px;
+  padding: 5px 5px 2px 16px;
   border-bottom: 1px solid #999;
   height: 2em;
   background-color: #e1ecfe;
 }
 
-#header_controls form {
-  display: inline;
-}
-
-#header_controls form > div {
-  display: inline;
-}
-
-#header_controls .custom_controls {
+#header_controls .control_bar {
   float: right;
-  margin-right: .5em;
-}
-
-#header_controls .page_controls {
-  float: left;
 }
 
 a { color: #2c50e8; text-decoration: none; }
