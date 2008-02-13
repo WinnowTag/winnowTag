@@ -93,6 +93,8 @@ class FeedItem < ActiveRecord::Base
     alias_method_chain :find_by_user, :caching
   end
   
+  has_many :tags, :through => :taggings
+  
   # Finds some random items with their tokens.  
   #
   # Instead of using order by rand(), which is very slow for large tables,

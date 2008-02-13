@@ -75,22 +75,41 @@ describe FeedItemsHelper do
   def test_display_tags_for_feed_item
     fi = FeedItem.find(1)
     Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag1'))
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag2'))
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag2'), :strength => 0)
     Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag3'), :classifier_tagging => true)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'))
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'), :classifier_tagging => true)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :strength => 0)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :classifier_tagging => true)
     @response.body = display_tags_for(fi)
     
     assert_select("span.positive", "tag1", @response.body)
-    assert_select("span.positive", "tag2")
-    assert_select("span.classifier", "tag3")
+    assert_select("span.negative", "tag2", @response.body)
+    assert_select("span.classifier", "tag3", @response.body)
+    assert_select("span.positive", "tag4", @response.body)
+    assert_select("span.negative", "tag5", @response.body)
   end
   
-  def test_ununsed_tag_control_not_added_for_negative_tag
-    @current_user.taggings.create(:tag => Tag(current_user, 'tag'), :feed_item => FeedItem.find(2))
-    fi = FeedItem.find(1)
-    Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0)
+  def test_unused_tag_controls
+    Tagging.delete_all
     
+    fi = FeedItem.find(1)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag1'))
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag2'), :strength => 0)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag3'), :classifier_tagging => true)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'))
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'), :classifier_tagging => true)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :strength => 0)
+    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :classifier_tagging => true)
+    Tag(current_user, 'tag6')
+        
     @response.body = unused_tag_controls(fi)
-    assert_select('li#unused_tag_control_for_tag_on_feed_item_1', false, @response.body)
+    assert_select('li#unused_tag_control_for_tag1_on_feed_item_1', false, @response.body)
+    assert_select('li#unused_tag_control_for_tag2_on_feed_item_1', false, @response.body)
+    assert_select('li#unused_tag_control_for_tag3_on_feed_item_1', false, @response.body)
+    assert_select('li#unused_tag_control_for_tag4_on_feed_item_1', false, @response.body)
+    assert_select('li#unused_tag_control_for_tag5_on_feed_item_1', false, @response.body)
+    assert_select('li#unused_tag_control_for_tag6_on_feed_item_1', true, @response.body)
   end
       
   # TODO: Update this to work with published tags

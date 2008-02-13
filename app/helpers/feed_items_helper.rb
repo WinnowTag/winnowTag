@@ -142,8 +142,6 @@ module FeedItemsHelper
     params[:manual_taggings] =~ /true/i ? true : false 
   end
  
-  # Builds tagging controls for a feed item
-  #
   def tag_controls(feed_item, options = {})
     options[:hide] = Array(options[:hide])    
     if show_manual_taggings?
@@ -183,41 +181,19 @@ module FeedItemsHelper
     content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "tag_controls")
   end
   
-  def unused_tag_controls(feed_item, options = {})
-    options[:hide] = Array(options[:hide])    
-    tags = feed_item.taggings_by_user(current_user)
-
-    unused_tags = []
-    current_user.tags.each do |tag|      
-      if taggings = tags.assoc(tag)
-        # If it isn't a user tagging or a classifier tagging 
-        # over 0.9 it hasn't been applied to the item.
-        #
-        # TODO: In Rails 2.0, Query caching will make this possible
-        #       to do using the model objects without hitting the 
-        #       database.
-        #
-        unless taggings.last.any? {|tagging| !tagging.classifier_tagging? || tagging.positive?}
-          unused_tags << tag
-        end
-      else
-        unused_tags << tag
-      end
-    end
+  def unused_tag_controls(feed_item)
+    unused_tags = current_user.tags - feed_item.tags
     
-    html = ""
-    unused_tags.each do |tag|
-      html << content_tag('li', content_tag("span", h(tag.name), :class => "name"),
+    html = unused_tags.map do |tag|
+      content_tag('li', content_tag("span", h(tag.name), :class => "name"),
         :id => dom_id(feed_item, "unused_tag_control_for_#{tag.name}_on"), :class => "cursor", 
-        :style => options[:hide].include?(tag.name) ? "display: none;" : nil,
         :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}');", 
-        :onmouseover => "show_tag_tooltip(this, '#{escape_javascript(tag.name)}');") + " "
-    end
+        :onmouseover => "show_tag_tooltip(this, '#{escape_javascript(tag.name)}');")
+    end.join(" ")
     content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "unused_tag_controls")
   end
 
 	# Creates an array of CSS class names for a list of taggings.
-	#
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
     
