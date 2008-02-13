@@ -19,7 +19,7 @@ class Notifier < ActionMailer::Base
 protected
   def setup_email(options = {})
     recipients  "winnowadmin@mindloom.org"
-    from        "winnowadmin@mindloom.org
+    from        "winnowadmin@mindloom.org"
     subject     options[:subject]
   end
 end
