@@ -7,6 +7,7 @@ describe "filter controls" do
     @user = users(:quentin)
     login
     open feed_items_path
+    wait_for_ajax
   end
   
   describe "show all items" do

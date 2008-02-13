@@ -6,6 +6,7 @@ describe "FeedItemsKeyboardShortcutsTest" do
   before(:each) do
     login
     open feed_items_path
+    wait_for_ajax
   end
   
   def test_change_item

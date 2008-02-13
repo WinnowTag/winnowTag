@@ -12,6 +12,7 @@ describe "FeedItemsTest" do
     delete_cookie "show_sidebar", "/"
     login
     open feed_items_path
+    wait_for_ajax
   end
 
   def test_mark_read_unread
@@ -23,12 +24,14 @@ describe "FeedItemsTest" do
     see_element "#feed_item_#{feed_item_1.id}.unread"
     
     refresh_and_wait
+    wait_for_ajax
     see_element "#feed_item_#{feed_item_1.id}.unread"
 
     click "css=#feed_item_#{feed_item_1.id} .status a"
     see_element "#feed_item_#{feed_item_1.id}.read"
 
     refresh_and_wait
+    wait_for_ajax
     see_element "#feed_item_#{feed_item_1.id}.read"
   end
   
@@ -65,6 +68,7 @@ describe "FeedItemsTest" do
     see_element "#feed_item_#{feed_item_1.id}.read"
 
     refresh_and_wait
+    wait_for_ajax
     see_element "#feed_item_#{feed_item_1.id}.read"
   end
   
