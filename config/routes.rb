@@ -31,8 +31,7 @@ ActionController::Routing::Routes.draw do |map|
                   :mark_read => :put,
                   :mark_unread => :put,
                   :info => :get,
-                  :description => :get,
-                  :moderation_panel => :get
+                  :description => :get
                 },
                 :collection => { 
                   :mark_read => :put

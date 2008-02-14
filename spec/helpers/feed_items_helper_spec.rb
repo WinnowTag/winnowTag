@@ -72,57 +72,6 @@ describe FeedItemsHelper do
     assert_select('li#tag_control_for_tag1_on_feed_item_1.positive.classifier', true, @response.body)
   end
     
-  def test_display_tags_for_feed_item
-    fi = FeedItem.find(1)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag1'))
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag2'), :strength => 0)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag3'), :classifier_tagging => true)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'))
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'), :classifier_tagging => true)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :strength => 0)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :classifier_tagging => true)
-    @response.body = display_tags_for(fi)
-    
-    assert_select("span.positive", "tag1", @response.body)
-    assert_select("span.negative", "tag2", @response.body)
-    assert_select("span.classifier", "tag3", @response.body)
-    assert_select("span.positive", "tag4", @response.body)
-    assert_select("span.negative", "tag5", @response.body)
-  end
-  
-  def test_unused_tag_controls
-    Tagging.delete_all
-    
-    fi = FeedItem.find(1)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag1'))
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag2'), :strength => 0)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag3'), :classifier_tagging => true)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'))
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag4'), :classifier_tagging => true)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :strength => 0)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag5'), :classifier_tagging => true)
-    Tag(current_user, 'tag6')
-        
-    @response.body = unused_tag_controls(fi)
-    assert_select('li#unused_tag_control_for_tag1_on_feed_item_1', false, @response.body)
-    assert_select('li#unused_tag_control_for_tag2_on_feed_item_1', false, @response.body)
-    assert_select('li#unused_tag_control_for_tag3_on_feed_item_1', false, @response.body)
-    assert_select('li#unused_tag_control_for_tag4_on_feed_item_1', false, @response.body)
-    assert_select('li#unused_tag_control_for_tag5_on_feed_item_1', false, @response.body)
-    assert_select('li#unused_tag_control_for_tag6_on_feed_item_1', true, @response.body)
-  end
-      
-  # TODO: Update this to work with published tags
-  # def test_display_published_tags_when_tag_filter_is_a_published_tag
-  #   tag_filter = TagPublication.find(1)
-  #   fi = FeedItem.find(1)
-  #   tag_filter.taggings.create(:tag => tag_filter.tag, :feed_item => fi)
-  #   
-  #   @view.add_tag :include, tag_filter
-  #   @response.body = display_tags_for(fi)
-  #   assert_select("span.tag_publication_tagging.tagged", "#{tag_filter.publisher.login}:#{tag_filter.tag.name}", "actual: " + @response.body)
-  # end
-  
   def test_clean_html_with_blank_value
     [nil, '', ' '].each do |value| 
       assert_nil clean_html(value)

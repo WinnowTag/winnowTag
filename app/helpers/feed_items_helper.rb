@@ -92,52 +92,6 @@ module FeedItemsHelper
     "Classify changed tags"
   end
   
-  # Prints each tag between a given user and taggable, including
-  # tags assigned by classifiers on behalf of the user. Each tag will
-  # be separated by TAG_SEPARATOR.
-  #
-  # * Users tags take precedence over classifier tags.
-  #
-  def display_tags_for(taggable)
-    if show_manual_taggings?
-      tags = taggable.taggings_by_user(current_user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
-    else
-      tags = taggable.taggings_by_user(current_user)
-    end
-    
-    tag_display = tags.collect do |tag, taggings|
-      if tagging = Array(taggings).first
-        content_tag('span', 
-          h(tagging.tag.name), 
-          :class => classes_for_taggings(tagging).join(" "))
-      end
-    end.compact
-
-    current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
-      if show_manual_taggings?
-        more_tags = taggable.taggings_by_user(user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
-      else
-        more_tags = taggable.taggings_by_user(user, :tags => subscribed_tags)
-      end
-            
-      tag_display += more_tags.collect do |tag, taggings|
-        if tagging = Array(taggings).first
-          tag_name_with_tooltip(tag, :class => classes_for_taggings(tagging, [:public]).join(" "))
-        end
-      end.compact
-    end
-    
-    html = if tag_display.empty?
-      "<i>no tags</i>"
-    else
-      tag_display.join(TAG_SEPARATOR)
-    end
-    
-    content_tag(:span, html, 
-      :class => "tags", :id => dom_id(taggable, "open_tags"), 
-      :onclick => "itemBrowser.toggleOpenCloseModerationPanel('#{dom_id(taggable)}'); Event.stop(event);")
-  end
-  
   def show_manual_taggings?
     params[:manual_taggings] =~ /true/i ? true : false 
   end
@@ -151,6 +105,9 @@ module FeedItemsHelper
     end
 
     html = ""
+    html << content_tag(:li, "Add Tag", :onclick => "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'), event)") << " "
+    html << content_tag(:li, "...", :onclick => "this.up('ul').toggleClassName('full')")
+    
     tags.each do |tag, taggings|
       content = content_tag("span", h(tag.name), :class => "name")
       content << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
@@ -173,7 +130,7 @@ module FeedItemsHelper
       more_tags.collect do |tag, taggings|
         if tagging = Array(taggings).first
           tag_span = tag_name_with_tooltip(tag)
-          html << content_tag(:li, tag_span, :class => classes_for_taggings(tagging, [:public, :name]).join(" "))
+          html << content_tag(:li, tag_span, :class => classes_for_taggings(tagging, [:public, :name]).join(" ")) << " "
         end
       end
     end
@@ -181,18 +138,6 @@ module FeedItemsHelper
     content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "tag_controls")
   end
   
-  def unused_tag_controls(feed_item)
-    unused_tags = current_user.tags - feed_item.tags
-    
-    html = unused_tags.map do |tag|
-      content_tag('li', content_tag("span", h(tag.name), :class => "name"),
-        :id => dom_id(feed_item, "unused_tag_control_for_#{tag.name}_on"), :class => "cursor", 
-        :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}');", 
-        :onmouseover => "show_tag_tooltip(this, '#{escape_javascript(tag.name)}');")
-    end.join(" ")
-    content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "unused_tag_controls")
-  end
-
 	# Creates an array of CSS class names for a list of taggings.
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)

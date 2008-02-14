@@ -519,13 +519,13 @@ a.editor_cancel {
 }
 
 .item .closed {
-  position: relative;
+/*  position: relative;*/
   border: 1px solid #fff;
   border-width: 2px 2px 1px 2px;
   -moz-user-select: none;
   line-height: 1.8;
-  height: 1.8em;
-  overflow: hidden;
+/*  height: 5.4em;*/
+/*  overflow: hidden;*/
 }
 
 .item.selected .closed {
@@ -555,60 +555,44 @@ a.editor_cancel {
 }
 
 .item .closed .opener {
-  height: 1.8em;
+/*  height: 1.8em;*/
   cursor: pointer;
 }
 
 .item .closed .feed_title {
-  position: absolute;
-  left: 20px;
+  float: left;
+  margin-left: 20px;
   width: 17%;
+  height: 1.8em;
   overflow: hidden;
   color: #999;
 }
 
-.item .closed .title_and_tags {
-  position: absolute;
-  left: 21%;
-  right: 5em;
-  overflow: hidden;
-  text-align: right;
-}
-
 .item .closed .title {
   float: left;
-  font-weight: bold;
-  margin-right: 1em;
-  max-width: 65%;
+  margin-left: 20px;
+  overflow: hidden;
   text-align: left;
+  font-weight: bold;
 }
 
 .item.read .closed .title {
   font-weight: normal;
 }
 
-.item .closed .tags {
-  color: #999;
-  background: #fff;
-  border: 1px solid #aaa;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 0.7em;
-  padding: 2px 0.4em;
-  margin-right: 2px;
-}
-
-.item .closed .tags i {
-  white-space: nowrap;
-}
-
-.item .closed .tags span {
-  white-space: nowrap;
-}
-
 .item .closed .date {
   float: right;
-  margin-right: 2px;
+  margin: 0 2px 0 2px;
   color: #666;
+}
+
+.item .closed .tag_list {
+  height: 1.8em;
+  clear: both;
+}
+
+.item .closed .tag_list.full {
+  height: auto;
 }
 
 .item .open {
@@ -670,6 +654,11 @@ a.editor_cancel {
   border: 2px solid #c3d9ff;
   background-color: #e1ecfe;
   padding: 5px;
+  z-index: 1000;
+  position: absolute;
+  left: 30em;
+  top: 4em;
+  width: 14.2em;
 }
 
 .item .new_tag_form h4 {
@@ -677,17 +666,10 @@ a.editor_cancel {
   margin: 0 0 .3em 0;
 }
 
-.item .new_tag_form h4.current_tags {
-  margin-top: 1em;
-}
-
-.item .new_tag_form form {
+.item .new_tag_form a {
   float: right;
 }
 
-.item .new_tag_form form input {
-  vertical-align: middle;
-}
 
 .item .open .info {
   position: absolute;
@@ -724,19 +706,6 @@ a.editor_cancel {
 
 .button {
   background: #888;
-}
-
-.item .closed .tags .positive {
-  color: #498740;
-}
-
-.item .closed .tags .negative {
-  color: #B2563F;
-}
-
-.item .closed .tags .public {
-  background: url(../images/public.png) center right no-repeat;
-  padding-right: 14px;
 }
 
 ul.tag_list {

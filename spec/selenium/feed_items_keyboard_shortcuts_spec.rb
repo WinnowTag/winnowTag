@@ -69,33 +69,6 @@ describe "FeedItemsKeyboardShortcutsTest" do
     see_element "#feed_item_#{feed_item_2.id}.read"
   end
   
-  def test_open_close_moderation_panel
-    feed_item_2, feed_item_1 = FeedItem.find(3, 4)
-
-    dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "new_tag_form_feed_item_#{feed_item_1.id}"
-    dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "new_tag_form_feed_item_#{feed_item_2.id}"
-
-    key_press "css=body", "n"
-    see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "new_tag_form_feed_item_#{feed_item_1.id}"
-    dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "new_tag_form_feed_item_#{feed_item_2.id}"
-
-    key_press "css=body", "t"
-    see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_visible "new_tag_form_feed_item_#{feed_item_1.id}"
-    dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "new_tag_form_feed_item_#{feed_item_2.id}"
-
-    key_press "css=body", "t"
-    see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "new_tag_form_feed_item_#{feed_item_1.id}"
-    dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "new_tag_form_feed_item_#{feed_item_2.id}"
-  end
-  
   def test_open_close_item
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 

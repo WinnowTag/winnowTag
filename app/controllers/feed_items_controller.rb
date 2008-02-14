@@ -104,11 +104,6 @@ class FeedItemsController < ApplicationController
     @feed_item = FeedItem.find(params[:id])
     respond_to :js
   end
-  
-  def moderation_panel
-    @feed_item = FeedItem.find(params[:id])
-    respond_to :js
-  end
 
 private
   def update_access_time

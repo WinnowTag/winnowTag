@@ -868,12 +868,12 @@ ItemBrowser.prototype = {
 	closeItem: function(item) {
 		if(item) {
 			$('open_' + $(item).getAttribute('id')).hide();
-			this.closeItemModerationPanel(item);
 			this.closeItemTagInformationPanel(item);
 		}
 	},
 	
-	toggleOpenCloseItem: function(item) {
+	toggleOpenCloseItem: function(item, event) {
+	  if(event && event.element().up('.tag_list')) { return false; }
 		if($('open_' + $(item).getAttribute('id')).visible() && $('body_' + $(item).getAttribute('id')).visible()) {
 			this.closeItem(item);
 		} else {
@@ -887,31 +887,36 @@ ItemBrowser.prototype = {
 		}
 	},
 	
-	openItemModerationPanel: function(item) {
+	openItemModerationPanel: function(item, event) {
 		if(this.selectedItem != $(item)) {
 			this.closeItem(this.selectedItem);
 			this.selectItem(item);
 		}
 
-		var container = $('new_tag_form_' + $(item).getAttribute('id'));
-		container.show();
-		this.scrollToItem(item);
-	  this.loadItemModerationPanel(item);
+    $$('.new_tag_form').invoke("hide");
 
-		if(!container.empty()) {
-		  $('new_tag_field_' + $(item).getAttribute('id')).focus();
+		var container = $('new_tag_form_' + $(item).getAttribute('id'));
+		if(event) {
+      // var top = event.pointerY();
+      // container.style.top = top + "px";
+		  var left = event.pointerX() - $('sidebar_control').getDimensions().width;
+		  if($('sidebar').visible()) { left -= $('sidebar').getDimensions().width; }
+  		container.style.left = left + "px";
 		}
+		container.show();
+
+	  $('new_tag_field_' + $(item).getAttribute('id')).focus();
 	},
 	
 	closeItemModerationPanel: function(item) {
 		$('new_tag_form_' + $(item).getAttribute('id')).hide();
 	},
 	
-	toggleOpenCloseModerationPanel: function(item) {
+	toggleOpenCloseModerationPanel: function(item, event) {
 		if($('new_tag_form_' + $(item).getAttribute('id')).visible()) {
 			this.closeItemModerationPanel(item);
 		} else {
-			this.openItemModerationPanel(item);
+			this.openItemModerationPanel(item, event);
 		}
 	},
 	
@@ -985,12 +990,6 @@ ItemBrowser.prototype = {
 		var tag_information = $("tag_information_" + $(item).getAttribute('id'));
 		var url = tag_information.getAttribute('url');
 		this.loadData(item, tag_information, url, "Unable to connect to the server to get the tag information panel.", this.closeItemTagInformationPanel.bind(this));
-	},
-	
-	loadItemModerationPanel: function(item) {
-		var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id'));
-		var url = moderation_panel.getAttribute('url') + "?" + location.hash.gsub("#", "");
-		this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
 	},
 	
 	loadData: function(item, target, url, error_message, error_callback) {
