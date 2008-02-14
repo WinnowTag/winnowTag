@@ -223,7 +223,7 @@ class FeedItem < ActiveRecord::Base
   end
   
   def self.mark_read_for(user_id, feed_item_id)
-    ReadItem.create!(:user_id => user_id, :feed_item_id => feed_item_id)
+    ReadItem.find_or_create_by_user_id_and_feed_item_id(user_id, feed_item_id)
   end
   
   # This builds the SQL to use for the find_with_filters and count_with_filters methods.
