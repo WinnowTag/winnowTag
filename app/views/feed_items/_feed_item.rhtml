@@ -1,12 +1,4 @@
 <div class="item<%= current_user.has_read_item?(feed_item) ? " read" : " unread" %>" id="<%= dom_id(feed_item) %>">
-  <form action="#" style="display:none" id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form clearfix" onsubmit="console.log('test');add_tag('<%= dom_id(feed_item) %>', $('<%= dom_id(feed_item, 'new_tag_field') %>').value); console.log('test2');this.reset(); return false;">
-    <%= link_to_function "cancel", "$(this).up('form').hide()" %>
-    <h4>Add Tag</h4>
-    <%= text_field_tag('tag', nil, :id => dom_id(feed_item, 'new_tag_field')) %>
-    <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
-    <%= auto_complete_field(dom_id(feed_item, 'new_tag_field'), :param_name => 'tag[name]', :url => auto_complete_for_tag_name_tags_path) %>
-  </form>
-
   <div class="closed clearfix">
     <span id="<%= dom_id(feed_item, 'status') %>" class="status"><%= toggle_read_unread_button %></span>
     <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>', event);">
@@ -17,7 +9,20 @@
       </span>
       <span class="title"><%= feed_item.title %></span>
       <span class="date"><%= format_date(feed_item.updated) %></span>
-      <%= tag_controls(feed_item) %>
+      <span class="tags">
+        <form action="#" style="display:none" id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form clearfix" onsubmit="console.log('test');add_tag('<%= dom_id(feed_item) %>', $('<%= dom_id(feed_item, 'new_tag_field') %>').value); console.log('test2');this.reset(); return false;">
+          <%= link_to_function "cancel", "$(this).up('form').hide()" %>
+          <h4>Add Tag</h4>
+          <%= text_field_tag('tag', nil, :id => dom_id(feed_item, 'new_tag_field')) %>
+          <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
+          <%= auto_complete_field(dom_id(feed_item, 'new_tag_field'), :param_name => 'tag[name]', :url => auto_complete_for_tag_name_tags_path) %>
+        </form>
+        
+        <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'), event)", :class => "add_tag" %>
+        <%= link_to_function "Show/Hide All Tags", "this.next('ul').toggleClassName('full')", :class => "expand" %>
+
+        <%= tag_controls(feed_item) %>
+      </span>
     </div>
   </div>  
   <div id="<%= dom_id(feed_item, 'open') %>" class="open" style="display: none;">

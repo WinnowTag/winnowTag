@@ -582,12 +582,26 @@ a.editor_cancel {
   color: #666;
 }
 
-.item .closed .tag_list {
-  height: 1.8em;
+.item .closed .tags {
   clear: both;
+  display: block;
 }
 
-.item .closed .tag_list.full {
+.item .closed .tags .add_tag {
+  float: left;
+  margin: 0 .5em;
+}
+
+.item .closed .tags .expand {
+  float: right;
+  margin: 0 .5em;
+}
+
+.item .closed .tags .tag_list {
+  height: 1.8em;
+}
+
+.item .closed .tags .tag_list.full {
   height: auto;
 }
 
@@ -764,34 +778,34 @@ ul.tag_list li .controls span {
   height: 16px;
 }
 
-ul.tag_list li .add {
+ul.tag_list li .controls .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -32px;
   cursor: pointer;
 }
 
-ul.tag_list li .remove {
+ul.tag_list li .controls .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
   cursor: pointer;
 }
 
-ul.tag_list li.positive .add {
+ul.tag_list li.positive .controls .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 0;
 }
 
-ul.tag_list li.positive .remove {
+ul.tag_list li.positive .controls .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
 }
 
-ul.tag_list li.negative .add {
+ul.tag_list li.negative .controls .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -32px;
 }
 
-ul.tag_list li.negative .remove {
+ul.tag_list li.negative .controls .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -64px;
 }

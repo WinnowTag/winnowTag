@@ -104,10 +104,7 @@ module FeedItemsHelper
       tags = feed_item.taggings_by_user(current_user)
     end
 
-    html = ""
-    html << content_tag(:li, "Add Tag", :onclick => "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'), event)") << " "
-    html << content_tag(:li, "...", :onclick => "this.up('ul').toggleClassName('full')")
-    
+    html = ""    
     tags.each do |tag, taggings|
       content = content_tag("span", h(tag.name), :class => "name")
       controls = ""
