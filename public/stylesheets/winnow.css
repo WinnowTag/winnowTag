@@ -749,16 +749,16 @@ ul.tag_list li.classifier {
   background-image: url(../images/bullet_black.png);
 }
 
-ul.tag_list li.public {
-  background-image: url(../images/bullet_blue.png);
-}
-
 ul.tag_list li.positive {
   background-image: url(../images/bullet_green.png);
 }
 
 ul.tag_list li.negative {
   background-image: url(../images/bullet_red.png);
+}
+
+ul.tag_list li.public {
+  background-image: url(../images/bullet_blue.png);
 }
 
 ul.tag_list li .controls {
