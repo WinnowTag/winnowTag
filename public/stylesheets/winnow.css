@@ -588,11 +588,6 @@ a.editor_cancel {
 }
 
 .item .closed .tags .add_tag {
-  float: left;
-  margin: 0 .5em;
-}
-
-.item .closed .tags .expand {
   float: right;
   margin: 0 .5em;
 }
@@ -601,7 +596,7 @@ a.editor_cancel {
   height: 1.8em;
 }
 
-.item .closed .tags .tag_list.full {
+.item.selected .closed .tags .tag_list {
   height: auto;
 }
 
@@ -667,7 +662,7 @@ a.editor_cancel {
   z-index: 1000;
   position: absolute;
   left: 30em;
-  top: 4em;
+  top: 3.5em;
   width: 14.2em;
 }
 

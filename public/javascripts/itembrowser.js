@@ -899,7 +899,7 @@ ItemBrowser.prototype = {
 		if(event) {
       // var top = event.pointerY();
       // container.style.top = top + "px";
-		  var left = event.pointerX() - $('sidebar_control').getDimensions().width;
+		  var left = event.pointerX() - $('sidebar_control').getDimensions().width - container.getDimensions().width;
 		  if($('sidebar').visible()) { left -= $('sidebar').getDimensions().width; }
   		container.style.left = left + "px";
 		}

@@ -17,10 +17,7 @@
           <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
           <%= auto_complete_field(dom_id(feed_item, 'new_tag_field'), :param_name => 'tag[name]', :url => auto_complete_for_tag_name_tags_path) %>
         </form>
-        
         <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'), event)", :class => "add_tag" %>
-        <%= link_to_function "Show/Hide All Tags", "this.next('ul').toggleClassName('full')", :class => "expand" %>
-
         <%= tag_controls(feed_item) %>
       </span>
     </div>
