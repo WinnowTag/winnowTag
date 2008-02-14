@@ -308,8 +308,8 @@ ItemBrowser.prototype = {
 	},
 	
 	itemHeight: function() {
-		if (this.items[0]) {
-			return this.items[0].element.offsetHeight;
+    if (this.items[0] && this.items[1]) {
+      return Math.min(this.items[0].element.offsetHeight, this.items[1].element.offsetHeight);
 		} else {
 		  return 0;
 		}
