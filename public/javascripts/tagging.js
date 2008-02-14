@@ -185,6 +185,15 @@ function show_tag_tooltip(tag, tag_name) {
 	tag.setAttribute("title", tag_tooltip);
 }
 
+function show_tag_controls(tag) {
+  tag = $(tag);
+  var controls = tag.down('.controls');
+  if(controls) {
+    controls.show();
+    tag.observe("mouseout", function() { controls.hide(); });
+  }
+}
+
 Effect.ScrollToInDiv = Class.create();
 Object.extend(Object.extend(Effect.ScrollToInDiv.prototype, Effect.Base.prototype), {
   initialize: function(container, element) {

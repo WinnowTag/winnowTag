@@ -519,13 +519,10 @@ a.editor_cancel {
 }
 
 .item .closed {
-/*  position: relative;*/
   border: 1px solid #fff;
   border-width: 2px 2px 1px 2px;
   -moz-user-select: none;
   line-height: 1.8;
-/*  height: 5.4em;*/
-/*  overflow: hidden;*/
 }
 
 .item.selected .closed {
@@ -555,7 +552,6 @@ a.editor_cancel {
 }
 
 .item .closed .opener {
-/*  height: 1.8em;*/
   cursor: pointer;
 }
 
@@ -728,29 +724,58 @@ ul.tag_list li {
   white-space: nowrap;
 }
 
-ul.tag_list li.public span {
-  background: url(../images/public.png) right center no-repeat;
-  padding: 1px 16px 2px 0;
-  margin-left: 3px;
+ul.tag_list li {
+  position: relative;
+  background-position: right center;
+  background-repeat: no-repeat;
+  padding-right: 16px;
+}
+
+ul.tag_list li.classifier {
+  background-image: url(../images/bullet_black.png);
+}
+
+ul.tag_list li.public {
+  background-image: url(../images/bullet_blue.png);
+}
+
+ul.tag_list li.positive {
+  background-image: url(../images/bullet_green.png);
+}
+
+ul.tag_list li.negative {
+  background-image: url(../images/bullet_red.png);
+}
+
+ul.tag_list li .controls {
+  position: absolute;
+  top: -8px;
+  right: -3px;
+  z-index: 900;
+  background: #fff;
+  border: 1px solid #aaa;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 0.7em;
+}
+
+ul.tag_list li .controls span {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 ul.tag_list li .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -32px;
-  padding: 1px 16px 2px 0;
-  margin-left: 3px;
   cursor: pointer;
 }
 
 ul.tag_list li .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
-  padding: 1px 16px 2px 0;
-  margin-left: 3px;
   cursor: pointer;
 }
 
-/* Positive user tagging */
 ul.tag_list li.positive .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 0;
@@ -759,12 +784,6 @@ ul.tag_list li.positive .add {
 ul.tag_list li.positive .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
-}
-
-/* Negative user tagging */
-
-ul.tag_list li.public.negative {
-  color: #B2563F;
 }
 
 ul.tag_list li.negative .add {
