@@ -96,8 +96,7 @@ module FeedItemsHelper
     params[:manual_taggings] =~ /true/i ? true : false 
   end
  
-  def tag_controls(feed_item, options = {})
-    options[:hide] = Array(options[:hide])    
+  def tag_controls(feed_item)
     if show_manual_taggings?
       tags = feed_item.taggings_by_user(current_user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
     else
@@ -108,14 +107,13 @@ module FeedItemsHelper
     tags.each do |tag, taggings|
       content = content_tag("span", h(tag.name), :class => "name")
       controls = ""
-      controls << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}', true);", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
-      controls << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}');", :onmouseover => "show_control_tooltip(this, this.parentNode, '#{escape_javascript(tag.name)}');")
+      controls << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", :onmouseover => "show_control_tooltip(this, this.parentNode, #{tag.name.to_json});")
+      controls << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", :onmouseover => "show_control_tooltip(this, this.parentNode, #{tag.name.to_json});")
       content << content_tag("span", controls, :class => "controls", :style => "display:none")
       classes = classes_for_taggings(taggings).join(' ')
       unless classes.blank?
         html << content_tag('li', content, 
           :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes, 
-          :style => options[:hide].include?(tag.name) ? "display: none;" : nil, 
           :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}); show_tag_controls(this);") + " "
       end
     end
