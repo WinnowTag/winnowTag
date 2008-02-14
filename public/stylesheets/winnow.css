@@ -40,7 +40,7 @@ a.close img {
   height: 12px;
 }
 
-#notice, #warning, #error {
+#notice, #warning, #error, #confirm {
   margin: 5px;
   padding: 5px 5px 5px 26px;
 }
@@ -51,9 +51,15 @@ a.close img {
   border: 1px solid #A0DC11;
 }
 
-#warning {
+#warning, #confirm {
   background: #FBF6D3 url(../images/vertical_sprite.png) no-repeat;
   background-position: 5px -475px;
+  border: 1px solid #D28D37;
+}
+
+#confirm {
+  background: #FBF6D3 url(../images/help.png) no-repeat;
+  background-position: 5px 5px;
   border: 1px solid #D28D37;
 }
 
@@ -62,7 +68,6 @@ a.close img {
   background-position: 5px -443px;
   border: 1px solid #FF260B;
 }
-
 
 #forms {
   border: none;

@@ -184,6 +184,34 @@ describe Tag do
     end
   end
   
+  describe "#potentially_undertrained?" do
+    before(:each) do
+      @user = User.create! valid_user_attributes
+      @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag')
+      # I need more items to tag
+      valid_feed_item!
+      valid_feed_item!
+    end
+    
+    it "should return true if positive taggings less than 6" do
+      FeedItem.find(:all).first(5).each do |i|
+        @tag.taggings.create!(:feed_item => i, :user => @user, :classifier_tagging => false, :strength => 1)
+      end
+      
+      @tag.should have(5).positive_taggings
+      @tag.should be_potentially_undertrained
+    end
+    
+    it "should return false if positive taggings 6" do
+      FeedItem.find(:all).each do |i|
+        @tag.taggings.create!(:feed_item => i, :user => @user, :classifier_tagging => false, :strength => 1)
+      end
+      
+      @tag.should have_at_least(5).positive_taggings
+      @tag.should_not be_potentially_undertrained
+    end
+  end
+  
   describe "from test/unit" do
     fixtures :users
 

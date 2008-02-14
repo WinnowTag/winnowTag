@@ -66,6 +66,25 @@ ErrorMessage.prototype = {
 	}	
 };
 
+var ConfirmationMessage = Class.create();
+ConfirmationMessage.prototype = {
+  initialize: function(message, options) {
+    this.options = {}
+		Object.extend(this.options, options || {});
+		
+    $('confirm').update(message + ' <a href="#" id="confirm_yes">Yes</a> or <a href="#" id="confirm_no">No</a>');
+    Event.observe($('confirm_no'), 'click', function() { $('confirm').hide(); resizeContent(); });
+    Event.observe($('confirm_yes'), 'click', function() { $('confirm').hide(); resizeContent(); });
+    
+    if (this.options.onConfirmed) {
+      Event.observe($('confirm_yes'), 'click', this.options.onConfirmed);
+    }
+    
+    $('confirm').show();
+    resizeContent();
+  }
+};
+
 var timeout_id = 1;
 var TimeoutMessage = Class.create();
 TimeoutMessage.prototype = {

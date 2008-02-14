@@ -106,15 +106,24 @@ Classification.prototype = {
 		classification = this;
 	},
 	
-	start: function() {
+	/* puct_confirm == true means that that user has confirmed that they want to 
+	 * classify some potentially undertrained tags.
+	 */
+	start: function(puct_confirm) {
 		this.notify('Start');		
 		this.showProgressBar();
-						
+		
+		parameters = null;
+		if (puct_confirm) {
+		  parameters = {puct_confirm: 'true'};
+		}	
+					
 		new Ajax.Request(this.classifier_url + '/classify', {
+		  parameters: parameters,
 			evalScripts: true,
 			onSuccess: function() {
 				this.notify('Started');
-				this.startProgressUpdater();				
+				this.startProgressUpdater();	
 			}.bind(this),
 			onFailure: function(transport) {
 				if (transport.responseText == "The classifier is already running.") {
@@ -134,6 +143,18 @@ Classification.prototype = {
 			onTimeout: function() {
 				this.notify("Cancelled");
 				new ErrorMessage(this.timeoutMessage)
+			}.bind(this),
+			on412: function(response) {
+			  this.notify('Cancelled');
+			  var tags = response.responseJSON;
+			  tags = tags.map(function(t) { return "'" + t + "'";});
+			  
+			  new ConfirmationMessage("You are about to classify " + tags.join(",") + ' which has less than 6 positive examples. ' +
+			                          'This might not work as well as you would expect.<br/>' + 'Do you want to proceed anyway?',
+			                          {onConfirmed: function() {
+			                            classification = Classification.createItemBrowserClassification('/classifier');
+			                            classification.start(true);
+			                          }});
 			}.bind(this)
 		});
 	},

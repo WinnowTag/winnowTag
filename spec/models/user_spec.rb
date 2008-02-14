@@ -96,6 +96,52 @@ describe User do
     end
   end
   
+  describe '#changed_tags' do
+    before(:each) do
+      @user = User.create! valid_user_attributes      
+      @changed_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
+      @unchanged_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.tomorrow.getutc))
+    end
+    
+    it "should return tag with updated_on later than last_classified" do
+      @user.changed_tags.should include(@changed_tag)
+    end
+    
+    it "should not return the unchanged tag" do
+      @user.changed_tags.should_not include(@unchanged_tag)
+    end
+  end
+  
+  describe '#potentially_undertrained_changed_tags' do
+    before(:each) do
+      valid_feed_item!
+      valid_feed_item!
+      @user = User.create! valid_user_attributes      
+      @changed_tag_with_5 = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
+      @changed_tag_with_6 = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
+      @unchanged_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.tomorrow.getutc))
+      
+      FeedItem.find(:all).first(5).each do |i|
+        @changed_tag_with_5.taggings.create!(:user => @user, :feed_item => i, :strength => 1)
+      end
+      FeedItem.find(:all).each do |i|
+        @changed_tag_with_6.taggings.create!(:user => @user, :feed_item => i, :strength => 1)
+      end
+    end
+    
+    it "should not return an unchanged tag" do
+      @user.potentially_undertrained_changed_tags.should_not include(@unchanged_tag)
+    end
+    
+    it "should not return a changed tag which is not potentially undertrained" do
+      @user.potentially_undertrained_changed_tags.should_not include(@changed_tag_with_6)
+    end
+    
+    it "should return a changed tag with is potentially undertrained" do
+      @user.potentially_undertrained_changed_tags.should include(@changed_tag_with_5)
+    end
+  end
+  
   describe "from test/unit" do
     fixtures :users
     

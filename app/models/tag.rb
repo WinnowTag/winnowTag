@@ -24,10 +24,12 @@ end
 #  name :string(255)   
 #
 
-class Tag < ActiveRecord::Base
-  include ActionView::Helpers::TextHelper
+class Tag < ActiveRecord::Base  
+  cattr_accessor :undertrained_threshold
+  @@undertrained_threshold = 6
   
   has_many :taggings, :dependent => :delete_all
+  has_many :positive_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ? and strength = ?', false, 1]
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true], 
             :dependent => :delete_all
@@ -119,6 +121,10 @@ class Tag < ActiveRecord::Base
     
   def delete_classifier_taggings!
     Tagging.delete_all("classifier_tagging = 1 and tag_id = #{self.id}")
+  end
+  
+  def potentially_undertrained?
+    self.positive_taggings.size < Tag.undertrained_threshold
   end
   
   def self.find_all_with_count(options = {})

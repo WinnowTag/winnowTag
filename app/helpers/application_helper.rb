@@ -21,7 +21,7 @@ module ApplicationHelper
   end
       
   def show_flash
-    [:notice, :warning, :error].map do |name|
+    [:notice, :warning, :error, :confirm].map do |name|
       close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => 'Close Message')
       content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display: none" : nil
     end.join
