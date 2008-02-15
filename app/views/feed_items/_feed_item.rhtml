@@ -10,7 +10,7 @@
       <span class="title"><%= feed_item.title %></span>
       <span class="date"><%= format_date(feed_item.updated) %></span>
       <span class="item_tags">
-        <form action="#" style="display:none" id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form clearfix" onsubmit="console.log('test');add_tag('<%= dom_id(feed_item) %>', $('<%= dom_id(feed_item, 'new_tag_field') %>').value); console.log('test2');this.reset(); return false;">
+        <form action="#" style="display:none" id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form clearfix" onsubmit="add_tag('<%= dom_id(feed_item) %>', $('<%= dom_id(feed_item, 'new_tag_field') %>').value); this.reset(); return false;">
           <%= link_to_function "cancel", "$(this).up('form').hide()" %>
           <h4>Add Tag</h4>
           <%= text_field_tag('tag', nil, :id => dom_id(feed_item, 'new_tag_field')) %>
