@@ -1,3 +1,3 @@
-ExceptionNotifier.exception_recipients = %w(wizzadmin@peerworks.org)
+ExceptionNotifier.exception_recipients = %w(winnowadmin@mindloom.org)
 ExceptionNotifier.email_prefix = "[WINNOW] "
-ExceptionNotifier.sender_address = %("Winnow Admin" <wizzadmin@peerworks.org>)
+ExceptionNotifier.sender_address = %("Winnow Admin" <winnowadmin@mindloom.org>)
