@@ -582,21 +582,21 @@ a.editor_cancel {
   color: #666;
 }
 
-.item .closed .tags {
+.item .closed .item_tags {
   clear: both;
   display: block;
 }
 
-.item .closed .tags .add_tag {
+.item .closed .item_tags .add_tag {
   float: right;
   margin: 0 .5em;
 }
 
-.item .closed .tags .tag_list {
+.item .closed .item_tags .tag_list {
   height: 1.8em;
 }
 
-.item.selected .closed .tags .tag_list {
+.item.selected .closed .item_tags .tag_list {
   height: auto;
 }
 
