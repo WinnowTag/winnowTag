@@ -107,8 +107,8 @@ module FeedItemsHelper
     tags.each do |tag, taggings|
       content = content_tag("span", h(tag.name), :class => "name")
       controls = ""
-      controls << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", :onmouseover => "show_control_tooltip(this, this.parentNode, #{tag.name.to_json});")
-      controls << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", :onmouseover => "show_control_tooltip(this, this.parentNode, #{tag.name.to_json});")
+      controls << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
+      controls << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
       content << content_tag("span", controls, :class => "controls", :style => "display:none")
       classes = classes_for_taggings(taggings).join(' ')
       unless classes.blank?

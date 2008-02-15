@@ -123,8 +123,8 @@ function add_tag_control(taggable_id, tag) {
   var tag_control = '<li id="' + tag_control_id + '" class="positive" style="display: none;" onmouseover="show_tag_tooltip(this, \'' + escape_javascript(tag) + '\'); show_tag_controls(this);">' + 
     '<span class="name">' + tag + '</span>' + 
     '<span class="controls" style="display:none">' +
-      '<span class="add" onclick="add_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', true);" onmouseover="show_control_tooltip(this, this.parentNode, \'' + escape_javascript(tag) + '\');"></span>' + 
-      '<span class="remove" onclick="remove_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\');" onmouseover="show_control_tooltip(this, this.ParentNode, \'' + escape_javascript(tag) + '\');"></span>' + 
+      '<span class="add" onclick="add_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', true);" onmouseover="show_control_tooltip(this, $(this).up(\'li\'), \'' + escape_javascript(tag) + '\');"></span>' + 
+      '<span class="remove" onclick="remove_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\');" onmouseover="show_control_tooltip(this, $(this).up(\'li\'), \'' + escape_javascript(tag) + '\');"></span>' + 
     '</span>' +
   '</li>';
 
