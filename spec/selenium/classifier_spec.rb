@@ -29,6 +29,15 @@ describe 'Classifier Controls' do
     assert_visible 'confirm_no'
   end
   
+  it "should use correct english when there is more than one tag" do
+    Tag.create! :name => 'another tag', :user_id => 1
+    click 'classification_button'
+    wait_for_ajax
+    assert_visible 'confirm'
+    assert_match("You are about to classify 'tag' and 'another tag' which have less than 6 positive examples. ",
+                  get_text('confirm'))
+  end
+  
   it "should close the confirmation when no is clicked" do
     click 'classification_button'
     wait_for_ajax
