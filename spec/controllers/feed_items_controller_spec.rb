@@ -102,6 +102,16 @@ describe FeedItemsController do
     end
   end
   
+  def test_mark_read_twice_only_creates_one_entry_and_doesnt_fail
+    assert_difference("ReadItem.count", 1) do
+      login_as(:quentin)
+      put :mark_read, :id => 1, :format => "js"
+      assert_response :success
+      put :mark_read, :id => 1, :format => "js"
+      assert_response :success
+    end
+  end
+  
   def test_mark_many_read
     users(:quentin).read_items.create(:feed_item_id => 1)
     users(:quentin).read_items.create(:feed_item_id => 2)
