@@ -48,21 +48,21 @@ describe "folders" do
     dont_see_element "#folder_#{@existing_folder.id}"
   end  
   
-  # it "can have feeds added" do
-  #   assert_not_visible "add_feed"
-  # 
-  #   click "add_feed_link"
-  #   assert_visible "add_feed"
-  #   
-  #   dont_see_element "#feed_#{@example_feed.id}"
-  #   
-  #   type "feed_title", @example_feed.title
-  #   wait_for_ajax
-  #   hit_enter "feed_title"
-  #   wait_for_ajax
-  #   
-  #   see_element "#feed_#{@example_feed.id}"
-  # end
+  xit "can have feeds added" do
+      assert_not_visible "add_feed"
+    
+      click "add_feed_link"
+      assert_visible "add_feed"
+      
+      dont_see_element "#feed_#{@example_feed.id}"
+      
+      type "feed_title", @example_feed.title
+      wait_for_ajax
+      hit_enter "feed_title"
+      wait_for_ajax
+      
+      see_element "#feed_#{@example_feed.id}"
+    end
   
   it "can have feeds removed" do
     see_element "#feed_#{@another_example_feed.id}"
@@ -72,16 +72,16 @@ describe "folders" do
     dont_see_element "#feed_#{@another_example_feed.id}"
   end
   
-  # it "can have private tags added"
-  # it "can have private tags removed"
-  # it "can have public tags added"
-  # it "can have public tags removed"
-  # it "can have private tags renamed"
-  # it "can have a feed moved to a custom folder"
-  # it "can have a feed removed from a custom folder"
-  # it "can have a private tag moved to a custom folder"
-  # it "can have a private tag removed from a custom folder"
-  # it "can have a public tag moved to a custom folder"
-  # it "can have a public tag removed from a custom folder"
-  # it "can have private tags renamed in custom folders"
+  xit "can have private tags added"
+  xit "can have private tags removed"
+  xit "can have public tags added"
+  xit "can have public tags removed"
+  xit "can have private tags renamed"
+  xit "can have a feed moved to a custom folder"
+  xit "can have a feed removed from a custom folder"
+  xit "can have a private tag moved to a custom folder"
+  xit "can have a private tag removed from a custom folder"
+  xit "can have a public tag moved to a custom folder"
+  xit "can have a public tag removed from a custom folder"
+  xit "can have private tags renamed in custom folders"
 end
