@@ -10,7 +10,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe 'Classifier Controls' do
   before(:each) do
     Tag.delete_all
-    Tag.create! :name => 'tag', :user_id => 1
+    @tag = Tag.create! :name => 'tag', :user_id => 1
     login
     open feed_items_path
     wait_for_ajax
@@ -34,7 +34,7 @@ describe 'Classifier Controls' do
     click 'classification_button'
     wait_for_ajax
     assert_visible 'confirm'
-    assert_match("You are about to classify 'tag' and 'another tag' which have less than 6 positive examples. ",
+    assert_match("You are about to classify 'another tag' and 'tag' which have less than 6 positive examples. ",
                   get_text('confirm'))
   end
   
@@ -59,5 +59,23 @@ describe 'Classifier Controls' do
     assert_visible 'error'
   end
   
-  it "should be tested during actual classifier operation"
+  it "should not trample the location.hash when confirm_yes is clicked (bug #661)" do
+    click "name_tag_#{@tag.id}"
+    location = get_location
+    click 'classification_button'
+    wait_for_ajax
+    click 'confirm_yes'
+    get_location.should == location
+  end
+  
+  it "should not trample the location.hash when confirm_no is clicked (bug #661)" do
+    click "name_tag_#{@tag.id}"
+    location = get_location
+    click 'classification_button'
+    wait_for_ajax
+    click 'confirm_no'
+    get_location.should == location
+  end
+  
+  xit "should be tested during actual classifier operation"
 end

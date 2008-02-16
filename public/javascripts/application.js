@@ -72,13 +72,19 @@ ConfirmationMessage.prototype = {
     this.options = {}
 		Object.extend(this.options, options || {});
 		
-    $('confirm').update(message + ' <a href="#" id="confirm_yes">Yes</a> or <a href="#" id="confirm_no">No</a>');
-    Event.observe($('confirm_no'), 'click', function() { $('confirm').hide(); resizeContent(); });
-    Event.observe($('confirm_yes'), 'click', function() { $('confirm').hide(); resizeContent(); });
-    
-    if (this.options.onConfirmed) {
-      Event.observe($('confirm_yes'), 'click', this.options.onConfirmed);
-    }
+    $('confirm').update(message + 
+                        ' <a href="#" id="confirm_yes" onclick="return false;">Yes</a>' +
+                        ' or <a href="#" id="confirm_no" onclick="return false">No</a>');
+    Event.observe($('confirm_no'), 'click', function() { $('confirm').hide(); resizeContent(); return false});
+    Event.observe($('confirm_yes'), 'click', function() { 
+      $('confirm').hide(); 
+      resizeContent();
+      if (this.options.onConfirmed) {
+        this.options.onConfirmed();        
+      }
+      
+      return false;
+    }.bindAsEventListener(this));    
     
     $('confirm').show();
     resizeContent();

@@ -148,7 +148,7 @@ Classification.prototype = {
 			  this.notify('Cancelled');
 			  if (response.responseJSON) {
   			  var haveOrHas = "has";
-			    var tags = response.responseJSON.map(function(t) { return "'" + t + "'";});;
+			    var tags = response.responseJSON.map(function(t) { return "'" + t + "'";}).sort();
   			  var tag_names = tags.first();
 			  
   			  if (tags.size() > 1) {
