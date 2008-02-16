@@ -3,8 +3,9 @@
 <% form_for :feed, @feed, :url => feeds_path do |f| %>
 	<fieldset>
 		<legend>Enter a new Feed URL</legend>
+		<p>Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains.</p>
 		<p>Only items with enough text for the classifier to use will be collected from the feed.</p>
-		<p><%= f.label(:url, "FeedURL") %><%= f.text_field :url, :size => 70 %></p>
+		<p><%= f.label(:url, "URL:") %><%= f.text_field :url, :size => 70 %></p>
 		<p><label>&nbsp;</label>
 			<%= submit_tag "Create Feed" %> 
 			<%= link_to "Cancel", feeds_path %>
