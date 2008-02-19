@@ -27,7 +27,7 @@
   <tbody id="content">
   	<% for user in @users -%>
   	<tr>
-  		<td><%= control_link user.login, user_url(user) %></td>
+  		<td><%= link_to user.login, user_url(user) %></td>
   		<td><%= user.display_name %></td>
   		<td><%= user.email %></td>
   		<td class="date"><%= format_date(user.logged_in_at) %></td>

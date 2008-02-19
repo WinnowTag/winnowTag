@@ -27,69 +27,6 @@ module ApplicationHelper
     end.join
   end
   
-  def property_row(obj, property, title = property.to_s.humanize, *args)
-    if args.any?
-      data = obj.send(property, *args)
-    else
-      data = obj.send(property)
-    end
-    
-    css_class = case data
-                when Numeric
-                  "number"
-                when Time
-                  data = format_date(data)
-                  "date"
-                end
-
-    
-    content_tag('tr',
-      content_tag('th', title) +
-      content_tag('td', data, :class => css_class)
-    )
-  end
-  
-  def appendable_url_for(options = {})
-    url = url_for(options)
-    
-    if url =~ /.*\?.*/
-      url += '&'
-    else
-      url += '?'
-    end
-  end
-  
-  # flattens nested params - only handles one level of nesting
-  def flatten_params(options = {})
-    skip = Array(options[:skip])
-    params.inject({}) do |hash, (key, value)|
-      if value.is_a? Hash and not(skip.include?(key))
-        value.inject(hash) do |hash, subentry|
-          subkey, subvalue = subentry
-          hash["#{key}[#{subkey}]"] = subvalue
-          hash
-        end
-      elsif not(skip.include?(key))
-        hash[key] = value
-      end
-      
-      hash
-    end
-  end
-  
-  def pagination_links(paginator, options = {}, html_options = {})
-    options = options.merge :link_to_current_page => true
-    options[:params] ||= {}
-    
-    pagination_links_each(paginator, options) do |page|
-      if page == paginator.current_page.number
-        content_tag('span', page, :class => 'current_page')
-      else
-        content_tag('span', link_to(page, options[:params].merge(:page => page), html_options))
-      end
-    end
-  end
-  
   # Provides some assistance over link_to for special control links
   #
   # == New Parameters

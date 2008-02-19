@@ -18,7 +18,7 @@
     		<td class="number"><%= feed.feed_items_count %></td>
     		<td class="date"><%= format_date(feed.updated_on) %></td>
     		<td class="controls">
-    			<%= control_link image_tag("show.gif"), feed_items_path(:anchor => "feed_ids=#{feed.id}") %>
+    			<%= link_to image_tag("show.gif"), feed_items_path(:anchor => "feed_ids=#{feed.id}") %>
     		</td>
       </tr>
     <% end %>
