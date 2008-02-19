@@ -883,7 +883,7 @@ ItemBrowser.prototype = {
 	},
 	
 	toggleOpenCloseItem: function(item, event) {
-	  if(event && event.element().up('.item_tags')) { return false; }
+	  if(event && event.element().up('.tag_list')) { return false; }
 		if($('open_' + $(item).getAttribute('id')).visible() && $('body_' + $(item).getAttribute('id')).visible()) {
 			this.closeItem(item);
 		} else {
