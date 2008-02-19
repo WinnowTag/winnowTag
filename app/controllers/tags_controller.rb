@@ -200,11 +200,14 @@ class TagsController < ApplicationController
   end
   
   def unsubscribe
-    if tag = Tag.find_by_id_and_public(params[:id], true)
-      TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
-      TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
+    if @tag = Tag.find_by_id_and_public(params[:id], true)
+      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
-    redirect_to :back
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
+    end
   end
   
   def sidebar

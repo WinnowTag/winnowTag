@@ -46,6 +46,7 @@ describe "Tags" do
     click "destroy_tag_#{tag.id}"
     assert is_confirmation_present
     get_confirmation
+    wait_for_ajax
     dont_see_element "#destroy_tag_#{tag.id}"
   end
   

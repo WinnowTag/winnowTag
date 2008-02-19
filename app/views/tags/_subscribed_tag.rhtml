@@ -6,9 +6,8 @@
   <td><%= globally_exclude_check_box(subscribed_tag) %></td>
 	<td><%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %></td>
  	<td class="control_icons" id="<%= dom_id(subscribed_tag, "controls") %>">
-    <%= link_to_remote image_tag('copy.gif', :title => "Copy #{subscribed_tag.name}"), :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}" %>
-    <%= link_to image_tag('trash.gif'), {:action => 'unsubscribe', :id => subscribed_tag}, 
-    			:method => 'put', :title => "Unsubscribe #{subscribed_tag.name}", :id => dom_id(subscribed_tag, "unsubscribe") %>
+    <%= link_to_remote "Copy", :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}", :html => { :title => "Copy #{subscribed_tag.name}", :class => "replace duplicate_icon" } %>
+    <%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "replace destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe_tag') } %>
 	</td>
   <td class="number">
     <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
@@ -20,7 +19,7 @@
   <td class="indented" nowrap="nowrap"><%= subscribed_tag.user.display_name %></td>
   <td><%= bias_slider(subscribed_tag, :disabled => true) %></td>
 </tr>
-<tr class="comment">
+<tr id="<%= dom_id(subscribed_tag, :comment) %>" class="comment">
   <td colspan="9">
     <%= subscribed_tag.comment %>
   </td>
