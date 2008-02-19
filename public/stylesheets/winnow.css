@@ -723,22 +723,18 @@ ul.tag_list {
 
 ul.tag_list li {
   display: inline;
-  background: #fff;
-  color: #000;
-  border: 1px solid #aaa;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 0.7em;
-  padding: 2px 0.4em 4px;
-  margin: 0 0 5px 0;
+  color: #666;
+  padding: 0;
+  margin: 0;
   line-height: 1.8;
   white-space: nowrap;
 }
 
 ul.tag_list li {
   position: relative;
-  background-position: right center;
+  background-position: left center;
   background-repeat: no-repeat;
-  padding-right: 16px;
+  padding-left: 18px;
 }
 
 ul.tag_list li.classifier {
@@ -747,14 +743,17 @@ ul.tag_list li.classifier {
 
 ul.tag_list li.positive {
   background-image: url(../images/bullet_green.png);
+  color: #52984B;
 }
 
 ul.tag_list li.negative {
   background-image: url(../images/bullet_red.png);
+  color: #C12A2F;
 }
 
 ul.tag_list li.public {
   background-image: url(../images/bullet_blue.png);
+  color: #2691BF;
 }
 
 ul.tag_list.unused li {
@@ -765,7 +764,7 @@ ul.tag_list.unused li {
 ul.tag_list li .controls {
   position: absolute;
   top: -8px;
-  right: -3px;
+  left: -1px;
   z-index: 900;
   background: #fff;
   border: 1px solid #aaa;
