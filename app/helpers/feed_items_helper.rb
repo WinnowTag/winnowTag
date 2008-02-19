@@ -6,12 +6,7 @@
 #
 
 module FeedItemsHelper
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::FormTagHelper
-  include ActionView::Helpers::CaptureHelper
-  include ActionView::Helpers::TextHelper
   include BiasSliderHelper
-  TAG_SEPARATOR = '&#32;<span class="tag_separator">&#8226;</span>&#32;' unless const_defined?(:TAG_SEPARATOR)
   STRIPPED_ELEMENTS = %w(script style link meta) unless const_defined?(:STRIPPED_ELEMENTS)
   
   def clean_html(html)
