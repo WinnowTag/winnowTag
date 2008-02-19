@@ -22,11 +22,19 @@ module FeedItemsHelper
     end
   end
   
-  def feed_link(feed_item, options = {})
-    if feed_item.feed.alternate 
-      link_to(feed_item.feed.title, feed_item.feed.alternate, options) 
+  def link_to_feed(feed, options = {})
+    if feed.alternate 
+      link_to(feed.title, feed.alternate, :target => "_blank") 
     else
-      feed_item.feed.title
+      feed.title
+    end
+  end
+  
+  def link_to_feed_item(feed_item)
+    if feed_item.link 
+      link_to(feed_item.title, feed_item.link, :target => "_blank") 
+    else
+      feed_item.title
     end
   end
   
@@ -34,18 +42,7 @@ module FeedItemsHelper
     link_to_function "", "itemBrowser.toggleReadUnreadItem(this.up('.item'))", 
           :onmouseover => "this.title = 'Click to mark as ' + ($(this).up('.item').match('.read') ? 'unread' : 'read');"
   end
-  
-  # Classification helpers
-  # TODO: Remove if we are not using this, else update it to work with new filters
-  def report_in_progress_classification
-    #if current_user.classifier.current_job
-    #  javascript_tag <<-END_JS
-    #    classification = Classification.createItemBrowserClassification('/classifier');
-    #    classification.startProgressUpdater();
-    #  END_JS
-    #end
-  end
-  
+    
   # Creates the classification button.
   #
   # When pressed, the classification button creates a Classification
@@ -60,14 +57,7 @@ module FeedItemsHelper
   # to the current user.
   #
   def classification_button
-    display = ""
-    #if current_user.classifier.current_job
-    #  display = "display: none"
-    #end
-     
-    classifier_path = "/classifier"
-     
-    button_to_function 'Start', :id => 'classification_button', :style => display do |page|
+    button_to_function 'Start', :id => 'classification_button' do |page|
       page << <<-END_JS
          classification = Classification.createItemBrowserClassification(#{classifier_path.to_json});
          classification.start();
@@ -75,19 +65,10 @@ module FeedItemsHelper
     end
   end
   
-  # TODO: Remove if we are not using this, else update it to work with new filters
   def cancel_classification_button
-    display = "display: none"
-    #if current_user.classifier.current_job
-    #  display = ""
-    #end
-    
-    button_to_function("Stop", 'cancelClassification();', 
-                        :style => display, 
-                        :id => 'cancel_classification_button')
+    button_to_function("Stop", 'cancelClassification();', :style => "display: none", :id => 'cancel_classification_button')
   end
   
-  # TODO: Remove if we are not using this, else update it to work with new filters
   def classifier_progress_title
     "Classify changed tags"
   end
@@ -147,7 +128,6 @@ module FeedItemsHelper
     content_tag "ul", html, :class => "tag_list unused clearfix", :id => dom_id(feed_item, "unused_tag_controls") 
   end   
 
-	# Creates an array of CSS class names for a list of taggings.
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
     
@@ -169,9 +149,5 @@ module FeedItemsHelper
     end
     
     classes.uniq
-  end
-
-  def link_to_feed_item(feed_item)
-    feed_item.link ? link_to(feed_item.title, feed_item.link, :target => "_blank") : feed_item.title
   end
 end

@@ -80,18 +80,23 @@ describe FeedItemsHelper do
     end
   end
   
-  it "feed_link_without_link" do
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => nil))
-    assert_equal "Feed Title", feed_link(feed_item)
+  it "link_to_feed_without_link" do
+    feed = mock_model(Feed, :title => "Feed Title", :alternate => nil)
+    assert_equal "Feed Title", link_to_feed(feed)
   end
   
-  it "feed_link_with_link" do
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com"))
-    assert_equal '<a href="http://example.com">Feed Title</a>', feed_link(feed_item)
+  it "link_to_feed_with_link" do
+    feed = mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com")
+    assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', link_to_feed(feed)
   end
   
-  it "feed_link_with_link_and_options" do
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com"))
-    assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', feed_link(feed_item, :target => "_blank")
+  it "link_to_feed_item_without_link" do
+    feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => nil)
+    assert_equal "FeedItem Title", link_to_feed_item(feed_item)
+  end
+  
+  it "link_to_feed_item_with_link" do
+    feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => "http://example.com")
+    assert_equal '<a href="http://example.com" target="_blank">FeedItem Title</a>', link_to_feed_item(feed_item)
   end
 end
