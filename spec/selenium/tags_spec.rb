@@ -32,11 +32,12 @@ describe "Tags" do
     assert_equal new_position, get_element_position_left("css=div.slider_handle")
   end
   
-  def test_unsubscribing_from_a_tag
+  it "can be unsubscribed by clicking the destroy link" do
     tag = Tag.find(2)
   
     see_element "#unsubscribe_tag_#{tag.id}"
-    click_and_wait "unsubscribe_tag_#{tag.id}"
+    click "unsubscribe_tag_#{tag.id}"
+    wait_for_ajax
     dont_see_element "#unsubscribe_tag_#{tag.id}"
   end
 

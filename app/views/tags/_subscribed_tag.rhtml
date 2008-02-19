@@ -7,7 +7,7 @@
 	<td><%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %></td>
  	<td class="control_icons" id="<%= dom_id(subscribed_tag, "controls") %>">
     <%= link_to_remote "Copy", :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}", :html => { :title => "Copy #{subscribed_tag.name}", :class => "replace duplicate_icon" } %>
-    <%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "replace destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe_tag') } %>
+    <%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "replace destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %>
 	</td>
   <td class="number">
     <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
