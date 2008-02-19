@@ -7,12 +7,10 @@
         <%# Prevent the item from opening when the feed title is clicked %>
         <%= javascript_tag "Event.observe('#{dom_id(feed_item, 'feed_link_for')}','click', function(e) {e.stopPropagation();});" %>
       </span>
-      <span class="title"><%= feed_item.title %></span>
+      <span class="title"><%= feed_item.title %></span> 
       <span class="date"><%= format_date(feed_item.updated) %></span>
-      <span class="item_tags">
-        <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'))", :id => dom_id(feed_item, "add_tag"), :class => "add_tag" %>
-        <%= tag_controls(feed_item) %>
-      </span>
+      <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'))", :id => dom_id(feed_item, "add_tag"), :class => "add_tag" %>
+      <%= tag_controls(feed_item) %>
     </div>
   </div>  
   <div id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form" style="display: none;" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div> 

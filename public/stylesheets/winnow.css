@@ -519,6 +519,7 @@ a.editor_cancel {
 }
 
 .item .closed {
+  position: relative;
   border: 1px solid #fff;
   border-width: 2px 2px 1px 2px;
   -moz-user-select: none;
@@ -567,9 +568,11 @@ a.editor_cancel {
 .item .closed .title {
   float: left;
   margin-left: 20px;
+  height: 1.8em;
   overflow: hidden;
   text-align: left;
   font-weight: bold;
+  max-width: 40%;
 }
 
 .item.read .closed .title {
@@ -578,25 +581,21 @@ a.editor_cancel {
 
 .item .closed .date {
   float: right;
-  margin: 0 2px 0 2px;
+  margin-right: 2px;
   color: #666;
 }
 
-.item .closed .item_tags {
-  clear: both;
-  display: block;
-}
-
-.item .closed .item_tags .add_tag {
+.item .closed .add_tag {
   float: right;
   margin: 0 .5em;
 }
 
-.item .closed .item_tags .tag_list {
+.item .closed .tag_list {
+  text-align: right;
   height: 1.8em;
 }
 
-.item.selected .closed .item_tags .tag_list {
+.item.selected .closed .tag_list {
   height: auto;
 }
 
