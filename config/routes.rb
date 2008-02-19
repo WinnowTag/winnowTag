@@ -91,11 +91,10 @@ ActionController::Routing::Routes.draw do |map|
   
   map.with_options :controller => "about" do |about_map|
     about_map.about "about"
+    about_map.using "using", :action => "using"
   end
   
   map.admin "admin", :controller => "admin"
-  
-  map.welcome "welcome", :controller => "welcome"
   
   map.root :controller => "feed_items"
 end

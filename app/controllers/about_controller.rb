@@ -6,7 +6,6 @@
 #
 
 class AboutController < ApplicationController
-
   def index
     @about = `svn info #{__FILE__}`
     
@@ -23,5 +22,8 @@ class AboutController < ApplicationController
     rescue
       @classifier_info = nil
     end
+  end
+  
+  def using
   end
 end

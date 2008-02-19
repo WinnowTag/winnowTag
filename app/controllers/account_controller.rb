@@ -54,7 +54,7 @@ class AccountController < ApplicationController
       if @user.save && @user.activate
         @invite.update_attribute :user_id, @user.id
         self.current_user = @user
-        redirect_back_or_default welcome_path
+        redirect_back_or_default using_path
       else
         render :action => 'login'
       end
