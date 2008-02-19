@@ -7,15 +7,6 @@
 module ApplicationHelper  
   include DateHelper
   
-  # Permit methods in the ApplicationController to be called from views.
-  def method_missing(method, *args, &block)
-    if ApplicationController.instance_methods.include?(method.to_s) && defined?(controller)
-      controller.send(method, *args, &block)
-    else
-      super
-    end
-  end
-  
   def tab_selected(controller, action = nil)
     "selected" if params[:controller] == controller and (action.nil? or params[:action] == action)
   end

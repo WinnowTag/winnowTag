@@ -13,19 +13,9 @@ class ApplicationController < ActionController::Base
 
   include ExceptionNotifiable
   include AuthenticatedSystem
+  helper_method :render_to_string, :controller_name, :action_name
+  
   before_filter :login_from_cookie, :login_required
-  SHOULD_BE_POST = {
-        :text => 'Bad Request. Should be POST. ' +
-                 'Please report this bug. Make ' +
-                 'sure you have Javascript enabled too! ', 
-        :status => 400
-      } unless defined?(SHOULD_BE_POST)
-  MISSING_PARAMS = {
-        :text => 'Bad Request. Missing Parameters. ' +
-                 'Please report this bug. Make ' +
-                 'sure you have Javascript enabled too! ', 
-        :status => 400
-      } unless defined?(MISSING_PARAMS)
 
 protected
   def check_atom
