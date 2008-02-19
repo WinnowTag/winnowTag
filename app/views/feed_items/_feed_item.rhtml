@@ -9,7 +9,7 @@
       </span>
       <span class="title"><%= feed_item.title %></span> 
       <span class="date"><%= format_date(feed_item.updated) %></span>
-      <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'))", :id => dom_id(feed_item, "add_tag"), :class => "add_tag" %>
+      <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item')); Event.stop(event);", :id => dom_id(feed_item, "add_tag"), :class => "add_tag" %>
       <%= tag_controls(feed_item) %>
     </div>
   </div>  

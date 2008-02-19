@@ -59,6 +59,13 @@ describe "FeedItemsTest" do
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}" 
   end 
   
+  def test_open_close_moderation_panel_does_not_open_close_item
+    feed_item = FeedItem.find(2) 
+    assert_not_visible "open_feed_item_#{feed_item.id}"
+    click "add_tag_feed_item_#{feed_item.id}" 
+    assert_not_visible "open_feed_item_#{feed_item.id}"
+  end
+  
   def test_opening_item_marks_it_read
     feed_item_1 = FeedItem.find(1)
 
