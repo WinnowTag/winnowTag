@@ -731,6 +731,11 @@ ul.tag_list li {
   margin: 0;
   line-height: 1.8;
   white-space: nowrap;
+  cursor: default;
+}
+
+ul.tag_list.unused li {
+  cursor: pointer;
 }
 
 ul.tag_list li {
