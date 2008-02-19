@@ -877,6 +877,7 @@ ItemBrowser.prototype = {
 	closeItem: function(item) {
 		if(item) {
 			$('open_' + $(item).getAttribute('id')).hide();
+			this.closeItemModerationPanel(item);
 			this.closeItemTagInformationPanel(item);
 		}
 	},
@@ -896,7 +897,7 @@ ItemBrowser.prototype = {
 		}
 	},
 	
-	openItemModerationPanel: function(item, event) {
+	openItemModerationPanel: function(item) {
 		if(this.selectedItem != $(item)) {
 			this.closeItem(this.selectedItem);
 			this.selectItem(item);
@@ -905,27 +906,23 @@ ItemBrowser.prototype = {
     $$('.new_tag_form').invoke("hide");
 
 		var container = $('new_tag_form_' + $(item).getAttribute('id'));
-		if(event) {
-      // var top = event.pointerY();
-      // container.style.top = top + "px";
-		  var left = event.pointerX() - $('sidebar_control').getDimensions().width - container.getDimensions().width;
-		  if($('sidebar').visible()) { left -= $('sidebar').getDimensions().width; }
-  		container.style.left = left + "px";
-		}
 		container.show();
-
-	  $('new_tag_field_' + $(item).getAttribute('id')).focus();
+		this.scrollToItem(item);
+		this.loadItemModerationPanel(item); 
+    
+    var field = $('new_tag_field_' + $(item).getAttribute('id'));
+    if(field) { field.focus(); }
 	},
 	
 	closeItemModerationPanel: function(item) {
 		$('new_tag_form_' + $(item).getAttribute('id')).hide();
 	},
 	
-	toggleOpenCloseModerationPanel: function(item, event) {
+	toggleOpenCloseModerationPanel: function(item) {
 		if($('new_tag_form_' + $(item).getAttribute('id')).visible()) {
 			this.closeItemModerationPanel(item);
 		} else {
-			this.openItemModerationPanel(item, event);
+			this.openItemModerationPanel(item);
 		}
 	},
 	
@@ -994,7 +991,13 @@ ItemBrowser.prototype = {
 		var url = body.getAttribute('url');
 		this.loadData(item, body, url, "Unable to connect to the server to get the item body.", this.closeItem.bind(this));
 	},
-	
+	 
+  loadItemModerationPanel: function(item) { 
+    var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id')); 
+    var url = moderation_panel.getAttribute('url') + "?" + location.hash.gsub("#", ""); 
+    this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
+  },
+
 	loadItemInformation: function(item) {
 		var tag_information = $("tag_information_" + $(item).getAttribute('id'));
 		var url = tag_information.getAttribute('url');

@@ -1,0 +1,15 @@
+<% form_tag "#", :onsubmit => "add_tag('#{dom_id(feed_item)}', $('#{dom_id(feed_item, 'new_tag_field')}').value); this.reset(); itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); return false;" do -%>
+  <%#= link_to_function "cancel", "itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}');" %>
+
+  <h4>Create a new tag...</h4>
+  <%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
+  <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
+  <%= auto_complete_field dom_id(feed_item, 'new_tag_field'), :param_name => 'tag[name]', :url => auto_complete_for_tag_name_tags_path %>
+  <%= submit_tag "Create Tag" %>
+<% end -%>
+
+<h4>Select an existing tag...</h4>
+<%= unused_tag_controls(feed_item) %>
+
+<!-- <h4 class="current_tags">Current tags...</h4> -->
+<%#= tag_controls(feed_item) %>

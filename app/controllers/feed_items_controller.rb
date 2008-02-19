@@ -105,6 +105,11 @@ class FeedItemsController < ApplicationController
     respond_to :js
   end
 
+  def moderation_panel 
+    @feed_item = FeedItem.find(params[:id]) 
+    respond_to :js 
+  end
+  
 private
   def update_access_time
     current_user.update_attribute(:last_accessed_at, Time.now.utc)

@@ -17,9 +17,14 @@ describe "moderation panel" do
   it "can add a positive taggig through the 'create a new tag' input" do
     dont_see_element "#tag_controls_feed_item_4 li"
     
+    assert_not_visible "new_tag_form_feed_item_4"
+    click "add_tag_feed_item_4"
+    assert_visible "new_tag_form_feed_item_4"
+    
     type "new_tag_field_feed_item_4", "new tag"
     hit_enter "new_tag_field_feed_item_4"
-
+    wait_for_effects
+    
     see_element "#tag_controls_feed_item_4 li.positive"
     get_text("tag_control_for_new tag_on_feed_item_4").should =~ /new tag/
   end

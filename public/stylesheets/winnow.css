@@ -659,11 +659,10 @@ a.editor_cancel {
   border: 2px solid #c3d9ff;
   background-color: #e1ecfe;
   padding: 5px;
-  z-index: 1000;
-  position: absolute;
-  left: 30em;
-  top: 3.5em;
-  width: 14.2em;
+}
+
+.item .new_tag_form form {
+  float: right;
 }
 
 .item .new_tag_form h4 {
@@ -675,6 +674,9 @@ a.editor_cancel {
   float: right;
 }
 
+.item .new_tag_form input {
+  display: inline;
+}
 
 .item .open .info {
   position: absolute;
@@ -754,6 +756,11 @@ ul.tag_list li.negative {
 
 ul.tag_list li.public {
   background-image: url(../images/bullet_blue.png);
+}
+
+ul.tag_list.unused li {
+  background-image: none;
+  padding-right: 0.4em;
 }
 
 ul.tag_list li .controls {
