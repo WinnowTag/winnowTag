@@ -7,6 +7,7 @@ class Invite < ActiveRecord::Base
   def initialize(*args, &block)
     super(*args, &block)
     self.subject ||= "Invitation Accepted"
+    self.body ||= "You request for an invitation to Winnow has been accepted!"
   end
   
   def activate!
