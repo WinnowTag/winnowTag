@@ -36,7 +36,7 @@ describe "folders" do
     see_element "#folder_#{new_folder.id}"
   end
   
-  it "can be renamed"
+  xit "can be renamed"
   
   it "can be destroyed" do
     see_element "#folder_#{@existing_folder.id}"
