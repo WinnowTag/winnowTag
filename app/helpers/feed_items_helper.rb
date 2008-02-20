@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 module FeedItemsHelper
   include BiasSliderHelper
   STRIPPED_ELEMENTS = %w(script style link meta) unless const_defined?(:STRIPPED_ELEMENTS)
@@ -79,20 +77,9 @@ module FeedItemsHelper
       tags = feed_item.taggings_by_user(current_user)
     end
 
-    html = ""    
-    tags.each do |tag, taggings|
-      content = content_tag("span", h(tag.name), :class => "name")
-      controls = ""
-      controls << content_tag("span", nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
-      controls << content_tag("span", nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
-      content << content_tag("span", controls, :class => "controls", :style => "display:none")
-      classes = classes_for_taggings(taggings).join(' ')
-      unless classes.blank?
-        html << content_tag('li', content, 
-          :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes, 
-          :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}); show_tag_controls(this);") + " "
-      end
-    end
+    html = tags.map do |tag, taggings|
+      tag_control_for(feed_item, tag, classes_for_taggings(taggings))
+    end.join(" ")
     
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
       if show_manual_taggings?
@@ -100,15 +87,30 @@ module FeedItemsHelper
       else
         more_tags = feed_item.taggings_by_user(user, :tags => subscribed_tags)
       end
-      more_tags.collect do |tag, taggings|
+      
+      html += more_tags.map do |tag, taggings|
         if tagging = Array(taggings).first
           tag_span = tag_name_with_tooltip(tag)
-          html << content_tag(:li, tag_span, :class => classes_for_taggings(tagging, [:public, :name]).join(" ")) << " "
+          content_tag(:li, tag_span, :class => classes_for_taggings(tagging, [:public, :name]).join(" "))
         end
-      end
+      end.compact.join(" ")
     end
     
     content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "tag_controls")
+  end
+  
+  def tag_control_for(feed_item, tag, classes)
+    controls  = content_tag(:span, nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", 
+                                        :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
+    controls << content_tag(:span, nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", 
+                                        :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
+
+    content   = content_tag(:span, h(tag.name), :class => "name")
+    content  << content_tag(:span, controls, :class => "controls", :style => "display:none")
+
+    content_tag(:li, content, 
+        :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "), 
+        :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}); show_tag_controls(this);")
   end
   
   def unused_tag_controls(feed_item) 
@@ -126,7 +128,7 @@ module FeedItemsHelper
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
     
-    if taggings.size == 1 and tagging = taggings.first
+    if tagging = taggings.first
       if tagging.classifier_tagging?
         classes << "classifier"
       elsif tagging.positive?
@@ -134,13 +136,10 @@ module FeedItemsHelper
       elsif tagging.negative?
         classes << "negative"
       end
-    elsif taggings.size > 1
-      classes += classes_for_taggings(taggings.first)
-      taggings.last(taggings.size - 1).each do |tagging|
-        if tagging.classifier_tagging?
-          classes << "classifier"
-        end
-      end
+    end
+    
+    if taggings.size > 1 && taggings.last(taggings.size - 1).detect(&:classifier_tagging?)
+      classes << "classifier"
     end
     
     classes.uniq
