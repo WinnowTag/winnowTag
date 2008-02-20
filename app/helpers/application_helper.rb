@@ -3,18 +3,17 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 module ApplicationHelper  
   include DateHelper
   
   def tab_selected(controller, action = nil)
-    "selected" if params[:controller] == controller and (action.nil? or params[:action] == action)
+    "selected" if controller_name == controller and (action.nil? or action_name == action)
   end
       
   def show_flash
     [:notice, :warning, :error, :confirm].map do |name|
       close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => 'Close Message')
-      content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display: none" : nil
+      content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display:none" : nil
     end.join
   end
   
@@ -131,7 +130,7 @@ module ApplicationHelper
   end
   
   def tag_name_with_tooltip(tag, options = {})
-    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
+    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil : "from #{tag.user.display_name}")
   end
   
   def feed_filter_controls(feeds, options = {})
