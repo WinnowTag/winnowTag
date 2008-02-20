@@ -190,70 +190,132 @@ describe ApplicationHelper do
   end
   
   describe "feed filter controls" do
-    it "needs to be tested"
+    it "creates a list with an li for each feed" do
+      feeds = [
+        mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1)),
+        mock_model(Feed, :title => "Feed 2", :feed_items => stub("feed_items", :size => 2)),
+        mock_model(Feed, :title => "Feed 3", :feed_items => stub("feed_items", :size => 3))
+      ]
+      feed_filter_controls(feeds, :remove => :subscription).should have_tag("ul") do
+        with_tag("li", 3)
+      end
+    end
+    
+    it "creates a filter control for a feed" do
+      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}.feed[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
+        with_tag "div.show_feed_control" do
+          with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({feed_ids: '#{feed.id}'})")}.*/
+          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'})")}.*/
+        end
+      end
+    end
+    
+    it "creates a filter control for a feed with the remove link for a subscription" do
+      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed_filter_control(feed, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_feed_path(feed, :subscribe => false))}.*/)
+    end
+    
+    it "creates a filter control for a feed with the remove link for a subscription" do
+      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      folder = mock_model(Folder)
+      feed_filter_control(feed, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(feed)))}.*/)
+    end
+    
+    it "creates a filter control for a feed with a span for autocomplete" do
+      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed_filter_control(feed, :remove => :subscription, :auto_complete => "ed").should have_tag("span.feed_name")
+    end
+    
+    it "creates a filter control for a feed with draggable controls" do
+      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed_filter_control(feed, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
+      feed_filter_control(feed, :remove => :subscription, :draggable => true).should have_tag("script", /.*Draggable.*/)
+    end
   end
   
   describe "tag filter controls" do
-    it "needs to be tested"
+    it "creates a list with an li for each tag" do
+      user = mock_model(User, :display_name => "Mark")
+      tags = [
+        mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user),
+        mock_model(Tag, :name => "Tag 2", :user_id => user.id, :user => user),
+        mock_model(Tag, :name => "Tag 3", :user_id => user.id, :user => user)
+      ]
+      tag_filter_controls(tags, :remove => :subscription).should have_tag("ul") do
+        with_tag("li", 3)
+      end
+    end
+
+    it "creates a filter control for a tag" do
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}.tag") do
+        with_tag "div.show_tag_control" do
+          with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
+          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})")}.*/
+        end
+      end
+    end
+    
+    it "creates a filter control for a tag with the remove link for a subscription" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li[subscribe_url=?]", subscribe_tag_path(tag, :subscribe => true)) do
+        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_tag_path(tag, :subscribe => false))}.*/)
+      end
+    end
+    
+    it "creates a filter control for a tag with the remove link for a subscription" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      folder = mock_model(Folder)
+      tag_filter_control(tag, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(tag)))}.*/)
+    end
+    
+    it "creates a filter control for a tag with the remove link for a sidebar" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag_filter_control(tag, :remove => :sidebar).should have_tag("li[subscribe_url=?]", sidebar_tag_path(tag, :sidebar => true)) do
+        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => false))}.*/)
+      end
+    end
+    
+    it "creates a filter control for a tag with the remove link for a subscription and current_user" do
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
+      tag_filter_control(tag, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => false))}.*/)
+    end
+    
+    it "creates a filter control for a tag with a span for autocomplete" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag_filter_control(tag, :remove => :subscription, :auto_complete => "ed").should have_tag("span.tag_name")
+    end
+    
+    it "creates a filter control for a tag with draggable controls" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag_filter_control(tag, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
+      tag_filter_control(tag, :remove => :subscription, :draggable => true).should have_tag("script", /.*Draggable.*/)
+    end
+    
+    it "creates a filter control for a public tag" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li.public") do
+        with_tag "a.name[title=?]", "from Mark"
+      end
+    end
+    
+    it "creates a filter control without an edit control for public tags" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag_filter_control(tag, :remove => :subscription).should_not have_tag("img.edit")
+    end
+    
+    it "creates a filter control with and edit control for private tags" do
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
+      tag_filter_control(tag, :remove => :subscription).should have_tag("img.edit")
+      tag_filter_control(tag, :remove => :subscription).should have_tag("script", /.*InPlaceEditor.*/)
+    end
   end
 end
-
-  # def feed_filter_controls(feeds, options = {})
-  #   content_tag :ul, feeds.map { |feed| feed_filter_control(feed, options) }.join, options.delete(:ul_options) || {}
-  # end
-  # 
-  # def feed_filter_control(feed, options = {})   
-  #   url  =  case options[:remove]
-  #     when :subscription then subscribe_feed_path(feed, :subscribe => false)
-  #     when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
-  #   end
-  #   html = link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
-  #   html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'})", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
-  #   
-  #   html =  content_tag(:div, html, :class => "show_feed_control")
-  #   html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
-  # 
-  #   class_names = ["feed"]
-  #   class_names << "draggable" if options[:draggable]
-  #   html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-  #   html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
-  #   html
-  # end
-  # 
-  # def tag_filter_controls(tags, options = {})
-  #   content_tag :ul, tags.map { |tag| tag_filter_control(tag, options) }.join, options.delete(:ul_options) || {}
-  # end
-  # 
-  # def tag_filter_control(tag, options = {})
-  #   if options[:remove] == :subscription && current_user == tag.user
-  #     options = options.except(:remove)
-  #     options[:remove] = :sidebar
-  #   end
-  #   url  =  case options[:remove]
-  #     when :subscription then subscribe_tag_path(tag, :subscribe => false)
-  #     when :sidebar      then sidebar_tag_path(tag, :sidebar => false)
-  #     when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
-  #   end
-  #   html =  link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({tag_ids: '#{tag.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
-  #   html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
-  #   html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
-  #   html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
-  #             :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
-  #             :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
-  #             :save_control => false, :cancel_control => false) if tag.user_id == current_user.id
-  #   
-  #   html =  content_tag(:div, html, :class => "show_tag_control")
-  #   html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
-  #   
-  #   class_names = ["tag"]
-  #   class_names << "public" if tag.user_id != current_user.id
-  #   class_names << "draggable" if options[:draggable]
-  #   url  =  case options[:remove]
-  #     when :subscription then subscribe_tag_path(tag, :subscribe => true)
-  #     when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
-  #   end
-  #   html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url)
-  #   html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
-  #   html
-  # end
-  # 
