@@ -3,15 +3,13 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 module FeedsHelper
   def feed_link(feed)
     feed_link = link_to("Feed", feed.via, :class => "feed_icon replace")
     feed_home_link = feed.alternate ? 
                         link_to("Feed Home", feed.alternate, :class => "home_icon replace") : 
                         content_tag('span', '', :class => 'blank_icon replace')
-    feed_page_link = link_to((feed.title.blank? ? feed.via : feed.title), feed_path(feed), :id => "link_to_feed_#{feed.id}")
+    feed_page_link = link_to((feed.title.blank? ? feed.via : feed.title), feed_path(feed), :id => dom_id(feed, "link_to"))
     
     feed_link + ' ' + feed_home_link + ' ' + feed_page_link
   end
