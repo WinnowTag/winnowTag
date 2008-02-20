@@ -587,15 +587,15 @@ a.editor_cancel {
 }
 
 .item .closed .add_tag {
-  float: right;
+  position: absolute;
+  right: 6em;
   height: 1.7em;
-  margin: 0 .5em;
 }
 
 .item .closed .tag_list {
   text-align: right;
   height: 1.8em;
-  margin-right: 5px;
+  margin-right: 11em;
 }
 
 .item.selected .closed .tag_list {
@@ -727,22 +727,14 @@ ul.tag_list {
 ul.tag_list li {
   display: inline;
   color: #666;
-  padding: 0;
-  margin: 0;
+  padding: 0 0 0 14px;
+  margin: 0 0 0 4px;
   line-height: 1.8;
   white-space: nowrap;
   cursor: default;
-}
-
-ul.tag_list.unused li {
-  cursor: pointer;
-}
-
-ul.tag_list li {
   position: relative;
   background-position: left center;
   background-repeat: no-repeat;
-  padding-left: 18px;
 }
 
 ul.tag_list li.classifier {
@@ -765,6 +757,7 @@ ul.tag_list li.public {
 }
 
 ul.tag_list.unused li {
+  cursor: pointer;
   background-image: none;
   padding-right: 0.4em;
 }
@@ -772,7 +765,7 @@ ul.tag_list.unused li {
 ul.tag_list li .controls {
   position: absolute;
   top: -8px;
-  left: -1px;
+  left: -5px;
   z-index: 900;
   background: #fff;
   border: 1px solid #aaa;

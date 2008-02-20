@@ -124,7 +124,7 @@ function add_tag_control(taggable_id, tag) {
       '<span class="add" onclick="add_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', true);" onmouseover="show_control_tooltip(this, $(this).up(\'li\'), \'' + escape_javascript(tag) + '\');"></span>' + 
       '<span class="remove" onclick="remove_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\');" onmouseover="show_control_tooltip(this, $(this).up(\'li\'), \'' + escape_javascript(tag) + '\');"></span>' + 
     '</span>' +
-  '</li>';
+  '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
   
@@ -145,7 +145,7 @@ function remove_tag_control(taggable_id, tag) {
     var unused_tag_control_id = 'unused_tag_control_for_' + tag + '_on_' + taggable_id;
     var unused_tag_control = '<li id="' + unused_tag_control_id + '" class="cursor" style="display: none;" onclick="add_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\');" onmouseover="show_tag_tooltip(this, \'' + escape_javascript(tag) + '\');">' +  
       '<span class="name">' + tag + '</span>' +  
-      '</li>'; 
+      '</li> '; 
     insert_in_order(unused_tag_controls, "li", "span.name", unused_tag_control, tag);
     Effect.Appear(unused_tag_control_id); 
   }
