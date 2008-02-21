@@ -15,7 +15,8 @@ class InvitesController < ApplicationController
   end
   
   def create
-    @invite = Invite.create!(params[:invite])
+    @invite = Invite.new(params[:invite])
+    @invite.save!
     if activate?
       @invite.activate!
       UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
