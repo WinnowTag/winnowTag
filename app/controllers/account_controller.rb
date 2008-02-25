@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 class AccountController < ApplicationController
   # before_filter :setup_mailer_site_url
   skip_before_filter :login_required, :except => [:edit]
