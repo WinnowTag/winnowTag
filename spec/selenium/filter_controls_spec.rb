@@ -164,5 +164,18 @@ describe "filter controls" do
       
       get_location.should =~ /\#tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
+    
+    it "filters by all tags in the folder, even when the tag was just added"
+
+    it "filters by all tags in the folder, even when a tag was just removed" do
+      open feed_items_path
+      click "css=#show_all"
+      wait_for_ajax
+
+      get_location.should =~ /\#$/
+      click "css=#tag_#{@tag.id} .show_tag_control .remove"
+      click "css=#tag_filters_control"      
+      get_location.should =~ /\#tag_ids=#{@sql.id}$/
+    end
   end
 end
