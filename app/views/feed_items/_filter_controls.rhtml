@@ -35,7 +35,7 @@
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
       <% tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags %>
       <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('tags', $(this).up('.folder').hasClassName('open'), 365);">
-        <%= link_to_function "Tags", "itemBrowser.toggleSetFilters({folder_ids: 'tags'}); event.stop()" %>
+        <%= link_to_function "Tags", "itemBrowser.toggleSetFilters({folder_ids: 'tags'}); event.stop()", :id => "tag_filters_control" %>
       </div>
       <%= tag_filter_controls(tags, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
     </div>
@@ -51,5 +51,5 @@
   </div>
   
   <%= check_box_tag :manual_taggings, true, false, :onclick => "itemBrowser.addFilters({manual_taggings: this.checked ? true : null})" %>
-  <label for="manual_taggings">Only Show Manual Taggings</label>
+  <label id="manual_taggings_filter" for="manual_taggings">Only Show Manual Taggings</label>
 </div>

@@ -64,4 +64,105 @@ describe "filter controls" do
   #     dont_see_element "#show_all.selected"
   #   end
   # end
+  
+  describe "show all items filter" do
+    it "turns on manual taggings" do
+      get_location.should =~ /\#$/
+      click "css=#manual_taggings_filter"
+      get_location.should =~ /\#manual_taggings=true$/
+    end
+    
+    it "keeps text and tag/feed filters intact" do
+      open login_path
+      open feed_items_path(:anchor => "text_filter=ruby&tag_ids=1&feed_ids=1")
+      wait_for_ajax
+
+      get_location.should =~ /\#text_filter=ruby&tag_ids=1&feed_ids=1$/
+      click "css=#manual_taggings_filter"
+      get_location.should =~ /\#text_filter=ruby&tag_ids=1&feed_ids=1&manual_taggings=true$/
+    end
+  end
+  
+  describe "text filter" do
+    it "sets the text filter" do
+      click "css=#show_all"
+      wait_for_ajax
+      
+      get_location.should =~ /\#$/
+
+      type "text_filter", "ruby"
+      hit_enter "text_filter"
+
+      get_location.should =~ /\#text_filter=ruby$/
+    end
+    
+    it "keeps manual taggings and tag/feed filters intact" do
+      open login_path
+      open feed_items_path(:anchor => "manual_taggings=true&tag_ids=1&feed_ids=1")
+      wait_for_ajax
+
+      get_location.should =~ /\#manual_taggings=true&tag_ids=1&feed_ids=1$/
+
+      type "text_filter", "ruby"
+      hit_enter "text_filter"
+
+      get_location.should =~ /\#manual_taggings=true&tag_ids=1&feed_ids=1&text_filter=ruby$/
+    end
+  end
+  
+  
+  describe "tag filter" do
+    before(:each) do
+      Tag.delete_all
+      @tag = Tag.create! :name => "ruby", :user => users(:quentin)
+      @sql = Tag.create! :name => "sql", :user => users(:quentin)
+      open feed_items_path
+    end
+    
+    it "sets the tag filter" do
+      click "css=#show_all"
+      wait_for_ajax
+      
+      get_location.should =~ /\#$/
+
+      click "css=#name_tag_#{@tag.id}"
+
+      get_location.should =~ /\#tag_ids=#{@tag.id}$/
+    end
+    
+    it "resets manual taggings filter, text filter, and any other feed/tag filters" do
+      open login_path
+      open feed_items_path(:anchor => "manual_taggings=true&text_filter=ruby&feed_ids=1")
+      wait_for_ajax
+
+      get_location.should =~ /\#manual_taggings=true&text_filter=ruby&feed_ids=1$/
+
+      click "css=#name_tag_#{@tag.id}"
+      
+      get_location.should =~ /\#tag_ids=#{@tag.id}$/
+    end
+    
+    it "turns off a tag filter" do
+      open login_path
+      open feed_items_path(:anchor => "tag_ids=1,#{@tag.id}")
+      wait_for_ajax
+
+      get_location.should =~ /\#tag_ids=1%2C#{@tag.id}$/
+
+      click "css=#name_tag_#{@tag.id}"
+      
+      get_location.should =~ /\#tag_ids=1$/
+    end
+    
+    it "sets tag filter for all in folder" do
+      click "css=#show_all"
+      wait_for_ajax
+
+      get_location.should =~ /\#$/
+
+      click "css=#tag_filters_control"
+      
+      get_location.should =~ /\#tag_ids=#{@tag.id}%2C#{@sql.id}$/
+    end
+  end
 end
