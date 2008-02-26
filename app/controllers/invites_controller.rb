@@ -16,14 +16,15 @@ class InvitesController < ApplicationController
   
   def create
     @invite = Invite.new(params[:invite])
-    @invite.save!
-    if activate?
-      @invite.activate!
-      UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+    if @invite.save
+      if activate?
+        @invite.activate!
+        UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+      end
+      redirect_to invites_path
+    else
+      render :action => 'new'
     end
-    redirect_to invites_path
-  rescue ActiveRecord::RecordInvalid
-    render :action => 'new'
   end
 
   def edit
@@ -32,14 +33,15 @@ class InvitesController < ApplicationController
   
   def update
     @invite = Invite.find(params[:id])
-    @invite.update_attributes! params[:invite]
-    if activate?
-      @invite.activate!
-      UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+    if @invite.update_attributes(params[:invite])
+      if activate?
+        @invite.activate!
+        UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+      end
+      redirect_to invites_path
+    else
+      render :action => 'edit'
     end
-    redirect_to invites_path
-  rescue ActiveRecord::RecordInvalid
-    render :action => 'edit'
   end
   
   def activate
