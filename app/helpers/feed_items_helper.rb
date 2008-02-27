@@ -71,22 +71,14 @@ module FeedItemsHelper
   end
  
   def tag_controls(feed_item)
-    if show_manual_taggings?
-      tags = feed_item.taggings_by_user(current_user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : nil)
-    else
-      tags = feed_item.taggings_by_user(current_user)
-    end
+    tags = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
 
     html = tags.map do |tag, taggings|
       tag_control_for(feed_item, tag, classes_for_taggings(taggings))
     end.join(" ")
     
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
-      if show_manual_taggings?
-        more_tags = feed_item.taggings_by_user(user, :tags => params[:tag_ids] ? params[:tag_ids].split(",") : subscribed_tags)
-      else
-        more_tags = feed_item.taggings_by_user(user, :tags => subscribed_tags)
-      end
+      more_tags = feed_item.taggings_by_user(user, :tags => tags_to_display)
       
       html += more_tags.map do |tag, taggings|
         if tagging = Array(taggings).first
@@ -97,6 +89,14 @@ module FeedItemsHelper
     end
     
     content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "tag_controls")
+  end
+  
+  def tags_to_display
+    if show_manual_taggings? && params[:tag_ids]
+      params[:tag_ids].split(",").map(&:to_i)
+    else
+      (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags).map(&:id) + params[:tag_ids].to_s.split(",").map(&:to_i)
+    end
   end
   
   def tag_control_for(feed_item, tag, classes)

@@ -168,7 +168,31 @@ describe FeedItemsHelper do
       end
     end
     
-    it "needs to be tested with show_manual_taggings?"
-    it "needs to be tested with public tags"
+    xit "needs to be tested with show_manual_taggings?"
+    xit "needs to be tested with public tags"
+  end
+  
+  describe "tags_to_display" do
+    def show_manual_taggings?; @show_manual_taggings; end
+    
+    it "only shows filtered tags when manual taggings is on" do
+      @show_manual_taggings = true
+      params[:tag_ids] = "1,5,7"
+      tags_to_display.should == [1, 5, 7]
+    end
+    
+    it "only shows the tags the user has in the sidebar (public and private) that are not excluded plus any filtered tags" do
+      ruby = mock_model(Tag)
+      svn = mock_model(Tag)
+      tech = mock_model(Tag)
+      langs = mock_model(Tag)
+      
+      current_user.stub!(:sidebar_tags).and_return([ruby, svn])
+      current_user.stub!(:subscribed_tags).and_return([tech, langs])
+      current_user.stub!(:excluded_tags).and_return([ruby, langs])
+      params[:tag_ids] = "1,5,7"
+      
+      tags_to_display.should == [svn.id, tech.id, 1, 5, 7]
+    end
   end
 end
