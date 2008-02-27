@@ -1,10 +1,11 @@
-<% form_tag "#", :onsubmit => "add_tag('#{dom_id(feed_item)}', $('#{dom_id(feed_item, 'new_tag_field')}').value); this.reset(); return false;" do -%>
-  <h4>Create a new tag...</h4>
+<% form_tag "#", :onsubmit => "itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); add_tag('#{dom_id(feed_item)}', $('#{dom_id(feed_item, 'new_tag_field')}').value); this.reset(); return false;" do -%>
   <%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
   <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
-  <%= auto_complete_field dom_id(feed_item, 'new_tag_field'), :param_name => 'tag[name]', :url => auto_complete_for_tag_name_tags_path %>
-  <%= submit_tag "Create Tag" %>
+  <% javascript_tag do -%>
+    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Ajax.Autocompleter(
+      '<%= dom_id(feed_item, 'new_tag_field') %>', '<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete', 
+      '<%= auto_complete_for_tag_name_tags_path %>', { paramName:'tag[name]', afterUpdateElement: function(input, choice) { input.form.onsubmit(); } });
+    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
+  <% end -%>
+  <%= submit_tag "Add Tag" %>
 <% end -%>
-
-<h4>Select an existing tag...</h4>
-<%= unused_tag_controls(feed_item) %>

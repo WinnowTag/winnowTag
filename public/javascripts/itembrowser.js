@@ -911,7 +911,10 @@ ItemBrowser.prototype = {
 		this.loadItemModerationPanel(item); 
     
     var field = $('new_tag_field_' + $(item).getAttribute('id'));
-    if(field) { field.focus(); }
+    if(field) { 
+      field.focus();
+      window.auto_completers['new_tag_field_' + $(item).getAttribute('id') + '_auto_completer'].activate();
+    }
 	},
 	
 	closeItemModerationPanel: function(item) {

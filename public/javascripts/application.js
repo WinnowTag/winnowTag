@@ -298,3 +298,5 @@ applesearch.removePlaceholder = function(fld) {
 	  fld.value = "";
   }
 }
+
+var auto_completers = {};

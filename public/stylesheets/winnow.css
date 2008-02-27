@@ -655,26 +655,13 @@ a.editor_cancel {
 }
 
 .item .new_tag_form {
+  position: absolute;
+  right: 1em;
+  top: 3em;
+  z-index: 1000;
   border: 2px solid #c3d9ff;
   background-color: #e1ecfe;
   padding: 5px;
-}
-
-.item .new_tag_form form {
-  float: right;
-}
-
-.item .new_tag_form h4 {
-  padding: 0;
-  margin: 0 0 .3em 0;
-}
-
-.item .new_tag_form a {
-  float: right;
-}
-
-.item .new_tag_form input {
-  display: inline;
 }
 
 .item .open .info {

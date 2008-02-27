@@ -107,7 +107,7 @@ class FeedItemsController < ApplicationController
 
   def moderation_panel 
     @feed_item = FeedItem.find(params[:id]) 
-    respond_to :js 
+    respond_to :js
   end
   
 private
