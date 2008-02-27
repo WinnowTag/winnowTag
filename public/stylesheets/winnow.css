@@ -590,9 +590,8 @@ a.editor_cancel {
 }
 
 .item .closed .tag_list {
-  text-align: right;
   height: 1.8em;
-  margin: 0 2px 0 0;
+  margin: 0 2px 0 19%;
 }
 
 .item.selected .closed .tag_list {
