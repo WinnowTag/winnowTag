@@ -1,14 +1,14 @@
 <% @skip_content_container = true %>
 
 <% content_for :header_controls do -%>
-  <% form_tag(users_path, :method => :get) do -%>
-	  <%= search_field_tag "q", params[:q], :clear => { :onclick => "window.location = '#{users_path}'" } %>
-  <% end -%>
-
   <ul class="control_bar">
     <li><%= will_paginate(@users) %></li>
     <li><%= link_to 'Create User', new_user_url, :class => "add" %></li>
   </ul>
+
+  <% form_tag(users_path, :method => :get) do -%>
+	  <%= search_field_tag "q", params[:q], :clear => { :onclick => "window.location = '#{users_path}'" } %>
+  <% end -%>
 <% end -%>
 
 <table class="data_table recordset">

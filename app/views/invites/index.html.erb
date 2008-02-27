@@ -1,14 +1,14 @@
 <% @skip_content_container = true %>
 
 <% content_for :header_controls do -%>
-  <% form_tag(invites_path, :method => :get) do -%>
-	  <%= search_field_tag "q", params[:q], :clear => { :onclick => "window.location = '#{invites_path}'" } %>
-  <% end -%>
-
   <ul class="control_bar">
     <li><%= will_paginate(@invites) %></li>
     <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
   </ul>
+
+  <% form_tag(invites_path, :method => :get) do -%>
+	  <%= search_field_tag "q", params[:q], :clear => { :onclick => "window.location = '#{invites_path}'" } %>
+  <% end -%>
 <% end -%>
 
 <table class="data_table recordset">
