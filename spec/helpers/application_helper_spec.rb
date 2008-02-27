@@ -251,7 +251,7 @@ describe ApplicationHelper do
       tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
       tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}.tag") do
         with_tag "div.show_tag_control" do
-          with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
+          with_tag "a.remove[onclick=?]", /.*#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
           with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})")}.*/
         end
       end
