@@ -739,12 +739,6 @@ ul.tag_list li.public {
   color: #2691BF;
 }
 
-ul.tag_list.unused li {
-  cursor: pointer;
-  background-image: none;
-  padding-right: 0.4em;
-}
-
 ul.tag_list li .controls {
   position: absolute;
   top: -8px;

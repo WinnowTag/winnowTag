@@ -113,18 +113,6 @@ module FeedItemsHelper
         :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}); show_tag_controls(this);")
   end
   
-  def unused_tag_controls(feed_item) 
-    unused_tags = current_user.tags - feed_item.tags 
-     
-    html = unused_tags.map do |tag| 
-      content_tag('li', content_tag("span", h(tag.name), :class => "name"), 
-        :id => dom_id(feed_item, "unused_tag_control_for_#{tag.name}_on"), :class => "cursor",  
-        :onclick => "add_tag('#{dom_id(feed_item)}', '#{escape_javascript(tag.name)}');",  
-        :onmouseover => "show_tag_tooltip(this, '#{escape_javascript(tag.name)}');") 
-    end.join(" ") 
-    content_tag "ul", html, :class => "tag_list unused clearfix", :id => dom_id(feed_item, "unused_tag_controls") 
-  end   
-
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
     

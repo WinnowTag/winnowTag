@@ -127,10 +127,9 @@ function add_tag_control(taggable_id, tag) {
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
-  
-  var unused_tag_control_id = 'unused_tag_control_for_' + tag + '_on_' + taggable_id; 
-  if($(unused_tag_control_id)) { 
-    Effect.Fade(unused_tag_control_id, { afterFinish: function() { Element.remove(unused_tag_control_id) } }); } 
+
+  auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array = 
+    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.without(tag);
 }
 
 function escape_javascript(string) {
@@ -139,17 +138,12 @@ function escape_javascript(string) {
 
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
-
-  var unused_tag_controls = $('unused_tag_controls_' + taggable_id); 
-  if(unused_tag_controls) {
-    var unused_tag_control_id = 'unused_tag_control_for_' + tag + '_on_' + taggable_id;
-    var unused_tag_control = '<li id="' + unused_tag_control_id + '" class="cursor" style="display: none;" onclick="add_tag(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\');" onmouseover="show_tag_tooltip(this, \'' + escape_javascript(tag) + '\');">' +  
-      '<span class="name">' + tag + '</span>' +  
-      '</li> '; 
-    insert_in_order(unused_tag_controls, "li", "span.name", unused_tag_control, tag);
-    Effect.Appear(unused_tag_control_id); 
+  
+  if(auto_completers['new_tag_field_' + taggable_id + '_auto_completer']) {
+    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.push(tag);
+    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array = 
+      auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.sort();
   }
-
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }
@@ -190,8 +184,6 @@ function show_tag_tooltip(tag, tag_name) {
     tag_tooltip = "Positive training example for Winnow";
   } else if (tag.match('.classifier')) {
     tag_tooltip = "Winnow figured this item fit your examples";
-  } else {
-    tag_tooltip = "Click if this is a very good example of " + tag_name;
   }
   //TODO: Published tags: "Published by <name of user>"
   

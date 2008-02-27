@@ -2,9 +2,10 @@
   <%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
   <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
   <% javascript_tag do -%>
-    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Ajax.Autocompleter(
+    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Autocompleter.Local(
       '<%= dom_id(feed_item, 'new_tag_field') %>', '<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete', 
-      '<%= auto_complete_for_tag_name_tags_path %>', { paramName:'tag[name]', afterUpdateElement: function(input, choice) { input.form.onsubmit(); } });
+      <%= (current_user.sidebar_tags - current_user.excluded_tags - feed_item.tags).map(&:name).to_json %>, 
+      { partialChars: 1, fullSearch: true, choices: <%= current_user.sidebar_tags.size %>, afterUpdateElement: function(input, choice) { input.form.onsubmit(); } });
     auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
   <% end -%>
   <%= submit_tag "Add Tag" %>

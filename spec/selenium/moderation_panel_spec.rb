@@ -42,32 +42,15 @@ describe "moderation panel" do
     wait_for_ajax 
      
     dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li[id='unused_tag_control_for_existing tag_on_feed_item_4']"
      
     type "new_tag_field_feed_item_4", "existing tag"
     hit_enter "new_tag_field_feed_item_4"
     wait_for_effects
-
+  
     see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
-    dont_see_element "li[id='unused_tag_control_for_existing tag_on_feed_item_4']"
   end
 
-  it "can add a positive tagging by clicking on an existing tag" do 
-    click "add_tag_feed_item_4"
-    wait_for_ajax
-    
-    dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li[id='unused_tag_control_for_existing tag_on_feed_item_4']"
-
-    click "unused_tag_control_for_existing tag_on_feed_item_4" 
-    wait_for_effects
-
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
-    get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
-    dont_see_element "li[id='unused_tag_control_for_existing tag_on_feed_item_4']"
-   end
-  
   it "can change a positive tagging to a negative tagging" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
 
@@ -237,14 +220,6 @@ describe "moderation panel" do
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
     assert_equal "Winnow figured this item fit your examples", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4']@title")
-  end
-  
-  it "shows the proper tooltip for an unused tagging" do
-    click "add_tag_feed_item_4"
-    wait_for_ajax
-    
-    mouse_over "css=li[id='unused_tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Click if this is a very good example of existing tag", get_attribute("css=li[id='unused_tag_control_for_existing tag_on_feed_item_4']@title")
   end
   
   it "shows the proper tooltip for controls in a negative tagging" do

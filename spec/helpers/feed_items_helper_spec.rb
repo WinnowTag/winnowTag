@@ -119,25 +119,6 @@ describe FeedItemsHelper do
       classes_for_taggings(taggings, ["public"]).should == ["public", "positive", "classifier"]      
     end
   end
-  
-  describe "unused tag controls" do
-    it "creates controls only for the current users tags not already on th feed item" do
-      tags = [
-        tag1 = mock_model(Tag, :name => "tag1"),
-        mock_model(Tag, :name => "tag2"),
-        mock_model(Tag, :name => "tag3")
-      ]
-      used_tags = [tag1]
-      current_user.stub!(:tags).and_return(tags)
-      feed_item = mock_model(FeedItem, :tags => used_tags)
-
-      unused_tag_controls(feed_item).should have_tag("ul.tag_list.unused##{dom_id(feed_item, 'unused_tag_controls')}") do
-        without_tag("li##{dom_id(feed_item, "unused_tag_control_for_tag1_on")} span.name", /tag1/)
-        with_tag("li##{dom_id(feed_item, "unused_tag_control_for_tag2_on")} span.name", /tag2/)
-        with_tag("li##{dom_id(feed_item, "unused_tag_control_for_tag3_on")} span.name", /tag3/)
-      end
-    end
-  end
 
   describe "tag control for" do
     it "creates a list item with the proper controls inside it" do
