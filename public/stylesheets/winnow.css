@@ -558,7 +558,7 @@ a.editor_cancel {
 
 .item .closed .feed_title {
   float: left;
-  margin-left: 20px;
+  margin: 0 1% 0 20px;
   width: 17%;
   height: 1.7em;
   overflow: hidden;
@@ -566,13 +566,11 @@ a.editor_cancel {
 }
 
 .item .closed .title {
-  float: left;
-  margin-left: 20px;
+  margin: 0 5em 0 0;
+  display: block;
   height: 1.7em;
   overflow: hidden;
-  text-align: left;
   font-weight: bold;
-  max-width: 40%;
 }
 
 .item.read .closed .title {
@@ -587,15 +585,14 @@ a.editor_cancel {
 }
 
 .item .closed .add_tag {
-  position: absolute;
-  right: 6em;
-  height: 1.7em;
+  float: right;
+  margin: 0 2px 0 1em;
 }
 
 .item .closed .tag_list {
   text-align: right;
   height: 1.8em;
-  margin-right: 11em;
+  margin: 0 2px 0 0;
 }
 
 .item.selected .closed .tag_list {
