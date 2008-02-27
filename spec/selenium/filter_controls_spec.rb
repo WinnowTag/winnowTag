@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "filter controls" do
-  fixtures :users
+  fixtures :users, :tags
 
   before(:each) do
     @user = users(:quentin)
