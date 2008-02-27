@@ -311,7 +311,7 @@ ItemBrowser.prototype = {
 			}
 		});
 		
-		this.feed_items_container.getElementsByClassName('item').each(function(fi) {
+		this.feed_items_container.select('.item').each(function(fi) {
 			this.items.insert(this.items.length, fi.getAttribute('id'), fi.getAttribute('position'), fi);
 		}.bind(this));
 	},
