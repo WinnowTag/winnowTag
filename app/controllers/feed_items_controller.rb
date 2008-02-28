@@ -91,7 +91,7 @@ class FeedItemsController < ApplicationController
   
   def mark_unread
     @feed_item = FeedItem.find(params[:id])
-    current_user.unread_items.create(:feed_item => @feed_item)
+    current_user.read_items.find(:all, :conditions => {:feed_item_id => @feed_item}).each {|ri| ri.destroy}
     render :nothing => true
   end
   
@@ -104,12 +104,12 @@ class FeedItemsController < ApplicationController
     @feed_item = FeedItem.find(params[:id])
     respond_to :js
   end
-  
-  def moderation_panel
-    @feed_item = FeedItem.find(params[:id])
+
+  def moderation_panel 
+    @feed_item = FeedItem.find(params[:id]) 
     respond_to :js
   end
-
+  
 private
   def update_access_time
     current_user.update_attribute(:last_accessed_at, Time.now.utc)

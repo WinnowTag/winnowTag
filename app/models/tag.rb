@@ -24,10 +24,12 @@ end
 #  name :string(255)   
 #
 
-class Tag < ActiveRecord::Base
-  include ActionView::Helpers::TextHelper
+class Tag < ActiveRecord::Base  
+  cattr_accessor :undertrained_threshold
+  @@undertrained_threshold = 6
   
   has_many :taggings, :dependent => :delete_all
+  has_many :positive_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ? and strength = ?', false, 1]
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true], 
             :dependent => :delete_all
@@ -121,6 +123,10 @@ class Tag < ActiveRecord::Base
     Tagging.delete_all("classifier_tagging = 1 and tag_id = #{self.id}")
   end
   
+  def potentially_undertrained?
+    self.positive_taggings.size < Tag.undertrained_threshold
+  end
+  
   def self.find_all_with_count(options = {})
     joins = ["LEFT JOIN users ON tags.user_id = users.id"]
     if options[:subscribed_by]
@@ -130,7 +136,9 @@ class Tag < ActiveRecord::Base
     select = ['tags.*', 
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND taggings.strength >= 0.9) AS classifier_count',
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND NOT EXISTS' <<
+                '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
+                  'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
               '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by']
     if options[:excluder]

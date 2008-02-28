@@ -1,0 +1,12 @@
+<% form_tag "#", :onsubmit => "itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); add_tag('#{dom_id(feed_item)}', $('#{dom_id(feed_item, 'new_tag_field')}').value); this.reset(); return false;" do -%>
+  <%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
+  <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
+  <% javascript_tag do -%>
+    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Autocompleter.Local(
+      '<%= dom_id(feed_item, 'new_tag_field') %>', '<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete', 
+      <%= (current_user.sidebar_tags - current_user.excluded_tags - feed_item.tags).map(&:name).to_json %>, 
+      { partialChars: 1, fullSearch: true, choices: <%= current_user.sidebar_tags.size %>, afterUpdateElement: function(input, choice) { input.form.onsubmit(); } });
+    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
+  <% end -%>
+  <%= submit_tag "Add Tag" %>
+<% end -%>

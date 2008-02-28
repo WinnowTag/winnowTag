@@ -40,7 +40,7 @@ a.close img {
   height: 12px;
 }
 
-#notice, #warning, #error {
+#notice, #warning, #error, #confirm {
   margin: 5px;
   padding: 5px 5px 5px 26px;
 }
@@ -51,9 +51,15 @@ a.close img {
   border: 1px solid #A0DC11;
 }
 
-#warning {
+#warning, #confirm {
   background: #FBF6D3 url(../images/vertical_sprite.png) no-repeat;
   background-position: 5px -475px;
+  border: 1px solid #D28D37;
+}
+
+#confirm {
+  background: #FBF6D3 url(../images/help.png) no-repeat;
+  background-position: 5px 5px;
   border: 1px solid #D28D37;
 }
 
@@ -62,7 +68,6 @@ a.close img {
   background-position: 5px -443px;
   border: 1px solid #FF260B;
 }
-
 
 #forms {
   border: none;
@@ -92,6 +97,22 @@ a.close img {
   font-size: 1.5em;
   text-align: center;
   border-bottom: 1px solid #999;
+}
+
+#forms h4 {
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid #999;
+  margin-bottom: 0;
+}
+
+#forms .description {
+  font-size: .9em;
+  font-weight: normal;
+  color: #666;
+  text-align: center;
+  display: block;
 }
 
 .navigation {
@@ -259,27 +280,14 @@ optgroup {
 }
 
 #header_controls {
-  padding: 3px 3px 1px 3px;
+  padding: 5px 5px 2px 16px;
   border-bottom: 1px solid #999;
   height: 2em;
   background-color: #e1ecfe;
 }
 
-#header_controls form {
-  display: inline;
-}
-
-#header_controls form > div {
-  display: inline;
-}
-
-#header_controls .custom_controls {
+#header_controls .control_bar {
   float: right;
-  margin-right: .5em;
-}
-
-#header_controls .page_controls {
-  float: left;
 }
 
 a { color: #2c50e8; text-decoration: none; }
@@ -516,8 +524,6 @@ a.editor_cancel {
   border-width: 2px 2px 1px 2px;
   -moz-user-select: none;
   line-height: 1.8;
-  height: 1.8em;
-  overflow: hidden;
 }
 
 .item.selected .closed {
@@ -547,60 +553,49 @@ a.editor_cancel {
 }
 
 .item .closed .opener {
-  height: 1.8em;
   cursor: pointer;
 }
 
 .item .closed .feed_title {
-  position: absolute;
-  left: 20px;
+  float: left;
+  margin: 0 1% 0 20px;
   width: 17%;
+  height: 1.7em;
   overflow: hidden;
   color: #999;
 }
 
-.item .closed .title_and_tags {
-  position: absolute;
-  left: 21%;
-  right: 5em;
-  overflow: hidden;
-  text-align: right;
-}
-
 .item .closed .title {
-  float: left;
+  margin: 0 5em 0 0;
+  display: block;
+  height: 1.7em;
+  overflow: hidden;
   font-weight: bold;
-  margin-right: 1em;
-  max-width: 65%;
-  text-align: left;
 }
 
 .item.read .closed .title {
   font-weight: normal;
 }
 
-.item .closed .tags {
-  color: #999;
-  background: #fff;
-  border: 1px solid #aaa;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 0.7em;
-  padding: 2px 0.4em;
-  margin-right: 2px;
-}
-
-.item .closed .tags i {
-  white-space: nowrap;
-}
-
-.item .closed .tags span {
-  white-space: nowrap;
-}
-
 .item .closed .date {
   float: right;
   margin-right: 2px;
+  height: 1.7em;
   color: #666;
+}
+
+.item .closed .add_tag {
+  float: right;
+  margin: 0 2px 0 1em;
+}
+
+.item .closed .tag_list {
+  height: 1.8em;
+  margin: 0 2px 0 19%;
+}
+
+.item.selected .closed .tag_list {
+  height: auto;
 }
 
 .item .open {
@@ -659,26 +654,13 @@ a.editor_cancel {
 }
 
 .item .new_tag_form {
+  position: absolute;
+  right: 1em;
+  top: 3em;
+  z-index: 1000;
   border: 2px solid #c3d9ff;
   background-color: #e1ecfe;
   padding: 5px;
-}
-
-.item .new_tag_form h4 {
-  padding: 0;
-  margin: 0 0 .3em 0;
-}
-
-.item .new_tag_form h4.current_tags {
-  margin-top: 1em;
-}
-
-.item .new_tag_form form {
-  float: right;
-}
-
-.item .new_tag_form form input {
-  vertical-align: middle;
 }
 
 .item .open .info {
@@ -718,19 +700,6 @@ a.editor_cancel {
   background: #888;
 }
 
-.item .closed .tags .positive {
-  color: #498740;
-}
-
-.item .closed .tags .negative {
-  color: #B2563F;
-}
-
-.item .closed .tags .public {
-  background: url(../images/public.png) center right no-repeat;
-  padding-right: 14px;
-}
-
 ul.tag_list {
   margin: 0;
   padding: 0;
@@ -740,62 +709,81 @@ ul.tag_list {
 
 ul.tag_list li {
   display: inline;
+  color: #666;
+  padding: 0 0 0 14px;
+  margin: 0 0 0 4px;
+  line-height: 1.8;
+  white-space: nowrap;
+  cursor: default;
+  position: relative;
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+ul.tag_list li.classifier {
+  background-image: url(../images/bullet_black.png);
+}
+
+ul.tag_list li.positive {
+  background-image: url(../images/bullet_green.png);
+  color: #52984B;
+}
+
+ul.tag_list li.negative {
+  background-image: url(../images/bullet_red.png);
+  color: #C12A2F;
+}
+
+ul.tag_list li.public {
+  background-image: url(../images/bullet_blue.png);
+  color: #2691BF;
+}
+
+ul.tag_list li .controls {
+  position: absolute;
+  top: -8px;
+  left: -5px;
+  z-index: 900;
   background: #fff;
-  color: #000;
   border: 1px solid #aaa;
   -moz-border-radius: 1em;
   -webkit-border-radius: 0.7em;
-  padding: 2px 0.4em 4px;
-  margin: 0 0 5px 0;
-  line-height: 1.8;
-  white-space: nowrap;
 }
 
-ul.tag_list li.public span {
-  background: url(../images/public.png) right center no-repeat;
-  padding: 1px 16px 2px 0;
-  margin-left: 3px;
+ul.tag_list li .controls span {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
-ul.tag_list li .add {
+ul.tag_list li .controls .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -32px;
-  padding: 1px 16px 2px 0;
-  margin-left: 3px;
   cursor: pointer;
 }
 
-ul.tag_list li .remove {
+ul.tag_list li .controls .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
-  padding: 1px 16px 2px 0;
-  margin-left: 3px;
   cursor: pointer;
 }
 
-/* Positive user tagging */
-ul.tag_list li.positive .add {
+ul.tag_list li.positive .controls .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 0;
 }
 
-ul.tag_list li.positive .remove {
+ul.tag_list li.positive .controls .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -96px;
 }
 
-/* Negative user tagging */
-
-ul.tag_list li.public.negative {
-  color: #B2563F;
-}
-
-ul.tag_list li.negative .add {
+ul.tag_list li.negative .controls .add {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -32px;
 }
 
-ul.tag_list li.negative .remove {
+ul.tag_list li.negative .controls .remove {
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -64px;
 }

@@ -11,12 +11,12 @@ describe Notifier do
       @email = Notifier.create_deployed("mh", "the beast", "666", "mark", "go team")
     end
 
-    it "is sent to wizzadmin" do
-      @email.to.should == ["wizzadmin@peerworks.org"]
+    it "is sent to winnowadmin" do
+      @email.to.should == ["winnowadmin@mindloom.org"]
     end
 
-    it "is sent from wizzadmin" do
-      @email.from.should == ["wizzadmin@peerworks.org"]
+    it "is sent from winnowadmin" do
+      @email.from.should == ["winnowadmin@mindloom.org"]
     end
 
     it "has a subect with revision info" do
@@ -46,20 +46,25 @@ describe Notifier do
 
   describe "invite requested email" do
     before(:each) do
-      @invite = mock_model(Invite, :email => "user@example.com")
+      @invite = mock_model(Invite, :email => "user@example.com", :hear => "found in google", :use => "feed reader")
       @email = Notifier.create_invite_requested(@invite)
     end
 
-    it "is sent to wizzadmin" do
-      @email.to.should == ["wizzadmin@peerworks.org"]
+    it "is sent to winnowadmin" do
+      @email.to.should == ["winnowadmin@mindloom.org"]
     end
 
-    it "is sent from wizzadmin" do
-      @email.from.should == ["wizzadmin@peerworks.org"]
+    it "is sent from winnowadmin" do
+      @email.from.should == ["winnowadmin@mindloom.org"]
     end
     
     it "contains the invite email in the email body" do
       @email.body.should =~ /user@example.com/
+    end
+    
+    it "contains the questions in the email body" do
+      @email.body.should =~ /found in google/
+      @email.body.should =~ /feed reader/
     end
   end
 end

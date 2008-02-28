@@ -1,10 +1,16 @@
 <% @skip_content_container = true %>
-<% content_for :page_controls do -%>
+
+<% content_for :header_controls do -%>
   <ul class="control_bar">
-    <li><%= control_link 'Create User', new_user_url, :requires => 'admin', :html => {:class => "add"} %></li>
     <li><%= will_paginate(@users) %></li>
+    <li><%= link_to 'Create User', new_user_url, :class => "add" %></li>
   </ul>
+
+  <% form_tag(users_path, :method => :get) do -%>
+	  <%= search_field_tag "q", params[:q], :clear => { :onclick => "window.location = '#{users_path}'" } %>
+  <% end -%>
 <% end -%>
+
 <table class="data_table recordset">
   <thead>
   	<tr>
@@ -21,7 +27,7 @@
   <tbody id="content">
   	<% for user in @users -%>
   	<tr>
-  		<td><%= control_link user.login, user_url(user) %></td>
+  		<td><%= link_to user.login, user_url(user) %></td>
   		<td><%= user.display_name %></td>
   		<td><%= user.email %></td>
   		<td class="date"><%= format_date(user.logged_in_at) %></td>

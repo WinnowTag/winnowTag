@@ -73,12 +73,17 @@ module AuthenticatedSystem
       respond_to do |accepts|
         accepts.html do
           store_location
-          redirect_to :controller => '/account', :action => 'login'
+          redirect_to login_path
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
           headers["WWW-Authenticate"] = %(Basic realm="Web Password")
           render :text => "Could't authenticate you", :status => '401 Unauthorized'
+        end
+        accepts.js do
+          render :update do |page|
+            page.redirect_to login_path
+          end
         end
       end
       false

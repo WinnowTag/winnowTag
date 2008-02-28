@@ -8,6 +8,9 @@ describe "/feeds" do
     open feeds_path
   end    
   
+  # These test just make sure that the headers are correct.
+  # Normally you would do this in a view test but since the
+  # implementation uses "content_for", views tests won't work.
   it "should have an 'Add Feed' link on index" do
     see_element 'a[href="/feeds/new"]'
   end
@@ -16,5 +19,15 @@ describe "/feeds" do
     feed = Feed.find(:first)
     click_and_wait "link_to_feed_#{feed.id}"
     see_element 'a[href="/feeds/new"]'
+  end
+  
+  it "should show the search field on the index page" do
+    see_element '#search_term'
+  end
+  
+  it "should hide the search field on a feed page" do
+    feed = Feed.find(:first)
+    click_and_wait "link_to_feed_#{feed.id}"
+    dont_see_element '#search_term'
   end
 end

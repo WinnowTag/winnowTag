@@ -7,7 +7,7 @@ class InvitesController < ApplicationController
   permit 'admin'
   
   def index
-    @invites = Invite.paginate(:per_page => 30, :page => params[:page])
+    @invites = Invite.search(:q => params[:q], :per_page => 30, :page => params[:page])
   end
 
   def new
@@ -16,14 +16,32 @@ class InvitesController < ApplicationController
   
   def create
     @invite = Invite.new(params[:invite])
-    @invite.save!
-    if activate?
-      @invite.activate!
-      UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+    if @invite.save
+      if activate?
+        @invite.activate!
+        UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+      end
+      redirect_to invites_path
+    else
+      render :action => 'new'
     end
-    redirect_to invites_path
-  rescue ActiveRecord::RecordInvalid
-    render :action => 'new'
+  end
+
+  def edit
+    @invite = Invite.find(params[:id])
+  end
+  
+  def update
+    @invite = Invite.find(params[:id])
+    if @invite.update_attributes(params[:invite])
+      if activate?
+        @invite.activate!
+        UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
+      end
+      redirect_to invites_path
+    else
+      render :action => 'edit'
+    end
   end
   
   def activate

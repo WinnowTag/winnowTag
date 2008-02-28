@@ -41,7 +41,7 @@ describe FeedItemsController do
     Tagging.create(:tag => Tag(user, 'tag1'), :user => user, :feed_item => fi, :strength => 0.8, :classifier_tagging => true)
     
     get :show, :id => 1, :format => "js"
-    assert_select("span#tag_control_for_tag1_on_feed_item_1.bayes_classifier_tagging.negative_tagging", false, @response.body)
+    assert_select("span#tag_control_for_tag1_on_feed_item_1.negative.classifier", false, @response.body)
   end
   
   it "/description" do
@@ -95,18 +95,27 @@ describe FeedItemsController do
   end
   
   def test_mark_read
-    users(:quentin).unread_items.create(:feed_item_id => 1)
-    assert_difference("UnreadItem.count", -1) do
+    assert_difference("ReadItem.count", 1) do
       login_as(:quentin)
       put :mark_read, :id => 1, :format => "js"
       assert_response :success
     end
   end
   
+  def test_mark_read_twice_only_creates_one_entry_and_doesnt_fail
+    assert_difference("ReadItem.count", 1) do
+      login_as(:quentin)
+      put :mark_read, :id => 1, :format => "js"
+      assert_response :success
+      put :mark_read, :id => 1, :format => "js"
+      assert_response :success
+    end
+  end
+  
   def test_mark_many_read
-    users(:quentin).unread_items.create(:feed_item_id => 1)
-    users(:quentin).unread_items.create(:feed_item_id => 2)
-    assert_difference("UnreadItem.count", -2) do
+    users(:quentin).read_items.create(:feed_item_id => 1)
+    users(:quentin).read_items.create(:feed_item_id => 2)
+    assert_difference("ReadItem.count", 2) do
       login_as(:quentin)
       put :mark_read, :format => "js"
       assert_response :success
@@ -114,7 +123,8 @@ describe FeedItemsController do
   end
   
   def test_mark_unread
-    assert_difference("UnreadItem.count", 1) do
+    users(:quentin).read_items.create(:feed_item_id => 2)
+    assert_difference("ReadItem.count", -1) do
       login_as(:quentin)
       put :mark_unread, :id => 2, :format => "js"
       assert_response :success

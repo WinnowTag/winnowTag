@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 class AccountController < ApplicationController
   # before_filter :setup_mailer_site_url
   skip_before_filter :login_required, :except => [:edit]
@@ -54,7 +52,7 @@ class AccountController < ApplicationController
       if @user.save && @user.activate
         @invite.update_attribute :user_id, @user.id
         self.current_user = @user
-        redirect_back_or_default feed_items_path
+        redirect_back_or_default using_path
       else
         render :action => 'login'
       end

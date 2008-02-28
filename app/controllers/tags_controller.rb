@@ -29,7 +29,6 @@ class TagsController < ApplicationController
         @tags = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
         @subscribed_tags = Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
-      wants.xml { render :xml => current_user.tags_with_count.to_xml }
     end
   end
   
@@ -201,11 +200,14 @@ class TagsController < ApplicationController
   end
   
   def unsubscribe
-    if tag = Tag.find_by_id_and_public(params[:id], true)
-      TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
-      TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
+    if @tag = Tag.find_by_id_and_public(params[:id], true)
+      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
-    redirect_to :back
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js
+    end
   end
   
   def sidebar

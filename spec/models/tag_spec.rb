@@ -15,29 +15,100 @@ describe Tag do
     end
   end
   
-  describe "specs" do
-    it "Properly calculates tagging counts" do
-      user_1 = User.create! valid_user_attributes
-      user_2 = User.create! valid_user_attributes
+  describe "tagging counts" do
+    fixtures :users, :feed_items
     
-      tag = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
-      tag_subscription = TagSubscription.create! :user_id => user_1.id, :tag_id => tag.id
-    
-      feed_item_1 = valid_feed_item!
-      feed_item_2 = valid_feed_item!
-    
-      tagging_1 = Tagging.create! :tag_id => tag.id, :user_id => user_2.id, :feed_item_id => feed_item_1.id
-      tagging_2 = Tagging.create! :tag_id => tag.id, :user_id => user_2.id, :feed_item_id => feed_item_2.id, :strength => 0.95, :classifier_tagging => true
-      tagging_3 = Tagging.create! :tag_id => tag.id, :user_id => user_2.id, :feed_item_id => feed_item_2.id, :strength => 0
-    
-      tags = Tag.find_all_with_count(:subscribed_by => user_1, :subscriber => user_1)
-      tags.should have(1).record
-    
-      tags.first.positive_count.should == "1"
-      tags.first.negative_count.should == "1"
-      tags.first.classifier_count.should == "1"
+    it "is properly calculated for private tags" do
+      Tag.delete_all
+      
+      u = users(:quentin)
+      fi1 = feed_items(:first)
+      fi2 = feed_items(:forth)
+      classifier = Tag(u, 'classifier')
+      classifier_diff = Tag(u, 'classifier_diff')
+      classifier_neg = Tag(u, 'classifier_neg')
+      classifier_pos = Tag(u, 'classifier_pos')
+      empty = Tag(u, 'empty')
+      peerworks = Tag(u, 'peerworks')
+      test = Tag(u, 'test')
+      Tagging.create(:user => u, :feed_item => fi2, :tag => classifier, :classifier_tagging => true)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => classifier_diff)
+      Tagging.create(:user => u, :feed_item => fi2, :tag => classifier_diff, :classifier_tagging => true)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => classifier_neg, :strength => 0)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => classifier_neg, :classifier_tagging => true)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => classifier_pos)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => classifier_pos, :classifier_tagging => true)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
+      Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => test)
+      Tagging.create(:user => u, :feed_item => fi2, :tag => test, :strength => 0)
+
+      tags = u.tags.find_all_with_count(:order => "tags.name")
+      assert_equal 7, tags.size
+
+      assert_equal classifier, tag = tags.shift
+      assert_equal 0, tag.positive_count.to_i
+      assert_equal 0, tag.negative_count.to_i
+      assert_equal 0, tag.training_count.to_i
+      assert_equal 1, tag.classifier_count.to_i
+
+      assert_equal classifier_diff, tag = tags.shift
+      assert_equal 1, tag.positive_count.to_i
+      assert_equal 0, tag.negative_count.to_i
+      assert_equal 1, tag.training_count.to_i
+      assert_equal 1, tag.classifier_count.to_i
+
+      assert_equal classifier_neg, tag = tags.shift
+      assert_equal 0, tag.positive_count.to_i
+      assert_equal 1, tag.negative_count.to_i
+      assert_equal 1, tag.training_count.to_i
+      assert_equal 0, tag.classifier_count.to_i
+
+      assert_equal classifier_pos, tag = tags.shift
+      assert_equal 1, tag.positive_count.to_i
+      assert_equal 0, tag.negative_count.to_i
+      assert_equal 1, tag.training_count.to_i
+      assert_equal 0, tag.classifier_count.to_i
+
+      assert_equal empty, tag = tags.shift
+      assert_equal 0, tag.positive_count.to_i
+      assert_equal 0, tag.negative_count.to_i
+      assert_equal 0, tag.training_count.to_i
+      assert_equal 0, tag.classifier_count.to_i
+
+      assert_equal peerworks, tag = tags.shift
+      assert_equal 2, tag.positive_count.to_i
+      assert_equal 0, tag.negative_count.to_i
+      assert_equal 2, tag.training_count.to_i
+      assert_equal 0, tag.classifier_count.to_i
+
+      assert_equal test, tag = tags.shift
+      assert_equal 1, tag.positive_count.to_i
+      assert_equal 1, tag.negative_count.to_i
+      assert_equal 2, tag.training_count.to_i
+      assert_equal 0, tag.classifier_count.to_i
     end
   
+    it "is properly calculated for subscribed tags" do
+      u = users(:quentin)
+      fi1 = FeedItem.find(1)
+      fi2 = FeedItem.find(4)
+      peerworks = Tag(u, 'peerworks')
+      test = Tag(u, 'test')
+      tag = Tag(u, 'tag')
+      Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
+      Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
+      Tagging.create(:user => u, :feed_item => fi1, :tag => test)
+      TagSubscription.create(:tag_id => tag.id, :user_id => users(:aaron).id)
+
+      tags = Tag.find_all_with_count(:order => "tags.name", :subscribed_by => users(:aaron))
+      assert_equal 1, tags.size
+      assert_equal 'tag', tags[0].name
+      assert_equal 0, tags[0].positive_count.to_i
+    end
+  end
+  
+  describe "specs" do
     it "filters items by search term" do
       user_1 = User.create! valid_user_attributes
       user_2 = User.create! valid_user_attributes(:login => "everman")
@@ -110,6 +181,34 @@ describe Tag do
       tag.reload
       tag.delete_classifier_taggings!
       tag.taggings.should == [t1]
+    end
+  end
+  
+  describe "#potentially_undertrained?" do
+    before(:each) do
+      @user = User.create! valid_user_attributes
+      @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag')
+      # I need more items to tag
+      valid_feed_item!
+      valid_feed_item!
+    end
+    
+    it "should return true if positive taggings less than 6" do
+      FeedItem.find(:all).first(5).each do |i|
+        @tag.taggings.create!(:feed_item => i, :user => @user, :classifier_tagging => false, :strength => 1)
+      end
+      
+      @tag.should have(5).positive_taggings
+      @tag.should be_potentially_undertrained
+    end
+    
+    it "should return false if positive taggings 6" do
+      FeedItem.find(:all).each do |i|
+        @tag.taggings.create!(:feed_item => i, :user => @user, :classifier_tagging => false, :strength => 1)
+      end
+      
+      @tag.should have_at_least(5).positive_taggings
+      @tag.should_not be_potentially_undertrained
     end
   end
   
@@ -295,55 +394,6 @@ describe Tag do
       assert_equal [1], new_tag.taggings(:reload).map(&:feed_item_id)
       assert_equal 0.9, new_tag.bias
       assert_equal "old tag comment", new_tag.comment
-    end
-    
-    def test_find_all_with_count
-      u = users(:quentin)
-      fi1 = FeedItem.find(1)
-      fi2 = FeedItem.find(4)
-      peerworks = Tag(u, 'peerworks')
-      test = Tag(u, 'test')
-      tag = Tag(u, 'tag')
-      Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
-      Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
-      Tagging.create(:user => u, :feed_item => fi1, :tag => test)
-      Tagging.create(:user => u, :feed_item => fi2, :tag => test, :strength => 0)
-
-      tags = u.tags.find_all_with_count(:order => "tags.name")
-      assert_equal 3, tags.size
-
-      assert_equal 'peerworks', tags[0].name
-      assert_equal 2, tags[0].positive_count.to_i
-      assert_equal 0, tags[0].negative_count.to_i
-      assert_equal 2, tags[0].training_count.to_i
-
-      assert_equal 'tag', tags[1].name
-      assert_equal 0, tags[1].positive_count.to_i
-      assert_equal 0, tags[1].negative_count.to_i
-      assert_equal 0, tags[1].training_count.to_i
-
-      assert_equal 'test', tags[2].name
-      assert_equal 1, tags[2].positive_count.to_i
-      assert_equal 1, tags[2].negative_count.to_i
-      assert_equal 2, tags[2].training_count.to_i
-    end
-  
-    def test_find_all_subscribed_tags_with_count
-      u = users(:quentin)
-      fi1 = FeedItem.find(1)
-      fi2 = FeedItem.find(4)
-      peerworks = Tag(u, 'peerworks')
-      test = Tag(u, 'test')
-      tag = Tag(u, 'tag')
-      Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
-      Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
-      Tagging.create(:user => u, :feed_item => fi1, :tag => test)
-      TagSubscription.create(:tag_id => tag.id, :user_id => users(:aaron).id)
-
-      tags = Tag.find_all_with_count(:order => "tags.name", :subscribed_by => users(:aaron))
-      assert_equal 1, tags.size
-      assert_equal 'tag', tags[0].name
-      assert_equal 0, tags[0].positive_count.to_i
     end
   end
 end

@@ -3,10 +3,7 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 class AboutController < ApplicationController
-
   def index
     @about = `svn info #{__FILE__}`
     
@@ -25,7 +22,6 @@ class AboutController < ApplicationController
     end
   end
   
-  def help
-    render :action => 'help', :layout => 'popup'
+  def using
   end
 end

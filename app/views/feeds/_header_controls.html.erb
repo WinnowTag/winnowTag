@@ -1,0 +1,13 @@
+<% content_for :header_controls do -%>
+  <ul class="control_bar">
+    <li><%= will_paginate(@feeds) if @feeds %></li>
+    <li><%= link_to "Add Feed", new_feed_path %></li>
+    <li><%= link_to "Import OPML", import_feeds_path %></li>
+  </ul>
+
+  <% if params[:action] == 'index' -%>
+    <% form_tag(feeds_path, :method => :get) do -%>
+  	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{feeds_path}';" } %>
+    <% end -%>
+  <% end -%>
+<% end -%>

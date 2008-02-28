@@ -10,182 +10,170 @@ require File.dirname(__FILE__) + '/../spec_helper'
 require 'tag'
 
 describe FeedItemsHelper do
+  attr_reader :current_user
   fixtures :feed_items
-  attr_reader :current_user, :session
 
-  def setup
-    @output = ""
+  before(:each) do
     @current_user = User.create! valid_user_attributes
-    @min_train_count = 1
-    @session = {}
-    @feed_item_count = nil
+  end
+  
+  describe "clean html" do
+    it "strips scripts" do
+      assert_equal("<h1>header</h1><p>content</p>", clean_html("<script>This is a script</script><h1>header</h1><p>content</p>"))
+    end
+  
+    it "strips styles" do
+      assert_equal("<h1>header</h1><p>content</p>", clean_html("<style>div {font-size:64px;}</style><h1>header</h1><p>content</p>"))
+    end
+  
+    it "strips links" do
+      assert_equal("<h1>header</h1><p>content</p>", clean_html('<link rel="foo"><h1>header</h1><p>content</p>'))
+    end
+  
+    it "strips meta" do
+      assert_equal("<h1>header</h1><p>content</p>", clean_html('<meta http-equiv="foo"><h1>header</h1><p>content</p>'))
+    end
+  
+    it "clean_html_with_blank_value" do
+      [nil, '', ' '].each do |value| 
+        assert_nil clean_html(value)
+      end
+    end
+  
+    it "clean_html_with_non_blank_value" do
+      ["string", "<div>content</div>"].each do |value| 
+        assert_not_nil clean_html(value)
+      end
+    end
+  end
+  
+  describe "link_to_feed" do
+    it "link_to_feed_without_link" do
+      feed = mock_model(Feed, :title => "Feed Title", :alternate => nil)
+      assert_equal "Feed Title", link_to_feed(feed)
+    end
+  
+    it "link_to_feed_with_link" do
+      feed = mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com")
+      assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', link_to_feed(feed)
+    end
+  end
+  
+  describe "link_to_feed_item" do
+    it "link_to_feed_item_without_link" do
+      feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => nil)
+      assert_equal "FeedItem Title", link_to_feed_item(feed_item)
+    end
+  
+    it "link_to_feed_item_with_link" do
+      feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => "http://example.com")
+      assert_equal '<a href="http://example.com" target="_blank">FeedItem Title</a>', link_to_feed_item(feed_item)
+    end
+  end
+  
+  describe "toggle_read_unread_button" do
+    it "creates a link which triggers the itemBrowser's read/unread function" do
+      toggle_read_unread_button.should have_tag("a[onclick=?]", /itemBrowser.toggleReadUnreadItem.*/)
+    end
   end
 
-  def test_clean_html_should_strip_scripts
-    assert_equal("<h1>header</h1><p>content</p>", clean_html("<script>This is a script</script><h1>header</h1><p>content</p>"))
+  describe "show_manual_taggings?" do
+    it "is true when params[:manual_taggings] is set to a truthy value" do
+      params[:manual_taggings] = "true"
+      show_manual_taggings?.should be_true
+    end
+    
+    it "is false when params[:manual_taggings] is set to a falsy value" do
+      ["", "false"].each do |falsy_value|
+        params[:manual_taggings] = falsy_value
+        show_manual_taggings?.should be_false
+      end
+    end
   end
   
-  def test_clean_html_should_strip_styles
-    assert_equal("<h1>header</h1><p>content</p>", clean_html("<style>div {font-size:64px;}</style><h1>header</h1><p>content</p>"))
-  end
-  
-  def test_clean_html_should_strip_links
-    assert_equal("<h1>header</h1><p>content</p>", clean_html('<link rel="foo"><h1>header</h1><p>content</p>'))
-  end
-  
-  def test_clean_html_should_strip_meta
-    assert_equal("<h1>header</h1><p>content</p>", clean_html('<meta http-equiv="foo"><h1>header</h1><p>content</p>'))
+  describe "classes_for_taggings" do
+    it "provides the class classifier when only a classifier tagging exists" do
+      taggings = mock_model(Tagging, :classifier_tagging? => true)
+      classes_for_taggings(taggings).should == ["classifier"]
+    end
+    
+    it "provides the class positive when a positive user tagging exists" do
+      taggings = mock_model(Tagging, :classifier_tagging? => false, :positive? => true)
+      classes_for_taggings(taggings).should == ["positive"]
+    end
+
+    it "provides the class negative when a negative user tagging exists" do
+      taggings = mock_model(Tagging, :classifier_tagging? => false, :positive? => false, :negative? => true)
+      classes_for_taggings(taggings).should == ["negative"]
+    end
+    
+    it "provides the class classifier when a user tagging and a classifier tagging exist" do
+      taggings = [ mock_model(Tagging, :classifier_tagging? => false, :positive? => true),
+                   mock_model(Tagging, :classifier_tagging? => true) ]
+      classes_for_taggings(taggings).should == ["positive", "classifier"]      
+    end
+    
+    it "keeps classes given" do
+      taggings = [ mock_model(Tagging, :classifier_tagging? => false, :positive? => true),
+                   mock_model(Tagging, :classifier_tagging? => true) ]
+      classes_for_taggings(taggings, ["public"]).should == ["public", "positive", "classifier"]      
+    end
   end
 
-  def test_tag_controls_helper_when_untagged
-    @current_user.stub!(:tags).and_return([Tag(current_user, 'tag1'), Tag(current_user, 'tag2'), Tag(current_user, 'tag3')])
-    fi = FeedItem.find(1)
-    @response.body = tag_controls(fi)
-    
-    assert_select('li.untagged', 0, @response.body)
+  describe "tag control for" do
+    it "creates a list item with the proper controls inside it" do
+      feed_item = mock_model(FeedItem)
+      tag = mock_model(Tag, :name => "tag1")
+      classes = ["positive", "classifier"]
+      tag_control_for(feed_item, tag, classes).should have_tag("li.positive.classifier##{dom_id(feed_item, "tag_control_for_tag1_on")}") do
+        with_tag "span.name", "tag1"
+        with_tag "span.controls[style=?]", /display:none/ do
+          with_tag "span.add"
+          with_tag "span.remove"
+        end
+      end
+    end
   end
   
-  def test_tag_controls_with_classifier_tags
-    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'))
-    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag2'), :classifier_tagging => true)
-    @response.body = tag_controls(FeedItem.find(1))
+  describe "tag controls" do
+    it "created list items for each tag" do
+      taggings = [
+        [ mock_model(Tag, :name => "tag1"), [] ],
+        [ mock_model(Tag, :name => "tag2"), [] ],
+        [ mock_model(Tag, :name => "tag3"), [] ]
+      ]
+      feed_item = mock_model(FeedItem, :taggings_by_user => taggings)
     
-    assert_select('li#tag_control_for_tag1_on_feed_item_1.positive', true)
-    assert_select('li#tag_control_for_tag2_on_feed_item_1.classifier', true)
+      tag_controls(feed_item).should have_tag("ul.tag_list##{dom_id(feed_item, 'tag_controls')}") do
+        with_tag("li", 3)
+      end
+    end
+    
+    xit "needs to be tested with show_manual_taggings?"
+    xit "needs to be tested with public tags"
   end
   
-  def test_tag_controls_when_negative_tagging_exists
-    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :strength => 0)
-    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :classifier_tagging => true)
+  describe "tags_to_display" do
+    def show_manual_taggings?; @show_manual_taggings; end
     
-    params[:manual_taggings] = "true"
-    response.body = tag_controls(FeedItem.find(1))
+    it "only shows filtered tags when manual taggings is on" do
+      @show_manual_taggings = true
+      params[:tag_ids] = "1,5,7"
+      tags_to_display.should == [1, 5, 7]
+    end
     
-    assert_select('li#tag_control_for_tag1_on_feed_item_1.negative.classifier', true, @response.body)
-  end
-  
-  def test_tag_controls_when_positive_tagging_overrides_classifier_tagging
-    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'))
-    Tagging.create(:feed_item => FeedItem.find(1), :user => @current_user, :tag => Tag(current_user, 'tag1'), :classifier_tagging => true)
-    @response.body = tag_controls(FeedItem.find(1))
-    
-    assert_select('li#tag_control_for_tag1_on_feed_item_1.positive.classifier', true, @response.body)
-  end
-  
-  def test_tag_controls_when_duplicate_tagging_exists
-    feed_item = FeedItem.find(1)
-    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :classifier_tagging => true)
-    Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :classifier_tagging => true)
-    
-    @response.body = tag_controls(feed_item)
-    
-    assert_select('li#tag_control_for_tag1_on_feed_item_1.classifier')
-  end
-  
-  def test_tag_controls_with_borderline_item
-    feed_item = FeedItem.find(1)
-    t1 = Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.89, :classifier_tagging => true)
-
-    @response.body = tag_controls(feed_item)
-    
-    assert_select('li#tag_control_for_tag1_on_feed_item_1.classifier.borderline', true, @response.body)
-  end
-
-  # TODO: Determine if these should be shown
-  # def test_assigned_tag_controls_should_not_display_item_below_threshold
-  #   feed_item = FeedItem.find(1)
-  #   Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
-  #   @response.body = tag_controls(feed_item)
-  #   
-  #   assert_select('li#tag_control_for_tag1_on_feed_item_1', false, @response.body)
-  # end
-  
-  def test_display_tags_for_feed_item
-    fi = FeedItem.find(1)
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag1'))
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag2'))
-    Tagging.create(:user => current_user, :feed_item => fi, :tag => Tag(current_user, 'tag3'), :classifier_tagging => true)
-    @response.body = display_tags_for(fi)
-    
-    assert_select("span.positive", "tag1", @response.body)
-    assert_select("span.positive", "tag2")
-    assert_select("span.classifier", "tag3")
-  end
-  
-  def test_display_borderline_tags
-    fi = FeedItem.find(1)
-    Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0.89, :classifier_tagging => true)
-    @response.body = display_tags_for(fi)
-
-    assert_select("span.classifier.borderline", "tag", @response.body)
-  end
-
-  # TODO: Determine if this should be displayed
-  # def test_item_tagged_below_threshold_gets_no_displayed_tag_but_the_tag_is_in_the_list_of_tags_to_add
-  #   @current_user.taggings.create(:tag => Tag(current_user, 'tag'), :feed_item => FeedItem.find(2))
-  #   fi = FeedItem.find(1)
-  #   Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0.81, :classifier_tagging => true)
-  #   
-  #   @response.body = display_tags_for(fi)
-  #   @response.body += unused_tag_controls(fi)
-  #   assert_select("span.classifier", false, @response.body)    
-  #   assert_select('li#unused_tag_control_for_tag_on_feed_item_1', true, @response.body)
-  # end
-    
-  def test_ununsed_tag_control_not_added_for_negative_tag
-    @current_user.taggings.create(:tag => Tag(current_user, 'tag'), :feed_item => FeedItem.find(2))
-    fi = FeedItem.find(1)
-    Tagging.create(:user => @current_user, :feed_item => fi, :tag => Tag(current_user, 'tag'), :strength => 0)
-    
-    @response.body = unused_tag_controls(fi)
-    assert_select('li#unused_tag_control_for_tag_on_feed_item_1', false, @response.body)
-  end
-
-  # TODO: Determine if this should be displayed
-  # def test_dont_display_tags_below_threshold
-  #   feed_item = FeedItem.find(1)
-  #   Tagging.create(:feed_item => feed_item, :tag => Tag(current_user, 'tag1'), :user => current_user, :strength => 0.85, :classifier_tagging => true)
-  # 
-  #   @response.body = display_tags_for(feed_item)
-  #   
-  #   assert_no_match(/tag1/, @response.body)
-  # end
+    it "only shows the tags the user has in the sidebar (public and private) that are not excluded plus any filtered tags" do
+      ruby = mock_model(Tag)
+      svn = mock_model(Tag)
+      tech = mock_model(Tag)
+      langs = mock_model(Tag)
       
-  # TODO: Update this to work with published tags
-  # def test_display_published_tags_when_tag_filter_is_a_published_tag
-  #   tag_filter = TagPublication.find(1)
-  #   fi = FeedItem.find(1)
-  #   tag_filter.taggings.create(:tag => tag_filter.tag, :feed_item => fi)
-  #   
-  #   @view.add_tag :include, tag_filter
-  #   @response.body = display_tags_for(fi)
-  #   assert_select("span.tag_publication_tagging.tagged", "#{tag_filter.publisher.login}:#{tag_filter.tag.name}", "actual: " + @response.body)
-  # end
-  
-  def test_clean_html_with_blank_value
-    [nil, '', ' '].each do |value| 
-      assert_nil clean_html(value)
+      current_user.stub!(:sidebar_tags).and_return([ruby, svn])
+      current_user.stub!(:subscribed_tags).and_return([tech, langs])
+      current_user.stub!(:excluded_tags).and_return([ruby, langs])
+      params[:tag_ids] = "1,5,7"
+      
+      tags_to_display.should == [svn.id, tech.id, 1, 5, 7]
     end
-  end
-  
-  def test_clean_html_with_non_blank_value
-    ["string", "<div>content</div>"].each do |value| 
-      assert_not_nil clean_html(value)
-    end
-  end
-  
-  def test_feed_link_without_link
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => nil))
-    assert_equal "Feed Title", feed_link(feed_item)
-  end
-  
-  def test_feed_link_with_link
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com"))
-    assert_equal '<a href="http://example.com">Feed Title</a>', feed_link(feed_item)
-  end
-  
-  def test_feed_link_with_link_and_options
-    feed_item = mock_model(FeedItem, :feed => mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com"))
-    assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', feed_link(feed_item, :target => "_blank")
   end
 end

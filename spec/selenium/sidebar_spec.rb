@@ -6,6 +6,7 @@ describe "sidebar" do
   before(:each) do
     login
     open feed_items_path
+    wait_for_ajax
   end
   
   it "is open by default" do
@@ -35,6 +36,7 @@ describe "sidebar" do
     assert_not_visible "sidebar"
 
     refresh_and_wait
+    wait_for_ajax
     
     assert_not_visible "sidebar"
     
@@ -50,6 +52,7 @@ describe "sidebar" do
     assert_visible "sidebar"
 
     refresh_and_wait
+    wait_for_ajax
     
     assert_visible "sidebar"
   end

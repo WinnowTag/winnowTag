@@ -297,17 +297,6 @@ describe FeedItem do
       assert_equal FeedItem.find(1, 2, 3, 4), feed_items
     end
   
-    def test_find_includes_borderline_items
-      user = users(:quentin)
-      tag2 = Tag(user, 'tag2')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2, :classifier_tagging => true)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag2, :strength => 0.89, :classifier_tagging => true)
-        
-      expected = FeedItem.find(3, 4)
-      actual = FeedItem.find_with_filters(:user => user, :tag_ids => tag2.id.to_s, :order => 'feed_items.id ASC')    
-      assert_equal expected, actual
-    end
-  
     def test_find_with_negatives_includes_negativey_tagged_items
       user = users(:quentin)
       tag = Tag(user, 'tag')
@@ -338,23 +327,23 @@ describe FeedItem do
       assert_equal expected, actual
     end
   
-    def test_find_with_tag_filter_excludes_negative_taggings
+    def test_find_with_tag_filter_includes_negative_taggings
       user = users(:quentin)
       tag = Tag(user, 'tag1')
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
 
-      assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
+      assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
     end  
 
-    def test_find_with_tag_filter_negative_taggings_exclude_positive_classifier_taggings
+    def test_find_with_tag_filter_include_negative_taggings_with_positive_classifier_taggings
       user = users(:quentin)
       tag = Tag(user, 'tag1')
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :classifier_tagging => true)
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
 
-      assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
+      assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
     end
   
     def test_find_with_tag_filter_should_ignore_other_users_tags
@@ -546,134 +535,25 @@ describe FeedItem do
     def test_options_for_filters_creates_text_filter
       assert_match(/MATCH/, FeedItem.send(:options_for_filters, :user => users(:quentin), :text_filter => "text")[:joins])
     end
-  
-    def test_each_tagging_by_user
+    
+    def test_taggings_by_user_and_classifier_where_user_taggins_float_up
       user = users(:quentin)
       tag1 = Tag(user, 'tag1')
       tag2 = Tag(user, 'tag2')
-      fi = FeedItem.find(1)
-      tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1)
-      tagging2 = Tagging.create(:user => user, :feed_item => fi, :tag => tag2)
-   
-      assert_equal [[tag1, tagging1], [tag2, tagging2]], fi.taggings_by_user(user) 
-    end
-  
-    def test_each_tagging_by_user_ignores_negative_taggings
-      user = users(:quentin)
-      fi = FeedItem.find(1)
-      tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag1'), :strength => 1)
-      tagging2 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag2'), :strength => 0)
-    
-      assert_equal [[Tag(user, 'tag1'), tagging1]], fi.taggings_by_user(user) 
-    end
-  
-    def test_each_tagging_with_user_and_classifier_where_user_takes_priority
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      fi = FeedItem.find(1)
-      u_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1)
-      u_tagging2 = Tagging.create(:user => user, :feed_item => fi, :tag => tag2)
-      c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :classifier_tagging => true)
-      c_tagging2 = Tagging.create(:user => user, :feed_item => fi, :tag => tag2, :classifier_tagging => true)
-    
-      expected = [[tag1, u_tagging1], [tag2, u_tagging2]]
-      result = fi.taggings_by_user(user) 
-    
-      assert_equal expected.size, result.size
-      assert_equal expected, result
-    end
-  
-    def test_each_tagging_by_user_and_classifier_where_classifier_tags_float_up
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
+      tag3 = Tag(user, 'tag3')
       fi = FeedItem.find(1)
     
       u_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1)
       c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :classifier_tagging => true)
       c_tagging2 = Tagging.create(:user => user, :feed_item => fi, :tag => tag2, :classifier_tagging => true)
+      u_tagging3 = Tagging.create(:user => user, :feed_item => fi, :tag => tag3)
     
-      expected = [[tag1, u_tagging1], [tag2, c_tagging2]]
+      expected = [[tag1, [u_tagging1, c_tagging1]], [tag2, [c_tagging2]], [tag3, [u_tagging3]]]
       result = fi.taggings_by_user(user)
     
       assert_equal expected, result
     end
   
-    def test_each_tagging_by_user_and_classifier_where_classifier_tags_float_up_except_it_is_too_weak
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      fi = FeedItem.find(1)
-    
-      u_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1)
-      c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :classifier_tagging => true)
-      c_tagging2 = Tagging.create(:user => user, :feed_item => fi, :tag => tag2, :strength => 0.3, :classifier_tagging => true)
-    
-      expected = [[tag1, u_tagging1]]
-      result = fi.taggings_by_user(user)
-    
-      assert_equal expected, result
-    end
-  
-    def test_each_tagging_by_user_and_classifier_where_classifier_tag_is_overriden_by_negative_tagging
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      fi = FeedItem.find(1)
-    
-      u_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :strength => 0)
-      c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :strength => 0.99, :classifier_tagging => true)
-    
-      expected = []
-      result = fi.taggings_by_user(user)
-    
-      assert_equal expected, result
-    end
-  
-    def test_taggings_by_taggers_with_borderline_items
-      user = users(:quentin)
-      tag = Tag(user, 'tag')
-      fi = FeedItem.find(1)
-    
-      c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag, :strength => 0.89, :classifier_tagging => true)
-    
-      expected = [[tag, c_tagging1]]
-      result = fi.taggings_by_user(user)
-    
-      assert_equal expected.size, result.size
-      assert_equal expected, result    
-    end
-  
-    def test_all_taggings
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      fi = FeedItem.find(1)
-
-      u_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :strength => 0)
-      c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :strength => 0.99, :classifier_tagging => true)
-  
-      expected = [[tag1, [u_tagging1, c_tagging1]]]
-      result = fi.taggings_by_user(user, :all_taggings => true)
-
-      assert_equal expected.size, result.size
-      assert_equal expected, result
-    end
-  
-    def test_all_taggings_with_borderline_items
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      fi = FeedItem.find(1)
-
-      u_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :strength => 0)
-      c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :strength => 0.89, :classifier_tagging => true)
-      
-      expected = [[tag1, [u_tagging1, c_tagging1]]]
-      result = fi.taggings_by_user(user, :all_taggings => true)
-
-      assert_equal expected, result
-    end
-
     def test_find_by_user_with_caching
       user = users(:quentin)
       fi = FeedItem.find(1)

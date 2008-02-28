@@ -1,0 +1,5 @@
+page[:notice].update "Unsubscribed from #{@tag.name}"
+page[:notice].show
+page[@tag].remove
+page[dom_id(@tag, :comment)].remove
+page << "Table.stripe('tags');"

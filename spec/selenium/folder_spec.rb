@@ -7,16 +7,23 @@ describe "folders" do
     Folder.delete_all
     Feed.delete_all
     FeedSubscription.delete_all
+    Tag.delete_all
+    TagSubscription.delete_all
     
-    @existing_folder = Folder.create! :user_id => 1, :name => "existing folder"
+    @current_user = User.find_by_login("quentin")
+    @existing_folder = Folder.create! :user_id => @current_user.id, :name => "existing folder"
     @example_feed = Feed.new :title => "Example Feed", :via => "http://example.com/atom"
     @example_feed.id = 1
     @example_feed.save!
     @another_example_feed = Feed.new :title => "Another Example Feed", :via => "http://another.example.com/atom"
     @another_example_feed.id = 2
     @another_example_feed.save!
-    FeedSubscription.create! :feed_id => @another_example_feed.id, :user_id => 1
-    
+    FeedSubscription.create! :feed_id => @another_example_feed.id, :user_id => @current_user.id
+    @user = User.create! valid_user_attributes
+    @private_tag = Tag.create! :name => "private tag", :user_id => @current_user.id
+    @public_tag = Tag.create! :name => "public tag", :user_id => @user.id, :public => true
+    TagSubscription.create! :tag_id => @public_tag.id, :user_id => @current_user.id
+
     login
     open feed_items_path
     wait_for_ajax
@@ -36,7 +43,11 @@ describe "folders" do
     see_element "#folder_#{new_folder.id}"
   end
   
-  it "can be renamed"
+  it "can be renamed" do
+    dont_see_element "#folder_#{@existing_folder.id} input"
+    click "css=#folder_#{@existing_folder.id} .edit"
+    see_element "#folder_#{@existing_folder.id} input"
+  end
   
   it "can be destroyed" do
     see_element "#folder_#{@existing_folder.id}"
@@ -48,40 +59,86 @@ describe "folders" do
     dont_see_element "#folder_#{@existing_folder.id}"
   end  
   
-  # it "can have feeds added" do
-  #   assert_not_visible "add_feed"
-  # 
-  #   click "add_feed_link"
-  #   assert_visible "add_feed"
-  #   
-  #   dont_see_element "#feed_#{@example_feed.id}"
-  #   
-  #   type "feed_title", @example_feed.title
-  #   wait_for_ajax
-  #   hit_enter "feed_title"
-  #   wait_for_ajax
-  #   
-  #   see_element "#feed_#{@example_feed.id}"
-  # end
+  xit "can have feeds added" do
+    assert_not_visible "add_feed"
+  
+    click "add_feed_link"
+    assert_visible "add_feed"
+    
+    dont_see_element "#feed_#{@example_feed.id}"
+    
+    type "feed_title", @example_feed.title
+    wait_for_ajax
+    hit_enter "feed_title"
+    wait_for_ajax
+    
+    see_element "#feed_#{@example_feed.id}"
+  end
   
   it "can have feeds removed" do
     see_element "#feed_#{@another_example_feed.id}"
-    
     click "css=#feed_#{@another_example_feed.id} .show_feed_control .remove"
-    
     dont_see_element "#feed_#{@another_example_feed.id}"
   end
   
-  it "can have private tags added"
-  it "can have private tags removed"
-  it "can have public tags added"
-  it "can have public tags removed"
-  it "can have private tags renamed"
-  it "can have a feed moved to a custom folder"
-  it "can have a feed removed from a custom folder"
-  it "can have a private tag moved to a custom folder"
-  it "can have a private tag removed from a custom folder"
-  it "can have a public tag moved to a custom folder"
-  it "can have a public tag removed from a custom folder"
-  it "can have private tags renamed in custom folders"
+  xit "can have private tags added"
+  
+  it "can have private tags removed" do
+    see_element "#tag_#{@private_tag.id}"
+    click "css=#tag_#{@private_tag.id} .show_tag_control .remove"
+    dont_see_element "#tag_#{@private_tag.id}"  
+  end
+
+  xit "can have public tags added"
+  
+  it "can have public tags removed" do
+    see_element "#tag_#{@public_tag.id}"
+    click "css=#tag_#{@public_tag.id} .show_tag_control .remove"
+    dont_see_element "#tag_#{@public_tag.id}"      
+  end
+  
+  it "can have private tags renamed" do
+    dont_see_element "#tag_#{@private_tag.id} input"
+    click "css=#tag_#{@private_tag.id} .edit"
+    see_element "#tag_#{@private_tag.id} input"
+  end
+  
+  it "cannot rename public tags" do
+    dont_see_element "#tag_#{@public_tag.id} .edit"
+  end
+  
+  xit "can have a feed moved to a custom folder" do
+    dont_see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
+    
+    click "css=#folder_feeds .header"    
+    mouse_down "css=#feed_#{@another_example_feed.id}"
+    mouse_move_at "css=#feed_#{@another_example_feed.id}", "0,-110"
+    mouse_up "css=#feed_#{@another_example_feed.id}"
+    wait_for_ajax
+    
+    see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
+  end
+  
+  xit "can have a private tag moved to a custom folder"
+  xit "can have a public tag moved to a custom folder"
+  
+  it "can open tags folder" do
+    assert_not_visible "css=#tag_filters"
+    click "css=#folder_tags .header"
+    assert_visible "css=#tag_filters"
+  end
+  
+  it "can open feeds folder" do
+    assert_not_visible "css=#feed_filters"
+    click "css=#folder_feeds .header"
+    assert_visible "css=#feed_filters"
+  end
+  
+  it "can open custom folder" do
+    assert_not_visible "css=#folder_#{@existing_folder.id}_tag_items"
+    assert_not_visible "css=#folder_#{@existing_folder.id}_feed_items"
+    click "css=#folder_#{@existing_folder.id} .header"
+    assert_visible "css=#folder_#{@existing_folder.id}_tag_items"
+    assert_visible "css=#folder_#{@existing_folder.id}_feed_items"
+  end
 end

@@ -1,12 +1,5 @@
 <% @skip_content_container = true %>
-<% content_for :header_controls do -%>
-  <% form_tag(feeds_path, :method => :get) do -%>
-	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{feeds_path}';" } %>
-  <% end -%>
-<% end -%>
-
-<%= render_partial 'page_controls' %>
-
+<%= render :partial => 'header_controls' %>
 <table class="data_table recordset">
   <thead>
     <tr>
@@ -25,7 +18,7 @@
     		<td class="number"><%= feed.feed_items_count %></td>
     		<td class="date"><%= format_date(feed.updated_on) %></td>
     		<td class="controls">
-    			<%= control_link image_tag("show.gif"), feed_items_path(:anchor => "feed_ids=#{feed.id}") %>
+    			<%= link_to image_tag("show.gif"), feed_items_path(:anchor => "feed_ids=#{feed.id}") %>
     		</td>
       </tr>
     <% end %>

@@ -3,91 +3,18 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 module ApplicationHelper  
   include DateHelper
   
-  # Permit methods in the ApplicationController to be called from views.
-  def method_missing(method, *args, &block)
-    if ApplicationController.instance_methods.include?(method.to_s) && defined?(controller)
-      controller.send(method, *args, &block)
-    else
-      super
-    end
-  end
-  
   def tab_selected(controller, action = nil)
-    "selected" if params[:controller] == controller and (action.nil? or params[:action] == action)
+    "selected" if controller_name == controller and (action.nil? or action_name == action)
   end
       
   def show_flash
-    [:notice, :warning, :error].map do |name|
+    [:notice, :warning, :error, :confirm].map do |name|
       close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => 'Close Message')
-      content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display: none" : nil
+      content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display:none" : nil
     end.join
-  end
-  
-  def property_row(obj, property, title = property.to_s.humanize, *args)
-    if args.any?
-      data = obj.send(property, *args)
-    else
-      data = obj.send(property)
-    end
-    
-    css_class = case data
-                when Numeric
-                  "number"
-                when Time
-                  data = format_date(data)
-                  "date"
-                end
-
-    
-    content_tag('tr',
-      content_tag('th', title) +
-      content_tag('td', data, :class => css_class)
-    )
-  end
-  
-  def appendable_url_for(options = {})
-    url = url_for(options)
-    
-    if url =~ /.*\?.*/
-      url += '&'
-    else
-      url += '?'
-    end
-  end
-  
-  # flattens nested params - only handles one level of nesting
-  def flatten_params(options = {})
-    skip = Array(options[:skip])
-    params.inject({}) do |hash, (key, value)|
-      if value.is_a? Hash and not(skip.include?(key))
-        value.inject(hash) do |hash, subentry|
-          subkey, subvalue = subentry
-          hash["#{key}[#{subkey}]"] = subvalue
-          hash
-        end
-      elsif not(skip.include?(key))
-        hash[key] = value
-      end
-      
-      hash
-    end
-  end
-  
-  def pagination_links(paginator, options = {}, html_options = {})
-    options = options.merge :link_to_current_page => true
-    options[:params] ||= {}
-    
-    pagination_links_each(paginator, options) do |page|
-      if page == paginator.current_page.number
-        content_tag('span', page, :class => 'current_page')
-      else
-        content_tag('span', link_to(page, options[:params].merge(:page => page), html_options))
-      end
-    end
   end
   
   # Provides some assistance over link_to for special control links
@@ -203,25 +130,19 @@ module ApplicationHelper
   end
   
   def tag_name_with_tooltip(tag, options = {})
-    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
+    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil : "from #{tag.user.display_name}")
   end
   
   def feed_filter_controls(feeds, options = {})
     content_tag :ul, feeds.map { |feed| feed_filter_control(feed, options) }.join, options.delete(:ul_options) || {}
   end
   
-  def feed_filter_control(feed, options = {})
-    unread_item_count = current_user.unread_items.for(feed).size
-    if true or unread_item_count.zero?
-      html = ""
-    else
-      html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items in this feed")
-    end
+  def feed_filter_control(feed, options = {})   
     url  =  case options[:remove]
       when :subscription then subscribe_feed_path(feed, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
-    html << link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    html = link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'})", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
     
     html =  content_tag(:div, html, :class => "show_feed_control")
@@ -239,12 +160,6 @@ module ApplicationHelper
   end
   
   def tag_filter_control(tag, options = {})
-    unread_item_count = current_user.unread_items.for(tag).size
-    if true or unread_item_count.zero?
-      html = ""
-    else
-      html = content_tag(:span, "(#{unread_item_count})", :class => "unread_count", :title => "#{unread_item_count} unread items with this tag")
-    end
     if options[:remove] == :subscription && current_user == tag.user
       options = options.except(:remove)
       options[:remove] = :sidebar
@@ -254,7 +169,7 @@ module ApplicationHelper
       when :sidebar      then sidebar_tag_path(tag, :sidebar => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
-    html << link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({tag_ids: '#{tag.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    html =  link_to_function(image_tag("cross.png"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}; itemBrowser.removeFilters({tag_ids: '#{tag.id}'});", :class => "remove") << " "
     html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
@@ -275,5 +190,9 @@ module ApplicationHelper
     html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url)
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
+  end
+  
+  def help_path
+    url_for(:controller => controller_name, :action => action_name, :host => "docs.mindloom.org")
   end
 end

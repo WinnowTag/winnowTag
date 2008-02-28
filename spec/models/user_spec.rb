@@ -81,6 +81,67 @@ describe User do
     end
   end
   
+  describe "searching" do
+    it "can find users by login, email, firstname, or lastname" do
+      user1 = User.create! valid_user_attributes(:login => "mark")
+      user2 = User.create! valid_user_attributes(:email => "mark@example.com")
+      user3 = User.create! valid_user_attributes(:firstname => "mark")
+      user4 = User.create! valid_user_attributes(:lastname => "mark")
+      user5 = User.create! valid_user_attributes
+      
+      expected_users = [user1, user2, user3, user4]
+      
+      users = User.search :q => "mark", :page => 1
+      users.should == expected_users
+    end
+  end
+  
+  describe '#changed_tags' do
+    before(:each) do
+      @user = User.create! valid_user_attributes      
+      @changed_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
+      @unchanged_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.tomorrow.getutc))
+    end
+    
+    it "should return tag with updated_on later than last_classified" do
+      @user.changed_tags.should include(@changed_tag)
+    end
+    
+    it "should not return the unchanged tag" do
+      @user.changed_tags.should_not include(@unchanged_tag)
+    end
+  end
+  
+  describe '#potentially_undertrained_changed_tags' do
+    before(:each) do
+      valid_feed_item!
+      valid_feed_item!
+      @user = User.create! valid_user_attributes      
+      @changed_tag_with_5 = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
+      @changed_tag_with_6 = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
+      @unchanged_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.tomorrow.getutc))
+      
+      FeedItem.find(:all).first(5).each do |i|
+        @changed_tag_with_5.taggings.create!(:user => @user, :feed_item => i, :strength => 1)
+      end
+      FeedItem.find(:all).each do |i|
+        @changed_tag_with_6.taggings.create!(:user => @user, :feed_item => i, :strength => 1)
+      end
+    end
+    
+    it "should not return an unchanged tag" do
+      @user.potentially_undertrained_changed_tags.should_not include(@unchanged_tag)
+    end
+    
+    it "should not return a changed tag which is not potentially undertrained" do
+      @user.potentially_undertrained_changed_tags.should_not include(@changed_tag_with_6)
+    end
+    
+    it "should return a changed tag with is potentially undertrained" do
+      @user.potentially_undertrained_changed_tags.should include(@changed_tag_with_5)
+    end
+  end
+  
   describe "from test/unit" do
     fixtures :users
     
@@ -157,16 +218,16 @@ describe User do
       user.should have(1).error_on(:time_zone)
     end
   
-    def test_has_read_item_when_unread_item_entry_exists
+    def test_has_read_item_when_read_item_entry_doesnt_exist
       u = User.find(1)
       f = FeedItem.find(1)
-      u.unread_items.create(:feed_item => f)
       assert !u.has_read_item?(f)
     end
   
-    def test_is_item_unread_when_it_doesnt_exist
+    def test_is_item_unread_when_it_exists
       u = User.find(1)
       f = FeedItem.find(2)
+      u.read_items.create(:feed_item => f)
       assert u.has_read_item?(f)
     end
   

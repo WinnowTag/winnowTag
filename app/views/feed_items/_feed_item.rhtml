@@ -1,20 +1,19 @@
 <div class="item<%= current_user.has_read_item?(feed_item) ? " read" : " unread" %>" id="<%= dom_id(feed_item) %>">
   <div class="closed clearfix">
     <span id="<%= dom_id(feed_item, 'status') %>" class="status"><%= toggle_read_unread_button %></span>
-    <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>');">
+    <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>', event);">
       <span class="feed_title">
         <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => dom_id(feed_item, "feed_link_for") %>
         <%# Prevent the item from opening when the feed title is clicked %>
         <%= javascript_tag "Event.observe('#{dom_id(feed_item, 'feed_link_for')}','click', function(e) {e.stopPropagation();});" %>
       </span>
-      <div class="title_and_tags clearfix">
-        <span class="title"><%= feed_item.title %></span>
-        <%= display_tags_for(feed_item) %>
-      </div>      
       <span class="date"><%= format_date(feed_item.updated) %></span>
+      <span class="title"><%= feed_item.title %></span> 
+      <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item')); Event.stop(event);", :id => dom_id(feed_item, "add_tag"), :class => "add_tag" %>
+      <%= tag_controls(feed_item) %>
     </div>
   </div>  
-  <div id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form" style="display: none;" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div>
+  <div id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form" style="display: none;" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div> 
   <div id="<%= dom_id(feed_item, 'open') %>" class="open" style="display: none;">
     <%= link_to_function "Info", "itemBrowser.toggleOpenCloseTagInformationPanel('#{dom_id(feed_item)}');", :class => "info", :style => 'visibility: hidden;' %>
     <div id="<%= dom_id(feed_item, 'tag_information') %>" style="display: none;" url="<%= info_feed_item_path(feed_item) %>" class="tag_information"></div>

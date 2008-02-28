@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     add_to_sortable_columns('users', :field => 'last_tagging_on')
     add_to_sortable_columns('users', :field => 'tag_count')
 
-    @users = User.search(:per_page => 20, :page => params[:page], :order => sortable_order('users', :alias => 'login', :sort_direction => :asc))
+    @users = User.search(:q => params[:q], :per_page => 20, :page => params[:page], :order => sortable_order('users', :alias => 'login', :sort_direction => :asc))
   end
 
   def new

@@ -1,5 +1,4 @@
 class FoldersController < ApplicationController
-
   def create
     @folder = current_user.folders.create!(params[:folder])
     respond_to :js
@@ -7,8 +6,7 @@ class FoldersController < ApplicationController
   
   def update
     @folder = current_user.folders.find(params[:id])
-    @folder.attributes = params[:folder]
-    @folder.save!
+    @folder.update_attributes!(params[:folder])
     render :text => @folder.name
   end
   

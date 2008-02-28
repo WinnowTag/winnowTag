@@ -66,6 +66,31 @@ ErrorMessage.prototype = {
 	}	
 };
 
+var ConfirmationMessage = Class.create();
+ConfirmationMessage.prototype = {
+  initialize: function(message, options) {
+    this.options = {}
+		Object.extend(this.options, options || {});
+		
+    $('confirm').update(message + 
+                        ' <a href="#" id="confirm_yes" onclick="return false;">Yes</a>' +
+                        ' or <a href="#" id="confirm_no" onclick="return false">No</a>');
+    Event.observe($('confirm_no'), 'click', function() { $('confirm').hide(); resizeContent(); return false});
+    Event.observe($('confirm_yes'), 'click', function() { 
+      $('confirm').hide(); 
+      resizeContent();
+      if (this.options.onConfirmed) {
+        this.options.onConfirmed();        
+      }
+      
+      return false;
+    }.bindAsEventListener(this));    
+    
+    $('confirm').show();
+    resizeContent();
+  }
+};
+
 var timeout_id = 1;
 var TimeoutMessage = Class.create();
 TimeoutMessage.prototype = {
@@ -203,7 +228,8 @@ function insert_in_order(container, sibling_selector, sibling_value_selector, el
   
 	var inserted = false;
 	container.select(sibling_selector).each(function(element) {
-		if(!inserted && element.down(sibling_value_selector).innerHTML.toLowerCase() > element_value.toLowerCase()) {
+	  var value_element = element.down(sibling_value_selector);
+		if(!inserted && value_element && value_element.innerHTML.toLowerCase() > element_value.toLowerCase()) {
 			new Insertion.Before(element, element_html);
 			inserted = true;
 		}
@@ -272,3 +298,5 @@ applesearch.removePlaceholder = function(fld) {
 	  fld.value = "";
   }
 }
+
+var auto_completers = {};

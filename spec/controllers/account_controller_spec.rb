@@ -10,10 +10,10 @@ describe AccountController do
     @emails.clear
   end
 
-  def test_should_login_and_redirect
+  def test_should_login_and_redirect_to_feed_items_path
     post :login, :login => 'quentin', :password => 'test'
     assert session[:user]
-    assert_response :redirect
+    response.should redirect_to(feed_items_path)
   end
 
   def test_should_fail_login_and_not_redirect
@@ -22,11 +22,11 @@ describe AccountController do
     assert_response :success
   end
 
-  def test_should_allow_signup
+  def test_should_allow_signup_and_redirect_to_using_path
     assert_difference "User.count" do
       create_user
-      assert_response :redirect
       assert session[:user]
+      response.should redirect_to(using_path)
     end
   end
 

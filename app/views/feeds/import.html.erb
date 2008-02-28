@@ -1,4 +1,4 @@
-<%= render_partial 'page_controls' %>
+<%= render :partial => 'header_controls' %>
 <% form_tag import_feeds_path, :method => :post, :multipart => true do -%>
 	<fieldset>
 		<legend>Upload an OPML file</legend>

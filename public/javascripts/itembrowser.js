@@ -106,15 +106,24 @@ Classification.prototype = {
 		classification = this;
 	},
 	
-	start: function() {
+	/* puct_confirm == true means that that user has confirmed that they want to 
+	 * classify some potentially undertrained tags.
+	 */
+	start: function(puct_confirm) {
 		this.notify('Start');		
 		this.showProgressBar();
-						
+		
+		parameters = null;
+		if (puct_confirm) {
+		  parameters = {puct_confirm: 'true'};
+		}	
+					
 		new Ajax.Request(this.classifier_url + '/classify', {
+		  parameters: parameters,
 			evalScripts: true,
 			onSuccess: function() {
 				this.notify('Started');
-				this.startProgressUpdater();				
+				this.startProgressUpdater();	
 			}.bind(this),
 			onFailure: function(transport) {
 				if (transport.responseText == "The classifier is already running.") {
@@ -134,6 +143,27 @@ Classification.prototype = {
 			onTimeout: function() {
 				this.notify("Cancelled");
 				new ErrorMessage(this.timeoutMessage)
+			}.bind(this),
+			on412: function(response) {
+			  this.notify('Cancelled');
+			  if (response.responseJSON) {
+  			  var haveOrHas = "has";
+			    var tags = response.responseJSON.map(function(t) { return "'" + t + "'";}).sort();
+  			  var tag_names = tags.first();
+			  
+  			  if (tags.size() > 1) {
+  			    var last = tags.last();
+  			    haveOrHas = "have";
+  			    tag_names = tags.slice(0, tags.size() - 1).join(", ") + ' and ' + last;
+  			  } 
+			  
+  			  new ConfirmationMessage("You are about to classify " + tag_names + ' which ' + haveOrHas +' less than 6 positive examples. ' +
+  			                          'This might not work as well as you would expect.<br/>' + 'Do you want to proceed anyway?',
+  			                          {onConfirmed: function() {
+  			                            classification = Classification.createItemBrowserClassification('/classifier');
+  			                            classification.start(true);
+  			                          }});
+			  }
 			}.bind(this)
 		});
 	},
@@ -281,14 +311,14 @@ ItemBrowser.prototype = {
 			}
 		});
 		
-		this.feed_items_container.getElementsByClassName('item').each(function(fi) {
+		this.feed_items_container.select('.item').each(function(fi) {
 			this.items.insert(this.items.length, fi.getAttribute('id'), fi.getAttribute('position'), fi);
 		}.bind(this));
 	},
 	
 	itemHeight: function() {
-		if (this.items[0]) {
-			return this.items[0].element.offsetHeight;
+    if (this.items[0] && this.items[1]) {
+      return Math.min(this.items[0].element.offsetHeight, this.items[1].element.offsetHeight);
 		} else {
 		  return 0;
 		}
@@ -852,7 +882,8 @@ ItemBrowser.prototype = {
 		}
 	},
 	
-	toggleOpenCloseItem: function(item) {
+	toggleOpenCloseItem: function(item, event) {
+	  if(event && event.element().up('.tag_list')) { return false; }
 		if($('open_' + $(item).getAttribute('id')).visible() && $('body_' + $(item).getAttribute('id')).visible()) {
 			this.closeItem(item);
 		} else {
@@ -872,14 +903,18 @@ ItemBrowser.prototype = {
 			this.selectItem(item);
 		}
 
+    $$('.new_tag_form').invoke("hide");
+
 		var container = $('new_tag_form_' + $(item).getAttribute('id'));
 		container.show();
 		this.scrollToItem(item);
-	  this.loadItemModerationPanel(item);
-
-		if(!container.empty()) {
-		  $('new_tag_field_' + $(item).getAttribute('id')).focus();
-		}
+		this.loadItemModerationPanel(item); 
+    
+    var field = $('new_tag_field_' + $(item).getAttribute('id'));
+    if(field) { 
+      field.focus();
+      window.auto_completers['new_tag_field_' + $(item).getAttribute('id') + '_auto_completer'].activate();
+    }
 	},
 	
 	closeItemModerationPanel: function(item) {
@@ -959,17 +994,17 @@ ItemBrowser.prototype = {
 		var url = body.getAttribute('url');
 		this.loadData(item, body, url, "Unable to connect to the server to get the item body.", this.closeItem.bind(this));
 	},
-	
+	 
+  loadItemModerationPanel: function(item) { 
+    var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id')); 
+    var url = moderation_panel.getAttribute('url') + "?" + location.hash.gsub("#", ""); 
+    this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
+  },
+
 	loadItemInformation: function(item) {
 		var tag_information = $("tag_information_" + $(item).getAttribute('id'));
 		var url = tag_information.getAttribute('url');
 		this.loadData(item, tag_information, url, "Unable to connect to the server to get the tag information panel.", this.closeItemTagInformationPanel.bind(this));
-	},
-	
-	loadItemModerationPanel: function(item) {
-		var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id'));
-		var url = moderation_panel.getAttribute('url') + "?" + location.hash.gsub("#", "");
-		this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
 	},
 	
 	loadData: function(item, target, url, error_message, error_callback) {
