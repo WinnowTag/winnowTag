@@ -10,6 +10,10 @@ describe "filter controls" do
     wait_for_ajax
   end
   
+  after(:each) do
+    delete_all_visible_cookies
+  end
+  
   describe "show all items" do
     it "is selected by default" do
       see_element "#show_all.selected"
@@ -83,7 +87,7 @@ describe "filter controls" do
     end
   end
   
-  describe "text filter" do
+  describe "text filter" do    
     it "sets the text filter" do
       click "css=#show_all"
       wait_for_ajax
