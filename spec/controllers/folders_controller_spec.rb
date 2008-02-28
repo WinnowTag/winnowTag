@@ -6,7 +6,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FoldersController do
-  fixtures :users
+  fixtures :users, :tags
 
   before(:each) do
     login_as(:quentin)
