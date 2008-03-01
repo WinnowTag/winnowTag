@@ -193,6 +193,6 @@ module ApplicationHelper
   end
   
   def help_path
-    url_for(:controller => controller_name, :action => action_name, :host => "docs.mindloom.org")
+    "http://docs.mindloom.org/wiki/Winnow:User_Help/#{controller_name.capitalize}_page##{action_name}"
   end
 end

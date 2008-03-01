@@ -49,12 +49,23 @@ describe ApplicationHelper do
     def controller_name; @controller_name; end
     def action_name; @action_name; end
 
-    it "points to the same controller on docs.mindloom.org" do
+    it "maps to the wiki path" do
+      @controller_name = "feeds"
+      help_path.should == "http://docs.mindloom.org/wiki/Winnow:User_Help/Feeds_page#"
+    end
+    
+    it "maps action to anchor" do
+      @controller_name = "tags"
+      @action_name = "public"
+      help_path.should == "http://docs.mindloom.org/wiki/Winnow:User_Help/Tags_page#public"
+    end
+    
+    xit "points to the same controller on docs.mindloom.org" do
       @controller_name = "feeds"
       help_path.should == "http://docs.mindloom.org/feeds"
     end
 
-    it "points to the same controller/action on docs.mindloom.org" do
+    xit "points to the same controller/action on docs.mindloom.org" do
       @controller_name = "tags"
       @action_name = "public"
       help_path.should == "http://docs.mindloom.org/tags/public"
