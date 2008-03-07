@@ -1013,10 +1013,11 @@ a.bookmarklet:hover {
 .folder ul.filter_list li {
   margin: 0;
   padding: 0 0 0 15px;
-  height: 1.4em;
+  height: 1.5em;
   overflow: hidden;
   font-style: normal;
   font-weight: normal;
+  position: relative;
 }
 
 .folder ul.filter_list li.draggable {
@@ -1046,19 +1047,37 @@ a.bookmarklet:hover {
 }
 
 .folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
-  float: right;
+  position: absolute;
   display: none;
   cursor: pointer;
+  padding-bottom: 3px;
+  background-color: #E2ECFD;
 }
 
 .folder ul.filter_list li:hover .remove, .folder ul.filter_list li:hover .edit {
   display: block;
 }
 
+.folder ul.filter_list li .remove {
+  right: 0px;
+}
+
+.folder ul.filter_list li .edit {
+  right: 16px;
+}
+
 .folder ul.filter_list li a.name {
   display: block;
   margin-left: 3px;
   cursor: pointer;
+}
+
+.folder ul.filter_list li input {
+  z-index: 1000;
+  width: 100%;
+  height: 1.2em;
+  margin: 0 0 0 3px;
+  font-size: 1em;
 }
 
 .add_section {
