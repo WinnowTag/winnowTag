@@ -1,6 +1,6 @@
 <tr id="<%= dom_id(tag) %>">
 	<td class="tag">
-		<%= link_to image_tag('show.gif'), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'tag_name', :title => "Show Only Items Tagged With #{tag.name}" %>
+	  <%= image_tag "tag.png" %>
     <% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
     <%= in_place_completing_editor_field :tag, :name, { :id => dom_id(tag, 'editor') },
           { :param_name => "'tag[name]'", :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false, 
@@ -18,17 +18,17 @@
 	</td>
 	<td class="number"><%= tag.classifier_count %></td>
 	<td class="date"><%= format_date(tag.last_used_by) %></td>	
-  <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
 	<td>
 		<%= bias_slider(tag) %>
 	</td>
-	<td class="control_icons" id="<%= dom_id(tag, "controls") %>">
+	<td id="<%= dom_id(tag, "controls") %>">
+		<%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'replace show_icon', :title => "Show Only Items Tagged With #{tag.name}" %>
     <%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "replace duplicate_icon" } %>
     <%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "replace destroy_icon", :id => dom_id(tag, 'destroy') } %>
 	</td>
 </tr>
 <tr id="<%= dom_id(tag, :comment) %>" class="comment">
-  <td colspan="9">
+  <td colspan="8">
     <span class="comment_icon replace" id="<%= dom_id(tag, "edit_comment") %>">Edit</span>
     <%= in_place_editor_field :tag, :comment, {},	:param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
           :click_to_edit_text => "Click to edit tag comment", :external_control => dom_id(tag, "edit_comment"), :save_text => "Save", :rows => 5, :cols => 50 %>

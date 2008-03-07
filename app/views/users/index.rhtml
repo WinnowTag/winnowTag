@@ -34,8 +34,7 @@
   		<td class="date"><%= format_date(user.last_accessed_at) %></td>
   		<td class="date"><%= format_date(user.last_tagging_on) %></td>
   		<td class="number"><%= user.tags.size %></td>
-  		<td class="control_icons">
-  		<nobr>
+  		<td>
   			<%= control_link 'Login', login_as_user_url(user), :disabled => user == current_user,
   										:method => :post, :confirm => "This will log you in as #{user.display_name}. " +
   											"You will need to log out and login as yourself to use your own account again.\n\n" +
@@ -43,7 +42,6 @@
   			<%= control_link 'Destroy', user_url(user), :method => :delete, 
   											:disabled => user == current_user,
   											:confirm => "Really delete #{user.display_name}?"%>
-  		</nobr>
   		</td>
   	</tr>
 	  <% end -%>

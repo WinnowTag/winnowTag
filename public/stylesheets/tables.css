@@ -62,11 +62,6 @@ table.property_table td {
   text-align: right;
 }
 
-th.control_icons, td.control_icons {
-	text-align: left;
-	width: 64px;
-}
-
 th.view_state {
 	white-space: nowrap;
 }
