@@ -12,10 +12,6 @@
 	<td>
 	  <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %>
   </td>
-	<td class="control_icons" id="<%= dom_id(tag, "controls") %>">
-    <%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "replace duplicate_icon" } %>
-    <%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "replace destroy_icon", :id => dom_id(tag, 'destroy') } %>
-	</td>
 	<td class="number">
     <%= link_to "#{tag.positive_count} / #{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&manual_taggings=true"), 
                 :title => "Inspect #{tag.name}" %>
@@ -25,6 +21,10 @@
   <td class="indented" nowrap="nowrap"><%= tag.user.display_name %></td>
 	<td>
 		<%= bias_slider(tag) %>
+	</td>
+	<td class="control_icons" id="<%= dom_id(tag, "controls") %>">
+    <%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "replace duplicate_icon" } %>
+    <%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "replace destroy_icon", :id => dom_id(tag, 'destroy') } %>
 	</td>
 </tr>
 <tr id="<%= dom_id(tag, :comment) %>" class="comment">
