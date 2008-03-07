@@ -35,6 +35,10 @@ describe "moderation panel" do
     
     see_element "li.positive[id='tag_control_for_new tag_on_feed_item_4']"
     get_text("tag_control_for_new tag_on_feed_item_4").should =~ /new tag/
+
+    tag = Tag.find_by_name("new tag")
+    # Adds tag to the sidebar
+    see_element "li#tag_#{tag.id}"
   end
   
   it "can add a positive tagging from an existing tag through the 'create new tag' input" do 
