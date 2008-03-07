@@ -808,18 +808,25 @@ input.example {
   display: inline;
 }
 
+.applesearch.non_safari {
+  position: relative;
+  overflow: hidden;
+  max-width: 224px;
+}
+
 .applesearch.non_safari .sbox_l {
   background: url('../images/search_field.gif') no-repeat;
-  float: left;
+  position: absolute;
   width: 19px;
   height: 19px;
   margin-top: 1px;
 }
 
 .applesearch.non_safari .sbox_r {
-  background: url('../images/search_field.gif') no-repeat;
+  background: #E2ECFD url('../images/search_field.gif') no-repeat;
   background-position: -19px 0;
-  float: left;
+  position: absolute;
+  right: 0;
   width: 19px;
   height: 19px;
   margin-top: 1px;
@@ -831,13 +838,13 @@ input.example {
 
 .applesearch.non_safari input {
   background: url('../images/srch_bg.gif') repeat-x top left;
-  float: left;
   border: 0;
   height: 19px;
+  width: 186px;
   padding: 3px;
   font: 11px/13px arial;
   color: #000;
-  margin-top: 1px;
+  margin: 1px 19px 0 19px;
 }
 
 .applesearch.non_safari input.placeholder {

@@ -110,9 +110,9 @@ module ApplicationHelper
   def search_field_tag(name, value = nil, options = {})
     options[:clear] ||= {}
     content_tag :div, 
-      content_tag(:span, nil, :class => "sbox_l") +
-        tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :size => 30, :results => 5, :placeholder => "Search...", :autosave => name) +      
-        content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]), 
+      content_tag(:span, nil, :class => "sbox_l") +      
+      content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]) +
+      tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => "Search...", :autosave => name), 
       :class => "applesearch"
   end
 
