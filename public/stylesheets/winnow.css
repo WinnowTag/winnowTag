@@ -1106,3 +1106,8 @@ a.bookmarklet:hover {
 .add_section {
   margin-top: 5px;
 }
+
+textarea.content { 
+  width: 100%;
+  height: 40em;
+}

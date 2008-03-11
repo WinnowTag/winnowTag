@@ -23,5 +23,6 @@ class AboutController < ApplicationController
   end
   
   def using
+    @using = Setting.find_or_initialize_by_name("Using Winnow")
   end
 end

@@ -10,4 +10,13 @@ class AdminController < ApplicationController
 
   def index
   end
+  
+  def using
+    @using = Setting.find_or_initialize_by_name("Using Winnow")
+    if request.post?
+      @using.value = params[:value]
+      @using.save!
+      redirect_to using_path
+    end
+  end
 end

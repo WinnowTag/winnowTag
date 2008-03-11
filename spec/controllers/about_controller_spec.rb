@@ -27,4 +27,13 @@ describe AboutController do
     response.should be_success
     assigns[:classifier_info].should be_nil
   end
+  
+  it "sets the using winnow setting for the view" do
+    using = mock_model(Setting)
+    Setting.should_receive(:find_or_initialize_by_name).with("Using Winnow").and_return(using)
+
+    get :using
+
+    assigns[:using].should == using
+  end
 end
