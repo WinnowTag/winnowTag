@@ -156,6 +156,15 @@ a.close img {
   text-decoration: underline;
 }
 
+.navigation .main li a.help {
+  border: none;
+  background-color: #fff;
+  background-image: url(../images/help.png);
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  padding-left: 23px;
+}
+
 .navigation .extra {
   float: right;
   padding: 0;
@@ -173,8 +182,11 @@ a.close img {
   padding: 0 10px;
 }
 
-.navigation .extra li.last a {
-  border: 0;
+.navigation .extra li a.help {
+  background-image: url(../images/help.png);
+  background-repeat: no-repeat;
+  padding-left: 18px;
+  font-weight: bold;
 }
 
 optgroup {
