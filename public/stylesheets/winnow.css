@@ -874,72 +874,6 @@ input.example {
   background: url(../images/vertical_sprite.png) no-repeat;
 }
 
-.blank_icon {
-  background-position: 0 -720px;
-}
-
-.feed_icon {
-  background-position: 0 -608px;
-}
-
-.new_icon {
-  background-position: 0 -128px;
-}
-
-.save_icon {
-  background-position: 0 -160px;
-}
-
-.save_disabled_icon {
-  background-position: 0 -192px;
-}
-
-.duplicate_icon {
-  background-position: 0 -224px;
-}
-
-.duplicate_disabled_icon {
-  background-position: 0 -256px;
-}
-
-.edit_icon {
-  background-position: 0 -288px;
-}
-
-.edit_disabled_icon {
-  background-position: 0 -320px;
-}
-
-.destroy_icon {
-  background-position: 0 -352px;
-}
-
-.destroy_disabled_icon {
-  background-position: 0 -384px;
-}
-
-.comment_icon {
-  background-position: 0 -576px;
-}
-
-.home_icon {
-  background-position: 0 -700px;
-  margin-right: 5px;
-}
-
-.cross_icon {
-  background: url(../images/cross.png) 0 center no-repeat;
-}
-
-.show_icon {
-  background: url(../images/show.gif) 0 center no-repeat;
-}
-
-.pencil_icon {
-  background: url(../images/pencil.png) 0 center no-repeat;
-  background-position: 0 0;
-}
-
 a.bookmarklet {
   background-color:#EBEBEB;
   color:#565656;
@@ -1110,4 +1044,139 @@ a.bookmarklet:hover {
 textarea.content { 
   width: 100%;
   height: 40em;
+}
+
+.tag {
+  border: 1px solid #666;
+  background: #eee;
+  padding: .5em;
+  margin: 0 0 .5em 0;
+}
+
+.tag ul.controls {
+  float: right;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag .controls li {
+  float: left;
+  padding: 0;
+  margin: 0 0 0 1.5em;
+}
+
+.tag .controls li a {
+  padding: 0 0 0 20px;
+  background-image: url(../images/vertical_sprite.png);
+  background-repeat: no-repeat;
+}
+
+.tag .controls li input {
+  margin: 0;
+  padding: 0;
+}
+
+.tag .controls li .slider {
+  margin: .5em 4px 0 0;
+  float: left;
+}
+
+.tag .name {
+  float: left;
+  width: 30%;
+  margin: 0 1em 0 0;
+}
+
+.tag dl.training {
+  float: right;
+  margin: 0;
+  padding: 0;
+  width: 20em;
+}
+
+.tag dl.training dt {
+  font-weight: bold;
+  color: #666;
+  float: left;
+  clear: both;
+  padding: 0;
+  margin: 0;
+  width: 8em;
+}
+
+.tag dl.training dt:after {
+  content: ":";
+}
+
+.tag dl.training dd {
+  float: left;
+  margin: 0 3em 0 .5em;
+  padding: 0;
+}
+
+.blank_icon {
+  background-position: 0 -720px;
+}
+
+.feed_icon {
+  background-position: 0 -608px;
+}
+
+.new_icon {
+  background-position: 0 -128px;
+}
+
+.save_icon {
+  background-position: 0 -160px;
+}
+
+.save_disabled_icon {
+  background-position: 0 -192px;
+}
+
+.duplicate_icon {
+  background-position: 0 -224px;
+}
+
+.duplicate_disabled_icon {
+  background-position: 0 -256px;
+}
+
+.edit_icon {
+  background-position: 0 -288px;
+}
+
+.edit_disabled_icon {
+  background-position: 0 -320px;
+}
+
+.destroy_icon {
+  background-position: 0 -352px;
+}
+
+.destroy_disabled_icon {
+  background-position: 0 -384px;
+}
+
+.comment_icon {
+  background-position: 0 -576px;
+}
+
+.home_icon {
+  background-position: 0 -700px;
+  margin-right: 5px;
+}
+
+.cross_icon {
+  background: url(../images/cross.png) 0 center no-repeat  !important;
+}
+
+.show_icon {
+  background: url(../images/show.gif) 0 center no-repeat !important;
+}
+
+.pencil_icon {
+  background: url(../images/pencil.png) 0 center no-repeat  !important;
+  background-position: 0 0;
 }

@@ -1,27 +1,34 @@
-<tr id="<%= dom_id(subscribed_tag) %>" class="subscribed_tag">
-	<td class="tag">
+<div id="<%= dom_id(subscribed_tag) %>" class="tag clearfix">
+  <ul class="controls">
+    <li class="slider"><%= bias_slider(subscribed_tag, :disabled => true) %></li>
+    <li><%= globally_exclude_check_box(subscribed_tag) %> Globally Exclude</li>
+    <li>
+      <%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %> Public
+    </li>
+    <li><%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'show_icon', :title => "Show Only Items Tagged With #{subscribed_tag.name}" %></li>
+    <li><%= link_to_remote "Copy", :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => "Copy #{subscribed_tag.name}", :class => "duplicate_icon" } %></li>
+    <li><%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'delete', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %></li>
+  </ul>
+
+  <dl class="training clearfix">
+    <dt>Last Trained</dt>
+    <dd><%= format_date(subscribed_tag.last_used_by) %></dd>
+    <br/>
+    <dt>Training</dt>
+    <dd><%= link_to "+#{subscribed_tag.positive_count} / -#{subscribed_tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&manual_taggings=true"), :title => "Inspect #{subscribed_tag.name}" %></dd>
+    <br/>
+    <dt>Automatic</dt>
+    <dd><%= subscribed_tag.classifier_count %></dd>
+  </dl>
+
+  <div class="name clearfix">
     <%= link_to "Feed", formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom), :class => "feed_icon replace" %>
     <%= image_tag "public.png" %>
     <%= tag_name_with_tooltip(subscribed_tag) %>
-	</td>
-  <td><%= globally_exclude_check_box(subscribed_tag) %></td>
-	<td><%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %></td>
-  <td class="number">
-    <%= link_to "#{subscribed_tag.positive_count} / #{subscribed_tag.negative_count}", 
-                feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&manual_taggings=true"), 
-                :title => "Inspect #{subscribed_tag.name}" %>
-  </td>
-  <td class="number"><%= subscribed_tag.classifier_count %></td>
-  <td class="date"><%= format_date(subscribed_tag.last_used_by) %></td>	
-  <td><%= bias_slider(subscribed_tag, :disabled => true) %></td>
- 	<td id="<%= dom_id(subscribed_tag, "controls") %>">
-		<%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'replace show_icon', :title => "Show Only Items Tagged With #{subscribed_tag.name}" %>
-    <%= link_to_remote "Copy", :url => tags_path(:copy => subscribed_tag), :with => "{name: prompt('New tag name', '#{subscribed_tag.name} - copy')}", :html => { :title => "Copy #{subscribed_tag.name}", :class => "replace duplicate_icon" } %>
-    <%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "replace destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %>
-	</td>
-</tr>
-<tr id="<%= dom_id(subscribed_tag, :comment) %>" class="comment">
-  <td colspan="8">
-    <%= subscribed_tag.comment %>
-  </td>
-</tr>
+
+    <div>
+      <span class="comment_icon replace"></span>
+      <%= subscribed_tag.comment %>
+    </div>
+  </div>
+</div>

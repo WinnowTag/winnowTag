@@ -214,7 +214,7 @@ describe ApplicationHelper do
     
     it "creates a filter control for a feed" do
       feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
-      feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}.feed[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
+      feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
         with_tag "div.show_feed_control" do
           with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({feed_ids: '#{feed.id}'})")}.*/
           with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'})")}.*/
@@ -260,7 +260,7 @@ describe ApplicationHelper do
 
     it "creates a filter control for a tag" do
       tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
-      tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}.tag") do
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}") do
         with_tag "div.show_tag_control" do
           with_tag "a.remove[onclick=?]", /.*#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
           with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'})")}.*/

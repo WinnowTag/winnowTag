@@ -53,13 +53,13 @@ module BiasSliderHelper
   
   private
   def bias_slider_html(prefix)
-    content_tag('div', 
+    content_tag 'div', content_tag('div', 
         content_tag('div', '', :id => "#{prefix}_0_9", :class => 'bias_marker', :title => "Very Negative") +
         content_tag('div', '', :id => "#{prefix}_1_0", :class => 'bias_marker neutral', :title => "Neutral") +
         content_tag('div', '', :id => "#{prefix}_1_1", :class => 'bias_marker', :title => "Slightly Positive") +
         content_tag('div', '', :id => "#{prefix}_1_2", :class => 'bias_marker', :title => "Strongly Positive") +
         content_tag('div', '', :id => "#{prefix}_1_3", :class => 'bias_marker', :title => "Very Strongly Positive") +
         content_tag('div','', :id => "#{prefix}_handle", :class => 'slider_handle', :title => "Drag to set the sensitvity of the classifier."),
-     :id => "#{prefix}_track", :class => 'slider_track')
+     :id => "#{prefix}_track", :class => 'slider_track'), :class => "slider"
   end
 end
