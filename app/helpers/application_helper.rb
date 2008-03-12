@@ -197,5 +197,6 @@ module ApplicationHelper
     if setting && setting[controller_name] && setting[controller_name][action_name]
       setting[controller_name][action_name]
     end
+  rescue ArgumentError # Swallow malformed yaml exceptions
   end
 end

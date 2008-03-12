@@ -50,11 +50,11 @@ describe ApplicationHelper do
     def action_name; @action_name; end
     
     before(:each) do
-      Setting.create! :name => "Help", :value => {
+      @setting = Setting.create! :name => "Help", :value => {
         "feed_items" => {
           "index" => "http://docs.mindloom.org/wiki/WinnowHelp:Items_page"
         }
-      }
+      }.to_yaml
     end
 
     it "maps to the wiki path" do
@@ -66,6 +66,16 @@ describe ApplicationHelper do
     it "maps action to anchor" do
       @controller_name = "feeds"
       @action_name = "fake"
+      help_path.should be_nil
+    end
+    
+    it "handless nil yaml" do
+      @setting.update_attribute :value, nil
+      help_path.should be_nil
+    end
+    
+    it "handless malformed yaml" do
+      @setting.update_attribute :value, "items:\nthings:"
       help_path.should be_nil
     end
   end
