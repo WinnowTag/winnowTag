@@ -19,4 +19,13 @@ class AdminController < ApplicationController
       redirect_to using_path
     end
   end
+  
+  def help
+    @help = Setting.find_or_initialize_by_name("Help")
+    if request.post?
+      @help.value = params[:value]
+      @help.save!
+      redirect_to admin_path
+    end
+  end
 end

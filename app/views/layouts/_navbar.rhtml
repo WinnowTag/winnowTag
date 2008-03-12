@@ -15,7 +15,9 @@
       <% if is_admin? -%>
         <li><%= link_to('Admin', admin_path, :class => tab_selected('admin')) %></li>
       <% end -%>
-      <li><%= link_to('Help', help_path, :target => "_blank", :class => "help") %></li>
+      <% if help_path -%>
+        <li><%= link_to('Help', help_path, :target => "_blank", :class => "help") %></li>
+      <% end -%>
   	</ul>
 	</div>
 <% end -%>

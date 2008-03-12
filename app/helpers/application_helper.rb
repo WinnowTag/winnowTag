@@ -193,6 +193,9 @@ module ApplicationHelper
   end
   
   def help_path
-    "http://docs.mindloom.org/wiki/Winnow:User_Help/#{controller_name.capitalize}_page##{action_name}"
+    setting = YAML.load(Setting.find_or_initialize_by_name("Help").value)
+    if setting[controller_name] && setting[controller_name][action_name]
+      setting[controller_name][action_name]
+    end
   end
 end

@@ -59,4 +59,49 @@ describe AdminController do
       end
     end
   end
+  
+  describe "#help" do
+    it "cannot be accessed by a non admin user" do
+      cannot_access(:quentin, :get, :help)
+    end
+    
+    it "can be accessed by an admin user" do
+      login_as(:admin)
+      get :help
+      response.should be_success
+    end
+    
+    describe "GET" do
+      it "sets the help setting for the view" do
+        login_as(:admin)
+        
+        help = mock_model(Setting)
+        Setting.should_receive(:find_or_initialize_by_name).with("Help").and_return(help)
+
+        get :help
+
+        assigns[:help].should == help
+      end
+    end
+    
+    describe "POST" do
+      before(:each) do
+        login_as(:admin)
+        @help = mock_model(Setting, :value= => nil, :save! => nil)
+        Setting.stub!(:find_or_initialize_by_name).and_return(@help)
+      end
+      
+      it "updates the settings value" do
+        @help.should_receive(:value=).with("The new value")
+        @help.should_receive(:save!)
+
+        post :help, :value => "The new value"
+      end
+      
+      it "redirects to the admin page" do
+        post :help, :value => "The new value"
+        response.should redirect_to(admin_path)
+      end
+    end
+  end
 end
