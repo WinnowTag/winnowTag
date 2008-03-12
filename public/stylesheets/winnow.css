@@ -1090,7 +1090,6 @@ textarea.content {
 
 .tag .name_and_comment .name {
   display: block;
-  cursor: pointer;
   background-image: url(../images/tag.png);
   background-repeat: no-repeat;
   background-position: 0 1px;
@@ -1098,7 +1097,6 @@ textarea.content {
 }
 
 .tag .name_and_comment  .comment {
-  cursor: pointer;
   background-image: url(../images/comment.png);
   background-repeat: no-repeat;
   background-position: 0 2px;
@@ -1110,6 +1108,10 @@ textarea.content {
   background-image: url(../images/public.png);
   background-repeat: no-repeat;
   background-position: 2px 3px;
+}
+
+.tag.private .name_and_comment .name, .tag.private .name_and_comment .comment {
+  cursor: pointer;
 }
 
 .tag .name_and_comment .inplaceeditor-form {
