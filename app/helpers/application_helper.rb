@@ -194,7 +194,7 @@ module ApplicationHelper
   
   def help_path
     setting = YAML.load(Setting.find_or_initialize_by_name("Help").value.to_s)
-    if setting[controller_name] && setting[controller_name][action_name]
+    if setting && setting[controller_name] && setting[controller_name][action_name]
       setting[controller_name][action_name]
     end
   end
