@@ -1082,10 +1082,38 @@ textarea.content {
   float: left;
 }
 
-.tag .name {
+.tag .name_and_comment {
   float: left;
   width: 30%;
   margin: 0 1em 0 0;
+}
+
+.tag .name_and_comment .name {
+  display: block;
+  cursor: pointer;
+  background-image: url(../images/tag.png);
+  background-repeat: no-repeat;
+  background-position: 0 1px;
+  padding: 0 0 0 18px;
+}
+
+.tag .name_and_comment  .comment {
+  cursor: pointer;
+  background-image: url(../images/comment.png);
+  background-repeat: no-repeat;
+  background-position: 0 2px;
+  padding: 0 0 0 18px;
+  color: #666;
+}
+
+.tag.public .name_and_comment .name {
+  background-image: url(../images/public.png);
+  background-repeat: no-repeat;
+  background-position: 2px 3px;
+}
+
+.tag .name_and_comment .inplaceeditor-form {
+  display: block;
 }
 
 .tag dl.training {

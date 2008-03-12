@@ -1,4 +1,14 @@
-<div id="<%= dom_id(public_tag) %>" class="tag clearfix">
+<div id="<%= dom_id(public_tag) %>" class="tag public clearfix">
+  <div class="name_and_comment clearfix">
+    <div class="name">
+      <%= tag_name_with_tooltip(public_tag) %>
+    </div>
+
+    <div class="comment">
+      <%= public_tag.comment %>
+    </div>
+  </div>
+  
   <ul class="controls">
     <li class="slider"><%= bias_slider(public_tag, :disabled => true) %></li>
     <li><%= globally_exclude_check_box(public_tag) %> Globally Exclude</li>
@@ -19,16 +29,7 @@
     <br/>
     <dt>Automatic</dt>
     <dd><%= public_tag.classifier_count %></dd>
+    <dt>Feed</dt>
+    <dd><%= link_to "Feed", formatted_public_tag_path(public_tag.user, public_tag, :atom), :class => "feed_icon replace" %></dd>
   </dl>
-
-  <div class="name clearfix">
-    <%= link_to "Feed", formatted_public_tag_path(public_tag.user, public_tag, :atom), :class => "feed_icon replace" %>
-    <%= image_tag "public.png" %>
-    <%= tag_name_with_tooltip(public_tag) %>
-
-    <div>
-      <span class="comment_icon replace"></span>
-      <%= public_tag.comment %>
-    </div>
-  </div>
 </div>
