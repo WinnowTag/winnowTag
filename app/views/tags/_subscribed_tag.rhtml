@@ -17,7 +17,7 @@
     </li>
     <li><%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'show_icon', :title => "Show Only Items Tagged With #{subscribed_tag.name}" %></li>
     <li><%= link_to_remote "Copy", :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => "Copy #{subscribed_tag.name}", :class => "duplicate_icon" } %></li>
-    <li><%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'delete', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %></li>
+    <li><%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %></li>
   </ul>
 
   <dl class="training clearfix">
