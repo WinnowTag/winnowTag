@@ -345,6 +345,7 @@ ItemBrowser.prototype = {
       this.total_items = total_items;
       this.updateInitialSpacer();
     }
+    this.updateEmptyMessage();
   },
   
   /** Updates the initial spacer's height to cover the total number of items minus the number of 
@@ -360,6 +361,22 @@ ItemBrowser.prototype = {
     }
     
     spacer.setStyle({height: '' + height + 'px'});    
+  },
+  
+  updateEmptyMessage: function() {
+    var spacer = this.feed_items_container.down(".empty");
+    
+    if (!spacer) {
+      new Insertion.Bottom(this.feed_items_container, '<div class="empty" style="display:none">No items matched your search criteria.</div>');
+      spacer = this.feed_items_container.down(".empty");
+    }
+    
+    console.log(this.total_items);
+    if(this.total_items == 0) {
+      spacer.show();
+    } else {
+      spacer.hide();
+    }
   },
   
   /** Responds to scrolling events on the feed_item_scrollable.
