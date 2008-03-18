@@ -55,6 +55,8 @@ describe "moderation panel" do
     get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
   end
 
+  it "can add a positive tagging from an existing tag through the 'create new tag' input when the tagging already exists"
+  
   it "can change a positive tagging to a negative tagging" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
 

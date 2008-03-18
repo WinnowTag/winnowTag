@@ -51,11 +51,13 @@ function add_tag(taggable_id, tag_name, allow_remove) {
   } else if (tag_control.match('.negative')) {
     tag_control.removeClassName('negative');
     tag_control.addClassName('positive');
-  } else if (tag_control.match('.positive') && allow_remove) {
-    tag_control.removeClassName('positive');
-    url = '/taggings/destroy';
-    if(!tag_control.match('.classifier')) {
-      remove_tag_control(taggable_id, tag_name); 
+  } else if (tag_control.match('.positive')) {
+    if(allow_remove) {
+      tag_control.removeClassName('positive');
+      url = '/taggings/destroy';
+      if(!tag_control.match('.classifier')) {
+        remove_tag_control(taggable_id, tag_name); 
+      }
     }
   } else if (tag_control.match('.classifier')) {
     tag_control.addClassName('positive'); 

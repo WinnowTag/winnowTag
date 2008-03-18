@@ -87,4 +87,7 @@ describe "FeedItemsTest" do
     assert_match feed_url(feed1), get_location
     see_element "#feed_1"
   end
+  
+  it "displays an empty message when there are no feed items"
+  it "does not display an empty message when there are feed items"
 end
