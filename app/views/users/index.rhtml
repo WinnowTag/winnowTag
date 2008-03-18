@@ -1,5 +1,3 @@
-<% @skip_content_container = true %>
-
 <% content_for :header_controls do -%>
   <ul class="control_bar">
     <li><%= will_paginate(@users) %></li>
@@ -11,39 +9,44 @@
   <% end -%>
 <% end -%>
 
-<table class="data_table recordset">
-  <thead>
-  	<tr>
-  		<th><%= sort_link "Login", 'users', :alias => 'login' %></th>
-  		<th><%= sort_link "Name", 'users', :alias => 'name' %></th>
-  		<th><%= sort_link "Email", 'users', :alias => 'email' %></th>
-  		<th class="date"><%= sort_link "Last Logged In", 'users', :alias => 'logged_in_at' %></th>
-  		<th class="date"><%= sort_link "Last Accessed", 'users', :alias => 'last_accessed_at' %></th>
-  		<th class="date"><%= sort_link "Last Moderated", 'users', :alias => 'last_tagging_on' %></th>
-  		<th class="number"><%= sort_link "Number of Tags", 'users', :alias => 'tag_count' %></th>
-  		<th>&nbsp;</th>
-  	</tr>
-  </thead>		
-  <tbody id="content">
-  	<% for user in @users -%>
-  	<tr>
-  		<td><%= link_to user.login, user_url(user) %></td>
-  		<td><%= user.display_name %></td>
-  		<td><%= user.email %></td>
-  		<td class="date"><%= format_date(user.logged_in_at) %></td>
-  		<td class="date"><%= format_date(user.last_accessed_at) %></td>
-  		<td class="date"><%= format_date(user.last_tagging_on) %></td>
-  		<td class="number"><%= user.tags.size %></td>
-  		<td>
-  			<%= control_link 'Login', login_as_user_url(user), :disabled => user == current_user,
-  										:method => :post, :confirm => "This will log you in as #{user.display_name}. " +
-  											"You will need to log out and login as yourself to use your own account again.\n\n" +
-  											'Are you sure you want to continue?'%>&nbsp;
-  			<%= control_link 'Destroy', user_url(user), :method => :delete, 
-  											:disabled => user == current_user,
-  											:confirm => "Really delete #{user.display_name}?"%>
-  		</td>
-  	</tr>
-	  <% end -%>
-	</tbody>
-</table>
+<% if @users.empty? -%>
+  <div class="empty">No users matched your search criteria.</div>
+<% else -%>
+  <% @skip_content_container = true %>
+  <table class="data_table recordset">
+    <thead>
+    	<tr>
+    		<th><%= sort_link "Login", 'users', :alias => 'login' %></th>
+    		<th><%= sort_link "Name", 'users', :alias => 'name' %></th>
+    		<th><%= sort_link "Email", 'users', :alias => 'email' %></th>
+    		<th class="date"><%= sort_link "Last Logged In", 'users', :alias => 'logged_in_at' %></th>
+    		<th class="date"><%= sort_link "Last Accessed", 'users', :alias => 'last_accessed_at' %></th>
+    		<th class="date"><%= sort_link "Last Moderated", 'users', :alias => 'last_tagging_on' %></th>
+    		<th class="number"><%= sort_link "Number of Tags", 'users', :alias => 'tag_count' %></th>
+    		<th>&nbsp;</th>
+    	</tr>
+    </thead>		
+    <tbody id="content">
+    	<% for user in @users -%>
+    	<tr>
+    		<td><%= link_to user.login, user_url(user) %></td>
+    		<td><%= user.display_name %></td>
+    		<td><%= user.email %></td>
+    		<td class="date"><%= format_date(user.logged_in_at) %></td>
+    		<td class="date"><%= format_date(user.last_accessed_at) %></td>
+    		<td class="date"><%= format_date(user.last_tagging_on) %></td>
+    		<td class="number"><%= user.tags.size %></td>
+    		<td>
+    			<%= control_link 'Login', login_as_user_url(user), :disabled => user == current_user,
+    										:method => :post, :confirm => "This will log you in as #{user.display_name}. " +
+    											"You will need to log out and login as yourself to use your own account again.\n\n" +
+    											'Are you sure you want to continue?'%>&nbsp;
+    			<%= control_link 'Destroy', user_url(user), :method => :delete, 
+    											:disabled => user == current_user,
+    											:confirm => "Really delete #{user.display_name}?"%>
+    		</td>
+    	</tr>
+  	  <% end -%>
+  	</tbody>
+  </table>
+<% end -%>

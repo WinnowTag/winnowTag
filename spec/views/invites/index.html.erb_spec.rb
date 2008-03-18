@@ -7,22 +7,21 @@
 
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/feeds/index' do
+describe '/invites/index' do
   before(:each) do
     login_as(1)
   end
   
   def render_it
-    render '/feeds/index'
+    render '/invites/index'
   end
   
   describe "non-empty result set" do
     before(:each) do
-      @user = User.find(1)
-      User.should_receive(:find_by_id).with(1).and_return(@user)
-      @feeds = [mock_new_model(Feed, valid_feed_attributes)]
-      @feeds.stub!(:page_count).and_return(1)
-      assigns[:feeds] = @feeds
+      @invites = [mock_model(Invite, :email => "email", :hear => "hear", :use => "use", :created_at => Time.now, :subject => "subject", 
+                                     :body => "body", :code? => false, :user => mock_model(User, :login => "login"))]
+      @invites.stub!(:page_count).and_return(1)
+      assigns[:invites] = @invites
     end
     
     it "should not show an empty message" do
@@ -38,9 +37,9 @@ describe '/feeds/index' do
   
   describe "empty result set" do
     before(:each) do
-      @feeds = []
-      @feeds.stub!(:page_count).and_return(0)
-      assigns[:feeds] = @feeds
+      @invites = []
+      @invites.stub!(:page_count).and_return(0)
+      assigns[:invites] = @invites
     end
     
     it "should show an empty message" do

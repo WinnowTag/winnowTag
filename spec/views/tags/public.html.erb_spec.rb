@@ -7,22 +7,22 @@
 
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/feeds/index' do
+describe '/tags/public' do
   before(:each) do
     login_as(1)
   end
   
   def render_it
-    render '/feeds/index'
+    render '/tags/public'
   end
   
   describe "non-empty result set" do
     before(:each) do
-      @user = User.find(1)
-      User.should_receive(:find_by_id).with(1).and_return(@user)
-      @feeds = [mock_new_model(Feed, valid_feed_attributes)]
-      @feeds.stub!(:page_count).and_return(1)
-      assigns[:feeds] = @feeds
+      @tags = [mock_model(Tag, :name => "name", :comment => "comment", :bias => 1, :last_used_by => Time.now,
+                               :positive_count => 0, :negative_count => 0, :classifier_count => 0, :user_id => 1, 
+                               :user => mock_model(User))]
+      @tags.stub!(:page_count).and_return(1)
+      assigns[:tags] = @tags
     end
     
     it "should not show an empty message" do
@@ -30,17 +30,17 @@ describe '/feeds/index' do
       response.should_not have_tag(".empty")
     end
 
-    it "should show table" do
+    it "should show a list of tags" do
       render_it
-      response.should have_tag("table")
+      response.should have_tag(".tag")
     end
   end
   
   describe "empty result set" do
     before(:each) do
-      @feeds = []
-      @feeds.stub!(:page_count).and_return(0)
-      assigns[:feeds] = @feeds
+      @tags = []
+      @tags.stub!(:page_count).and_return(0)
+      assigns[:tags] = @tags
     end
     
     it "should show an empty message" do
@@ -48,9 +48,9 @@ describe '/feeds/index' do
       response.should have_tag(".empty")
     end
 
-    it "should not show table" do
+    it "should not show a list of tags" do
       render_it
-      response.should_not have_tag("table")
+      response.should_not have_tag(".tag")
     end
   end
 end

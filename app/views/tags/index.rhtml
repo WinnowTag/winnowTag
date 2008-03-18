@@ -14,5 +14,9 @@
   <% end -%>
 <% end -%>
 
-<%= render :partial => 'tag', :collection => @tags %>
-<%= render :partial => 'subscribed_tag', :collection => @subscribed_tags %>
+<% if @tags.empty? && @subscribed_tags.empty? -%>
+  <div class="empty">No tags matched your search criteria.</div>
+<% else -%>
+  <%= render :partial => 'tag', :collection => @tags %>
+  <%= render :partial => 'subscribed_tag', :collection => @subscribed_tags %>
+<% end -%>
