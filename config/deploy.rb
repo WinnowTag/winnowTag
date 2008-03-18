@@ -22,6 +22,7 @@ set :use_sudo, false
 # be used to single out a specific subset of boxes in a particular role, like
 # :primary => true.
 
+default_run_options[:pty] = true
 set :scm, 'git'
 set :repository, 'git@github.com:seangeo/winnow.git'
 set :user, 'winnow'
@@ -116,9 +117,9 @@ task :send_notification do
   run %Q(cd #{current_path} && script/runner 'Notifier.deliver_deployed("http://#{domain}", "#{repository}", "#{revision}", "#{ENV['USER']}", "#{mail_comment}")')
 end
 
-after :'deploy:update_code', :package_assets
 after :'deploy:update_code', :copy_config
-after :deploy, :send_nofication
+after :'deploy:update_code', :package_assets
+after :deploy, :send_notification
 
 namespace :deploy do
   [:start, :stop, :restart, :status].each do |t|
