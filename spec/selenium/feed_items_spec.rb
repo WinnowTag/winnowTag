@@ -15,7 +15,7 @@ describe "FeedItemsTest" do
     wait_for_ajax
   end
 
-  def test_mark_read_unread
+  it "mark_read_unread" do
     feed_item_1 = FeedItem.find(2)
         
     see_element "#feed_item_#{feed_item_1.id}.read"
@@ -35,7 +35,7 @@ describe "FeedItemsTest" do
     see_element "#feed_item_#{feed_item_1.id}.read"
   end
   
-  def test_open_close_item
+  it "open_close_item" do
     feed_item = FeedItem.find(2)
 
     assert_not_visible "open_feed_item_#{feed_item.id}"
@@ -47,7 +47,7 @@ describe "FeedItemsTest" do
     assert_not_visible "open_feed_item_#{feed_item.id}"
   end
 
-  def test_open_close_moderation_panel 
+  it "open_close_moderation_panel " do
     feed_item = FeedItem.find(2) 
  
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}" 
@@ -59,14 +59,14 @@ describe "FeedItemsTest" do
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}" 
   end 
   
-  def test_open_close_moderation_panel_does_not_open_close_item
+  it "open_close_moderation_panel_does_not_open_close_item" do
     feed_item = FeedItem.find(2) 
     assert_not_visible "open_feed_item_#{feed_item.id}"
     click "add_tag_feed_item_#{feed_item.id}" 
     assert_not_visible "open_feed_item_#{feed_item.id}"
   end
   
-  def test_opening_item_marks_it_read
+  it "opening_item_marks_it_read" do
     feed_item_1 = FeedItem.find(1)
 
     see_element "#feed_item_#{feed_item_1.id}.unread"
@@ -79,7 +79,7 @@ describe "FeedItemsTest" do
     see_element "#feed_item_#{feed_item_1.id}.read"
   end
   
-  def test_click_feed_title_takes_you_to_feed_page
+  it "click_feed_title_takes_you_to_feed_page" do
     feed_item_1 = FeedItem.find(1)
     feed1 = feed_item_1.feed
     see_element "#feed_link_for_feed_item_#{feed_item_1.id}"

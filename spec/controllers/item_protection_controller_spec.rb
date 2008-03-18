@@ -21,8 +21,8 @@ describe ItemProtectionController do
   def test_index_displays_protector_info
     login_as(:admin)
     get :show
-    assert_instance_of(Remote::Protector, assigns(:protector))
     assert_response :success
+    assert_instance_of(Remote::Protector, assigns(:protector))
   end
   
   def test_rebuild_calls_rebuild_on_protector_and_redirects_to_show
