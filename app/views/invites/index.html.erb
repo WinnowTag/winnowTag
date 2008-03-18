@@ -7,7 +7,7 @@
   </ul>
 
   <% form_tag(invites_path, :method => :get) do -%>
-	  <%= search_field_tag "q", params[:q], :clear => { :onclick => "window.location = '#{invites_path}'" } %>
+	  <%= search_field_tag "q", params[:q], :placeholder => "Search Invites...", :clear => { :onclick => "window.location = '#{invites_path}'" } %>
   <% end -%>
 <% end -%>
 

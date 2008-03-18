@@ -1,4 +1,4 @@
 <% form_tag feed_items_path, :method => :get, :onsubmit => "itemBrowser.addFilters({text_filter: $('text_filter').value}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Items...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>
 	
