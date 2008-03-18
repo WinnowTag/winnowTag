@@ -1,19 +1,6 @@
 # This defines a deployment "recipe" that you can feed to capistrano
 # (http://manuals.rubyonrails.com/read/book/17). It allows you to automate
 # (among other things) the deployment of your application.
-require 'mongrel_cluster/recipes'
-
-# Function to get the subversion repository for the working directory
-def get_working_directory_repository
-  info = `svn info #{File.join(File.dirname(__FILE__), '..')}`
-  
-  if info =~ /URL: (.*)/
-    puts $1
-    return $1
-  else
-    raise "Could not discover URL from #{info}"
-  end
-end
 
 # =============================================================================
 # REQUIRED VARIABLES
@@ -25,7 +12,6 @@ end
 
 set :application, "winnow"
 set :use_sudo, false
-set :checkout, "checkout"
 
 # =============================================================================
 # ROLES
@@ -36,34 +22,27 @@ set :checkout, "checkout"
 # be used to single out a specific subset of boxes in a particular role, like
 # :primary => true.
 
+set :scm, 'git'
+set :repository, 'git@github.com:seangeo/winnow.git'
+set :user, 'winnow'
+set :deploy_via, :remote_cache
+
 if ENV['STAGE'] == 'beta'
-  set :subdomain, 'beta'
-  set :repository, 'http://svn.winnow.peerworks.org/tags/winnow_BETA'
   set :domain, "winnow.mindloom.org"
-  role :web, domain
-  role :app, domain
-  role :db,  domain, :primary => true
-  set :user, 'winnow'
   set :deploy_to, "/home/winnow/winnow.deploy"
-elsif ENV['STAGE'] =~ /^set[\d]$/ or %w(trunk alpha).include?(ENV['STAGE'])
-  if ENV['STAGE'] == 'alpha'
-    set :repository, "http://svn.winnow.peerworks.org/tags/winnow_ALPHA"
-  elsif ENV['STAGE'] == 'trunk'
-    set :repository, "http://svn.winnow.peerworks.org/trunk/winnow"
-  else
-    set :repository, "http://svn.winnow.peerworks.org/tags/winnow_M3"
-  end
-  
-  set :subdomain, ENV['STAGE']
-  set :domain, "#{subdomain}.mindloom.org"
-  role :web, domain
-  role :app, domain
-  role :db, domain, :primary => true
-  set :deploy_to, "/home/winnow/www/#{subdomain}.deploy"
-  set :user, 'winnow'
+  set :branch, "origin/beta"
+elsif ENV['STAGE'] == 'trunk'
+  set :domain, 'trunk.mindloom.org'
+  set :deploy_to, "/home/winnow/www/trunk.deploy"
+  set :branch, "origin/master"
+  set :group, "trunk-mongrels"
+else
+  raise "Set STAGE to beta or trunk"
 end
 
-set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
+role :web, domain
+role :app, domain
+role :db,  domain, :primary => true
 
 # =============================================================================
 # OPTIONAL VARIABLES
@@ -122,59 +101,29 @@ task :config_collector do
   put("http://collector.mindloom.org", "#{shared_path}/collector.conf")
 end
 
-task :after_update_code do
+task :copy_config do
   run "ln -s #{shared_path}/tmp #{release_path}/tmp"
-  run "ln -s #{shared_path}/exported_corpus #{release_path}/public/exported_corpus"
   run "ln -s #{shared_path}/database.yml #{release_path}/config/database.yml"
-  run "ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/mongrel_cluster.yml"
   run "ln -s #{shared_path}/collector.conf #{release_path}/config/collector.conf"
-  run "ln -s #{shared_path}/classifier.conf #{release_path}/config/classifier.conf"
   run "ln -s #{shared_path}/classifier-client.conf #{release_path}/config/classifier-client.conf"
 end
 
-task :before_symlink do
-  package_assets
-end
 
 desc "Notify the list of deployment"
-task :after_deploy do
+task :send_notification do
   mail_comment = comment rescue mail_comment = "None provided."
   # Run it on the server so we know we have a good email configuration
   run %Q(cd #{current_path} && script/runner 'Notifier.deliver_deployed("http://#{domain}", "#{repository}", "#{revision}", "#{ENV['USER']}", "#{mail_comment}")')
 end
 
-task :after_setup do
-  dbyaml =<<-END
-production:
-  adapter: mysql
-  database: #{subdomain}
-  host: localhost
-  username: #{user}
-  password: #{ENV['db_pass']}
-  
-development:
-  adapter: mysql
-  database: #{subdomain}
-  host: localhost
-  username: #{user}
-  password: #{ENV['db_pass']}
+after :'deploy:update_code', :package_assets
+after :'deploy:update_code', :copy_config
+after :deploy, :send_nofication
 
-END
-
-  cluster_config =<<-END
---- 
-user: #{user}
-group: users
-cwd: #{current_path}
-port: #{ENV['mg_port']}
-environment: production
-address: 127.0.0.1
-pid_file: log/mongrel.pid
-servers: 4
-END
-
-  put(dbyaml, "#{shared_path}/database.yml")
-  put(cluster_config, "#{shared_path}/mongrel_cluster.yml")
-  
-  run "mkdir -p #{shared_path}/tmp"
+namespace :deploy do
+  [:start, :stop, :restart, :status].each do |t|
+    task t do
+      run "god #{t.to_s} #{group}"
+    end
+  end
 end
