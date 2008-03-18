@@ -3,13 +3,11 @@
     <span id="<%= dom_id(feed_item, 'status') %>" class="status"><%= toggle_read_unread_button %></span>
     <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>', event);">
       <span class="feed_title">
-        <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => dom_id(feed_item, "feed_link_for") %>
-        <%# Prevent the item from opening when the feed title is clicked %>
-        <%= javascript_tag "Event.observe('#{dom_id(feed_item, 'feed_link_for')}','click', function(e) {e.stopPropagation();});" %>
+        <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => dom_id(feed_item, "feed_link_for"), :class => "stop" %>
       </span>
       <span class="date"><%= format_date(feed_item.updated) %></span>
       <span class="title"><%= feed_item.title %></span> 
-      <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item')); Event.stop(event);", :id => dom_id(feed_item, "add_tag"), :class => "add_tag" %>
+      <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'));", :id => dom_id(feed_item, "add_tag"), :class => "add_tag stop" %>
       <%= tag_controls(feed_item) %>
     </div>
   </div>  

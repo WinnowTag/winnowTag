@@ -88,7 +88,7 @@ module FeedItemsHelper
       end.compact.join(" ")
     end
     
-    content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "tag_controls")
+    content_tag "ul", html, :class => "tag_list clearfix stop", :id => dom_id(feed_item, "tag_controls")
   end
   
   def tags_to_display
