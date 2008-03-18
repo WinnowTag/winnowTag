@@ -1,2 +1,5 @@
 coverage
 config/collector.conf
+config/database.yml
+doc/TODO
+log
