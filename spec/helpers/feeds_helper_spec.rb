@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe FeedsHelper do
   describe "#feed_link" do
     before(:each) do
-      @feed = mock_model(Feed, :via => "http://example.com/rss", :alternate => "http://example.com", :title => "Feed Title")
+      @feed = mock_model(Feed, :via => "http://example.com/rss", :alternate => "http://example.com/blog", :title => "Feed Title")
     end
     
     it "contains a link to the feed's feed" do
@@ -26,11 +26,6 @@ describe FeedsHelper do
     
     it "contains a link to the feeds page in winnow with the title as the link" do
       feed_link(@feed).should =~ /#{Regexp.escape(link_to("Feed Title", feed_path(@feed), :id => dom_id(@feed, "link_to")))}/
-    end
-    
-    it "contains a link to the feeds page in winnow with the url as the link" do
-      @feed.stub!(:title)
-      feed_link(@feed).should =~ /#{Regexp.escape(link_to("http://example.com/rss", feed_path(@feed), :id => dom_id(@feed, "link_to")))}/
     end
   end
 end
