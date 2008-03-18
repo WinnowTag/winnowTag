@@ -2,11 +2,11 @@
   <ul class="control_bar">
     <li>
       Sort By:
-      <%= link_to "Name", sort_param('tags', :alias => 'name') %>, 
-      <%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %>,
-      <%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %>,
-      <%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %>,
-      <%= link_to "Globally Exclude", sort_param('tags', :alias => 'globally_exclude') %>
+      <%= sort_link "Name", 'tags', :alias => 'name' %>, 
+      <%= sort_link "Last Trained", 'tags', :alias => 'last_used_by' %>,
+      <%= sort_link "Training (+/-)", 'tags', :alias => 'training_count' %>,
+      <%= sort_link "Automatic", 'tags', :alias => 'classifier_count' %>,
+      <%= sort_link "Globally Exclude", 'tags', :alias => 'globally_exclude' %>
     </li>
   </ul>
   <% form_tag(tags_path, :method => :get) do -%>

@@ -2,15 +2,14 @@
   <ul class="control_bar">
     <li>
       Sort By:
-      <%= link_to "Name", sort_param('tags', :alias => 'name') %>, 
-      <%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %>,
-      <%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %>,
-      <%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %>,
-      <%= link_to "Globally Exclude", sort_param('tags', :alias => 'globally_exclude') %>, 
-      <%= link_to "Subscribe", sort_param('tags', :alias => "subscribe") %>
+      <%= sort_link "Name", 'tags', :alias => 'name' %>, 
+      <%= sort_link "Last Trained", 'tags', :alias => 'last_used_by' %>,
+      <%= sort_link "Training (+/-)", 'tags', :alias => 'training_count' %>,
+      <%= sort_link "Automatic", 'tags', :alias => 'classifier_count' %>,
+      <%= sort_link "Globally Exclude", 'tags', :alias => 'globally_exclude' %>,
+      <%= sort_link "Subscribe", 'tags', :alias => 'subscribe' %>
     </li>
   </ul>
-
 
   <% form_tag(public_tags_path, :method => :get) do -%>
 	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{public_tags_path}';" } %>

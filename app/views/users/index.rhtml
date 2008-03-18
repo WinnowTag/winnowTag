@@ -14,13 +14,13 @@
 <table class="data_table recordset">
   <thead>
   	<tr>
-  		<th><%= link_to "Login", sort_param('users', :alias => 'login') %></th>
-  		<th><%= link_to "Name", sort_param('users', :alias => 'name') %></th>
-  		<th><%= link_to "Email", sort_param('users', :alias => 'email') %></th>
-  		<th class="date"><%= link_to "Last Logged In", sort_param('users', :alias => 'logged_in_at') %></th>
-  		<th class="date"><%= link_to "Last Accessed", sort_param('users', :alias => 'last_accessed_at') %></th>
-  		<th class="date"><%= link_to "Last Moderated", sort_param('users', :alias => 'last_tagging_on') %></th>
-  		<th class="number"><%= link_to "Number of Tags", sort_param('users', :alias => 'tag_count') %></th>
+  		<th><%= sort_link "Login", 'users', :alias => 'login' %></th>
+  		<th><%= sort_link "Name", 'users', :alias => 'name' %></th>
+  		<th><%= sort_link "Email", 'users', :alias => 'email' %></th>
+  		<th class="date"><%= sort_link "Last Logged In", 'users', :alias => 'logged_in_at' %></th>
+  		<th class="date"><%= sort_link "Last Accessed", 'users', :alias => 'last_accessed_at' %></th>
+  		<th class="date"><%= sort_link "Last Moderated", 'users', :alias => 'last_tagging_on' %></th>
+  		<th class="number"><%= sort_link "Number of Tags", 'users', :alias => 'tag_count' %></th>
   		<th>&nbsp;</th>
   	</tr>
   </thead>		

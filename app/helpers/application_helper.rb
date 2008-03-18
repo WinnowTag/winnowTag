@@ -199,4 +199,8 @@ module ApplicationHelper
     end
   rescue ArgumentError # Swallow malformed yaml exceptions
   end
+
+  def sort_link(text, sortable_name, *args)
+    link_to text, sort_param(sortable_name, *args), :class => sort_direction(sortable_name, *args)
+  end
 end

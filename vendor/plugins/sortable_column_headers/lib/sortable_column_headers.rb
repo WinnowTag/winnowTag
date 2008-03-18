@@ -7,7 +7,7 @@ protected
     base.instance_eval do
       attr_accessor :sortable_column_header_data
       before_filter :init_sortable_column_headers
-      helper_method :sort_param
+      helper_method :sort_param, :sort_direction
     end
   end
 
@@ -198,15 +198,29 @@ protected
     { sort_param.to_sym => (got_chopped ? data_name : sortable_name+'-'+data_name) }
   end
 
+  def sort_direction(sortable_name, *args)
+    data_name, got_chopped = get_data_name_for_sort_param(sortable_name, *args)
 
+    sortable_key = assemble_sort_key(sortable_name, data_name)
+    sorted_key = assemble_sort_key(sortable_name)
+    
+    sort_param = nil
+    unless session[:sortable_column_headers].nil? || session[:sortable_column_headers][sorted_key].nil?
+      sch_key = self.sortable_column_header_data[sortable_key] || ''
+      if session[:sortable_column_headers][sorted_key].first == sch_key+' ASC'
+        sort_param = 'asc'
+      elsif session[:sortable_column_headers][sorted_key].first == sch_key+' DESC'
+        sort_param = 'desc'
+      end
+    end
+    sort_param
+  end
+  
   def sortable_data
     self.sortable_column_header_data
   end
-
-
-private
-
   
+private
   def get_data_name_for_sort_param(sortable_name, *args)
     if args.size >= 1
       if args.first.kind_of?(Class)

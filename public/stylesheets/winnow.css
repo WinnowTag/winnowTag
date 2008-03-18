@@ -1,3 +1,4 @@
+
 .clearfix:after {
     content: ".";
     display: block;
@@ -1209,4 +1210,18 @@ textarea.content {
 .pencil_icon {
   background: url(../images/pencil.png) 0 center no-repeat  !important;
   background-position: 0 0;
+}
+
+a.asc {
+  background-image: url(../images/bullet_arrow_up.png);
+  background-repeat: no-repeat;
+  background-position: center right;
+  padding: 0 16px 0 0;
+}
+
+a.desc {
+  background-image: url(../images/bullet_arrow_down.png);
+  background-repeat: no-repeat;
+  background-position: center right;
+  padding: 0 16px 0 0;
 }

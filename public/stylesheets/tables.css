@@ -74,7 +74,7 @@ td.view_state {
 td.number, th.number, 
 td.date, th.date {
 	text-align: right;
-  width: 10em;
+  width: 11em;
 }
 
 th.sensitivity {
