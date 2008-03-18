@@ -1054,35 +1054,6 @@ textarea.content {
   margin: 0 0 .5em 0;
 }
 
-.tag ul.controls {
-  float: right;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tag .controls li {
-  float: left;
-  padding: 0;
-  margin: 0 0 0 1.5em;
-}
-
-.tag .controls li a {
-  padding: 0 0 0 20px;
-  background-image: url(../images/vertical_sprite.png);
-  background-repeat: no-repeat;
-}
-
-.tag .controls li input {
-  margin: 0;
-  padding: 0;
-}
-
-.tag .controls li .slider {
-  margin: .5em 4px 0 0;
-  float: left;
-}
-
 .tag .name_and_comment {
   float: left;
   width: 30%;
@@ -1119,21 +1090,23 @@ textarea.content {
   display: block;
 }
 
-.tag dl.training {
+.tag .controls_and_training {
   float: right;
-  margin: 0;
+}
+
+.tag dl.training {
+  clear: left;
+  float: left;
+  margin: 0 0 1em 0;
   padding: 0;
-  width: 20em;
 }
 
 .tag dl.training dt {
   font-weight: bold;
   color: #666;
   float: left;
-  clear: both;
   padding: 0;
   margin: 0;
-  width: 8em;
 }
 
 .tag dl.training dt:after {
@@ -1142,8 +1115,48 @@ textarea.content {
 
 .tag dl.training dd {
   float: left;
-  margin: 0 3em 0 .5em;
+  margin: 0 0 0 .5em;
   padding: 0;
+  width: 7.5em;
+}
+
+.tag dl.training dd.feed {
+  margin: 0;
+  width: auto;
+}
+
+.tag ul.controls {
+  clear: left;
+  float: left;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag .controls li {
+  float: left;
+  padding: 0;
+  margin: 0 0 0 1.5em;
+}
+
+.tag .controls li a {
+  padding: 0 0 0 20px;
+  background-image: url(../images/vertical_sprite.png);
+  background-repeat: no-repeat;
+}
+
+.tag .controls li input {
+  margin: 0;
+  padding: 0;
+}
+
+.tag .controls li.first {
+  margin-left: 0;
+}
+
+.tag .controls li .slider {
+  margin: .5em 4px 0 0;
+  float: left;
 }
 
 .blank_icon {

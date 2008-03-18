@@ -16,25 +16,25 @@
     </div>
   </div>
   
-  <ul class="controls">
-    <li class="slider"><%= bias_slider(tag) %></li>
-    <li><%= globally_exclude_check_box(tag) %> Globally Exclude</li>
-    <li>
-      <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> Public
-    </li>
-    <li><%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show_icon', :title => "Show Only Items Tagged With #{tag.name}" %></li>
-    <li><%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "duplicate_icon" } %></li>
-    <li><%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
-  </ul>
-
-  <dl class="training clearfix">
-    <dt>Last Trained</dt>
-    <dd><%= format_date(tag.last_used_by) %></dd>
-    <br/>
-    <dt>Training</dt>
-    <dd><%= link_to "+#{tag.positive_count} / -#{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&manual_taggings=true"), :title => "Inspect #{tag.name}" %></dd>
-    <br/>
-    <dt>Automatic</dt>
-    <dd><%= tag.classifier_count %></dd>
-  </dl>
+  <div class="controls_and_training clearfix">
+    <dl class="training">
+      <dt>Last Trained</dt>
+      <dd><%= format_date(tag.last_used_by) %></dd>
+      <dt>Training</dt>
+      <dd><%= link_to "+#{tag.positive_count} / -#{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&manual_taggings=true"), :title => "Inspect #{tag.name}" %></dd>
+      <dt>Automatic</dt>
+      <dd><%= tag.classifier_count %></dd>
+    </dl>
+    
+    <ul class="controls">
+      <li class="first"><%= bias_slider(tag) %></li>
+      <li><%= globally_exclude_check_box(tag) %> Globally Exclude</li>
+      <li>
+        <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> Public
+      </li>
+      <li><%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show_icon', :title => "Show Only Items Tagged With #{tag.name}" %></li>
+      <li><%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "duplicate_icon" } %></li>
+      <li><%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
+    </ul>
+  </div>
 </div>
