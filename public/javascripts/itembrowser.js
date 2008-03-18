@@ -371,7 +371,6 @@ ItemBrowser.prototype = {
       spacer = this.feed_items_container.down(".empty");
     }
     
-    console.log(this.total_items);
     if(this.total_items == 0) {
       spacer.show();
     } else {
