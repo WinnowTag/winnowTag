@@ -115,11 +115,11 @@ describe Feed do
       end
       
       it "should set the title to ''" do
-        @feed.title.should == ''        
+        @feed.read_attribute(:title).should == ''        
       end
       
       it "should set the sort title to ''" do
-        @feed.sort_title.should == ''
+        @feed.read_attribute(:sort_title).should == ''
       end
     end
     
@@ -270,6 +270,17 @@ describe Feed do
     it "should skip duplicates" do
       Feed.create! valid_feed_attributes(:title => 'Duplicate', :duplicate_id => 1)
       Feed.search(:search_term => 'Duplicate').should be_empty
+    end
+  end
+  
+  describe "title" do
+    it "should return the title if present" do
+      feed = Feed.new :title => "Some Title"
+      feed.title.should == "Some Title"
+    end
+    it "should return the hostname if no title is present" do
+      feed = Feed.new :via => "http://example.com/feed.rss"
+      feed.title.should == "example.com"
     end
   end
 end
