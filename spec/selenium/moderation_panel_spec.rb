@@ -56,6 +56,9 @@ describe "moderation panel" do
   end
 
   it "can add a positive tagging from an existing tag through the 'create new tag' input when the tagging already exists"
+  it "does not select the first choice in the auto complete list"
+  it "uses the selected entry when clicking 'Add Tag'"
+  it "creates a new tag when hitting enter and not entry is selected"
   
   it "can change a positive tagging to a negative tagging" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false

@@ -762,12 +762,12 @@ ItemBrowser.prototype = {
       if (parameters.text_filter.length > 0 && parameters.text_filter.length < 4) {
         new ErrorMessage("Search requires a word with at least 4 characters.");
         return;
-          } else {
-            if ($('error')) {
-              $('error').hide(); 
-              resizeContent();
-            }
-          }
+      } else {
+        if ($('error')) {
+          $('error').hide(); 
+          resizeContent();
+        }
+      }
     }
     
     // Update location.hash
@@ -780,7 +780,7 @@ ItemBrowser.prototype = {
       }
     });
     location.hash = "#" + new_parameters.toQueryString();
-
+    
     // Update styles on selected items
     var params = new_parameters.toQueryString().toQueryParams();
     if($H(params).keys().size() == 0) {
@@ -788,7 +788,6 @@ ItemBrowser.prototype = {
     } else {
       $("show_all").removeClassName("selected");
     }
-    
     
     var feed_ids = params.feed_ids ? params.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
@@ -809,7 +808,7 @@ ItemBrowser.prototype = {
         element.removeClassName("selected");
       }
     });
-
+    
     $$(".folder").each(function(folder) {
       var items = folder.select(".filter_list li");
       var selected = 0;
@@ -830,13 +829,15 @@ ItemBrowser.prototype = {
         folder.removeClassName("some_selected");        
       }
     });
-
+    
+    var text_filter = $("text_filter");
     if(params.text_filter) {
-      $("text_filter").value = params.text_filter;
+      text_filter.value = params.text_filter;
     } else {
-      $("text_filter").focus();
-      $("text_filter").value = "";
-      $("text_filter").blur();
+      clear_button = text_filter.previous(".srch_clear");
+      text_filter.value = "";
+	    applesearch.onChange(text_filter, clear_button);
+	    applesearch.insertPlaceholder(text_filter);
     }
     
     if(params.manual_taggings) {
