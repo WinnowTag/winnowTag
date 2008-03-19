@@ -13,6 +13,7 @@
     <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('folder_name').value = ''" do |form| -%>
       <%= form.text_field :name, :class => "filter_search" %>
     <% end -%>
+    <div id="new_folder_errors" class="error" style="display:none"></div>
   </div>
   
   <div id="add_feed" class="add_section" style="display: none">

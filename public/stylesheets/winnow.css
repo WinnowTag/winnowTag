@@ -1238,3 +1238,12 @@ a.desc {
   background-position: center right;
   padding: 0 16px 0 0;
 }
+
+.error {
+  font-weight: bold;
+  color: #FF260B;
+  background-color: #FDDFD7;
+  border: 2px solid #FF260B;
+  padding: 3px;
+  text-align: center;
+}
