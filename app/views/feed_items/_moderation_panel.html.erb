@@ -8,8 +8,13 @@
       afterUpdateElement: function(input, choice) { 
         itemBrowser.closeItemModerationPanel('<%= dom_id(feed_item) %>'); add_tag('<%= dom_id(feed_item) %>', input.value); input.value = ""; } });
   auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
-  // escape key handler
-  // don't hide when enter
-  // show when focused
+  // TODO: escape key handler (hide dialog)
+  // TODO: blur text field (hide dialog, dont hide list)
+  // TODO: don't hide list when enter is hit
+  // TODO: show list when text field focuses
+  // TODO: need to update this local list when tag controls are clicked so they are always in sync
+  // TODO: arrowing when item list is scrolled messes up the item list location
+  // TODO: arrowing off the end of the list should go back to none selected
+  // TODO: scrolling up/off the bottom should not move the item list back up
 <% end -%>
 <%= submit_tag "Add Tag", :onclick => "auto_completers['#{dom_id(feed_item, 'new_tag_field')}_auto_completer'].selectEntry();" %>

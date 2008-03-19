@@ -466,6 +466,7 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
         var top = [];
         if(!entry.blank()) {
           this.persistent.each(function(choice) {
+            // TODO: Make case insensitive
             if(!instance.options.array.include(entry)) {
               top.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
             }
