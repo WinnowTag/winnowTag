@@ -124,7 +124,7 @@ after :deploy, :send_notification
 namespace :deploy do
   [:start, :stop, :restart, :status].each do |t|
     task t do
-      run "god #{t.to_s} #{group}"
+      sudo "god #{t.to_s} #{group}"
     end
   end
 end
