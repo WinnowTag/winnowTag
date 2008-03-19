@@ -3,7 +3,7 @@
 <% javascript_tag do -%>
   auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Autocompleter.Local(
     '<%= dom_id(feed_item, 'new_tag_field') %>', '<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete', 
-    <%= (current_user.sidebar_tags - current_user.excluded_tags - feed_item.tags).map(&:name).to_json %>, 
+    <%= (current_user.sidebar_tags - current_user.excluded_tags - feed_item.tags.from_user).map(&:name).to_json %>, 
     { partialChars: 1, fullSearch: true, choices: <%= current_user.sidebar_tags.size %>, persistent: ["Create a new tag '#{entry}'..."],
       afterUpdateElement: function(input, choice) { 
         itemBrowser.closeItemModerationPanel('<%= dom_id(feed_item) %>'); add_tag('<%= dom_id(feed_item) %>', input.value); input.value = ""; } });
