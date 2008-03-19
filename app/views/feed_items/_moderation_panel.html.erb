@@ -8,5 +8,5 @@
       { partialChars: 1, fullSearch: true, choices: <%= current_user.sidebar_tags.size %>, afterUpdateElement: function(input, choice) { input.form.onsubmit(); } });
     auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
   <% end -%>
-  <%= submit_tag "Add Tag" %>
+  <%= submit_tag "Add Tag", :onclick => "auto_completers['#{dom_id(feed_item, 'new_tag_field')}_auto_completer'].selectEntry();" %>
 <% end -%>

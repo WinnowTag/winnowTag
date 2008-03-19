@@ -211,11 +211,11 @@ Autocompleter.Base = Class.create({
   markPrevious: function() {
     if(this.index > 0) this.index--
       else this.index = this.entryCount-1;
-    this.getEntry(this.index).scrollIntoView(true);
+    this.getEntry(this.index).scrollIntoView(false);
   },
   
   markNext: function() {
-    if(this.index < this.entryCount-1) this.index++
+    if(this.index != null && this.index < this.entryCount-1) this.index++
       else this.index = 0;
     this.getEntry(this.index).scrollIntoView(false);
   },
@@ -242,8 +242,12 @@ Autocompleter.Base = Class.create({
     if (this.options.select) {
       var nodes = $(selectedElement).select('.' + this.options.select) || [];
       if(nodes.length>0) value = Element.collectTextNodes(nodes[0], this.options.select);
-    } else
+    } else if(selectedElement) {
       value = Element.collectTextNodesIgnoreClass(selectedElement, 'informal');
+    } else {
+      // TODO: This should take tokens into account
+      value = this.element.value;
+    }
     
     var bounds = this.getTokenBounds();
     if (bounds[0] != -1) {
@@ -281,7 +285,7 @@ Autocompleter.Base = Class.create({
       }
 
       this.stopIndicator();
-      this.index = 0;
+      this.index = null;
       
       if(this.entryCount==1 && this.options.autoSelect) {
         this.selectEntry();
