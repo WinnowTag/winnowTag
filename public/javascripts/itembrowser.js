@@ -45,21 +45,23 @@ Classification.createItemBrowserClassification = function(classifier_url) {
       onStarted: function(c) {        
         $('progress_bar').style.width = "0%";
         $('progress_title').update("Classifying changed tags");
-      },
-      onStartProgressUpdater: function(c) {
-        c.classifier_items_loaded = 0;
-      },
-      onShowProgressBar: function(c) {
         $('classification_button').hide();
         $('cancel_classification_button').show();
         $('progress_bar').removeClassName('complete');
         $('classification_progress').show();
         $('progress_title').update("Starting Classifier");
       },
+      onStartProgressUpdater: function(c) {
+        c.classifier_items_loaded = 0;
+      },
+      onShowProgressBar: function(c) {
+        
+      },
       onReset: function() {
         
       },
       onCancelled: function(c) {
+        $('classification_progress').hide();
         $('cancel_classification_button').hide();
         $('classification_button').show();
         $('progress_bar').setStyle({width: '0%'});
@@ -71,6 +73,7 @@ Classification.createItemBrowserClassification = function(classifier_url) {
         $('progress_title').update("Classify changed tags");          
       },
       onFinished: function(c) {
+        $('classification_progress').hide();
         c.options.onCancelled(c);
         $('progress_title').update("Classification Complete");
         $('classification_button').disabled = true;
@@ -111,8 +114,7 @@ Classification.prototype = {
    */
   start: function(puct_confirm) {
     this.notify('Start');    
-    this.showProgressBar();
-    
+        
     parameters = null;
     if (puct_confirm) {
       parameters = {puct_confirm: 'true'};
