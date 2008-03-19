@@ -245,8 +245,7 @@ Autocompleter.Base = Class.create({
     } else if(selectedElement) {
       value = Element.collectTextNodesIgnoreClass(selectedElement, 'informal');
     } else {
-      // TODO: This should take tokens into account
-      value = this.element.value;
+      return;
     }
     
     var bounds = this.getTokenBounds();
@@ -425,6 +424,7 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
       partialChars: 2,
       ignoreCase: true,
       fullSearch: false,
+      persistent: [],
       selector: function(instance) {
         var ret       = []; // Beginning matches
         var partial   = []; // Inside matches
@@ -462,6 +462,17 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
         }
         if (partial.length)
           ret = ret.concat(partial.slice(0, instance.options.choices - ret.length))
+
+        var top = [];
+        if(!entry.blank()) {
+          this.persistent.each(function(choice) {
+            if(!instance.options.array.include(entry)) {
+              top.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
+            }
+          });
+        }
+        
+        ret = [top, ret].flatten();
         return "<ul>" + ret.join('') + "</ul>";
       }
     }, options || { });
