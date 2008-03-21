@@ -9,12 +9,12 @@ require File.dirname(__FILE__) + '/helper'
 
 steps_for(:item_cache) do
   Given("the feed entry at '$entry'") do |entry|
-    @feed_entry = File.read(File.join('spec/fixtures', entry))
+    @feed_entry = File.read(File.join(RAILS_ROOT, 'spec/fixtures', entry))
     @feed_count = Feed.count
   end
   
   Given("the item entry at '$entry'") do |entry|
-    @item_entry = File.read(File.join('spec/fixtures', entry))
+    @item_entry = File.read(File.join(RAILS_ROOT, 'spec/fixtures', entry))
     @item_count = FeedItem.count
   end
   
