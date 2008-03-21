@@ -211,11 +211,12 @@ Autocompleter.Base = Class.create({
   markPrevious: function() {
     if(this.index > 0) this.index--
       else this.index = this.entryCount-1;
+    // NOTE: peerworks change
     this.getEntry(this.index).scrollIntoView(false);
   },
   
   markNext: function() {
-    if(this.index != null && this.index < this.entryCount-1) this.index++
+    if(this.index < this.entryCount-1) this.index++
       else this.index = 0;
     this.getEntry(this.index).scrollIntoView(false);
   },
@@ -242,11 +243,8 @@ Autocompleter.Base = Class.create({
     if (this.options.select) {
       var nodes = $(selectedElement).select('.' + this.options.select) || [];
       if(nodes.length>0) value = Element.collectTextNodes(nodes[0], this.options.select);
-    } else if(selectedElement) {
+    } else
       value = Element.collectTextNodesIgnoreClass(selectedElement, 'informal');
-    } else {
-      return;
-    }
     
     var bounds = this.getTokenBounds();
     if (bounds[0] != -1) {
@@ -284,7 +282,7 @@ Autocompleter.Base = Class.create({
       }
 
       this.stopIndicator();
-      this.index = null;
+      this.index = 0;
       
       if(this.entryCount==1 && this.options.autoSelect) {
         this.selectEntry();
@@ -424,6 +422,7 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
       partialChars: 2,
       ignoreCase: true,
       fullSearch: false,
+      // NOTE: peerworks change
       persistent: [],
       selector: function(instance) {
         var ret       = []; // Beginning matches
@@ -462,7 +461,8 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
         }
         if (partial.length)
           ret = ret.concat(partial.slice(0, instance.options.choices - ret.length))
-
+        
+        // NOTE: peerworks change
         var top = [];
         if(!entry.blank()) {
           this.persistent.each(function(choice) {
@@ -472,8 +472,8 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
             }
           });
         }
+        ret = [top, ret].flatten();  
         
-        ret = [top, ret].flatten();
         return "<ul>" + ret.join('') + "</ul>";
       }
     }, options || { });
