@@ -1,6 +1,8 @@
 class Folder < ActiveRecord::Base
   belongs_to :user
   
+  validates_uniqueness_of :name, :scope => :user_id
+  
   def feed_ids
     read_attribute(:feed_ids).to_s.split(",").map(&:to_i)
   end

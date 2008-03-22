@@ -13,7 +13,8 @@ describe FoldersController do
     
     @user = mock_model(User)
     User.stub!(:find_by_id).with(users(:quentin).id).and_return(@user)
-    @folders = mock("folders")
+    @folder = mock_model(Folder, :save => true)
+    @folders = mock("folders", :new => @folder)
     @user.stub!(:folders).and_return(@folders)
 
     @params = { "name" => "Tech" }
@@ -29,13 +30,30 @@ describe FoldersController do
     end
     
     it "creates a new folder for the current user" do
-      @folders.should_receive(:create!).with(@params)
+      @folders.should_receive(:new).with(@params).and_return(@folder)
       do_post
     end
-    
-    it "renders the js template" do
-      do_post
-      response.should render_template("create")
+
+    describe "successful save" do
+      before(:each) do
+        @folder.should_receive(:save).and_return(true)
+      end
+
+      it "renders the js template" do
+        do_post
+        response.should render_template("create")
+      end
+    end
+
+    describe "unsuccessful save" do
+      before(:each) do
+        @folder.should_receive(:save).and_return(false)
+      end
+
+      it "renders the js template" do
+        do_post
+        response.should render_template("error")
+      end
     end
   end
 

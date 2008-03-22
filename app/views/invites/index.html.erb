@@ -1,5 +1,3 @@
-<% @skip_content_container = true %>
-
 <% content_for :header_controls do -%>
   <ul class="control_bar">
     <li><%= will_paginate(@invites) %></li>
@@ -7,61 +5,66 @@
   </ul>
 
   <% form_tag(invites_path, :method => :get) do -%>
-	  <%= search_field_tag "q", params[:q], :clear => { :onclick => "window.location = '#{invites_path}'" } %>
+	  <%= search_field_tag "q", params[:q], :placeholder => "Search Invites...", :clear => { :onclick => "window.location = '#{invites_path}'" } %>
   <% end -%>
 <% end -%>
 
-<table class="data_table recordset">
-  <thead>
-  	<tr>
-  		<th>Email</th>
-  		<th>Questions</th>
-  		<th>Created</th>
-  		<th>Status</th>
-  		<th>Email</th>
-  		<th>&nbsp;</th>
-  	</tr>
-  </thead>		
-  <tbody id="content">
-  	<% for invite in @invites -%>
-  	<tr>
-  		<td><%= invite.email %></td>
-  		<td>
-  		  <% unless invite.hear.blank? -%>
-		      <b>How did you hear about Winnow?</b><br/>
-		      <%= invite.hear %><br/>
-		    <% end -%>
-  		  <% unless invite.use.blank? -%>
-		      <b>How/why do you want to use Winnow?</b><br/>
-          <%= invite.use %><br/>
-		    <% end -%>
-  		</td>
-  		<td><%= format_date(invite.created_at) %></td>
-  		<td>
-  		  <% if invite.user -%>
-  		    Accepted: <%= link_to invite.user.login, invite.user %>
-  		  <% elsif invite.code? -%>
-  		    Activated: <%= invite.code %>
-  		  <% else -%>
-  		    Requested
-  		  <% end -%>
-  		</td>
-  		<td>
-		    <% unless invite.subject.blank? -%>
-  	      Subject: <%= invite.subject %><br/>
-  	    <% end -%>
-  	    <% unless invite.body.blank? -%>
-  	      Body: <%= invite.body %><br/>
-  	    <% end -%>
-  		</td>
-  		<td nowrap="nowrap">
-		    <% unless invite.code? -%>
-          <%= link_to "Activate", activate_invite_path(invite), :method => :put %> or
-          <%= link_to "Edit", edit_invite_path(invite) %> or
-        <% end -%>
-        <%= link_to "Destroy", invite, :method => :delete, :confirm => "Are you sure?" %>
-  		</td>
-  	</tr>
-	  <% end -%>
-	</tbody>
-</table>
+<% if @invites.empty? -%>
+  <div class="empty">No invites matched your search criteria.</div>
+<% else -%>
+  <% @skip_content_container = true %>
+  <table class="data_table recordset">
+    <thead>
+    	<tr>
+    		<th>Email</th>
+    		<th>Questions</th>
+    		<th>Created</th>
+    		<th>Status</th>
+    		<th>Email</th>
+    		<th>&nbsp;</th>
+    	</tr>
+    </thead>		
+    <tbody id="content">
+    	<% for invite in @invites -%>
+    	<tr>
+    		<td><%= invite.email %></td>
+    		<td>
+    		  <% unless invite.hear.blank? -%>
+  		      <b>How did you hear about Winnow?</b><br/>
+  		      <%= invite.hear %><br/>
+  		    <% end -%>
+    		  <% unless invite.use.blank? -%>
+  		      <b>How/why do you want to use Winnow?</b><br/>
+            <%= invite.use %><br/>
+  		    <% end -%>
+    		</td>
+    		<td><%= format_date(invite.created_at) %></td>
+    		<td>
+    		  <% if invite.user -%>
+    		    Accepted: <%= link_to invite.user.login, invite.user %>
+    		  <% elsif invite.code? -%>
+    		    Activated: <%= invite.code %>
+    		  <% else -%>
+    		    Requested
+    		  <% end -%>
+    		</td>
+    		<td>
+  		    <% unless invite.subject.blank? -%>
+    	      Subject: <%= invite.subject %><br/>
+    	    <% end -%>
+    	    <% unless invite.body.blank? -%>
+    	      Body: <%= invite.body %><br/>
+    	    <% end -%>
+    		</td>
+    		<td nowrap="nowrap">
+  		    <% unless invite.code? -%>
+            <%= link_to "Activate", activate_invite_path(invite), :method => :put %> or
+            <%= link_to "Edit", edit_invite_path(invite) %> or
+          <% end -%>
+          <%= link_to "Destroy", invite, :method => :delete, :confirm => "Are you sure?" %>
+    		</td>
+    	</tr>
+  	  <% end -%>
+  	</tbody>
+  </table>
+<% end -%>

@@ -38,6 +38,9 @@ function validate_tag_edit(original_name, new_name) {
 function add_tag(taggable_id, tag_name, allow_remove) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
+  var match = tag_name.match(/^Create a new tag '(.+)'...$/);
+  if( match ) { tag_name = match[1]; }
+
   var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
   var url = '/taggings/create';
   var parameters = {};
@@ -51,11 +54,13 @@ function add_tag(taggable_id, tag_name, allow_remove) {
   } else if (tag_control.match('.negative')) {
     tag_control.removeClassName('negative');
     tag_control.addClassName('positive');
-  } else if (tag_control.match('.positive') && allow_remove) {
-    tag_control.removeClassName('positive');
-    url = '/taggings/destroy';
-    if(!tag_control.match('.classifier')) {
-      remove_tag_control(taggable_id, tag_name); 
+  } else if (tag_control.match('.positive')) {
+    if(allow_remove) {
+      tag_control.removeClassName('positive');
+      url = '/taggings/destroy';
+      if(!tag_control.match('.classifier')) {
+        remove_tag_control(taggable_id, tag_name); 
+      }
     }
   } else if (tag_control.match('.classifier')) {
     tag_control.addClassName('positive'); 

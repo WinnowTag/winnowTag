@@ -1,14 +1,11 @@
 <div class="section">
-  <h4>Classifier</h4>
-
-  <div class="progress_bar_container" id="classification_progress">
-  	<div id="progress_message" style="display:none;"></div>
-  	<div id="progress_title"><%= classifier_progress_title %></div>
-  	<div id="progress_bar" class="progress_bar" style="width: 0%;"></div>
-  </div>
-
   <div class="classification_controls">
   	<%= classification_button %>
   	<%= cancel_classification_button %>
+  </div>
+  <div class="progress_bar_container" id="classification_progress" style="display:none;">
+  	<div id="progress_message" style="display:none;"></div>
+  	<div id="progress_title"><%= classifier_progress_title %></div>
+  	<div id="progress_bar" class="progress_bar" style="width: 0%;"></div>
   </div>
 </div>

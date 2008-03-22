@@ -95,7 +95,11 @@ ActionController::Routing::Routes.draw do |map|
     about_map.using "using", :action => "using"
   end
   
-  map.admin "admin", :controller => "admin"
+  map.with_options :controller => "admin" do |admin_map|
+    admin_map.admin "admin"
+    admin_map.admin_using "admin/using", :action => "using"
+    admin_map.admin_help "admin/help", :action => "help"
+  end
   
   map.root :controller => "feed_items"
 end

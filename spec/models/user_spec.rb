@@ -143,7 +143,7 @@ describe User do
   end
   
   describe "from test/unit" do
-    fixtures :users
+    fixtures :users, :feed_items
     
     def test_should_be_owner_of_self
       u = create_user

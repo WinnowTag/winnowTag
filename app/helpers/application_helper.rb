@@ -109,10 +109,11 @@ module ApplicationHelper
   
   def search_field_tag(name, value = nil, options = {})
     options[:clear] ||= {}
+    options[:placeholder] ||= "Search..."
     content_tag :div, 
-      content_tag(:span, nil, :class => "sbox_l") +
-        tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :size => 30, :results => 5, :placeholder => "Search...", :autosave => name) +      
-        content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]), 
+      content_tag(:span, nil, :class => "sbox_l") +      
+      content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]) +
+      tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name), 
       :class => "applesearch"
   end
 
@@ -134,7 +135,9 @@ module ApplicationHelper
   end
   
   def feed_filter_controls(feeds, options = {})
-    content_tag :ul, feeds.map { |feed| feed_filter_control(feed, options) }.join, options.delete(:ul_options) || {}
+    content = options[:add] ? content_tag(:li, "Create a new feed '#{options[:auto_complete]}'...", :id => "add_new_feed") : ""
+    content << feeds.map { |feed| feed_filter_control(feed, options) }.join
+    content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
   def feed_filter_control(feed, options = {})   
@@ -148,7 +151,7 @@ module ApplicationHelper
     html =  content_tag(:div, html, :class => "show_feed_control")
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
 
-    class_names = ["feed"]
+    class_names = []
     class_names << "draggable" if options[:draggable]
     html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
     html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
@@ -156,7 +159,9 @@ module ApplicationHelper
   end
   
   def tag_filter_controls(tags, options = {})
-    content_tag :ul, tags.map { |tag| tag_filter_control(tag, options) }.join, options.delete(:ul_options) || {}
+    content = options[:add] ? content_tag(:li, "Create a new tag '#{options[:auto_complete]}'...", :id => "add_new_tag") : ""
+    content << tags.map { |tag| tag_filter_control(tag, options) }.join
+    content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
   def tag_filter_control(tag, options = {})
@@ -180,7 +185,7 @@ module ApplicationHelper
     html =  content_tag(:div, html, :class => "show_tag_control")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
     
-    class_names = ["tag"]
+    class_names = []
     class_names << "public" if tag.user_id != current_user.id
     class_names << "draggable" if options[:draggable]
     url  =  case options[:remove]
@@ -193,6 +198,14 @@ module ApplicationHelper
   end
   
   def help_path
-    url_for(:controller => controller_name, :action => action_name, :host => "docs.mindloom.org")
+    setting = YAML.load(Setting.find_or_initialize_by_name("Help").value.to_s)
+    if setting && setting[controller_name] && setting[controller_name][action_name]
+      setting[controller_name][action_name]
+    end
+  rescue ArgumentError # Swallow malformed yaml exceptions
+  end
+
+  def sort_link(text, sortable_name, *args)
+    link_to text, sort_param(sortable_name, *args), :class => sort_direction(sortable_name, *args)
   end
 end

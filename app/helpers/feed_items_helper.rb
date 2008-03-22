@@ -50,7 +50,7 @@ module FeedItemsHelper
   # to the current user.
   #
   def classification_button
-    button_to_function 'Start', :id => 'classification_button' do |page|
+    button_to_function 'Auto-tag', :id => 'classification_button' do |page|
       page << <<-END_JS
          classification = Classification.createItemBrowserClassification(#{classifier_path.to_json});
          classification.start();
@@ -88,7 +88,7 @@ module FeedItemsHelper
       end.compact.join(" ")
     end
     
-    content_tag "ul", html, :class => "tag_list clearfix", :id => dom_id(feed_item, "tag_controls")
+    content_tag "ul", html, :class => "tag_list clearfix stop", :id => dom_id(feed_item, "tag_controls")
   end
   
   def tags_to_display

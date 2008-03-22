@@ -93,7 +93,11 @@ class FeedItem < ActiveRecord::Base
     alias_method_chain :find_by_user, :caching
   end
   
-  has_many :tags, :through => :taggings
+  has_many :tags, :through => :taggings do
+    def from_user
+      find(:all, :conditions => ["taggings.classifier_tagging = ?", false])
+    end
+  end
   
   # Finds some random items with their tokens.  
   #

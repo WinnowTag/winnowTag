@@ -1,27 +1,22 @@
-<% @skip_content_container = true %>
-
 <% content_for :header_controls do -%>
+  <ul class="control_bar">
+    <li>
+      Sort By:
+      <%= sort_link "Name", 'tags', :alias => 'name' %>, 
+      <%= sort_link "Last Trained", 'tags', :alias => 'last_used_by' %>,
+      <%= sort_link "Training (+/-)", 'tags', :alias => 'training_count' %>,
+      <%= sort_link "Automatic", 'tags', :alias => 'classifier_count' %>,
+      <%= sort_link "Globally Exclude", 'tags', :alias => 'globally_exclude' %>
+    </li>
+  </ul>
   <% form_tag(tags_path, :method => :get) do -%>
-	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{tags_path}';" } %>
+	  <%= search_field_tag "search_term", @search_term, :placeholder => "Search Tags...", :clear => { :onclick => "window.location = '#{tags_path}';" } %>
   <% end -%>
 <% end -%>
 
-<table id="tags" class="data_table recordset" skip="2">
-  <thead>
-    <tr>
-    	<th class="tag"><%= link_to "Tag", sort_param('tags', :alias => 'name') %></th>
-		  <th class="view_state"><%= link_to "Globally Exclude", sort_param('tags', :alias => 'globally_exclude') %></th>
-    	<th class="control_icons"><%= link_to "Public", sort_param('tags', :alias => "public") %></th>
-    	<th class="control_icons">Actions</th>
-    	<th class="usage number"><%= link_to "Training (+/-)", sort_param('tags', :alias => "training_count") %></th>
-    	<th class="classifier_usage number"><%= link_to "Automatic", sort_param('tags', :alias => "classifier_count") %></th>
-    	<th class="date"><%= link_to "Last Trained", sort_param('tags', :alias => "last_used_by") %></th>
-      <th class="indented"><%= link_to "User", sort_param('tags', :alias => "login") %></th>
-    	<th class="sensitivity">Sensitivity</th>
-    </tr>
-  </thead>
-  <tbody id="content">
-		<%= render :partial => 'tag', :collection => @tags %>
-		<%= render :partial => 'subscribed_tag', :collection => @subscribed_tags %>
-  </tbody>
-</table>
+<% if @tags.empty? && @subscribed_tags.empty? -%>
+  <div class="empty">No tags matched your search criteria.</div>
+<% else -%>
+  <%= render :partial => 'tag', :collection => @tags %>
+  <%= render :partial => 'subscribed_tag', :collection => @subscribed_tags %>
+<% end -%>

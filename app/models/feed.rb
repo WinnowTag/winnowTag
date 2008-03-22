@@ -108,9 +108,17 @@ class Feed < ActiveRecord::Base
     end
   end
   
-  private
+  def title
+    if not read_attribute(:title).blank?
+      read_attribute(:title)
+    elsif not alternate.blank?
+      URI.parse(alternate).host
+    end
+  end
+  
+private
   def update_sort_title
-    self.sort_title = self.title.nil? ? nil : self.title.downcase
+    self.sort_title = read_attribute(:title) && read_attribute(:title).downcase
   end
   
   def self.parse_id_uri(entry)

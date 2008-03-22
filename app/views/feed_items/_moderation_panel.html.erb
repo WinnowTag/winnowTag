@@ -1,12 +1,21 @@
-<% form_tag "#", :onsubmit => "itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); add_tag('#{dom_id(feed_item)}', $('#{dom_id(feed_item, 'new_tag_field')}').value); this.reset(); return false;" do -%>
-  <%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
-  <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
-  <% javascript_tag do -%>
-    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Autocompleter.Local(
-      '<%= dom_id(feed_item, 'new_tag_field') %>', '<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete', 
-      <%= (current_user.sidebar_tags - current_user.excluded_tags - feed_item.tags).map(&:name).to_json %>, 
-      { partialChars: 1, fullSearch: true, choices: <%= current_user.sidebar_tags.size %>, afterUpdateElement: function(input, choice) { input.form.onsubmit(); } });
-    auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
-  <% end -%>
-  <%= submit_tag "Add Tag" %>
+<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
+<div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
+<% javascript_tag do -%>
+  auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Autocompleter.Local(
+    '<%= dom_id(feed_item, 'new_tag_field') %>', '<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete', 
+    <%= (current_user.sidebar_tags - current_user.excluded_tags - feed_item.tags.from_user).map(&:name).to_json %>, 
+    { partialChars: 1, fullSearch: true, choices: <%= current_user.sidebar_tags.size %>, persistent: ["Create a new tag '#{entry}'..."],
+      afterUpdateElement: function(input, choice) { 
+        itemBrowser.closeItemModerationPanel('<%= dom_id(feed_item) %>'); add_tag('<%= dom_id(feed_item) %>', input.value); input.blur(); input.value = ""; } });
+  auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
+  // TODO: escape key handler (hide dialog)
+  // TODO: blur text field/list/button (hide dialog)
+  // TODO: show list when text field focuses
+
+  // TODO: arrowing when item list is scrolled messes up the item list location
+  // TODO: arrowing off the end of the list should go back to none selected
+  // TODO: scrolling up/off the bottom should not move the item list back up
+  
+  // TODO: need to update this local list when tag controls are clicked so they are always in sync
 <% end -%>
+<%= submit_tag "Add Tag", :onclick => "auto_completers['#{dom_id(feed_item, 'new_tag_field')}_auto_completer'].selectEntry();" %>

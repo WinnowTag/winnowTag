@@ -4,6 +4,7 @@ describe "FeedItemsKeyboardShortcutsTest" do
   fixtures :users, :feed_items, :feeds, :feed_item_contents
 
   before(:each) do
+    ReadItem.delete_all
     login
     open feed_items_path
     wait_for_ajax
@@ -46,27 +47,27 @@ describe "FeedItemsKeyboardShortcutsTest" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    see_element "#feed_item_#{feed_item_1.id}.read"
+    see_element "#feed_item_#{feed_item_1.id}.unread"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    see_element "#feed_item_#{feed_item_2.id}.read"
+    see_element "#feed_item_#{feed_item_2.id}.unread"
 
     key_press "css=body", "n"
     see_element "#feed_item_#{feed_item_1.id}.selected"
+    see_element "#feed_item_#{feed_item_1.id}.unread"
+    dont_see_element "#feed_item_#{feed_item_2.id}.selected"
+    see_element "#feed_item_#{feed_item_2.id}.unread"
+
+    key_press "css=body", "m"
+    see_element "#feed_item_#{feed_item_1.id}.selected"
     see_element "#feed_item_#{feed_item_1.id}.read"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    see_element "#feed_item_#{feed_item_2.id}.read"
+    see_element "#feed_item_#{feed_item_2.id}.unread"
 
     key_press "css=body", "m"
     see_element "#feed_item_#{feed_item_1.id}.selected"
     see_element "#feed_item_#{feed_item_1.id}.unread"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    see_element "#feed_item_#{feed_item_2.id}.read"
-
-    key_press "css=body", "m"
-    see_element "#feed_item_#{feed_item_1.id}.selected"
-    see_element "#feed_item_#{feed_item_1.id}.read"
-    dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    see_element "#feed_item_#{feed_item_2.id}.read"
+    see_element "#feed_item_#{feed_item_2.id}.unread"
   end
   
   def test_open_close_moderation_panel 

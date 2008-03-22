@@ -7,7 +7,7 @@
 
   <% if params[:action] == 'index' -%>
     <% form_tag(feeds_path, :method => :get) do -%>
-  	  <%= search_field_tag "search_term", @search_term, :clear => { :onclick => "window.location = '#{feeds_path}';" } %>
+  	  <%= search_field_tag "search_term", @search_term, :placeholder => "Search Feeds...", :clear => { :onclick => "window.location = '#{feeds_path}';" } %>
     <% end -%>
   <% end -%>
 <% end -%>

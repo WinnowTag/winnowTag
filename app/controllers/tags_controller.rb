@@ -106,12 +106,17 @@ class TagsController < ApplicationController
 
   # Merge, rename, or change the comment on a tag.
   def update
-    if name = params[:tag][:name]
-      if (merge_to = current_user.tags.find_by_name(name)) && (merge_to != @tag)
-        @tag.merge(merge_to)
-        flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
+    if @name = params[:tag][:name]
+      if (merge_to = current_user.tags.find_by_name(@name)) && (merge_to != @tag)
+        if params[:merge] =~ /true/i
+          @tag.merge(merge_to)
+          flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
+        else
+          render :action => "merge.js.rjs"
+          return
+        end
       else
-        if @tag.update_attributes :name => name
+        if @tag.update_attributes :name => @name
           flash[:notice] = "Tag Renamed"
         else
           flash[:error] = @tag.errors.full_messages.join('<br/>')

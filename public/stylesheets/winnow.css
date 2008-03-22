@@ -1,3 +1,4 @@
+
 .clearfix:after {
     content: ".";
     display: block;
@@ -156,6 +157,15 @@ a.close img {
   text-decoration: underline;
 }
 
+.navigation .main li a.help {
+  border: none;
+  background-color: #fff;
+  background-image: url(../images/help.png);
+  background-repeat: no-repeat;
+  background-position: 5px 5px;
+  padding-left: 23px;
+}
+
 .navigation .extra {
   float: right;
   padding: 0;
@@ -173,8 +183,11 @@ a.close img {
   padding: 0 10px;
 }
 
-.navigation .extra li.last a {
-  border: 0;
+.navigation .extra li a.help {
+  background-image: url(../images/help.png);
+  background-repeat: no-repeat;
+  padding-left: 18px;
+  font-weight: bold;
 }
 
 optgroup {
@@ -808,18 +821,25 @@ input.example {
   display: inline;
 }
 
+.applesearch.non_safari {
+  position: relative;
+  overflow: hidden;
+  max-width: 224px;
+}
+
 .applesearch.non_safari .sbox_l {
   background: url('../images/search_field.gif') no-repeat;
-  float: left;
+  position: absolute;
   width: 19px;
   height: 19px;
   margin-top: 1px;
 }
 
 .applesearch.non_safari .sbox_r {
-  background: url('../images/search_field.gif') no-repeat;
+  background: #E2ECFD url('../images/search_field.gif') no-repeat;
   background-position: -19px 0;
-  float: left;
+  position: absolute;
+  right: 0;
   width: 19px;
   height: 19px;
   margin-top: 1px;
@@ -831,13 +851,13 @@ input.example {
 
 .applesearch.non_safari input {
   background: url('../images/srch_bg.gif') repeat-x top left;
-  float: left;
   border: 0;
   height: 19px;
+  width: 186px;
   padding: 3px;
   font: 11px/13px arial;
   color: #000;
-  margin-top: 1px;
+  margin: 1px 19px 0 19px;
 }
 
 .applesearch.non_safari input.placeholder {
@@ -853,68 +873,6 @@ input.example {
   overflow: hidden;
   margin: 0 2px 0 2px;
   background: url(../images/vertical_sprite.png) no-repeat;
-}
-
-.blank_icon {
-  background-position: 0 -720px;
-}
-
-.feed_icon {
-  background-position: 0 -608px;
-}
-
-.new_icon {
-  background-position: 0 -128px;
-}
-
-.save_icon {
-  background-position: 0 -160px;
-}
-
-.save_disabled_icon {
-  background-position: 0 -192px;
-}
-
-.duplicate_icon {
-  background-position: 0 -224px;
-}
-
-.duplicate_disabled_icon {
-  background-position: 0 -256px;
-}
-
-.edit_icon {
-  background-position: 0 -288px;
-}
-
-.edit_disabled_icon {
-  background-position: 0 -320px;
-}
-
-.destroy_icon {
-  background-position: 0 -352px;
-}
-
-.destroy_disabled_icon {
-  background-position: 0 -384px;
-}
-
-.comment_icon {
-  background-position: 0 -576px;
-}
-
-.home_icon {
-  background-position: 0 -700px;
-  margin-right: 5px;
-}
-
-.cross_icon {
-  background: url(../images/cross.png) 0 center no-repeat;
-}
-
-.pencil_icon {
-  background: url(../images/pencil.png) 0 center no-repeat;
-  background-position: 0 0;
 }
 
 a.bookmarklet {
@@ -1013,10 +971,11 @@ a.bookmarklet:hover {
 .folder ul.filter_list li {
   margin: 0;
   padding: 0 0 0 15px;
-  height: 1.4em;
+  height: 1.5em;
   overflow: hidden;
   font-style: normal;
   font-weight: normal;
+  position: relative;
 }
 
 .folder ul.filter_list li.draggable {
@@ -1046,13 +1005,23 @@ a.bookmarklet:hover {
 }
 
 .folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
-  float: right;
+  position: absolute;
   display: none;
   cursor: pointer;
+  padding-bottom: 3px;
+  background-color: #E2ECFD;
 }
 
 .folder ul.filter_list li:hover .remove, .folder ul.filter_list li:hover .edit {
   display: block;
+}
+
+.folder ul.filter_list li .remove {
+  right: 0px;
+}
+
+.folder ul.filter_list li .edit {
+  right: 16px;
 }
 
 .folder ul.filter_list li a.name {
@@ -1061,6 +1030,220 @@ a.bookmarklet:hover {
   cursor: pointer;
 }
 
+.folder ul.filter_list li input {
+  z-index: 1000;
+  width: 100%;
+  height: 1.2em;
+  margin: 0 0 0 3px;
+  font-size: 1em;
+}
+
 .add_section {
   margin-top: 5px;
+}
+
+textarea.content { 
+  width: 100%;
+  height: 40em;
+}
+
+.tag {
+  border: 1px solid #666;
+  background: #eee;
+  padding: .5em;
+  margin: 0 0 .5em 0;
+}
+
+.tag .name_and_comment {
+  float: left;
+  width: 30%;
+  margin: 0 1em 0 0;
+}
+
+.tag .name_and_comment .name {
+  display: block;
+  background-image: url(../images/tag.png);
+  background-repeat: no-repeat;
+  background-position: 0 1px;
+  padding: 0 0 0 18px;
+}
+
+.tag .name_and_comment  .comment {
+  background-image: url(../images/comment.png);
+  background-repeat: no-repeat;
+  background-position: 0 2px;
+  padding: 0 0 0 18px;
+  color: #666;
+}
+
+.tag.public .name_and_comment .name {
+  background-image: url(../images/public.png);
+  background-repeat: no-repeat;
+  background-position: 2px 3px;
+}
+
+.tag.private .name_and_comment .name, .tag.private .name_and_comment .comment {
+  cursor: pointer;
+}
+
+.tag .name_and_comment .inplaceeditor-form {
+  display: block;
+}
+
+.tag .controls_and_training {
+  float: right;
+}
+
+.tag dl.training {
+  clear: left;
+  float: left;
+  margin: 0 0 1em 0;
+  padding: 0;
+}
+
+.tag dl.training dt {
+  font-weight: bold;
+  color: #666;
+  float: left;
+  padding: 0;
+  margin: 0;
+}
+
+.tag dl.training dt:after {
+  content: ":";
+}
+
+.tag dl.training dd {
+  float: left;
+  margin: 0 0 0 .5em;
+  padding: 0;
+  width: 7.5em;
+}
+
+.tag dl.training dd.feed {
+  margin: 0;
+  width: auto;
+}
+
+.tag ul.controls {
+  clear: left;
+  float: left;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag .controls li {
+  float: left;
+  padding: 0;
+  margin: 0 0 0 1.5em;
+}
+
+.tag .controls li a {
+  padding: 0 0 0 20px;
+  background-image: url(../images/vertical_sprite.png);
+  background-repeat: no-repeat;
+}
+
+.tag .controls li input {
+  margin: 0;
+  padding: 0;
+}
+
+.tag .controls li.first {
+  margin-left: 0;
+}
+
+.tag .controls li .slider {
+  margin: .5em 4px 0 0;
+  float: left;
+}
+
+.blank_icon {
+  background-position: 0 -720px;
+}
+
+.feed_icon {
+  background-position: 0 -608px;
+}
+
+.new_icon {
+  background-position: 0 -128px;
+}
+
+.save_icon {
+  background-position: 0 -160px;
+}
+
+.save_disabled_icon {
+  background-position: 0 -192px;
+}
+
+.duplicate_icon {
+  background-position: 0 -224px;
+}
+
+.duplicate_disabled_icon {
+  background-position: 0 -256px;
+}
+
+.edit_icon {
+  background-position: 0 -288px;
+}
+
+.edit_disabled_icon {
+  background-position: 0 -320px;
+}
+
+.destroy_icon {
+  background-position: 0 -352px;
+}
+
+.destroy_disabled_icon {
+  background-position: 0 -384px;
+}
+
+.comment_icon {
+  background-position: 0 -576px;
+}
+
+.home_icon {
+  background-position: 0 -700px;
+  margin-right: 5px;
+}
+
+.cross_icon {
+  background: url(../images/cross.png) 0 center no-repeat  !important;
+}
+
+.show_icon {
+  background: url(../images/show.gif) 0 center no-repeat !important;
+}
+
+.pencil_icon {
+  background: url(../images/pencil.png) 0 center no-repeat  !important;
+  background-position: 0 0;
+}
+
+a.asc {
+  background-image: url(../images/bullet_arrow_up.png);
+  background-repeat: no-repeat;
+  background-position: center right;
+  padding: 0 16px 0 0;
+}
+
+a.desc {
+  background-image: url(../images/bullet_arrow_down.png);
+  background-repeat: no-repeat;
+  background-position: center right;
+  padding: 0 16px 0 0;
+}
+
+.error {
+  font-weight: bold;
+  color: #FF260B;
+  background-color: #FDDFD7;
+  border: 2px solid #FF260B;
+  padding: 3px;
+  text-align: center;
 }

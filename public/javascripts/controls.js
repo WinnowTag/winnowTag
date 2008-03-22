@@ -211,7 +211,8 @@ Autocompleter.Base = Class.create({
   markPrevious: function() {
     if(this.index > 0) this.index--
       else this.index = this.entryCount-1;
-    this.getEntry(this.index).scrollIntoView(true);
+    // NOTE: peerworks change
+    this.getEntry(this.index).scrollIntoView(false);
   },
   
   markNext: function() {
@@ -421,6 +422,8 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
       partialChars: 2,
       ignoreCase: true,
       fullSearch: false,
+      // NOTE: peerworks change
+      persistent: [],
       selector: function(instance) {
         var ret       = []; // Beginning matches
         var partial   = []; // Inside matches
@@ -458,6 +461,19 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
         }
         if (partial.length)
           ret = ret.concat(partial.slice(0, instance.options.choices - ret.length))
+        
+        // NOTE: peerworks change
+        var top = [];
+        if(!entry.blank()) {
+          this.persistent.each(function(choice) {
+            // TODO: Make case insensitive
+            if(!instance.options.array.include(entry)) {
+              top.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
+            }
+          });
+        }
+        ret = [top, ret].flatten();  
+        
         return "<ul>" + ret.join('') + "</ul>";
       }
     }, options || { });

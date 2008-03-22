@@ -12,13 +12,13 @@ describe "Tags" do
   end
   
   def test_cant_change_bias_of_subscribed_tag
-    initial_position = get_element_position_left "css=tr.subscribed_tag div.slider_handle"
-    mouse_down "css=tr.subscribed_tag div.slider_handle"
-    mouse_move_at "css=tr.subscribed_tag div.slider_handle", "30,0"
-    mouse_up "css=tr.subscribed_tag div.slider_handle"
-    assert_equal initial_position, get_element_position_left("css=tr.subscribed_tag div.slider_handle")
+    initial_position = get_element_position_left "css=div.tag.public div.slider_handle"
+    mouse_down "css=div.tag.public div.slider_handle"
+    mouse_move_at "css=div.tag.public div.slider_handle", "30,0"
+    mouse_up "css=div.tag.public div.slider_handle"
+    assert_equal initial_position, get_element_position_left("css=div.tag.public div.slider_handle")
     refresh_and_wait
-    assert_equal initial_position, get_element_position_left("css=tr.subscribed_tag div.slider_handle")
+    assert_equal initial_position, get_element_position_left("css=div.tag.public div.slider_handle")
   end
   
   def test_changing_bias

@@ -1,6 +1,5 @@
 class RemoveTagPublications < ActiveRecord::Migration
   def self.up
-    # TODO: Not sure if tag_publications can be salvaged at this point... the tag_id is likely out of date
     drop_table :tag_publications    
   end
 

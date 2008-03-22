@@ -1,0 +1,5 @@
+page << <<-EOJS
+  if(confirm("This will merge #{@tag.name} with #{@name}. Are you sure you want to do this?")) {
+    #{remote_function(:url => hash_for_tag_path(:id => @tag, "tag[name]" => @name, :merge => true), :method => :put)};
+  }
+EOJS

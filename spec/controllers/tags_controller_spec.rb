@@ -160,13 +160,13 @@ describe TagsController do
     end
   
     def test_tag_renaming_with_same_tag
-      post :update, :id => @tag, :tag => {:name => 'tag' }
+      put :update, :id => @tag, :tag => {:name => 'tag' }
       assert_redirected_to tags_path
       assert_equal([@tag], users(:quentin).tags)
     end
   
     def test_tag_renaming
-      post :update, :id => @tag, :tag => {:name => 'new'}
+      put :update, :id => @tag, :tag => {:name => 'new'}
       assert_redirected_to tags_path
       assert users(:quentin).tags.find_by_name('new')
     end
@@ -177,20 +177,20 @@ describe TagsController do
       Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
       Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
     
-      post :update, :id => old, :tag => {:name => 'new'}
+      put :update, :id => old, :tag => {:name => 'new'}, :merge => "true"
       assert_redirected_to tags_path
       assert_equal("'old' merged with 'new'", flash[:notice])
     end
   
-    def test_tag_merging_with_conflict
+    def test_renaming_when_merge_will_happen
       old = Tag(users(:quentin), 'old')
       Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
       Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
-      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(2))
+      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
     
-      post :update, :id => old, :tag => {:name => 'new'}
-      assert_redirected_to tags_path
-      assert_equal("'old' merged with 'new'", flash[:notice])
+      put :update, :id => old, :tag => {:name => 'new'}
+      response.should be_success
+      response.should render_template("merge.js.rjs")
     end
   
     def test_destroy_by_tag
@@ -205,7 +205,7 @@ describe TagsController do
     
       assert_equal [@tag, to_destroy, to_keep], user.tags
     
-      post :destroy, :id => to_destroy
+      delete :destroy, :id => to_destroy
       assert_response :success
       assert_equal [@tag, to_keep], users(:quentin).tags(true)
       assert_equal([@tagging, keep], user.taggings(true))
@@ -222,14 +222,14 @@ describe TagsController do
       user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(3), :classifier_tagging => true)
       keep = user.taggings.create(:tag => to_keep, :feed_item => FeedItem.find(1), :classifier_tagging => true)
     
-      post :destroy, :id => to_destroy
+      delete :destroy, :id => to_destroy
       assert_response :success
       assert_equal [@tagging, keep], user.taggings(true)
     end
   
     def test_destroy_by_unused_tag
       login_as(:quentin)
-      post :destroy, :id => 999999999
+      delete :destroy, :id => 999999999
       assert_response 404
     end
   

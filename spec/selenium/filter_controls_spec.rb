@@ -181,5 +181,7 @@ describe "filter controls" do
       click "css=#tag_filters_control"      
       get_location.should =~ /\#tag_ids=#{@sql.id}$/
     end
+    
+    it "doesnt scroll the sidebar to the top"
   end
 end
