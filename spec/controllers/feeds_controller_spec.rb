@@ -201,4 +201,21 @@ describe FeedsController do
     
     post :subscribe, :id => @feed.id, :subscribe => 'true'
   end
+  
+  describe "auto_complete_for_feed_title" do
+    before(:each) do
+      @user.stub!(:subscribed_feeds).and_return([])
+    end
+    
+    it "should return all feeds with matching title" do
+      get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
+      assigns[:feeds].size.should == 2
+    end
+    
+    it "should not return duplicate feeds" do
+      Feed.create!(valid_feed_attributes(:title => 'Ruby', :duplicate_id => 1))
+      get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
+      assigns[:feeds].size.should == 2
+    end
+  end
 end
