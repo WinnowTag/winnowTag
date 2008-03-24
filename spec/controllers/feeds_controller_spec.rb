@@ -26,7 +26,7 @@ describe FeedsController do
   
   describe "#show" do
     it "should assign feed on show" do
-      feed = mock('feed_1')
+      feed = mock_model(Feed, valid_feed_attributes)
       Feed.should_receive(:find).with("12").and_return(feed)
       get 'show', :id => "12"
       assigns[:feed].should == feed
@@ -51,6 +51,14 @@ describe FeedsController do
     
       get 'show', :id => 1
       response.should redirect_to(feed_url(:id => '1234'))
+    end
+    
+    it "should redirect if we have a local duplicate" do
+      dup_feed = mock_model(Feed, valid_feed_attributes(:duplicate_id => 1))
+      Feed.should_receive(:find).with(dup_feed.id.to_s).and_return(dup_feed)
+
+      get 'show', :id => dup_feed.id
+      response.should redirect_to(feed_url(:id => '1'))
     end
     
     it "should render 404 if we can't find the feed locally and it can't be found in the collector" do

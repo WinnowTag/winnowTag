@@ -105,7 +105,8 @@ Spec::Runner.configure do |config|
       :alternate => "http://#{unique_id}.example.com",
       :title => "#{unique_id} Example",
       :feed_items_count => 0,
-      :updated_on => Time.now
+      :updated_on => Time.now,
+      :duplicate_id => nil
     }.merge(attributes)
   end
   

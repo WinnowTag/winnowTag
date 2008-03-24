@@ -74,6 +74,10 @@ class FeedsController < ApplicationController
   def show
     begin
       @feed = Feed.find(params[:id])
+      
+      if @feed.duplicate_id
+        redirect_to :id => @feed.duplicate_id
+      end
     rescue ActiveRecord::RecordNotFound
       begin
         @feed = Remote::Feed.find(params[:id])
