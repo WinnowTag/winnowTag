@@ -195,11 +195,18 @@ optgroup {
   border-top: 1px solid #ddd;
 }
 
+#table {
+  border-collapse: collapse;
+}
+
+#table td {
+  padding: 0;
+  vertical-align: top;
+}
+
 #content {
   overflow: auto;
-  overflow-x: hidden;
   padding: 10px;
-  position: relative;
 }
 
 #feed_items_controller #content {
@@ -209,7 +216,6 @@ optgroup {
 #sidebar {
   width: 230px;
   height: auto;
-  float: left;
   padding: 5px;
   background-color: #E1ECFE;
   overflow-y: auto;
@@ -221,7 +227,6 @@ optgroup {
   cursor: pointer;
   width: 20px;
   height: auto;
-  float: left;
   background: #E1ECFE url(../images/right_aarow.png) 8px center no-repeat;
   border-right: 1px solid #999;
 }

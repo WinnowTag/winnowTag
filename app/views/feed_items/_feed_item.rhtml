@@ -1,5 +1,5 @@
 <div class="item<%= current_user.has_read_item?(feed_item) ? " read" : " unread" %>" id="<%= dom_id(feed_item) %>">
-  <div class="closed clearfix">
+  <div class="closed">
     <span id="<%= dom_id(feed_item, 'status') %>" class="status"><%= toggle_read_unread_button %></span>
     <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>', event);">
       <span class="feed_title">
@@ -15,6 +15,6 @@
   <div id="<%= dom_id(feed_item, 'open') %>" class="open">
     <%= link_to_function "Info", "itemBrowser.toggleOpenCloseTagInformationPanel('#{dom_id(feed_item)}');", :class => "info", :style => 'visibility: hidden;' %>
     <div id="<%= dom_id(feed_item, 'tag_information') %>" style="display: none;" url="<%= info_feed_item_path(feed_item) %>" class="tag_information"></div>
-    <div id="<%= dom_id(feed_item, 'body') %>" class="body clearfix" url="<%= description_feed_item_path(feed_item) %>"></div>
+    <div id="<%= dom_id(feed_item, 'body') %>" class="body" url="<%= description_feed_item_path(feed_item) %>"></div>
   </div>
 </div>
