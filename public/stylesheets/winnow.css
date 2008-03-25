@@ -122,6 +122,7 @@ a.close img {
   border-bottom: 1px solid #999;
 }
 .navigation .main {
+  float: left;
   padding: 0;
   margin: 0;
   list-style: none;
