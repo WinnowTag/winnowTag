@@ -885,8 +885,8 @@ ItemBrowser.prototype = {
   },
   
   openItem: function(item) {
+    this.closeAllItems();
     if(this.selectedItem != $(item)) {
-      this.closeItem(this.selectedItem);
       this.selectItem(item);
     }
     $('open_' + $(item).getAttribute('id')).show();
@@ -901,6 +901,10 @@ ItemBrowser.prototype = {
       this.closeItemModerationPanel(item);
       this.closeItemTagInformationPanel(item);
     }
+  },
+  
+  closeAllItems: function() {
+    $$(".item .open").invoke("hide");
   },
   
   toggleOpenCloseItem: function(item, event) {
