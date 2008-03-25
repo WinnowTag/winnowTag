@@ -205,7 +205,7 @@ function toggleSidebar() {
 function update_feed_filters(element, value) {
   element.value = "";
   if(value.match("#add_new_feed")) {
-    alert("Adding a new feed...");
+    new Ajax.Request("/feeds", {parameters: 'feed[url]='+encodeURIComponent(value.getAttribute("url")), method:'post'});
   } else {
     value.removeClassName('selected');
     insert_in_order('feed_filters', 'li', '.name', value, $(value).down(".name").innerHTML);
@@ -217,7 +217,7 @@ function update_feed_filters(element, value) {
 function update_tag_filters(element, value) {
   element.value = "";
   if(value.match("#add_new_tag")) {
-    alert("Adding a new tag...");
+    new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(value.getAttribute("name")), method:'post'});
   } else {
     value.removeClassName('selected');
     insert_in_order('tag_filters', 'li', '.name', value, $(value).down(".name").innerHTML);

@@ -45,8 +45,11 @@ class FeedsController < ApplicationController
                          "however we will update it now and we'll let you know when it is done. " +
                          "The feed has also been added to your feeds folder in the sidebar."
       end
-            
-      redirect_to feed_url(@feed)
+      
+      respond_to do |format|
+        format.html { redirect_to feed_url(@feed) }
+        format.js
+      end
     else
       flash[:error] = @feed.errors.on(:url)
       render :action => 'new'        

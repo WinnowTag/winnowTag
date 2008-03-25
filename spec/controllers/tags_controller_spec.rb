@@ -8,11 +8,69 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TagsController do
-  fixtures :feed_items
+  fixtures :users, :feed_items
+
+  before(:each) do
+    Tag.delete_all
+    login_as(:quentin)
+  end
+  
+  describe "create" do
+    before(:each) do
+      @tag = Tag(users(:quentin), 'tag')
+      @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))
+    end
+
+    it "copies named tag" do
+      users(:quentin).taggings.create(:tag => @tag, :feed_item => FeedItem.find(1))
+      assert_difference("users(:quentin).tags.count") do
+        post :create, :copy => @tag, :name => "tag - copy"
+        assert_response :success
+        assert_equal("'tag' successfully copied to 'tag - copy'", flash[:notice])
+      end
+      assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])
+      assert_equal(2, users(:quentin).taggings.size)
+    end
+  
+    it "prompts the user to overwrite when copying to an existing tag" do
+      tag2 = Tag(users(:quentin), 'tag2')
+    
+      post :create, :copy => @tag, :name => "tag2"
+      assert_response :success
+    
+      assert_match /confirm/, response.body
+    end
+  
+    it "overwrites an existing tag when overwrite is set to true" do
+      tag2 = Tag(users(:quentin), 'tag2')
+    
+      feed_item_1 = FeedItem.find(1)
+      feed_item_2 = FeedItem.find(2)
+    
+      users(:quentin).taggings.create(:tag => @tag, :feed_item => feed_item_1)
+      users(:quentin).taggings.create(:tag => tag2, :feed_item => feed_item_2)
+
+      assert_equal [feed_item_1], @tag.taggings.map(&:feed_item)
+      assert_equal [feed_item_2], tag2.taggings.map(&:feed_item)
+
+      assert_difference("users(:quentin).tags.count", 0) do
+        post :create, :copy => @tag, :name => "tag2", :overwrite => "true"
+        assert_response :success
+        assert_equal("'tag' successfully copied to 'tag2'", flash[:notice])
+      end
+
+      assert_equal [feed_item_1], tag2.taggings(:reload).map(&:feed_item)
+    end
+    
+    it "can create a new tag" do
+      assert_difference "Tag.count" do
+        post :create, :name => "new tag"
+      end
+    end
+  end
   
   describe "specs" do
     before(:each) do
-      login_as(1)
       mock_user_for_controller
       @tag = mock_model(Tag)    
       @tags.stub!(:find_by_id).and_return(@tag)
@@ -58,63 +116,18 @@ describe TagsController do
   end
   
   describe "from test/unit" do
-    fixtures :users
-
     before(:each) do
-      Tag.delete_all
-      login_as(:quentin)
       @tag = Tag(users(:quentin), 'tag')
       @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))
     end
 
-    # def test_routing
+    # it "routing" do
     #   assert_routing('/tags/atag', :controller => 'tags', :action => 'show', :id => 'atag')
     #   assert_routing('/tags/my+tag', :controller => 'tags', :action => 'show', :id => 'my tag')
     #   assert_routing('/tags/edit/my+tag.', :controller => 'tags', :action => 'edit', :id => 'my tag.')
     # end
   
-    def test_create_should_copy_named_tag
-      users(:quentin).taggings.create(:tag => @tag, :feed_item => FeedItem.find(1))
-      assert_difference("users(:quentin).tags.count") do
-        post :create, :copy => @tag, :name => "tag - copy"
-        assert_response :success
-        assert_equal("'tag' successfully copied to 'tag - copy'", flash[:notice])
-      end
-      assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])
-      assert_equal(2, users(:quentin).taggings.size)
-    end
-  
-    def test_copying_tag_to_an_already_existing_name_prompts_the_user_to_overwrite
-      tag2 = Tag(users(:quentin), 'tag2')
-    
-      post :create, :copy => @tag, :name => "tag2"
-      assert_response :success
-    
-      assert_match /confirm/, response.body
-    end
-  
-    def test_copying_tag_to_an_already_existing_name_with_overwrite_flag
-      tag2 = Tag(users(:quentin), 'tag2')
-    
-      feed_item_1 = FeedItem.find(1)
-      feed_item_2 = FeedItem.find(2)
-    
-      users(:quentin).taggings.create(:tag => @tag, :feed_item => feed_item_1)
-      users(:quentin).taggings.create(:tag => tag2, :feed_item => feed_item_2)
-
-      assert_equal [feed_item_1], @tag.taggings.map(&:feed_item)
-      assert_equal [feed_item_2], tag2.taggings.map(&:feed_item)
-
-      assert_difference("users(:quentin).tags.count", 0) do
-        post :create, :copy => @tag, :name => "tag2", :overwrite => "true"
-        assert_response :success
-        assert_equal("'tag' successfully copied to 'tag2'", flash[:notice])
-      end
-
-      assert_equal [feed_item_1], tag2.taggings(:reload).map(&:feed_item)
-    end
-  
-    def test_index
+    it "index" do
       get :index
       assert assigns(:tags)
       assert_equal(@tag, assigns(:tags).first)
@@ -127,31 +140,31 @@ describe TagsController do
     end
   
     # TODO - Tags with periods on the end break routing until Rails 1.2.4?
-    def test_index_with_funny_name_tag
+    it "index_with_funny_name_tag" do
       Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag.'), :feed_item => FeedItem.find(1))
       get :index
       assert_response :success
     end
   
-    def test_edit_with_funny_name_tag
+    it "edit_with_funny_name_tag" do
       tag_dot = Tag(users(:quentin), 'tag.')
       Tagging.create(:user => users(:quentin), :tag => tag_dot, :feed_item => FeedItem.find(1))
       get :edit, :id => tag_dot
       assert_response :success
     end
   
-    def test_edit
+    it "edit" do
       get :edit, :id => @tag
       assert assigns(:tag)
       assert_template 'edit'
     end
   
-    def test_edit_with_missing_tag
+    it "edit_with_missing_tag" do
       get :edit, :id => 'missing'
       assert_response 404
     end
   
-    def test_edit_with_js
+    it "edit_with_js" do
       get :edit, :id => @tag, :format => :js
       assert assigns(:tag)
       # TODO: Move to view test
@@ -159,19 +172,19 @@ describe TagsController do
       # assert_select "form[action='#{tag_path(@tag)}']", 1, @response.body
     end
   
-    def test_tag_renaming_with_same_tag
+    it "tag_renaming_with_same_tag" do
       put :update, :id => @tag, :tag => {:name => 'tag' }
       assert_redirected_to tags_path
       assert_equal([@tag], users(:quentin).tags)
     end
   
-    def test_tag_renaming
+    it "tag_renaming" do
       put :update, :id => @tag, :tag => {:name => 'new'}
       assert_redirected_to tags_path
       assert users(:quentin).tags.find_by_name('new')
     end
   
-    def test_tag_merging
+    it "tag_merging" do
       old = Tag(users(:quentin), 'old')
       Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
       Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
@@ -182,7 +195,7 @@ describe TagsController do
       assert_equal("'old' merged with 'new'", flash[:notice])
     end
   
-    def test_renaming_when_merge_will_happen
+    it "renaming_when_merge_will_happen" do
       old = Tag(users(:quentin), 'old')
       Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
       Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
@@ -193,7 +206,7 @@ describe TagsController do
       response.should render_template("merge.js.rjs")
     end
   
-    def test_destroy_by_tag
+    it "destroy_by_tag" do
       login_as(:quentin)
       user = users(:quentin)
       to_destroy = Tag(user, 'to_destroy')
@@ -211,7 +224,7 @@ describe TagsController do
       assert_equal([@tagging, keep], user.taggings(true))
     end
   
-    def test_destroy_by_tag_destroys_classifier_taggings
+    it "destroy_by_tag_destroys_classifier_taggings" do
       login_as(:quentin)
       user = users(:quentin)
       to_destroy = Tag(user, 'to_destroy')
@@ -227,13 +240,13 @@ describe TagsController do
       assert_equal [@tagging, keep], user.taggings(true)
     end
   
-    def test_destroy_by_unused_tag
+    it "destroy_by_unused_tag" do
       login_as(:quentin)
       delete :destroy, :id => 999999999
       assert_response 404
     end
   
-    def test_atom_feed_contains_items_in_tag
+    it "atom_feed_contains_items_in_tag" do
       user = users(:quentin)
       tag = Tag(user, 'tag')
       tag.update_attribute :public, true
@@ -248,12 +261,12 @@ describe TagsController do
       # assert_select("entry", 2, response.body)
     end
 
-    def test_atom_feed_with_missing_tag_returns_404
+    it "atom_feed_with_missing_tag_returns_404" do
       get :show, :user_id => users(:quentin).login, :id => "missing", :format => "atom"
       assert_response(404)
     end
 
-    def test_anyone_can_access_feeds
+    it "anyone_can_access_feeds" do
       login_as(nil)
 
       user = users(:quentin)
@@ -264,7 +277,7 @@ describe TagsController do
       assert_response :success
     end
   
-    def test_subscribe_to_public_tag    
+    it "subscribe_to_public_tag    " do
       other_user = users(:aaron)
 
       tag = Tag(other_user, 'hockey')
@@ -278,7 +291,7 @@ describe TagsController do
     end
   
     # Test how unsubscribing as implemented on the "Public Tags" page
-    def test_unsubscribe_from_public_tag_via_subscribe_action
+    it "unsubscribe_from_public_tag_via_subscribe_action" do
       other_user = users(:aaron)
 
       tag = Tag(other_user, 'hockey')
@@ -292,7 +305,7 @@ describe TagsController do
     end
 
     # Test unsubscribing as implemented on the "My Tags" page
-    def test_unsubscribe_from_public_tag_via_unsubscribe_action
+    it "unsubscribe_from_public_tag_via_unsubscribe_action" do
       referer("/tags")
       other_user = users(:aaron)
 
@@ -313,7 +326,7 @@ describe TagsController do
     #
     #     This test is currently failing, Craig should probably be the one to fix it.
     #
-    def test_subscribe_to_other_users_tag_with_same_name
+    it "subscribe_to_other_users_tag_with_same_name" do
       other_user = users(:aaron)
       tag = Tag(other_user, 'tag')
       tag.update_attribute :public, true
@@ -327,7 +340,7 @@ describe TagsController do
 
     # SG: This ensures that only public tags can be subscribed to.
     # 
-    def test_cant_subscribe_to_other_users_non_public_tags
+    it "cant_subscribe_to_other_users_non_public_tags" do
       other_user = users(:aaron)
       tag = Tag(other_user, 'hockey')
       tag.update_attribute :public, false

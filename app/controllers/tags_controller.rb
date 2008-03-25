@@ -92,6 +92,9 @@ class TagsController < ApplicationController
           page.redirect_to tags_path
         end
       end
+    elsif params[:name]
+      @tag = Tag.create! :name => params[:name], :user => current_user
+      respond_to :js
     else
       render :nothing => true
     end

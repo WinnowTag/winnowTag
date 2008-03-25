@@ -202,6 +202,18 @@ describe FeedsController do
     post :subscribe, :id => @feed.id, :subscribe => 'true'
   end
   
+  describe "create" do
+    it "renders the rjs template on a javascript call" do
+      feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now, :collect => nil)
+      feed.errors.stub!(:empty?).and_return(true)
+      Remote::Feed.stub!(:find_or_create_by_url).with('http://example.com').and_return(feed)
+      FeedSubscription.stub!(:find_or_create_by_feed_id_and_user_id)
+    
+      post :create, :feed => {:url => 'http://example.com'}, :format => 'js'
+      response.should render_template("create")
+    end
+  end
+  
   describe "auto_complete_for_feed_title" do
     before(:each) do
       @user.stub!(:subscribed_feeds).and_return([])

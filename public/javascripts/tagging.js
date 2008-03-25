@@ -38,7 +38,7 @@ function validate_tag_edit(original_name, new_name) {
 function add_tag(taggable_id, tag_name, allow_remove) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
-  var match = tag_name.match(/^Create a new tag '(.+)'...$/);
+  var match = tag_name.match(/^Create Tag: '(.+)'$/);
   if( match ) { tag_name = match[1]; }
 
   var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);

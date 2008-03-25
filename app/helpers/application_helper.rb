@@ -136,7 +136,7 @@ module ApplicationHelper
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, "Create a new feed '#{options[:auto_complete]}'...", :id => "add_new_feed") if options[:add]
+    content << content_tag(:li, "Create Feed: '#{options[:auto_complete]}'", :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -160,7 +160,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content << content_tag(:li, "Create a new tag '#{options[:auto_complete]}'...", :id => "add_new_tag") if options[:add]
+    content << content_tag(:li, "Create Tag: '#{options[:auto_complete]}'", :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
