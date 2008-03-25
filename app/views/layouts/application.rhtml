@@ -25,27 +25,17 @@
 
 	<%= show_flash %>
 	
-	<table id="table">
-	  <tr>
-	    <% if sidebar_content = yield(:sidebar) -%>
-      <td>
-    		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
-      </td>
-      <td>
-        <div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
-      </td>
-      <% end -%>
-      <td>
-        <% if @skip_content_container -%>
-      	  <%= yield %>
-      	<% else -%>
-        	<div id="content">
-        	  <%= yield %>
-        	</div>
-      	<% end -%>
-	    </td>
-	  </tr>
-	</table>
+  <% if sidebar_content = yield(:sidebar) -%>
+		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
+    <div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
+  <% end -%>
+  <% if @skip_content_container -%>
+    <%= yield %>
+  <% else -%>
+    <div id="content">
+      <%= yield %>
+    </div>
+  <% end -%>
 
 	<% if footer_content = yield(:footer) -%>
 		<div id="footer"><%= footer_content %></div>

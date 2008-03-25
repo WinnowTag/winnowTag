@@ -196,15 +196,6 @@ optgroup {
   border-top: 1px solid #ddd;
 }
 
-#table {
-  border-collapse: collapse;
-}
-
-#table td {
-  padding: 0;
-  vertical-align: top;
-}
-
 #content {
   overflow: auto;
   padding: 10px;
@@ -215,6 +206,7 @@ optgroup {
 }
 
 #sidebar {
+  float: left;
   width: 230px;
   height: auto;
   padding: 5px;
@@ -225,6 +217,7 @@ optgroup {
 }
 
 #sidebar_control {
+  float: left;
   cursor: pointer;
   width: 20px;
   height: auto;
