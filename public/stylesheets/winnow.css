@@ -540,12 +540,16 @@ a.editor_cancel {
 }
 
 .item.selected .closed {
-  border: none;
+  border-width: 0;
 }
 
 .item.read .closed {
   border-color: #e8eef7;
   background-color: #e8eef7;
+}
+
+.item.open.selected .closed {
+  border-width: 0 0 1px 0;
 }
 
 .item .closed .status a {
@@ -613,10 +617,19 @@ a.editor_cancel {
 
 .item .open {
   position: relative;
+  display: none;
+}
+
+.item.open .open {
+  display: block;
 }
 
 .item .open .body {
   padding: 5px 5px 5px 25px;
+}
+
+.item.selected .open .body {
+  padding: 5px 3px 4px 23px;
 }
 
 .item .open .body h3 {

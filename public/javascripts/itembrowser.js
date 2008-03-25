@@ -889,7 +889,7 @@ ItemBrowser.prototype = {
     if(this.selectedItem != $(item)) {
       this.selectItem(item);
     }
-    $('open_' + $(item).getAttribute('id')).show();
+    $(item).addClassName("open");
     this.markItemRead(item);
     this.scrollToItem(item);
     this.loadItemDescription(item);
@@ -897,19 +897,19 @@ ItemBrowser.prototype = {
   
   closeItem: function(item) {
     if(item) {
-      $('open_' + $(item).getAttribute('id')).hide();
+      $(item).removeClassName("open");
       this.closeItemModerationPanel(item);
       this.closeItemTagInformationPanel(item);
     }
   },
   
   closeAllItems: function() {
-    $$(".item .open").invoke("hide");
+    $$(".item.open").invoke("removeClassName", "open");
   },
   
   toggleOpenCloseItem: function(item, event) {
     if(event && (event.element().match(".stop") || event.element().up('.stop'))) { return false; }
-    if($('open_' + $(item).getAttribute('id')).visible() && $('body_' + $(item).getAttribute('id')).visible()) {
+    if($(item).match(".open")) {
       this.closeItem(item);
     } else {
       this.openItem(item);
