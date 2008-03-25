@@ -1,5 +1,5 @@
 <div id="<%= dom_id(tag) %>" class="tag private clearfix">
-  <div class="name_and_comment clearfix">
+  <div class="left clearfix">
     <div class="name">
       <% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
       <%= in_place_completing_editor_field :tag, :name, { :id => dom_id(tag, 'editor') },
@@ -16,14 +16,14 @@
     </div>
   </div>
   
-  <div class="controls_and_training clearfix">
+  <div class="right clearfix">
     <dl class="training">
       <dt>Last Trained</dt>
       <dd><%= format_date(tag.last_used_by) %></dd>
       <dt>Training</dt>
       <dd><%= link_to "+#{tag.positive_count} / -#{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&manual_taggings=true"), :title => "Inspect #{tag.name}" %></dd>
       <dt>Automatic</dt>
-      <dd><%= tag.classifier_count %></dd>
+      <dd class="last"><%= tag.classifier_count %></dd>
     </dl>
     
     <ul class="controls">

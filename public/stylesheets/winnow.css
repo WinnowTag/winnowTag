@@ -1059,20 +1059,23 @@ textarea.content {
   height: 40em;
 }
 
-.tag {
+.tag, .feed {
   border: 1px solid #666;
   background: #eee;
   padding: .5em;
   margin: 0 0 .5em 0;
 }
 
-.tag .name_and_comment {
+.tag .left, .feed .left {
   float: left;
-  width: 30%;
   margin: 0 1em 0 0;
 }
 
-.tag .name_and_comment .name {
+.tag .left {
+  width: 30%;
+}
+
+.tag .left .name {
   display: block;
   background-image: url(../images/tag.png);
   background-repeat: no-repeat;
@@ -1080,7 +1083,7 @@ textarea.content {
   padding: 0 0 0 18px;
 }
 
-.tag .name_and_comment  .comment {
+.tag .left .comment {
   background-image: url(../images/comment.png);
   background-repeat: no-repeat;
   background-position: 0 2px;
@@ -1088,32 +1091,36 @@ textarea.content {
   color: #666;
 }
 
-.tag.public .name_and_comment .name {
+.tag.public .left .name {
   background-image: url(../images/public.png);
   background-repeat: no-repeat;
   background-position: 2px 3px;
 }
 
-.tag.private .name_and_comment .name, .tag.private .name_and_comment .comment {
+.tag.private .left .name, .tag.private .left .comment {
   cursor: pointer;
 }
 
-.tag .name_and_comment .inplaceeditor-form {
+.tag .left .inplaceeditor-form {
   display: block;
 }
 
-.tag .controls_and_training {
+.tag .right, .feed .right {
   float: right;
 }
 
-.tag dl.training {
+.tag dl.training, .feed dl.training {
   clear: left;
   float: left;
   margin: 0 0 1em 0;
   padding: 0;
 }
 
-.tag dl.training dt {
+.tag.public dl.training {
+  margin-left: 5.5em;
+}
+
+.tag dl.training dt, .feed dl.training dt {
   font-weight: bold;
   color: #666;
   float: left;
@@ -1121,23 +1128,22 @@ textarea.content {
   margin: 0;
 }
 
-.tag dl.training dt:after {
+.tag dl.training dt:after, .feed dl.training dt:after {
   content: ":";
 }
 
-.tag dl.training dd {
+.tag dl.training dd, .feed dl.training dd {
   float: left;
   margin: 0 0 0 .5em;
   padding: 0;
   width: 7.5em;
 }
 
-.tag dl.training dd.feed {
-  margin: 0;
-  width: auto;
+.tag dl.training dd.last, .feed dl.training dd.last {
+  width: 3em
 }
 
-.tag ul.controls {
+.tag .controls, .feed .controls {
   clear: left;
   float: left;
   margin: 0;
@@ -1145,24 +1151,24 @@ textarea.content {
   list-style: none;
 }
 
-.tag .controls li {
+.tag .controls li, .feed .controls li {
   float: left;
   padding: 0;
   margin: 0 0 0 1.5em;
 }
 
-.tag .controls li a {
+.tag .controls li a, .feed .controls li a {
   padding: 0 0 0 20px;
   background-image: url(../images/vertical_sprite.png);
   background-repeat: no-repeat;
 }
 
-.tag .controls li input {
+.tag .controls li input, .feed .controls li input {
   margin: 0;
   padding: 0;
 }
 
-.tag .controls li.first {
+.tag .controls li.first, .feed .controls li.first {
   margin-left: 0;
 }
 

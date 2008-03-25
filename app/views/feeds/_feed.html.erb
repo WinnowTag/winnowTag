@@ -1,0 +1,21 @@
+<div id="<%= dom_id(feed) %>" class="feed clearfix">
+  <div class="left clearfix">
+    <div class="name">
+      <%= feed_link(feed) %>
+    </div>
+  </div>
+  
+  <div class="right clearfix">
+    <dl class="training">
+      <dt>Last Updated</dt>
+      <dd><%= format_date(feed.updated_on) %></dd>
+      <dt># of Items</dt>
+      <dd class="last"><%= feed.feed_items_count %></dd>
+    </dl>
+    
+    <ul class="controls">
+      <li class="first"><%= globally_exclude_check_box(feed) %> Globally Exclude</li>
+      <li><%= link_to "Show", feed_items_path(:anchor => "feed_ids=#{feed.id}"), :class => 'show_icon', :title => "Show Only Items From #{feed.title}" %></li>
+    </ul>
+  </div>
+</div>
