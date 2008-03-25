@@ -5,19 +5,16 @@
 # Please contact info@peerworks.org for further information.
 class AboutController < ApplicationController
   def index
-    # @about = `svn info #{__FILE__}`
-    @about = "TODO: Implement from git"
+    # Capistrano now stores the revision in RAILS_ROOT/REVISION
+    #
+    cap_rev_file = File.join(RAILS_ROOT, 'REVISION')
     
-    # if @about =~ /Revision: ([\d]+)/
-    #   @revision = $1
-    # end
-    @revision = "TODO: Implement from git"
-    
-    # if @about =~ /http:\/\/svn.winnow.peerworks.org\/(.+)\/app\/controllers\/about_controller.rb/
-    #   @repos = $1
-    # end
-    @repos = "TODO: Implement from git"
-    
+    if File.exists?(cap_rev_file)
+      @revision = File.read(cap_rev_file)
+    else
+      @revision = `git rev-parse --short HEAD`.chomp
+    end
+        
     begin
       @classifier_info = Remote::Classifier.get_info
     rescue
