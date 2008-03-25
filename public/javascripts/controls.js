@@ -463,16 +463,16 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
           ret = ret.concat(partial.slice(0, instance.options.choices - ret.length))
         
         // NOTE: peerworks change
-        var top = [];
+        var bot = [];
         if(!entry.blank()) {
           this.persistent.each(function(choice) {
             // TODO: Make case insensitive
             if(!instance.options.array.include(entry)) {
-              top.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
+              bot.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
             }
           });
         }
-        ret = [top, ret].flatten();  
+        ret = [ret, bot].flatten();  
         
         return "<ul>" + ret.join('') + "</ul>";
       }
