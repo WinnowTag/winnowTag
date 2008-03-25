@@ -1,4 +1,4 @@
-<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field') %>
+<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field'), :onkeydown => "if(event.keyCode == Event.KEY_ESC) { $('#{dom_id(feed_item, 'new_tag_form')}').hide(); }" %>
 <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
 <% javascript_tag do -%>
   auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Autocompleter.Local(
@@ -8,7 +8,6 @@
       afterUpdateElement: function(input, choice) { 
         itemBrowser.closeItemModerationPanel('<%= dom_id(feed_item) %>'); add_tag('<%= dom_id(feed_item) %>', input.value); input.blur(); input.value = ""; } });
   auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
-  // TODO: escape key handler (hide dialog)
   // TODO: blur text field/list/button (hide dialog)
   // TODO: show list when text field focuses
 
