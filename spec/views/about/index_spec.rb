@@ -15,12 +15,12 @@ describe '/about' do
   
   it "should display svn version" do
     @classifier_info.should_receive(:version).once.and_return("1.0")
-    @classifier_info.should_receive(:svnversion).once.and_return("2808")
+    @classifier_info.should_receive(:git_revision).once.and_return("2808")
     
     render "/about/index"
     
     response.should have_tag('span.classifier_version', '1.0')
-    response.should have_tag('span.classifier_svnversion', '2808')
+    response.should have_tag('span.classifier_gitrevision', '2808')
   end
   
   it "should display classifier error when classifier_info is nil" do
