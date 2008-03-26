@@ -209,7 +209,8 @@ Object.extend(Object.extend(Effect.ScrollToInDiv.prototype, Effect.Base.prototyp
   initialize: function(container, element) {
     this.container = $(container);
     this.element = $(element);
-    this.start(arguments[2] || {});
+    this.bottom_margin = (arguments[2] && arguments[2].bottom_margin) || 0;
+    this.start(arguments[2] || {});      
   },
   setup: function() {
     var containerOffset = Position.cumulativeOffset(this.container);
@@ -230,7 +231,7 @@ Object.extend(Object.extend(Effect.ScrollToInDiv.prototype, Effect.Base.prototyp
 
      // If the item is below the bottom of the container, scroll to the bottom of the item
      } else if(bottom_of_element > bottom_of_container) {
-       this.delta = bottom_of_element - bottom_of_container;
+       this.delta = bottom_of_element - bottom_of_container + this.bottom_margin;
 
      } else {
        this.delta = 0;

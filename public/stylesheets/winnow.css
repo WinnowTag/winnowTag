@@ -681,8 +681,8 @@ a.editor_cancel {
 
 .item .new_tag_form {
   position: absolute;
-  right: 1em;
-  top: 3em;
+  right: -2px;
+  bottom: -1.65em;
   z-index: 1000;
   border: 2px solid #c3d9ff;
   background-color: #e1ecfe;

@@ -212,13 +212,22 @@ Autocompleter.Base = Class.create({
     if(this.index > 0) this.index--
       else this.index = this.entryCount-1;
     // NOTE: peerworks change
-    this.getEntry(this.index).scrollIntoView(false);
+    if(this.getEntry(this.index).up("#feed_items")) {
+      new Effect.ScrollToInDiv(itemBrowser.feed_items_scrollable, this.getEntry(this.index), {duration: 0.3, bottom_margin: 7});
+    } else {
+      this.getEntry(this.index).scrollIntoView(false);
+    }
   },
   
   markNext: function() {
     if(this.index < this.entryCount-1) this.index++
       else this.index = 0;
-    this.getEntry(this.index).scrollIntoView(false);
+    // NOTE: peerworks change
+    if(this.getEntry(this.index).up("#feed_items")) {
+      new Effect.ScrollToInDiv(itemBrowser.feed_items_scrollable, this.getEntry(this.index), {duration: 0.3, bottom_margin: 7});
+    } else {
+      this.getEntry(this.index).scrollIntoView(false);
+    }
   },
   
   getEntry: function(index) {

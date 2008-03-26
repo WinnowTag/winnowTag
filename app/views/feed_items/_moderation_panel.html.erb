@@ -8,11 +8,7 @@
     { partialChars: 1, fullSearch: true, choices: <%= current_user.sidebar_tags.size %>, persistent: ["Create Tag: '#{entry}'"],
       afterUpdateElement: function(input, choice) { 
         itemBrowser.closeItemModerationPanel('<%= dom_id(feed_item) %>'); add_tag('<%= dom_id(feed_item) %>', input.value); input.blur(); input.value = ""; } });
-  auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
-
-  // TODO: arrowing when item list is scrolled messes up the item list location
-  // TODO: scrolling up/off the bottom should not move the item list back up
-  
+  itemBrowser.openItemModerationPanel('<%= dom_id(feed_item) %>');
   // TODO: need to update this local list when tag controls are clicked so they are always in sync
 <% end -%>
 <%= submit_tag "Add Tag", :onclick => "auto_completers['#{dom_id(feed_item, 'new_tag_field')}_auto_completer'].selectEntry();" %>

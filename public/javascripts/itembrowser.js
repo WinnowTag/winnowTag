@@ -953,11 +953,13 @@ ItemBrowser.prototype = {
     if(field) { 
       field.focus();
       window.auto_completers['new_tag_field_' + $(item).getAttribute('id') + '_auto_completer'].activate();
+      new Effect.ScrollToInDiv(this.feed_items_scrollable, "new_tag_field_" + $(item).getAttribute('id') + "_auto_complete", {duration: 0.3, bottom_margin: 5});
     }
   },
   
   closeItemModerationPanel: function(item) {
-    $('new_tag_field_' + $(item).getAttribute('id')).blur();
+    var input = $('new_tag_field_' + $(item).getAttribute('id'));
+    if(input) { input.blur(); }
     $('new_tag_form_' + $(item).getAttribute('id')).hide();
   },
   
