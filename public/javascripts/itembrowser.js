@@ -709,24 +709,26 @@ ItemBrowser.prototype = {
     }
   },
   
-  toggleSetFilters: function(parameters) {
-    this.expandFolderParameters(parameters);
-    
-    var selected = true;
-    
-    if(parameters.feed_ids) {
-      parameters.feed_ids.split(",").each(function(feed_id) {
-        selected = selected && $("feed_" + feed_id).hasClassName("selected");
-      });
-    }
-    if(parameters.tag_ids) {
-      parameters.tag_ids.split(",").each(function(tag_id) {
-        selected = selected && $("tag_" + tag_id).hasClassName("selected");
-      });
-    }
-    
-    if(selected) {
-      this.removeFilters(parameters);
+  toggleSetFilters: function(event, parameters) {
+    if(event.metaKey) {
+      this.expandFolderParameters(parameters);
+      var selected = true;
+      if(parameters.feed_ids) {
+        parameters.feed_ids.split(",").each(function(feed_id) {
+          selected = selected && $("feed_" + feed_id).hasClassName("selected");
+        });
+      }
+      if(parameters.tag_ids) {
+        parameters.tag_ids.split(",").each(function(tag_id) {
+          selected = selected && $("tag_" + tag_id).hasClassName("selected");
+        });
+      }
+      
+      if(selected) {
+        this.removeFilters(parameters);
+      } else {
+        this.addFilters(parameters);
+      }
     } else {
       this.setFilters(parameters);
     }
@@ -769,12 +771,24 @@ ItemBrowser.prototype = {
         }
       }
     }
-    
+
     // Update location.hash
-    var new_parameters = $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters));
+    var old_parameters = location.hash.gsub('#', '').toQueryParams();
+    if(old_parameters.tag_ids && parameters.tag_ids) {
+      var tag_ids = old_parameters.tag_ids.split(",");
+      tag_ids.push(parameters.tag_ids.split(","));
+      parameters.tag_ids = tag_ids.flatten().uniq().join(",");
+    }
+    if(old_parameters.feed_ids && parameters.feed_ids) {
+      var feed_ids = old_parameters.feed_ids.split(",");
+      feed_ids.push(parameters.feed_ids.split(","));
+      parameters.feed_ids = feed_ids.flatten().uniq().join(",");
+    }
+    
+    var new_parameters = $H(old_parameters).merge($H(parameters));
     new_parameters.each(function(key_value) {
-          var key = key_value[0];
-          var value = key_value[1];
+      var key = key_value[0];
+      var value = key_value[1];
       if(value == null || Object.isUndefined(value) || (typeof(value) == 'string' && value.blank())) {
         new_parameters.unset(key);
       }
