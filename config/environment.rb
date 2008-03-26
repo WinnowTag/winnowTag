@@ -18,8 +18,11 @@ RAILS_GEM_VERSION = '2.0.1' unless defined? RAILS_GEM_VERSION
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
-# Need to require this first so i can setup at_exit handlers to run AFTER test/unit at_exit handler which runs tests
+# Need to require this first so I can setup at_exit handlers to run AFTER test/unit at_exit handler which runs tests
 require File.join(RAILS_ROOT, %w[vendor plugins lwt_testing lib selenium at_exit])
+
+# Need to require this first so 3.0.4 does not get required by action pack
+gem 'RedCloth', '3.0.3'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
