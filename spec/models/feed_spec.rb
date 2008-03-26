@@ -278,11 +278,18 @@ describe Feed do
       feed = Feed.new :title => "Some Title"
       feed.title.should == "Some Title"
     end
-    it "should return the hostname if no title is present" do
+    
+    it "should return the hostname from alternate if no title is present" do
       feed = Feed.new :alternate => "http://example.com/blog"
       feed.title.should == "example.com"
     end
-    it "should return nil of title and alternate are both blank" do
+    
+    it "should return the hostname from via if no title or alternate is present" do
+      feed = Feed.new :via => "http://example.com/blog"
+      feed.title.should == "example.com"
+    end
+    
+    it "should return nil if title, alternate, and via are all blank" do
       feed = Feed.new 
       feed.title.should be_nil
     end

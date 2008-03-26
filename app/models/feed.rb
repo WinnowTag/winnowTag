@@ -119,6 +119,8 @@ class Feed < ActiveRecord::Base
       read_attribute(:title)
     elsif not alternate.blank?
       URI.parse(alternate).host
+    elsif not via.blank?
+      URI.parse(via).host
     end
   end
   
