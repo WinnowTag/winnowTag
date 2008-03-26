@@ -225,7 +225,7 @@ describe ApplicationHelper do
       feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
         with_tag "div.show_feed_control" do
           with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({feed_ids: '#{feed.id}'})")}.*/
-          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters(event, {feed_ids: '#{feed.id}'})")}.*/
+          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)")}.*/
         end
       end
     end
@@ -271,7 +271,7 @@ describe ApplicationHelper do
       tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}") do
         with_tag "div.show_tag_control" do
           with_tag "a.remove[onclick=?]", /.*#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
-          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters(event, {tag_ids: '#{tag.id}'})")}.*/
+          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)")}.*/
         end
       end
     end

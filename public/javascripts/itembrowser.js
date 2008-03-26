@@ -709,8 +709,8 @@ ItemBrowser.prototype = {
     }
   },
   
-  toggleSetFilters: function(event, parameters) {
-    if(event.metaKey) {
+  toggleSetFilters: function(parameters, event) {
+    if(event && event.metaKey) {
       this.expandFolderParameters(parameters);
       var selected = true;
       if(parameters.feed_ids) {
@@ -760,18 +760,6 @@ ItemBrowser.prototype = {
   addFilters: function(parameters) {
     this.expandFolderParameters(parameters);
 
-    if (parameters.text_filter) {
-      if (parameters.text_filter.length > 0 && parameters.text_filter.length < 4) {
-        new ErrorMessage("Search requires a word with at least 4 characters.");
-        return;
-      } else {
-        if ($('error')) {
-          $('error').hide(); 
-          resizeContent();
-        }
-      }
-    }
-
     // Update location.hash
     var old_parameters = location.hash.gsub('#', '').toQueryParams();
     if(old_parameters.tag_ids && parameters.tag_ids) {
@@ -795,8 +783,17 @@ ItemBrowser.prototype = {
     });
     location.hash = "#" + new_parameters.toQueryString();
     
-    // Update styles on selected items
-    var params = new_parameters.toQueryString().toQueryParams();
+    this.styleFilters();
+    
+    // Store filters for page reload
+    Cookie.set("filters", new_parameters.toQueryString(), 365);
+    
+    // Reload the item browser
+    this.reload();
+  },
+  
+  styleFilters: function() {
+    var params = location.hash.gsub('#', '').toQueryParams();
     if($H(params).keys().size() == 0) {
       $("show_all").addClassName("selected");
     } else {
@@ -859,12 +856,6 @@ ItemBrowser.prototype = {
     } else {
       $("manual_taggings").checked = false;
     }
-    
-    // Store filters for page reload
-    Cookie.set("filters", new_parameters.toQueryString(), 365);
-    
-    // Reload the item browser
-    this.reload();
   },
   
   showLoadingIndicator: function(message) {

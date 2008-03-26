@@ -210,6 +210,7 @@ function update_feed_filters(element, value) {
     value.removeClassName('selected');
     insert_in_order('feed_filters', 'li', '.name', value, $(value).down(".name").innerHTML);
   	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
+    itemBrowser.toggleSetFilters({tag_ids: $(value).getAttribute("id").gsub("feed_", "")});
   	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
   }
 }
@@ -222,6 +223,7 @@ function update_tag_filters(element, value) {
     value.removeClassName('selected');
     insert_in_order('tag_filters', 'li', '.name', value, $(value).down(".name").innerHTML);
   	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
+    itemBrowser.toggleSetFilters({tag_ids: $(value).getAttribute("id").gsub("tag_", "")});
   	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
   }
 }
