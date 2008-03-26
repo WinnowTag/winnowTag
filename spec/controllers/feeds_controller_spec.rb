@@ -103,7 +103,7 @@ describe FeedsController do
   end
   
   it "should create resource and then collect it " do    
-    feed = mock_model(Remote::Feed, :url => 'http://example.com')
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
     feed.errors.should_receive(:empty?).and_return(true)
     feed.should_receive(:collect)
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
