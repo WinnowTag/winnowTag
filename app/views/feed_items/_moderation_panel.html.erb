@@ -1,4 +1,5 @@
-<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field'), :onkeydown => "if(event.keyCode == Event.KEY_ESC) { $('#{dom_id(feed_item, 'new_tag_form')}').hide(); }" %>
+<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field'), :onblur => "setTimeout(function() { itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); }, 100);", 
+      :onkeydown => "if(event.keyCode == Event.KEY_ESC) { itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); }" %>
 <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
 <% javascript_tag do -%>
   auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'] = new Autocompleter.Local(
@@ -8,8 +9,6 @@
       afterUpdateElement: function(input, choice) { 
         itemBrowser.closeItemModerationPanel('<%= dom_id(feed_item) %>'); add_tag('<%= dom_id(feed_item) %>', input.value); input.blur(); input.value = ""; } });
   auto_completers['<%= dom_id(feed_item, 'new_tag_field') %>_auto_completer'].activate();
-  // TODO: blur text field/list/button (hide dialog)
-  // TODO: show list when text field focuses
 
   // TODO: arrowing when item list is scrolled messes up the item list location
   // TODO: scrolling up/off the bottom should not move the item list back up

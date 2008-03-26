@@ -957,6 +957,7 @@ ItemBrowser.prototype = {
   },
   
   closeItemModerationPanel: function(item) {
+    $('new_tag_field_' + $(item).getAttribute('id')).blur();
     $('new_tag_form_' + $(item).getAttribute('id')).hide();
   },
   
