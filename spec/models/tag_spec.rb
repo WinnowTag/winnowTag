@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Tag do
+  fixtures :users, :feed_items
   describe "associations" do
     before(:each) do
       @tag = Tag.new
@@ -16,8 +17,6 @@ describe Tag do
   end
   
   describe "tagging counts" do
-    fixtures :users, :feed_items
-    
     it "is properly calculated for private tags" do
       Tag.delete_all
       

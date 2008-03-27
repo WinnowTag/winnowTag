@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe User do
+  fixtures :users, :feeds, :tags
   describe "associations" do
     before(:each) do
       @user = User.new
