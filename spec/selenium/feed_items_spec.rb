@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "FeedItemsTest" do
-  fixtures :users, :feed_items, :feeds
+  fixtures :users, :feed_items, :feeds, :tags
 
   before(:each) do
     ReadItem.delete_all
