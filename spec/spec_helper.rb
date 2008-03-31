@@ -6,7 +6,7 @@ require 'spec'
 require 'spec/rails'
 require 'authenticated_test_helper'
 require 'active_resource/http_mock'
-require File.join(RAILS_ROOT, *%w[vendor plugins lwt_testing lib selenium example_group])
+require File.join(RAILS_ROOT, *%w[vendor plugins mhs_testing lib selenium example_group])
 
 module CustomSeleniumHelpers
   def login(login = "quentin", password = "test")
@@ -68,7 +68,7 @@ Spec::Runner.configure do |config|
   config.use_instantiated_fixtures  = false
   config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
 
-  # TODO: Pull this call into lwt_testing
+  # TODO: Pull this call into mhs_testing
   config.include ValidationMatchers, AssociationMatchers
   config.include CustomSeleniumHelpers, :type => :selenium
 
