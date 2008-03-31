@@ -21,6 +21,10 @@ module Spec
           # @browser.reconnect!
         end
         
+        after(:each) do
+          delete_all_visible_cookies
+        end
+        
         def reset!
           @browser.reconnect!
         end
