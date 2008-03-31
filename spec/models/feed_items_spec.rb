@@ -259,6 +259,11 @@ describe FeedItem do
   describe '.archive' do
     before(:each) do
       @before_count = FeedItem.count
+      ActiveRecord::Base.record_timestamps = false
+    end
+    
+    after(:each) do
+      ActiveRecord::Base.record_timestamps = true
     end
     
     it "should delete items older than the parameter" do
@@ -277,7 +282,7 @@ describe FeedItem do
       FeedItem.count.should == (@before_count + 1)
     end
     
-    it "should exclude items with taggings" do
+    it "should exclude items with manual taggings" do
       item = valid_feed_item!(:updated => 31.days.ago.getutc)
       user = User.find(1)
       tag = Tag.create!(:user => user, :name => 'newtag')
@@ -286,6 +291,27 @@ describe FeedItem do
       FeedItem.archive_items
       lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
       FeedItem.count.should == (@before_count + 1)
+    end
+    
+    it "should delete items with only classifier taggings older than 30 days" do
+      item = valid_feed_item!(:updated => 31.days.ago.getutc)
+      user = User.find(1)
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true, :created_on => 31.days.ago.getutc)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
+    end
+      
+    it "should not delete items with a classifier and a manual tagging" do
+      item = valid_feed_item!(:updated => 31.days.ago.getutc)
+      user = User.find(1)
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true, :created_on => 31.days.ago.getutc)
+      user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => false, :created_on => 31.days.ago.getutc)
+
+      FeedItem.archive_items
+      lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
     end
   end
   
