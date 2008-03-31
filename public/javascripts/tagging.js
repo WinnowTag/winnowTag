@@ -132,9 +132,6 @@ function add_tag_control(taggable_id, tag) {
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
-
-  auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array = 
-    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.without(tag);
 }
 
 function escape_javascript(string) {
@@ -143,12 +140,6 @@ function escape_javascript(string) {
 
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
-  
-  if(auto_completers['new_tag_field_' + taggable_id + '_auto_completer']) {
-    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.push(tag);
-    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array = 
-      auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.sort();
-  }
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }

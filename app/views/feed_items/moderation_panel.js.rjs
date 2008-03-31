@@ -1,1 +1,2 @@
 page.replace_html dom_id(@feed_item, 'new_tag_form'), :partial => 'moderation_panel', :locals => { :feed_item => @feed_item }
+page << "itemBrowser.initializeItemModerationPanel('#{dom_id(@feed_item)}')"

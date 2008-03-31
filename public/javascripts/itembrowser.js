@@ -243,6 +243,7 @@ Classification.prototype = {
 };
 
 var ItemBrowser = Class.create();
+ItemBrowser.instance = null;
 /** Provides the ItemBrowser functionality.
  *
  *  The Item Browser is a scrollable view over the entire list of items
@@ -267,6 +268,8 @@ ItemBrowser.prototype = {
    *
    */
   initialize: function(feed_item_container, options) {
+    ItemBrowser.instance = this;
+    
     this.options = {
       pruning_threshold: 500,
       update_threshold: 8
@@ -289,6 +292,8 @@ ItemBrowser.prototype = {
     
     var self = this;
     Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
+    
+    this.auto_completers = {};
     
     if(location.hash.gsub('#', '').blank() && Cookie.get("filters")) {
       this.setFilters(Cookie.get("filters").toQueryParams());
@@ -652,7 +657,7 @@ ItemBrowser.prototype = {
     
     this.updateInitialSpacer();
   },
-  
+
   removeEmptySpaceAt: function(index) {
     if (this.items[index - 1]) {
       var space = this.items[index - 1].element.nextSiblings().first();
@@ -938,16 +943,67 @@ ItemBrowser.prototype = {
     var container = $('new_tag_form_' + $(item).getAttribute('id'));
     container.show();
     this.scrollToItem(item);
-    this.loadItemModerationPanel(item); 
+    this.loadItemModerationPanel(item);
     
-    var field = $('new_tag_field_' + $(item).getAttribute('id'));
-    if(field) { 
+    this.initializeItemModerationPanel(item);
+  },
+  
+  // TODO: need to update this local list when tag controls are clicked so they are always in sync
+  initializeItemModerationPanel: function(item) {
+    var panel = $(item).down(".new_tag_form");
+    var field = panel.down("input[type=text]");
+    var list = panel.down(".auto_complete");
+    var add = panel.down("input[type=submit]");
+    var cancel = panel.down("a");
+
+    if(field && list && add && cancel) {
+      if(!this.auto_completers[$(item).getAttribute("id")]) {
+        this.auto_completers[$(item).getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
+          partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
+          afterUpdateElement: function() { 
+            this.closeItemModerationPanel(item);
+            // TODO: Move this call into item browser...
+            window.add_tag($(item).getAttribute("id"), field.value);
+            field.blur();
+            field.value = "";
+          }.bind(this)
+        });
+      }
+      var used_tags = $$("#tag_controls_" + $(item).getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
+      this.auto_completers[$(item).getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
+        return used_tags.include(tag);
+      });
+      this.auto_completers[$(item).getAttribute("id")].activate();
+
+      field.observe("blur", function() {
+        setTimeout(this.closeItemModerationPanel.bind(this, item), 200);
+      }.bind(this));
+      field.observe("keydown", function(event) {
+        if(event.keyCode == Event.KEY_ESC) { this.closeItemModerationPanel(item); }
+      }.bind(this));
       field.focus();
-      window.auto_completers['new_tag_field_' + $(item).getAttribute('id') + '_auto_completer'].activate();
-      new Effect.ScrollToInDiv(this.feed_items_scrollable, "new_tag_field_" + $(item).getAttribute('id') + "_auto_complete", {duration: 0.3, bottom_margin: 5});
+      
+      add.observe("click", function() {
+        this.auto_completers[$(item).getAttribute("id")].selectEntry();
+      }.bind(this));
+
+      cancel.observe("click", this.closeItemModerationPanel.bind(this, item));
+      
+      new Effect.ScrollToInDiv(this.feed_items_scrollable, list, {duration: 0.3, bottom_margin: 5});
     }
   },
   
+  addTag: function(tag) {
+    if(!this.options.tags.include(tag)) {
+      this.options.tags.push(tag);
+      this.options.tags = this.options.tags.sort();
+    }
+  },
+  
+  removeTag: function(tag) {
+    this.options.tags = this.options.tags.without(tag)
+  },
+
   closeItemModerationPanel: function(item) {
     var input = $('new_tag_field_' + $(item).getAttribute('id'));
     if(input) { input.blur(); }
