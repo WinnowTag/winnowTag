@@ -69,7 +69,7 @@ Spec::Runner.configure do |config|
   config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
 
   # TODO: Pull this call into mhs_testing
-  config.include ValidationMatchers, AssociationMatchers
+  config.include ValidationMatchers, AssociationMatchers, :type => :model
   config.include CustomSeleniumHelpers, :type => :selenium
 
   # You can declare fixtures for each behaviour like this:
