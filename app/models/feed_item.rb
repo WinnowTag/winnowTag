@@ -169,11 +169,13 @@ class FeedItem < ActiveRecord::Base
   # and reduce the chance of getting a deadlock with a long transaction.
   #
   def self.archive_items(since = 30.days.ago.getutc)
-    Tagging.delete_all(['created_on < ? and classifier_tagging = ?', since, true])
+    taggings_deleted = Tagging.delete_all(['created_on < ? and classifier_tagging = ?', since, true])
     conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
-    FeedItem.find(:all, :conditions => conditions).each do |item|
+    items = FeedItem.find(:all, :conditions => conditions)
+    items.each do |item|
       item.destroy
     end
+    logger.info("ARCHIVAL: Deleted #{items.size} items and #{taggings_deleted} classifier taggings older than #{since}")
   end
   
   # Gets a count of the number of items that meet conditions applied by the filters.
