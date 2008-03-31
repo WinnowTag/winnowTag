@@ -10,10 +10,6 @@ describe "filter controls" do
     wait_for_ajax
   end
   
-  after(:each) do
-    delete_all_visible_cookies
-  end
-  
   describe "show all items" do
     it "is selected by default" do
       see_element "#show_all.selected"
@@ -155,7 +151,7 @@ describe "filter controls" do
 
       click "css=#name_tag_#{@tag.id}"
       
-      get_location.should =~ /\#tag_ids=1$/
+      get_location.should =~ /\#tag_ids=#{@tag.id}$/
     end
     
     it "sets tag filter for all in folder" do
