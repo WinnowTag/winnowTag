@@ -758,7 +758,7 @@ ItemBrowser.prototype = {
   addTag: function(tag) {
     if(!this.options.tags.include(tag)) {
       this.options.tags.push(tag);
-      this.options.tags = this.options.tags.sort();
+      this.options.tags = this.options.tags.sortBy(function(item) { return item.toLowerCase(); });
     }
   },
   

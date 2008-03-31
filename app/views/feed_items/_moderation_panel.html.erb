@@ -1,3 +1,3 @@
-<%= text_field_tag 'tag' %>
+<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, "new_tag_field") %>
 <div class="auto_complete"></div>
 <%= submit_tag "Add Tag" %> or <%= link_to_function "cancel" %>
