@@ -56,7 +56,7 @@ class FeedItem < ActiveRecord::Base
   #
   # See FeedItem.find_by_filters for how this is done.
   #
-  has_many :taggings, :dependent => :delete_all do 
+  has_many :taggings do 
     def cached_taggings
       if @cached_taggings.nil?
         @cached_taggings = Hash.new([])
