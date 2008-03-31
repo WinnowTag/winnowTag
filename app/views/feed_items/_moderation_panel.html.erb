@@ -1,4 +1,4 @@
-<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field'), :onblur => "setTimeout(function() { itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); }, 100);", 
+<%= text_field_tag 'tag', nil, :id => dom_id(feed_item, 'new_tag_field'), :onblur => "setTimeout(function() { itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); }, 200);", 
       :onkeydown => "if(event.keyCode == Event.KEY_ESC) { itemBrowser.closeItemModerationPanel('#{dom_id(feed_item)}'); }" %>
 <div id="<%= dom_id(feed_item, 'new_tag_field') %>_auto_complete" class="auto_complete"></div>
 <% javascript_tag do -%>
