@@ -1,5 +1,9 @@
-tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags
-page[:tag_filters].replace tag_filter_controls(tags, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" })
+page << "if(!$('#{dom_id(@tagging.tag)}')) {"
+  page.call(:insert_in_order, 'tag_filters', 'li', '.name', tag_filter_control(@tagging.tag, :remove => :subscription), @tagging.tag.name)
+  page.draggable(dom_id(@tagging.tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :constraint => "'vertical'", 
+    :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }")
+  page << "itemBrowser.styleFilters()"
+page << "}"
 
 page << "if ($('classification_button')) {"
   page['classification_button'].disabled = false
