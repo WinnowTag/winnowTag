@@ -11,4 +11,5 @@
   itemBrowser.openItemModerationPanel('<%= dom_id(feed_item) %>');
   // TODO: need to update this local list when tag controls are clicked so they are always in sync
 <% end -%>
-<%= submit_tag "Add Tag", :onclick => "auto_completers['#{dom_id(feed_item, 'new_tag_field')}_auto_completer'].selectEntry();" %>
+<%= submit_tag "Add Tag", :onclick => "auto_completers['#{dom_id(feed_item, 'new_tag_field')}_auto_completer'].selectEntry();" %> or
+<%= link_to_function "cancel", "itemBrowser.closeModerationPanel(this.up('.item'));" %>
