@@ -40,8 +40,8 @@ module FeedItemsHelper
   #
   # When pressed, the classification button creates a Classification
   # Javascript object that handles the interaction with the server.
-  # See Classification and Classification.createItemBrowserClassification
-  # in itembrowser.js.
+  # See Classification and Classification.startItemBrowserClassification
+  # in classification.js.
   #
   # The way the routes are setup for the classifier controller means
   # that we can always identify a single classifier to use by either
@@ -50,16 +50,11 @@ module FeedItemsHelper
   # to the current user.
   #
   def classification_button
-    button_to_function 'Auto-tag', :id => 'classification_button' do |page|
-      page << <<-END_JS
-         classification = Classification.createItemBrowserClassification(#{classifier_path.to_json});
-         classification.start();
-      END_JS
-    end
+    button_to_function 'Auto-tag', "Classification.startItemBrowserClassification(#{classifier_path.to_json});", :id => 'classification_button'
   end
   
   def cancel_classification_button
-    button_to_function("Stop", 'cancelClassification();', :style => "display: none", :id => 'cancel_classification_button')
+    button_to_function("Stop", 'Classification.cancel();', :style => "display: none", :id => 'cancel_classification_button')
   end
   
   def classifier_progress_title

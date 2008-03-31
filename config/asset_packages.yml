@@ -6,10 +6,12 @@ javascripts:
   - controls
   - slider
   - dragdrop
-  - tagging
-  - itembrowser
   - in_place_completer
   - cookies
+  - itembrowser
+  - bias_slider
+  - classification
+  - tagging
   - application
 stylesheets: 
 - base: 

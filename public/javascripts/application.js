@@ -1,3 +1,8 @@
+function exceptionToIgnore(e) {
+  // Ignore this Firefox error because it just occurs when a XHR request is interrupted.
+  return e.name == "NS_ERROR_NOT_AVAILABLE"
+}
+
 Position.includeScrollOffsets = true;
 
 document.observe('dom:loaded', function() {
