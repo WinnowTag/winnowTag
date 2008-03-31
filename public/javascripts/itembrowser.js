@@ -56,6 +56,8 @@ ItemBrowser.prototype = {
     Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
     
     this.auto_completers = {};
+
+    this.loadSidebar();
     
     if(location.hash.gsub('#', '').blank() && Cookie.get("filters")) {
       this.setFilters(Cookie.get("filters").toQueryParams());
@@ -455,7 +457,20 @@ ItemBrowser.prototype = {
     }
   },
   
-  expandFolderParameters:function(parameters) {
+  loadSidebar: function() {
+    var sidebar = $("sidebar");
+    sidebar.addClassName("loading");
+
+    new Ajax.Updater("sidebar", "/feed_items/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
+      onComplete: function() {
+        sidebar.removeClassName("loading");
+        applesearch.init();
+        ItemBrowser.instance.styleFilters();
+      }
+    });  
+  },
+  
+  expandFolderParameters: function(parameters) {
     if(parameters.folder_ids) {
       var tag_ids = parameters.tag_ids ? parameters.tag_ids.split(",") : [];
       var feed_ids = parameters.feed_ids ? parameters.feed_ids.split(",") : [];
@@ -560,6 +575,8 @@ ItemBrowser.prototype = {
   },
   
   styleFilters: function() {
+    if(!$("show_all")) { return; }
+    
     var params = location.hash.gsub('#', '').toQueryParams();
     if($H(params).keys().size() == 0) {
       $("show_all").addClassName("selected");

@@ -127,4 +127,18 @@ module FeedItemsHelper
     
     classes.uniq
   end
+  
+  def feeds_for_sidebar
+    feeds = current_user.feeds
+    feed_ids = params[:feed_ids].to_s.split(",").map(&:to_i) - feeds.map(&:id)
+    feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
+    feeds.sort_by { |feed| feed.title.downcase }
+  end
+  
+  def tags_for_sidebar
+    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags
+    tag_ids = params[:tag_ids].to_s.split(",").map(&:to_i) - tags.map(&:id)
+    tags += Tag.find_all_by_id(tag_ids) unless tag_ids.empty?
+    tags.sort_by { |tag| tag.name.downcase }
+  end
 end

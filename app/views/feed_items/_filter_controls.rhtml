@@ -34,18 +34,17 @@
 
   <div id="folders">
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
-      <% tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags %>
       <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('tags', $(this).up('.folder').hasClassName('open'), 365);">
         <%= link_to_function "Tags", "itemBrowser.toggleSetFilters({folder_ids: 'tags'}, event); event.stop()", :id => "tag_filters_control" %>
       </div>
-      <%= tag_filter_controls(tags, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
+      <%= tag_filter_controls(tags_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
     </div>
   
     <div id="folder_feeds" class="folder<%= open_feeds? ? " open" : "" %>">
       <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('feeds', $(this).up('.folder').hasClassName('open'), 365);">
         <%= link_to_function "Feeds", "itemBrowser.toggleSetFilters({folder_ids: 'feeds'}, event); event.stop()" %>
       </div>
-      <%= feed_filter_controls(current_user.feeds, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list feeds" }) %>
+      <%= feed_filter_controls(feeds_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list feeds" }) %>
     </div>
   
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>

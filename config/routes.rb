@@ -35,7 +35,8 @@ ActionController::Routing::Routes.draw do |map|
                   :moderation_panel => :get
                 },
                 :collection => { 
-                  :mark_read => :put
+                  :mark_read => :put,
+                  :sidebar => :get
                 }
 
   map.resources :tags,
