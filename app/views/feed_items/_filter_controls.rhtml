@@ -4,15 +4,15 @@
   <div id="folders">
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
       <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('tags', $(this).up('.folder').hasClassName('open'), 365);">
-        <%= link_to_function "Add", "$(this).up('.folder').addClassName('open'); $('add_tag').show(); $('tag_name').focus(); event.stop();", :id => "add_tag_link" %>
+        <%= link_to_function "Add", "$(this).up('.folder').addClassName('open'); $(this).up('.folder').addClassName('add'); $('tag_name').focus(); event.stop();", :class => "add_link" %>
+        <%= link_to_function "cancel", "$(this).up('.folder').removeClassName('add'); event.stop();", :class => "cancel_link" %>
         <%= link_to_function "Tags", "itemBrowser.toggleSetFilters({folder_ids: 'tags'}, event); event.stop()", :id => "tag_filters_control" %>
       </div>
 
-      <div id="add_tag" class="add_section" style="display: none">
+      <div class="add_section">
         <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
               :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
-              :after_update_element => "function(e, v) { update_tag_filters(e,v); $('add_tag').hide(); }", :on_hide => "clear_auto_complete") %>
-        <%= link_to_function "cancel", "$('add_tag').hide()" %>
+              :after_update_element => "function(e, v) { update_tag_filters(e,v); $('folder_tags').removeClassName('add'); }", :on_hide => "clear_auto_complete") %>
       </div>
       
       <%= tag_filter_controls(tags_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
@@ -20,15 +20,15 @@
   
     <div id="folder_feeds" class="folder<%= open_feeds? ? " open" : "" %>">
       <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('feeds', $(this).up('.folder').hasClassName('open'), 365);">
-        <%= link_to_function "Add", "$(this).up('.folder').addClassName('open'); $('add_feed').show(); $('feed_title').focus(); event.stop();", :id => "add_feed_link" %>
+        <%= link_to_function "Add", "$(this).up('.folder').addClassName('open'); $(this).up('.folder').addClassName('add'); $('feed_title').focus(); event.stop();", :class => "add_link" %>
+        <%= link_to_function "cancel", "$(this).up('.folder').removeClassName('add'); event.stop();", :class => "cancel_link" %>
         <%= link_to_function "Feeds", "itemBrowser.toggleSetFilters({folder_ids: 'feeds'}, event); event.stop()" %>
       </div>
   
-      <div id="add_feed" class="add_section" style="display: none">
+      <div class="add_section">
         <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
               :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
-              :after_update_element => "function(e, v) { update_feed_filters(e,v); $('add_feed').hide(); }", :on_hide => "clear_auto_complete") %>
-        <%= link_to_function "cancel", "$('add_feed').hide()" %>
+              :after_update_element => "function(e, v) { update_feed_filters(e,v); $('folder_feeds').removeClassName('add'); }", :on_hide => "clear_auto_complete") %>
       </div>
 
       <%= feed_filter_controls(feeds_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list feeds" }) %>
@@ -37,16 +37,20 @@
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
   
+  <div id="new_folder" class="folder new">
+    <div class="clearfix">
+      <%= link_to_function "Add a Folder", "$(this).up('.folder').addClassName('open'); $(this).up('.folder').addClassName('add'); $('folder_name').focus();", :class => "add_link" %>
+      <%= link_to_function "cancel", "$(this).up('.folder').removeClassName('add');", :class => "cancel_link" %>
+    </div>
+    
+    <div id="add_folder" class="add_section">
+      <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('new_folder').removeClassName('add'); $('folder_name').value = ''" do |form| -%>
+        <%= form.text_field :name, :class => "filter_search" %>
+      <% end -%>
+      <div id="new_folder_errors" class="error" style="display:none"></div>
+    </div>
+  </div>
+  
   <%= check_box_tag :manual_taggings, true, false, :onclick => "itemBrowser.addFilters({manual_taggings: this.checked ? true : null})" %>
   <label id="manual_taggings_filter" for="manual_taggings">Only Show Manual Taggings</label>
-  
-  <%= link_to_function "Add a Folder", "$$('.add_section').invoke('hide'); $('add_folder').show(); $('folder_name').focus()", :id => "add_folder_link" %>
-
-  <div id="add_folder" class="add_section" style="display: none">
-    <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('add_folder').hide(); $('folder_name').value = ''" do |form| -%>
-      <%= form.text_field :name, :class => "filter_search" %>
-      <%= link_to_function "cancel", "$('add_folder').hide()" %>
-    <% end -%>
-    <div id="new_folder_errors" class="error" style="display:none"></div>
-  </div>
 </div>

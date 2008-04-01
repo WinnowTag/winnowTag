@@ -462,6 +462,8 @@ a.editor_cancel {
 .auto_complete {
   background: #fff;
   z-index: 100;
+  font-weight: normal;
+  font-style: normal;
 }
 
 .auto_complete ul {
@@ -912,25 +914,8 @@ a.bookmarklet:hover {
   font-weight: bold;
 }
 
-#add_folder_link, #add_tag_link, #add_feed_link {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 0;
-  padding: 0 0 0 19px;
-  font-weight: normal;
-  font-style: normal;
-}
-
-#add_folder_link {
-  display: block;
-  margin: 1em 0 0 0;
-}
-
-#add_tag_link, #add_feed_link {
-  float: right;
-}
-
-.add_section input { 
-  width: 79%;
+#manual_taggings { 
+  margin: 0;
 }
 
 .folder {
@@ -947,21 +932,6 @@ a.bookmarklet:hover {
 
 .folder.some_selected {
   font-style: italic;
-}
-
-.folder .add_section {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  background-color: #E2ECFD;
-  font-weight: normal;
-  font-style: normal;
-}
-
-.folder.open .add_section {
-  display: block;
 }
 
 .folder .header ul.actions {
@@ -994,6 +964,58 @@ a.bookmarklet:hover {
 
 .folder .header:hover {
   background-color: #eee;
+}
+
+.folder .add_link, .folder .cancel_link {
+  font-weight: normal;
+  font-style: normal;
+  float: right;
+}
+
+.folder .add_link {
+  display: block;
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 0;
+  padding: 0 0 0 19px;
+}
+
+.folder .cancel_link { 
+  display: none;
+}
+
+.folder .add_section {
+  display: none;
+  margin: .2em .5em .2em 15px;
+}
+
+.folder .add_section input {
+  display: block;
+  width: 100%;
+}
+
+.folder.add .add_link {
+  display: none;
+}
+
+.folder.add .cancel_link {
+  display: block;
+}
+
+.folder.add .add_section {
+  display: block;
+}
+
+.folder.new .add_link {
+  float: left;
+  margin: .4em 0;
+}
+
+.folder.new .cancel_link {
+  margin: .4em 0;
+}
+
+.folder.new.add .add_link {
+  display: block;
 }
 
 .folder a {
@@ -1079,10 +1101,6 @@ a.bookmarklet:hover {
   height: 1.2em;
   margin: 0 0 0 3px;
   font-size: 1em;
-}
-
-.add_section {
-  margin-top: 5px;
 }
 
 textarea.content { 
