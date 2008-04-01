@@ -164,6 +164,11 @@ describe TagsController do
       response.content_type.should == "application/atom+xml"
     end
     
+    it "should set the Last-Modified header" do
+      get :training, :id => @tag.id
+      response.headers['Last-Modified'].should_not be_nil
+    end
+    
     it_should_behave_like 'conditional GET of tag'
   end
     
