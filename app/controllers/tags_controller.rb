@@ -18,7 +18,7 @@
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => :show
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training]
   
   def index
     respond_to do |wants|
@@ -142,6 +142,18 @@ class TagsController < ApplicationController
     @tag.destroy
     TagSubscription.delete_all(:tag_id => @tag)
     respond_to :js
+  end
+  
+  def training
+    tag = Tag.find(params[:id])    
+    base_uri = "http://#{request.host}:#{request.port}"
+    atom = tag.to_atom(:training_only => true, :base_uri => base_uri)
+    
+    respond_to do |wants|
+      wants.atom do
+        render :text => atom.to_xml
+      end
+    end
   end
   
   # Action to get tag names for the auto-complete tag field on the merge/rename form.

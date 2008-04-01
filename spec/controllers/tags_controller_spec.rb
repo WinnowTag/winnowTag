@@ -69,14 +69,14 @@ describe TagsController do
     end
   end
   
-  describe "specs" do
+  describe "show" do
     before(:each) do
       mock_user_for_controller
-      @tag = mock_model(Tag)    
+      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now)
       @tags.stub!(:find_by_id).and_return(@tag)
-      mock_tags = mock('tags')
-      mock_tags.stub!(:find_by_id).and_return(@tag)
-      @user.stub!(:tags).and_return(mock_tags)
+      @mock_tags = mock('tags')
+      @mock_tags.stub!(:find_by_id).and_return(@tag)
+      @user.stub!(:tags).and_return(@mock_tags)
       User.stub!(:find_by_login).and_return(@user)
     end
   
@@ -96,8 +96,7 @@ describe TagsController do
       response.code.should == '304'
     end
   
-    it "should return 200 for show if if_modified_since older than updated on" do
-      @tag.stub!(:updated_on).and_return(Time.now)
+    it "should return 200 for show if if_modified_since older than updated on" do      
       @tag.stub!(:last_classified_at).and_return(Time.now.yesterday.yesterday)
       request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
     
@@ -106,15 +105,60 @@ describe TagsController do
     end
   
     it "should return 200 for show if last modified older than last classified" do
-      @tag.stub!(:last_classified_at).and_return(Time.now)
       @tag.stub!(:updated_on).and_return(Time.now.yesterday.yesterday)
       request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
     
       get "show", :id => 1, :user_id => 'quentin'
       response.should be_success
     end
+    
+    # it "atom_feed_contains_items_in_tag" do
+    #   user = users(:quentin)
+    #   tag = Tag(user, 'tag')
+    #   tag.update_attribute :public, true
+    # 
+    #   user.taggings.create!(:feed_item => FeedItem.find(1), :tag => tag)
+    #   user.taggings.create!(:feed_item => FeedItem.find(2), :tag => tag)
+    # 
+    #   get :show, :user_id => user.login, :id => tag, :format => "atom"
+    # 
+    #   response.should be_success
+    #   # TODO: Move to view test
+    #   # assert_select("entry", 2, response.body)
+    # end
+
+    it "atom_feed_with_missing_tag_returns_404" do
+      @mock_tags.stub!(:find_by_id).with("missing").and_return(nil)
+      get :show, :user_id => users(:quentin).login, :id => "missing", :format => "atom"
+      response.code.should == "404"
+    end
+
+    it "anyone_can_access_feeds" do
+      login_as(nil)
+      get :show, :user_id => 'quentin', :id => 1, :format => "atom"
+      response.should be_success
+    end
   end
   
+  describe "GET training" do
+    before(:each) do
+      @tag = mock_model(Tag)    
+      Tag.stub!(:find).with(@tag.id.to_s).and_return(@tag)
+      @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
+    end
+    
+    it "should call to_atom with :training_only => true" do      
+      get :training, :id => @tag.id
+      response.should be_success
+    end
+    
+    it "should set the content type to application/atom+xml" do
+      get :training, :id => @tag.id, :format => 'atom'
+      response.should be_success
+      response.content_type.should == "application/atom+xml"
+    end
+  end
+    
   describe "from test/unit" do
     before(:each) do
       @tag = Tag(users(:quentin), 'tag')
@@ -245,38 +289,7 @@ describe TagsController do
       delete :destroy, :id => 999999999
       assert_response 404
     end
-  
-    it "atom_feed_contains_items_in_tag" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag')
-      tag.update_attribute :public, true
-    
-      user.taggings.create!(:feed_item => FeedItem.find(1), :tag => tag)
-      user.taggings.create!(:feed_item => FeedItem.find(2), :tag => tag)
 
-      get :show, :user_id => user.login, :id => tag, :format => "atom"
-
-      assert_response(:success)
-      # TODO: Move to view test
-      # assert_select("entry", 2, response.body)
-    end
-
-    it "atom_feed_with_missing_tag_returns_404" do
-      get :show, :user_id => users(:quentin).login, :id => "missing", :format => "atom"
-      assert_response(404)
-    end
-
-    it "anyone_can_access_feeds" do
-      login_as(nil)
-
-      user = users(:quentin)
-      tag = Tag(user, 'tag')
-      tag.update_attribute :public, true
-
-      get :show, :user_id => user.login, :id => tag, :format => "atom"
-      assert_response :success
-    end
-  
     it "subscribe_to_public_tag    " do
       other_user = users(:aaron)
 
