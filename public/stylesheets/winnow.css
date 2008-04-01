@@ -1146,7 +1146,7 @@ textarea.content {
   background-position: 2px 3px;
 }
 
-.tag.private .left .name, .tag.private .left .comment {
+.tag.private .left .name span, .tag.private .left .comment span {
   cursor: pointer;
 }
 
