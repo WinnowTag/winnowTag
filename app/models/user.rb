@@ -73,6 +73,8 @@ class User < ActiveRecord::Base
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
   has_many :folders, :dependent => :delete_all
  
+  before_save :update_prototype
+ 
   def feeds
     (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.name.to_s }
   end
@@ -296,5 +298,11 @@ protected
   
   def make_owner_of_self
     self.has_role('owner', self)
+  end
+  
+  def update_prototype
+    if prototype?
+      User.update_all(["prototype = ?", false])
+    end
   end
 end

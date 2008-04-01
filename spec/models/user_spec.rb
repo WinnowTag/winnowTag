@@ -16,6 +16,19 @@ describe User do
     end
   end
   
+  describe "prototype" do
+    it "marks all other users as non-prototypes when saving a prototype" do
+      original_prototype = User.create! valid_user_attributes(:prototype => true)
+      original_prototype.should be_prototype
+      
+      new_prototype = User.create! valid_user_attributes(:prototype => true)
+      new_prototype.should be_prototype
+      
+      original_prototype.reload
+      original_prototype.should_not be_prototype
+    end
+  end
+  
   describe "logging login" do 
     before(:each) do
       @user = User.create! valid_user_attributes

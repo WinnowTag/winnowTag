@@ -9,7 +9,7 @@ module ApplicationHelper
   def tab_selected(controller, action = nil)
     "selected" if controller_name == controller and (action.nil? or action_name == action)
   end
-      
+  
   def show_flash
     [:notice, :warning, :error, :confirm].map do |name|
       close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => 'Close Message')
