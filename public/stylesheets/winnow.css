@@ -914,7 +914,7 @@ a.bookmarklet:hover {
   font-weight: bold;
 }
 
-#manual_taggings { 
+.checkbox_filter input {
   margin: 0;
 }
 

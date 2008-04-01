@@ -57,13 +57,13 @@ ItemBrowser.prototype = {
     
     this.auto_completers = {};
 
-    this.loadSidebar();
-    
     if(location.hash.gsub('#', '').blank() && Cookie.get("filters")) {
       this.setFilters(Cookie.get("filters").toQueryParams());
     } else {
       this.setFilters(location.hash.gsub('#', '').toQueryParams());
     }
+
+    this.loadSidebar();    
   },
   
   /** Called to initialize the internal list of items from the items loaded into the feed_item_container.
@@ -639,6 +639,12 @@ ItemBrowser.prototype = {
       $("manual_taggings").checked = true;
     } else {
       $("manual_taggings").checked = false;
+    }
+    
+    if(params.read_items) {
+      $("read_items").checked = true;
+    } else {
+      $("read_items").checked = false;
     }
   },
   

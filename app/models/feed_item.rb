@@ -267,7 +267,7 @@ class FeedItem < ActiveRecord::Base
   # This will return a Hash of options suitable for passing to FeedItem.find.
   # 
   def self.options_for_filters(filters) # :doc:
-    filters.assert_valid_keys(:limit, :order, :offset, :manual_taggings, :user, :feed_ids, :tag_ids, :text_filter)
+    filters.assert_valid_keys(:limit, :order, :offset, :manual_taggings, :read_items, :user, :feed_ids, :tag_ids, :text_filter)
     options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}
 
     joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
@@ -285,6 +285,8 @@ class FeedItem < ActiveRecord::Base
     conditions += filters[:user].excluded_tags.map do |tag|
       build_tag_exclusion_filter(tag)
     end
+    
+    add_read_items_filter_conditions!(filters[:read_items], filters[:user], conditions)
         
     options[:conditions] = conditions.join(" AND ")
     add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
@@ -311,6 +313,12 @@ class FeedItem < ActiveRecord::Base
     if !text_filter.blank?
       joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
                " and MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+    end
+  end
+  
+  def self.add_read_items_filter_conditions!(read_items, user, conditions)
+    unless read_items
+      conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
     end
   end
 

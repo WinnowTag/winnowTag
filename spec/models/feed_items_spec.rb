@@ -108,6 +108,30 @@ describe FeedItem do
       user_1 = User.create! valid_user_attributes
       lambda { FeedItem.find_with_filters(:user => user_1, :text_filter => 'text')}.should_not raise_error
     end
+    
+    it "filters out read items" do
+      user_1 = User.create! valid_user_attributes
+
+      FeedItem.delete_all
+      feed_item_1 = valid_feed_item!
+      feed_item_2 = valid_feed_item!
+
+      FeedItem.mark_read_for(user_1.id, feed_item_2.id)
+      
+      FeedItem.find_with_filters(:user => user_1, :read_items => false, :order => "feed_items.id").should == [feed_item_1]
+    end
+    
+    it "can include read items" do
+      user_1 = User.create! valid_user_attributes
+
+      FeedItem.delete_all
+      feed_item_1 = valid_feed_item!(:id => 1)
+      feed_item_2 = valid_feed_item!(:id => 2)
+
+      FeedItem.mark_read_for(user_1.id, feed_item_2.id)
+      
+      FeedItem.find_with_filters(:user => user_1, :read_items => true, :order => "feed_items.id").should == [feed_item_1, feed_item_2]
+    end
   end  
   
   describe "update_from_atom" do

@@ -51,6 +51,13 @@
     </div>
   </div>
   
-  <%= check_box_tag :manual_taggings, true, false, :onclick => "itemBrowser.addFilters({manual_taggings: this.checked ? true : null})" %>
-  <label id="manual_taggings_filter" for="manual_taggings">Only Show Manual Taggings</label>
+  <div class="checkbox_filter">
+    <%= check_box_tag :manual_taggings, true, false, :onclick => "itemBrowser.addFilters({manual_taggings: this.checked ? true : null})" %>
+    <label id="manual_taggings_filter" for="manual_taggings">Only Show Manual Taggings</label>
+  </div>
+  
+  <div class="checkbox_filter">
+    <%= check_box_tag :read_items, true, false, :onclick => "itemBrowser.addFilters({read_items: this.checked ? true : null})" %>
+    <label id="read_items_filter" for="read_items">Only Read Items</label>
+  </div>
 </div>

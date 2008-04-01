@@ -50,6 +50,7 @@ class FeedItemsController < ApplicationController
                     :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :manual_taggings => params[:manual_taggings],
+                    :read_items => params[:read_items],
                     :user => current_user }
   
         @feed_items = FeedItem.find_with_filters(filters)    
@@ -82,6 +83,7 @@ class FeedItemsController < ApplicationController
                   :tag_ids => params[:tag_ids],
                   :text_filter => params[:text_filter],
                   :manual_taggings => params[:manual_taggings],
+                  :read_items => params[:read_items],
                   :user => current_user }
       
       FeedItem.mark_read(filters)
