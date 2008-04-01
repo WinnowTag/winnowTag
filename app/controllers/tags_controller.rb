@@ -38,18 +38,7 @@ class TagsController < ApplicationController
     if user and @tag = user.tags.find_by_id(params[:id])
       respond_to do |wants|
         wants.atom do        
-          last_modified = if @tag.updated_on and @tag.last_classified_at
-            [@tag.updated_on, @tag.last_classified_at].max
-          else
-            (@tag.updated_on or @tag.last_classified_at)
-          end
-          
-          since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
-
-          if since && last_modified && since >= last_modified
-            head :not_modified
-          else
-            response.headers['Last-Modified'] = last_modified.httpdate if last_modified
+          conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do
             render :layout => false
           end
         end
@@ -151,7 +140,9 @@ class TagsController < ApplicationController
     
     respond_to do |wants|
       wants.atom do
-        render :text => atom.to_xml
+        conditional_render(tag.updated_on) do
+          render :text => atom.to_xml
+        end
       end
     end
   end
@@ -252,5 +243,16 @@ private
     add_to_sortable_columns('tags', :field => 'last_used_by')
     add_to_sortable_columns('tags', :field => 'login')
     add_to_sortable_columns('tags', :field => 'globally_exclude')
+  end
+  
+  def conditional_render(last_modified)   
+    since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
+
+    if since && last_modified && since >= last_modified
+      head :not_modified
+    else
+      response.headers['Last-Modified'] = last_modified.httpdate if last_modified
+      yield
+    end
   end
 end

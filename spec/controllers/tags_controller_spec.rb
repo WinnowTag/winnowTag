@@ -7,6 +7,26 @@
 
 require File.dirname(__FILE__) + '/../spec_helper'
 
+shared_examples_for 'conditional GET of tag' do
+  it "should return not modified for show if if_modified after as updated on and last classified" do
+    time = Time.now.yesterday
+    @tag.stub!(:updated_on).and_return(time)
+    @tag.stub!(:last_classified_at).and_return(time)    
+    request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
+  
+    get @action, :id => @tag.id, :user_id => 'quentin'
+    response.code.should == '304'
+  end
+
+  it "should return 200 for show if if_modified_since older than updated on" do      
+    @tag.stub!(:last_classified_at).and_return(Time.now.yesterday.yesterday)
+    request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
+  
+    get @action, :id => @tag.id, :user_id => 'quentin'
+    response.should be_success
+  end
+end
+
 describe TagsController do
   fixtures :users, :feed_items
 
@@ -71,6 +91,7 @@ describe TagsController do
   
   describe "show" do
     before(:each) do
+      @action = "show" # for 'conditional GET of tag'
       mock_user_for_controller
       @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now)
       @tags.stub!(:find_by_id).and_return(@tag)
@@ -86,23 +107,7 @@ describe TagsController do
       response.should be_success
     end
   
-    it "should return not modified for show if if_modified after as updated on and last classified" do
-      time = Time.now.yesterday
-      @tag.stub!(:updated_on).and_return(time)
-      @tag.stub!(:last_classified_at).and_return(time)    
-      request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
-    
-      get "show", :id => 1, :user_id => 'quentin'
-      response.code.should == '304'
-    end
-  
-    it "should return 200 for show if if_modified_since older than updated on" do      
-      @tag.stub!(:last_classified_at).and_return(Time.now.yesterday.yesterday)
-      request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
-    
-      get "show", :id => 1, :user_id => 'quentin'
-      response.should be_success
-    end
+    it_should_behave_like 'conditional GET of tag'
   
     it "should return 200 for show if last modified older than last classified" do
       @tag.stub!(:updated_on).and_return(Time.now.yesterday.yesterday)
@@ -142,7 +147,8 @@ describe TagsController do
   
   describe "GET training" do
     before(:each) do
-      @tag = mock_model(Tag)    
+      @action = "training" # for 'conditional GET of tag'
+      @tag = mock_model(Tag, :updated_on => Time.now)    
       Tag.stub!(:find).with(@tag.id.to_s).and_return(@tag)
       @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
     end
@@ -157,6 +163,8 @@ describe TagsController do
       response.should be_success
       response.content_type.should == "application/atom+xml"
     end
+    
+    it_should_behave_like 'conditional GET of tag'
   end
     
   describe "from test/unit" do
