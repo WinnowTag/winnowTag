@@ -256,6 +256,40 @@ describe FeedItem do
     end
   end
   
+  describe "to_atom" do
+    fixtures :feed_item_contents
+    before(:each) do
+      @item = FeedItem.find(1)
+      @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org')
+    end
+    
+    it "should include the title" do
+      @atom.title.should == @item.title
+    end
+    
+    it "should include the id" do
+      @atom.id.should == "urn:peerworks.org:entry##{@item.id}"
+    end
+    
+    it "should include the author" do
+      @atom.authors.first.should_not be_nil
+      @atom.authors.first.name.should == @item.author
+    end
+    
+    it "should include the link" do
+      @atom.alternate.href.should == @item.link
+    end
+    
+    it "should include a link to the feed" do
+      @atom.links.detect {|l| l.rel == 'http://peerworks.org/feed'}.should_not be_nil
+      @atom.links.detect {|l| l.rel == 'http://peerworks.org/feed'}.href.should == "urn:peerworks.org:feed##{@item.feed_id}"
+    end
+    
+    it "should include the content" do
+      @atom.content.to_s.should == @item.content.content
+    end
+  end
+  
   describe '.archive' do
     before(:each) do
       @before_count = FeedItem.count

@@ -148,6 +148,18 @@ class FeedItem < ActiveRecord::Base
     self
   end
   
+  def to_atom(options = {})
+    Atom::Entry.new do |entry|
+      entry.title = self.title
+      entry.id = "urn:peerworks.org:entry##{self.id}"
+      entry.authors << Atom::Person.new(:name => self.author)
+      entry.links << Atom::Link.new(:rel => 'self', :href => self.collector_link)
+      entry.links << Atom::Link.new(:rel => 'alternate', :href => self.link)
+      entry.links << Atom::Link.new(:rel => 'http://peerworks.org/feed', :href => "urn:peerworks.org:feed##{self.id}")
+      entry.content = Atom::Content::Html.new(self.content.content) if self.content
+    end
+  end
+    
   # Override count to use feed_id because InnoDB tables are slow with count(*)
   def self.count(*args)
     if args.first.is_a? String

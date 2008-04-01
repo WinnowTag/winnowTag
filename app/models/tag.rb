@@ -127,6 +127,40 @@ class Tag < ActiveRecord::Base
     self.positive_taggings.size < Tag.undertrained_threshold
   end
   
+  CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier'
+  
+  # Return an Atom document for this tag.
+  #
+  # When :training_only => true all and only training examples will be included
+  # in the document and it will conform to the Training Definition Document.
+  #
+  def to_atom(options = {})
+    Atom::Feed.new do |feed|
+      feed.title = "#{self.user.login}:#{self.name}"
+      feed.id = "#{options[:base_uri]}/tags/#{self.id}"
+      feed.updated = self.updated_on
+      feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
+      feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
+      feed.links << Atom::Link.new(:rel => "self", :href => feed.id)
+      feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
+                                   :href => "#{options[:base_uri]}/tags/#{self.id}/classifier_taggings")
+                                   
+      if options[:training_only]
+        self.manual_taggings.find(:all, :include => :feed_item).each do |manual_tagging|
+          entry = manual_tagging.feed_item.to_atom(options)
+          
+          # Don't need a value here, just an empty element
+          case manual_tagging.strength
+          when 1 then entry[CLASSIFIER_NAMESPACE, 'positive-example'] << ''
+          when 0 then entry[CLASSIFIER_NAMESPACE, 'negative-example'] << ''
+          end
+          
+          feed.entries << entry
+        end
+      end
+    end
+  end
+  
   def self.find_all_with_count(options = {})
     joins = ["LEFT JOIN users ON tags.user_id = users.id"]
     if options[:subscribed_by]
