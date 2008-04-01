@@ -48,8 +48,8 @@ class AccountController < ApplicationController
 
   def signup
     if @invite = Invite.find_active(params[:invite])
-      @user = User.new(params[:user])
-      if @user.save && @user.activate
+      @user = User.create_from_prototype(params[:user])
+      unless @user.new_record?
         @invite.update_attribute :user_id, @user.id
         self.current_user = @user
         redirect_back_or_default using_path

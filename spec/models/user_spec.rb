@@ -27,6 +27,97 @@ describe User do
       original_prototype.reload
       original_prototype.should_not be_prototype
     end
+
+    it "creating from a prototype activates the new user" do
+      prototype = User.create! valid_user_attributes(:prototype => true)
+      user = User.create_from_prototype(valid_user_attributes)
+      user.should be_active
+    end
+    
+    it "creating from a prototype returns a new user record if the record was invalid" do
+      prototype = User.create! valid_user_attributes(:prototype => true)
+      user = User.create_from_prototype
+      user.should be_new_record
+    end
+    
+    it "creating from a prototype copies over custom folders" do
+      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype.folders.create!(:name => "Big", :tag_ids => "1,2,3", :feed_ids => "4,5,6")
+      prototype.folders.create!(:name => "Small", :tag_ids => "9", :feed_ids => "10")
+      
+      user = User.create_from_prototype(valid_user_attributes)
+      user.should have(2).folders
+      
+      user.folders.first.name.should == "Big"
+      user.folders.first.tag_ids.should == [1,2,3]
+      user.folders.first.feed_ids.should == [4,5,6]
+
+      user.folders.last.name.should == "Small"
+      user.folders.last.tag_ids.should == [9]
+      user.folders.last.feed_ids.should == [10]
+    end
+    
+    it "creating from a prototype copies over feed subscriptions" do
+      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype.feed_subscriptions.create!(:feed_id => 1)
+      prototype.feed_subscriptions.create!(:feed_id => 2)
+      
+      user = User.create_from_prototype(valid_user_attributes)
+      user.should have(2).feed_subscriptions
+      
+      user.feed_subscriptions.first.feed_id.should == 1
+      user.feed_subscriptions.last.feed_id.should == 2
+    end
+    
+    it "creating from a prototype copies over tag subscriptions" do
+      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype.tag_subscriptions.create!(:tag_id => 1)
+      prototype.tag_subscriptions.create!(:tag_id => 2)
+      
+      user = User.create_from_prototype(valid_user_attributes)
+      user.should have(2).tag_subscriptions
+      
+      user.tag_subscriptions.first.tag_id.should == 1
+      user.tag_subscriptions.last.tag_id.should == 2
+    end
+    
+    it "creating from a prototype copies over tags" do
+      prototype = User.create! valid_user_attributes(:prototype => true)
+                  
+      tag1 = prototype.tags.create!(:name => "Tag 1", :public => false, :bias => 1.2, :show_in_sidebar => true, :comment => "Tag 1 Comment")
+      tag1.taggings.create! :classifier_tagging => true, :strength => 1, :feed_item_id => 1, :user_id => prototype.id
+      tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :comment => "Tag 2 Comment")
+      tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => 2, :user_id => prototype.id
+      
+      user = User.create_from_prototype(valid_user_attributes)
+      user.should have(2).tags
+      
+      user.tags.first.name.should == "Tag 1"
+      user.tags.first.public.should == false
+      user.tags.first.bias.should == 1.2
+      user.tags.first.show_in_sidebar.should == true
+      user.tags.first.comment.should == "Tag 1 Comment"
+
+      user.tags.first.should have(1).taggings   
+      user.tags.first.taggings.first.classifier_tagging.should == true
+      user.tags.first.taggings.first.strength.should == 1
+      user.tags.first.taggings.first.feed_item_id.should == 1
+      user.tags.first.taggings.first.user_id.should == user.id
+      user.tags.first.taggings.first.tag_id.should == user.tags.first.id
+      
+      user.tags.last.name.should == "Tag 2"
+      user.tags.last.public.should == true
+      user.tags.last.bias.should == 1.5
+      user.tags.last.show_in_sidebar.should == false
+      user.tags.last.comment.should == "Tag 2 Comment"
+
+      user.tags.last.should have(1).taggings
+      user.tags.last.taggings.first.classifier_tagging.should == false
+      user.tags.last.taggings.first.strength.should == 0
+      user.tags.last.taggings.first.feed_item_id.should == 2
+      user.tags.last.taggings.first.user_id.should == user.id    
+      user.tags.last.taggings.first.tag_id.should == user.tags.last.id
+    end
   end
   
   describe "logging login" do 
