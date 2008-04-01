@@ -6,6 +6,7 @@ describe "moderation panel" do
   before(:each) do
     Tagging.delete_all
     Tag.delete_all
+    ReadItem.delete_all
     
     @existing_tag = Tag.create! :user_id => 1, :name => "existing tag"
     

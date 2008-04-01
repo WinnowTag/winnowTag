@@ -32,7 +32,7 @@ describe "folders" do
   it "can be created" do
     assert_not_visible "add_folder"
 
-    click "add_folder_link"
+    click "css=#new_folder .add_link"
     assert_visible "add_folder"
     
     type "folder_name", "new folder"

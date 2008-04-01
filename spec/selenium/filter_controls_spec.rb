@@ -65,7 +65,7 @@ describe "filter controls" do
   #   end
   # end
   
-  describe "show all items filter" do
+  describe "manual taggings filter" do
     it "turns on manual taggings" do
       get_location.should =~ /\#$/
       click "css=#manual_taggings_filter"
@@ -80,6 +80,24 @@ describe "filter controls" do
       get_location.should =~ /\#text_filter=ruby&tag_ids=1&feed_ids=1$/
       click "css=#manual_taggings_filter"
       get_location.should =~ /\#text_filter=ruby&tag_ids=1&feed_ids=1&manual_taggings=true$/
+    end
+  end
+  
+  describe "read items filter" do
+    it "turns on read items" do
+      get_location.should =~ /\#$/
+      click "css=#read_items_filter"
+      get_location.should =~ /\#read_items=true$/
+    end
+    
+    it "keeps text and tag/feed filters intact" do
+      open login_path
+      open feed_items_path(:anchor => "text_filter=ruby&tag_ids=1&feed_ids=1")
+      wait_for_ajax
+
+      get_location.should =~ /\#text_filter=ruby&tag_ids=1&feed_ids=1$/
+      click "css=#read_items_filter"
+      get_location.should =~ /\#text_filter=ruby&tag_ids=1&feed_ids=1&read_items=true$/
     end
   end
   
@@ -165,7 +183,7 @@ describe "filter controls" do
       get_location.should =~ /\#tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
     
-    it "filters by all tags in the folder, even when the tag was just added"
+    xit "filters by all tags in the folder, even when the tag was just added"
 
     it "filters by all tags in the folder, even when a tag was just removed" do
       open feed_items_path
@@ -178,6 +196,6 @@ describe "filter controls" do
       get_location.should =~ /\#tag_ids=#{@sql.id}$/
     end
     
-    it "doesnt scroll the sidebar to the top"
+    xit "doesnt scroll the sidebar to the top"
   end
 end

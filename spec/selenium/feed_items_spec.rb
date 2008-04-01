@@ -16,27 +16,28 @@ describe "FeedItemsTest" do
   end
 
   it "mark_read_unread" do
-    feed_item_1 = FeedItem.find(2)
+    feed_item_1 = FeedItem.find(1)
         
-    see_element "#feed_item_#{feed_item_1.id}.read"
+    see_element "#feed_item_#{feed_item_1.id}.unread"
 
     click "css=#feed_item_#{feed_item_1.id} .status a"
-    see_element "#feed_item_#{feed_item_1.id}.unread"
+    see_element "#feed_item_#{feed_item_1.id}.read"
     
     refresh_and_wait
     wait_for_ajax
-    see_element "#feed_item_#{feed_item_1.id}.unread"
+    dont_see_element "#feed_item_#{feed_item_1.id}.unread"
 
-    click "css=#feed_item_#{feed_item_1.id} .status a"
-    see_element "#feed_item_#{feed_item_1.id}.read"
-
-    refresh_and_wait
-    wait_for_ajax
-    see_element "#feed_item_#{feed_item_1.id}.read"
+    # TODO: Make this work with read_items=true
+    # click "css=#feed_item_#{feed_item_1.id} .status a"
+    # see_element "#feed_item_#{feed_item_1.id}.read"
+    # 
+    # refresh_and_wait
+    # wait_for_ajax
+    # see_element "#feed_item_#{feed_item_1.id}.read"
   end
   
   it "open_close_item" do
-    feed_item = FeedItem.find(2)
+    feed_item = FeedItem.find(1)
 
     assert_not_visible "open_feed_item_#{feed_item.id}"
     
@@ -48,7 +49,7 @@ describe "FeedItemsTest" do
   end
 
   it "open_close_moderation_panel " do
-    feed_item = FeedItem.find(2) 
+    feed_item = FeedItem.find(1)
  
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}" 
  
@@ -60,7 +61,7 @@ describe "FeedItemsTest" do
   end 
   
   it "open_close_moderation_panel_does_not_open_close_item" do
-    feed_item = FeedItem.find(2) 
+    feed_item = FeedItem.find(1)
     assert_not_visible "open_feed_item_#{feed_item.id}"
     click "add_tag_feed_item_#{feed_item.id}" 
     assert_not_visible "open_feed_item_#{feed_item.id}"
@@ -76,7 +77,7 @@ describe "FeedItemsTest" do
 
     refresh_and_wait
     wait_for_ajax
-    see_element "#feed_item_#{feed_item_1.id}.read"
+    dont_see_element "#feed_item_#{feed_item_1.id}"
   end
   
   it "click_feed_title_takes_you_to_feed_page" do
@@ -88,6 +89,6 @@ describe "FeedItemsTest" do
     see_element "#feed_1"
   end
   
-  it "displays an empty message when there are no feed items"
-  it "does not display an empty message when there are feed items"
+  xit "displays an empty message when there are no feed items"
+  xit "does not display an empty message when there are feed items"
 end

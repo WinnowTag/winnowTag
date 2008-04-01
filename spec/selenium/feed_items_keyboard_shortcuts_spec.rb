@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "FeedItemsKeyboardShortcutsTest" do
+describe "keyboard shortcuts" do
   fixtures :users, :feed_items, :feeds, :feed_item_contents
 
   before(:each) do
@@ -124,7 +124,7 @@ describe "FeedItemsKeyboardShortcutsTest" do
     assert_not_visible "open_feed_item_#{feed_item_2.id}"
   end
   
-  it "closes open items when opening an item"
+  xit "closes open items when opening an item"
   
   it "select_item" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
