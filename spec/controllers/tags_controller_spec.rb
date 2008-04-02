@@ -91,7 +91,7 @@ describe TagsController do
   
   describe "index with Accept: application/atomsvc+xml" do
     before(:each) do
-      Tag.should_receive(:to_atomsvc).with(:base_uri => "http://test.host:80")
+      Tag.should_receive(:to_atomsvc).with(:base_uri => "http://test.host:80").and_return(Atom::Pub::Service.new)
     end
     
     it "should be successful" do
@@ -109,6 +109,11 @@ describe TagsController do
     it "should have application/atomsvc+xml as the content type when :format is atomsvc" do
       get :index, :format => 'atomsvc'
       response.content_type.should == "application/atomsvc+xml"
+    end
+    
+    it "should have the atom content" do
+      get :index, :format => 'atomsvc'
+      response.body.should match(%r{<service})
     end
   end
   
