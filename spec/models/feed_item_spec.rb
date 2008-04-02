@@ -178,6 +178,24 @@ describe FeedItem do
       
       FeedItem.find_with_filters(:user => user_1, :read_items => true, :order => "id").should == [feed_item_1, feed_item_2]
     end
+    
+    it "filters out read items when there are more then 1 tags included" do
+      user_1 = User.create! valid_user_attributes
+        
+      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+
+      FeedItem.delete_all    
+      feed_item_1 = valid_feed_item!
+    
+      tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
+      tagging_2 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_2.id
+
+      FeedItem.mark_read_for(user_1.id, feed_item_1.id)
+      
+      FeedItem.find_with_filters(:user => user_1, :read_items => false, :tag_ids => [tag_1.id, tag_2.id].join(","), :order => "id").should == []
+    end
+    
   end  
   
   describe "update_from_atom" do

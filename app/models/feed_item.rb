@@ -298,7 +298,7 @@ class FeedItem < ActiveRecord::Base
     conditions += tags.map do |tag|
       build_tag_inclusion_filter(tag, filters[:manual_taggings])
     end
-    conditions = [conditions.join(" OR ")] unless conditions.blank?
+    conditions = ["(#{conditions.join(" OR ")})"] unless conditions.blank? 
     
     conditions += filters[:user].excluded_tags.map do |tag|
       build_tag_exclusion_filter(tag)
