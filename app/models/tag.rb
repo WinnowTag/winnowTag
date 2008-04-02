@@ -167,11 +167,11 @@ class Tag < ActiveRecord::Base
   def self.to_atomsvc(options = {})
     Atom::Pub::Service.new do |service|
       service.workspaces << Atom::Pub::Workspace.new  do |wkspc|
-        wkspc.title = "Tags"
+        wkspc.title = "Tag Training"
         Tag.find(:all).each do |tag|
           wkspc.collections << Atom::Pub::Collection.new do |collection|
             collection.title = tag.name
-            collection.href = "#{options[:base_uri]}/tags/#{tag.id}"
+            collection.href = "#{options[:base_uri]}/tags/#{tag.id}/training"
             collection.accepts << ''
           end
         end

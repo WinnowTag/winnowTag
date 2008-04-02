@@ -225,7 +225,7 @@ describe Tag do
     end
     
     it "should have 'Tags' as the title of the workspace" do
-      @atomsvc.workspaces.first.title.should == 'Tags'
+      @atomsvc.workspaces.first.title.should == 'Tag Training'
     end
     
     it "should have a collection for each tag" do
@@ -254,9 +254,9 @@ describe Tag do
       end
     end
     
-    it "should have :base_uri/tags/:id for the url for each collection" do
+    it "should have :base_uri/tags/:id/training for the url for each collection" do
       @atomsvc.workspaces.first.collections.each do |c|
-        c.href.should match(%r{http://winnow.mindloom.org/tags/\d+})
+        c.href.should match(%r{http://winnow.mindloom.org/tags/\d+/training})
       end
     end
     
