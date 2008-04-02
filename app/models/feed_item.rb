@@ -275,7 +275,18 @@ class FeedItem < ActiveRecord::Base
   # 
   def self.options_for_filters(filters) # :doc:
     filters.assert_valid_keys(:limit, :order, :offset, :manual_taggings, :read_items, :user, :feed_ids, :tag_ids, :text_filter)
-    options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}
+    options = {:limit => filters[:limit], :offset => filters[:offset]}
+    
+    case filters[:order]
+    when "strength"
+      options[:order] = "(SELECT POW(AVG(taggings.strength), 1/COUNT(*)) FROM taggings WHERE taggings.user_id = #{filters[:user].id} AND taggings.feed_item_id = feed_items.id) DESC"
+    when "oldest"
+      options[:order] = "feed_items.updated"
+    when "id"
+      options[:order] = "feed_items.id"
+    else
+      options[:order] = "feed_items.updated DESC"
+    end
 
     joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
     conditions = []

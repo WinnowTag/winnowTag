@@ -646,6 +646,13 @@ ItemBrowser.prototype = {
     } else {
       $("read_items").checked = false;
     }
+
+		$$(".feed_item_order a").invoke("removeClassName", "selected");
+		if(params.order) {
+			$("order_" + params.order).addClassName("selected");
+		} else {
+			$("order_newest").addClassName("selected");
+		}
   },
   
   showLoadingIndicator: function(message) {

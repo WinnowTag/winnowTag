@@ -1103,6 +1103,14 @@ a.bookmarklet:hover {
   font-size: 1em;
 }
 
+.feed_item_order {
+	margin: 1em 0;
+	color: #666;
+}
+.feed_item_order a.selected {
+	font-weight: bold;
+}
+
 textarea.content { 
   width: 100%;
   height: 40em;
