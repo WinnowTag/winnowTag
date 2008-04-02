@@ -91,7 +91,13 @@ describe TagsController do
   
   describe "index with Accept: application/atomsvc+xml" do
     before(:each) do
+      Tag.stub!(:maximum).with(:created_on).and_return(Time.now)
+      Tag.stub!(:to_atomsvc).with(:base_uri => "http://test.host:80").and_return(Atom::Pub::Service.new)
+    end
+    
+    it "should call Tag.to_atomsvc" do
       Tag.should_receive(:to_atomsvc).with(:base_uri => "http://test.host:80").and_return(Atom::Pub::Service.new)
+      get :index, :format => 'atomsvc'      
     end
     
     it "should be successful" do
@@ -114,6 +120,20 @@ describe TagsController do
     it "should have the atom content" do
       get :index, :format => 'atomsvc'
       response.body.should match(%r{<service})
+    end
+    
+    it "should respond with a 304 if there are no new tags since HTTP_IF_MODIFIED_SINCE" do
+      Tag.should_receive(:maximum).with(:created_on).and_return(Time.now.yesterday)
+      Tag.should_not_receive(:to_atom_svc).with(:base_uri => "http://test.host:80")
+      request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
+      get :index, :format => 'atomsvc'
+      response.code.should == "304"
+    end
+    
+    it "should responde with a 200 if there are new tags since HTTP_IF_MODIFIED_SINCE" do
+      request.env['HTTP_IF_MODIFIED_SINCE'] = 30.days.ago.httpdate
+      get :index, :format => 'atomsvc'
+      response.code.should == "200"
     end
   end
   

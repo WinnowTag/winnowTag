@@ -30,9 +30,11 @@ class TagsController < ApplicationController
         @tags = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
         @subscribed_tags = Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
-      wants.atomsvc do
-        atomsvc = Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
-        render :xml => atomsvc.to_xml
+      wants.atomsvc do        
+        conditional_render(Tag.maximum(:created_on)) do
+          atomsvc = Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
+          render :xml => atomsvc.to_xml
+        end
       end
     end
   end
