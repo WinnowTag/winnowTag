@@ -373,6 +373,26 @@ describe FeedItem do
       FeedItem.archive_items
       lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
     end
+    
+    it "should delete old items with recent classifier tagging" do
+      item = valid_feed_item!(:updated => 31.days.ago.getutc)
+      user = User.find(1)
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
+    end
+    
+    it "should not delete old items with recent user tagging" do
+      item = valid_feed_item!(:updated => 31.days.ago.getutc)
+      user = User.find(1)
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => false)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+    end
       
     it "should not delete items with a classifier and a manual tagging" do
       item = valid_feed_item!(:updated => 31.days.ago.getutc)

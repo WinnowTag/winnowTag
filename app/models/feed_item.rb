@@ -180,15 +180,15 @@ class FeedItem < ActiveRecord::Base
   
   # Destroy feed items older that +since+.
   #
-  # This also deletes all classifier taggings that are older than +since+,
-  # manual taggings are untouched.
+  # This also deletes all classifier taggings that are on items older than +since+,
+  # Manual taggings are untouched.
   #
   # You could do this in the one SQL statement, however using ActiveRecord,
   # while taking slightly longer, will break this up into multiple transactions
   # and reduce the chance of getting a deadlock with a long transaction.
   #
   def self.archive_items(since = 30.days.ago.getutc)
-    taggings_deleted = Tagging.delete_all(['created_on < ? and classifier_tagging = ?', since, true])
+    taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
     conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
     items = FeedItem.find(:all, :conditions => conditions)
     items.each do |item|
