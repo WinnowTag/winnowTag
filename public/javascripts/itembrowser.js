@@ -535,7 +535,13 @@ ItemBrowser.prototype = {
   
   setFilters: function(parameters) {
     this.expandFolderParameters(parameters);
-    location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
+
+    // Clear out any tag/feed ids
+    var old_parameters = $H(location.hash.gsub('#', '').toQueryParams());
+    old_parameters.unset("tag_ids");
+    old_parameters.unset("feed_ids");
+    location.hash = "#" + old_parameters.toQueryString();
+    
     this.addFilters(parameters);
   },
   
