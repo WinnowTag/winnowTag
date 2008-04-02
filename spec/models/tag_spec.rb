@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Tag do
-  fixtures :users, :feed_items
+  fixtures :users, :feed_items, :feed_item_contents
   describe "associations" do
     before(:each) do
       @tag = Tag.new
