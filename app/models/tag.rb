@@ -13,6 +13,9 @@ def Tag(user, tag)
   end
 end
 
+require 'atom'
+require 'atom/pub'
+
 # Tag is a simple word used to tag an item. Every Tagging belongs to a Tag.
 # 
 # == Schema Information
@@ -156,6 +159,21 @@ class Tag < ActiveRecord::Base
           end
           
           feed.entries << entry
+        end
+      end
+    end
+  end
+  
+  def self.to_atomsvc(options = {})
+    Atom::Pub::Service.new do |service|
+      service.workspaces << Atom::Pub::Workspace.new  do |wkspc|
+        wkspc.title = "Tags"
+        Tag.find(:all).each do |tag|
+          wkspc.collections << Atom::Pub::Collection.new do |collection|
+            collection.title = tag.name
+            collection.href = "#{options[:base_uri]}/tags/#{tag.id}"
+            collection.accepts << ''
+          end
         end
       end
     end

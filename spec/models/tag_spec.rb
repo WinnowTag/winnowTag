@@ -211,6 +211,60 @@ describe Tag do
     end
   end
   
+  describe '.to_atomsvc' do
+    before(:each) do
+      @atomsvc = Tag.to_atomsvc(:base_uri => 'http://winnow.mindloom.org')
+    end
+    
+    it "should return an Atom::Pub:Service" do
+      @atomsvc.should be_an_instance_of(Atom::Pub::Service)
+    end
+    
+    it "should have a single workspace" do
+      @atomsvc.should have(1).workspaces
+    end
+    
+    it "should have 'Tags' as the title of the workspace" do
+      @atomsvc.workspaces.first.title.should == 'Tags'
+    end
+    
+    it "should have a collection for each tag" do
+      @atomsvc.workspaces.first.should have(Tag.count).collections
+    end      
+
+    it "should have some tags" do
+      @atomsvc.workspaces.first.should have_at_least(1).collections
+    end
+    
+    it "should have a title in each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.title.should_not be_nil
+      end
+    end
+      
+    it "should have an empty app:accept element in each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.accepts.should == ['']
+      end
+    end
+    
+    it "should have a url for each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.href.should_not be_nil
+      end
+    end
+    
+    it "should have :base_uri/tags/:id for the url for each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.href.should match(%r{http://winnow.mindloom.org/tags/\d+})
+      end
+    end
+    
+    it "should be parseable by ratom" do
+      lambda { Atom::Pub::Service.load_service(@atomsvc.to_xml) }.should_not raise_error
+    end
+  end
+  
   describe "#to_atom with training only" do
     CLASSIFIER_NS = 'http://peerworks.org/classifier'
     before(:each) do
