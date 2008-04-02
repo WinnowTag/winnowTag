@@ -279,7 +279,8 @@ class FeedItem < ActiveRecord::Base
     
     case filters[:order]
     when "strength"
-      options[:order] = "(SELECT POW(AVG(taggings.strength), 1/COUNT(*)) FROM taggings WHERE taggings.user_id = #{filters[:user].id} AND taggings.tag_id IN (#{filters[:user].sidebar_tags.map(&:id).join(',')}) AND taggings.feed_item_id = feed_items.id) DESC"
+      tag_ids = (filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags).map(&:id).join(',')
+      options[:order] = "(SELECT POW(AVG(taggings.strength), 1/COUNT(*)) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) DESC"
     when "oldest"
       options[:order] = "feed_items.updated"
     when "id"
