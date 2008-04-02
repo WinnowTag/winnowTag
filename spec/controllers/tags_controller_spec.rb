@@ -89,6 +89,29 @@ describe TagsController do
     end
   end
   
+  describe "index with Accept: application/atomsvc+xml" do
+    before(:each) do
+      Tag.should_receive(:to_atomsvc).with(:base_uri => "http://test.host:80")
+    end
+    
+    it "should be successful" do
+      accept('application/atomsvc+xml')
+      get :index
+      response.should be_success
+    end
+        
+    it "should have application/atomsvc+xml as the content type" do
+      accept('application/atomsvc+xml')
+      get :index
+      response.content_type.should == "application/atomsvc+xml"
+    end
+    
+    it "should have application/atomsvc+xml as the content type when :format is atomsvc" do
+      get :index, :format => 'atomsvc'
+      response.content_type.should == "application/atomsvc+xml"
+    end
+  end
+  
   describe "show" do
     before(:each) do
       @action = "show" # for 'conditional GET of tag'

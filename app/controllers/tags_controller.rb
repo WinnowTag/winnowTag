@@ -17,7 +17,8 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  skip_before_filter :login_required, :only => :show
+  skip_before_filter :login_required, :only => [:show, :index]
+  before_filter :login_required_unless_local, :only => :index
   before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training]
   
   def index
@@ -28,6 +29,9 @@ class TagsController < ApplicationController
         setup_sortable_columns
         @tags = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
         @subscribed_tags = Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+      end
+      wants.atomsvc do
+        Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
       end
     end
   end
