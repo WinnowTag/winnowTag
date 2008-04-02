@@ -314,6 +314,19 @@ describe FeedItem do
     end
   end
   
+  describe "to_atom with non-utf8" do
+    before(:each) do
+      @item = FeedItem.find(1)
+      @item.content.content = "this is not utf-8 \227"
+      @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org')
+    end
+    
+    it "should fix non-utf-8 content" do
+      lambda { @atom.to_xml }.should_not raise_error
+      @atom.to_xml.should match(/this is not utf-8/)
+    end
+  end
+    
   describe '.archive' do
     before(:each) do
       @before_count = FeedItem.count

@@ -156,7 +156,14 @@ class FeedItem < ActiveRecord::Base
       entry.links << Atom::Link.new(:rel => 'self', :href => self.collector_link)
       entry.links << Atom::Link.new(:rel => 'alternate', :href => self.link)
       entry.links << Atom::Link.new(:rel => 'http://peerworks.org/feed', :href => "urn:peerworks.org:feed##{self.id}")
-      entry.content = Atom::Content::Html.new(self.content.content) if self.content
+      
+      if self.content
+        begin
+          entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'utf-8', self.content.content).first)
+        rescue Iconv::IllegalSequence
+          entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'LATIN1', self.content.content).first)
+        end
+      end
     end
   end
     
