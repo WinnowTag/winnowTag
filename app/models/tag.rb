@@ -132,6 +132,10 @@ class Tag < ActiveRecord::Base
   
   CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier'
   
+  def create_taggings_from_atom(atom)
+    
+  end
+  
   # Return an Atom document for this tag.
   #
   # When :training_only => true all and only training examples will be included

@@ -344,7 +344,74 @@ describe Tag do
       lambda { Atom::Feed.load_feed(@atom.to_xml) }.should_not raise_error
     end
   end
+end
+
+describe 'create_taggings_from_atom', :shared => true do
+  it "should create new classifier taggings for each entry in the atom" do
+    @tag.classifier_taggings.size.should == (@before_classifier_taggings_size + @number_of_new_taggings)
+  end
   
+  it "should leave the original user tagging intact" do
+    lambda { @ut.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+  end
+  
+  it "should leave the original classifier tagging intact" do
+    lambda { @ct.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+  end
+  
+  it "should update the original classifier tagging's strength" do
+    @ct.reload
+    @ct.strength.should == @updated_strength
+  end
+  
+  it "should have the new classifier tagging" do
+    @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and strength = 0.99 and classifier_tagging = 1']).should_not be_nil
+  end
+end
+
+describe Tag do  
+  describe "#create_taggings_from_atom" do      
+    before(:each) do
+      @user = User.create! valid_user_attributes
+      @tag = Tag.create! valid_tag_attributes(:user => @user)
+      @ut = @tag.taggings.create!(:user_id => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
+      @ct = @tag.taggings.create!(:user_id => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+      @updated_strength = 0.97
+      @before_classifier_taggings_size = @tag.classifier_taggings.size
+      @number_of_new_taggings = 1
+      
+      @atom = Atom::Feed.new do |f|
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#3"
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#2"
+          e[CLASSIFIER_NS, 'autotag'] << @updated_strength.to_s
+        end
+      end
+      
+      @tag.create_taggings_from_atom(@atom)
+    end    
+   
+    it_should_behave_like 'create_taggings_from_atom'
+    
+    describe 'with missing items in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#123"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+  end
+  
+  describe "#replace_taggings_from_atom" do
+    
+  end
+end
+  
+describe Tag do
   describe "from test/unit" do
     fixtures :users
 
