@@ -348,34 +348,39 @@ end
 
 describe 'create_taggings_from_atom', :shared => true do
   it "should create new classifier taggings for each entry in the atom" do
+    @tag.create_taggings_from_atom(@atom)
     @tag.classifier_taggings.size.should == (@before_classifier_taggings_size + @number_of_new_taggings)
   end
   
   it "should leave the original user tagging intact" do
+    @tag.create_taggings_from_atom(@atom)
     lambda { @ut.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
   end
   
   it "should leave the original classifier tagging intact" do
+    @tag.create_taggings_from_atom(@atom)
     lambda { @ct.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
   end
   
   it "should update the original classifier tagging's strength" do
+    @tag.create_taggings_from_atom(@atom)
     @ct.reload
     @ct.strength.should == @updated_strength
   end
   
   it "should have the new classifier tagging" do
-    @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and strength = 0.99 and classifier_tagging = 1']).should_not be_nil
+    @tag.create_taggings_from_atom(@atom)
+    @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and classifier_tagging = 1']).strength.should == 0.99
   end
 end
 
-describe Tag do  
+describe Tag do
   describe "#create_taggings_from_atom" do      
     before(:each) do
       @user = User.create! valid_user_attributes
       @tag = Tag.create! valid_tag_attributes(:user => @user)
-      @ut = @tag.taggings.create!(:user_id => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
-      @ct = @tag.taggings.create!(:user_id => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+      @ut = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
+      @ct = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
       @updated_strength = 0.97
       @before_classifier_taggings_size = @tag.classifier_taggings.size
       @number_of_new_taggings = 1
@@ -390,8 +395,6 @@ describe Tag do
           e[CLASSIFIER_NS, 'autotag'] << @updated_strength.to_s
         end
       end
-      
-      @tag.create_taggings_from_atom(@atom)
     end    
    
     it_should_behave_like 'create_taggings_from_atom'
@@ -400,6 +403,36 @@ describe Tag do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
           e.id = "urn:peerworks.org:entry#123"
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+    
+    describe 'with strength-less item in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#4"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+    
+    describe 'with bad id item in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = " ks "          
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+    
+    describe 'with strength less than 0.9 item in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#4"          
+          e[CLASSIFIER_NS, 'autotag'] << "0.8"
         end
       end
       it_should_behave_like 'create_taggings_from_atom'
@@ -407,7 +440,46 @@ describe Tag do
   end
   
   describe "#replace_taggings_from_atom" do
+    before(:each) do
+      @user = User.create! valid_user_attributes
+      @tag = Tag.create! valid_tag_attributes(:user => @user)
+      @tag2 = Tag.create! valid_tag_attributes(:user => @user)
+      @ut = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
+      @ct = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+      @ct2 = @tag2.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+            
+      @atom = Atom::Feed.new do |f|
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#3"
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#2"
+          e[CLASSIFIER_NS, 'autotag'] << "0.95"
+        end
+      end
+    end
     
+    it "should leave the user tagging intact" do
+      @tag.replace_taggings_from_atom(@atom)
+      lambda { @ut.reload }.should_not raise_error
+    end
+    
+    it "should destroy the old classifier tagging" do
+      @tag.replace_taggings_from_atom(@atom)
+      lambda { @ct.reload }.should raise_error
+    end
+    
+    it "should create new taggings" do
+      @tag.replace_taggings_from_atom(@atom)
+      @tag.reload
+      @tag.classifier_taggings.size.should == @atom.entries.size
+    end
+    
+    it "should not affect other tags" do
+      @tag.replace_taggings_from_atom(@atom)
+      lambda { @ct2.reload }.should_not raise_error
+    end
   end
 end
   

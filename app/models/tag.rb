@@ -132,8 +132,31 @@ class Tag < ActiveRecord::Base
   
   CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier'
   
+  # This needs to be fast so we'll bypass Active Record
   def create_taggings_from_atom(atom)
-    
+    Tagging.transaction do 
+      atom.entries.each do |entry|
+        begin
+          item_id = URI.parse(entry.id).fragment.to_i
+          strength = entry[CLASSIFIER_NAMESPACE, 'autotag'].first.to_f
+          if strength >= 0.9
+            connection.execute "INSERT IGNORE INTO taggings " +
+                                "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
+                                "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                                "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
+          end
+        rescue URI::InvalidURIError => urie
+          logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
+        rescue ActiveRecord::StatementInvalid => arsi
+          logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
+        end
+      end
+    end
+  end
+  
+  def replace_taggings_from_atom(atom)
+    self.classifier_taggings.clear
+    self.create_taggings_from_atom(atom)
   end
   
   # Return an Atom document for this tag.
