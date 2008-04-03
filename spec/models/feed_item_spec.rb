@@ -379,6 +379,7 @@ describe FeedItem do
   end
   
   describe "to_atom with non-utf8" do
+    fixtures :feed_item_contents
     before(:each) do
       @item = FeedItem.find(1)
       @item.content.content = "this is not utf-8 \227"
