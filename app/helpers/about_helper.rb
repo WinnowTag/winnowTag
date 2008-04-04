@@ -11,7 +11,7 @@ module AboutHelper # :nodoc:
       rev = "??"
       if @classifier_info.respond_to?(:git_revision)
         rev = @classifier_info.git_revision
-      elsif @classifier_info.respond_to(:svnversion)        
+      elsif @classifier_info.respond_to?(:svnversion)        
         rev = @classifier_info.svnversion
       end
       
