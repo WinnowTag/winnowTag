@@ -135,6 +135,7 @@ describe "filter controls" do
       @tag = Tag.create! :name => "ruby", :user => users(:quentin)
       @sql = Tag.create! :name => "sql", :user => users(:quentin)
       open feed_items_path
+      wait_for_ajax
     end
     
     it "sets the tag filter" do
@@ -186,7 +187,6 @@ describe "filter controls" do
     xit "filters by all tags in the folder, even when the tag was just added"
 
     it "filters by all tags in the folder, even when a tag was just removed" do
-      open feed_items_path
       click "css=#show_all"
       wait_for_ajax
 
