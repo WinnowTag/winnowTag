@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => [:show, :index]
   before_filter :login_required_unless_local, :only => :index
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training]
+  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training, :classifier_taggings]
   
   def index
     respond_to do |wants|
@@ -151,6 +151,20 @@ class TagsController < ApplicationController
           render :text => atom.to_xml
         end
       end
+    end
+  end
+  
+  def classifier_taggings
+    @tag = Tag.find(params[:id])
+    
+    if !(request.post? || request.put?)
+      render :status => "405", :nothing => true
+    elsif params[:atom].nil?
+      render :status => "400", :nothing => true    
+    elsif request.post? || request.put?
+      request.post? ? @tag.create_taggings_from_atom(params[:atom]) : 
+                      @tag.replace_taggings_from_atom(params[:atom])
+      render :status => "204", :nothing => true
     end
   end
   

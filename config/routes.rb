@@ -52,7 +52,8 @@ ActionController::Routing::Routes.draw do |map|
                   :unsubscribe => :put, 
                   :sidebar => :put,
                   :auto_complete_for_tag_name => :any,
-                  :training => :get
+                  :training => :get,
+                  :classifier_taggings => :any
                 }
   
   map.public_tag "tags/public/:user_id/:id", :controller => "tags", :action => "show"
