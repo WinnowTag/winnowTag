@@ -1,0 +1,40 @@
+<div id="<%= dom_id(tag) %>" class="tag private clearfix">
+  <div class="left clearfix">
+    <div class="name">
+      <% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
+      <%= in_place_completing_editor_field :tag, :name, { :id => dom_id(tag, 'editor') },
+          { :param_name => "'tag[name]'", :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false, 
+            :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'), 
+            :click_to_edit_text => "Click to edit tag name", :save_text => "Save" },  
+          { :skip_style => true, :update => dom_id(tag, 'auto_complete'), :url => auto_complete_for_tag_name_tag_path(tag) } %> 
+    </div>
+
+    <div class="comment" id="<%= dom_id(tag, "edit_comment") %>">
+      <% if tag.comment.blank?; tag.comment = "..."; end %>
+      <%= in_place_editor_field :tag, :comment, {}, :param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
+          :click_to_edit_text => "Click to edit tag comment", :save_text => "Save", :rows => 5, :cols => 50 %>
+    </div>
+  </div>
+  
+  <div class="right clearfix">
+    <dl class="training">
+      <dt>Last Trained</dt>
+      <dd><%= format_date(tag.last_used_by) %></dd>
+      <dt>Training</dt>
+      <dd><%= link_to "+#{tag.positive_count} / -#{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&manual_taggings=true"), :title => "Inspect #{tag.name}" %></dd>
+      <dt>Automatic</dt>
+      <dd class="last"><%= tag.classifier_count %></dd>
+    </dl>
+    
+    <ul class="controls">
+      <li class="first"><%= bias_slider(tag) %></li>
+      <li><%= globally_exclude_check_box(tag) %> Globally Exclude</li>
+      <li>
+        <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> Public
+      </li>
+      <li><%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show_icon', :title => "Show Only Items Tagged With #{tag.name}" %></li>
+      <li><%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "duplicate_icon" } %></li>
+      <li><%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
+    </ul>
+  </div>
+</div>

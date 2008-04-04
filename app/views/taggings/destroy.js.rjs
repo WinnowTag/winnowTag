@@ -1,0 +1,12 @@
+if @tag.taggings.empty?
+  page << <<-EOJS
+    if(confirm("You have just removed the last example of tag '#{@tag.name}'. Do you want to delete the tag from Winnow?")) {
+      #{remote_function(:url => tag_path(@tag), :method => :delete)}
+    }
+  EOJS
+end
+
+page << "if ($('classification_button')) {"
+  page['classification_button'].disabled = false
+  page.replace_html 'progress_title', classifier_progress_title
+page << "}"

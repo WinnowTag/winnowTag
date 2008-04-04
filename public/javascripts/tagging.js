@@ -38,7 +38,7 @@ function validate_tag_edit(original_name, new_name) {
 function add_tag(taggable_id, tag_name, allow_remove) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
-  var match = tag_name.match(/^Create a new tag '(.+)'...$/);
+  var match = tag_name.match(/^Create Tag: '(.+)'$/);
   if( match ) { tag_name = match[1]; }
 
   var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
@@ -132,9 +132,6 @@ function add_tag_control(taggable_id, tag) {
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
-
-  auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array = 
-    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.without(tag);
 }
 
 function escape_javascript(string) {
@@ -143,12 +140,6 @@ function escape_javascript(string) {
 
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
-  
-  if(auto_completers['new_tag_field_' + taggable_id + '_auto_completer']) {
-    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.push(tag);
-    auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array = 
-      auto_completers['new_tag_field_' + taggable_id + '_auto_completer'].options.array.sort();
-  }
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }
@@ -179,7 +170,7 @@ function show_control_tooltip(control, tag, tag_name) {
   control.setAttribute("title", control_tooltip);
 }
 
-function show_tag_tooltip(tag, tag_name) {
+function show_tag_tooltip(tag, tag_name, classifier_strength) {
   tag = $(tag);
   var tag_tooltip = "";
   
@@ -188,7 +179,7 @@ function show_tag_tooltip(tag, tag_name) {
   } else if (tag.match('.positive')) {
     tag_tooltip = "Positive training example for Winnow";
   } else if (tag.match('.classifier')) {
-    tag_tooltip = "Winnow figured this item fit your examples";
+    tag_tooltip = "Winnow is " + classifier_strength +" sure this item fit your examples";
   }
   //TODO: Published tags: "Published by <name of user>"
   
@@ -209,7 +200,8 @@ Object.extend(Object.extend(Effect.ScrollToInDiv.prototype, Effect.Base.prototyp
   initialize: function(container, element) {
     this.container = $(container);
     this.element = $(element);
-    this.start(arguments[2] || {});
+    this.bottom_margin = (arguments[2] && arguments[2].bottom_margin) || 0;
+    this.start(arguments[2] || {});      
   },
   setup: function() {
     var containerOffset = Position.cumulativeOffset(this.container);
@@ -230,7 +222,7 @@ Object.extend(Object.extend(Effect.ScrollToInDiv.prototype, Effect.Base.prototyp
 
      // If the item is below the bottom of the container, scroll to the bottom of the item
      } else if(bottom_of_element > bottom_of_container) {
-       this.delta = bottom_of_element - bottom_of_container;
+       this.delta = bottom_of_element - bottom_of_container + this.bottom_margin;
 
      } else {
        this.delta = 0;

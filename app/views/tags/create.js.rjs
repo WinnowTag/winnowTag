@@ -1,0 +1,4 @@
+page << "if(ItemBrowser.instance) { itemBrowser.addTag(#{@tag.name.to_json}); }"
+page.call(:insert_in_order, 'tag_filters', 'li', '.name', tag_filter_control(@tag, :remove => :subscription), @tag.name)
+page.draggable(dom_id(@tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :constraint => "'vertical'", 
+  :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }")

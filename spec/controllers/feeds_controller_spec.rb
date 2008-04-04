@@ -26,7 +26,7 @@ describe FeedsController do
   
   describe "#show" do
     it "should assign feed on show" do
-      feed = mock('feed_1')
+      feed = mock_model(Feed, valid_feed_attributes)
       Feed.should_receive(:find).with("12").and_return(feed)
       get 'show', :id => "12"
       assigns[:feed].should == feed
@@ -51,6 +51,14 @@ describe FeedsController do
     
       get 'show', :id => 1
       response.should redirect_to(feed_url(:id => '1234'))
+    end
+    
+    it "should redirect if we have a local duplicate" do
+      dup_feed = mock_model(Feed, valid_feed_attributes(:duplicate_id => 1))
+      Feed.should_receive(:find).with(dup_feed.id.to_s).and_return(dup_feed)
+
+      get 'show', :id => dup_feed.id
+      response.should redirect_to(feed_url(:id => '1'))
     end
     
     it "should render 404 if we can't find the feed locally and it can't be found in the collector" do
@@ -95,7 +103,7 @@ describe FeedsController do
   end
   
   it "should create resource and then collect it " do    
-    feed = mock_model(Remote::Feed, :url => 'http://example.com')
+    feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
     feed.errors.should_receive(:empty?).and_return(true)
     feed.should_receive(:collect)
     Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
@@ -192,5 +200,34 @@ describe FeedsController do
     @user.should_receive(:feed_subscriptions).and_return(subscriptions)
     
     post :subscribe, :id => @feed.id, :subscribe => 'true'
+  end
+  
+  describe "create" do
+    it "renders the rjs template on a javascript call" do
+      feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now, :collect => nil)
+      feed.errors.stub!(:empty?).and_return(true)
+      Remote::Feed.stub!(:find_or_create_by_url).with('http://example.com').and_return(feed)
+      FeedSubscription.stub!(:find_or_create_by_feed_id_and_user_id)
+    
+      post :create, :feed => {:url => 'http://example.com'}, :format => 'js'
+      response.should render_template("create")
+    end
+  end
+  
+  describe "auto_complete_for_feed_title" do
+    before(:each) do
+      @user.stub!(:subscribed_feeds).and_return([])
+    end
+    
+    it "should return all feeds with matching title" do
+      get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
+      assigns[:feeds].size.should == 2
+    end
+    
+    it "should not return duplicate feeds" do
+      Feed.create!(valid_feed_attributes(:title => 'Ruby', :duplicate_id => 1))
+      get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
+      assigns[:feeds].size.should == 2
+    end
   end
 end

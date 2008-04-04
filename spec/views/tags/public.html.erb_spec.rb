@@ -8,6 +8,7 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/tags/public' do
+  fixtures :users
   before(:each) do
     login_as(1)
   end

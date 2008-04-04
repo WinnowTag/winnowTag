@@ -56,7 +56,7 @@ class FeedItem < ActiveRecord::Base
   #
   # See FeedItem.find_by_filters for how this is done.
   #
-  has_many :taggings, :dependent => :delete_all do 
+  has_many :taggings do 
     def cached_taggings
       if @cached_taggings.nil?
         @cached_taggings = Hash.new([])
@@ -148,6 +148,25 @@ class FeedItem < ActiveRecord::Base
     self
   end
   
+  def to_atom(options = {})
+    Atom::Entry.new do |entry|
+      entry.title = self.title
+      entry.id = "urn:peerworks.org:entry##{self.id}"
+      entry.authors << Atom::Person.new(:name => self.author)
+      entry.links << Atom::Link.new(:rel => 'self', :href => self.collector_link)
+      entry.links << Atom::Link.new(:rel => 'alternate', :href => self.link)
+      entry.links << Atom::Link.new(:rel => 'http://peerworks.org/feed', :href => "urn:peerworks.org:feed##{self.id}")
+      
+      if self.content
+        begin
+          entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'utf-8', self.content.content).first)
+        rescue Iconv::IllegalSequence
+          entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'LATIN1', self.content.content).first)
+        end
+      end
+    end
+  end
+    
   # Override count to use feed_id because InnoDB tables are slow with count(*)
   def self.count(*args)
     if args.first.is_a? String
@@ -161,15 +180,21 @@ class FeedItem < ActiveRecord::Base
   
   # Destroy feed items older that +since+.
   #
+  # This also deletes all classifier taggings that are on items older than +since+,
+  # Manual taggings are untouched.
+  #
   # You could do this in the one SQL statement, however using ActiveRecord,
   # while taking slightly longer, will break this up into multiple transactions
   # and reduce the chance of getting a deadlock with a long transaction.
   #
   def self.archive_items(since = 30.days.ago.getutc)
+    taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
     conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
-    FeedItem.find(:all, :conditions => conditions).each do |item|
+    items = FeedItem.find(:all, :conditions => conditions)
+    items.each do |item|
       item.destroy
     end
+    logger.info("ARCHIVAL: Deleted #{items.size} items and #{taggings_deleted} classifier taggings older than #{since}")
   end
   
   # Gets a count of the number of items that meet conditions applied by the filters.
@@ -249,8 +274,24 @@ class FeedItem < ActiveRecord::Base
   # This will return a Hash of options suitable for passing to FeedItem.find.
   # 
   def self.options_for_filters(filters) # :doc:
-    filters.assert_valid_keys(:limit, :order, :offset, :manual_taggings, :user, :feed_ids, :tag_ids, :text_filter)
-    options = {:limit => filters[:limit], :order => filters[:order], :offset => filters[:offset]}
+    filters.assert_valid_keys(:limit, :order, :offset, :manual_taggings, :read_items, :user, :feed_ids, :tag_ids, :text_filter)
+    options = {:limit => filters[:limit], :offset => filters[:offset]}
+    
+    case filters[:order]
+    when "strength"
+      if filters[:tag_ids].blank?
+        tag_ids = (filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags).map(&:id).join(',')
+      else
+        tag_ids = filters[:tag_ids]
+      end
+      options[:order] = "(SELECT MAX(taggings.strength) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) DESC, feed_items.updated DESC"
+    when "oldest"
+      options[:order] = "feed_items.updated"
+    when "id"
+      options[:order] = "feed_items.id"
+    else
+      options[:order] = "feed_items.updated DESC"
+    end
 
     joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
     conditions = []
@@ -262,11 +303,13 @@ class FeedItem < ActiveRecord::Base
     conditions += tags.map do |tag|
       build_tag_inclusion_filter(tag, filters[:manual_taggings])
     end
-    conditions = [conditions.join(" OR ")] unless conditions.blank?
+    conditions = ["(#{conditions.join(" OR ")})"] unless conditions.blank? 
     
     conditions += filters[:user].excluded_tags.map do |tag|
       build_tag_exclusion_filter(tag)
     end
+    
+    add_read_items_filter_conditions!(filters[:read_items], filters[:user], conditions)
         
     options[:conditions] = conditions.join(" AND ")
     add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
@@ -293,6 +336,12 @@ class FeedItem < ActiveRecord::Base
     if !text_filter.blank?
       joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
                " and MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+    end
+  end
+  
+  def self.add_read_items_filter_conditions!(read_items, user, conditions)
+    unless read_items
+      conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
     end
   end
 

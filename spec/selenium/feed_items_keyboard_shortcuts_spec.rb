@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "FeedItemsKeyboardShortcutsTest" do
+describe "keyboard shortcuts" do
   fixtures :users, :feed_items, :feeds, :feed_item_contents
 
   before(:each) do
@@ -10,7 +10,7 @@ describe "FeedItemsKeyboardShortcutsTest" do
     wait_for_ajax
   end
   
-  def test_change_item
+  it "change_item" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
@@ -43,7 +43,7 @@ describe "FeedItemsKeyboardShortcutsTest" do
     assert_not_visible "open_feed_item_#{feed_item_2.id}"
   end
   
-  def test_mark_read_unread
+  it "mark_read_unread" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
@@ -70,7 +70,7 @@ describe "FeedItemsKeyboardShortcutsTest" do
     see_element "#feed_item_#{feed_item_2.id}.unread"
   end
   
-  def test_open_close_moderation_panel 
+  it "open_close_moderation_panel " do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4) 
  
     dont_see_element "#feed_item_#{feed_item_1.id}.selected" 
@@ -97,7 +97,7 @@ describe "FeedItemsKeyboardShortcutsTest" do
     assert_not_visible "new_tag_form_feed_item_#{feed_item_2.id}" 
   end
   
-  def test_open_close_item
+  it "open_close_item" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
@@ -124,7 +124,9 @@ describe "FeedItemsKeyboardShortcutsTest" do
     assert_not_visible "open_feed_item_#{feed_item_2.id}"
   end
   
-  def test_select_item
+  xit "closes open items when opening an item"
+  
+  it "select_item" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"

@@ -25,7 +25,7 @@ describe "TagsPublicTest" do
   #   assert !is_checked("subscribe_tag_#{tag_2.id}")
   # end
   
-  def test_cant_subscribe_to_own_public_tag
+  it "cant_subscribe_to_own_public_tag" do
     tag_1 = Tag.create! :user_id => 1, :name => "public_tag", :public => true
     refresh_and_wait
     tag_2 = Tag.find(2)

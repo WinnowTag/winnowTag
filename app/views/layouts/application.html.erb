@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Winnow<%= " (#{current_user.login})" if current_user %>: <%= controller.controller_name.titleize %> <%= controller.action_name.titleize %></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ 	<%= javascript_include_merged :base %>
+	<%= stylesheet_link_merged :base %>
+	<!--[if lt IE 7]>
+	<%= javascript_include_tag('taconite_for_prototype.js') %>
+	<![endif]-->
+	<%= yield(:head) %>
+	
+	<script type="text/javascript" charset="utf-8">
+    document.observe('dom:loaded', resizeContent);
+    document.observe('dom:loaded', applesearch.init);
+    document.observe('font:resized', resizeContent);
+    Event.observe(window, 'resize', resizeContent);
+	</script>
+</head>
+<body id="<%= controller.controller_name %>_controller">
+	<%= render :partial => 'layouts/navbar' %>
+	<% if header_controls = yield(:header_controls) -%>
+	  <div id="header_controls"><%= header_controls %></div>
+	<% end -%>
+
+	<%= show_flash %>
+	
+  <% if sidebar_content = yield(:sidebar) -%>
+		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
+    <div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
+  <% end -%>
+  <% if @skip_content_container -%>
+    <%= yield %>
+  <% else -%>
+    <div id="content">
+      <%= yield %>
+    </div>
+  <% end -%>
+
+	<% if footer_content = yield(:footer) -%>
+		<div id="footer"><%= footer_content %></div>
+	<% end -%>
+</body>
+</html>

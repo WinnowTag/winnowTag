@@ -36,6 +36,12 @@ class Feed < ActiveRecord::Base
   alias_attribute :name, :title
   before_save :update_sort_title
 
+  def self.find_without_duplicates(*parameters)
+    with_scope(:find => {:conditions => 'duplicate_id is null'}) do
+      find(*parameters)
+    end
+  end
+  
   def self.find_or_create_from_atom(atom_feed)
     feed = find_or_create_from_atom_entry(atom_feed)
     
@@ -113,6 +119,8 @@ class Feed < ActiveRecord::Base
       read_attribute(:title)
     elsif not alternate.blank?
       URI.parse(alternate).host
+    elsif not via.blank?
+      URI.parse(via).host
     end
   end
   

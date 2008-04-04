@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Tag do
+  fixtures :users, :feed_items, :feed_item_contents
   describe "associations" do
     before(:each) do
       @tag = Tag.new
@@ -16,8 +17,6 @@ describe Tag do
   end
   
   describe "tagging counts" do
-    fixtures :users, :feed_items
-    
     it "is properly calculated for private tags" do
       Tag.delete_all
       
@@ -212,6 +211,279 @@ describe Tag do
     end
   end
   
+  describe '.to_atomsvc' do
+    before(:each) do
+      @atomsvc = Tag.to_atomsvc(:base_uri => 'http://winnow.mindloom.org')
+    end
+    
+    it "should return an Atom::Pub:Service" do
+      @atomsvc.should be_an_instance_of(Atom::Pub::Service)
+    end
+    
+    it "should have a single workspace" do
+      @atomsvc.should have(1).workspaces
+    end
+    
+    it "should have 'Tags' as the title of the workspace" do
+      @atomsvc.workspaces.first.title.should == 'Tag Training'
+    end
+    
+    it "should have a collection for each tag" do
+      @atomsvc.workspaces.first.should have(Tag.count).collections
+    end      
+
+    it "should have some tags" do
+      @atomsvc.workspaces.first.should have_at_least(1).collections
+    end
+    
+    it "should have a title in each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.title.should_not be_nil
+      end
+    end
+      
+    it "should have an empty app:accept element in each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.accepts.should == ['']
+      end
+    end
+    
+    it "should have a url for each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.href.should_not be_nil
+      end
+    end
+    
+    it "should have :base_uri/tags/:id/training for the url for each collection" do
+      @atomsvc.workspaces.first.collections.each do |c|
+        c.href.should match(%r{http://winnow.mindloom.org/tags/\d+/training})
+      end
+    end
+    
+    it "should be parseable by ratom" do
+      lambda { Atom::Pub::Service.load_service(@atomsvc.to_xml) }.should_not raise_error
+    end
+  end
+  
+  describe "#to_atom with training only" do
+    CLASSIFIER_NS = 'http://peerworks.org/classifier'
+    before(:each) do
+      @user = User.create! valid_user_attributes
+      @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag', :last_classified_at => Time.now)
+      @tag.taggings.create!(:feed_item => FeedItem.find(1), :user => @user, :strength => 1)
+      @tag.taggings.create!(:feed_item => FeedItem.find(2), :user => @user, :strength => 1)
+      @tag.taggings.create!(:feed_item => FeedItem.find(3), :user => @user, :strength => 0)
+      @tag.taggings.create!(:feed_item => FeedItem.find(4), :user => @user, :strength => 0.95, :classifier_tagging => true)
+      @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
+    end
+    
+    it "should set atom:title to the :user::tag name" do
+      @atom.title.should == "#{@user.login}:#{@tag.name}"
+    end
+    
+    it "should set atom:updated to the last trained date" do
+      @atom.updated.should == @tag.updated_on
+    end
+    
+    it "should set classifier:classified to the last classified date" do
+      @atom[CLASSIFIER_NS, 'classified'].first.should == @tag.last_classified_at.xmlschema
+    end
+    
+    it "should set classifier:bias the bias" do
+      @atom[CLASSIFIER_NS, 'bias'].first.should == @tag.bias.to_s
+    end
+    
+    it "should set the atom:id to :base_uri/tags/:id" do
+      @atom.id.should == "http://winnow.mindloom.org/tags/#{@tag.id}"
+    end
+    
+    it "should have an http://peerworks.org/classifier/edit link that refers to the classifier tagging resource" do
+      @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.should_not be_nil
+      @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.href.should == "http://winnow.mindloom.org/tags/#{@tag.id}/classifier_taggings"
+    end
+    
+    it "should have a self link" do
+      @atom.links.detect {|l| l.rel == "self" }.should_not be_nil
+      @atom.links.detect {|l| l.rel == "self" }.href.should == "http://winnow.mindloom.org/tags/#{@tag.id}"
+    end
+    
+    it "should contain all the manually tagged items" do
+      @atom.should have(3).entries
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should_not be_nil
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should_not be_nil
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.should_not be_nil
+    end
+    
+    it "should not contain any classifier only tagged items" do
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.should be_nil
+    end
+    
+    it "should contain the full content for each item" do
+      @atom.entries.each do |e|
+        e.content.to_s.size.should > 0
+      end
+    end
+    
+    it "should have either classifier:positive-example or classifier:negative-example elements for all items" do
+      @atom.entries.each do |e|
+        (e[CLASSIFIER_NS, 'positive-example'] + e[CLASSIFIER_NS, 'negative-example']).size.should == 1
+      end
+    end
+    
+    it "should have a classifier:negative-example for all negative examples" do
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}[CLASSIFIER_NS, 'positive-example'].should_not be_empty
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}[CLASSIFIER_NS, 'positive-example'].should_not be_empty
+    end
+        
+    it "should have a classifier:positive-example for all positive examples" do
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}[CLASSIFIER_NS, 'negative-example'].should_not be_empty
+    end
+      
+    
+    it "should be parseable by ratom" do
+      lambda { Atom::Feed.load_feed(@atom.to_xml) }.should_not raise_error
+    end
+  end
+end
+
+describe 'create_taggings_from_atom', :shared => true do
+  it "should create new classifier taggings for each entry in the atom" do
+    @tag.create_taggings_from_atom(@atom)
+    @tag.classifier_taggings.size.should == (@before_classifier_taggings_size + @number_of_new_taggings)
+  end
+  
+  it "should leave the original user tagging intact" do
+    @tag.create_taggings_from_atom(@atom)
+    lambda { @ut.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+  end
+  
+  it "should leave the original classifier tagging intact" do
+    @tag.create_taggings_from_atom(@atom)
+    lambda { @ct.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+  end
+  
+  it "should update the original classifier tagging's strength" do
+    @tag.create_taggings_from_atom(@atom)
+    @ct.reload
+    @ct.strength.should == @updated_strength
+  end
+  
+  it "should have the new classifier tagging" do
+    @tag.create_taggings_from_atom(@atom)
+    @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and classifier_tagging = 1']).strength.should == 0.99
+  end
+end
+
+describe Tag do
+  describe "#create_taggings_from_atom" do      
+    before(:each) do
+      @user = User.create! valid_user_attributes
+      @tag = Tag.create! valid_tag_attributes(:user => @user)
+      @ut = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
+      @ct = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+      @updated_strength = 0.97
+      @before_classifier_taggings_size = @tag.classifier_taggings.size
+      @number_of_new_taggings = 1
+      
+      @atom = Atom::Feed.new do |f|
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#3"
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#2"
+          e[CLASSIFIER_NS, 'autotag'] << @updated_strength.to_s
+        end
+      end
+    end    
+   
+    it_should_behave_like 'create_taggings_from_atom'
+    
+    describe 'with missing items in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#123"
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+    
+    describe 'with strength-less item in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#4"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+    
+    describe 'with bad id item in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = " ks "          
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+    
+    describe 'with strength less than 0.9 item in the document' do
+      before(:each) do 
+        @atom.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#4"          
+          e[CLASSIFIER_NS, 'autotag'] << "0.8"
+        end
+      end
+      it_should_behave_like 'create_taggings_from_atom'
+    end
+  end
+  
+  describe "#replace_taggings_from_atom" do
+    before(:each) do
+      @user = User.create! valid_user_attributes
+      @tag = Tag.create! valid_tag_attributes(:user => @user)
+      @tag2 = Tag.create! valid_tag_attributes(:user => @user)
+      @ut = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
+      @ct = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+      @ct2 = @tag2.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+            
+      @atom = Atom::Feed.new do |f|
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#3"
+          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+        end
+        f.entries << Atom::Entry.new do |e|
+          e.id = "urn:peerworks.org:entry#2"
+          e[CLASSIFIER_NS, 'autotag'] << "0.95"
+        end
+      end
+    end
+    
+    it "should leave the user tagging intact" do
+      @tag.replace_taggings_from_atom(@atom)
+      lambda { @ut.reload }.should_not raise_error
+    end
+    
+    it "should destroy the old classifier tagging" do
+      @tag.replace_taggings_from_atom(@atom)
+      lambda { @ct.reload }.should raise_error
+    end
+    
+    it "should create new taggings" do
+      @tag.replace_taggings_from_atom(@atom)
+      @tag.reload
+      @tag.classifier_taggings.size.should == @atom.entries.size
+    end
+    
+    it "should not affect other tags" do
+      @tag.replace_taggings_from_atom(@atom)
+      lambda { @ct2.reload }.should_not raise_error
+    end
+  end
+end
+  
+describe Tag do
   describe "from test/unit" do
     fixtures :users
 

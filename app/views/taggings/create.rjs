@@ -1,7 +1,0 @@
-tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags
-page[:tag_filters].replace tag_filter_controls(tags, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" })
-
-page << "if ($('classification_button')) {"
-  page['classification_button'].disabled = false
-  page.replace_html 'progress_title', classifier_progress_title
-page << "}"

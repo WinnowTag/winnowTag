@@ -36,7 +36,7 @@ class FeedsController < ApplicationController
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
                                       
-      if !@feed.respond_to?(:updated_on) || @feed.updated_on.nil?
+      if @feed.updated_on.nil?
         flash[:notice] = "Thanks for adding the feed from '#{@feed.url}'. " + 
                          "We will fetch the items soon and we'll let you know when it is done. " +
                          "The feed has also been added to your feeds folder in the sidebar."
@@ -45,8 +45,11 @@ class FeedsController < ApplicationController
                          "however we will update it now and we'll let you know when it is done. " +
                          "The feed has also been added to your feeds folder in the sidebar."
       end
-            
-      redirect_to feed_url(@feed)
+      
+      respond_to do |format|
+        format.html { redirect_to feed_url(@feed) }
+        format.js
+      end
     else
       flash[:error] = @feed.errors.on(:url)
       render :action => 'new'        
@@ -74,6 +77,10 @@ class FeedsController < ApplicationController
   def show
     begin
       @feed = Feed.find(params[:id])
+      
+      if @feed.duplicate_id
+        redirect_to :id => @feed.duplicate_id
+      end
     rescue ActiveRecord::RecordNotFound
       begin
         @feed = Remote::Feed.find(params[:id])
@@ -105,7 +112,7 @@ class FeedsController < ApplicationController
       values << feed_ids
     end
     
-    @feeds = Feed.find(:all, :conditions => [conditions.join(" AND "), *values], :limit => 30)
+    @feeds = Feed.find_without_duplicates(:all, :conditions => [conditions.join(" AND "), *values], :limit => 30)
     render :layout => false
   end
   

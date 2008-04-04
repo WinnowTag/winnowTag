@@ -11,8 +11,8 @@ module AboutHelper # :nodoc:
       content_tag('p',
           'Using classifier version ' +
           content_tag('span', @classifier_info.version, :class => 'classifier_version') +
-          ' at build no ' +
-          content_tag('span', @classifier_info.svnversion, :class => 'classifier_svnversion') +
+          ' at build ' +
+          content_tag('span', @classifier_info.git_revision, :class => 'classifier_gitrevision') +
           '.',
           :class => 'classifier_info')
     else

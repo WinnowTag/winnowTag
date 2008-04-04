@@ -6,6 +6,7 @@ describe "moderation panel" do
   before(:each) do
     Tagging.delete_all
     Tag.delete_all
+    ReadItem.delete_all
     
     @existing_tag = Tag.create! :user_id => 1, :name => "existing tag"
     
@@ -174,6 +175,8 @@ describe "moderation panel" do
     wait_for_effects
     
     dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+
+    get_confirmation # Ignore the confirmation to delete the tag
   end
   
   it "can change a negative tagging to a nothing tagging" do
@@ -189,6 +192,8 @@ describe "moderation panel" do
     wait_for_effects
     
     dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+    
+    get_confirmation # Ignore the confirmation to delete the tag
   end
   
   it "changing tagging state does not open/close item" do
@@ -225,13 +230,13 @@ describe "moderation panel" do
   end
   
   it "shows the proper tooltip for a classifier tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
+    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true, :strength => 0.9523
 
     open feed_items_path
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Winnow figured this item fit your examples", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4']@title")
+    assert_equal "Winnow is 95.23% sure this item fit your examples", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4']@title")
   end
   
   it "shows the proper tooltip for controls in a negative tagging" do

@@ -1,8 +1,17 @@
 <% content_for :header_controls do -%>
   <ul class="control_bar">
     <li><%= will_paginate(@feeds) if @feeds %></li>
-    <li><%= link_to "Add Feed", new_feed_path %></li>
-    <li><%= link_to "Import OPML", import_feeds_path %></li>
+    <li><%= link_to "Add", new_feed_path %></li>
+    <li><%= link_to "Import", import_feeds_path %></li>
+    <% if params[:action] == "index" -%>
+    <li>
+      Sort By:
+      <%= sort_link "Title", 'feeds', :alias => 'title' %>,
+    	<%= sort_link "Globally Exclude", 'feeds', :alias => 'globally_exclude' %>,
+    	<%= sort_link "Items", 'feeds', :alias => 'item_count' %>,
+    	<%= sort_link "Last Updated", 'feeds', :alias => 'updated_on' %>
+    </li>
+    <% end -%>
   </ul>
 
   <% if params[:action] == 'index' -%>

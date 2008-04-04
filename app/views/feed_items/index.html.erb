@@ -1,0 +1,24 @@
+<% content_for :head do -%>
+	<script type="text/javascript" charset="utf-8">
+		var itemBrowser;
+		document.observe('dom:loaded', function() {
+			itemBrowser = new ItemBrowser('feed_items', {tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %>});
+		});
+	</script>
+<% end -%>
+
+<noscript>Winnow requires Javascript to be enabled.  Please enable Javascript in your browser and refresh.</noscript>
+
+<% content_for :sidebar, "" -%>
+
+<div id="feed_items"></div>
+
+<% content_for :footer do -%>
+	<span id="previous-next-buttons">
+		<%= image_submit_tag "previous.png", :onclick => "itemBrowser.openPreviousItem();" %>
+		<%= image_submit_tag "next.png", :onclick => "itemBrowser.openNextItem();" %>
+		<%= image_submit_tag "mark_read.png", :onclick => "itemBrowser.markAllItemsRead();" %>
+	</span>
+	<span id="feed_items_indicator" style="display:none;"></span>
+	<span id="feed_item_count"></span>
+<% end -%>

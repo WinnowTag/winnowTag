@@ -43,13 +43,14 @@ class FeedItemsController < ApplicationController
         #   params[:tag_ids] = folder.tag_ids.join(",")
         # end
 
-        filters = { :order => 'feed_items.updated DESC',
+        filters = { :order => params[:order],
                     :limit => limit,
                     :offset => params[:offset],
                     :feed_ids => params[:feed_ids],
                     :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :manual_taggings => params[:manual_taggings],
+                    :read_items => params[:read_items],
                     :user => current_user }
   
         @feed_items = FeedItem.find_with_filters(filters)    
@@ -82,6 +83,7 @@ class FeedItemsController < ApplicationController
                   :tag_ids => params[:tag_ids],
                   :text_filter => params[:text_filter],
                   :manual_taggings => params[:manual_taggings],
+                  :read_items => params[:read_items],
                   :user => current_user }
       
       FeedItem.mark_read(filters)
@@ -108,6 +110,10 @@ class FeedItemsController < ApplicationController
   def moderation_panel 
     @feed_item = FeedItem.find(params[:id]) 
     respond_to :js
+  end
+  
+  def sidebar
+    render :layout => false
   end
   
 private

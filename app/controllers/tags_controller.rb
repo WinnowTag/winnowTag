@@ -17,8 +17,9 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  skip_before_filter :login_required, :only => :show
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  skip_before_filter :login_required, :only => [:show, :index]
+  before_filter :login_required_unless_local, :only => :index
+  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training, :classifier_taggings]
   
   def index
     respond_to do |wants|
@@ -29,6 +30,12 @@ class TagsController < ApplicationController
         @tags = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
         @subscribed_tags = Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
       end
+      wants.atomsvc do        
+        conditional_render(Tag.maximum(:created_on)) do
+          atomsvc = Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
+          render :xml => atomsvc.to_xml
+        end
+      end
     end
   end
   
@@ -38,18 +45,7 @@ class TagsController < ApplicationController
     if user and @tag = user.tags.find_by_id(params[:id])
       respond_to do |wants|
         wants.atom do        
-          last_modified = if @tag.updated_on and @tag.last_classified_at
-            [@tag.updated_on, @tag.last_classified_at].max
-          else
-            (@tag.updated_on or @tag.last_classified_at)
-          end
-          
-          since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
-
-          if since && last_modified && since >= last_modified
-            head :not_modified
-          else
-            response.headers['Last-Modified'] = last_modified.httpdate if last_modified
+          conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do
             render :layout => false
           end
         end
@@ -92,6 +88,9 @@ class TagsController < ApplicationController
           page.redirect_to tags_path
         end
       end
+    elsif params[:name]
+      @tag = Tag.create! :name => params[:name], :user => current_user
+      respond_to :js
     else
       render :nothing => true
     end
@@ -139,6 +138,34 @@ class TagsController < ApplicationController
     @tag.destroy
     TagSubscription.delete_all(:tag_id => @tag)
     respond_to :js
+  end
+  
+  def training
+    tag = Tag.find(params[:id])    
+    base_uri = "http://#{request.host}:#{request.port}"
+    atom = tag.to_atom(:training_only => true, :base_uri => base_uri)
+    
+    respond_to do |wants|
+      wants.atom do
+        conditional_render(tag.updated_on) do
+          render :text => atom.to_xml
+        end
+      end
+    end
+  end
+  
+  def classifier_taggings
+    @tag = Tag.find(params[:id])
+    
+    if !(request.post? || request.put?)
+      render :status => "405", :nothing => true
+    elsif params[:atom].nil?
+      render :status => "400", :nothing => true    
+    elsif request.post? || request.put?
+      request.post? ? @tag.create_taggings_from_atom(params[:atom]) : 
+                      @tag.replace_taggings_from_atom(params[:atom])
+      render :status => "204", :nothing => true
+    end
   end
   
   # Action to get tag names for the auto-complete tag field on the merge/rename form.
@@ -237,5 +264,16 @@ private
     add_to_sortable_columns('tags', :field => 'last_used_by')
     add_to_sortable_columns('tags', :field => 'login')
     add_to_sortable_columns('tags', :field => 'globally_exclude')
+  end
+  
+  def conditional_render(last_modified)   
+    since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
+
+    if since && last_modified && since >= last_modified
+      head :not_modified
+    else
+      response.headers['Last-Modified'] = last_modified.httpdate if last_modified
+      yield
+    end
   end
 end

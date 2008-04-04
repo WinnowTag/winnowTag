@@ -1,3 +1,8 @@
+function exceptionToIgnore(e) {
+  // Ignore this Firefox error because it just occurs when a XHR request is interrupted.
+  return e.name == "NS_ERROR_NOT_AVAILABLE"
+}
+
 Position.includeScrollOffsets = true;
 
 document.observe('dom:loaded', function() {
@@ -205,11 +210,12 @@ function toggleSidebar() {
 function update_feed_filters(element, value) {
   element.value = "";
   if(value.match("#add_new_feed")) {
-    alert("Adding a new feed...");
+    new Ajax.Request("/feeds", {parameters: 'feed[url]='+encodeURIComponent(value.getAttribute("url")), method:'post'});
   } else {
     value.removeClassName('selected');
     insert_in_order('feed_filters', 'li', '.name', value, $(value).down(".name").innerHTML);
   	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
+    itemBrowser.toggleSetFilters({feed_ids: $(value).getAttribute("id").gsub("feed_", "")});
   	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
   }
 }
@@ -217,11 +223,12 @@ function update_feed_filters(element, value) {
 function update_tag_filters(element, value) {
   element.value = "";
   if(value.match("#add_new_tag")) {
-    alert("Adding a new tag...");
+    new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(value.getAttribute("name")), method:'post'});
   } else {
     value.removeClassName('selected');
     insert_in_order('tag_filters', 'li', '.name', value, $(value).down(".name").innerHTML);
   	new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
+    itemBrowser.toggleSetFilters({tag_ids: $(value).getAttribute("id").gsub("tag_", "")});
   	new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
   }
 }
@@ -305,5 +312,3 @@ applesearch.removePlaceholder = function(fld) {
 	  fld.value = "";
   }
 }
-
-var auto_completers = {};

@@ -1,0 +1,4 @@
+<% form_tag feed_items_path, :method => :get, :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage('Search requires a word with at least 4 characters.'); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Items...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% end -%>
+	

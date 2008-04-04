@@ -212,13 +212,22 @@ Autocompleter.Base = Class.create({
     if(this.index > 0) this.index--
       else this.index = this.entryCount-1;
     // NOTE: peerworks change
-    this.getEntry(this.index).scrollIntoView(false);
+    if(this.getEntry(this.index).up("#feed_items")) {
+      new Effect.ScrollToInDiv(itemBrowser.feed_items_scrollable, this.getEntry(this.index), {duration: 0.3, bottom_margin: 7});
+    } else {
+      this.getEntry(this.index).scrollIntoView(false);
+    }
   },
   
   markNext: function() {
     if(this.index < this.entryCount-1) this.index++
       else this.index = 0;
-    this.getEntry(this.index).scrollIntoView(false);
+    // NOTE: peerworks change
+    if(this.getEntry(this.index).up("#feed_items")) {
+      new Effect.ScrollToInDiv(itemBrowser.feed_items_scrollable, this.getEntry(this.index), {duration: 0.3, bottom_margin: 7});
+    } else {
+      this.getEntry(this.index).scrollIntoView(false);
+    }
   },
   
   getEntry: function(index) {
@@ -463,16 +472,16 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
           ret = ret.concat(partial.slice(0, instance.options.choices - ret.length))
         
         // NOTE: peerworks change
-        var top = [];
+        var bot = [];
         if(!entry.blank()) {
           this.persistent.each(function(choice) {
             // TODO: Make case insensitive
             if(!instance.options.array.include(entry)) {
-              top.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
+              bot.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
             }
           });
         }
-        ret = [top, ret].flatten();  
+        ret = [ret, bot].flatten();  
         
         return "<ul>" + ret.join('') + "</ul>";
       }

@@ -73,6 +73,8 @@ class User < ActiveRecord::Base
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
   has_many :folders, :dependent => :delete_all
  
+  before_save :update_prototype
+ 
   def feeds
     (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.name.to_s }
   end
@@ -223,6 +225,10 @@ class User < ActiveRecord::Base
     @activated = true
     update_attributes(:activated_at => Time.now.utc, :activation_code => nil)
   end
+  
+  def active?
+    activated_at && activated_at < Time.now
+  end
 
   # Returns true if the user has just been activated.
   def recently_activated?
@@ -271,6 +277,38 @@ class User < ActiveRecord::Base
     self.save!
   end
   
+  def self.create_from_prototype(attributes = {})
+    user = new(attributes)
+    user.save!
+    user.activate
+    
+    if prototype = User.find_by_prototype(true)
+      prototype.folders.each do |folder| 
+        user.folders.create! :name => folder.name, :tag_ids => folder.tag_ids, :feed_ids => folder.feed_ids
+      end
+      
+      prototype.feed_subscriptions.each do |feed_subscription| 
+        user.feed_subscriptions.create! :feed_id => feed_subscription.feed_id
+      end
+      
+      prototype.tag_subscriptions.each do |tag_subscription| 
+        user.tag_subscriptions.create! :tag_id => tag_subscription.tag_id
+      end
+      
+      prototype.tags.each do |tag|
+        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :show_in_sidebar => tag.show_in_sidebar, :comment => tag.comment
+
+        tag.taggings.each do |tagging|
+          user.taggings.create! :classifier_tagging => tagging.classifier_tagging, :strength => tagging.strength, :feed_item_id => tagging.feed_item_id, :tag_id => new_tag.id
+        end
+      end
+    end
+    
+    user
+  rescue ActiveRecord::RecordInvalid
+    user
+  end
+  
 protected
   # before filter 
   def encrypt_password
@@ -296,5 +334,11 @@ protected
   
   def make_owner_of_self
     self.has_role('owner', self)
+  end
+  
+  def update_prototype
+    if prototype?
+      User.update_all(["prototype = ?", false])
+    end
   end
 end

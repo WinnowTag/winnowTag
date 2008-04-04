@@ -30,9 +30,9 @@ describe '/feeds/index' do
       response.should_not have_tag(".empty")
     end
 
-    it "should show table" do
+    it "should show the feeds" do
       render_it
-      response.should have_tag("table")
+      response.should have_tag(".feed")
     end
   end
   

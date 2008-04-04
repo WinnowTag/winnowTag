@@ -13,6 +13,9 @@ def Tag(user, tag)
   end
 end
 
+require 'atom'
+require 'atom/pub'
+
 # Tag is a simple word used to tag an item. Every Tagging belongs to a Tag.
 # 
 # == Schema Information
@@ -125,6 +128,82 @@ class Tag < ActiveRecord::Base
   
   def potentially_undertrained?
     self.positive_taggings.size < Tag.undertrained_threshold
+  end
+  
+  CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier'
+  
+  # This needs to be fast so we'll bypass Active Record
+  def create_taggings_from_atom(atom)
+    Tagging.transaction do 
+      atom.entries.each do |entry|
+        begin
+          item_id = URI.parse(entry.id).fragment.to_i
+          strength = entry[CLASSIFIER_NAMESPACE, 'autotag'].first.to_f
+          if strength >= 0.9
+            connection.execute "INSERT IGNORE INTO taggings " +
+                                "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
+                                "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                                "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
+          end
+        rescue URI::InvalidURIError => urie
+          logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
+        rescue ActiveRecord::StatementInvalid => arsi
+          logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
+        end
+      end
+    end
+  end
+  
+  def replace_taggings_from_atom(atom)
+    self.classifier_taggings.clear
+    self.create_taggings_from_atom(atom)
+  end
+  
+  # Return an Atom document for this tag.
+  #
+  # When :training_only => true all and only training examples will be included
+  # in the document and it will conform to the Training Definition Document.
+  #
+  def to_atom(options = {})
+    Atom::Feed.new do |feed|
+      feed.title = "#{self.user.login}:#{self.name}"
+      feed.id = "#{options[:base_uri]}/tags/#{self.id}"
+      feed.updated = self.updated_on
+      feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
+      feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
+      feed.links << Atom::Link.new(:rel => "self", :href => feed.id)
+      feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
+                                   :href => "#{options[:base_uri]}/tags/#{self.id}/classifier_taggings")
+                                   
+      if options[:training_only]
+        self.manual_taggings.find(:all, :include => :feed_item).each do |manual_tagging|
+          entry = manual_tagging.feed_item.to_atom(options)
+          
+          # Don't need a value here, just an empty element
+          case manual_tagging.strength
+          when 1 then entry[CLASSIFIER_NAMESPACE, 'positive-example'] << ''
+          when 0 then entry[CLASSIFIER_NAMESPACE, 'negative-example'] << ''
+          end
+          
+          feed.entries << entry
+        end
+      end
+    end
+  end
+  
+  def self.to_atomsvc(options = {})
+    Atom::Pub::Service.new do |service|
+      service.workspaces << Atom::Pub::Workspace.new  do |wkspc|
+        wkspc.title = "Tag Training"
+        Tag.find(:all).each do |tag|
+          wkspc.collections << Atom::Pub::Collection.new do |collection|
+            collection.title = tag.name
+            collection.href = "#{options[:base_uri]}/tags/#{tag.id}/training"
+            collection.accepts << ''
+          end
+        end
+      end
+    end
   end
   
   def self.find_all_with_count(options = {})

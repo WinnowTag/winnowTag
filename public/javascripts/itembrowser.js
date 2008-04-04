@@ -3,246 +3,9 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please contact info@peerworks.org for further information.
-//
-// Functions that control the feed item browser interface
-var classification = null;
-
-function exceptionToIgnore(e) {
-  // Ignore this Firefox error because it just occurs when a XHR request is interrupted.
-  return e.name == "NS_ERROR_NOT_AVAILABLE"
-}
-
-function cancelClassification() {
-  if (classification) {
-    classification.cancel();
-  }
-  
-  classification = null;
-}
-
-var BiasSlider = Class.create();
-BiasSlider.prototype = Object.extend(Control.Slider.prototype, {
-  setDisabled: function() {
-    this.disabled = true;
-    this.track.addClassName('disabled');    
-  },
-  setEnabled: function() {
-    this.disabled = false;
-    this.track.removeClassName('disabled');
-  },
-  sendUpdate: function(bias, tag_id) {
-    new Ajax.Request("/tags/" + tag_id + "?tag[bias]=" + bias, {method: "PUT"});
-  }
-});
-
-var Classification = Class.create();
-
-/** Creates a Classification instance configured to be integrated
- *  with the ItemBrowser
- */
-Classification.createItemBrowserClassification = function(classifier_url) {  
-  return new Classification(classifier_url, {
-      onStarted: function(c) {        
-        $('progress_bar').style.width = "0%";
-        $('progress_title').update("Classifying changed tags");
-        $('classification_button').hide();
-        $('cancel_classification_button').show();
-        $('progress_bar').removeClassName('complete');
-        $('classification_progress').show();
-        $('progress_title').update("Starting Classifier");
-      },
-      onStartProgressUpdater: function(c) {
-        c.classifier_items_loaded = 0;
-      },
-      onShowProgressBar: function(c) {
-        
-      },
-      onReset: function() {
-        
-      },
-      onCancelled: function(c) {
-        $('classification_progress').hide();
-        $('cancel_classification_button').hide();
-        $('classification_button').show();
-        $('progress_bar').setStyle({width: '0%'});
-        $('progress_title').update("Classify changed tags");          
-      },
-      onReactivated: function(c) {
-        c.classifier_items_loaded = 0;
-        $('classification_button').disabled = false;
-        $('progress_title').update("Classify changed tags");          
-      },
-      onFinished: function(c) {
-        $('classification_progress').hide();
-        c.options.onCancelled(c);
-        $('progress_title').update("Classification Complete");
-        $('classification_button').disabled = true;
-        if (confirm("Classification has completed.\nDo you want to reload the items?")) {
-          itemBrowser.reload();
-        }
-      },
-      onProgressUpdated: function(c, progress) {
-        $('progress_bar').setStyle({width: progress.progress + '%'});      
-      }            
-    });
-};
-
-/**
- *
- *  Available Callbacks (in lifecycle order)
- *
- *   - onStart
- *   - onShowProgressBar
- *   - onStarted
- *   - onStartProgressUpdater
- *   - onProgressUpdated
- *   - onCancelled
- *   - onFinished
- *   - onReset
- */
-Classification.prototype = {
-  timeoutMessage: "Timed out trying to start the classifier.  Perhaps the server or network are down. You can try again if you like.",
-  initialize: function(classifier_url, options) {
-    this.classifier_url = classifier_url;
-    this.options = {}
-    Object.extend(this.options, options || {});
-    classification = this;
-  },
-  
-  /* puct_confirm == true means that that user has confirmed that they want to 
-   * classify some potentially undertrained tags.
-   */
-  start: function(puct_confirm) {
-    this.notify('Start');    
-        
-    parameters = null;
-    if (puct_confirm) {
-      parameters = {puct_confirm: 'true'};
-    }  
-          
-    new Ajax.Request(this.classifier_url + '/classify', {
-      parameters: parameters,
-      evalScripts: true,
-      onSuccess: function() {
-        this.notify('Started');
-        this.startProgressUpdater();  
-      }.bind(this),
-      onFailure: function(transport) {
-        if (transport.responseText == "The classifier is already running.") {
-          this.notify("Started");
-          this.startProgressUpdater();
-        } else {
-          new ErrorMessage(transport.responseText);
-          this.notify('Cancelled');  
-        }
-      }.bind(this),
-      onException: function(request, exception) {
-        this.notify('Cancelled');
-        if (!exceptionToIgnore(exception)) {
-          new ErrorMessage("Unable to connect to the web server.");
-        }
-      }.bind(this),
-      onTimeout: function() {
-        this.notify("Cancelled");
-        new ErrorMessage(this.timeoutMessage)
-      }.bind(this),
-      on412: function(response) {
-        this.notify('Cancelled');
-        if (response.responseJSON) {
-          var haveOrHas = "has";
-          var tags = response.responseJSON.map(function(t) { return "'" + t + "'";}).sort();
-          var tag_names = tags.first();
-        
-          if (tags.size() > 1) {
-            var last = tags.last();
-            haveOrHas = "have";
-            tag_names = tags.slice(0, tags.size() - 1).join(", ") + ' and ' + last;
-          } 
-        
-          new ConfirmationMessage("You are about to classify " + tag_names + ' which ' + haveOrHas +' less than 6 positive examples. ' +
-                                  'This might not work as well as you would expect.<br/>' + 'Do you want to proceed anyway?',
-                                  {onConfirmed: function() {
-                                    classification = Classification.createItemBrowserClassification('/classifier');
-                                    classification.start(true);
-                                  }});
-        }
-      }.bind(this)
-    });
-  },
-  
-  cancel: function() {
-    this.progressUpdater.stop();
-    this.reset();
-        
-    new Ajax.Request(this.classifier_url + '/cancel?no_redirect=true', {
-      onComplete: function() {
-        this.notify('Cancelled');
-      }.bind(this),
-      onFailure: function(transport) {
-        alert(transport.responseText);
-        this.notify('Cancelled');
-      },
-      onException: function(request, exception) {
-        if (!exceptionToIgnore(exception)) {
-          alert("Exception: " + exception.message);
-        }
-      }
-    });    
-  },
-  
-  showProgressBar: function() {
-    if (this.options.onShowProgressBar) {
-      this.options.onShowProgressBar(this);
-    }  
-  },
-    
-  startProgressUpdater: function() {
-    this.notify('StartProgressUpdater');
-    this.progressUpdater = new PeriodicalExecuter(function(executer) {
-      if (!this.loading) {
-        this.loading = true;
-        new Ajax.Request(this.classifier_url + '/status', {
-          onComplete: function(transport, json) {          
-            this.loading = false;
-            if (!json || json.progress >= 100) {
-              executer.stop();
-              this.notify('Finished');
-            }
-          }.bind(this),
-          onSuccess: function(transport, json) {
-            if (this.options.onProgressUpdated) {
-              this.options.onProgressUpdated(this, json);
-            }
-          }.bind(this),
-          onFailure: function(transport) {
-            this.notify("Cancelled");
-            executer.stop();
-            new ErrorMessage(transport.responseText);
-          }.bind(this),
-          onException: function(request, exception) {
-            this.notify("Cancelled");
-            executer.stop();
-            if (!exceptionToIgnore(exception)) {
-              new ErrorMessage("Unable to connect to the web server: " + exception.message);
-            }
-          }.bind(this),
-          onTimeout: function() {
-            executer.stop();
-            this.notify("Cancelled");
-            new ErrorMessage(this.timeoutMessage);
-          }.bind(this)
-        });
-      }
-    }.bind(this), 2);
-  },
-  notify: function(event) {
-    if (this.options['on' + event]) {
-      this.options['on' + event](this);
-    }
-  }
-};
 
 var ItemBrowser = Class.create();
+ItemBrowser.instance = null;
 /** Provides the ItemBrowser functionality.
  *
  *  The Item Browser is a scrollable view over the entire list of items
@@ -267,6 +30,8 @@ ItemBrowser.prototype = {
    *
    */
   initialize: function(feed_item_container, options) {
+    ItemBrowser.instance = this;
+    
     this.options = {
       pruning_threshold: 500,
       update_threshold: 8
@@ -290,11 +55,15 @@ ItemBrowser.prototype = {
     var self = this;
     Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
     
+    this.auto_completers = {};
+
     if(location.hash.gsub('#', '').blank() && Cookie.get("filters")) {
       this.setFilters(Cookie.get("filters").toQueryParams());
     } else {
       this.setFilters(location.hash.gsub('#', '').toQueryParams());
     }
+
+    this.loadSidebar();    
   },
   
   /** Called to initialize the internal list of items from the items loaded into the feed_item_container.
@@ -652,7 +421,7 @@ ItemBrowser.prototype = {
     
     this.updateInitialSpacer();
   },
-  
+
   removeEmptySpaceAt: function(index) {
     if (this.items[index - 1]) {
       var space = this.items[index - 1].element.nextSiblings().first();
@@ -688,7 +457,20 @@ ItemBrowser.prototype = {
     }
   },
   
-  expandFolderParameters:function(parameters) {
+  loadSidebar: function() {
+    var sidebar = $("sidebar");
+    sidebar.addClassName("loading");
+
+    new Ajax.Updater("sidebar", "/feed_items/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
+      onComplete: function() {
+        sidebar.removeClassName("loading");
+        applesearch.init();
+        ItemBrowser.instance.styleFilters();
+      }
+    });  
+  },
+  
+  expandFolderParameters: function(parameters) {
     if(parameters.folder_ids) {
       var tag_ids = parameters.tag_ids ? parameters.tag_ids.split(",") : [];
       var feed_ids = parameters.feed_ids ? parameters.feed_ids.split(",") : [];
@@ -709,24 +491,26 @@ ItemBrowser.prototype = {
     }
   },
   
-  toggleSetFilters: function(parameters) {
-    this.expandFolderParameters(parameters);
-    
-    var selected = true;
-    
-    if(parameters.feed_ids) {
-      parameters.feed_ids.split(",").each(function(feed_id) {
-        selected = selected && $("feed_" + feed_id).hasClassName("selected");
-      });
-    }
-    if(parameters.tag_ids) {
-      parameters.tag_ids.split(",").each(function(tag_id) {
-        selected = selected && $("tag_" + tag_id).hasClassName("selected");
-      });
-    }
-    
-    if(selected) {
-      this.removeFilters(parameters);
+  toggleSetFilters: function(parameters, event) {
+    if(event && event.metaKey) {
+      this.expandFolderParameters(parameters);
+      var selected = true;
+      if(parameters.feed_ids) {
+        parameters.feed_ids.split(",").each(function(feed_id) {
+          selected = selected && $("feed_" + feed_id).hasClassName("selected");
+        });
+      }
+      if(parameters.tag_ids) {
+        parameters.tag_ids.split(",").each(function(tag_id) {
+          selected = selected && $("tag_" + tag_id).hasClassName("selected");
+        });
+      }
+      
+      if(selected) {
+        this.removeFilters(parameters);
+      } else {
+        this.addFilters(parameters);
+      }
     } else {
       this.setFilters(parameters);
     }
@@ -751,38 +535,55 @@ ItemBrowser.prototype = {
   
   setFilters: function(parameters) {
     this.expandFolderParameters(parameters);
-    location.hash = " "; // This needs to be set to a space otherwise safari does not register the change
+
+    // Clear out any tag/feed ids
+    var old_parameters = $H(location.hash.gsub('#', '').toQueryParams());
+    old_parameters.unset("tag_ids");
+    old_parameters.unset("feed_ids");
+    location.hash = "#" + old_parameters.toQueryString();
+    
     this.addFilters(parameters);
   },
   
   addFilters: function(parameters) {
     this.expandFolderParameters(parameters);
 
-    if (parameters.text_filter) {
-      if (parameters.text_filter.length > 0 && parameters.text_filter.length < 4) {
-        new ErrorMessage("Search requires a word with at least 4 characters.");
-        return;
-      } else {
-        if ($('error')) {
-          $('error').hide(); 
-          resizeContent();
-        }
-      }
+    // Update location.hash
+    var old_parameters = location.hash.gsub('#', '').toQueryParams();
+    if(old_parameters.tag_ids && parameters.tag_ids) {
+      var tag_ids = old_parameters.tag_ids.split(",");
+      tag_ids.push(parameters.tag_ids.split(","));
+      parameters.tag_ids = tag_ids.flatten().uniq().join(",");
+    }
+    if(old_parameters.feed_ids && parameters.feed_ids) {
+      var feed_ids = old_parameters.feed_ids.split(",");
+      feed_ids.push(parameters.feed_ids.split(","));
+      parameters.feed_ids = feed_ids.flatten().uniq().join(",");
     }
     
-    // Update location.hash
-    var new_parameters = $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters));
+    var new_parameters = $H(old_parameters).merge($H(parameters));
     new_parameters.each(function(key_value) {
-          var key = key_value[0];
-          var value = key_value[1];
+      var key = key_value[0];
+      var value = key_value[1];
       if(value == null || Object.isUndefined(value) || (typeof(value) == 'string' && value.blank())) {
         new_parameters.unset(key);
       }
     });
     location.hash = "#" + new_parameters.toQueryString();
     
-    // Update styles on selected items
-    var params = new_parameters.toQueryString().toQueryParams();
+    this.styleFilters();
+    
+    // Store filters for page reload
+    Cookie.set("filters", new_parameters.toQueryString(), 365);
+    
+    // Reload the item browser
+    this.reload();
+  },
+  
+  styleFilters: function() {
+    if(!$("show_all")) { return; }
+    
+    var params = location.hash.gsub('#', '').toQueryParams();
     if($H(params).keys().size() == 0) {
       $("show_all").addClassName("selected");
     } else {
@@ -846,11 +647,18 @@ ItemBrowser.prototype = {
       $("manual_taggings").checked = false;
     }
     
-    // Store filters for page reload
-    Cookie.set("filters", new_parameters.toQueryString(), 365);
-    
-    // Reload the item browser
-    this.reload();
+    if(params.read_items) {
+      $("read_items").checked = true;
+    } else {
+      $("read_items").checked = false;
+    }
+
+		$$(".feed_item_order a").invoke("removeClassName", "selected");
+		if(params.order) {
+			$("order_" + params.order).addClassName("selected");
+		} else {
+			$("order_newest").addClassName("selected");
+		}
   },
   
   showLoadingIndicator: function(message) {
@@ -885,11 +693,11 @@ ItemBrowser.prototype = {
   },
   
   openItem: function(item) {
+    this.closeAllItems();
     if(this.selectedItem != $(item)) {
-      this.closeItem(this.selectedItem);
       this.selectItem(item);
     }
-    $('open_' + $(item).getAttribute('id')).show();
+    $(item).addClassName("open");
     this.markItemRead(item);
     this.scrollToItem(item);
     this.loadItemDescription(item);
@@ -897,15 +705,19 @@ ItemBrowser.prototype = {
   
   closeItem: function(item) {
     if(item) {
-      $('open_' + $(item).getAttribute('id')).hide();
+      $(item).removeClassName("open");
       this.closeItemModerationPanel(item);
       this.closeItemTagInformationPanel(item);
     }
   },
   
+  closeAllItems: function() {
+    $$(".item.open").invoke("removeClassName", "open");
+  },
+  
   toggleOpenCloseItem: function(item, event) {
     if(event && (event.element().match(".stop") || event.element().up('.stop'))) { return false; }
-    if($('open_' + $(item).getAttribute('id')).visible() && $('body_' + $(item).getAttribute('id')).visible()) {
+    if($(item).match(".open")) {
       this.closeItem(item);
     } else {
       this.openItem(item);
@@ -929,16 +741,70 @@ ItemBrowser.prototype = {
     var container = $('new_tag_form_' + $(item).getAttribute('id'));
     container.show();
     this.scrollToItem(item);
-    this.loadItemModerationPanel(item); 
+    this.loadItemModerationPanel(item);
     
-    var field = $('new_tag_field_' + $(item).getAttribute('id'));
-    if(field) { 
+    this.initializeItemModerationPanel(item);
+  },
+  
+  // TODO: need to update this local list when tag controls are clicked so they are always in sync
+  initializeItemModerationPanel: function(item) {
+    var panel = $(item).down(".new_tag_form");
+    var field = panel.down("input[type=text]");
+    var list = panel.down(".auto_complete");
+    var add = panel.down("input[type=submit]");
+    var cancel = panel.down("a");
+
+    if(field && list && add && cancel) {
+      if(!this.auto_completers[$(item).getAttribute("id")]) {
+        this.auto_completers[$(item).getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
+          partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
+          afterUpdateElement: function() { 
+            this.closeItemModerationPanel(item);
+            // TODO: Move this call into item browser...
+            window.add_tag($(item).getAttribute("id"), field.value);
+            field.blur();
+            field.value = "";
+          }.bind(this)
+        });
+      }
+      var used_tags = $$("#tag_controls_" + $(item).getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
+      this.auto_completers[$(item).getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
+        return used_tags.include(tag);
+      });
+      this.auto_completers[$(item).getAttribute("id")].activate();
+
+      field.observe("blur", function() {
+        setTimeout(this.closeItemModerationPanel.bind(this, item), 200);
+      }.bind(this));
+      field.observe("keydown", function(event) {
+        if(event.keyCode == Event.KEY_ESC) { this.closeItemModerationPanel(item); }
+      }.bind(this));
       field.focus();
-      window.auto_completers['new_tag_field_' + $(item).getAttribute('id') + '_auto_completer'].activate();
+      
+      add.observe("click", function() {
+        this.auto_completers[$(item).getAttribute("id")].selectEntry();
+      }.bind(this));
+
+      cancel.observe("click", this.closeItemModerationPanel.bind(this, item));
+      
+      new Effect.ScrollToInDiv(this.feed_items_scrollable, list, {duration: 0.3, bottom_margin: 5});
     }
   },
   
+  addTag: function(tag) {
+    if(!this.options.tags.include(tag)) {
+      this.options.tags.push(tag);
+      this.options.tags = this.options.tags.sortBy(function(item) { return item.toLowerCase(); });
+    }
+  },
+  
+  removeTag: function(tag) {
+    this.options.tags = this.options.tags.without(tag)
+  },
+
   closeItemModerationPanel: function(item) {
+    var input = $('new_tag_field_' + $(item).getAttribute('id'));
+    if(input) { input.blur(); }
     $('new_tag_form_' + $(item).getAttribute('id')).hide();
   },
   

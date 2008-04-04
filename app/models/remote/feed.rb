@@ -31,7 +31,14 @@ module Remote
     end  
     
     # some handy functions that map the collectors schema into the atom'ish schema used by Winnow
-    def alternate; self.link; end
-    def via;       self.url;  end
+    def alternate; self.link;           end
+    def via;       self.url;            end
+    
+    # Write some of my own attribute getters so they exist when ActiveResource doesnt map write them for us
+    %w[title updated_on].each do |attribute|
+      define_method(attribute) do
+        attributes[attribute]
+      end
+    end
   end
 end

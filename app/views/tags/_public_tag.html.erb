@@ -1,5 +1,5 @@
 <div id="<%= dom_id(public_tag) %>" class="tag public clearfix">
-  <div class="name_and_comment clearfix">
+  <div class="left clearfix">
     <div class="name">
       <%= tag_name_with_tooltip(public_tag) %>
     </div>
@@ -9,19 +9,21 @@
     </div>
   </div>
   
-  <div class="controls_and_training clearfix">
+  <div class="right clearfix">
     <dl class="training clearfix">
       <dt>Last Trained</dt>
       <dd><%= format_date(public_tag.last_used_by) %></dd>
       <dt>Training</dt>
       <dd><%= link_to "+#{public_tag.positive_count} / -#{public_tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{public_tag.id}&manual_taggings=true"), :title => "Inspect #{public_tag.name}" %></dd>
       <dt>Automatic</dt>
-      <dd><%= public_tag.classifier_count %></dd>
-      <dd class="feed"><%= link_to "Feed", formatted_public_tag_path(public_tag.user, public_tag, :atom), :class => "feed_icon replace" %></dd>
+      <dd class="last"><%= public_tag.classifier_count %></dd>
     </dl>
 
     <ul class="controls">
-      <li class="first"><%= bias_slider(public_tag, :disabled => true) %></li>
+      <li class="first">
+        <%= link_to "Feed", formatted_public_tag_path(public_tag.user, public_tag, :atom), :class => "feed_icon" %>
+      </li>
+      <li><%= bias_slider(public_tag, :disabled => true) %></li>
       <li><%= globally_exclude_check_box(public_tag) %> Globally Exclude</li>
       <li>
   			<%= check_box_tag dom_id(public_tag, "subscribe"), "1", current_user.subscribed?(public_tag), :disabled => current_user == public_tag.user,

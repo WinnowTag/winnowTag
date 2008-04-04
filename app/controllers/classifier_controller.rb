@@ -39,13 +39,13 @@ class ClassifierController < ApplicationController
           session[:classification_job_id] = job.id
         end
         
-        wants.js   { render :nothing => true }
+        wants.json   { render :nothing => true }
       rescue ClassificationStartException => detail
-        wants.js   { render :json => detail.message, :status => detail.code }
+        wants.json   { render :json => detail.message, :status => detail.code }
       rescue => detail       
         logger.fatal(detail) 
         logger.debug(detail.backtrace.join("\n"))
-        wants.js   { render :json => detail.message, :status => 500 }
+        wants.json   { render :json => detail.message, :status => 500 }
       end
     end    
   end

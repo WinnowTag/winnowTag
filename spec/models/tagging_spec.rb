@@ -113,13 +113,12 @@ describe Tagging do
     Tagging.new(:user => User.find(1), :feed_item => @feed_item, :tag => Tag(users(:quentin), 'peerworks')).should be_valid
   end
   
-  def test_deletion_of_feed_item_deletes_taggings
+  it "should prevent deletion of a feed item with a tagging" do
     user = User.find(1)
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
-    tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag)
-    feed_item.destroy
-    assert_raises(ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
+    tagging = Tagging.create!(:user => user, :feed_item => feed_item, :tag => tag)
+    lambda { feed_item.destroy }.should raise_error(ActiveRecord::StatementInvalid)
   end
 
   def test_deletion_copies_tagging_to_deleted_taggings_table

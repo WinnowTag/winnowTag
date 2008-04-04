@@ -11,7 +11,7 @@ describe "Tags" do
     open tags_path
   end
   
-  def test_cant_change_bias_of_subscribed_tag
+  it "cant_change_bias_of_subscribed_tag" do
     initial_position = get_element_position_left "css=div.tag.public div.slider_handle"
     mouse_down "css=div.tag.public div.slider_handle"
     mouse_move_at "css=div.tag.public div.slider_handle", "30,0"
@@ -21,7 +21,7 @@ describe "Tags" do
     assert_equal initial_position, get_element_position_left("css=div.tag.public div.slider_handle")
   end
   
-  def test_changing_bias
+  it "changing_bias" do
     initial_position = get_element_position_left "css=div.slider_handle"
     mouse_down "css=div.slider_handle"
     mouse_move_at "css=div.slider_handle", "30,0"
@@ -41,7 +41,7 @@ describe "Tags" do
     dont_see_element "#unsubscribe_tag_#{tag.id}"
   end
 
-  def test_destroying_a_tag
+  it "destroying_a_tag" do
     tag = Tag.find(1)
     see_element "#destroy_tag_#{tag.id}"
     click "destroy_tag_#{tag.id}"
@@ -51,7 +51,7 @@ describe "Tags" do
     dont_see_element "#destroy_tag_#{tag.id}"
   end
   
-  def test_marking_a_tag_public
+  it "marking_a_tag_public" do
     tag_1 = Tag.find(1)
 
     assert !is_checked("public_tag_#{tag_1.id}")
@@ -66,7 +66,7 @@ describe "Tags" do
     assert !is_checked("public_tag_#{tag_1.id}")
   end
   
-  def test_cant_mark_subscribed_tag_public
+  it "cant_mark_subscribed_tag_public" do
     tag_1 = Tag.find(1)
     tag_2 = Tag.find(2)
 

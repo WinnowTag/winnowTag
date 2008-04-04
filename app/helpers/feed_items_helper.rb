@@ -40,8 +40,8 @@ module FeedItemsHelper
   #
   # When pressed, the classification button creates a Classification
   # Javascript object that handles the interaction with the server.
-  # See Classification and Classification.createItemBrowserClassification
-  # in itembrowser.js.
+  # See Classification and Classification.startItemBrowserClassification
+  # in classification.js.
   #
   # The way the routes are setup for the classifier controller means
   # that we can always identify a single classifier to use by either
@@ -50,16 +50,11 @@ module FeedItemsHelper
   # to the current user.
   #
   def classification_button
-    button_to_function 'Auto-tag', :id => 'classification_button' do |page|
-      page << <<-END_JS
-         classification = Classification.createItemBrowserClassification(#{classifier_path.to_json});
-         classification.start();
-      END_JS
-    end
+    button_to_function 'Auto-tag', "Classification.startItemBrowserClassification(#{classifier_path.to_json});", :id => 'classification_button'
   end
   
   def cancel_classification_button
-    button_to_function("Stop", 'cancelClassification();', :style => "display: none", :id => 'cancel_classification_button')
+    button_to_function("Stop", 'Classification.cancel();', :style => "display: none", :id => 'cancel_classification_button')
   end
   
   def classifier_progress_title
@@ -74,7 +69,7 @@ module FeedItemsHelper
     tags = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
 
     html = tags.map do |tag, taggings|
-      tag_control_for(feed_item, tag, classes_for_taggings(taggings))
+      tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
     end.join(" ")
     
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
@@ -88,7 +83,15 @@ module FeedItemsHelper
       end.compact.join(" ")
     end
     
-    content_tag "ul", html, :class => "tag_list clearfix stop", :id => dom_id(feed_item, "tag_controls")
+    content_tag "ul", html, :class => "tag_list stop", :id => dom_id(feed_item, "tag_controls")
+  end
+  
+  # Format a classifier tagging strength as a percentage.
+  #
+  def format_classifier_strength(taggings)
+    if classifier_tagging = taggings.detect {|t| t.classifier_tagging? }
+      "%.2f%" % (classifier_tagging.strength * 100)
+    end
   end
   
   def tags_to_display
@@ -99,7 +102,7 @@ module FeedItemsHelper
     end
   end
   
-  def tag_control_for(feed_item, tag, classes)
+  def tag_control_for(feed_item, tag, classes, classifier_strength)
     controls  = content_tag(:span, nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", 
                                         :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
     controls << content_tag(:span, nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", 
@@ -110,7 +113,7 @@ module FeedItemsHelper
 
     content_tag(:li, content, 
         :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "), 
-        :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}); show_tag_controls(this);")
+        :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}, #{classifier_strength.to_json}); show_tag_controls(this);")
   end
   
 	def classes_for_taggings(taggings, classes = [])
@@ -131,5 +134,19 @@ module FeedItemsHelper
     end
     
     classes.uniq
+  end
+  
+  def feeds_for_sidebar
+    feeds = current_user.feeds
+    feed_ids = params[:feed_ids].to_s.split(",").map(&:to_i) - feeds.map(&:id)
+    feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
+    feeds.sort_by { |feed| feed.title.downcase }
+  end
+  
+  def tags_for_sidebar
+    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags
+    tag_ids = params[:tag_ids].to_s.split(",").map(&:to_i) - tags.map(&:id)
+    tags += Tag.find_all_by_id(tag_ids) unless tag_ids.empty?
+    tags.sort_by { |tag| tag.name.downcase }
   end
 end

@@ -19,7 +19,7 @@ describe Remote::Feed do
     feeds.should == [Remote::Feed.new(Feed.find(1).attributes)]
   end
   
-  def test_collect_creates_new_collection_job
+  it "collect_creates_new_collection_job" do
     ActiveResource::HttpMock.respond_to do |mock|
       mock.post   "/feeds/1/collection_jobs.xml",   {}, nil, 201, 'Location' => '/feeds/1/collection_jobs/3'
     end
@@ -27,7 +27,7 @@ describe Remote::Feed do
     assert_equal 3, job.id.to_i
   end
   
-  def test_collect_sets_user
+  it "collect_sets_user" do
     ActiveResource::HttpMock.respond_to do |mock|
       mock.post   "/feeds/1/collection_jobs.xml",   {}, nil, 201, 'Location' => '/feeds/1/collection_jobs/3'
     end
@@ -35,7 +35,7 @@ describe Remote::Feed do
     assert_equal 'seangeo', job.created_by
   end
   
-  def test_collect_sets_callback_url
+  it "collect_sets_callback_url" do
     ActiveResource::HttpMock.respond_to do |mock|
       mock.post   "/feeds/1/collection_jobs.xml",   {}, nil, 201, 'Location' => '/feeds/1/collection_jobs/3'
     end
@@ -61,7 +61,7 @@ describe Remote::Feed do
     feed.via.should == 'http://example.com'
   end
   
-  def test_find_or_create_by_url
+  it "find_or_create_by_url" do
     ActiveResource::HttpMock.respond_to do |http|
       http.post  "/feeds.xml", {}, {:url => 'http://example.com'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
     end
@@ -72,7 +72,7 @@ describe Remote::Feed do
     assert job.errors.empty?
   end
   
-  def test_find_or_create_by_url_with_duplicate    
+  it "find_or_create_by_url_with_duplicate    " do
     ActiveResource::HttpMock.respond_to do |http|
       http.post  "/feeds.xml", {}, {:url => 'http://example.com'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
       http.get   "/feeds/24.xml", {}, {:url => 'http://www.example.com', :id => 24}.to_xml(:root => 'feed'), 200
@@ -84,12 +84,26 @@ describe Remote::Feed do
     assert job.errors.empty?
   end
   
-  def test_find_or_create_by_url_with_redirect_loop_raises_exception
+  it "find_or_create_by_url_with_redirect_loop_raises_exception" do
     ActiveResource::HttpMock.respond_to do |http|
       http.post  "/feeds.xml", {}, {:url => 'http://example.com'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
       http.get   "/feeds/24.xml", {}, nil, 302, 'Location' => '/feeds/24'
     end
     
     assert_raise(ActiveResource::Redirection) { job = Remote::Feed.find_or_create_by_url('http://example.com') }    
+  end
+  
+  describe "attributes" do
+    {:title => "is this thing on?", :updated_on => Date.today}.each do |attribute, value|
+      it "responds to #{attribute} when not given one" do
+        feed = Remote::Feed.new
+        feed.should respond_to(attribute)
+      end
+    
+      it "can be given #{attribute} as an attribute" do
+        feed = Remote::Feed.new attribute => value
+        feed.send(attribute).should == value
+      end
+    end
   end
 end

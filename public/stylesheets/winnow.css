@@ -122,6 +122,7 @@ a.close img {
   border-bottom: 1px solid #999;
 }
 .navigation .main {
+  float: left;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -197,9 +198,7 @@ optgroup {
 
 #content {
   overflow: auto;
-  overflow-x: hidden;
   padding: 10px;
-  position: relative;
 }
 
 #feed_items_controller #content {
@@ -207,9 +206,9 @@ optgroup {
 }
 
 #sidebar {
+  float: left;
   width: 230px;
   height: auto;
-  float: left;
   padding: 5px;
   background-color: #E1ECFE;
   overflow-y: auto;
@@ -218,10 +217,10 @@ optgroup {
 }
 
 #sidebar_control {
+  float: left;
   cursor: pointer;
   width: 20px;
   height: auto;
-  float: left;
   background: #E1ECFE url(../images/right_aarow.png) 8px center no-repeat;
   border-right: 1px solid #999;
 }
@@ -257,12 +256,6 @@ optgroup {
 
 #sidebar .show_untagged {
   text-align: center;
-}
-
-#sidebar .filter_search {
-  width: 98%;
-  margin-bottom: 0.5em;
-  padding: 0 0 0 3px;
 }
 
 .progress_bar_container {
@@ -469,6 +462,8 @@ a.editor_cancel {
 .auto_complete {
   background: #fff;
   z-index: 100;
+  font-weight: normal;
+  font-style: normal;
 }
 
 .auto_complete ul {
@@ -540,12 +535,16 @@ a.editor_cancel {
 }
 
 .item.selected .closed {
-  border: none;
+  border-width: 0;
 }
 
 .item.read .closed {
   border-color: #e8eef7;
   background-color: #e8eef7;
+}
+
+.item.open.selected .closed {
+  border-width: 0 0 1px 0;
 }
 
 .item .closed .status a {
@@ -604,6 +603,7 @@ a.editor_cancel {
 
 .item .closed .tag_list {
   height: 1.8em;
+  min-height: 1.8em;
   margin: 0 2px 0 19%;
 }
 
@@ -613,10 +613,19 @@ a.editor_cancel {
 
 .item .open {
   position: relative;
+  display: none;
+}
+
+.item.open .open {
+  display: block;
 }
 
 .item .open .body {
   padding: 5px 5px 5px 25px;
+}
+
+.item.selected .open .body {
+  padding: 5px 3px 4px 23px;
 }
 
 .item .open .body h3 {
@@ -668,8 +677,8 @@ a.editor_cancel {
 
 .item .new_tag_form {
   position: absolute;
-  right: 1em;
-  top: 3em;
+  right: 2px;
+  top: 3px;
   z-index: 1000;
   border: 2px solid #c3d9ff;
   background-color: #e1ecfe;
@@ -896,13 +905,21 @@ a.bookmarklet:hover {
   float: right;
 }
 
+#show_all {
+  display: block;
+  text-align: center;
+}
+
 #show_all.selected {
   font-weight: bold;
 }
 
+.checkbox_filter input {
+  margin: 0;
+}
+
 .folder {
   position: relative;
-  border-bottom: 1px dashed #666;
 }
 
 .folder.hover {
@@ -915,10 +932,6 @@ a.bookmarklet:hover {
 
 .folder.some_selected {
   font-style: italic;
-}
-
-.folder.open {
-  padding: 0 0 5px 0;
 }
 
 .folder .header ul.actions {
@@ -951,6 +964,58 @@ a.bookmarklet:hover {
 
 .folder .header:hover {
   background-color: #eee;
+}
+
+.folder .add_link, .folder .cancel_link {
+  font-weight: normal;
+  font-style: normal;
+  float: right;
+}
+
+.folder .add_link {
+  display: block;
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 0;
+  padding: 0 0 0 19px;
+}
+
+.folder .cancel_link { 
+  display: none;
+}
+
+.folder .add_section {
+  display: none;
+  margin: .2em .5em .2em 15px;
+}
+
+.folder .add_section input {
+  display: block;
+  width: 100%;
+}
+
+.folder.add .add_link {
+  display: none;
+}
+
+.folder.add .cancel_link {
+  display: block;
+}
+
+.folder.add .add_section {
+  display: block;
+}
+
+.folder.new .add_link {
+  float: left;
+  margin: .4em 0;
+}
+
+.folder.new .cancel_link {
+  margin: .4em 0;
+}
+
+.folder.new.add .add_link {
+  display: block;
 }
 
 .folder a {
@@ -1038,8 +1103,12 @@ a.bookmarklet:hover {
   font-size: 1em;
 }
 
-.add_section {
-  margin-top: 5px;
+.feed_item_order {
+	margin: 1em 0;
+	color: #666;
+}
+.feed_item_order a.selected {
+	font-weight: bold;
 }
 
 textarea.content { 
@@ -1047,20 +1116,23 @@ textarea.content {
   height: 40em;
 }
 
-.tag {
+.tag, .feed {
   border: 1px solid #666;
   background: #eee;
   padding: .5em;
   margin: 0 0 .5em 0;
 }
 
-.tag .name_and_comment {
+.tag .left, .feed .left {
   float: left;
-  width: 30%;
   margin: 0 1em 0 0;
 }
 
-.tag .name_and_comment .name {
+.tag .left {
+  width: 30%;
+}
+
+.tag .left .name {
   display: block;
   background-image: url(../images/tag.png);
   background-repeat: no-repeat;
@@ -1068,7 +1140,7 @@ textarea.content {
   padding: 0 0 0 18px;
 }
 
-.tag .name_and_comment  .comment {
+.tag .left .comment {
   background-image: url(../images/comment.png);
   background-repeat: no-repeat;
   background-position: 0 2px;
@@ -1076,32 +1148,36 @@ textarea.content {
   color: #666;
 }
 
-.tag.public .name_and_comment .name {
+.tag.public .left .name {
   background-image: url(../images/public.png);
   background-repeat: no-repeat;
   background-position: 2px 3px;
 }
 
-.tag.private .name_and_comment .name, .tag.private .name_and_comment .comment {
+.tag.private .left .name span, .tag.private .left .comment span {
   cursor: pointer;
 }
 
-.tag .name_and_comment .inplaceeditor-form {
+.tag .left .inplaceeditor-form {
   display: block;
 }
 
-.tag .controls_and_training {
+.tag .right, .feed .right {
   float: right;
 }
 
-.tag dl.training {
+.tag dl.training, .feed dl.training {
   clear: left;
   float: left;
   margin: 0 0 1em 0;
   padding: 0;
 }
 
-.tag dl.training dt {
+.tag.public dl.training {
+  margin-left: 5.5em;
+}
+
+.tag dl.training dt, .feed dl.training dt {
   font-weight: bold;
   color: #666;
   float: left;
@@ -1109,23 +1185,22 @@ textarea.content {
   margin: 0;
 }
 
-.tag dl.training dt:after {
+.tag dl.training dt:after, .feed dl.training dt:after {
   content: ":";
 }
 
-.tag dl.training dd {
+.tag dl.training dd, .feed dl.training dd {
   float: left;
   margin: 0 0 0 .5em;
   padding: 0;
   width: 7.5em;
 }
 
-.tag dl.training dd.feed {
-  margin: 0;
-  width: auto;
+.tag dl.training dd.last, .feed dl.training dd.last {
+  width: 3em
 }
 
-.tag ul.controls {
+.tag .controls, .feed .controls {
   clear: left;
   float: left;
   margin: 0;
@@ -1133,24 +1208,24 @@ textarea.content {
   list-style: none;
 }
 
-.tag .controls li {
+.tag .controls li, .feed .controls li {
   float: left;
   padding: 0;
   margin: 0 0 0 1.5em;
 }
 
-.tag .controls li a {
+.tag .controls li a, .feed .controls li a {
   padding: 0 0 0 20px;
   background-image: url(../images/vertical_sprite.png);
   background-repeat: no-repeat;
 }
 
-.tag .controls li input {
+.tag .controls li input, .feed .controls li input {
   margin: 0;
   padding: 0;
 }
 
-.tag .controls li.first {
+.tag .controls li.first, .feed .controls li.first {
   margin-left: 0;
 }
 

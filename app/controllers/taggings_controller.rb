@@ -49,9 +49,10 @@ class TaggingsController < ApplicationController
   #
   def destroy
     @feed_item = FeedItem.find(params[:tagging][:feed_item_id])
+    @tag = Tag(current_user, params[:tagging][:tag])
     
     current_user.taggings.find_by_feed_item(@feed_item, :all, 
-      :conditions => { :classifier_tagging => false, :tag_id => Tag(current_user, params[:tagging][:tag]).id }).each(&:destroy)            
+      :conditions => { :classifier_tagging => false, :tag_id => @tag }).each(&:destroy)            
 
     respond_to do |wants|
       wants.js

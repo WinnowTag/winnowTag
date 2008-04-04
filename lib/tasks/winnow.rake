@@ -56,7 +56,7 @@ namespace :winnow do
     end
     
     puts "Writing Feed Items"
-    FeedItem.each(:include => :feed_item_content) do |fi|
+    FeedItem.find(:all, :include => :content).each do |fi|
       File.open(File.join('corpus', corpus_name, "#{fi.id}.html"), 'w') do |f|
         f.write("<h1>#{fi.content.title}</h1>\n")
         f.write(fi.content.encoded_content)

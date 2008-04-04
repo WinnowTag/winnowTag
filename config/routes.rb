@@ -35,7 +35,8 @@ ActionController::Routing::Routes.draw do |map|
                   :moderation_panel => :get
                 },
                 :collection => { 
-                  :mark_read => :put
+                  :mark_read => :put,
+                  :sidebar => :get
                 }
 
   map.resources :tags,
@@ -50,7 +51,9 @@ ActionController::Routing::Routes.draw do |map|
                   :subscribe => :put,
                   :unsubscribe => :put, 
                   :sidebar => :put,
-                  :auto_complete_for_tag_name => :any
+                  :auto_complete_for_tag_name => :any,
+                  :training => :get,
+                  :classifier_taggings => :any
                 }
   
   map.public_tag "tags/public/:user_id/:id", :controller => "tags", :action => "show"

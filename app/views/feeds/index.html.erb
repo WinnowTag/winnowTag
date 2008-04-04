@@ -3,29 +3,5 @@
 <% if @feeds.empty? -%>
   <div class="empty">No feeds matched your search criteria.</div>
 <% else -%>
-  <% @skip_content_container = true %>
-  <table class="data_table recordset">
-    <thead>
-      <tr>
-    		<th><%= sort_link "Title", 'feeds', :alias => 'title' %></th>
-    		<th class="view_state"><%= sort_link "Globally Exclude", 'feeds', :alias => 'globally_exclude' %></th>
-    		<th class="number"><%= sort_link "Items", 'feeds', :alias => 'item_count' %></th>
-    		<th class="date"><%= sort_link "Last Updated", 'feeds', :alias => 'updated_on' %></th>
-    		<th></th>
-      </tr>
-    </thead>
-    <tbody id="content">
-      <% for feed in @feeds %>
-        <tr id="<%= "feed_#{feed.id}" %>">
-      		<td><%= feed_link(feed) %></td>
-    	    <td><%= globally_exclude_check_box(feed) %></td>
-      		<td class="number"><%= feed.feed_items_count %></td>
-      		<td class="date"><%= format_date(feed.updated_on) %></td>
-      		<td class="controls">
-      			<%= link_to image_tag("show.gif"), feed_items_path(:anchor => "feed_ids=#{feed.id}") %>
-      		</td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%= render :partial => 'feed', :collection => @feeds %>
 <% end -%>
