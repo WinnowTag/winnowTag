@@ -284,7 +284,7 @@ class FeedItem < ActiveRecord::Base
       else
         tag_ids = filters[:tag_ids]
       end
-      options[:order] = "(SELECT POW(AVG(taggings.strength), 1/COUNT(*)) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) DESC"
+      options[:order] = "(SELECT POW(AVG(taggings.strength), 1/COUNT(*)) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) DESC, feed_items.updated DESC"
     when "oldest"
       options[:order] = "feed_items.updated"
     when "id"
