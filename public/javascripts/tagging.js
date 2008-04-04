@@ -170,7 +170,7 @@ function show_control_tooltip(control, tag, tag_name) {
   control.setAttribute("title", control_tooltip);
 }
 
-function show_tag_tooltip(tag, tag_name) {
+function show_tag_tooltip(tag, tag_name, classifier_strength) {
   tag = $(tag);
   var tag_tooltip = "";
   
@@ -179,7 +179,7 @@ function show_tag_tooltip(tag, tag_name) {
   } else if (tag.match('.positive')) {
     tag_tooltip = "Positive training example for Winnow";
   } else if (tag.match('.classifier')) {
-    tag_tooltip = "Winnow figured this item fit your examples";
+    tag_tooltip = "Winnow is " + classifier_strength +" sure this item fit your examples";
   }
   //TODO: Published tags: "Published by <name of user>"
   

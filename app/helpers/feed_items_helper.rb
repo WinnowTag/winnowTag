@@ -69,7 +69,7 @@ module FeedItemsHelper
     tags = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
 
     html = tags.map do |tag, taggings|
-      tag_control_for(feed_item, tag, classes_for_taggings(taggings))
+      tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
     end.join(" ")
     
     current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
@@ -86,6 +86,14 @@ module FeedItemsHelper
     content_tag "ul", html, :class => "tag_list stop", :id => dom_id(feed_item, "tag_controls")
   end
   
+  # Format a classifier tagging strength as a percentage.
+  #
+  def format_classifier_strength(taggings)
+    if classifier_tagging = taggings.detect {|t| t.classifier_tagging? }
+      "%.2f%" % (classifier_tagging.strength * 100)
+    end
+  end
+  
   def tags_to_display
     if show_manual_taggings? && params[:tag_ids]
       params[:tag_ids].split(",").map(&:to_i)
@@ -94,7 +102,7 @@ module FeedItemsHelper
     end
   end
   
-  def tag_control_for(feed_item, tag, classes)
+  def tag_control_for(feed_item, tag, classes, classifier_strength)
     controls  = content_tag(:span, nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", 
                                         :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
     controls << content_tag(:span, nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", 
@@ -105,7 +113,7 @@ module FeedItemsHelper
 
     content_tag(:li, content, 
         :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "), 
-        :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}); show_tag_controls(this);")
+        :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}, #{classifier_strength.to_json}); show_tag_controls(this);")
   end
   
 	def classes_for_taggings(taggings, classes = [])
