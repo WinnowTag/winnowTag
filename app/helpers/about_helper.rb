@@ -8,11 +8,18 @@
 module AboutHelper # :nodoc:
   def classifier_info(classifer_info)
     if @classifier_info 
+      rev = "??"
+      if @classifier_info.respond_to?(:git_revision)
+        rev = @classifier_info.git_revision
+      elsif @classifier_info.respond_to(:svnversion)        
+        rev = @classifier_info.svnversion
+      end
+      
       content_tag('p',
           'Using classifier version ' +
           content_tag('span', @classifier_info.version, :class => 'classifier_version') +
           ' at build ' +
-          content_tag('span', @classifier_info.git_revision, :class => 'classifier_gitrevision') +
+          content_tag('span', rev, :class => 'classifier_gitrevision') +
           '.',
           :class => 'classifier_info')
     else
