@@ -267,7 +267,6 @@ describe TagsController do
       get :index
       assert assigns(:tags)
       assert_equal(@tag, assigns(:tags).first)
-      assert assigns(:subscribed_tags)
       # TODO: Move this to a view test
       # assert_select "tr##{dom_id(@tag)}", 1
       # assert_select "tr##{dom_id(@tag)} td:nth-child(1)", /tag.*/
