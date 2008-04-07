@@ -757,8 +757,8 @@ ul.tag_list li.negative {
 }
 
 ul.tag_list li.public {
-  background-image: url(../images/bullet_blue.png);
-  color: #2691BF;
+  background-image: url(../images/public.png);
+/*  color: #2691BF;*/
 }
 
 ul.tag_list li .controls {
