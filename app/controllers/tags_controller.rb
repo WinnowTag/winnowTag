@@ -200,6 +200,7 @@ class TagsController < ApplicationController
     unless @tag.public?
       TagSubscription.delete_all(:tag_id => @tag)
     end
+    render :nothing => true
   end
   
   def public
