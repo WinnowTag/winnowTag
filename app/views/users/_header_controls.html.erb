@@ -1,0 +1,23 @@
+<% content_for :header_controls do -%>
+  <ul class="control_bar">
+    <li><%= will_paginate(@users) %></li>
+    <li><%= link_to 'Create User', new_user_url, :class => "add" %></li>
+
+    <% if params[:action] == "index" -%>
+    <li>
+      Sort By:
+      <%= sort_link "Login", 'users', :alias => 'login' %>,
+      <%= sort_link "Name", 'users', :alias => 'name' %>,
+      <%= sort_link "Email", 'users', :alias => 'email' %>,
+      <%= sort_link "Last Logged In", 'users', :alias => 'logged_in_at' %>,
+      <%= sort_link "Last Accessed", 'users', :alias => 'last_accessed_at' %>,
+      <%= sort_link "Last Moderated", 'users', :alias => 'last_tagging_on' %>,
+      <%= sort_link "Number of Tags", 'users', :alias => 'tag_count' %>
+    </li>    
+    <% end -%>
+  </ul>
+
+  <% form_tag(users_path, :method => :get) do -%>
+	  <%= search_field_tag "q", params[:q], :placeholder => "Search Users...", :clear => { :onclick => "window.location = '#{users_path}'" } %>
+  <% end -%>
+<% end -%>

@@ -1,0 +1,34 @@
+<div id="user_<%= user.id %>" class="user clearfix">
+  <ul class="controls">
+    <li class="first"><%= control_link 'Login', login_as_user_url(user), :html => { :class => :home_icon }, :disabled => user == current_user,
+  										:method => :post, :confirm => "This will log you in as #{user.display_name}. " +
+  											"You will need to log out and login as yourself to use your own account again.\n\n" +
+  											'Are you sure you want to continue?'%></li>
+    <li class="last"><%= control_link 'Destroy', user_url(user), :method => :delete, :html => { :class => :destroy_icon },
+  											:disabled => user == current_user,
+  											:confirm => "Really delete #{user.display_name}?"%></li>
+  </ul>
+
+  <h4><%= link_to user.login, user_url(user) %></h4>  
+
+  <div class="clearfix">
+    <dl class="account_detail">
+      <dt>Display Name</dt>
+  		<dd><%= user.display_name %></dd>
+      <dt>Email</dt>
+  		<dd><%= user.email %></dd>
+    </dl>
+    <dl class="login_detail">
+      <dt>Last Logged In</dt>
+      <dd><%= format_date(user.logged_in_at) %></dd>
+      <dt>Last Accessed</dt>
+      <dd><%= format_date(user.last_accessed_at) %></dd>      
+    </dl>
+    <dl class="tag_detail">      
+      <dt>Last Moderated</dt>
+      <dd><%= format_date(user.last_tagging_on) %></dd>
+      <dt>Number of Tags</dt>      
+      <dd class="last"><%= user.tags.size %></dd>
+    </dl>
+  </div>    
+</div> <!-- /#user_<%= user.id %>-->
