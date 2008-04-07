@@ -540,7 +540,11 @@ ItemBrowser.prototype = {
     var old_parameters = $H(location.hash.gsub('#', '').toQueryParams());
     old_parameters.unset("tag_ids");
     old_parameters.unset("feed_ids");
-    location.hash = "#" + old_parameters.toQueryString();
+    if(old_parameters.keys().size() == 0) {
+      location.hash = " ";
+    } else {
+      location.hash = "#" + old_parameters.toQueryString();
+    }
     
     this.addFilters(parameters);
   },
