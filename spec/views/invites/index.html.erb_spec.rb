@@ -29,9 +29,9 @@ describe '/invites/index' do
       response.should_not have_tag(".empty")
     end
 
-    it "should show table" do
+    it "should show a list of invites" do
       render_it
-      response.should have_tag("table")
+      response.should have_tag(".invite")
     end
   end
   
@@ -47,9 +47,9 @@ describe '/invites/index' do
       response.should have_tag(".empty")
     end
 
-    it "should not show table" do
+    it "should not show a list of invites" do
       render_it
-      response.should_not have_tag("table")
+      response.should_not have_tag(".invite")
     end
   end
 end

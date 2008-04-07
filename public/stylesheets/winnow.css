@@ -1107,14 +1107,15 @@ textarea.content {
   height: 40em;
 }
 
-.tag, .feed, .user {
+.tag, .feed, .user, .invite {
+	position: relative;
   border: 1px solid #666;
   background: #eee;
   padding: .5em;
   margin: 0 0 .5em 0;
 }
 
-.tag .left, .feed .left, .user .left {
+.tag .left, .feed .left {
   float: left;
   margin: 0 1em 0 0;
 }
@@ -1170,6 +1171,46 @@ textarea.content {
 .user dl dd {
   float: left;
   margin: 0 0 0 .5em;
+  padding: 0;
+/*  width: 7.5em;*/
+}
+
+.invite dl {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.invite dl.created {
+	width: 20%
+}
+
+.invite dl.created dd {
+	margin-bottom: 1em;
+}
+
+.invite dl.question {
+	width: 40%;
+}
+
+.invite dl.message {
+	width: 40%;
+}
+
+.invite dl dt {
+	clear: both;
+/*	float: left;*/
+  font-weight: bold;
+  color: #666;
+}
+
+.invite dl dt:after {
+  content: ":";
+}
+
+.invite dl dd {
+  float: left;
+  margin: 0 0 0 1em;
   padding: 0;
 /*  width: 7.5em;*/
 }
@@ -1234,7 +1275,7 @@ textarea.content {
   width: 3em
 }
 
-.tag .controls, .feed .controls {
+.tag .controls, .feed .controls, .user .controls {
   clear: both;
   float: right;
   margin: 0;
@@ -1242,32 +1283,33 @@ textarea.content {
   list-style: none;
 }
 
-.user .controls {
-  clear: both;
-  float: right;
+.invite .controls {
+	position: absolute;
+	top: 1em;
+	right: 1em;
   margin: 0;
   padding: 0;
-  list-style: none;
+  list-style: none;	
 }
 
-.tag .controls li, .feed .controls li, .user .controls li {
+.tag .controls li, .feed .controls li, .user .controls li, .invite .controls li {
   float: left;
   padding: 0;
   margin: 0 0 0 1.5em;
 }
 
-.tag .controls li a, .feed .controls li a, .user .controls li a {
+.tag .controls li a, .feed .controls li a, .user .controls li a, .invite .controls li a {
   padding: 0 0 0 20px;
   background-image: url(../images/vertical_sprite.png);
   background-repeat: no-repeat;
 }
 
-.tag .controls li input, .feed .controls li input, .user .controls li input {
+.tag .controls li input, .feed .controls li input, .user .controls li input, .invite .controls li input {
   margin: 0;
   padding: 0;
 }
 
-.tag .controls li.first, .feed .controls li.first, .user .controls li.first {
+.tag .controls li.first, .feed .controls li.first, .user .controls li.first, .invite .controls li.first {
   margin-left: 0;
 }
 
@@ -1318,6 +1360,10 @@ textarea.content {
 
 .destroy_disabled_icon {
   background-position: 0 -384px;
+}
+
+.activate_icon {
+  background-position: 0 -416px;
 }
 
 .comment_icon {
