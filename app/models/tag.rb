@@ -130,7 +130,7 @@ class Tag < ActiveRecord::Base
     self.positive_taggings.size < Tag.undertrained_threshold
   end
   
-  CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier'
+  CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier' unless defined?(CLASSIFIER_NAMESPACE)
   
   # This needs to be fast so we'll bypass Active Record
   def create_taggings_from_atom(atom)
