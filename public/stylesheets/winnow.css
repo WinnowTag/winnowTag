@@ -758,6 +758,8 @@ ul.tag_list li.negative {
 
 ul.tag_list li.public {
   background-image: url(../images/public.png);
+  background-position: 2px center;
+  padding-left: 16px;
 /*  color: #2691BF;*/
 }
 
