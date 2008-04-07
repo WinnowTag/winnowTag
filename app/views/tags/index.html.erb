@@ -17,6 +17,11 @@
 <% if @tags.empty? && @subscribed_tags.empty? -%>
   <div class="empty">No tags matched your search criteria.</div>
 <% else -%>
-  <%= render :partial => 'tag', :collection => @tags %>
-  <%= render :partial => 'subscribed_tag', :collection => @subscribed_tags %>
+  <% @tags.each do |tag| -%>
+    <% if tag.user == current_user -%>
+      <%= render :partial => 'tag', :locals => { :tag => tag } %>
+    <% else -%>
+      <%= render :partial => 'subscribed_tag', :locals => { :subscribed_tag => tag } %>
+    <% end -%>
+  <% end -%>
 <% end -%>
