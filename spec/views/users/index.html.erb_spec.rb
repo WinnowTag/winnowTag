@@ -30,9 +30,9 @@ describe '/users/index' do
       response.should_not have_tag(".empty")
     end
 
-    it "should show table" do
+    it "should show a list of users" do
       render_it
-      response.should have_tag("table")
+      response.should have_tag(".user")
     end
   end
   
@@ -48,9 +48,9 @@ describe '/users/index' do
       response.should have_tag(".empty")
     end
 
-    it "should not show table" do
+    it "should not show a list of users" do
       render_it
-      response.should_not have_tag("table")
+      response.should_not have_tag(".user")
     end
   end
 end

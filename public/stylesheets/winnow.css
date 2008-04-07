@@ -1105,14 +1105,14 @@ textarea.content {
   height: 40em;
 }
 
-.tag, .feed {
+.tag, .feed, .user {
   border: 1px solid #666;
   background: #eee;
   padding: .5em;
   margin: 0 0 .5em 0;
 }
 
-.tag .left, .feed .left {
+.tag .left, .feed .left, .user .left {
   float: left;
   margin: 0 1em 0 0;
 }
@@ -1127,6 +1127,49 @@ textarea.content {
   background-repeat: no-repeat;
   background-position: 0 1px;
   padding: 0 0 0 18px;
+}
+
+.user h4 {
+	font-size: 140%;
+	margin: 0 0 0.5em 0;
+}
+
+.user dl {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.user dl.account_detail {
+	width: 33%;
+}
+
+.user dl.login_detail {
+	width: 33%;
+
+}
+
+.user dl.tag_detail {
+	width: 33%;
+
+}
+
+.user dl dt {
+	clear: both;
+	float: left;
+  font-weight: bold;
+  color: #666;
+}
+
+.user dl dt:after {
+  content: ":";
+}
+
+.user dl dd {
+  float: left;
+  margin: 0 0 0 .5em;
+  padding: 0;
+/*  width: 7.5em;*/
 }
 
 .tag .left .comment {
@@ -1151,12 +1194,12 @@ textarea.content {
   display: block;
 }
 
-.tag .right, .feed .right {
+.tag .right, .feed .right, .user .right {
   float: right;
 }
 
 .tag dl.training, .feed dl.training {
-  clear: left;
+  clear: both;
   float: left;
   margin: 0 0 1em 0;
   padding: 0;
@@ -1171,18 +1214,18 @@ textarea.content {
   color: #666;
   float: left;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 2em;
 }
 
-.tag dl.training dt:after, .feed dl.training dt:after {
+.tag dl.training dt:after, .feed dl.training dt:after, .user dl.details dt:after {
   content: ":";
 }
 
 .tag dl.training dd, .feed dl.training dd {
   float: left;
-  margin: 0 0 0 .5em;
+  margin: 0 0 0 0.5em;
   padding: 0;
-  width: 7.5em;
+  width: 6.5em;
 }
 
 .tag dl.training dd.last, .feed dl.training dd.last {
@@ -1190,31 +1233,39 @@ textarea.content {
 }
 
 .tag .controls, .feed .controls {
-  clear: left;
-  float: left;
+  clear: both;
+  float: right;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.tag .controls li, .feed .controls li {
+.user .controls {
+  clear: both;
+  float: right;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag .controls li, .feed .controls li, .user .controls li {
   float: left;
   padding: 0;
   margin: 0 0 0 1.5em;
 }
 
-.tag .controls li a, .feed .controls li a {
+.tag .controls li a, .feed .controls li a, .user .controls li a {
   padding: 0 0 0 20px;
   background-image: url(../images/vertical_sprite.png);
   background-repeat: no-repeat;
 }
 
-.tag .controls li input, .feed .controls li input {
+.tag .controls li input, .feed .controls li input, .user .controls li input {
   margin: 0;
   padding: 0;
 }
 
-.tag .controls li.first, .feed .controls li.first {
+.tag .controls li.first, .feed .controls li.first, .user .controls li.first {
   margin-left: 0;
 }
 
