@@ -406,7 +406,7 @@ class FeedItem < ActiveRecord::Base
       hash
     end.to_a.sort
   end
-    
+
   def self.parse_id_uri(entry)
     begin
       uri = URI.parse(entry.id)

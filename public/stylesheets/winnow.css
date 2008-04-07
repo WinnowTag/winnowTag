@@ -1311,3 +1311,9 @@ a.desc {
   padding: 3px;
   text-align: center;
 }
+
+.notitle {
+  font-style: italic;
+  font-weight: normal;
+  color: #666;
+}

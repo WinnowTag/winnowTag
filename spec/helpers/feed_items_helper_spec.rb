@@ -158,4 +158,16 @@ describe FeedItemsHelper do
       tags_to_display.should == [svn.id, tech.id, 1, 5, 7]
     end
   end
+  
+  describe "feed_item_title" do
+    it "shows the feed items title if it has one" do
+      feed_item = FeedItem.new :title => "Some Title"
+      feed_item_title(feed_item).should == "Some Title"
+    end
+    
+    it "shows (no title) if there is no title" do
+      feed_item = FeedItem.new
+      feed_item_title(feed_item).should have_tag(".notitle", "(no title)")
+    end
+  end
 end

@@ -141,4 +141,12 @@ module FeedItemsHelper
     tags += Tag.find_all_by_id(tag_ids) unless tag_ids.empty?
     tags.sort_by { |tag| tag.name.downcase }
   end
+  
+  def feed_item_title(feed_item)
+    if not feed_item.title.blank?
+      feed_item.title
+    else
+      content_tag :span, "(no title)", :class => "notitle"
+    end
+  end
 end
