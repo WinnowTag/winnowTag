@@ -298,15 +298,21 @@ class FeedItem < ActiveRecord::Base
     conditions = []
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
-    tags = Tag.find_all_by_id(filters[:tag_ids].to_s.split(','))
+    tags = if filters[:tag_ids]
+      Tag.find_all_by_id(filters[:tag_ids].to_s.split(','))
+    elsif filters[:mode] =~ /moderated/i # limit the search to tagged items
+      filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
+    else
+      tags = []
+    end
     conditions += tags.map do |tag|
-      build_tag_inclusion_filter(tag, filters[:mode])
+      build_tag_inclusion_filter(tag, filters[:mode])  # TODO: Compact this into one statement?
     end
     conditions = ["(#{conditions.join(" OR ")})"] unless conditions.blank? 
     
     unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
       conditions += filters[:user].excluded_tags.map do |tag|
-        build_tag_exclusion_filter(tag)
+        build_tag_exclusion_filter(tag) # TODO: Compact this into one statement?
       end
     end
     
@@ -326,13 +332,6 @@ class FeedItem < ActiveRecord::Base
     options
   end
   
-  def self.add_feed_filter_conditions!(feed_ids, conditions)
-    feeds = Feed.find_all_by_id(feed_ids.to_s.split(','))
-    if !feeds.empty?
-      conditions << "feed_items.feed_id IN (#{feeds.map(&:id).join(",")})"
-    end
-  end
-  
   # Add any text_filter. This is done using a inner join on feed_item_contents with an
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
@@ -342,8 +341,11 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  def self.add_read_items_filter_conditions!(user, conditions)
-    conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
+  def self.add_feed_filter_conditions!(feed_ids, conditions)
+    feeds = Feed.find_all_by_id(feed_ids.to_s.split(','))
+    if !feeds.empty?
+      conditions << "feed_items.feed_id IN (#{feeds.map(&:id).join(",")})"
+    end
   end
 
   def self.build_tag_inclusion_filter(tag, mode)
@@ -355,10 +357,8 @@ class FeedItem < ActiveRecord::Base
     "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id)"
   end
   
-  def self.add_always_include_feed_filter_conditions!(feed_filters, conditions)
-    if !conditions.blank? and !feed_filters.blank?
-      conditions.replace "feed_items.feed_id IN (#{feed_filters.map(&:feed_id).join(",")}) OR (#{conditions})"
-    end
+  def self.add_read_items_filter_conditions!(user, conditions)
+    conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
   end
   
   def self.add_globally_exclude_feed_filter_conditions!(feed_filters, conditions)

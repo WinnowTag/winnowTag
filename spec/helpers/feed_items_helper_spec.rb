@@ -77,20 +77,6 @@ describe FeedItemsHelper do
     end
   end
 
-  describe "show_manual_taggings?" do
-    it "is true when params[:mode] is set to moderated" do
-      params[:mode] = "moderated"
-      show_manual_taggings?.should be_true
-    end
-    
-    it "is false when params[:mode] is not set to moderated" do
-      ["", "unread", "all"].each do |mode|
-        params[:mode] = mode
-        show_manual_taggings?.should be_false
-      end
-    end
-  end
-  
   describe "classes_for_taggings" do
     it "provides the class classifier when only a classifier tagging exists" do
       taggings = mock_model(Tagging, :classifier_tagging? => true)
@@ -149,15 +135,11 @@ describe FeedItemsHelper do
       end
     end
     
-    xit "needs to be tested with show_manual_taggings?"
     xit "needs to be tested with public tags"
   end
   
   describe "tags_to_display" do
-    def show_manual_taggings?; @show_manual_taggings; end
-    
     it "only shows filtered tags when manual taggings is on" do
-      @show_manual_taggings = true
       params[:tag_ids] = "1,5,7"
       tags_to_display.should == [1, 5, 7]
     end

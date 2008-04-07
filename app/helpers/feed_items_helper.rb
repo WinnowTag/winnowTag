@@ -61,10 +61,6 @@ module FeedItemsHelper
     "Classify changed tags"
   end
   
-  def show_manual_taggings?
-    params[:mode] =~ /moderated/i ? true : false 
-  end
- 
   def tag_controls(feed_item)
     tags = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
 
@@ -95,11 +91,7 @@ module FeedItemsHelper
   end
   
   def tags_to_display
-    if show_manual_taggings? && params[:tag_ids]
-      params[:tag_ids].split(",").map(&:to_i)
-    else
-      (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags).map(&:id) + params[:tag_ids].to_s.split(",").map(&:to_i)
-    end
+    (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags).map(&:id) + params[:tag_ids].to_s.split(",").map(&:to_i)
   end
   
   def tag_control_for(feed_item, tag, classes, classifier_strength)
