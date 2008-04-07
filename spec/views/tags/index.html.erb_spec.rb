@@ -19,7 +19,7 @@ describe '/tags/index' do
   describe "non-empty result set" do
     before(:each) do
       @tags = [mock_model(Tag, :name => "name", :comment => "comment", :bias => 1, :public? => false, :last_used_by => Time.now,
-                               :positive_count => 0, :negative_count => 0, :classifier_count => 0)]
+                               :positive_count => 0, :negative_count => 0, :classifier_count => 0, :user => User.find(1))]
       @tags.stub!(:page_count).and_return(1)
       assigns[:tags] = @tags
       @subscribed_tags = []

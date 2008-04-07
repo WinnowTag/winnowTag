@@ -170,7 +170,7 @@ function show_control_tooltip(control, tag, tag_name) {
   control.setAttribute("title", control_tooltip);
 }
 
-function show_tag_tooltip(tag, tag_name, classifier_strength) {
+function show_tag_tooltip(tag, tag_name, classifier_strength, user) {
   tag = $(tag);
   var tag_tooltip = "";
   
@@ -181,7 +181,10 @@ function show_tag_tooltip(tag, tag_name, classifier_strength) {
   } else if (tag.match('.classifier')) {
     tag_tooltip = "Winnow is " + classifier_strength +" sure this item fit your examples";
   }
-  //TODO: Published tags: "Published by <name of user>"
+  
+  if(user) {
+    tag_tooltip += " (from " + user + ")"
+  }
   
   tag.setAttribute("title", tag_tooltip);
 }

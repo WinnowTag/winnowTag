@@ -124,9 +124,9 @@ describe FeedItemsHelper do
   describe "tag controls" do
     it "created list items for each tag" do
       taggings = [
-        [ mock_model(Tag, :name => "tag1"), [] ],
-        [ mock_model(Tag, :name => "tag2"), [] ],
-        [ mock_model(Tag, :name => "tag3"), [] ]
+        [ mock_model(Tag, :name => "tag1", :user => current_user), [] ],
+        [ mock_model(Tag, :name => "tag2", :user => current_user), [] ],
+        [ mock_model(Tag, :name => "tag3", :user => current_user), [] ]
       ]
       feed_item = mock_model(FeedItem, :taggings_by_user => taggings)
     

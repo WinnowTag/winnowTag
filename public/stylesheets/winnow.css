@@ -254,8 +254,8 @@ optgroup {
   margin: 0 0 2em 0;
 }
 
-#sidebar .show_untagged {
-  text-align: center;
+#sidebar .section #clear_selected_filters {
+  float: right;
 }
 
 .progress_bar_container {
@@ -757,8 +757,10 @@ ul.tag_list li.negative {
 }
 
 ul.tag_list li.public {
-  background-image: url(../images/bullet_blue.png);
-  color: #2691BF;
+  background-image: url(../images/public.png);
+  background-position: 2px center;
+  padding-left: 16px;
+/*  color: #2691BF;*/
 }
 
 ul.tag_list li .controls {
