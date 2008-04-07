@@ -78,14 +78,14 @@ describe FeedItemsHelper do
   end
 
   describe "show_manual_taggings?" do
-    it "is true when params[:manual_taggings] is set to a truthy value" do
-      params[:manual_taggings] = "true"
+    it "is true when params[:mode] is set to moderated" do
+      params[:mode] = "moderated"
       show_manual_taggings?.should be_true
     end
     
-    it "is false when params[:manual_taggings] is set to a falsy value" do
-      ["", "false"].each do |falsy_value|
-        params[:manual_taggings] = falsy_value
+    it "is false when params[:mode] is not set to moderated" do
+      ["", "unread", "all"].each do |mode|
+        params[:mode] = mode
         show_manual_taggings?.should be_false
       end
     end

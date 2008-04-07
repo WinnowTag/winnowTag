@@ -265,16 +265,13 @@ class FeedItem < ActiveRecord::Base
   # === Parameters
   #
   # A Hash with these keys (all optional):
-  #
-  # <tt>:view</tt>:: Constrains returned items to the parameters defined in the view
-  # <tt>:manual_taggings</tt>:: (true|false) If true negative taggings will be included in a tag_filters results. Default is false.
   # 
   # Also supports <tt>:limit</tt>, <tt>:offset</tt> and <tt>:order</tt> as defined by ActiveRecord::Base.find
   #
   # This will return a Hash of options suitable for passing to FeedItem.find.
   # 
   def self.options_for_filters(filters) # :doc:
-    filters.assert_valid_keys(:limit, :order, :offset, :manual_taggings, :read_items, :user, :feed_ids, :tag_ids, :text_filter)
+    filters.assert_valid_keys(:limit, :order, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
     options = {:limit => filters[:limit], :offset => filters[:offset]}
     
     case filters[:order]
@@ -293,29 +290,35 @@ class FeedItem < ActiveRecord::Base
       options[:order] = "feed_items.updated DESC"
     end
 
+    filters[:mode] ||= "unread"
+
     joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
+    add_text_filter_joins!(filters[:text_filter], joins)
+
     conditions = []
-    
-    # Feed filtering (include)
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
     tags = Tag.find_all_by_id(filters[:tag_ids].to_s.split(','))
     conditions += tags.map do |tag|
-      build_tag_inclusion_filter(tag, filters[:manual_taggings])
+      build_tag_inclusion_filter(tag, filters[:mode])
     end
     conditions = ["(#{conditions.join(" OR ")})"] unless conditions.blank? 
     
-    conditions += filters[:user].excluded_tags.map do |tag|
-      build_tag_exclusion_filter(tag)
+    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+      conditions += filters[:user].excluded_tags.map do |tag|
+        build_tag_exclusion_filter(tag)
+      end
     end
     
-    add_read_items_filter_conditions!(filters[:read_items], filters[:user], conditions)
+    if filters[:mode] =~ /unread/i # only filter out read items when showing unread items
+      add_read_items_filter_conditions!(filters[:user], conditions)
+    end
         
     options[:conditions] = conditions.join(" AND ")
-    add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
 
-    # Text filtering
-    add_text_filter_joins!(filters[:text_filter], joins)
+    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+      add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
+    end
     
     options[:conditions] = nil if options[:conditions].blank?    
     options[:joins] = joins.uniq.join(" ")
@@ -339,14 +342,12 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  def self.add_read_items_filter_conditions!(read_items, user, conditions)
-    unless read_items
-      conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
-    end
+  def self.add_read_items_filter_conditions!(user, conditions)
+    conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
   end
 
-  def self.build_tag_inclusion_filter(tag, manual_taggings)
-    manual_taggings_sql = manual_taggings ? " AND classifier_tagging = 0" : nil
+  def self.build_tag_inclusion_filter(tag, mode)
+    manual_taggings_sql = mode =~ /moderated/i ? " AND classifier_tagging = 0" : nil
     "EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id#{manual_taggings_sql})"
   end
 

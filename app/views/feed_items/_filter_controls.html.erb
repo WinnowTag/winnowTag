@@ -1,5 +1,16 @@
 <div class="section">
-  <%= link_to_function "Show All Items", "itemBrowser.setFilters({})", :id => "show_all" %>
+  <div class="choice_filter">
+    Show: <%= link_to_function "All", "itemBrowser.addFilters({mode: 'all'})", :id => "mode_all" %>, 
+          <%= link_to_function "Unread", "itemBrowser.addFilters({mode: 'unread'})", :id => "mode_unread" %>, 
+          <%= link_to_function "Moderated", "itemBrowser.addFilters({mode: 'moderated'})", :id => "mode_moderated" %>
+
+  </div>
+
+  <div class="choice_filter">
+    Sort: <%= link_to_function "Newest", "itemBrowser.addFilters({order: 'newest'})", :id => "order_newest" %>, 
+          <%= link_to_function "Oldest", "itemBrowser.addFilters({order: 'oldest'})", :id => "order_oldest" %>, 
+          <%= link_to_function "Strength", "itemBrowser.addFilters({order: 'strength'})", :id => "order_strength" %>
+  </div>  
 
   <div id="folders">
     <div id="folder_tags" class="folder<%= open_tags? ? " open" : "" %>">
@@ -50,20 +61,4 @@
       <div id="new_folder_errors" class="error" style="display:none"></div>
     </div>
   </div>
-  
-  <div class="checkbox_filter">
-    <%= check_box_tag :manual_taggings, true, false, :onclick => "itemBrowser.addFilters({manual_taggings: this.checked ? true : null})" %>
-    <label id="manual_taggings_filter" for="manual_taggings">Only Show Manual Taggings</label>
-  </div>
-  
-  <div class="checkbox_filter">
-    <%= check_box_tag :read_items, true, false, :onclick => "itemBrowser.addFilters({read_items: this.checked ? true : null})" %>
-    <label id="read_items_filter" for="read_items">Include Read Items</label>
-  </div>
-
-  <div class="feed_item_order">
-    Sort by: <%= link_to_function "Newest", "itemBrowser.addFilters({order: 'newest'})", :id => "order_newest" %>, 
-             <%= link_to_function "Oldest", "itemBrowser.addFilters({order: 'oldest'})", :id => "order_oldest" %>, 
-             <%= link_to_function "Strength", "itemBrowser.addFilters({order: 'strength'})", :id => "order_strength" %>
-  </div>  
 </div>

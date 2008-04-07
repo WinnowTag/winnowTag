@@ -905,17 +905,14 @@ a.bookmarklet:hover {
   float: right;
 }
 
-#show_all {
+.choice_filter {
+	color: #666;
   display: block;
-  text-align: center;
 }
 
-#show_all.selected {
+.choice_filter .selected {
+  color: #000;
   font-weight: bold;
-}
-
-.checkbox_filter input {
-  margin: 0;
 }
 
 .folder {
@@ -1101,14 +1098,6 @@ a.bookmarklet:hover {
   height: 1.2em;
   margin: 0 0 0 3px;
   font-size: 1em;
-}
-
-.feed_item_order {
-	margin: 1em 0;
-	color: #666;
-}
-.feed_item_order a.selected {
-	font-weight: bold;
 }
 
 textarea.content { 

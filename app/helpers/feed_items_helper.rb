@@ -62,7 +62,7 @@ module FeedItemsHelper
   end
   
   def show_manual_taggings?
-    params[:manual_taggings] =~ /true/i ? true : false 
+    params[:mode] =~ /moderated/i ? true : false 
   end
  
   def tag_controls(feed_item)

@@ -164,7 +164,7 @@ describe FeedItem do
 
       FeedItem.mark_read_for(user_1.id, feed_item_2.id)
       
-      FeedItem.find_with_filters(:user => user_1, :read_items => false, :order => "id").should == [feed_item_1]
+      FeedItem.find_with_filters(:user => user_1, :mode => "unread", :order => "id").should == [feed_item_1]
     end
     
     it "can include read items" do
@@ -176,7 +176,7 @@ describe FeedItem do
 
       FeedItem.mark_read_for(user_1.id, feed_item_2.id)
       
-      FeedItem.find_with_filters(:user => user_1, :read_items => true, :order => "id").should == [feed_item_1, feed_item_2]
+      FeedItem.find_with_filters(:user => user_1, :mode => "all", :order => "id").should == [feed_item_1, feed_item_2]
     end
     
     it "filters out read items when there are more then 1 tags included" do
@@ -193,7 +193,7 @@ describe FeedItem do
 
       FeedItem.mark_read_for(user_1.id, feed_item_1.id)
       
-      FeedItem.find_with_filters(:user => user_1, :read_items => false, :tag_ids => [tag_1.id, tag_2.id].join(","), :order => "id").should == []
+      FeedItem.find_with_filters(:user => user_1, :mode => "unread", :tag_ids => [tag_1.id, tag_2.id].join(","), :order => "id").should == []
     end
     
   end  
@@ -487,7 +487,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag, :strength => 0)
     
       expected = FeedItem.find(2, 4)
-      assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :manual_taggings => true, :order => 'id'))
+      assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :mode => "moderated", :order => 'id'))
     end
   
     it "find_with_tag_filter_should_only_return_items_with_that_tag" do

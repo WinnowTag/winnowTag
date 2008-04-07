@@ -585,14 +585,40 @@ ItemBrowser.prototype = {
   },
   
   styleFilters: function() {
-    if(!$("show_all")) { return; }
+    // Make sure this is not run if the sidebar is not loaded yet
+    if(!$("mode_all")) { return; }
     
     var params = location.hash.gsub('#', '').toQueryParams();
-    if($H(params).keys().size() == 0) {
-      $("show_all").addClassName("selected");
-    } else {
-      $("show_all").removeClassName("selected");
-    }
+
+	  var modes = ["all", "unread", "moderated"];
+		if(params.mode) {
+			modes.without(params.mode).each(function(mode) {
+			  $("mode_" + mode).removeClassName("selected")
+			});
+			
+			$("mode_" + params.mode).addClassName("selected");
+		} else {
+			modes.without("unread").each(function(mode) {
+			  $("mode_" + mode).removeClassName("selected")
+			});
+
+			$("mode_unread").addClassName("selected");
+		}
+    
+	  var orders = ["newest", "oldest", "strength"];
+		if(params.order) {
+			orders.without(params.order).each(function(order) {
+			  $("order_" + order).removeClassName("selected")
+			});
+			
+			$("order_" + params.order).addClassName("selected");
+		} else {
+			orders.without("newest").each(function(order) {
+			  $("order_" + order).removeClassName("selected")
+			});
+
+			$("order_newest").addClassName("selected");
+		}
     
     var feed_ids = params.feed_ids ? params.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
@@ -644,25 +670,6 @@ ItemBrowser.prototype = {
 	    applesearch.onChange(text_filter, clear_button);
 	    applesearch.insertPlaceholder(text_filter);
     }
-    
-    if(params.manual_taggings) {
-      $("manual_taggings").checked = true;
-    } else {
-      $("manual_taggings").checked = false;
-    }
-    
-    if(params.read_items) {
-      $("read_items").checked = true;
-    } else {
-      $("read_items").checked = false;
-    }
-
-		$$(".feed_item_order a").invoke("removeClassName", "selected");
-		if(params.order) {
-			$("order_" + params.order).addClassName("selected");
-		} else {
-			$("order_newest").addClassName("selected");
-		}
   },
   
   showLoadingIndicator: function(message) {

@@ -14,7 +14,7 @@
       <dt>Last Trained</dt>
       <dd><%= format_date(subscribed_tag.last_used_by) %></dd>
       <dt>Training</dt>
-      <dd><%= link_to "+#{subscribed_tag.positive_count} / -#{subscribed_tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&manual_taggings=true"), :title => "Inspect #{subscribed_tag.name}" %></dd>
+      <dd><%= link_to "+#{subscribed_tag.positive_count} / -#{subscribed_tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :title => "Inspect #{subscribed_tag.name}" %></dd>
       <dt>Automatic</dt>
       <dd class="last"><%= subscribed_tag.classifier_count %></dd>
     </dl>

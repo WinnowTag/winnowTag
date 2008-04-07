@@ -27,7 +27,7 @@ describe "FeedItemsTest" do
     wait_for_ajax
     dont_see_element "#feed_item_#{feed_item_1.id}.unread"
 
-    # TODO: Make this work with read_items=true
+    # TODO: Make this work with mode=all
     # click "css=#feed_item_#{feed_item_1.id} .status a"
     # see_element "#feed_item_#{feed_item_1.id}.read"
     # 
