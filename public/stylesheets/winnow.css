@@ -254,8 +254,8 @@ optgroup {
   margin: 0 0 2em 0;
 }
 
-#sidebar .show_untagged {
-  text-align: center;
+#sidebar .section #clear_selected_filters {
+  float: right;
 }
 
 .progress_bar_container {

@@ -670,6 +670,15 @@ ItemBrowser.prototype = {
 	    applesearch.onChange(text_filter, clear_button);
 	    applesearch.insertPlaceholder(text_filter);
     }
+    
+    var clear_selected_filters = $("clear_selected_filters");
+    if(params.tag_ids || params.feed_ids || params.text_filter) {
+      clear_selected_filters.disabled = false;
+      clear_selected_filters.value = "Clear Selected Filters";
+    } else {
+      clear_selected_filters.disabled = true;
+      clear_selected_filters.value = "No Filters Selected";
+    }
   },
   
   showLoadingIndicator: function(message) {
