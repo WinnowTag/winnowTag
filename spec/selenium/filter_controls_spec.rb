@@ -149,16 +149,16 @@ describe "filter controls" do
       get_location.should =~ /\#tag_ids=#{@tag.id}$/
     end
     
-    it "resets manual taggings filter, text filter, and any other feed/tag filters" do
+    it "resets feed/tag filters only" do
       open login_path
-      open feed_items_path(:anchor => "manual_taggings=true&text_filter=ruby&feed_ids=1")
+      open feed_items_path(:anchor => "manual_taggings=true&text_filter=ruby&feed_ids=1&tag_ids=999")
       wait_for_ajax
 
-      get_location.should =~ /\#manual_taggings=true&text_filter=ruby&feed_ids=1$/
+      get_location.should =~ /\#manual_taggings=true&text_filter=ruby&feed_ids=1&tag_ids=999$/
 
       click "css=#name_tag_#{@tag.id}"
       
-      get_location.should =~ /\#tag_ids=#{@tag.id}$/
+      get_location.should =~ /\#manual_taggings=true&text_filter=ruby&tag_ids=#{@tag.id}$/
     end
     
     it "turns off a tag filter" do
