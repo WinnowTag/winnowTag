@@ -19,6 +19,7 @@
 </head>
 <body id="<%= controller.controller_name %>_controller">
 	<%= render :partial => 'layouts/navbar' %>
+	
 	<% if header_controls = yield(:header_controls) -%>
 	  <div id="header_controls"><%= header_controls %></div>
 	<% end -%>
@@ -29,13 +30,10 @@
 		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
     <div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
   <% end -%>
-  <% if @skip_content_container -%>
+
+  <div id="content">
     <%= yield %>
-  <% else -%>
-    <div id="content">
-      <%= yield %>
-    </div>
-  <% end -%>
+  </div>
 
 	<% if footer_content = yield(:footer) -%>
 		<div id="footer"><%= footer_content %></div>
