@@ -735,7 +735,7 @@ ItemBrowser.prototype = {
   },
   
   toggleOpenCloseItem: function(item, event) {
-    if(event && (event.element().match(".stop") || event.element().up('.stop'))) { return false; }
+    if(event && (Event.element(event).match(".stop") || Event.element(event).up('.stop'))) { return false; }
     if($(item).match(".open")) {
       this.closeItem(item);
     } else {
