@@ -15,6 +15,7 @@
 
 html {
   height: 100%;
+  overflow-y: hidden;
 }
 
 body {
@@ -23,7 +24,6 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow-y: hidden;
 }
 
 body > h2, body > h3, body > h4 {
@@ -198,6 +198,7 @@ optgroup {
 #content {
   overflow: auto;
   padding: 10px;
+  position: relative;
 }
 
 #feed_items_controller #content {
