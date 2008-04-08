@@ -33,7 +33,7 @@ describe InvitesController do
     end
     
     it "find invites based on the search criteria" do
-      Invite.should_receive(:search).with(:q => "ruby", :per_page => 30, :page => nil)
+      Invite.should_receive(:search).with(:q => "ruby", :per_page => 20, :page => nil, :order => "created_at ASC")
       do_get("ruby")
     end
   end

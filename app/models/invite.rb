@@ -35,7 +35,9 @@ class Invite < ActiveRecord::Base
       
       conditions = conditions.empty? ? nil : [conditions.join(" AND "), *values]
       
-      paginate(options.merge(:conditions => conditions))
+      paginate(options.merge(
+        :select => "invites.*, (CASE WHEN user_id IS NOT NULL THEN 2 WHEN code IS NOT NULL THEN 1 ELSE 0 END) AS status",
+        :conditions => conditions))
     end
   end
 end

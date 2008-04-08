@@ -5,9 +5,9 @@
     <% if params[:action] == "index" -%>
     <li>
       Sort By:
+      <%= sort_link "Created", 'invites', :alias => 'created_at' %>,      
       <%= sort_link "Email", 'invites', :alias => 'email' %>,        
-      <%= sort_link "Created", 'invites', :alias => 'email' %>,      
-      <%= sort_link "Status", 'invites', :alias => 'email' %>
+      <%= sort_link "Status", 'invites', :alias => 'status' %>
     </li>
     <% end -%>
   </ul>
