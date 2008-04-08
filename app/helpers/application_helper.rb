@@ -170,7 +170,7 @@ module ApplicationHelper
       options[:remove] = :sidebar
     end
     url  =  case options[:remove]
-      when :subscription then subscribe_tag_path(tag, :subscribe => false)
+      when :subscription then unsubscribe_tag_path(tag)
       when :sidebar      then sidebar_tag_path(tag, :sidebar => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end

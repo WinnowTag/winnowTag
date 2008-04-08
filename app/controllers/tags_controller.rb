@@ -245,10 +245,10 @@ class TagsController < ApplicationController
   end
   
   def sidebar
-    if tag = current_user.tags.find(params[:id])
-      tag.update_attribute :show_in_sidebar, params[:sidebar]
+    if @tag = current_user.tags.find(params[:id])
+      @tag.update_attribute :show_in_sidebar, params[:sidebar]
     end
-    render :nothing => true
+    respond_to :js
   end
   
 private

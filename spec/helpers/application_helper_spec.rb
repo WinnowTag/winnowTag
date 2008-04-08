@@ -281,7 +281,7 @@ describe ApplicationHelper do
       user = mock_model(User, :display_name => "Mark")
       tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
       tag_filter_control(tag, :remove => :subscription).should have_tag("li[subscribe_url=?]", subscribe_tag_path(tag, :subscribe => true)) do
-        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_tag_path(tag, :subscribe => false))}.*/)
+        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(unsubscribe_tag_path(tag))}.*/)
       end
     end
     

@@ -12,7 +12,7 @@ ErrorMessage.prototype = {
 		resizeContent();
 
 		self = this;
-		errorTimeout = setTimeout(function() { 
+		errorTimeout = setTimeout(function() {
 			new Effect.Fade(self.error_message, {duration: 4, afterFinish: resizeContent});
 		}, 10000);
 	}	
@@ -21,16 +21,24 @@ ErrorMessage.prototype = {
 var ConfirmationMessage = Class.create();
 ConfirmationMessage.prototype = {
   initialize: function(message, options) {
-    this.options = {}
+    this.options = {
+      yes: "Yes",
+      no: "No"
+    }
 		Object.extend(this.options, options || {});
 		
     $('confirm').update(message + 
-                        ' <a href="#" id="confirm_yes" onclick="return false;">Yes</a>' +
-                        ' or <a href="#" id="confirm_no" onclick="return false">No</a>');
-    Event.observe($('confirm_no'), 'click', function() { $('confirm').hide(); resizeContent(); return false});
-    Event.observe($('confirm_yes'), 'click', function() { 
+                        ' <a href="#" id="confirm_yes" onclick="return false;">' + this.options.yes + '</a>' +
+                        ' or <a href="#" id="confirm_no" onclick="return false">' + this.options.no + '</a>');
+    $('confirm_no').observe('click', function() { 
+      $('confirm').hide();
+      resizeContent(); 
+      return false
+    });
+    $('confirm_yes').observe('click', function() { 
       $('confirm').hide(); 
       resizeContent();
+      
       if (this.options.onConfirmed) {
         this.options.onConfirmed();        
       }

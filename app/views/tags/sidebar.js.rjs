@@ -1,0 +1,11 @@
+page << <<-EOJS
+  new ConfirmationMessage("Do you want to completely destroy the tag " + #{@tag.name.to_json} + 
+                          " with #{0} positive examples and #{0} negative examples, or leave " + 
+                          #{@tag.name.to_json} + " on the My Tags page?", {
+    yes: "Destroy " + #{@tag.name.to_json},
+    no: "Keep " + #{@tag.name.to_json} + " on My Tags",
+    onConfirmed: function() {
+      #{remote_function(:url => tag_path(@tag), :method => :delete)}
+    }
+  });
+EOJS
