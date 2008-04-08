@@ -5,8 +5,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  	<%= javascript_include_merged :base %>
 	<%= stylesheet_link_merged :base %>
-	<!--[if lt IE 7]>
-	<%= javascript_include_tag('taconite_for_prototype.js') %>
+	<!--[if IE]>
+	  <link rel="stylesheet" href="stylesheets/ie.css" type="text/css" media="screen, projection">
 	<![endif]-->
 	<%= yield(:head) %>
 	
