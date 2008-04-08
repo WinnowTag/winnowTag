@@ -65,7 +65,7 @@ function add_tag(taggable_id, tag_name, allow_remove) {
   } else if (tag_control.match('.classifier')) {
     tag_control.addClassName('positive'); 
   } else {
-    alert("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
+    new ErrorMessage("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
   }
 
   sendTagRequest(url, parameters);
@@ -94,7 +94,7 @@ function remove_tag(taggable_id, tag_name) {
   } else if (tag_control.match('.classifier')) {
     tag_control.addClassName('negative'); 
   } else {
-    alert("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
+    new ErrorMessage("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
   }
 
   sendTagRequest(url, parameters);
@@ -107,7 +107,7 @@ function sendTagRequest(url, parameters) {
   new Ajax.Request(url, {parameters: $H(parameters).toQueryString(),
     method: 'post',
     onFailure: function(transport) {
-      alert("Error contacting server.  You're changes have not been saved.");
+      new ErrorMessage("Error contacting server.  You're changes have not been saved.");
     }
   });
 }

@@ -940,7 +940,7 @@ Object.extend(Ajax.InPlaceEditor, {
         ipe._effect.cancel();
     },
     onFailure: function(transport, ipe) {
-      alert('Error communication with the server: ' + transport.responseText.stripTags());
+      new ErrorMessage('Error communication with the server: ' + transport.responseText.stripTags());
     },
     onFormCustomization: null, // Takes the IPE and its generated form, after editor, before controls.
     onLeaveEditMode: null,

@@ -151,12 +151,12 @@ Classification.prototype = {
         this.notify('Cancelled');
       }.bind(this),
       onFailure: function(transport) {
-        alert(transport.responseText);
+        new ErrorMessage(transport.responseText);
         this.notify('Cancelled');
       },
       onException: function(request, exception) {
         if (!exceptionToIgnore(exception)) {
-          alert("Exception: " + exception.message);
+          new ErrorMessage("Exception: " + exception.message);
         }
       }
     });    
