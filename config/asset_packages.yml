@@ -12,6 +12,8 @@ javascripts:
   - bias_slider
   - classification
   - tagging
+  - applesearch
+  - messages
   - application
 stylesheets: 
 - base: 
