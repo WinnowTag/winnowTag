@@ -37,13 +37,13 @@ class FeedsController < ApplicationController
                                       :callback_url => collection_job_results_url(current_user))
                                       
       if @feed.updated_on.nil?
-        flash[:notice] = "Thanks for adding the feed from '#{@feed.url}'. " + 
-                         "We will fetch the items soon and we'll let you know when it is done. " +
-                         "The feed has also been added to your feeds folder in the sidebar."
+        flash[:notice] = Message.create!(:body => "Thanks for adding the feed from '#{@feed.url}'. " + 
+                                                  "We will fetch the items soon and we'll let you know when it is done. " +
+                                                  "The feed has also been added to your feeds folder in the sidebar.")
       else
-        flash[:notice] = "We already have the feed from '#{@feed.url}', " +
-                         "however we will update it now and we'll let you know when it is done. " +
-                         "The feed has also been added to your feeds folder in the sidebar."
+        flash[:notice] = Message.create!(:body => "We already have the feed from '#{@feed.url}', " +
+                                                  "however we will update it now and we'll let you know when it is done. " +
+                                                  "The feed has also been added to your feeds folder in the sidebar.")
       end
       
       respond_to do |format|
@@ -64,7 +64,7 @@ class FeedsController < ApplicationController
         feed.collect(:created_by   => current_user.login, 
                      :callback_url => collection_job_results_url(current_user))
       end
-      flash[:notice] = "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file"
+      flash[:notice] = Message.create!(:body => "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file")
       redirect_to feeds_url
     end
   end
