@@ -271,7 +271,7 @@ ItemBrowser.prototype = {
         }
         this.loading = false;
         this.updateFromQueue();
-      }.bind(this),
+      }.bind(this)
       // onFailure: function(request) {
       //   // we get a status code of 2147746065 when the request gets interrupted in FF3B4
       //   if(request.status == 2147746065) { return; }
