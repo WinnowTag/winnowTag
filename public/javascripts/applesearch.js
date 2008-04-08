@@ -1,57 +1,59 @@
-var applesearch;
-if (!applesearch)	applesearch = {};
+var AppleSearch = Class.create();
+AppleSearch.setup = function() {
+  if(navigator.userAgent.toLowerCase().indexOf('safari') >= 0) { return; }
+  
+  $$(".applesearch").each(function(element) {
+    new AppleSearch(element);
+  });
+};
 
-applesearch.init = function () {
-	if (navigator.userAgent.toLowerCase().indexOf('safari') < 0) {
-		$$(".applesearch").each(function(element) {
-		  element.addClassName("non_safari");
-		  
-		  var text_input = element.down("input");
-		  var clear_button = element.down('.srch_clear');
-		  Event.observe(text_input, 'keyup', function() {
-		    applesearch.onChange(text_input, clear_button);
-	    });
-		  Event.observe(text_input, 'focus', function() {
-		    applesearch.removePlaceholder(text_input);
-	    });
-		  Event.observe(text_input, 'blur', function() {
-		    applesearch.onChange(text_input, clear_button);
-		    applesearch.insertPlaceholder(text_input);
-	    });
-		  Event.observe(clear_button, 'click', function() {
-		    applesearch.clearFld(text_input, clear_button);
-	    });
-	    
-      applesearch.onChange(text_input, clear_button);
-      applesearch.insertPlaceholder(text_input);
-		});
-	}
-}
+AppleSearch.prototype = {
+  initialize: function(element) {
+    this.element = element;
+    this.element.addClassName("non_safari");
+    this.element.applesearch = this;
+  
+    this.text_input = element.down("input");
+    this.text_input.observe("keyup", this.displayClearButton.bind(this));
+    this.text_input.observe("focus", this.removePlaceholder.bind(this));
+    this.text_input.observe("blur", function() {
+      this.displayClearButton();
+      this.insertPlaceholder();
+    }.bind(this));
 
-applesearch.onChange = function (fld, btn) {
-	if (fld.value.length > 0 && !btn.hasClassName("clear_button")) {
-	  btn.addClassName("clear_button");
-	} else if (fld.value.length == 0 && btn.hasClassName("clear_button")) {
-	  btn.removeClassName("clear_button");
-	}
-}
+    this.clear_button = element.down('.srch_clear');
+    this.clear_button.observe("click", this.clear.bind(this));
+  
+    this.displayClearButton();
+    this.insertPlaceholder();
+  },
 
-applesearch.clearFld = function (fld,btn) {
-	fld.value = "";
-	this.onChange(fld,btn);
-	fld.focus();
-}
+  displayClearButton: function() {
+    if(this.text_input.value.length > 0) {
+      this.clear_button.addClassName("clear_button");
+    } else {
+      this.clear_button.removeClassName("clear_button");
+    }
+  },
+  
+  clear: function () {
+    this.text_input.value = "";
+    this.displayClearButton();
+    this.text_input.focus();
+  },
 
-applesearch.insertPlaceholder = function(fld) {
-  if(fld.value == "") {
-	  fld.addClassName("placeholder");
-	  fld.value = fld.getAttribute("placeholder");
-  }
-}
+  insertPlaceholder: function() {
+    if(this.text_input.value == "") {
+      this.text_input.addClassName("placeholder");
+      // TODO: Why doesn't this work?
+      this.text_input.value = this.text_input.getAttribute("placeholder");
+    }
+  },
 
-applesearch.removePlaceholder = function(fld) {
-   if(fld.value == fld.getAttribute("placeholder")) {
-	  fld.removeClassName("placeholder");
-	  fld.value = "";
+  removePlaceholder: function() {
+    if(this.text_input.value == this.text_input.getAttribute("placeholder")) {
+      this.text_input.value = "";
+    }
+    this.text_input.removeClassName("placeholder");
   }
 }

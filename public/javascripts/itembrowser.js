@@ -464,7 +464,7 @@ ItemBrowser.prototype = {
     new Ajax.Updater("sidebar", "/feed_items/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
       onComplete: function() {
         sidebar.removeClassName("loading");
-        applesearch.init();
+        AppleSearch.setup();
         ItemBrowser.instance.styleFilters();
       }
     });  
@@ -665,10 +665,9 @@ ItemBrowser.prototype = {
     if(params.text_filter) {
       text_filter.value = params.text_filter;
     } else {
-      clear_button = text_filter.previous(".srch_clear");
       text_filter.value = "";
-	    applesearch.onChange(text_filter, clear_button);
-	    applesearch.insertPlaceholder(text_filter);
+      // TODO: Why doesn't this work?
+      text_filter.fire("blur");
     }
     
     var clear_selected_filters = $("clear_selected_filters");
