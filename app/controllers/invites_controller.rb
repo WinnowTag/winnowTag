@@ -7,7 +7,11 @@ class InvitesController < ApplicationController
   permit 'admin'
   
   def index
-    @invites = Invite.search(:q => params[:q], :per_page => 30, :page => params[:page])
+    add_to_sortable_columns('invites', :field => 'created_at')
+    add_to_sortable_columns('invites', :field => 'email')
+    add_to_sortable_columns('invites', :field => 'status')
+      
+    @invites = Invite.search(:q => params[:q], :per_page => 20, :page => params[:page], :order => "#{sortable_order('invites', :alias => 'created_at', :sort_direction => :asc)}")
   end
 
   def new
