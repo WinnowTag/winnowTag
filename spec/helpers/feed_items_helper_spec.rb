@@ -139,12 +139,7 @@ describe FeedItemsHelper do
   end
   
   describe "tags_to_display" do
-    it "only shows filtered tags when manual taggings is on" do
-      params[:tag_ids] = "1,5,7"
-      tags_to_display.should == [1, 5, 7]
-    end
-    
-    it "only shows the tags the user has in the sidebar (public and private) that are not excluded plus any filtered tags" do
+    it "only shows the tags the user has in the sidebar (public and private) that are not excluded plus any filtered tags which are theirs or public" do
       ruby = mock_model(Tag)
       svn = mock_model(Tag)
       tech = mock_model(Tag)
@@ -153,9 +148,16 @@ describe FeedItemsHelper do
       current_user.stub!(:sidebar_tags).and_return([ruby, svn])
       current_user.stub!(:subscribed_tags).and_return([tech, langs])
       current_user.stub!(:excluded_tags).and_return([ruby, langs])
-      params[:tag_ids] = "1,5,7"
       
-      tags_to_display.should == [svn.id, tech.id, 1, 5, 7]
+      Tag.delete_all
+      non_sidebar_tag = Tag.create! :name => "non_sidebar_tag", :public => true, :user => current_user
+      other_user = User.create! valid_user_attributes
+      other_public_tag = Tag.create! :name => "other_public_tag", :public => true, :user => other_user
+      other_private_tag = Tag.create! :name => "other_private_tag", :user => other_user
+      
+      params[:tag_ids] = [non_sidebar_tag.id, other_public_tag.id, other_private_tag.id].join(",")
+
+      tags_to_display.should == [svn, tech, non_sidebar_tag, other_public_tag]
     end
   end
   

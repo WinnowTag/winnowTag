@@ -89,7 +89,9 @@ module FeedItemsHelper
   end
   
   def tags_to_display
-    (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags).map(&:id) + params[:tag_ids].to_s.split(",").map(&:to_i)
+    (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + 
+      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
+    ).uniq
   end
   
   def tag_control_for(feed_item, tag, classes, classifier_strength)
@@ -134,10 +136,10 @@ module FeedItemsHelper
   end
   
   def tags_for_sidebar
-    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags
-    tag_ids = params[:tag_ids].to_s.split(",").map(&:to_i) - tags.map(&:id)
-    tags += Tag.find_all_by_id(tag_ids) unless tag_ids.empty?
-    tags.sort_by { |tag| tag.name.downcase }
+    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + 
+      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
+
+    tags.uniq.sort_by { |tag| tag.name.downcase }
   end
   
   def feed_item_title(feed_item)

@@ -279,7 +279,7 @@ class FeedItem < ActiveRecord::Base
       if filters[:tag_ids].blank?
         tag_ids = (filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags).map(&:id).join(',')
       else
-        tag_ids = filters[:tag_ids]
+        tag_ids = Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]]).join(",")
       end
       options[:order] = "(SELECT MAX(taggings.strength) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) DESC, feed_items.updated DESC"
     when "oldest"
@@ -299,7 +299,7 @@ class FeedItem < ActiveRecord::Base
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
     tags = if filters[:tag_ids]
-      Tag.find_all_by_id(filters[:tag_ids].to_s.split(','))
+      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]])
     elsif filters[:mode] =~ /moderated/i # limit the search to tagged items
       filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
     else
