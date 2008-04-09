@@ -1,4 +1,4 @@
-<%= render :partial => "messages/sidebar" %>
+<%= render :partial => "messages/sidebar", :locals => { :messages => @messages } %>
 
 <div class="using">
   <%= textilize @using.value %>
