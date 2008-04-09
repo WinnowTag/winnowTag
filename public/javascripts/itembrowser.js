@@ -510,6 +510,7 @@ ItemBrowser.prototype = {
         this.removeFilters(parameters);
       } else {
         this.addFilters(parameters);
+        Event.stop(event);
       }
     } else {
       this.setFilters(parameters);
