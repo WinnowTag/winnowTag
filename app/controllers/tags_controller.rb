@@ -47,7 +47,7 @@ class TagsController < ApplicationController
       respond_to do |wants|
         wants.atom do        
           conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do
-            render :layout => false
+            render 
           end
         end
       end

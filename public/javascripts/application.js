@@ -75,21 +75,19 @@ Ajax.Responders.register({
 
 function resizeContent() {
 	var content = $('content');
-	if(content && (!Prototype.Browser.IE || content.tagName != 'TBODY')) {
-		var body_height = $(document.body).getHeight();
-		var top_of_content = content.offsetTop;
-		var content_padding = parseInt(content.getStyle("padding-top")) + parseInt(content.getStyle("padding-bottom"));
-    var footer_height = $('footer') ? $('footer').getHeight() : 0;
-		var feed_item_height = body_height - top_of_content - footer_height - content_padding;
-		content.style.height = feed_item_height + 'px';
-		
-	  var sidebar = $('sidebar');
-		if(sidebar) {
-		  var sidebar_padding = parseInt(sidebar.getStyle("padding-top")) + parseInt(sidebar.getStyle("padding-bottom"));
-		  var sidebar_height = body_height - top_of_content - sidebar_padding;
-			sidebar.style.height = sidebar_height + 'px';
-			$('sidebar_control').style.height = (sidebar_height + sidebar_padding) + 'px';
-		}
+	var body_height = $(document.body).getHeight();
+	var top_of_content = content.offsetTop;
+	var content_padding = parseInt(content.getStyle("padding-top")) + parseInt(content.getStyle("padding-bottom"));
+  var footer_height = $('footer') ? $('footer').getHeight() : 0;
+	var feed_item_height = body_height - top_of_content - footer_height - content_padding;
+	content.style.height = feed_item_height + 'px';
+	
+  var sidebar = $('sidebar');
+	if(sidebar) {
+	  var sidebar_padding = parseInt(sidebar.getStyle("padding-top")) + parseInt(sidebar.getStyle("padding-bottom"));
+	  var sidebar_height = body_height - top_of_content - sidebar_padding;
+		sidebar.style.height = sidebar_height + 'px';
+		$('sidebar_control').style.height = (sidebar_height + sidebar_padding) + 'px';
 	}
 }
 

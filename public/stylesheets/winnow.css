@@ -198,7 +198,7 @@ optgroup {
 #content {
   overflow: auto;
   padding: 10px;
-  position: relative;
+	position: relative;
 }
 
 #feed_items_controller #content {
