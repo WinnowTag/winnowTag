@@ -10,7 +10,7 @@
 	<dl class="created clearfix">
 	  <dt>Created</dt>
 	  <dd><%= format_date(invite.created_at) %></dd>
-    <dt>Email</dt>
+    <dt>Email Address</dt>
     <dd><%= mail_to invite.email %></dd>
 	  <dt>Status</dt>
     <dd>
@@ -27,19 +27,23 @@
 	<dl class="question clearfix">
 	  <dt>Question</dt>
 	  <dd>
-	  <% unless invite.hear.blank? -%>
-      <strong>How did you hear about Winnow?</strong><br />
-      <%= invite.hear %><br />
-      <br />
-    <% end -%>
-	  <% unless invite.use.blank? -%>
-      <strong>How/why do you want to use Winnow?</strong><br />
-      <%= invite.use %><br />
-    <% end -%>
+	    <% if invite.hear.blank? && invite.use.blank? -%>
+	      <em>The user did not answer any questions.</em>
+	    <% else -%>
+    	  <% unless invite.hear.blank? -%>
+          <strong>How did you hear about Winnow?</strong><br />
+          <%= invite.hear %><br />
+          <br />
+        <% end -%>
+    	  <% unless invite.use.blank? -%>
+          <strong>How/why do you want to use Winnow?</strong><br />
+          <%= invite.use %><br />
+        <% end -%>
+      <% end -%>
     </dd>
 	</dl>
 	
-	<dl class="message clearfix">
+	<dl class="email clearfix">
 	  <dt>Email</dt>
 	  <dd>
     <% unless invite.subject.blank? -%>
