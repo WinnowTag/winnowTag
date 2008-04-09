@@ -17,12 +17,10 @@ class FeedsController < ApplicationController
   include ActionView::Helpers::TextHelper
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :flash_collection_job_result
+  before_filter :setup_sortable_columns, :only => :index
   
   def index
-    setup_sortable_columns
-    @search_term = params[:search_term]
-    @feeds = Feed.search :search_term => @search_term, :excluder => current_user, 
-                         :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
+    @presenter = FeedsPresenter.new(:current_user => current_user, :search_term => params[:search_term], :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc))
   end
   
   def new

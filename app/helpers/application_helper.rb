@@ -208,6 +208,6 @@ module ApplicationHelper
   end
 
   def sort_link(text, sortable_name, *args)
-    link_to text, sort_param(sortable_name, *args), :class => sort_direction(sortable_name, *args)
+    link_to text, params.except(:page, :sortasc, :sortdesc).merge(sort_param(sortable_name, *args)), :class => sort_direction(sortable_name, *args)
   end
 end

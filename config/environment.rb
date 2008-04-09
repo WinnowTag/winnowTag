@@ -40,7 +40,8 @@ Rails::Initializer.run do |config|
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
   # Add additional load paths for your own custom dirs
-  config.load_paths += %W( #{RAILS_ROOT}/app/mailers )
+  config.load_paths += %W( #{RAILS_ROOT}/app/mailers 
+                           #{RAILS_ROOT}/app/presenters )
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)

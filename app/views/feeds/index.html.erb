@@ -1,7 +1,9 @@
-<%= render :partial => 'header_controls' %>
+<% content_for :header_controls do -%>
+  <%= render :partial => "index_header_controls" %>
+<% end -%>
 
-<% if @feeds.empty? -%>
+<% if @presenter.feeds.empty? -%>
   <div class="empty">No feeds matched your search criteria.</div>
 <% else -%>
-  <%= render :partial => 'feed', :collection => @feeds %>
+  <%= render :partial => @presenter.feeds %>
 <% end -%>
