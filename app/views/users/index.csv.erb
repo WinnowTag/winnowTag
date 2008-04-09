@@ -1,0 +1,6 @@
+<%= FasterCSV.generate do |csv|
+  csv << ["Login", "Name", "Email", "Last Logged In"]
+  for user in @users
+    csv << [user.login, user.display_name, user.email, format_date(user.logged_in_at)]
+  end
+end %>

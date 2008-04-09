@@ -13,7 +13,7 @@ module DateHelper
         date = current_user.tz.utc_to_local(date)
       end
       
-      content_tag "nobr", date.strftime(format)      
+      date.strftime(format)      
     end
   end
 end

@@ -2,6 +2,7 @@
   <ul class="control_bar">
     <li><%= will_paginate(@users) %></li>
     <li><%= link_to 'Create User', new_user_url, :class => "add" %></li>
+    <li><%= link_to 'Export (CSV)', formatted_users_path(:csv, params.except(:controller, :action)), :class => "add" %></li>
 
     <% if params[:action] == "index" -%>
     <li>

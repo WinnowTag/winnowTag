@@ -8,17 +8,22 @@
 class UsersController < ApplicationController
   permit 'admin'
   before_filter :setup_user, :except => [:create, :new]
+  before_filter :setup_sortable_columns
   
   def index
-    add_to_sortable_columns('users', :field => 'login')
-    add_to_sortable_columns('users', :field => 'lastname, firstname', :alias => "name")
-    add_to_sortable_columns('users', :field => 'email')
-    add_to_sortable_columns('users', :field => 'logged_in_at')
-    add_to_sortable_columns('users', :field => 'last_accessed_at')
-    add_to_sortable_columns('users', :field => 'last_tagging_on')
-    add_to_sortable_columns('users', :field => 'tag_count')
+    options_for_search = { 
+      :q => params[:q], 
+      :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}"
+    }
 
-    @users = User.search(:q => params[:q], :per_page => 20, :page => params[:page], :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}")
+    respond_to do |format|
+      format.html do
+        @users = User.search(options_for_search.merge(:per_page => 20, :page => params[:page]))
+      end
+      format.csv do
+        @users = User.search(options_for_search)
+      end
+    end
   end
 
   def new
@@ -54,10 +59,20 @@ class UsersController < ApplicationController
   
 private
   def setup_user
-     if params[:id] =~ /^[\d]+$/    
-       @user = User.find(params[:id]) 
-     elsif params[:id]
-       @user = User.find_by_login(params[:id])
-     end
-   end
+    if params[:id] =~ /^[\d]+$/    
+      @user = User.find(params[:id]) 
+    elsif params[:id]
+      @user = User.find_by_login(params[:id])
+    end
+  end
+
+  def setup_sortable_columns
+    add_to_sortable_columns('users', :field => 'login')
+    add_to_sortable_columns('users', :field => 'lastname, firstname', :alias => "name")
+    add_to_sortable_columns('users', :field => 'email')
+    add_to_sortable_columns('users', :field => 'logged_in_at')
+    add_to_sortable_columns('users', :field => 'last_accessed_at')
+    add_to_sortable_columns('users', :field => 'last_tagging_on')
+    add_to_sortable_columns('users', :field => 'tag_count')
+  end
 end

@@ -108,10 +108,17 @@ class User < ActiveRecord::Base
       
       conditions = conditions.empty? ? nil : [conditions.join(" AND "), *values]
       
-      paginate(options.merge(:select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
-                             :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
-                             :conditions => conditions,
-                             :group => "users.id"))
+      options_for_find = options.merge(
+        :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
+        :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
+        :conditions => conditions,
+        :group => "users.id")
+      
+      if options.has_key?(:page) or options.has_key?(:per_page)
+        paginate(options_for_find)
+      else
+        find(:all, options_for_find)
+      end
     end
   end
   
