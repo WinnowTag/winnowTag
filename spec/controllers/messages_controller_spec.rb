@@ -38,38 +38,6 @@ describe MessagesController do
     end
   end
 
-  describe "handling GET /messages/1" do
-
-    before(:each) do
-      @message = mock_model(Message)
-      Message.stub!(:find).and_return(@message)
-    end
-  
-    def do_get
-      get :show, :id => "1"
-    end
-
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-  
-    it "should render show template" do
-      do_get
-      response.should render_template('show')
-    end
-  
-    it "should find the message requested" do
-      Message.should_receive(:find).with("1").and_return(@message)
-      do_get
-    end
-  
-    it "should assign the found message for the view" do
-      do_get
-      assigns[:message].should equal(@message)
-    end
-  end
-
   describe "handling GET /messages/new" do
 
     before(:each) do
@@ -160,7 +128,7 @@ describe MessagesController do
 
       it "should redirect to the new message" do
         do_post
-        response.should redirect_to(message_url("1"))
+        response.should redirect_to(messages_path)
       end
       
     end
@@ -211,7 +179,7 @@ describe MessagesController do
 
       it "should redirect to the message" do
         do_put
-        response.should redirect_to(message_url("1"))
+        response.should redirect_to(messages_path)
       end
 
     end
@@ -249,7 +217,7 @@ describe MessagesController do
   
     it "should redirect to the messages list" do
       do_delete
-      response.should redirect_to(messages_url)
+      response.should redirect_to(messages_path)
     end
   end
 end

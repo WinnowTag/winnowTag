@@ -14,12 +14,22 @@ describe "/messages/_message.html.erb" do
   
   it "displays the message body" do
     render_it
-    response.should have_tag(".body", "foo")
+    response.should have_tag(".message .body", "foo")
   end
   
   it "displays the message created time" do
     template.should_receive(:format_date).with(@time).and_return("the date")
     render_it
-    response.should have_tag(".date", "the date")
+    response.should have_tag(".message .date", "the date")
+  end
+  
+  it "displays the edit link" do
+    render_it
+    response.should have_tag(".controls a[class=edit_icon][href=?]", edit_message_path(@message))
+  end
+  
+  it "displays the destroy link" do
+    render_it
+    response.should have_tag(".controls a[class=destroy_icon][href=?]", message_path(@message))
   end
 end

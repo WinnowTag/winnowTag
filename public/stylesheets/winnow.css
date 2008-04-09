@@ -1115,7 +1115,7 @@ textarea.content {
   height: 40em;
 }
 
-.tag, .feed, .user, .invite {
+.tag, .feed, .user, .invite, .message {
 	position: relative;
   border: 1px solid #666;
   background: #eee;
@@ -1283,7 +1283,7 @@ textarea.content {
   width: 3em
 }
 
-.tag .controls, .feed .controls, .user .controls {
+.tag .controls, .feed .controls, .user .controls, .message .controls {
   clear: both;
   float: right;
   margin: 0;
@@ -1300,13 +1300,13 @@ textarea.content {
   list-style: none;	
 }
 
-.tag .controls li, .feed .controls li, .user .controls li, .invite .controls li {
+.tag .controls li, .feed .controls li, .user .controls li, .invite .controls li, .message .controls li {
   float: left;
   padding: 0;
   margin: 0 0 0 1.5em;
 }
 
-.tag .controls li a, .feed .controls li a, .user .controls li a, .invite .controls li a {
+.tag .controls li a, .feed .controls li a, .user .controls li a, .invite .controls li a, .message .controls li a {
   padding: 0 0 0 20px;
   background-image: url(../images/vertical_sprite.png);
   background-repeat: no-repeat;
@@ -1324,6 +1324,11 @@ textarea.content {
 .tag .controls li .slider {
   margin: .5em 4px 0 0;
   float: left;
+}
+
+.message .date {
+	display: block;
+	color: #999;
 }
 
 .blank_icon {
@@ -1443,31 +1448,25 @@ a.desc {
   color: #666;
 }
 
-.messages h4 {
+.messages > h4 {
   font-size: 1.5em;
   margin: 0;
   border-bottom: 2px solid #000;
 }
 
-.messages ul {
+.messages > ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.messages ul li {
+.messages ul li.sidebar_message {
   margin: 0;
   padding: .5em 0;
   border-bottom: 1px dotted #ccc;
 }
 
-.messages ul li .body {
-  display: block;
-  float: left;
-}
-
-.messages ul li .date {
-  display: block;
+.messages ul li.sidebar_message .date {
   color: #999;
   float: right;
 }

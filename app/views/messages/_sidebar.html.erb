@@ -4,7 +4,7 @@
     <span class="empty">You have no recent messages.</span>
   <% else -%>
     <ul>
-      <%= render :partial => messages %>
+      <%= render :partial => "messages/sidebar_message", :collection => messages %>
     </ul>
   <% end -%>
 </div>

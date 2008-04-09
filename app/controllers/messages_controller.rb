@@ -2,11 +2,7 @@ class MessagesController < ApplicationController
   def index
     @messages = Message.find_global
   end
-
-  def show
-    @message = Message.find(params[:id])
-  end
-
+  
   def new
     @message = Message.new
   end
@@ -20,7 +16,7 @@ class MessagesController < ApplicationController
 
     if @message.save
       flash[:notice] = 'Message was successfully created.'
-      redirect_to(@message)
+      redirect_to messages_path
     else
       render :action => "new"
     end
@@ -31,7 +27,7 @@ class MessagesController < ApplicationController
 
     if @message.update_attributes(params[:message])
       flash[:notice] = 'Message was successfully updated.'
-      redirect_to(@message)
+      redirect_to messages_path
     else
       render :action => "edit"
     end
@@ -39,6 +35,6 @@ class MessagesController < ApplicationController
 
   def destroy
     @message = Message.destroy(params[:id])
-    redirect_to(messages_url)
+    redirect_to messages_path
   end
 end

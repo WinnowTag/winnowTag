@@ -1,1 +1,0 @@
-page << "new ErrorMessage(#{flash[:error].to_json});"

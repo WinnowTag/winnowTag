@@ -1,20 +1,9 @@
-<h1>Listing messages</h1>
+<% content_for :header_controls do -%>
+  <%= render :partial => "header_controls" %>
+<% end -%>
 
-<table>
-  <tr>
-    <th>Body</th>
-  </tr>
-
-<% for message in @messages %>
-  <tr>
-    <td><%=h message.body %></td>
-    <td><%= link_to 'Show', message %></td>
-    <td><%= link_to 'Edit', edit_message_path(message) %></td>
-    <td><%= link_to 'Destroy', message, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New message', new_message_path %>
+<% if @messages.empty? -%>
+  <div class="empty">No messages matched your search criteria.</div>
+<% else -%>
+  <%= render :partial => @messages %>
+<% end -%>

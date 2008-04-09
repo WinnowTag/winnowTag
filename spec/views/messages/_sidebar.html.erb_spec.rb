@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe "/messages/_sidebar.html.erb" do  
   before(:each) do
     @messages = []
-    template.stub_render(:partial => @messages)    
+    template.stub_render(:partial => "messages/sidebar_message", :collection => @messages)
   end
   
   def render_it
@@ -20,7 +20,7 @@ describe "/messages/_sidebar.html.erb" do
     message2 = mock_model(Message, :body => "bar", :created_at => Time.now)
     @messages = [message1, message2]
     
-    template.expect_render(:partial => @messages)
+    template.expect_render(:partial => "messages/sidebar_message", :collection => @messages)
     render_it
   end
 end
