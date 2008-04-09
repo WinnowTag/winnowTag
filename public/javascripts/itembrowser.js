@@ -275,11 +275,11 @@ ItemBrowser.prototype = {
       // onFailure: function(request) {
       //   // we get a status code of 2147746065 when the request gets interrupted in FF3B4
       //   if(request.status == 2147746065) { return; }
-      //   alert("Failure: " + request.status);
+      //   new ErrorMessage("Failure: " + request.status);
       // },
       // onException: function(request, exception) {
       //   if (!exceptionToIgnore(exception)) {
-      //     alert("Exception: " + exception.toString());
+      //     new ErrorMessage("Exception: " + exception.toString());
       //   }
       // }
     });  
@@ -464,7 +464,7 @@ ItemBrowser.prototype = {
     new Ajax.Updater("sidebar", "/feed_items/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
       onComplete: function() {
         sidebar.removeClassName("loading");
-        applesearch.init();
+        AppleSearch.setup();
         ItemBrowser.instance.styleFilters();
       }
     });  
@@ -510,6 +510,7 @@ ItemBrowser.prototype = {
         this.removeFilters(parameters);
       } else {
         this.addFilters(parameters);
+        Event.stop(event);
       }
     } else {
       this.setFilters(parameters);
@@ -665,10 +666,9 @@ ItemBrowser.prototype = {
     if(params.text_filter) {
       text_filter.value = params.text_filter;
     } else {
-      clear_button = text_filter.previous(".srch_clear");
       text_filter.value = "";
-	    applesearch.onChange(text_filter, clear_button);
-	    applesearch.insertPlaceholder(text_filter);
+      // TODO: Why doesn't this work?
+      text_filter.fire("blur");
     }
     
     var clear_selected_filters = $("clear_selected_filters");

@@ -1,0 +1,10 @@
+<div class="messages">
+  <h4>Messages</h4>
+  <% if current_user.messages.blank? -%>
+    <span class="empty">You have no recent messages.</span>
+  <% else -%>
+    <ul>
+      <%= render :partial => current_user.messages %>
+    </ul>
+  <% end -%>
+</div>

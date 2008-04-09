@@ -12,7 +12,11 @@ describe User do
     end
     
     it "has many feed subscriptions" do
-      @user.should have_many(:feed_subscriptions)      
+      @user.should have_many(:feed_subscriptions)
+    end
+    
+    it "has many messages" do
+      @user.should have_many(:messages)
     end
   end
   

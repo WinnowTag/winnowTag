@@ -32,10 +32,13 @@ class TaggingsController < ApplicationController
       @tagging = current_user.taggings.build(params[:tagging])
       @feed_item = @tagging.feed_item
       
-      if @tagging.save    
+      if @tagging.save
         wants.js
       else
-        wants.js { render :update do |page| page.alert("Tagging failed") end }
+        wants.js do
+          flash.now[:error] = "Tagging Failed"
+          render :template => "messages/error"
+        end
       end
     end 
   end
