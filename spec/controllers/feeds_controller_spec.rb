@@ -36,6 +36,10 @@ describe FeedsController do
     end
   end
   
+  describe "#unsubscribe" do
+    
+  end
+  
   describe "old specs" do
   
     before(:each) do

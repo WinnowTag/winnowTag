@@ -114,12 +114,12 @@ describe FoldersController do
     end
     
     it "adds a new feed to the folder" do
-      @folder.should_receive(:feed_ids=).with(["1"])
+      @folder.should_receive(:add_feed!).with("1")
       do_put("feed_1")
     end
 
     it "adds a new tag to the folder" do
-      @folder.should_receive(:tag_ids=).with(["2"])
+      @folder.should_receive(:add_tag!).with("2")
       do_put("tag_2")
     end
   end
@@ -135,12 +135,12 @@ describe FoldersController do
     end
     
     it "adds a new feed to the folder" do
-      @folder.should_receive(:feed_ids=).with([2])
+      @folder.should_receive(:remove_feed!).with("1")
       do_put("feed_1")
     end
 
     it "adds a new tag to the folder" do
-      @folder.should_receive(:tag_ids=).with([1])
+      @folder.should_receive(:remove_tag!).with("2")
       do_put("tag_2")
     end
   end

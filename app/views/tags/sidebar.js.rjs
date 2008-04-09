@@ -9,3 +9,5 @@ page << <<-EOJS
     }
   });
 EOJS
+
+page.select(".#{dom_id(@tag)}").invoke("remove")

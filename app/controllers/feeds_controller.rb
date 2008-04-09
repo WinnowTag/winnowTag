@@ -128,12 +128,13 @@ class FeedsController < ApplicationController
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
+        Folder.remove_feed(current_user, feed.id)
       end
     end
       
-    if params[:remove] =~ /true/i
+    if params[:subscribe] =~ /false/i
       render :update do |page|
-        page[dom_id(feed)].remove
+        page.select(".#{dom_id(feed)}").invoke("remove")
       end
     else
       render :nothing => true

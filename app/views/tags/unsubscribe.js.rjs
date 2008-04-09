@@ -1,5 +1,8 @@
 page[:notice].update "You have been unsubscribed from the public #{@tag.name}. You can subscribe on the Public Tags page."
 page[:notice].show
+
 page << "if($('#{dom_id(@tag)}')) {"
   page[@tag].remove
 page << "}"
+
+page.select(".#{dom_id(@tag)}").invoke("remove")

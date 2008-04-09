@@ -26,4 +26,39 @@ class Folder < ActiveRecord::Base
   def tags
     Tag.find_all_by_id(tag_ids, :order => :name)
   end
+
+  def add_tag!(tag_id)
+    self.tag_ids = self.tag_ids + [tag_id.to_i]
+    self.save!
+  end
+  
+  def add_feed!(feed_id)
+    self.feed_ids = self.feed_ids + [feed_id.to_i]
+    self.save!
+  end
+
+  
+  def remove_tag!(tag_id)
+    self.tag_ids = self.tag_ids - [tag_id.to_i]
+    self.save!
+  end
+  
+  def remove_feed!(feed_id)
+    self.feed_ids = self.feed_ids - [feed_id.to_i]
+    self.save!
+  end
+  
+  def self.remove_tag(user, tag_id)
+    folders = user.folders
+    folders.each do |folder|
+      folder.remove_tag!(tag_id)
+    end
+  end
+  
+  def self.remove_feed(user, feed_id)
+    folders = user.folders
+    folders.each do |folder|
+      folder.remove_feed!(feed_id)
+    end
+  end
 end

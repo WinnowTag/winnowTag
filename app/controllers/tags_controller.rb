@@ -237,6 +237,7 @@ class TagsController < ApplicationController
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      Folder.remove_tag(current_user, @tag.id)
     end
     respond_to do |format|
       format.html { redirect_to :back }
@@ -246,7 +247,11 @@ class TagsController < ApplicationController
   
   def sidebar
     if @tag = current_user.tags.find(params[:id])
-      @tag.update_attribute :show_in_sidebar, params[:sidebar]
+      @tag.update_attribute :show_in_sidebar, params[:sidebar]      
+
+      unless @tag.show_in_sidebar?
+        Folder.remove_tag(current_user, @tag.id)
+      end
     end
     respond_to :js
   end

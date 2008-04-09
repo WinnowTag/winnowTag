@@ -17,7 +17,7 @@
       :onDrop => "function(element, folder) {" <<
         "if(folder.down('#' + element.getAttribute('id'))) { return; }" <<  
         "var new_element = element.cloneNode(true); new_element.setAttribute('style', '');" <<
-        "insert_in_order('#{dom_id(folder)}_' + (element.hasClassName('feed') ? 'feed' : 'tag') + '_items', 'li', " <<
+        "insert_in_order('#{dom_id(folder)}_' + (element.getAttribute('id').match(/^feed_/) ? 'feed' : 'tag') + '_items', 'li', " <<
           "'.name', new_element, element.down('.name').innerHTML);" << 
         "folder.addClassName('open');" <<
         "itemBrowser.styleFilters();" <<
