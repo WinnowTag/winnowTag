@@ -1,0 +1,15 @@
+Story: Tag Feeds
+
+  As a Feed consumer
+  I want to access feeds for each tag
+  So that I can read them
+  
+  Scenario: Accessing a feed for a public tag
+  
+    Given a public tag in the system
+  
+    When I access /tags/public/username/tag_id.atom  
+    
+    Then the response is 200
+    And the body is parseable by ratom
+    And the content type is atom
