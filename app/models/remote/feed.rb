@@ -40,5 +40,10 @@ module Remote
         attributes[attribute]
       end
     end
+
+    # This is needed so that the Remote::Feed has the same API as the local Feed model.
+    def feed_items
+      []
+    end
   end
 end
