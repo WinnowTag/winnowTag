@@ -167,13 +167,14 @@ class Tag < ActiveRecord::Base
   def to_atom(options = {})
     Atom::Feed.new do |feed|
       feed.title = "#{self.user.login}:#{self.name}"
-      feed.id = "#{options[:base_uri]}/tags/#{self.id}"
+      feed.id = "#{options[:base_uri]}/#{user.login}/tags/#{self.name}"
       feed.updated = self.updated_on
       feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
       feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
-      feed.links << Atom::Link.new(:rel => "self", :href => feed.id)
+      feed.links << Atom::Link.new(:rel => "self", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")
+      feed.links << Atom::Link.new(:rel => "alternate", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
       feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
-                                   :href => "#{options[:base_uri]}/tags/#{self.id}/classifier_taggings")
+                                   :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom")
                                    
       if options[:training_only]
         self.manual_taggings.find(:all, :include => :feed_item).each do |manual_tagging|
@@ -181,8 +182,8 @@ class Tag < ActiveRecord::Base
           
           # Don't need a value here, just an empty element
           case manual_tagging.strength
-          when 1 then entry[CLASSIFIER_NAMESPACE, 'positive-example'] << ''
-          when 0 then entry[CLASSIFIER_NAMESPACE, 'negative-example'] << ''
+          when 1 then entry.categories << Atom::Category.new(:term => self.name, :scheme => "#{options[:base_uri]}/#{user.login}/tags/")
+          when 0 then entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/negative-example", :href => feed.id)
           end
           
           feed.entries << entry
