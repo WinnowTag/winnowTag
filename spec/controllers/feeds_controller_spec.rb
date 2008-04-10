@@ -59,8 +59,13 @@ describe FeedsController do
       job.should_receive(:update_attribute).with(:user_notified, true)
       @user.should_receive(:collection_job_result_to_display).and_return(job)
     
+      @message = mock_model(Message)
+      @messages = stub("messages")
+      @messages.should_receive(:create!).with(:body => "We have finished fetching new items for '#{feed.title}'.").and_return(@message)
+      @user.stub!(:messages).and_return(@messages)
+
       get :index
-      flash[:notice].should == "We have finished fetching new items for '#{feed.title}'."
+      flash[:notice].should == @message
     end
   
     it "should flash failed collection result" do
@@ -69,8 +74,14 @@ describe FeedsController do
       job.should_receive(:update_attribute).with(:user_notified, true)
       @user.should_receive(:collection_job_result_to_display).and_return(job)
     
+      @message = mock_model(Message)
+      @messages = stub("messages")
+      @messages.should_receive(:create!).with(:body => "Collection Job for #{feed.title} failed with result: Message").and_return(@message)
+      @user.stub!(:messages).and_return(@messages)
+
       get :index
-      flash[:warning].should =~ /Collection Job for #{feed.title} failed with result: Message/
+
+      flash[:warning].should == @message
     end
   
     describe "#show" do
