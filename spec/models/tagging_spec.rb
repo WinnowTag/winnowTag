@@ -11,6 +11,7 @@ describe Tagging do
   fixtures :users
 
   before(:each) do
+    Tagging.delete_all
     FeedItem.delete_all
     @feed_item = FeedItem.create! :feed_id => 1,
                                   :updated => Time.now.yesterday.yesterday.to_formatted_s(:db),
