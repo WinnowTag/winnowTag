@@ -46,8 +46,9 @@ class TagsController < ApplicationController
     if user and @tag = user.tags.find_by_id(params[:id])
       respond_to do |wants|
         wants.atom do        
-          conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do
-            render 
+          conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
+            atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
+            render :xml => atom.to_xml
           end
         end
       end
@@ -144,11 +145,11 @@ class TagsController < ApplicationController
   def training
     tag = Tag.find(params[:id])    
     base_uri = "http://#{request.host}:#{request.port}"
-    atom = tag.to_atom(:training_only => true, :base_uri => base_uri)
     
     respond_to do |wants|
       wants.atom do
         conditional_render(tag.updated_on) do
+          atom = tag.to_atom(:training_only => true, :base_uri => base_uri)
           render :text => atom.to_xml
         end
       end
@@ -280,7 +281,7 @@ private
       head :not_modified
     else
       response.headers['Last-Modified'] = last_modified.httpdate if last_modified
-      yield
+      yield(since)
     end
   end
 end
