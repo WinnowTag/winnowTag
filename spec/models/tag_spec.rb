@@ -289,7 +289,6 @@ describe 'to_atom', :shared => true do
   end
   
   it "should be parseable by ratom" do
-    puts @atom.to_xml
     lambda { Atom::Feed.load_feed(@atom.to_xml) }.should_not raise_error
   end
   
