@@ -263,7 +263,7 @@ describe Tag do
   
   describe "#to_atom with training only" do
     CLASSIFIER_NS = 'http://peerworks.org/classifier'
-    before(:each) do
+    before(:all) do
       @user = User.create! valid_user_attributes
       @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag', :last_classified_at => Time.now)
       @tag.taggings.create!(:feed_item => FeedItem.find(1), :user => @user, :strength => 1)
