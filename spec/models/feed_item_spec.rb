@@ -362,6 +362,10 @@ describe FeedItem do
       @atom.id.should == "urn:peerworks.org:entry##{@item.id}"
     end
     
+    it "should include the updated date" do
+      @atom.updated.should == @item.updated
+    end
+    
     it "should include the author" do
       @atom.authors.first.should_not be_nil
       @atom.authors.first.name.should == @item.author
