@@ -201,7 +201,7 @@ class Tag < ActiveRecord::Base
       end
       
       self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], 
-                               :order => 'feed_items.updated DESC', :include => :feed_item).each do |tagging|
+                               :order => 'feed_items.updated DESC', :include => [{:feed_item, :content}]).each do |tagging|
         entry = tagging.feed_item.to_atom(options)
         
         if tagging.strength > 0.9
