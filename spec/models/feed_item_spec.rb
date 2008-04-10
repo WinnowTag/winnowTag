@@ -35,7 +35,10 @@ shared_examples_for "FeedItem update attributes from atom" do
 end
 
 describe FeedItem do
-  fixtures :users
+  fixtures :users, :tags
+   before(:all) do
+     Tagging.delete_all
+   end
   
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
@@ -83,7 +86,7 @@ describe FeedItem do
     end
   end
   
-  describe ".find_with_filters" do
+  describe ".find_with_filters" do    
     it "Properly filters feed items with included private tag and excluded public tag" do
       user_1 = User.create! valid_user_attributes
       user_2 = User.create! valid_user_attributes
