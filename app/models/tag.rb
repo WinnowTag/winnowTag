@@ -176,23 +176,41 @@ class Tag < ActiveRecord::Base
       feed.updated = self.updated_on
       feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
       feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
-      feed.links << Atom::Link.new(:rel => "self", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")
+      
       feed.links << Atom::Link.new(:rel => "alternate", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
       feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
                                    :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom")
-                                   
+                         
+      conditions = []
+                
       if options[:training_only]
-        self.manual_taggings.find(:all, :include => :feed_item).each do |manual_tagging|
-          entry = manual_tagging.feed_item.to_atom(options)
-          
-          # Don't need a value here, just an empty element
-          case manual_tagging.strength
-          when 1 then entry.categories << Atom::Category.new(:term => self.name, :scheme => "#{options[:base_uri]}/#{user.login}/tags/")
-          when 0 then entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/negative-example", :href => feed.id)
+        conditions = ['classifier_tagging = 0']
+        feed.links << Atom::Link.new(:rel => "self", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")
+      else
+        conditions = ['strength <> 0']
+        feed.links << Atom::Link.new(:rel => "self", 
+                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
+        feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
+                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")        
+      end
+      
+      self.taggings.find(:all, :conditions => conditions, :order => 'feed_items.updated DESC', :include => :feed_item).each do |tagging|
+        entry = tagging.feed_item.to_atom(options)
+        
+        if tagging.strength > 0.9
+          entry.categories << Atom::Category.new do |cat|
+            cat.term = self.name
+            cat.scheme = "#{options[:base_uri]}/#{user.login}/tags/"
+            if tagging.classifier_tagging?
+              cat[CLASSIFIER_NAMESPACE, 'strength'] << tagging.strength.to_s
+              cat[CLASSIFIER_NAMESPACE, 'strength'].as_attribute = true
+            end
           end
-          
-          feed.entries << entry
+        elsif tagging.strength == 0            
+          entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/negative-example", :href => feed.id)
         end
+        
+        feed.entries << entry
       end
     end
   end

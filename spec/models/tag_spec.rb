@@ -260,8 +260,48 @@ describe Tag do
       lambda { Atom::Pub::Service.load_service(@atomsvc.to_xml) }.should_not raise_error
     end
   end
+end
+
+describe 'to_atom', :shared => true do
+  it "should set atom:title to the :user::tag name" do
+    @atom.title.should == "#{@user.login}:#{@tag.name}"
+  end
+
+  it "should set atom:updated to the last trained date" do
+    @atom.updated.should == @tag.updated_on
+  end
+
+  it "should set classifier:classified to the last classified date" do
+    @atom[CLASSIFIER_NS, 'classified'].first.should == @tag.last_classified_at.xmlschema
+  end
+
+  it "should set classifier:bias the bias" do
+    @atom[CLASSIFIER_NS, 'bias'].first.should == @tag.bias.to_s
+  end
+
+  it "should set the atom:id to :base_uri/tags/:id" do
+    @atom.id.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
+  end
+
+  it "should have an http://peerworks.org/classifier/edit link that refers to the classifier tagging resource" do
+    @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.should_not be_nil
+    @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}/classifier_taggings.atom"
+  end
   
-  describe "#to_atom with training only" do
+  it "should be parseable by ratom" do
+    puts @atom.to_xml
+    lambda { Atom::Feed.load_feed(@atom.to_xml) }.should_not raise_error
+  end
+  
+  it "should contain the full content for each item" do
+    @atom.entries.each do |e|
+      e.content.to_s.size.should > 0
+    end
+  end
+end
+
+describe Tag do
+  describe "#to_atom" do
     CLASSIFIER_NS = 'http://peerworks.org/classifier'
     before(:all) do
       @user = User.create! valid_user_attributes
@@ -270,84 +310,97 @@ describe Tag do
       @tag.taggings.create!(:feed_item => FeedItem.find(2), :user => @user, :strength => 1)
       @tag.taggings.create!(:feed_item => FeedItem.find(3), :user => @user, :strength => 0)
       @tag.taggings.create!(:feed_item => FeedItem.find(4), :user => @user, :strength => 0.95, :classifier_tagging => true)
-      @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
-    end
+      @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
+    end    
     
-    it "should set atom:title to the :user::tag name" do
-      @atom.title.should == "#{@user.login}:#{@tag.name}"
-    end
-    
-    it "should set atom:updated to the last trained date" do
-      @atom.updated.should == @tag.updated_on
-    end
-    
-    it "should set classifier:classified to the last classified date" do
-      @atom[CLASSIFIER_NS, 'classified'].first.should == @tag.last_classified_at.xmlschema
-    end
-    
-    it "should set classifier:bias the bias" do
-      @atom[CLASSIFIER_NS, 'bias'].first.should == @tag.bias.to_s
-    end
-    
-    it "should set the atom:id to :base_uri/tags/:id" do
-      @atom.id.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
-    end
-    
-    it "should have an http://peerworks.org/classifier/edit link that refers to the classifier tagging resource" do
-      @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.should_not be_nil
-      @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}/classifier_taggings.atom"
-    end
+    it_should_behave_like 'to_atom'
     
     it "should have a self link" do
       @atom.links.detect {|l| l.rel == "self" }.should_not be_nil
-      @atom.links.detect {|l| l.rel == "self" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}/training.atom"
+      @atom.links.detect {|l| l.rel == "self" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}.atom"
     end
     
-    it "should have an alternate link that points to the base" do
-      @atom.links.detect {|l| l.rel == "alternate" }.should_not be_nil
-      @atom.links.detect {|l| l.rel == "alternate" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}.atom"
-    end
+    it "should have a training link" do
+      @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/training" }.should_not be_nil
+      @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/training" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}/training.atom"
+    end      
     
-    it "should contain all the manually tagged items" do
+    it "should contain all the tagged items" do
       @atom.should have(3).entries
       @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should_not be_nil
       @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should_not be_nil
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.should_not be_nil
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.should_not be_nil
     end
     
-    it "should not contain any classifier only tagged items" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.should be_nil
+    it "should not contain any negatively tagged items" do
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.should be_nil
     end
     
-    it "should contain the full content for each item" do
-      @atom.entries.each do |e|
-        e.content.to_s.size.should > 0
+    it "should have atom:category for the classifier example" do
+      entry = @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}
+      entry.categories.first.should_not be_nil
+    end
+    
+    it "should have the terms for the classifier example" do
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.categories.first.term.should == @tag.name
+    end
+    
+    it "should have the scheme for the classifier example" do
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+    end
+    
+    it "should have the strength for the classifier example" do
+      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.categories.first[CLASSIFIER_NS, 'strength'].first.should == "0.95"
+    end
+    
+    describe "with training only" do   
+      before(:all) do
+        @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
       end
-    end
-        
-    it "should have a classifier:negative-example for all negative examples" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.links.detect do |l| 
-        l.rel == "http://peerworks.org/classifier/negative-example" && l.href == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
-      end.should_not be_nil
-    end
-        
-    it "should have a atom:category for all positive examples" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should have(1).categories
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should have(1).categories
-    end
+    
+      it_should_behave_like 'to_atom'
       
-    it "should have the tag name as the term for atom:categories" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.categories.first.term.should == @tag.name
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.categories.first.term.should == @tag.name
-    end
+      it "should have a self link" do
+        @atom.links.detect {|l| l.rel == "self" }.should_not be_nil
+        @atom.links.detect {|l| l.rel == "self" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}/training.atom"
+      end
     
-    it "should have the users tag index as the scheme for the atom:categories" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
-    end
+      it "should have an alternate link that points to the base" do
+        @atom.links.detect {|l| l.rel == "alternate" }.should_not be_nil
+        @atom.links.detect {|l| l.rel == "alternate" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}.atom"
+      end
     
-    it "should be parseable by ratom" do
-      lambda { Atom::Feed.load_feed(@atom.to_xml) }.should_not raise_error
+      it "should contain all the manually tagged items" do
+        @atom.should have(3).entries
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should_not be_nil
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should_not be_nil
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.should_not be_nil
+      end
+    
+      it "should not contain any classifier only tagged items" do
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.should be_nil
+      end
+            
+      it "should have a classifier:negative-example for all negative examples" do
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.links.detect do |l| 
+          l.rel == "http://peerworks.org/classifier/negative-example" && l.href == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
+        end.should_not be_nil
+      end
+        
+      it "should have a atom:category for all positive examples" do
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should have(1).categories
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should have(1).categories
+      end
+      
+      it "should have the tag name as the term for atom:categories" do
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.categories.first.term.should == @tag.name
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.categories.first.term.should == @tag.name
+      end
+    
+      it "should have the users tag index as the scheme for the atom:categories" do
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+      end      
     end
   end
 end
