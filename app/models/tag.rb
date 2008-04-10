@@ -182,19 +182,26 @@ class Tag < ActiveRecord::Base
                                    :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom")
                          
       conditions = []
+      condition_values = []
                 
       if options[:training_only]
-        conditions = ['classifier_tagging = 0']
+        conditions << 'classifier_tagging = 0'
         feed.links << Atom::Link.new(:rel => "self", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")
       else
-        conditions = ['strength <> 0']
+        conditions << 'strength <> 0'
         feed.links << Atom::Link.new(:rel => "self", 
                                      :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
         feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
                                      :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")        
       end
       
-      self.taggings.find(:all, :conditions => conditions, :order => 'feed_items.updated DESC', :include => :feed_item).each do |tagging|
+      if options[:since]
+        conditions << 'feed_items.updated > ?'
+        condition_values << options[:since].getutc
+      end
+      
+      self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], 
+                               :order => 'feed_items.updated DESC', :include => :feed_item).each do |tagging|
         entry = tagging.feed_item.to_atom(options)
         
         if tagging.strength > 0.9
