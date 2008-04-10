@@ -394,11 +394,21 @@ describe Tag do
       @atom = Atom::Feed.new do |f|
         f.entries << Atom::Entry.new do |e|
           e.id = "urn:peerworks.org:entry#3"
-          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+          e.categories << Atom::Category.new do |c|
+            c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
+            c.term = @tag.name
+            c[CLASSIFIER_NS, 'strength'].as_attribute = true
+            c[CLASSIFIER_NS, 'strength'] << ".99"
+          end
         end
         f.entries << Atom::Entry.new do |e|
           e.id = "urn:peerworks.org:entry#2"
-          e[CLASSIFIER_NS, 'autotag'] << @updated_strength.to_s
+          e.categories << Atom::Category.new do |c|
+            c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
+            c.term = @tag.name
+            c[CLASSIFIER_NS, 'strength'].as_attribute = true
+            c[CLASSIFIER_NS, 'strength'] << @updated_strength.to_s
+          end
         end
       end
     end    
@@ -409,7 +419,12 @@ describe Tag do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
           e.id = "urn:peerworks.org:entry#123"
-          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+          e.categories << Atom::Category.new do |c|
+            c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
+            c.term = @tag.name
+            c[CLASSIFIER_NS, 'strength'].as_attribute = true
+            c[CLASSIFIER_NS, 'strength'] << "0.99"
+          end
         end
       end
       it_should_behave_like 'create_taggings_from_atom'
@@ -428,7 +443,12 @@ describe Tag do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
           e.id = " ks "          
-          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+          e.categories << Atom::Category.new do |c|
+            c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
+            c.term = @tag.name
+            c[CLASSIFIER_NS, 'strength'].as_attribute = true
+            c[CLASSIFIER_NS, 'strength'] << ".99"
+          end
         end
       end
       it_should_behave_like 'create_taggings_from_atom'
@@ -438,7 +458,12 @@ describe Tag do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
           e.id = "urn:peerworks.org:entry#4"          
-          e[CLASSIFIER_NS, 'autotag'] << "0.8"
+          e.categories << Atom::Category.new do |c|
+            c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
+            c.term = @tag.name
+            c[CLASSIFIER_NS, 'strength'].as_attribute = true
+            c[CLASSIFIER_NS, 'strength'] << ".8"
+          end
         end
       end
       it_should_behave_like 'create_taggings_from_atom'
@@ -457,11 +482,21 @@ describe Tag do
       @atom = Atom::Feed.new do |f|
         f.entries << Atom::Entry.new do |e|
           e.id = "urn:peerworks.org:entry#3"
-          e[CLASSIFIER_NS, 'autotag'] << "0.99"
+          e.categories << Atom::Category.new do |c|
+            c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
+            c.term = @tag.name
+            c[CLASSIFIER_NS, 'strength'].as_attribute = true
+            c[CLASSIFIER_NS, 'strength'] << "0.99"
+          end
         end
         f.entries << Atom::Entry.new do |e|
           e.id = "urn:peerworks.org:entry#2"
-          e[CLASSIFIER_NS, 'autotag'] << "0.95"
+          e.categories << Atom::Category.new do |c|
+            c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
+            c.term = @tag.name
+            c[CLASSIFIER_NS, 'strength'].as_attribute = true
+            c[CLASSIFIER_NS, 'strength'] << "0.95"
+          end
         end
       end
     end

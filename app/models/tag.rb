@@ -138,7 +138,12 @@ class Tag < ActiveRecord::Base
       atom.entries.each do |entry|
         begin
           item_id = URI.parse(entry.id).fragment.to_i
-          strength = entry[CLASSIFIER_NAMESPACE, 'autotag'].first.to_f
+          strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
+            category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
+          else 
+            0.0
+          end
+          
           if strength >= 0.9
             connection.execute "INSERT IGNORE INTO taggings " +
                                 "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
