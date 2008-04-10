@@ -142,31 +142,27 @@ describe Tag do
     end
   
     it "should update it's timestamp when a new tag is created" do
-      user = User.create! valid_user_attributes
-      feed_item = valid_feed_item!
-    
-      tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "No this tag is the best tag in the world")
-      updated_on = tag.updated_on
-      sleep(1)
-      Tagging.create! :tag_id => tag.id, :user_id => user.id, :feed_item_id => feed_item.id, :strength => 1    
-      tag.reload
+      user = users(:quentin)
+      feed_item = FeedItem.find(:first)
+  
+      tag = Tag.create! valid_tag_attributes(:user => user, :name => "No this tag is the best tag in the world")
+      updated_on = tag.updated_on = Time.now.yesterday
+
+      Tagging.create! :tag => tag, :user => user, :feed_item => feed_item, :strength => 1    
       tag.updated_on.should > updated_on
     end
-    
+  
     it "should update it's timestamp when a tag is deleted" do
-      user = User.create! valid_user_attributes
-      feed_item = valid_feed_item!
-    
-      tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "No this tag is the best tag in the world")
-      tagging = Tagging.create! :tag_id => tag.id, :user_id => user.id, :feed_item_id => feed_item.id, :strength => 1    
-      tag.reload
-      updated_on = tag.updated_on
-      sleep(1)
+      user = users(:quentin)
+      feed_item = FeedItem.find(:first)
+  
+      tag = Tag.create! valid_tag_attributes(:user => user, :name => "No this tag is the best tag in the world")
+      tagging = Tagging.create! :tag => tag, :user => user, :feed_item => feed_item, :strength => 1    
+      updated_on = tag.updated_on = Time.now.yesterday
       tagging.destroy
-      tag.reload
       tag.updated_on.should > updated_on      
     end
-  
+    
     it "should delete classifier taggings" do
       user = User.create! valid_user_attributes
       feed_item_1 = valid_feed_item!
