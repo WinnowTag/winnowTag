@@ -352,6 +352,13 @@ describe Tag do
       @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.categories.first[CLASSIFIER_NS, 'strength'].first.should == "0.95"
     end
     
+    describe "with since" do
+      it "should only return items with updated date after :since" do
+        @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org', :since => Time.now)
+        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should be_nil
+      end
+    end
+    
     describe "with training only" do   
       before(:all) do
         @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
