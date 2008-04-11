@@ -175,8 +175,6 @@ describe "moderation panel" do
     wait_for_effects
     
     dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
-
-    get_confirmation # Ignore the confirmation to delete the tag
   end
   
   it "can change a negative tagging to a nothing tagging" do
@@ -192,8 +190,6 @@ describe "moderation panel" do
     wait_for_effects
     
     dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
-    
-    get_confirmation # Ignore the confirmation to delete the tag
   end
   
   it "changing tagging state does not open/close item" do
