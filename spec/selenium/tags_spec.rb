@@ -22,14 +22,14 @@ describe "Tags" do
   end
   
   it "changing_bias" do
-    initial_position = get_element_position_left "css=div.slider_handle"
-    mouse_down "css=div.slider_handle"
-    mouse_move_at "css=div.slider_handle", "30,0"
-    mouse_up "css=div.slider_handle"
-    assert_not_equal initial_position, get_element_position_left("css=div.slider_handle")
-    new_position = get_element_position_left "css=div.slider_handle"
+    initial_position = get_element_position_left "css=div.tag.private div.slider_handle"
+    mouse_down "css=div.tag.private div.slider_handle"
+    mouse_move_at "css=div.tag.private div.slider_handle", "30,0"
+    mouse_up "css=div.tag.private div.slider_handle"
+    assert_not_equal initial_position, get_element_position_left("css=div.tag.private div.slider_handle")
+    new_position = get_element_position_left "css=div.tag.private div.slider_handle"
     refresh_and_wait
-    assert_equal new_position, get_element_position_left("css=div.slider_handle")
+    assert_equal new_position, get_element_position_left("css=div.tag.private div.slider_handle")
   end
   
   it "can be unsubscribed by clicking the destroy link" do
