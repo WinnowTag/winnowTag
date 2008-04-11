@@ -1,0 +1,9 @@
+<div class="message clearfix">
+	<ul class="controls">
+    <li><%= link_to 'Edit', edit_message_path(message), :class => :edit_icon %></li>
+    <li><%= link_to 'Destroy', message, :confirm => 'Are you sure?', :method => :delete, :class => :destroy_icon %></li>    
+	</ul>
+	
+  <span class="date"><%= format_date message.created_at %></span>
+  <span class="body"><%= textilize message.body %></span>
+</div>

@@ -35,7 +35,10 @@ shared_examples_for "FeedItem update attributes from atom" do
 end
 
 describe FeedItem do
-  fixtures :users
+  fixtures :users, :tags
+   before(:all) do
+     Tagging.delete_all
+   end
   
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
@@ -83,7 +86,7 @@ describe FeedItem do
     end
   end
   
-  describe ".find_with_filters" do
+  describe ".find_with_filters" do    
     it "Properly filters feed items with included private tag and excluded public tag" do
       user_1 = User.create! valid_user_attributes
       user_2 = User.create! valid_user_attributes
@@ -164,7 +167,7 @@ describe FeedItem do
 
       FeedItem.mark_read_for(user_1.id, feed_item_2.id)
       
-      FeedItem.find_with_filters(:user => user_1, :read_items => false, :order => "id").should == [feed_item_1]
+      FeedItem.find_with_filters(:user => user_1, :mode => "unread", :order => "id").should == [feed_item_1]
     end
     
     it "can include read items" do
@@ -176,7 +179,7 @@ describe FeedItem do
 
       FeedItem.mark_read_for(user_1.id, feed_item_2.id)
       
-      FeedItem.find_with_filters(:user => user_1, :read_items => true, :order => "id").should == [feed_item_1, feed_item_2]
+      FeedItem.find_with_filters(:user => user_1, :mode => "all", :order => "id").should == [feed_item_1, feed_item_2]
     end
     
     it "filters out read items when there are more then 1 tags included" do
@@ -193,7 +196,7 @@ describe FeedItem do
 
       FeedItem.mark_read_for(user_1.id, feed_item_1.id)
       
-      FeedItem.find_with_filters(:user => user_1, :read_items => false, :tag_ids => [tag_1.id, tag_2.id].join(","), :order => "id").should == []
+      FeedItem.find_with_filters(:user => user_1, :mode => "unread", :tag_ids => [tag_1.id, tag_2.id].join(","), :order => "id").should == []
     end
     
   end  
@@ -359,6 +362,10 @@ describe FeedItem do
       @atom.id.should == "urn:peerworks.org:entry##{@item.id}"
     end
     
+    it "should include the updated date" do
+      @atom.updated.should == @item.updated
+    end
+    
     it "should include the author" do
       @atom.authors.first.should_not be_nil
       @atom.authors.first.name.should == @item.author
@@ -487,7 +494,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag, :strength => 0)
     
       expected = FeedItem.find(2, 4)
-      assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :manual_taggings => true, :order => 'id'))
+      assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :mode => "moderated", :order => 'id'))
     end
   
     it "find_with_tag_filter_should_only_return_items_with_that_tag" do

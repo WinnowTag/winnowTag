@@ -1,4 +1,3 @@
-
 .clearfix:after {
     content: ".";
     display: block;
@@ -16,6 +15,7 @@
 
 html {
   height: 100%;
+  overflow-y: hidden;
 }
 
 body {
@@ -24,7 +24,6 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow-y: hidden;
 }
 
 body > h2, body > h3, body > h4 {
@@ -199,6 +198,7 @@ optgroup {
 #content {
   overflow: auto;
   padding: 10px;
+	position: relative;
 }
 
 #feed_items_controller #content {
@@ -254,7 +254,7 @@ optgroup {
   margin: 0 0 2em 0;
 }
 
-#sidebar .show_untagged {
+#sidebar .section .clear {
   text-align: center;
 }
 
@@ -757,8 +757,10 @@ ul.tag_list li.negative {
 }
 
 ul.tag_list li.public {
-  background-image: url(../images/bullet_blue.png);
-  color: #2691BF;
+  background-image: url(../images/public.png);
+  background-position: 2px center;
+  padding-left: 16px;
+/*  color: #2691BF;*/
 }
 
 ul.tag_list li .controls {
@@ -905,17 +907,14 @@ a.bookmarklet:hover {
   float: right;
 }
 
-#show_all {
+.choice_filter {
+	color: #666;
   display: block;
-  text-align: center;
 }
 
-#show_all.selected {
+.choice_filter .selected {
+  color: #000;
   font-weight: bold;
-}
-
-.checkbox_filter input {
-  margin: 0;
 }
 
 .folder {
@@ -964,6 +963,14 @@ a.bookmarklet:hover {
 
 .folder .header:hover {
   background-color: #eee;
+}
+
+#new_folder .header {
+  background: none;
+  cursor: inherit;
+  padding-left: 5px;
+  font-weight: bold;
+  color: #666;
 }
 
 .folder .add_link, .folder .cancel_link {
@@ -1103,20 +1110,13 @@ a.bookmarklet:hover {
   font-size: 1em;
 }
 
-.feed_item_order {
-	margin: 1em 0;
-	color: #666;
-}
-.feed_item_order a.selected {
-	font-weight: bold;
-}
-
 textarea.content { 
   width: 100%;
   height: 40em;
 }
 
-.tag, .feed {
+.tag, .feed, .user, .invite, .message {
+	position: relative;
   border: 1px solid #666;
   background: #eee;
   padding: .5em;
@@ -1138,6 +1138,89 @@ textarea.content {
   background-repeat: no-repeat;
   background-position: 0 1px;
   padding: 0 0 0 18px;
+}
+
+.user h4 {
+	font-size: 140%;
+	margin: 0 0 0.5em 0;
+}
+
+.user dl {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.user dl.account_detail {
+	width: 33%;
+}
+
+.user dl.login_detail {
+	width: 33%;
+
+}
+
+.user dl.tag_detail {
+	width: 33%;
+
+}
+
+.user dl dt {
+	clear: both;
+	float: left;
+  font-weight: bold;
+  color: #666;
+}
+
+.user dl dt:after {
+  content: ":";
+}
+
+.user dl dd {
+  float: left;
+  margin: 0 0 0 .5em;
+  padding: 0;
+/*  width: 7.5em;*/
+}
+
+.invite dl {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.invite dl.created {
+	width: 20%
+}
+
+.invite dl.created dd {
+	margin-bottom: 1em;
+}
+
+.invite dl.question {
+	width: 40%;
+}
+
+.invite dl.email {
+	width: 40%;
+}
+
+.invite dl dt {
+	clear: both;
+/*	float: left;*/
+  font-weight: bold;
+  color: #666;
+}
+
+.invite dl dt:after {
+  content: ":";
+}
+
+.invite dl dd {
+  float: left;
+  margin: 0 0 0 1em;
+  padding: 0;
+/*  width: 7.5em;*/
 }
 
 .tag .left .comment {
@@ -1162,12 +1245,12 @@ textarea.content {
   display: block;
 }
 
-.tag .right, .feed .right {
+.tag .right, .feed .right, .user .right {
   float: right;
 }
 
 .tag dl.training, .feed dl.training {
-  clear: left;
+  clear: both;
   float: left;
   margin: 0 0 1em 0;
   padding: 0;
@@ -1182,56 +1265,70 @@ textarea.content {
   color: #666;
   float: left;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 2em;
 }
 
-.tag dl.training dt:after, .feed dl.training dt:after {
+.tag dl.training dt:after, .feed dl.training dt:after, .user dl.details dt:after {
   content: ":";
 }
 
 .tag dl.training dd, .feed dl.training dd {
   float: left;
-  margin: 0 0 0 .5em;
+  margin: 0 0 0 0.5em;
   padding: 0;
-  width: 7.5em;
+  width: 6.5em;
 }
 
 .tag dl.training dd.last, .feed dl.training dd.last {
   width: 3em
 }
 
-.tag .controls, .feed .controls {
-  clear: left;
-  float: left;
+.tag .controls, .feed .controls, .user .controls, .message .controls {
+  clear: both;
+  float: right;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.tag .controls li, .feed .controls li {
+.invite .controls {
+	position: absolute;
+	top: 1em;
+	right: 1em;
+  margin: 0;
+  padding: 0;
+  list-style: none;	
+}
+
+.tag .controls li, .feed .controls li, .user .controls li, .invite .controls li, .message .controls li {
   float: left;
   padding: 0;
   margin: 0 0 0 1.5em;
 }
 
-.tag .controls li a, .feed .controls li a {
+.tag .controls li a, .feed .controls li a, .user .controls li a, .invite .controls li a, .message .controls li a {
   padding: 0 0 0 20px;
   background-image: url(../images/vertical_sprite.png);
   background-repeat: no-repeat;
 }
 
-.tag .controls li input, .feed .controls li input {
+.tag .controls li input, .feed .controls li input, .user .controls li input, .invite .controls li input {
   margin: 0;
   padding: 0;
 }
 
-.tag .controls li.first, .feed .controls li.first {
+.tag .controls li.first, .feed .controls li.first, .user .controls li.first, .invite .controls li.first {
   margin-left: 0;
 }
 
 .tag .controls li .slider {
   margin: .5em 4px 0 0;
   float: left;
+}
+
+.message .date {
+	display: block;
+	color: #999;
 }
 
 .blank_icon {
@@ -1278,6 +1375,10 @@ textarea.content {
   background-position: 0 -384px;
 }
 
+.activate_icon {
+  background-position: 0 -416px;
+}
+
 .comment_icon {
   background-position: 0 -576px;
 }
@@ -1321,4 +1422,51 @@ a.desc {
   border: 2px solid #FF260B;
   padding: 3px;
   text-align: center;
+}
+
+.notitle {
+  font-style: italic;
+  font-weight: normal;
+  color: #666;
+}
+
+.using { 
+  margin-right: 26%;
+}
+
+/* =messages */
+.messages {
+  float: right;
+  width: 25%;
+}
+
+.messages .empty {
+  display: block;
+  padding: .5em 0;
+  text-align: center;
+  font-style: italic;
+  color: #666;
+}
+
+.messages > h4 {
+  font-size: 1.5em;
+  margin: 0;
+  border-bottom: 2px solid #000;
+}
+
+.messages > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.messages ul li.sidebar_message {
+  margin: 0;
+  padding: .5em 0;
+  border-bottom: 1px dotted #ccc;
+}
+
+.messages ul li.sidebar_message .date {
+  color: #999;
+  float: right;
 }

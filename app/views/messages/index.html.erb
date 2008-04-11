@@ -1,0 +1,9 @@
+<% content_for :header_controls do -%>
+  <%= render :partial => "header_controls" %>
+<% end -%>
+
+<% if @messages.empty? -%>
+  <div class="empty">No messages matched your search criteria.</div>
+<% else -%>
+  <%= render :partial => @messages %>
+<% end -%>

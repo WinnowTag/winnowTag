@@ -271,15 +271,15 @@ ItemBrowser.prototype = {
         }
         this.loading = false;
         this.updateFromQueue();
-      }.bind(this),
+      }.bind(this)
       // onFailure: function(request) {
       //   // we get a status code of 2147746065 when the request gets interrupted in FF3B4
       //   if(request.status == 2147746065) { return; }
-      //   alert("Failure: " + request.status);
+      //   new ErrorMessage("Failure: " + request.status);
       // },
       // onException: function(request, exception) {
       //   if (!exceptionToIgnore(exception)) {
-      //     alert("Exception: " + exception.toString());
+      //     new ErrorMessage("Exception: " + exception.toString());
       //   }
       // }
     });  
@@ -464,7 +464,7 @@ ItemBrowser.prototype = {
     new Ajax.Updater("sidebar", "/feed_items/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
       onComplete: function() {
         sidebar.removeClassName("loading");
-        applesearch.init();
+        AppleSearch.setup();
         ItemBrowser.instance.styleFilters();
       }
     });  
@@ -510,6 +510,7 @@ ItemBrowser.prototype = {
         this.removeFilters(parameters);
       } else {
         this.addFilters(parameters);
+        Event.stop(event);
       }
     } else {
       this.setFilters(parameters);
@@ -540,7 +541,11 @@ ItemBrowser.prototype = {
     var old_parameters = $H(location.hash.gsub('#', '').toQueryParams());
     old_parameters.unset("tag_ids");
     old_parameters.unset("feed_ids");
-    location.hash = "#" + old_parameters.toQueryString();
+    if(old_parameters.keys().size() == 0) {
+      location.hash = " ";
+    } else {
+      location.hash = "#" + old_parameters.toQueryString();
+    }
     
     this.addFilters(parameters);
   },
@@ -581,14 +586,40 @@ ItemBrowser.prototype = {
   },
   
   styleFilters: function() {
-    if(!$("show_all")) { return; }
+    // Make sure this is not run if the sidebar is not loaded yet
+    if(!$("mode_all")) { return; }
     
     var params = location.hash.gsub('#', '').toQueryParams();
-    if($H(params).keys().size() == 0) {
-      $("show_all").addClassName("selected");
-    } else {
-      $("show_all").removeClassName("selected");
-    }
+
+	  var modes = ["all", "unread", "moderated"];
+		if(params.mode) {
+			modes.without(params.mode).each(function(mode) {
+			  $("mode_" + mode).removeClassName("selected")
+			});
+			
+			$("mode_" + params.mode).addClassName("selected");
+		} else {
+			modes.without("unread").each(function(mode) {
+			  $("mode_" + mode).removeClassName("selected")
+			});
+
+			$("mode_unread").addClassName("selected");
+		}
+    
+	  var orders = ["newest", "oldest", "strength"];
+		if(params.order) {
+			orders.without(params.order).each(function(order) {
+			  $("order_" + order).removeClassName("selected")
+			});
+			
+			$("order_" + params.order).addClassName("selected");
+		} else {
+			orders.without("newest").each(function(order) {
+			  $("order_" + order).removeClassName("selected")
+			});
+
+			$("order_newest").addClassName("selected");
+		}
     
     var feed_ids = params.feed_ids ? params.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
@@ -635,30 +666,19 @@ ItemBrowser.prototype = {
     if(params.text_filter) {
       text_filter.value = params.text_filter;
     } else {
-      clear_button = text_filter.previous(".srch_clear");
       text_filter.value = "";
-	    applesearch.onChange(text_filter, clear_button);
-	    applesearch.insertPlaceholder(text_filter);
+      // TODO: Why doesn't this work?
+      text_filter.fire("blur");
     }
     
-    if(params.manual_taggings) {
-      $("manual_taggings").checked = true;
+    var clear_selected_filters = $("clear_selected_filters");
+    if(params.tag_ids || params.feed_ids || params.text_filter) {
+      clear_selected_filters.disabled = false;
+      clear_selected_filters.value = "Clear Selected Filters";
     } else {
-      $("manual_taggings").checked = false;
+      clear_selected_filters.disabled = true;
+      clear_selected_filters.value = "No Filters Selected";
     }
-    
-    if(params.read_items) {
-      $("read_items").checked = true;
-    } else {
-      $("read_items").checked = false;
-    }
-
-		$$(".feed_item_order a").invoke("removeClassName", "selected");
-		if(params.order) {
-			$("order_" + params.order).addClassName("selected");
-		} else {
-			$("order_newest").addClassName("selected");
-		}
   },
   
   showLoadingIndicator: function(message) {
@@ -716,7 +736,7 @@ ItemBrowser.prototype = {
   },
   
   toggleOpenCloseItem: function(item, event) {
-    if(event && (event.element().match(".stop") || event.element().up('.stop'))) { return false; }
+    if(event && (Event.element(event).match(".stop") || Event.element(event).up('.stop'))) { return false; }
     if($(item).match(".open")) {
       this.closeItem(item);
     } else {

@@ -77,20 +77,6 @@ describe FeedItemsHelper do
     end
   end
 
-  describe "show_manual_taggings?" do
-    it "is true when params[:manual_taggings] is set to a truthy value" do
-      params[:manual_taggings] = "true"
-      show_manual_taggings?.should be_true
-    end
-    
-    it "is false when params[:manual_taggings] is set to a falsy value" do
-      ["", "false"].each do |falsy_value|
-        params[:manual_taggings] = falsy_value
-        show_manual_taggings?.should be_false
-      end
-    end
-  end
-  
   describe "classes_for_taggings" do
     it "provides the class classifier when only a classifier tagging exists" do
       taggings = mock_model(Tagging, :classifier_tagging? => true)
@@ -138,9 +124,9 @@ describe FeedItemsHelper do
   describe "tag controls" do
     it "created list items for each tag" do
       taggings = [
-        [ mock_model(Tag, :name => "tag1"), [] ],
-        [ mock_model(Tag, :name => "tag2"), [] ],
-        [ mock_model(Tag, :name => "tag3"), [] ]
+        [ mock_model(Tag, :name => "tag1", :user => current_user), [] ],
+        [ mock_model(Tag, :name => "tag2", :user => current_user), [] ],
+        [ mock_model(Tag, :name => "tag3", :user => current_user), [] ]
       ]
       feed_item = mock_model(FeedItem, :taggings_by_user => taggings)
     
@@ -149,20 +135,11 @@ describe FeedItemsHelper do
       end
     end
     
-    xit "needs to be tested with show_manual_taggings?"
     xit "needs to be tested with public tags"
   end
   
   describe "tags_to_display" do
-    def show_manual_taggings?; @show_manual_taggings; end
-    
-    it "only shows filtered tags when manual taggings is on" do
-      @show_manual_taggings = true
-      params[:tag_ids] = "1,5,7"
-      tags_to_display.should == [1, 5, 7]
-    end
-    
-    it "only shows the tags the user has in the sidebar (public and private) that are not excluded plus any filtered tags" do
+    it "only shows the tags the user has in the sidebar (public and private) that are not excluded plus any filtered tags which are theirs or public" do
       ruby = mock_model(Tag)
       svn = mock_model(Tag)
       tech = mock_model(Tag)
@@ -171,9 +148,28 @@ describe FeedItemsHelper do
       current_user.stub!(:sidebar_tags).and_return([ruby, svn])
       current_user.stub!(:subscribed_tags).and_return([tech, langs])
       current_user.stub!(:excluded_tags).and_return([ruby, langs])
-      params[:tag_ids] = "1,5,7"
       
-      tags_to_display.should == [svn.id, tech.id, 1, 5, 7]
+      Tag.delete_all
+      non_sidebar_tag = Tag.create! :name => "non_sidebar_tag", :public => true, :user => current_user
+      other_user = User.create! valid_user_attributes
+      other_public_tag = Tag.create! :name => "other_public_tag", :public => true, :user => other_user
+      other_private_tag = Tag.create! :name => "other_private_tag", :user => other_user
+      
+      params[:tag_ids] = [non_sidebar_tag.id, other_public_tag.id, other_private_tag.id].join(",")
+
+      tags_to_display.should == [svn, tech, non_sidebar_tag, other_public_tag]
+    end
+  end
+  
+  describe "feed_item_title" do
+    it "shows the feed items title if it has one" do
+      feed_item = FeedItem.new :title => "Some Title"
+      feed_item_title(feed_item).should == "Some Title"
+    end
+    
+    it "shows (no title) if there is no title" do
+      feed_item = FeedItem.new
+      feed_item_title(feed_item).should have_tag(".notitle", "(no title)")
     end
   end
 end

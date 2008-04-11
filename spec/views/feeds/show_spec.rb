@@ -33,7 +33,7 @@ describe '/feeds/show' do
   it "should show the created on date" do
     render '/feeds/show'
     response.should have_tag('th', 'Created On')
-    response.should have_tag('td nobr', /\d+ \w+, \d+/)
+    response.should have_tag('td', /\d+ \w+, \d+/)
   end
   
   it "should show the url of the feed as a feed icon link" do

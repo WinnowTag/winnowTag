@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   acts_as_authorized_user
   acts_as_authorizable
   composed_of :tz, :class_name => "TZInfo::Timezone", :mapping => %w(time_zone identifier)
+  has_many :messages, :order => "created_at DESC"
   has_many :collection_job_results
   has_one :collection_job_result_to_display, :class_name => "CollectionJobResult", :foreign_key => 'user_id',
               :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on asc', 
@@ -107,10 +108,17 @@ class User < ActiveRecord::Base
       
       conditions = conditions.empty? ? nil : [conditions.join(" AND "), *values]
       
-      paginate(options.merge(:select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
-                             :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
-                             :conditions => conditions,
-                             :group => "users.id"))
+      options_for_find = options.merge(
+        :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
+        :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
+        :conditions => conditions,
+        :group => "users.id")
+      
+      if options.has_key?(:page) or options.has_key?(:per_page)
+        paginate(options_for_find)
+      else
+        find(:all, options_for_find)
+      end
     end
   end
   

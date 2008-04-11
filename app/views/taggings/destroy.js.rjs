@@ -1,8 +1,15 @@
 if @tag.taggings.empty?
   page << <<-EOJS
-    if(confirm("You have just removed the last example of tag '#{@tag.name}'. Do you want to delete the tag from Winnow?")) {
-      #{remote_function(:url => tag_path(@tag), :method => :delete)}
-    }
+    new ConfirmationMessage("You have just removed the last example of tag '" + #{@tag.name.to_json} + "'.<br/>" +
+                            "Do you want to completely destroy the tag '" + #{@tag.name.to_json} + 
+                            "' with #{0} positive examples and #{0} negative examples, or leave " + 
+                            #{@tag.name.to_json} + " on the My Tags page?<br/>", {
+      yes: "Destroy " + #{@tag.name.to_json},
+      no: "Keep " + #{@tag.name.to_json} + " on My Tags",
+      onConfirmed: function() {
+        #{remote_function(:url => tag_path(@tag), :method => :delete)}
+      }
+    });
   EOJS
 end
 

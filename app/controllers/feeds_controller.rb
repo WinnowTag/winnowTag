@@ -17,12 +17,10 @@ class FeedsController < ApplicationController
   include ActionView::Helpers::TextHelper
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :flash_collection_job_result
+  before_filter :setup_sortable_columns, :only => :index
   
   def index
-    setup_sortable_columns
-    @search_term = params[:search_term]
-    @feeds = Feed.search :search_term => @search_term, :excluder => current_user, 
-                         :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc)
+    @presenter = FeedsPresenter.new(:current_user => current_user, :search_term => params[:search_term], :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc))
   end
   
   def new
@@ -37,13 +35,11 @@ class FeedsController < ApplicationController
                                       :callback_url => collection_job_results_url(current_user))
                                       
       if @feed.updated_on.nil?
-        flash[:notice] = "Thanks for adding the feed from '#{@feed.url}'. " + 
-                         "We will fetch the items soon and we'll let you know when it is done. " +
-                         "The feed has also been added to your feeds folder in the sidebar."
+        flash[:notice] = current_user.messages.create!(:body => "Thanks for adding the feed from '#{@feed.url}'. We will fetch the " <<
+          "items soon and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar.")
       else
-        flash[:notice] = "We already have the feed from '#{@feed.url}', " +
-                         "however we will update it now and we'll let you know when it is done. " +
-                         "The feed has also been added to your feeds folder in the sidebar."
+        flash[:notice] = current_user.messages.create!(:body => "We already have the feed from '#{@feed.url}', however we will " <<
+          "update it now and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar.")
       end
       
       respond_to do |format|
@@ -64,7 +60,7 @@ class FeedsController < ApplicationController
         feed.collect(:created_by   => current_user.login, 
                      :callback_url => collection_job_results_url(current_user))
       end
-      flash[:notice] = "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file"
+      flash[:notice] = current_user.messages.create!(:body => "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file")
       redirect_to feeds_url
     end
   end
@@ -73,7 +69,6 @@ class FeedsController < ApplicationController
   # If that fails we try and fetch it from the collector.
   #
   # If both of those fail, report a nice error message.
-  #
   def show
     begin
       @feed = Feed.find(params[:id])
@@ -133,12 +128,13 @@ class FeedsController < ApplicationController
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
+        Folder.remove_feed(current_user, feed.id)
       end
     end
       
-    if params[:remove] =~ /true/i
+    if params[:subscribe] =~ /false/i
       render :update do |page|
-        page[dom_id(feed)].remove
+        page.select(".#{dom_id(feed)}").invoke("remove")
       end
     else
       render :nothing => true

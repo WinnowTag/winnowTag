@@ -65,7 +65,7 @@ function add_tag(taggable_id, tag_name, allow_remove) {
   } else if (tag_control.match('.classifier')) {
     tag_control.addClassName('positive'); 
   } else {
-    alert("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
+    new ErrorMessage("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
   }
 
   sendTagRequest(url, parameters);
@@ -94,7 +94,7 @@ function remove_tag(taggable_id, tag_name) {
   } else if (tag_control.match('.classifier')) {
     tag_control.addClassName('negative'); 
   } else {
-    alert("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
+    new ErrorMessage("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
   }
 
   sendTagRequest(url, parameters);
@@ -107,7 +107,7 @@ function sendTagRequest(url, parameters) {
   new Ajax.Request(url, {parameters: $H(parameters).toQueryString(),
     method: 'post',
     onFailure: function(transport) {
-      alert("Error contacting server.  You're changes have not been saved.");
+      new ErrorMessage("Error contacting server.  You're changes have not been saved.");
     }
   });
 }
@@ -170,7 +170,7 @@ function show_control_tooltip(control, tag, tag_name) {
   control.setAttribute("title", control_tooltip);
 }
 
-function show_tag_tooltip(tag, tag_name, classifier_strength) {
+function show_tag_tooltip(tag, tag_name, classifier_strength, user) {
   tag = $(tag);
   var tag_tooltip = "";
   
@@ -181,7 +181,10 @@ function show_tag_tooltip(tag, tag_name, classifier_strength) {
   } else if (tag.match('.classifier')) {
     tag_tooltip = "Winnow is " + classifier_strength +" sure this item fit your examples";
   }
-  //TODO: Published tags: "Published by <name of user>"
+  
+  if(user) {
+    tag_tooltip += " (from " + user + ")"
+  }
   
   tag.setAttribute("title", tag_tooltip);
 }

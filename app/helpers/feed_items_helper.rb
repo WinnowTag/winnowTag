@@ -61,33 +61,27 @@ module FeedItemsHelper
     "Classify changed tags"
   end
   
-  def show_manual_taggings?
-    params[:manual_taggings] =~ /true/i ? true : false 
-  end
- 
   def tag_controls(feed_item)
     tags = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
-
-    html = tags.map do |tag, taggings|
-      tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
-    end.join(" ")
-    
-    current_user.subscribed_tags.group_by(&:user).each do |user, subscribed_tags|
-      more_tags = feed_item.taggings_by_user(user, :tags => tags_to_display)
-      
-      html += more_tags.map do |tag, taggings|
-        if tagging = Array(taggings).first
-          tag_span = tag_name_with_tooltip(tag)
-          content_tag(:li, tag_span, :class => classes_for_taggings(tagging, [:public, :name]).join(" "))
-        end
-      end.compact.join(" ")
+    current_user.subscribed_tags.group_by(&:user).map do |user|
+      tags += feed_item.taggings_by_user(user, :tags => tags_to_display)
     end
+
+    html = tags.sort_by { |tag, taggings| tag.name.downcase }.map do |tag, taggings|
+      if tag.user == current_user
+        tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
+      else
+        if tagging = Array(taggings).first
+          content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes_for_taggings(tagging, [:public]).join(" "),
+              :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}, #{format_classifier_strength(taggings).to_json}, #{tag.user.display_name.to_json}); show_tag_controls(this);")
+        end
+      end
+    end.compact.join(" ")
     
     content_tag "ul", html, :class => "tag_list stop", :id => dom_id(feed_item, "tag_controls")
   end
   
   # Format a classifier tagging strength as a percentage.
-  #
   def format_classifier_strength(taggings)
     if classifier_tagging = taggings.detect {|t| t.classifier_tagging? }
       "%.2f%" % (classifier_tagging.strength * 100)
@@ -95,11 +89,9 @@ module FeedItemsHelper
   end
   
   def tags_to_display
-    if show_manual_taggings? && params[:tag_ids]
-      params[:tag_ids].split(",").map(&:to_i)
-    else
-      (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags).map(&:id) + params[:tag_ids].to_s.split(",").map(&:to_i)
-    end
+    (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + 
+      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
+    ).uniq
   end
   
   def tag_control_for(feed_item, tag, classes, classifier_strength)
@@ -144,9 +136,17 @@ module FeedItemsHelper
   end
   
   def tags_for_sidebar
-    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags
-    tag_ids = params[:tag_ids].to_s.split(",").map(&:to_i) - tags.map(&:id)
-    tags += Tag.find_all_by_id(tag_ids) unless tag_ids.empty?
-    tags.sort_by { |tag| tag.name.downcase }
+    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + 
+      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
+
+    tags.uniq.sort_by { |tag| tag.name.downcase }
+  end
+  
+  def feed_item_title(feed_item)
+    if not feed_item.title.blank?
+      feed_item.title
+    else
+      content_tag :span, "(no title)", :class => "notitle"
+    end
   end
 end

@@ -138,11 +138,12 @@ Spec::Runner.configure do |config|
   
   def login_as(user_id_or_fixture_name)
     session[:user] = case user_id_or_fixture_name
+      when User;    user_id_or_fixture_name.id
       when Numeric; user_id_or_fixture_name
-      when Symbol; users(user_id_or_fixture_name).id
+      when Symbol;  users(user_id_or_fixture_name).id
     end
   end
-  
+    
   def mock_new_model(model_class, options_and_stubs = {})
     mock_model(model_class, options_and_stubs.reverse_merge(:id => nil, :to_param => nil, :new_record? => true))
   end

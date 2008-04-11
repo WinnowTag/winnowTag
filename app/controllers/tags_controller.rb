@@ -27,8 +27,9 @@ class TagsController < ApplicationController
         @search_term = params[:search_term]
         
         setup_sortable_columns
-        @tags = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @subscribed_tags = Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @tags  = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @tags += Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+        @tags = @tags.sort_by(&:name)
       end
       wants.atomsvc do        
         conditional_render(Tag.maximum(:created_on)) do
@@ -200,6 +201,7 @@ class TagsController < ApplicationController
     unless @tag.public?
       TagSubscription.delete_all(:tag_id => @tag)
     end
+    render :nothing => true
   end
   
   def public
@@ -235,6 +237,7 @@ class TagsController < ApplicationController
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      Folder.remove_tag(current_user, @tag.id)
     end
     respond_to do |format|
       format.html { redirect_to :back }
@@ -243,10 +246,14 @@ class TagsController < ApplicationController
   end
   
   def sidebar
-    if tag = current_user.tags.find(params[:id])
-      tag.update_attribute :show_in_sidebar, params[:sidebar]
+    if @tag = current_user.tags.find(params[:id])
+      @tag.update_attribute :show_in_sidebar, params[:sidebar]      
+
+      unless @tag.show_in_sidebar?
+        Folder.remove_tag(current_user, @tag.id)
+      end
     end
-    render :nothing => true
+    respond_to :js
   end
   
 private

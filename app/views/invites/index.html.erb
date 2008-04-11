@@ -2,6 +2,14 @@
   <ul class="control_bar">
     <li><%= will_paginate(@invites) %></li>
     <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
+    <% if params[:action] == "index" -%>
+    <li>
+      Sort By:
+      <%= sort_link "Created", 'invites', :alias => 'created_at' %>,      
+      <%= sort_link "Email", 'invites', :alias => 'email' %>,        
+      <%= sort_link "Status", 'invites', :alias => 'status' %>
+    </li>
+    <% end -%>
   </ul>
 
   <% form_tag(invites_path, :method => :get) do -%>
@@ -12,59 +20,5 @@
 <% if @invites.empty? -%>
   <div class="empty">No invites matched your search criteria.</div>
 <% else -%>
-  <% @skip_content_container = true %>
-  <table class="data_table recordset">
-    <thead>
-    	<tr>
-    		<th>Email</th>
-    		<th>Questions</th>
-    		<th>Created</th>
-    		<th>Status</th>
-    		<th>Email</th>
-    		<th>&nbsp;</th>
-    	</tr>
-    </thead>		
-    <tbody id="content">
-    	<% for invite in @invites -%>
-    	<tr>
-    		<td><%= invite.email %></td>
-    		<td>
-    		  <% unless invite.hear.blank? -%>
-  		      <b>How did you hear about Winnow?</b><br/>
-  		      <%= invite.hear %><br/>
-  		    <% end -%>
-    		  <% unless invite.use.blank? -%>
-  		      <b>How/why do you want to use Winnow?</b><br/>
-            <%= invite.use %><br/>
-  		    <% end -%>
-    		</td>
-    		<td><%= format_date(invite.created_at) %></td>
-    		<td>
-    		  <% if invite.user -%>
-    		    Accepted: <%= link_to invite.user.login, invite.user %>
-    		  <% elsif invite.code? -%>
-    		    Activated: <%= invite.code %>
-    		  <% else -%>
-    		    Requested
-    		  <% end -%>
-    		</td>
-    		<td>
-  		    <% unless invite.subject.blank? -%>
-    	      Subject: <%= invite.subject %><br/>
-    	    <% end -%>
-    	    <% unless invite.body.blank? -%>
-    	      Body: <%= invite.body %><br/>
-    	    <% end -%>
-    		</td>
-    		<td nowrap="nowrap">
-  		    <% unless invite.code? -%>
-            <%= link_to "Activate", activate_invite_path(invite), :method => :put %> or
-            <%= link_to "Edit", edit_invite_path(invite) %> or
-          <% end -%>
-          <%= link_to "Destroy", invite, :method => :delete, :confirm => "Are you sure?" %>
-    		</td>
-    	</tr>
-  	  <% end -%>
-  	</tbody>
-  </table>
+  <%= render :partial => 'invite', :collection => @invites %>
 <% end -%>

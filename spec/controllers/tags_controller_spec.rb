@@ -267,7 +267,6 @@ describe TagsController do
       get :index
       assert assigns(:tags)
       assert_equal(@tag, assigns(:tags).first)
-      assert assigns(:subscribed_tags)
       # TODO: Move this to a view test
       # assert_select "tr##{dom_id(@tag)}", 1
       # assert_select "tr##{dom_id(@tag)} td:nth-child(1)", /tag.*/
@@ -418,6 +417,7 @@ describe TagsController do
       tag.update_attribute :public, true
 
       TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
 
       put :unsubscribe, :id => tag
 
@@ -428,9 +428,6 @@ describe TagsController do
     #     It also exposes the fact that sending only the name of the tag as the parameter is not
     #     sufficient, it also needs the name of the user since tags are only unique for a user.
     #     In fact it probably makes sense to use the public_tag route to call subscribe.
-    #
-    #     This test is currently failing, Craig should probably be the one to fix it.
-    #
     it "subscribe_to_other_users_tag_with_same_name" do
       other_user = users(:aaron)
       tag = Tag(other_user, 'tag')
@@ -444,7 +441,6 @@ describe TagsController do
     end
 
     # SG: This ensures that only public tags can be subscribed to.
-    # 
     it "cant_subscribe_to_other_users_non_public_tags" do
       other_user = users(:aaron)
       tag = Tag(other_user, 'hockey')
@@ -455,6 +451,28 @@ describe TagsController do
       end
     
       assert_response :success 
+    end
+
+    # Test unsubscribing as implemented on the "My Tags" page
+    it "sidebar - false" do
+      tag = Tag(users(:quentin), 'hockey')
+
+      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
+
+      put :sidebar, :id => tag, :sidebar => "false"
+
+      assert_response :success
+    end
+
+    # Test unsubscribing as implemented on the "My Tags" page
+    it "sidebar - true" do
+      tag = Tag(users(:quentin), 'hockey')
+
+      Folder.should_not_receive(:remove_tag)
+
+      put :sidebar, :id => tag, :sidebar => "true"
+
+      assert_response :success
     end
   end
 end

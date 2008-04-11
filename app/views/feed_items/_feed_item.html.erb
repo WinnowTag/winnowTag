@@ -6,7 +6,7 @@
         <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => dom_id(feed_item, "feed_link_for"), :class => "stop" %>
       </span>
       <span class="date"><%= format_date(feed_item.updated) %></span>
-      <span class="title"><%= feed_item.title %></span> 
+      <span class="title"><%= feed_item_title(feed_item) %></span> 
       <%= link_to_function "Add Tag", "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'));", :id => dom_id(feed_item, "add_tag"), :class => "add_tag stop" %>
       <%= tag_controls(feed_item) %>
     </div>
