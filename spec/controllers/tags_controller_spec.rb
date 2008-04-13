@@ -12,6 +12,7 @@ shared_examples_for 'conditional GET of tag' do
     time = Time.now.yesterday
     @tag.stub!(:updated_on).and_return(time)
     @tag.stub!(:last_classified_at).and_return(time)    
+    @tag.should_receive(:to_atom).never
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
   
     get @action, :id => @tag.id, :user_id => 'quentin'
@@ -142,6 +143,7 @@ describe TagsController do
       @action = "show" # for 'conditional GET of tag'
       mock_user_for_controller
       @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now)
+      @tag.stub!(:to_atom).and_return(Atom::Feed.new)
       @tags.stub!(:find_by_id).and_return(@tag)
       @mock_tags = mock('tags')
       @mock_tags.stub!(:find_by_id).and_return(@tag)
@@ -198,21 +200,24 @@ describe TagsController do
       @action = "training" # for 'conditional GET of tag'
       @tag = mock_model(Tag, :updated_on => Time.now)    
       Tag.stub!(:find).with(@tag.id.to_s).and_return(@tag)
-      @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
+      @tag.stub!(:to_atom).and_return(Atom::Feed.new)
     end
     
     it "should call to_atom with :training_only => true" do      
+      @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
       get :training, :id => @tag.id
       response.should be_success
     end
     
     it "should set the content type to application/atom+xml" do
+      @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
       get :training, :id => @tag.id, :format => 'atom'
       response.should be_success
       response.content_type.should == "application/atom+xml"
     end
     
     it "should set the Last-Modified header" do
+      @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
       get :training, :id => @tag.id
       response.headers['Last-Modified'].should_not be_nil
     end
