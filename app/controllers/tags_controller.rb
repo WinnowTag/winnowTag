@@ -252,9 +252,11 @@ class TagsController < ApplicationController
 
       unless @tag.show_in_sidebar?
         Folder.remove_tag(current_user, @tag.id)
+        respond_to :js
+        return
       end
     end
-    respond_to :js
+    render :nothing => true
   end
   
 private
