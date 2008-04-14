@@ -1,0 +1,13 @@
+<ul class="control_bar">
+  <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
+  <li>
+    Sort:
+    <%= link_to_function "Created", "itemBrowser.addFilters({order: 'created'})", :id => "order_created" %>, 
+    <%= link_to_function "Email",   "itemBrowser.addFilters({order: 'email'})",   :id => "order_email" %>, 
+    <%= link_to_function "Status",  "itemBrowser.addFilters({order: 'status'})",  :id => "order_status" %>
+  </li>
+</ul>
+
+<% form_tag feeds_path, :method => :get, :onsubmit => "resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Invites...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% end -%>

@@ -10,7 +10,6 @@ class UsersController < ApplicationController
   before_filter :setup_user, :except => [:create, :new]
   
   def index
-    # :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}"
     respond_to do |format|
       format.html
       format.js do

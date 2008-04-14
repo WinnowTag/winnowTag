@@ -90,8 +90,7 @@ class Feed < ActiveRecord::Base
     
     options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
     
-    results = find(:all, options_for_find.merge(:select => select.join(","), :order => order, :group => "feeds.id",
-                                                :limit => options[:limit], :offset => options[:offset]))
+    results = find(:all, options_for_find.merge(:select => select.join(","), :order => order, :limit => options[:limit], :offset => options[:offset]))
     
     if options[:count]
       [results, count(options_for_find)]

@@ -67,7 +67,7 @@ describe Invite do
       
       expected_invites = [invite1]
       
-      invites = Invite.search :q => "mark", :page => 1
+      invites = Invite.search :text_filter => "mark", :order => "id"
       invites.should == expected_invites
     end
   end

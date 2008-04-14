@@ -113,6 +113,7 @@ class User < ActiveRecord::Base
       when "last_tagging_on", "tag_count"
         options[:order]
       else
+        # :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}"
         "users.login"
       end
     

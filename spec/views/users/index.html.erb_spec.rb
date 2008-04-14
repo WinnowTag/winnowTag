@@ -3,13 +3,10 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/users/index.html.erb' do
   before(:each) do
-    login_as stub("user")
     template.stub_render(:partial => "header_controls")
   end
   

@@ -7,7 +7,6 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feeds/index.html.erb' do
   before(:each) do
-    login_as stub("user")
     template.stub_render(:partial => "index_header_controls")
   end
   
