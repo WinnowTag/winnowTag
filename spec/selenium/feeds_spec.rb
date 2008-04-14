@@ -28,6 +28,6 @@ describe "/feeds" do
   it "should hide the search field on a feed page" do
     feed = Feed.find(:first)
     click_and_wait "link_to_feed_#{feed.id}"
-    dont_see_element '#search_term'
+    dont_see_element '#text_filter'
   end
 end

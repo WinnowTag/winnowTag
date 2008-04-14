@@ -1,23 +1,19 @@
-<% content_for :header_controls do -%>
-  <ul class="control_bar">
-    <li>
-      Sort By:
-      <%= sort_link "Name", 'tags', :alias => 'name' %>, 
-      <%= sort_link "Last Trained", 'tags', :alias => 'last_used_by' %>,
-      <%= sort_link "Training (+/-)", 'tags', :alias => 'training_count' %>,
-      <%= sort_link "Automatic", 'tags', :alias => 'classifier_count' %>,
-      <%= sort_link "Globally Exclude", 'tags', :alias => 'globally_exclude' %>,
-      <%= sort_link "Subscribe", 'tags', :alias => 'subscribe' %>
-    </li>
-  </ul>
-
-  <% form_tag(public_tags_path, :method => :get) do -%>
-	  <%= search_field_tag "search_term", @search_term, :placeholder => "Search Tags...", :clear => { :onclick => "window.location = '#{public_tags_path}';" } %>
-	<% end -%>
+<% content_for :head do -%>
+	<script type="text/javascript" charset="utf-8">
+		var itemBrowser;
+		document.observe('dom:loaded', function() {
+			itemBrowser = new ItemBrowser('tags', {url: "tags/public"});
+		});
+	</script>
 <% end -%>
 
-<% if @tags.empty? -%>
-  <div class="empty">No tags matched your search criteria.</div>
-<% else -%>
-  <%= render :partial => 'public_tag', :collection => @tags %>
+<% content_for :header_controls do -%>
+  <%= render :partial => 'header_controls' %>
+<% end -%>
+
+<div id="tags"></div>
+
+<% content_for :footer do -%>
+	<span id="tags_indicator" class="loading" style="display:none;"></span>
+	<span id="tags_count" class="count"></span>
 <% end -%>

@@ -237,7 +237,7 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  def self.find_all_with_count(options = {})
+  def self.search(options = {})
     joins = ["LEFT JOIN users ON tags.user_id = users.id"]
     if options[:subscribed_by]
       joins << "INNER JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscribed_by].id}"
@@ -267,22 +267,37 @@ class Tag < ActiveRecord::Base
       conditions << sanitize_sql(options[:conditions])
     end
     
-    if !options[:search_term].blank?
+    if !options[:text_filter].blank?
       ored_conditions = []
       ored_conditions << "LOWER(tags.name) LIKE LOWER(?)"
       ored_conditions << "LOWER(tags.comment) LIKE LOWER(?)"
       ored_conditions << "LOWER(users.login) LIKE LOWER(?)"
       conditions << "(#{ored_conditions.join(" OR ")})"
       
-      value = "%#{options[:search_term]}%"
+      value = "%#{options[:text_filter]}%"
       values << value << value << value
     end
     
-    find(:all, 
-       :select => select.join(","),
-       :joins => joins.join(" "),
-       :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
-       :group => 'tags.id',
-       :order => options[:order])
+    order = case options[:order]
+    when "name", "public", "id"
+      "tags.#{options[:order]}"
+    when "subscribe", "training_count", "classifier_count", "last_used_by", "globally_exclude"
+      options[:order]
+    when "login"
+      "users.#{options[:order]}"
+    else
+      "tags.name"
+    end
+
+    options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
+    
+    results = find(:all, options_for_find.merge(:select => select.join(","),  :joins => joins.join(" "),
+                   :order => order, :group => "tags.id", :limit => options[:limit], :offset => options[:offset]))
+    
+    if options[:count]
+      [results, count(options_for_find)]
+    else
+      results
+    end
   end
 end

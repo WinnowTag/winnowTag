@@ -24,16 +24,15 @@ class TagsController < ApplicationController
   before_filter :ensure_user_is_tag_owner_unless_local, :only => :classifier_taggings
   
   def index
-    respond_to do |wants|
-      wants.html do
-        @search_term = params[:search_term]
-        
-        setup_sortable_columns
-        @tags  = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @tags += Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @tags = @tags.sort_by(&:name)
+    respond_to do |format|
+      format.html
+      format.js do
+        @tags  = current_user.tags.search(:excluder => current_user, :text_filter => params[:text_filter], :order => params[:order])
+        @tags += Tag.search(:excluder => current_user, :text_filter => params[:text_filter], :subscribed_by => current_user, :order => params[:order])
+        @tags  = @tags.sort_by { |tag| tag.name.downcase }
+        @tags_count = @tags.size
       end
-      wants.atomsvc do        
+      format.atomsvc do        
         conditional_render(Tag.maximum(:created_on)) do
           atomsvc = Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
           render :xml => atomsvc.to_xml
@@ -43,10 +42,14 @@ class TagsController < ApplicationController
   end
   
   def public
-    @search_term = params[:search_term]
-    setup_sortable_columns
-    @tags = Tag.find_all_with_count(:search_term => @search_term, :conditions => ["tags.public = ?", true], :subscriber => current_user,
-                                    :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+    respond_to do |format|
+      format.html
+      format.js do
+        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
+        @tags, @tags_count = Tag.search(:text_filter => params[:text_filter], :conditions => ["tags.public = ?", true], :subscriber => current_user,
+                                        :order => params[:order], :limit => limit, :offset => params[:offset], :count => true)
+      end
+    end
   end
 
   def show
@@ -278,17 +281,6 @@ private
   
   def ensure_user_is_tag_owner_unless_local
     ensure_user_is_tag_owner unless local_request?
-  end
-  
-  def setup_sortable_columns
-    add_to_sortable_columns('tags', :field => 'name')
-    add_to_sortable_columns('tags', :field => 'subscribe')
-    add_to_sortable_columns('tags', :field => 'public')
-    add_to_sortable_columns('tags', :field => 'training_count')
-    add_to_sortable_columns('tags', :field => 'classifier_count')
-    add_to_sortable_columns('tags', :field => 'last_used_by')
-    add_to_sortable_columns('tags', :field => 'login')
-    add_to_sortable_columns('tags', :field => 'globally_exclude')
   end
   
   def conditional_render(last_modified)   

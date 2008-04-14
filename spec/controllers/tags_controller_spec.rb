@@ -124,7 +124,6 @@ describe TagsController do
   describe 'GET /' do
     it "index" do
       get :index
-      assert assigns(:tags)    
     end
   end
   

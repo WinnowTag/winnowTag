@@ -42,7 +42,7 @@ describe Tag do
       Tagging.create(:user => u, :feed_item => fi1, :tag => test)
       Tagging.create(:user => u, :feed_item => fi2, :tag => test, :strength => 0)
 
-      tags = u.tags.find_all_with_count(:order => "tags.name")
+      tags = u.tags.search(:order => "tags.name")
       assert_equal 7, tags.size
 
       assert_equal classifier, tag = tags.shift
@@ -100,7 +100,7 @@ describe Tag do
       Tagging.create(:user => u, :feed_item => fi1, :tag => test)
       TagSubscription.create(:tag_id => tag.id, :user_id => users(:aaron).id)
 
-      tags = Tag.find_all_with_count(:order => "tags.name", :subscribed_by => users(:aaron))
+      tags = Tag.search(:order => "tags.name", :subscribed_by => users(:aaron))
       assert_equal 1, tags.size
       assert_equal 'tag', tags[0].name
       assert_equal 0, tags[0].positive_count.to_i
@@ -116,16 +116,16 @@ describe Tag do
       tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "Another Tag", :comment => "The second best tag ever")
       tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
     
-      tags = Tag.find_all_with_count(:search_term => "ever")
+      tags = Tag.search(:text_filter => "ever", :order => "id")
       tags.should == [tag_1, tag_2, tag_3]
     
-      tags = Tag.find_all_with_count(:search_term => "world")
+      tags = Tag.search(:text_filter => "world")
       tags.should == [tag_1]
     
-      tags = Tag.find_all_with_count(:search_term => "second")
+      tags = Tag.search(:text_filter => "second")
       tags.should == [tag_2]
     
-      tags = Tag.find_all_with_count(:search_term => "man")
+      tags = Tag.search(:text_filter => "man")
       tags.should == [tag_3]
     end
   
@@ -137,7 +137,7 @@ describe Tag do
       tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :public => true, :name => "Another Tag", :comment => "The second best tag ever")
       tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
     
-      tags = Tag.find_all_with_count(:search_term => "ever", :conditions => { :public => true })
+      tags = Tag.search(:text_filter => "ever", :conditions => { :public => true }, :order => "id")
       tags.should == [tag_1, tag_2]
     end
   
