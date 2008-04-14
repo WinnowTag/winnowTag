@@ -707,13 +707,13 @@ a.editor_cancel {
   margin-left: 5px;
 }
 
-#footer #feed_item_count {
+#footer .count {
   float: right;
 }
 
-#footer #feed_items_indicator {
-  float: left;
-  background: url(../images/indicator.gif) center left no-repeat;
+#footer .loading {
+  float: right;
+  background: url(../images/indicator.gif) top left no-repeat;
   padding-left: 20px;
   margin-left: 1em;
 }

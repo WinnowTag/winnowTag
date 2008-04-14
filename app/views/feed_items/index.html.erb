@@ -19,6 +19,6 @@
 		<%= image_submit_tag "next.png", :onclick => "itemBrowser.openNextItem();" %>
 		<%= image_submit_tag "mark_read.png", :onclick => "itemBrowser.markAllItemsRead();" %>
 	</span>
-	<span id="feed_items_indicator" style="display:none;"></span>
-	<span id="feed_items_count"></span>
+	<span id="feed_items_indicator" class="loading" style="display:none;"></span>
+	<span id="feed_items_count" class="count"></span>
 <% end -%>
