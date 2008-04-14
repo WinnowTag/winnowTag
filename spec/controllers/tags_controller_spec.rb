@@ -363,6 +363,50 @@ describe TagsController do
     end
   end
   
+  describe "DELETE" do
+    before(:each) do
+      mock_user_for_controller
+      @tag = mock_model(Tag, valid_tag_attributes(:public? => false, :user_id => @user.id))
+      @mock_tags = mock('tags')
+      @mock_tags.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
+      @mock_tags.stub!(:find).with(@tag.id.to_s).and_return(@tag)
+      @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
+      @user.stub!(:tags).and_return(@mock_tags)
+      User.stub!(:find_by_login).with(@user.login).and_return(@user)
+    end
+    
+    it "/tags/id" do
+      @tag.should_receive(:destroy)
+      delete :destroy, :id => @tag.id
+      response.should be_success
+    end
+    
+    it "/user/tags/name" do
+      @tag.should_receive(:destroy)
+      delete :destroy, :user => @user.login, :tag_name => @tag.name
+      response.code.should == "200"
+    end
+  
+    it "destroy_by_unused_tag" do
+      delete :destroy, :id => 999999999
+      response.code.should ==  "404"
+    end
+    
+    it "should prevent destruction of other user's tag" do
+      tags = mock('other_user_tags')
+      tag = mock_model(Tag, valid_tag_attributes(:public? => true))
+      tag.should_not_receive(:destroy)
+      tags.should_receive(:find_by_name).with(tag.name).and_return(tag)
+      other_user = mock_model(User, valid_user_attributes)
+      other_user.stub!(:tags).and_return(tags)
+      User.stub!(:find_by_login).with(other_user.login).and_return(other_user)
+      
+      delete :destroy, :user => other_user.login, :tag_name => tag.name
+      response.should_not be_success
+    end
+  end
+  
+  
   describe "from test/unit" do
     before(:each) do
       @tag = Tag(users(:quentin), 'tag')
@@ -451,46 +495,6 @@ describe TagsController do
       put :update, :id => old, :tag => {:name => 'new'}
       response.should be_success
       response.should render_template("merge.js.rjs")
-    end
-  
-    it "destroy_by_tag" do
-      login_as(:quentin)
-      user = users(:quentin)
-      to_destroy = Tag(user, 'to_destroy')
-      to_keep = Tag(user, 'to_keep')
-      user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(1))
-      user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(2))
-      user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(3))
-      keep = user.taggings.create(:tag => to_keep, :feed_item => FeedItem.find(1))
-    
-      assert_equal [@tag, to_destroy, to_keep], user.tags
-    
-      delete :destroy, :id => to_destroy
-      assert_response :success
-      assert_equal [@tag, to_keep], users(:quentin).tags(true)
-      assert_equal([@tagging, keep], user.taggings(true))
-    end
-  
-    it "destroy_by_tag_destroys_classifier_taggings" do
-      login_as(:quentin)
-      user = users(:quentin)
-      to_destroy = Tag(user, 'to_destroy')
-      to_keep = Tag(user, 'to_keep')
-    
-      user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(1))
-      user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(2), :classifier_tagging => true)
-      user.taggings.create(:tag => to_destroy, :feed_item => FeedItem.find(3), :classifier_tagging => true)
-      keep = user.taggings.create(:tag => to_keep, :feed_item => FeedItem.find(1), :classifier_tagging => true)
-    
-      delete :destroy, :id => to_destroy
-      assert_response :success
-      assert_equal [@tagging, keep], user.taggings(true)
-    end
-  
-    it "destroy_by_unused_tag" do
-      login_as(:quentin)
-      delete :destroy, :id => 999999999
-      assert_response 404
     end
 
     it "subscribe_to_public_tag    " do

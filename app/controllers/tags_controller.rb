@@ -20,7 +20,7 @@ class TagsController < ApplicationController
   skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
   before_filter :login_required_unless_local, :only => :index
   before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
-  before_filter :ensure_user_is_tag_owner, :only => :update
+  before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
   before_filter :ensure_user_is_tag_owner_unless_local, :only => :classifier_taggings
   
   def index
