@@ -8,20 +8,18 @@
 class UsersController < ApplicationController
   permit 'admin'
   before_filter :setup_user, :except => [:create, :new]
-  before_filter :setup_sortable_columns
   
   def index
-    options_for_search = { 
-      :q => params[:q], 
-      :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}"
-    }
-
+    # :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}"
     respond_to do |format|
-      format.html do
-        @users = User.search(options_for_search.merge(:per_page => 20, :page => params[:page]))
+      format.html
+      format.js do
+        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
+        @users, @users_count = User.search(:text_filter => params[:text_filter], :order => params[:order], 
+                                           :limit => limit, :offset => params[:offset], :count => true)
       end
       format.csv do
-        @users = User.search(options_for_search)
+        @users = User.search(:text_filter => params[:text_filter], :order => params[:order])
       end
     end
   end
@@ -64,15 +62,5 @@ private
     elsif params[:id]
       @user = User.find_by_login(params[:id])
     end
-  end
-
-  def setup_sortable_columns
-    add_to_sortable_columns('users', :field => 'login')
-    add_to_sortable_columns('users', :field => 'lastname, firstname', :alias => "name")
-    add_to_sortable_columns('users', :field => 'email')
-    add_to_sortable_columns('users', :field => 'logged_in_at')
-    add_to_sortable_columns('users', :field => 'last_accessed_at')
-    add_to_sortable_columns('users', :field => 'last_tagging_on')
-    add_to_sortable_columns('users', :field => 'tag_count')
   end
 end

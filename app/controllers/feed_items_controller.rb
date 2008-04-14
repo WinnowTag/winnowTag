@@ -10,8 +10,6 @@ class FeedItemsController < ApplicationController
   include ActionView::Helpers::TextHelper
   before_filter :login_required
   before_filter :update_access_time
-  DEFAULT_LIMIT = 40
-  MAX_LIMIT = 100
      
   # The Index action has two modes.  The normal mode which displays
   # positive user and classifier tagged items and the tag inspect mode

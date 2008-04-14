@@ -96,28 +96,37 @@ class User < ActiveRecord::Base
     def search(options = {})
       conditions, values = [], []
       
-      q = options.delete(:q)
-      unless q.blank?
+      unless options[:text_filter].blank?
         ored_conditions = []
         [:login, :email, :firstname, :lastname].each do |attribute|
           ored_conditions << "users.#{attribute} LIKE ?"
-          values          << "%#{q}%"
+          values          << "%#{options[:text_filter]}%"
         end
         conditions << "(" + ored_conditions.join(" OR ") + ")"
       end
       
-      conditions = conditions.empty? ? nil : [conditions.join(" AND "), *values]
-      
-      options_for_find = options.merge(
-        :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
-        :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
-        :conditions => conditions,
-        :group => "users.id")
-      
-      if options.has_key?(:page) or options.has_key?(:per_page)
-        paginate(options_for_find)
+      order = case options[:order]
+      when "login", "email", "logged_in_at", "last_accessed_at", "id"
+        "users.#{options[:order]}"
+      when "name"
+        "lastname, firstname"
+      when "last_tagging_on", "tag_count"
+        options[:order]
       else
-        find(:all, options_for_find)
+        "users.login"
+      end
+    
+      options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
+      
+      results = find(:all, options_for_find.merge(
+                     :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
+                     :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
+                     :order => order, :group => "users.id", :limit => options[:limit], :offset => options[:offset]))
+      
+      if options[:count]
+        [results, count(options_for_find)]
+      else
+        results
       end
     end
   end

@@ -17,6 +17,9 @@ class ApplicationController < ActionController::Base
   
   before_filter :login_from_cookie, :login_required
 
+  DEFAULT_LIMIT = 40
+  MAX_LIMIT = 100
+
 protected
   def check_atom
     render(:text => params[:atom_error].message, :status => 400) if params[:atom_error]

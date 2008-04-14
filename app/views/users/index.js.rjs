@@ -1,0 +1,8 @@
+page.call 'itemBrowser.hideLoadingIndicator'
+
+page.call "itemBrowser.setTotalItems", @users_count
+
+@users.each_with_index do |user, index|
+  page.call 'itemBrowser.insertItem', dom_id(user), params[:offset].to_i + index, 
+    render_to_string(:partial => 'user.html.erb', :locals => {:user => user})
+end

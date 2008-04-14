@@ -9,8 +9,6 @@
 # feed creation requests on to the collector using Remote::Feed.
 #
 class FeedsController < ApplicationController
-  DEFAULT_LIMIT = 40
-  MAX_LIMIT = 100
   FEED_NOT_FOUND = "We couldn't find this feed in any of our databases.  Maybe it has been deleted or " +
                    "never existed.  If you think this is an error, please contact us." unless defined?(FEED_NOT_FOUND)
   COLLECTOR_DOWN = "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. " +
@@ -30,7 +28,6 @@ class FeedsController < ApplicationController
                                            :count => true)
       end
     end
-
   end
   
   def new

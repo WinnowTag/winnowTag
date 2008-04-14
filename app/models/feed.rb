@@ -67,15 +67,10 @@ class Feed < ActiveRecord::Base
   end
   
   def self.search options = {}
-    joins = []
     conditions, values = ['duplicate_id is ?'], [nil]
     
-    if options[:subscribed_by]
-      joins << "INNER JOIN feed_subscriptions ON feeds.id = feed_subscriptions.feed_id AND feed_subscriptions.user_id = #{options[:subscribed_by].id}"
-    end
-    
     unless options[:text_filter].blank?
-      conditions << '(title LIKE ? OR alternate LIKE ?)'
+      conditions << '(feeds.title LIKE ? OR feeds.alternate LIKE ?)'
       values << "%#{options[:text_filter]}%" << "%#{options[:text_filter]}%"
     end
   
@@ -84,7 +79,6 @@ class Feed < ActiveRecord::Base
       select << "((SELECT COUNT(*) FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) > 0) AS globally_exclude"
     end
 
-  
     order = case options[:order]
     when "title", "updated_on", "feed_items_count"
       "feeds.#{options[:order]}"
@@ -94,14 +88,13 @@ class Feed < ActiveRecord::Base
       "feeds.title"
     end
     
-    results = find(:all, :select => select.join(","), :joins => joins.join(" "),
-                         :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
-                         :order => order, :group => "feeds.id",
-                         :limit => options[:limit], :offset => options[:offset])
+    options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
+    
+    results = find(:all, options_for_find.merge(:select => select.join(","), :order => order, :group => "feeds.id",
+                                                :limit => options[:limit], :offset => options[:offset]))
     
     if options[:count]
-      count = count(:joins => joins.join(" "), :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values])
-      [results, count]
+      [results, count(options_for_find)]
     else
       results
     end
