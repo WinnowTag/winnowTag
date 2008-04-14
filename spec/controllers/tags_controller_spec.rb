@@ -241,31 +241,35 @@ describe TagsController do
     
   describe "/classifier_taggings" do
     before(:each) do 
-      @tag = mock_model(Tag)
-      Tag.stub!(:find).with(@tag.id.to_s).and_return(@tag)
+      mock_user_for_controller
+      @tag = mock_model(Tag, :updated_on => Time.now, :name => 'atag', :public? => true, :user_id => @user.id)
+      @mock_tags = mock('tags')
+      @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
+      @user.stub!(:tags).and_return(@mock_tags)
+      User.stub!(:find_by_login).with("quentin").and_return(@user)
     end
     
     it "should return 400 without :atom" do
-      put :classifier_taggings, :id => @tag.id
+      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name
       response.code.should == "400"
     end
     
     it "should return 405 when not :put or :post" do
-      get :classifier_taggings, :id => @tag.id
+      get :classifier_taggings, :user => 'quentin', :tag_name => @tag.name
       response.code.should == "405"
     end
     
     it "should call @tag.create_taggings_from_atom with POST and return 201" do
       atom = mock('atom')
       @tag.should_receive(:create_taggings_from_atom).with(atom)
-      post :classifier_taggings, :id => @tag.id, :atom => atom
+      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => atom
       response.code.should == "204"
     end
     
     it "should call @tag.replace_taggings_from_atom with PUT and return 204" do
       atom = mock('atom')
       @tag.should_receive(:replace_taggings_from_atom).with(atom)
-      put :classifier_taggings, :id => @tag.id, :atom => atom
+      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => atom
       response.code.should =="204"
     end
   end

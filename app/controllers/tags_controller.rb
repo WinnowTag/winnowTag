@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => [:show, :index]
   before_filter :login_required_unless_local, :only => :index
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :classifier_taggings]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
   
   def index
     respond_to do |wants|
@@ -152,9 +152,7 @@ class TagsController < ApplicationController
     end
   end
   
-  def classifier_taggings
-    @tag = Tag.find(params[:id])
-    
+  def classifier_taggings    
     if !(request.post? || request.put?)
       render :status => "405", :nothing => true
     elsif params[:atom].nil?
