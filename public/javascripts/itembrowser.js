@@ -23,8 +23,6 @@ ItemBrowser.prototype = {
    *         scrollable div.
    *
    *  @param options A hash of options.  Supported options are:
-   *         - pruning_threshold: The number of items that can be loaded into
-   *                              the browser before pruning occurs.
    *         - update_threshold: The minimum number of items that will be fetched in
    *                             an update for that update to occur.
    *
@@ -33,7 +31,6 @@ ItemBrowser.prototype = {
     ItemBrowser.instance = this;
     
     this.options = {
-      pruning_threshold: 500,
       update_threshold: 8,
       controller: container,
       url: container
@@ -199,16 +196,10 @@ ItemBrowser.prototype = {
   /** This function is responsible for determining which items to fetch
    *  from the server and invoking doUpdate with those parameters.
    * 
-   *  In it's normal mode, updateItems accepts an offset parameter as one
+   *  updateItems accepts an offset parameter as one
    *  of the options.  This parameter is interpreted as the position of the
    *  top of the scroll viewport, it then attempts to gets item to cover the
    *  previous half page, the current page and the first half of the next page.
-   *
-   *  The second mode is the incremental mode, which currently uses the explicit
-   *  offset and limit specified in the arguments.  Also in the incremental mode
-   *  if the number of items currently loaded is greater than the pruning_threshold,
-   *  no items will be fetched, just the counts are updatd, i.e. the total_items 
-   *  and the tag count filters.
    */
   updateItems: function(options) {
     if (this.loading) {
@@ -218,18 +209,12 @@ ItemBrowser.prototype = {
     
     var update_options = Object.clone(options);
     
-    if (options && options.incremental && this.items.length >= this.options.pruning_threshold) {
-      update_options.count_only = true;
-      // Set loading to false because this request won't trigger an item load
-      this.loading = false;
-    }
-    
     var do_update = false;
     // This is the standard update method.
     //
     // Start half a page ahead and behind the current page and 
     // 'squeeze' in until we have a set of items to load.     
-    if (update_options && !(update_options.incremental || update_options.count_only)) {
+    if (update_options) {
       var items_in_view = this.numberOfItemsInView();
       // The raw_offset is the item half a page behind the current page
       var raw_offset = Math.floor(options.offset - (items_in_view / 2));
@@ -252,10 +237,8 @@ ItemBrowser.prototype = {
       }      
     }
         
-    if (do_update || update_options.incremental) {
-      if (!update_options.count_only) {
-        this.showLoadingIndicator();
-      }
+    if (do_update) {
+      this.showLoadingIndicator();
       this.doUpdate(update_options);
     } else {
       this.loading = false;
@@ -268,9 +251,7 @@ ItemBrowser.prototype = {
     new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
       onComplete: function() {
         this.updateCount();
-        if (!options.count_only) {
-          this.hideLoadingIndicator();
-        }
+        this.hideLoadingIndicator();
         this.loading = false;
         this.updateFromQueue();
       }.bind(this)
@@ -383,59 +364,6 @@ ItemBrowser.prototype = {
     }
   },
   
-  /** Inserts a item in it's correct position.
-   *
-   *  This function is used during the incremental update process to ensure that items
-   *  which come in during classification are placed in the correct order.  Ordering is done
-   *  by the position attribute.
-   */
-  insertInOrder: function(item_id, position, content) {    
-    if (!this.items[item_id] && this.items.length == 0) {
-      new Insertion.Top(this.container, content);
-      this.items.insert(0, item_id, position, $(item_id));
-    } else if (!this.items[item_id]) {
-      var inserted = false;
-      var skippedOver = null;
-      
-      for (var i = this.items.length - 1; i >= 0; i--) {
-        if (!this.items[i]) {
-          skippedOver = i;          
-        } else if (this.items[i].position >= position) {
-          inserted = true;              
-          if (skippedOver) {
-            this.removeEmptySpaceAt(skippedOver);
-          }
-          new Insertion.After(this.items[i].element, content);
-          this.items.insert(i + 1, item_id, position, this.items[i].element.next());  
-          break;
-        } 
-      }
-      
-      if (!inserted) {
-        if (skippedOver) {
-          this.removeEmptySpaceAt(skippedOver);
-        }
-        new Insertion.Before(this.items[0].element, content);
-        this.items.insert(0, item_id, position, $(item_id));
-
-      }            
-    }
-    
-    this.updateInitialSpacer();
-  },
-
-  removeEmptySpaceAt: function(index) {
-    if (this.items[index - 1]) {
-      var space = this.items[index - 1].element.nextSiblings().first();
-      if (space) {
-        space.setStyle({height: space.getHeight() - this.itemHeight() + 'px'});
-      }
-    }
-    
-    this.items.splice(index, 1);
-  },
-
-  /** Clears all the items. */
   clear: function() {
     this.container.update('');
     this.selectedItem = null;
