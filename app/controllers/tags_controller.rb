@@ -93,13 +93,6 @@ class TagsController < ApplicationController
       render :nothing => true
     end
   end
-  
-  def edit
-    respond_to do |wants|
-      wants.html
-      wants.js { headers['Content-Type'] = 'text/html'; render :partial => 'form' }
-    end
-  end
 
   # Rename, or change the comment on a tag.
   #

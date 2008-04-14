@@ -576,32 +576,5 @@ describe TagsController do
       get :index
       assert_response :success
     end
-  
-    it "edit_with_funny_name_tag" do
-      tag_dot = Tag(users(:quentin), 'tag.')
-      Tagging.create(:user => users(:quentin), :tag => tag_dot, :feed_item => FeedItem.find(1))
-      get :edit, :id => tag_dot
-      assert_response :success
-    end
-  
-    it "edit" do
-      get :edit, :id => @tag
-      assert assigns(:tag)
-      assert_template 'edit'
-    end
-  
-    it "edit_with_missing_tag" do
-      get :edit, :id => 'missing'
-      assert_response 404
-    end
-  
-    it "edit_with_js" do
-      get :edit, :id => @tag, :format => :js
-      assert assigns(:tag)
-      # TODO: Move to view test
-      # assert_select "html", false
-      # assert_select "form[action='#{tag_path(@tag)}']", 1, @response.body
-    end
-  
   end
 end
