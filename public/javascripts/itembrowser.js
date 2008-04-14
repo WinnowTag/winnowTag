@@ -202,9 +202,8 @@ ItemBrowser.prototype = {
    *  previous half page, the current page and the first half of the next page.
    */
   updateItems: function(options) {
-    if (this.loading) {
-      return;
-    }
+    if(this.items.compact().length == this.total_items) { return; }
+    if(this.loading)                                    { return; }
     this.loading = true;
     
     var update_options = Object.clone(options);
