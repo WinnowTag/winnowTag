@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => [:show, :index]
   before_filter :login_required_unless_local, :only => :index
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training, :classifier_taggings]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :classifier_taggings]
   
   def index
     respond_to do |wants|
@@ -41,19 +41,13 @@ class TagsController < ApplicationController
   end
   
   def show
-    user = User.find_by_login(params[:user_id])
-
-    if user and @tag = user.tags.find_by_id(params[:id])
-      respond_to do |wants|
-        wants.atom do        
-          conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
-            atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
-            render :xml => atom.to_xml
-          end
+    respond_to do |wants|
+      wants.atom do        
+        conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
+          atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
+          render :xml => atom.to_xml
         end
       end
-    else
-      render :text => "#{params[:id]} has not been published by #{params[:user_id]}", :status => 404
     end
   end
 
@@ -106,6 +100,9 @@ class TagsController < ApplicationController
   end
 
   # Merge, rename, or change the comment on a tag.
+  #
+  # TODO: This is way too overloaded it should be broken out into smaller methods.
+  #
   def update
     if @name = params[:tag][:name]
       if (merge_to = current_user.tags.find_by_name(@name)) && (merge_to != @tag)
@@ -143,13 +140,12 @@ class TagsController < ApplicationController
   end
   
   def training
-    tag = Tag.find(params[:id])    
     base_uri = "http://#{request.host}:#{request.port}"
     
     respond_to do |wants|
       wants.atom do
-        conditional_render(tag.updated_on) do
-          atom = tag.to_atom(:training_only => true, :base_uri => base_uri)
+        conditional_render(@tag.updated_on) do
+          atom = @tag.to_atom(:training_only => true, :base_uri => base_uri)
           render :text => atom.to_xml
         end
       end
@@ -259,8 +255,22 @@ class TagsController < ApplicationController
   
 private
   def find_tag
-    @tag = current_user.tags.find_by_id(params[:id])    
-    render :status => 404, :text => "#{params[:id]} not found." unless @tag
+    if params[:user] && params[:tag_name]
+      @user = User.find_by_login(params[:user])
+      unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
+        render :status => 404, :text => "#{params[:user]} and no tag '#{params[:tag_name]}'."      
+      end
+    elsif params[:id]
+      begin
+        @tag = current_user.tags.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render :status => 404, :text => "Tag with id #{params[:id]} not found."
+      end
+    end
+    
+    if @tag && !@tag.public? && (current_user.nil? || @tag.user_id != current_user.id)
+      render :status => 403, :text => "You don't have permission to view this tag."
+    end
   end
   
   def setup_sortable_columns

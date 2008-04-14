@@ -15,7 +15,7 @@ shared_examples_for 'conditional GET of tag' do
     @tag.should_receive(:to_atom).never
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
   
-    get @action, :id => @tag.id, :user_id => 'quentin'
+    get @action, :tag_name => @tag.name, :user => 'quentin'
     response.code.should == '304'
   end
 
@@ -23,7 +23,7 @@ shared_examples_for 'conditional GET of tag' do
     @tag.stub!(:last_classified_at).and_return(Time.now.yesterday.yesterday)
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
   
-    get @action, :id => @tag.id, :user_id => 'quentin'
+    get @action, :tag_name => @tag.name, :user => 'quentin'
     response.should be_success
   end
 end
@@ -142,19 +142,13 @@ describe TagsController do
     before(:each) do
       @action = "show" # for 'conditional GET of tag'
       mock_user_for_controller
-      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now)
+      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true, :user_id => 1)
       @tag.stub!(:to_atom).and_return(Atom::Feed.new)
-      @tags.stub!(:find_by_id).and_return(@tag)
       @mock_tags = mock('tags')
-      @mock_tags.stub!(:find_by_id).and_return(@tag)
+      @mock_tags.stub!(:find_by_name).and_return(nil)
+      @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
       @user.stub!(:tags).and_return(@mock_tags)
-      User.stub!(:find_by_login).and_return(@user)
-    end
-  
-    it "should update the tag's bias" do
-      @tag.should_receive(:update_attribute).with(:bias, 1.2)
-      put "update", :id => 1, :tag => {:bias => 1.2}
-      response.should be_success
+      User.stub!(:find_by_login).with('quentin').and_return(@user)
     end
   
     it_should_behave_like 'conditional GET of tag'
@@ -163,7 +157,7 @@ describe TagsController do
       @tag.stub!(:updated_on).and_return(Time.now.yesterday.yesterday)
       request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
     
-      get "show", :id => 1, :user_id => 'quentin'
+      get "show", :tag_name => @tag.name, :user => 'quentin'
       response.should be_success
     end
     
@@ -184,41 +178,61 @@ describe TagsController do
 
     it "atom_feed_with_missing_tag_returns_404" do
       @mock_tags.stub!(:find_by_id).with("missing").and_return(nil)
-      get :show, :user_id => users(:quentin).login, :id => "missing", :format => "atom"
+      get :show, :user => users(:quentin).login, :tag_name => "missing", :format => "atom"
       response.code.should == "404"
     end
 
-    it "anyone_can_access_feeds" do
+    it "anyone can access feeds if the tag is public" do
+      @tag.stub!(:public?).and_return(true)
       login_as(nil)
-      get :show, :user_id => 'quentin', :id => 1, :format => "atom"
+      get :show, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
       response.should be_success
+    end
+    
+    it "should prevent anyone accessing private tags" do
+      @tag.stub!(:public?).and_return(false)
+      login_as(nil)
+      get :show, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+      response.code.should == "403"
+    end
+    
+    it "should allow the owner to access private tags" do
+      @tag.stub!(:public?).and_return(false)
+      login_as(:quentin)
+      get :show, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+      response.code.should == "403"
     end
   end
   
   describe "GET training" do
     before(:each) do
       @action = "training" # for 'conditional GET of tag'
-      @tag = mock_model(Tag, :updated_on => Time.now)    
+      mock_user_for_controller
+      @tag = mock_model(Tag, :updated_on => Time.now, :name => 'atag', :public? => true)    
       Tag.stub!(:find).with(@tag.id.to_s).and_return(@tag)
       @tag.stub!(:to_atom).and_return(Atom::Feed.new)
+      @mock_tags = mock('tags')
+      @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
+      @user.stub!(:tags).and_return(@mock_tags)
+      User.stub!(:find_by_login).with("quentin").and_return(@user)
     end
     
     it "should call to_atom with :training_only => true" do      
       @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
-      get :training, :id => @tag.id
+      get :training, :user => 'quentin', :tag_name => @tag.name
       response.should be_success
     end
     
     it "should set the content type to application/atom+xml" do
       @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
-      get :training, :id => @tag.id, :format => 'atom'
+      get :training, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
       response.should be_success
       response.content_type.should == "application/atom+xml"
     end
     
     it "should set the Last-Modified header" do
       @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
-      get :training, :id => @tag.id
+      get :training, :user => 'quentin', :tag_name => @tag.name
       response.headers['Last-Modified'].should_not be_nil
     end
     
@@ -253,6 +267,30 @@ describe TagsController do
       @tag.should_receive(:replace_taggings_from_atom).with(atom)
       put :classifier_taggings, :id => @tag.id, :atom => atom
       response.code.should =="204"
+    end
+  end
+  
+  describe "PUT /tags/id" do
+    before(:each) do
+      mock_user_for_controller
+      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true)
+      @mock_tags = mock('tags')
+      @mock_tags.stub!(:find).with(@tag.id.to_s).and_return(@tag)
+      @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
+      @user.stub!(:tags).and_return(@mock_tags)
+      User.stub!(:find_by_login).and_return(@user)
+    end
+    
+    it "should update the tag's bias" do
+      @tag.should_receive(:update_attribute).with(:bias, 1.2)
+      put "update", :id => @tag.id, :tag => {:bias => 1.2}
+      response.should be_success
+    end
+    
+    it "should update the tag's bias via /:user/tags/:tag_name request" do
+      @tag.should_receive(:update_attribute).with(:bias, 1.2)
+      put "update", :user => 'quentin', :tag_name => @tag.name, :tag => {:bias => 1.2}
+      response.should be_success
     end
   end
   
