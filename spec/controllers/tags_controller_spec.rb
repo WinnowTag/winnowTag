@@ -406,6 +406,103 @@ describe TagsController do
     end
   end
   
+  describe 'PUT subscribe' do
+    it "subscribe_to_public_tag    " do
+      other_user = users(:aaron)
+
+      tag = Tag(other_user, 'hockey')
+      tag.update_attribute :public, true
+    
+      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+    
+      put :subscribe, :id => tag, :subscribe => "true"
+    
+      assert_response :success
+    end
+    
+    # SG: This test ensures that the user's public tag is actually the one that is subscribed to.
+    #     It also exposes the fact that sending only the name of the tag as the parameter is not
+    #     sufficient, it also needs the name of the user since tags are only unique for a user.
+    #     In fact it probably makes sense to use the public_tag route to call subscribe.
+    it "subscribe_to_other_users_tag_with_same_name" do
+      other_user = users(:aaron)
+      tag = Tag(other_user, 'tag')
+      tag.update_attribute :public, true
+    
+      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+    
+      put :subscribe, :id => tag, :subscribe => "true"
+    
+      assert_response :success
+    end
+
+    # SG: This ensures that only public tags can be subscribed to.
+    it "cant_subscribe_to_other_users_non_public_tags" do
+      other_user = users(:aaron)
+      tag = Tag(other_user, 'hockey')
+      tag.update_attribute :public, false
+
+      assert_no_difference("TagSubscription.count") do
+        put :subscribe, :id => tag, :subscribe => "true"
+      end
+    
+      assert_response :success 
+    end
+  
+    # Test how unsubscribing as implemented on the "Public Tags" page
+    it "unsubscribe_from_public_tag_via_subscribe_action" do
+      other_user = users(:aaron)
+
+      tag = Tag(other_user, 'hockey')
+      tag.update_attribute :public, true
+    
+      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+    
+      put :subscribe, :id => tag, :subscribe => "false"
+    
+      assert_response :success
+    end
+
+    # Test unsubscribing as implemented on the "My Tags" page
+    it "unsubscribe_from_public_tag_via_unsubscribe_action" do
+      referer("/tags")
+      other_user = users(:aaron)
+
+      tag = Tag(other_user, 'hockey')
+      tag.update_attribute :public, true
+
+      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
+      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
+
+      put :unsubscribe, :id => tag
+
+      assert_response :redirect
+    end
+  end
+  
+  describe 'sidebar' do
+    # Test unsubscribing as implemented on the "My Tags" page
+    it "sidebar - false" do
+      tag = Tag(users(:quentin), 'hockey')
+
+      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
+
+      put :sidebar, :id => tag, :sidebar => "false"
+
+      assert_response :success
+    end
+
+    # Test unsubscribing as implemented on the "My Tags" page
+    it "sidebar - true" do
+      tag = Tag(users(:quentin), 'hockey')
+
+      Folder.should_not_receive(:remove_tag)
+
+      put :sidebar, :id => tag, :sidebar => "true"
+
+      assert_response :success
+    end
+  end
   
   describe "from test/unit" do
     before(:each) do
@@ -495,100 +592,6 @@ describe TagsController do
       put :update, :id => old, :tag => {:name => 'new'}
       response.should be_success
       response.should render_template("merge.js.rjs")
-    end
-
-    it "subscribe_to_public_tag    " do
-      other_user = users(:aaron)
-
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, true
-    
-      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-    
-      put :subscribe, :id => tag, :subscribe => "true"
-    
-      assert_response :success
-    end
-  
-    # Test how unsubscribing as implemented on the "Public Tags" page
-    it "unsubscribe_from_public_tag_via_subscribe_action" do
-      other_user = users(:aaron)
-
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, true
-    
-      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-    
-      put :subscribe, :id => tag, :subscribe => "false"
-    
-      assert_response :success
-    end
-
-    # Test unsubscribing as implemented on the "My Tags" page
-    it "unsubscribe_from_public_tag_via_unsubscribe_action" do
-      referer("/tags")
-      other_user = users(:aaron)
-
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, true
-
-      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
-
-      put :unsubscribe, :id => tag
-
-      assert_response :redirect
-    end
-  
-    # SG: This test ensures that the user's public tag is actually the one that is subscribed to.
-    #     It also exposes the fact that sending only the name of the tag as the parameter is not
-    #     sufficient, it also needs the name of the user since tags are only unique for a user.
-    #     In fact it probably makes sense to use the public_tag route to call subscribe.
-    it "subscribe_to_other_users_tag_with_same_name" do
-      other_user = users(:aaron)
-      tag = Tag(other_user, 'tag')
-      tag.update_attribute :public, true
-    
-      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-    
-      put :subscribe, :id => tag, :subscribe => "true"
-    
-      assert_response :success
-    end
-
-    # SG: This ensures that only public tags can be subscribed to.
-    it "cant_subscribe_to_other_users_non_public_tags" do
-      other_user = users(:aaron)
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, false
-
-      assert_no_difference("TagSubscription.count") do
-        put :subscribe, :id => tag, :subscribe => "true"
-      end
-    
-      assert_response :success 
-    end
-
-    # Test unsubscribing as implemented on the "My Tags" page
-    it "sidebar - false" do
-      tag = Tag(users(:quentin), 'hockey')
-
-      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
-
-      put :sidebar, :id => tag, :sidebar => "false"
-
-      assert_response :success
-    end
-
-    # Test unsubscribing as implemented on the "My Tags" page
-    it "sidebar - true" do
-      tag = Tag(users(:quentin), 'hockey')
-
-      Folder.should_not_receive(:remove_tag)
-
-      put :sidebar, :id => tag, :sidebar => "true"
-
-      assert_response :success
-    end
+    end    
   end
 end
