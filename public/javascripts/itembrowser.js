@@ -34,7 +34,9 @@ ItemBrowser.prototype = {
     
     this.options = {
       pruning_threshold: 500,
-      update_threshold: 8
+      update_threshold: 8,
+      controller: container,
+      url: container
     };
     Object.extend(this.options, options || {});
     
@@ -57,8 +59,8 @@ ItemBrowser.prototype = {
     
     this.auto_completers = {};
 
-    if(location.hash.gsub('#', '').blank() && Cookie.get(this.container.getAttribute("id") + "filters")) {
-      this.setFilters(Cookie.get(this.container.getAttribute("id") + "filters").toQueryParams());
+    if(location.hash.gsub('#', '').blank() && Cookie.get(this.container.getAttribute("id") + "_filters")) {
+      this.setFilters(Cookie.get(this.container.getAttribute("id") + "_filters").toQueryParams());
     } else {
       this.setFilters(location.hash.gsub('#', '').toQueryParams());
     }
@@ -184,7 +186,7 @@ ItemBrowser.prototype = {
   
   /** Creates the update URL from a list of options. */
   buildUpdateURL: function(parameters) {
-    return '/' + this.container.getAttribute('id') + '?' + $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters)).toQueryString();
+    return '/' + this.options.url + '?' + $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters)).toQueryString();
   },
   
   updateFromQueue: function() {
@@ -462,7 +464,7 @@ ItemBrowser.prototype = {
     if(sidebar) {
       sidebar.addClassName("loading");
 
-      new Ajax.Updater("sidebar", "/" + this.container.getAttribute("id") + "/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
+      new Ajax.Updater("sidebar", "/" + this.options.controller + "/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
         onComplete: function() {
           sidebar.removeClassName("loading");
           AppleSearch.setup();
@@ -581,7 +583,7 @@ ItemBrowser.prototype = {
     this.styleFilters();
     
     // Store filters for page reload
-    Cookie.set(this.container.getAttribute("id") + "filters", new_parameters.toQueryString(), 365);
+    Cookie.set(this.container.getAttribute("id") + "_filters", new_parameters.toQueryString(), 365);
     
     // Reload the item browser
     this.reload();
@@ -868,14 +870,14 @@ ItemBrowser.prototype = {
     item = $(item);
     item.addClassName('read');
     item.removeClassName('unread');
-    new Ajax.Request('/' + this.container.getAttribute('id') + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_read', {method: 'put'});
+    new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_read', {method: 'put'});
   },
   
   markItemUnread: function(item) {
     item = $(item);
     item.addClassName('unread'); 
     item.removeClassName('read');    
-    new Ajax.Request('/' + this.container.getAttribute('id') + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_unread', {method: 'put'});
+    new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_unread', {method: 'put'});
   },
   
   toggleReadUnreadItem: function(item) {
@@ -895,7 +897,7 @@ ItemBrowser.prototype = {
   
   markAllItemsRead: function() {
     $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
-    new Ajax.Request('/' + this.container.getAttribute('id') + '/mark_read', {method: 'put'});
+    new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
   },
   
   scrollToItem: function(item) {
