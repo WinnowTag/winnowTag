@@ -121,6 +121,13 @@ describe TagsController do
     end
   end
   
+  describe 'GET /' do
+    it "index" do
+      get :index
+      assert assigns(:tags)    
+    end
+  end
+  
   describe "index with Accept: application/atomsvc+xml" do
     before(:each) do
       Tag.stub!(:maximum).with(:created_on).and_return(Time.now)
@@ -545,36 +552,5 @@ describe TagsController do
       assert_redirected_to tags_path
       assert users(:quentin).tags.find_by_name('new')
     end    
-  end
-  
-  describe "from test/unit" do
-    before(:each) do
-      @tag = Tag(users(:quentin), 'tag')
-      @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))
-    end
-
-    # it "routing" do
-    #   assert_routing('/tags/atag', :controller => 'tags', :action => 'show', :id => 'atag')
-    #   assert_routing('/tags/my+tag', :controller => 'tags', :action => 'show', :id => 'my tag')
-    #   assert_routing('/tags/edit/my+tag.', :controller => 'tags', :action => 'edit', :id => 'my tag.')
-    # end
-  
-    it "index" do
-      get :index
-      assert assigns(:tags)
-      assert_equal(@tag, assigns(:tags).first)
-      # TODO: Move this to a view test
-      # assert_select "tr##{dom_id(@tag)}", 1
-      # assert_select "tr##{dom_id(@tag)} td:nth-child(1)", /tag.*/
-      # assert_select "tr##{dom_id(@tag)} td:nth-child(5)", "1 / 0"
-      # assert_select "tr##{dom_id(@tag)} td:nth-child(6)", "0"
-    end
-  
-    # TODO - Tags with periods on the end break routing until Rails 1.2.4?
-    it "index_with_funny_name_tag" do
-      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'tag.'), :feed_item => FeedItem.find(1))
-      get :index
-      assert_response :success
-    end
   end
 end
