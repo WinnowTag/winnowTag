@@ -28,6 +28,37 @@ shared_examples_for 'conditional GET of tag' do
   end
 end
 
+shared_examples_for 'tag access controls' do
+  it "anyone can access feeds if the tag is public" do
+    @tag.stub!(:public?).and_return(true)
+    login_as(nil)
+    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    response.should be_success
+  end
+  
+  it "should prevent anyone accessing private tags" do
+    @tag.stub!(:public?).and_return(false)
+    login_as(nil)
+    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    response.code.should == "401"
+  end
+  
+  it "should allow the owner to access private tags" do
+    @tag.stub!(:public?).and_return(false)
+    login_as(:quentin)
+    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    response.code.should == "200"
+  end
+  
+  it "should allow local requests to access private tags regardless of login" do
+    @tag.stub!(:public?).and_return(false)
+    login_as(nil)
+    @controller.stub!(:local_request?).and_return(true)
+    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    response.code.should == "200"
+  end
+end
+
 describe TagsController do
   fixtures :users, :feed_items
 
@@ -136,13 +167,20 @@ describe TagsController do
       get :index, :format => 'atomsvc'
       response.code.should == "200"
     end
+    
+    it "should not require a login for local requests" do
+      login_as(nil)
+      @controller.stub!(:local_request?).and_return(true)
+      get :index, :format => 'atomsvc'
+      response.should be_success
+    end    
   end
   
   describe "show" do
     before(:each) do
       @action = "show" # for 'conditional GET of tag'
       mock_user_for_controller
-      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true, :user_id => 1)
+      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true, :user_id => @user.id)
       @tag.stub!(:to_atom).and_return(Atom::Feed.new)
       @mock_tags = mock('tags')
       @mock_tags.stub!(:find_by_name).and_return(nil)
@@ -152,6 +190,7 @@ describe TagsController do
     end
   
     it_should_behave_like 'conditional GET of tag'
+    it_should_behave_like 'tag access controls'
   
     it "should return 200 for show if last modified older than last classified" do
       @tag.stub!(:updated_on).and_return(Time.now.yesterday.yesterday)
@@ -181,34 +220,13 @@ describe TagsController do
       get :show, :user => users(:quentin).login, :tag_name => "missing", :format => "atom"
       response.code.should == "404"
     end
-
-    it "anyone can access feeds if the tag is public" do
-      @tag.stub!(:public?).and_return(true)
-      login_as(nil)
-      get :show, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
-      response.should be_success
-    end
-    
-    it "should prevent anyone accessing private tags" do
-      @tag.stub!(:public?).and_return(false)
-      login_as(nil)
-      get :show, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
-      response.code.should == "403"
-    end
-    
-    it "should allow the owner to access private tags" do
-      @tag.stub!(:public?).and_return(false)
-      login_as(:quentin)
-      get :show, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
-      response.code.should == "403"
-    end
   end
   
   describe "GET training" do
     before(:each) do
       @action = "training" # for 'conditional GET of tag'
       mock_user_for_controller
-      @tag = mock_model(Tag, :updated_on => Time.now, :name => 'atag', :public? => true)    
+      @tag = mock_model(Tag, :updated_on => Time.now, :name => 'atag', :public? => true, :user_id => @user.id)    
       Tag.stub!(:find).with(@tag.id.to_s).and_return(@tag)
       @tag.stub!(:to_atom).and_return(Atom::Feed.new)
       @mock_tags = mock('tags')
@@ -237,6 +255,7 @@ describe TagsController do
     end
     
     it_should_behave_like 'conditional GET of tag'
+    it_should_behave_like 'tag access controls'
   end
     
   describe "/classifier_taggings" do
@@ -247,6 +266,7 @@ describe TagsController do
       @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
       @user.stub!(:tags).and_return(@mock_tags)
       User.stub!(:find_by_login).with("quentin").and_return(@user)
+      @atom = mock('atom')
     end
     
     it "should return 400 without :atom" do
@@ -255,29 +275,67 @@ describe TagsController do
     end
     
     it "should return 405 when not :put or :post" do
-      get :classifier_taggings, :user => 'quentin', :tag_name => @tag.name
+      get :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
       response.code.should == "405"
     end
     
-    it "should call @tag.create_taggings_from_atom with POST and return 201" do
-      atom = mock('atom')
-      @tag.should_receive(:create_taggings_from_atom).with(atom)
-      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => atom
+    it "should call @tag.create_taggings_from_atom with POST and return 201" do      
+      @tag.should_receive(:create_taggings_from_atom).with(@atom)
+      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
       response.code.should == "204"
     end
     
     it "should call @tag.replace_taggings_from_atom with PUT and return 204" do
-      atom = mock('atom')
-      @tag.should_receive(:replace_taggings_from_atom).with(atom)
-      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => atom
+      @tag.should_receive(:replace_taggings_from_atom).with(@atom)
+      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
       response.code.should =="204"
+    end
+    
+    it "should not allow POST from other user" do
+      @tag.stub!(:user_id).and_return(@user.id + 1)
+      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      response.code.should == "401"
+    end
+    
+    it "should not allow POST when not logged in" do
+      login_as(nil)
+      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      response.code.should == "401"
+    end
+    
+    it "should not allow PUT from other user" do
+      @tag.stub!(:user_id).and_return(@user.id + 1)
+      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      response.code.should == "401"
+    end
+    
+    it "should not allow PUT when not logged in" do
+      login_as(nil)
+      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      response.code.should == "401"
+    end
+    
+    it "should allow POST when not logged in if the request is local" do
+      login_as(nil)
+      @controller.stub!(:local_request?).and_return(true)
+      @tag.should_receive(:create_taggings_from_atom).with(@atom)
+      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
+      response.code.should == "204"
+    end
+    
+    it "should allow PUT when not logged in if the request is local" do
+      login_as(nil)
+      @controller.stub!(:local_request?).and_return(true)
+      @tag.should_receive(:replace_taggings_from_atom).with(@atom)
+      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
+      response.code.should == "204"
     end
   end
   
   describe "PUT /tags/id" do
     before(:each) do
       mock_user_for_controller
-      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true)
+      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true, :user_id => @user.id)
       @mock_tags = mock('tags')
       @mock_tags.stub!(:find).with(@tag.id.to_s).and_return(@tag)
       @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
@@ -295,6 +353,13 @@ describe TagsController do
       @tag.should_receive(:update_attribute).with(:bias, 1.2)
       put "update", :user => 'quentin', :tag_name => @tag.name, :tag => {:bias => 1.2}
       response.should be_success
+    end
+    
+    it "should not allow a logged in user to update someelse's tag" do
+      @tag.stub!(:user_id).and_return(@user.id + 1)
+      @tag.should_not_receive(:update_attribute).with(:bias, 1.2)
+      put "update", :user => 'quentin', :tag_name => @tag.name, :tag => {:bias => 1.2}
+      response.should_not be_success
     end
   end
   

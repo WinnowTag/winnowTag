@@ -17,9 +17,11 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  skip_before_filter :login_required, :only => [:show, :index]
+  skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
   before_filter :login_required_unless_local, :only => :index
   before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  before_filter :ensure_user_is_tag_owner, :only => :update
+  before_filter :ensure_user_is_tag_owner_unless_local, :only => :classifier_taggings
   
   def index
     respond_to do |wants|
@@ -266,9 +268,17 @@ private
       end
     end
     
-    if @tag && !@tag.public? && (current_user.nil? || @tag.user_id != current_user.id)
-      render :status => 403, :text => "You don't have permission to view this tag."
+    if @tag && !@tag.public? && !local_request? && (current_user.nil? || @tag.user_id != current_user.id)
+      access_denied
     end
+  end
+  
+  def ensure_user_is_tag_owner
+    access_denied if current_user.nil? || current_user.id != @tag.user_id
+  end
+  
+  def ensure_user_is_tag_owner_unless_local
+    ensure_user_is_tag_owner unless local_request?
   end
   
   def setup_sortable_columns
