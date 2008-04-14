@@ -62,7 +62,8 @@ ActionController::Routing::Routes.draw do |map|
                   :sidebar => :put,
                   :auto_complete_for_tag_name => :any,
                   :training => :get,
-                  :classifier_taggings => :any
+                  :classifier_taggings => :any,
+                  :merge => :put
                 }
   
   map.public_tag "tags/public/:user_id/:id", :controller => "tags", :action => "show"

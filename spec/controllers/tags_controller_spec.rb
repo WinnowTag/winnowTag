@@ -504,6 +504,49 @@ describe TagsController do
     end
   end
   
+  describe 'merge' do
+    it "tag_merging" do
+      old = Tag(users(:quentin), 'old')
+      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
+      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
+      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
+    
+      put :merge, :id => old, :tag => {:name => 'new'}, :merge => "true"
+      assert_redirected_to tags_path
+      assert_equal("'old' merged with 'new'", flash[:notice])
+    end
+  
+    it "renaming_when_merge_will_happen" do
+      old = Tag(users(:quentin), 'old')
+      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
+      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
+      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
+    
+      put :update, :id => old, :tag => {:name => 'new'}
+      response.should be_success
+      response.should render_template("merge.js.rjs")
+    end
+  end
+  
+  describe 'rename' do    
+    before(:each) do
+      @tag = Tag(users(:quentin), 'tag')
+      @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))
+    end
+    
+    it "tag_renaming_with_same_tag" do
+      put :update, :id => @tag, :tag => {:name => 'tag' }
+      assert_redirected_to tags_path
+      assert_equal([@tag], users(:quentin).tags)
+    end
+
+    it "rename the tag" do
+      put :update, :id => @tag, :tag => {:name => 'new'}
+      assert_redirected_to tags_path
+      assert users(:quentin).tags.find_by_name('new')
+    end    
+  end
+  
   describe "from test/unit" do
     before(:each) do
       @tag = Tag(users(:quentin), 'tag')
@@ -560,38 +603,5 @@ describe TagsController do
       # assert_select "form[action='#{tag_path(@tag)}']", 1, @response.body
     end
   
-    it "tag_renaming_with_same_tag" do
-      put :update, :id => @tag, :tag => {:name => 'tag' }
-      assert_redirected_to tags_path
-      assert_equal([@tag], users(:quentin).tags)
-    end
-  
-    it "tag_renaming" do
-      put :update, :id => @tag, :tag => {:name => 'new'}
-      assert_redirected_to tags_path
-      assert users(:quentin).tags.find_by_name('new')
-    end
-  
-    it "tag_merging" do
-      old = Tag(users(:quentin), 'old')
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
-      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
-    
-      put :update, :id => old, :tag => {:name => 'new'}, :merge => "true"
-      assert_redirected_to tags_path
-      assert_equal("'old' merged with 'new'", flash[:notice])
-    end
-  
-    it "renaming_when_merge_will_happen" do
-      old = Tag(users(:quentin), 'old')
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
-      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
-    
-      put :update, :id => old, :tag => {:name => 'new'}
-      response.should be_success
-      response.should render_template("merge.js.rjs")
-    end    
   end
 end

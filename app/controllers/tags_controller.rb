@@ -101,30 +101,22 @@ class TagsController < ApplicationController
     end
   end
 
-  # Merge, rename, or change the comment on a tag.
-  #
-  # TODO: This is way too overloaded it should be broken out into smaller methods.
+  # Rename, or change the comment on a tag.
   #
   def update
     if @name = params[:tag][:name]
-      if (merge_to = current_user.tags.find_by_name(@name)) && (merge_to != @tag)
-        if params[:merge] =~ /true/i
-          @tag.merge(merge_to)
-          flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
-        else
-          render :action => "merge.js.rjs"
-          return
-        end
+      if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
+        render :action => "merge.js.rjs"
       else
-        if @tag.update_attributes :name => @name
+        if @tag.update_attributes(:name => @name)
           flash[:notice] = "Tag Renamed"
         else
           flash[:error] = @tag.errors.full_messages.join('<br/>')
         end
-      end
-      respond_to do |format|
-        format.html { redirect_to tags_path }
-        format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
+        respond_to do |format|
+          format.html { redirect_to tags_path }
+          format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
+        end        
       end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
@@ -132,6 +124,18 @@ class TagsController < ApplicationController
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true
+    end
+  end
+  
+  def merge    
+    respond_to do |format|
+      if merge_to = current_user.tags.find_by_name(params[:tag][:name])
+        @tag.merge(merge_to)
+        flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
+      end
+      
+      format.html { redirect_to tags_path }
+      format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
     end
   end
 
