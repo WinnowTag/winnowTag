@@ -42,6 +42,13 @@ class TagsController < ApplicationController
     end
   end
   
+  def public
+    @search_term = params[:search_term]
+    setup_sortable_columns
+    @tags = Tag.find_all_with_count(:search_term => @search_term, :conditions => ["tags.public = ?", true], :subscriber => current_user,
+                                    :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
+  end
+
   def show
     respond_to do |wants|
       wants.atom do        
@@ -198,13 +205,6 @@ class TagsController < ApplicationController
     render :nothing => true
   end
   
-  def public
-    @search_term = params[:search_term]
-    setup_sortable_columns
-    @tags = Tag.find_all_with_count(:search_term => @search_term, :conditions => ["tags.public = ?", true], :subscriber => current_user,
-                                    :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-  end
-
   def globally_exclude
     @tag = Tag.find(params[:id])
     if params[:globally_exclude] =~ /true/i
