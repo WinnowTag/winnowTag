@@ -41,7 +41,20 @@ describe TagsController do
       route_for(:controller => 'tags', :action => 'classifier_taggings', :user => 'bob', :tag_name => 'mytag', :format => 'atom').should == '/bob/tags/mytag/classifier_taggings.atom'
     end
     
+    # some funky tags
     
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'} to /bob/tags/my%20tag" do
+      route_for({:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'}).should == '/bob/tags/my%20tag'
+    end
+    
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.'} to /bob/tags/mytag." do
+      route_for({:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.'}).should == '/bob/tags/mytag.'
+    end
+    
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.', :format => 'atom} to /bob/tags/mytag..atom" do
+      route_for({:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.', :format => 'atom'}).should == '/bob/tags/mytag..atom'
+    end
+      
     # Maybe also support the old style
     it "should map { :controller => 'tags', :action => 'show', :id => 23} to /tags/23" do
       route_for(:controller => 'tags', :action => 'show', :id => 23).should == '/tags/23'
@@ -79,6 +92,20 @@ describe TagsController do
     
     it "should generate params { :controller => 'tags', :action => 'classifier_taggings', :user => 'bob', :tag_name => 'mytag', :format => 'atom'} from GET /bob/tags/mytag/classifier_taggings.atom" do
       params_from(:get, '/bob/tags/mytag/classifier_taggings.atom').should == { :controller => 'tags', :action => 'classifier_taggings', :user => 'bob', :tag_name => 'mytag', :format => 'atom'}
+    end
+    
+    # some funky tags
+    
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'} to /bob/tags/my%20tag" do
+      params_from(:get, '/bob/tags/my%20tag').should == {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'}
+    end
+    
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.'} to /bob/tags/mytag." do
+      params_from(:get, '/bob/tags/mytag.').should == {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.'}
+    end
+    
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.', :format => 'atom} to /bob/tags/mytag..atom" do
+      params_from(:get, '/bob/tags/mytag..atom').should == {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'mytag.', :format => 'atom'}
     end
         
     # Maybe also support the old style
