@@ -37,8 +37,19 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { 
                   :mark_read => :put,
                   :sidebar => :get
-                }
-
+                }                
+                
+  map.with_options :controller => "tags" do |tags_map|
+    tags_map.connect ":user/tags.:format", :action => 'index'
+    tags_map.connect ":user/tags", :action => 'index'
+    tags_map.with_options :requirements => {:tag_name => %r{[^/;,?]+}} do |tags_map|
+      tags_map.connect ":user/tags/:tag_name.:format", :action => 'show'
+      tags_map.connect ":user/tags/:tag_name", :action => 'show'
+      tags_map.connect ":user/tags/:tag_name/:action.:format"
+      tags_map.connect ":user/tags/:tag_name/:action"
+    end
+  end
+  
   map.resources :tags,
                 :collection => { 
                   :public => :get,
@@ -53,7 +64,8 @@ ActionController::Routing::Routes.draw do |map|
                   :sidebar => :put,
                   :auto_complete_for_tag_name => :any,
                   :training => :get,
-                  :classifier_taggings => :any
+                  :classifier_taggings => :any,
+                  :merge => :put
                 }
   
   map.public_tag "tags/public/:user_id/:id", :controller => "tags", :action => "show"

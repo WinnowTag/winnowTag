@@ -17,9 +17,11 @@
 #
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  skip_before_filter :login_required, :only => [:show, :index]
+  skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
   before_filter :login_required_unless_local, :only => :index
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training, :classifier_taggings]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
+  before_filter :ensure_user_is_tag_owner_unless_local, :only => :classifier_taggings
   
   def index
     respond_to do |wants|
@@ -41,19 +43,13 @@ class TagsController < ApplicationController
   end
   
   def show
-    user = User.find_by_login(params[:user_id])
-
-    if user and @tag = user.tags.find_by_id(params[:id])
-      respond_to do |wants|
-        wants.atom do        
-          conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
-            atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
-            render :xml => atom.to_xml
-          end
+    respond_to do |wants|
+      wants.atom do        
+        conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
+          atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
+          render :xml => atom.to_xml
         end
       end
-    else
-      render :text => "#{params[:id]} has not been published by #{params[:user_id]}", :status => 404
     end
   end
 
@@ -97,35 +93,23 @@ class TagsController < ApplicationController
       render :nothing => true
     end
   end
-  
-  def edit
-    respond_to do |wants|
-      wants.html
-      wants.js { headers['Content-Type'] = 'text/html'; render :partial => 'form' }
-    end
-  end
 
-  # Merge, rename, or change the comment on a tag.
+  # Rename, or change the comment on a tag.
+  #
   def update
     if @name = params[:tag][:name]
-      if (merge_to = current_user.tags.find_by_name(@name)) && (merge_to != @tag)
-        if params[:merge] =~ /true/i
-          @tag.merge(merge_to)
-          flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
-        else
-          render :action => "merge.js.rjs"
-          return
-        end
+      if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
+        render :action => "merge.js.rjs"
       else
-        if @tag.update_attributes :name => @name
+        if @tag.update_attributes(:name => @name)
           flash[:notice] = "Tag Renamed"
         else
           flash[:error] = @tag.errors.full_messages.join('<br/>')
         end
-      end
-      respond_to do |format|
-        format.html { redirect_to tags_path }
-        format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
+        respond_to do |format|
+          format.html { redirect_to tags_path }
+          format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
+        end        
       end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
@@ -133,6 +117,18 @@ class TagsController < ApplicationController
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true
+    end
+  end
+  
+  def merge    
+    respond_to do |format|
+      if merge_to = current_user.tags.find_by_name(params[:tag][:name])
+        @tag.merge(merge_to)
+        flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
+      end
+      
+      format.html { redirect_to tags_path }
+      format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
     end
   end
 
@@ -143,22 +139,19 @@ class TagsController < ApplicationController
   end
   
   def training
-    tag = Tag.find(params[:id])    
     base_uri = "http://#{request.host}:#{request.port}"
     
     respond_to do |wants|
       wants.atom do
-        conditional_render(tag.updated_on) do
-          atom = tag.to_atom(:training_only => true, :base_uri => base_uri)
+        conditional_render(@tag.updated_on) do
+          atom = @tag.to_atom(:training_only => true, :base_uri => base_uri)
           render :text => atom.to_xml
         end
       end
     end
   end
   
-  def classifier_taggings
-    @tag = Tag.find(params[:id])
-    
+  def classifier_taggings    
     if !(request.post? || request.put?)
       render :status => "405", :nothing => true
     elsif params[:atom].nil?
@@ -261,8 +254,30 @@ class TagsController < ApplicationController
   
 private
   def find_tag
-    @tag = current_user.tags.find_by_id(params[:id])    
-    render :status => 404, :text => "#{params[:id]} not found." unless @tag
+    if params[:user] && params[:tag_name]
+      @user = User.find_by_login(params[:user])
+      unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
+        render :status => 404, :text => "#{params[:user]} and no tag '#{params[:tag_name]}'."      
+      end
+    elsif params[:id]
+      begin
+        @tag = current_user.tags.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render :status => 404, :text => "Tag with id #{params[:id]} not found."
+      end
+    end
+    
+    if @tag && !@tag.public? && !local_request? && (current_user.nil? || @tag.user_id != current_user.id)
+      access_denied
+    end
+  end
+  
+  def ensure_user_is_tag_owner
+    access_denied if current_user.nil? || current_user.id != @tag.user_id
+  end
+  
+  def ensure_user_is_tag_owner_unless_local
+    ensure_user_is_tag_owner unless local_request?
   end
   
   def setup_sortable_columns

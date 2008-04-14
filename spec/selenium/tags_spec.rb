@@ -11,6 +11,41 @@ describe "Tags" do
     open tags_path
   end
   
+  describe 'merging' do
+    before(:each) do
+      @other = Tag.create!(:user_id => 1, :name => 'other')
+      open tags_path
+    end
+    
+    it "can merge two tags by changing their names" do
+      tag = Tag.find(1)
+      click "editor_tag_#{@other.id}"
+      
+      see_element("#editor_tag_#{@other.id}-inplaceeditor")
+      type "css=input.editor_field", tag.name
+      hit_enter "css=input.editor_field"
+      wait_for_ajax
+      get_confirmation
+      wait_for_page_to_load(30000)
+      dont_see_element "#editor_tag_#{@other.id}"
+    end
+  end
+  
+  it "can change the name of a tag" do
+    tag = Tag.find(1)
+    new_name = "#{tag.name}-renamed"
+    click "editor_tag_#{tag.id}"
+    
+    see_element("#editor_tag_#{tag.id}-inplaceeditor")
+    type "css=input.editor_field", new_name
+    hit_enter "css=input.editor_field"
+    wait_for_ajax
+    wait_for_page_to_load(30000)
+    see_element "#editor_tag_#{tag.id}"
+    tag.reload
+    tag.name.should == new_name
+  end
+  
   it "cant_change_bias_of_subscribed_tag" do
     initial_position = get_element_position_left "css=div.tag.public div.slider_handle"
     mouse_down "css=div.tag.public div.slider_handle"
