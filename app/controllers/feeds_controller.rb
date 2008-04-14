@@ -9,6 +9,8 @@
 # feed creation requests on to the collector using Remote::Feed.
 #
 class FeedsController < ApplicationController
+  DEFAULT_LIMIT = 40
+  MAX_LIMIT = 100
   FEED_NOT_FOUND = "We couldn't find this feed in any of our databases.  Maybe it has been deleted or " +
                    "never existed.  If you think this is an error, please contact us." unless defined?(FEED_NOT_FOUND)
   COLLECTOR_DOWN = "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. " +
@@ -17,10 +19,18 @@ class FeedsController < ApplicationController
   include ActionView::Helpers::TextHelper
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :flash_collection_job_result
-  before_filter :setup_sortable_columns, :only => :index
   
   def index
-    @presenter = FeedsPresenter.new(:current_user => current_user, :search_term => params[:search_term], :page => params[:page], :order => sortable_order('feeds', :field => 'title',:sort_direction => :asc))
+    respond_to do |format|
+      format.html
+      format.js do
+        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
+        @feeds, @feeds_count = Feed.search(:text_filter => params[:text_filter], :excluder => current_user, 
+                                           :order => params[:order], :limit => limit, :offset => params[:offset],
+                                           :count => true)
+      end
+    end
+
   end
   
   def new
@@ -139,13 +149,5 @@ class FeedsController < ApplicationController
     else
       render :nothing => true
     end
-  end
-  
-private
-  def setup_sortable_columns
-    add_to_sortable_columns('feeds', :field => 'title')
-    add_to_sortable_columns('feeds', :field => 'feed_items_count', :alias => 'item_count')
-    add_to_sortable_columns('feeds', :field => 'updated_on')
-    add_to_sortable_columns('feeds', :field => 'globally_exclude')
   end
 end

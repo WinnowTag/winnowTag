@@ -10,9 +10,6 @@ describe FeedsController do
     before(:each) do
       @user = User.create! valid_user_attributes
       login_as @user
-      
-      @presenter = stub("presenter")
-      FeedsPresenter.stub!(:new).and_return(@presenter)
     end
 
     def do_get(params = {})
@@ -28,18 +25,8 @@ describe FeedsController do
       do_get
       response.should render_template("index")
     end
-
-    it "assigns the presenter for the view" do
-      FeedsPresenter.should_receive(:new).with(:current_user => @user, :search_term => "Ruby", :page => "2", :order => "title ASC").and_return(@presenter)
-      do_get :search_term => "Ruby", :page => "2"
-      assigns[:presenter].should == @presenter
-    end
   end
-  
-  describe "#unsubscribe" do
     
-  end
-  
   describe "old specs" do
   
     before(:each) do

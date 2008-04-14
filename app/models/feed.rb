@@ -74,22 +74,37 @@ class Feed < ActiveRecord::Base
       joins << "INNER JOIN feed_subscriptions ON feeds.id = feed_subscriptions.feed_id AND feed_subscriptions.user_id = #{options[:subscribed_by].id}"
     end
     
-    unless options[:search_term].blank?
+    unless options[:text_filter].blank?
       conditions << '(title LIKE ? OR alternate LIKE ?)'
-      values << "%#{options[:search_term]}%" << "%#{options[:search_term]}%"
+      values << "%#{options[:text_filter]}%" << "%#{options[:text_filter]}%"
     end
   
     select = ["feeds.*"]
     if options[:excluder]
       select << "((SELECT COUNT(*) FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) > 0) AS globally_exclude"
     end
+
+  
+    order = case options[:order]
+    when "title", "updated_on", "feed_items_count"
+      "feeds.#{options[:order]}"
+    when "globally_exclude"
+      options[:order]
+    else
+      "feeds.title"
+    end
     
-    paginate(:select => select.join(","),
-             :joins => joins.join(" "),
-             :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
-             :page => options[:page],
-             :group => "feeds.id",
-             :order => options[:order])
+    results = find(:all, :select => select.join(","), :joins => joins.join(" "),
+                         :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
+                         :order => order, :group => "feeds.id",
+                         :limit => options[:limit], :offset => options[:offset])
+    
+    if options[:count]
+      count = count(:joins => joins.join(" "), :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values])
+      [results, count]
+    else
+      results
+    end
   end
   
   def self.find_by_url_or_link(url)
