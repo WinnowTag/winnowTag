@@ -748,7 +748,9 @@ ItemBrowser.prototype = {
   },
   
   removeTag: function(tag) {
-    this.options.tags = this.options.tags.without(tag)
+    if(this.options.tags) {
+      this.options.tags = this.options.tags.without(tag);
+    }
   },
 
   closeItemModerationPanel: function(item) {
