@@ -265,6 +265,8 @@ describe FeedsController do
     end
   
     describe "auto_complete_for_feed_title" do
+      fixtures :feeds
+      
       before(:each) do
         @user.stub!(:subscribed_feeds).and_return([])
       end
