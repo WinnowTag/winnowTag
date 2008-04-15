@@ -57,14 +57,23 @@ ItemBrowser.prototype = {
     Event.observe(this.scrollable, 'scroll', function() { self.scrollView(); });
     
     this.auto_completers = {};
+    
+    this.initializeFilters();
 
+    this.loadSidebar();    
+  },
+
+  initializeFilters: function() {
+    this.filters = {
+      order: this.options.default_order,
+      direction: this.options.default_direction
+    };
+    
     if(location.hash.gsub('#', '').blank() && Cookie.get(this.container.getAttribute("id") + "_filters")) {
       this.setFilters(Cookie.get(this.container.getAttribute("id") + "_filters").toQueryParams());
     } else {
       this.setFilters(location.hash.gsub('#', '').toQueryParams());
     }
-
-    this.loadSidebar();    
   },
   
   /** Called to initialize the internal list of items from the items loaded into the container.
@@ -185,7 +194,7 @@ ItemBrowser.prototype = {
   
   /** Creates the update URL from a list of options. */
   buildUpdateURL: function(parameters) {
-    return '/' + this.options.url + '?' + $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters)).toQueryString();
+    return '/' + this.options.url + '?' + $H(this.filters).merge($H(parameters)).toQueryString();
   },
   
   updateFromQueue: function() {
@@ -353,7 +362,7 @@ ItemBrowser.prototype = {
     if(sidebar) {
       sidebar.addClassName("loading");
 
-      new Ajax.Updater("sidebar", "/" + this.options.controller + "/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
+      new Ajax.Updater("sidebar", "/" + this.options.controller + "/sidebar", { method: 'get', parameters: this.filters, evalScripts: true,
         onComplete: function() {
           sidebar.removeClassName("loading");
           AppleSearch.setup();
@@ -413,7 +422,7 @@ ItemBrowser.prototype = {
   removeFilters: function(parameters) {
     this.expandFolderParameters(parameters);
     
-    var new_parameters = location.hash.gsub('#', '').toQueryParams();
+    var new_parameters = Object.clone(this.filters);
     if(parameters.feed_ids) {
       new_parameters.feed_ids = (new_parameters.feed_ids || "").split(",").reject(function(feed_id) {
         return parameters.feed_ids.split(",").include(feed_id);
@@ -429,66 +438,42 @@ ItemBrowser.prototype = {
   
   setFilters: function(parameters) {
     this.expandFolderParameters(parameters);
-
-    // Clear out any tag/feed ids
-    var old_parameters = $H(location.hash.gsub('#', '').toQueryParams());
-    old_parameters.unset("tag_ids");
-    old_parameters.unset("feed_ids");
-    if(old_parameters.keys().size() == 0) {
-      location.hash = " ";
-    } else {
-      location.hash = "#" + old_parameters.toQueryString();
-    }
-    
+    this.filters.tag_ids = null;
+    this.filters.feed_ids = null;
     this.addFilters(parameters);
   },
   
   addFilters: function(parameters) {
     this.expandFolderParameters(parameters);
 
-    // Update location.hash
-    var old_parameters = location.hash.gsub('#', '').toQueryParams();
-    if(old_parameters.tag_ids && parameters.tag_ids) {
-      var tag_ids = old_parameters.tag_ids.split(",");
+    if(this.filters.tag_ids && parameters.tag_ids) {
+      var tag_ids = this.filters.tag_ids.split(",");
       tag_ids.push(parameters.tag_ids.split(","));
       parameters.tag_ids = tag_ids.flatten().uniq().join(",");
     }
-    if(old_parameters.feed_ids && parameters.feed_ids) {
-      var feed_ids = old_parameters.feed_ids.split(",");
+    if(this.filters.feed_ids && parameters.feed_ids) {
+      var feed_ids = this.filters.feed_ids.split(",");
       feed_ids.push(parameters.feed_ids.split(","));
       parameters.feed_ids = feed_ids.flatten().uniq().join(",");
     }
     
-    var new_parameters = $H(old_parameters).merge($H(parameters));
-    new_parameters.each(function(key_value) {
-      var key = key_value[0];
-      var value = key_value[1];
-      if(value == null || Object.isUndefined(value) || (typeof(value) == 'string' && value.blank())) {
-        new_parameters.unset(key);
-      }
-    });
-    location.hash = "#" + new_parameters.toQueryString();
+    var new_parameters = $H(this.filters).merge($H(parameters));
+    this.filters = new_parameters.toQueryString().toQueryParams();
     
+    this.saveFilters();    
     this.styleFilters();
-    
-    // Store filters for page reload
-    Cookie.set(this.container.getAttribute("id") + "_filters", new_parameters.toQueryString(), 365);
-    
-    // Reload the item browser
     this.reload();
   },
   
   styleFilters: function() {
-    var params = location.hash.gsub('#', '').toQueryParams();
-    
     if($("mode_all")) {
   	  var modes = ["all", "unread", "moderated"];
-  		if(params.mode) {
-  			modes.without(params.mode).each(function(mode) {
+  		if(this.filters.mode) {
+  			modes.without(this.filters.mode).each(function(mode) {
   			  $("mode_" + mode).removeClassName("selected")
   			});
 			
-  			$("mode_" + params.mode).addClassName("selected");
+  			$("mode_" + this.filters.mode).addClassName("selected");
   		} else {
   			modes.without("unread").each(function(mode) {
   			  $("mode_" + mode).removeClassName("selected")
@@ -500,7 +485,7 @@ ItemBrowser.prototype = {
     
     this.styleOrders();
     
-    var feed_ids = params.feed_ids ? params.feed_ids.split(",") : [];
+    var feed_ids = this.filters.feed_ids ? this.filters.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
       var feed_id = element.getAttribute("id").gsub("feed_", "");
       if(feed_ids.include(feed_id)) {
@@ -510,7 +495,7 @@ ItemBrowser.prototype = {
       }
     });
     
-    var tag_ids = params.tag_ids ? params.tag_ids.split(",") : [];
+    var tag_ids = this.filters.tag_ids ? this.filters.tag_ids.split(",") : [];
     $$(".tags li").each(function(element) {
       var tag_id = element.getAttribute("id").gsub("tag_", "");
       if(tag_ids.include(tag_id)) {
@@ -543,8 +528,8 @@ ItemBrowser.prototype = {
     
     var text_filter = $("text_filter");
     if(text_filter) {
-      if(params.text_filter) {
-        text_filter.value = params.text_filter;
+      if(this.filters.text_filter) {
+        text_filter.value = this.filters.text_filter;
       } else {
         text_filter.value = "";
         // TODO: Why doesn't this work?
@@ -554,7 +539,7 @@ ItemBrowser.prototype = {
     
     var clear_selected_filters = $("clear_selected_filters");
     if(clear_selected_filters) {
-      if(params.tag_ids || params.feed_ids || params.text_filter) {
+      if(this.filters.tag_ids || this.filters.feed_ids || this.filters.text_filter) {
         clear_selected_filters.disabled = false;
         clear_selected_filters.value = "Clear Selected Filters";
       } else {
@@ -565,30 +550,46 @@ ItemBrowser.prototype = {
     
     var feed_with_selected_filters = $("feed_with_selected_filters");
     if(feed_with_selected_filters) {
-      feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + location.hash.gsub('#', '');
+      feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + $H(this.filters).toQueryString();
     }
   },
   
   setOrder: function(order) {
-    var params = location.hash.gsub('#', '').toQueryParams();
-    if(params.order == order) {
-      params.direction = (params.direction == "asc" ? "desc" : "asc");
-    } else if(!params.order && this.options.default_order == order) {
-      params.order = order;
-      params.direction = (this.options.default_direction == "asc" ? "desc" : "asc");
+    if(this.filters.order == order) {
+      this.filters.direction = (this.filters.direction == "asc" ? "desc" : "asc");
     } else {
-      params.order = order;
-      params.direction = this.options.default_direction;
+      this.filters.order = order;
+      this.filters.direction = this.options.default_direction;
     }
-    location.hash = "#" + $H(params).toQueryString();
+    this.saveFilters();
     this.styleOrders();
-    Cookie.set(this.container.getAttribute("id") + "_filters", $H(params).toQueryString(), 365);
     this.reload();
   },
   
+  saveFilters: function() {
+    // Remove empty values
+    var filters_hash = $H(this.filters);
+    filters_hash.each(function(key_value) {
+      var key = key_value[0];
+      var value = key_value[1];
+      if(value == null || Object.isUndefined(value) || (typeof(value) == 'string' && value.blank())) {
+        filters_hash.unset(key);
+      }
+    });
+    this.filters = filters_hash.toQueryString().toQueryParams();
+    
+    // Update the url
+    // if(this.filters.keys().size() == 0) {
+    //   location.hash = " ";
+    // } else {
+      location.hash = "#" + $H(this.filters).toQueryString();
+    // }
+    
+    // Save to a cookie
+    Cookie.set(this.container.getAttribute("id") + "_filters", $H(this.filters).toQueryString(), 365);
+  },
+  
   styleOrders: function() {
-    var params = location.hash.gsub('#', '').toQueryParams();
-
 		this.options.orders.each(function(order) {
 		  var order_control = $("order_" + order);
 		  if(order_control) {
@@ -597,10 +598,10 @@ ItemBrowser.prototype = {
 		  }
 		});
 
-		if(params.order) {
-		  var order_control = $("order_" + params.order);
+		if(this.filters.order) {
+		  var order_control = $("order_" + this.filters.order);
 		  if(order_control) {
-		    order_control.addClassName(params.direction || this.options.default_direction);
+		    order_control.addClassName(this.filters.direction);
 		  }
 		} else if(this.options.default_order) {
 		  var order_control = $("order_" + this.options.default_order);
@@ -832,7 +833,7 @@ ItemBrowser.prototype = {
    
   loadItemModerationPanel: function(item) { 
     var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id')); 
-    var url = moderation_panel.getAttribute('url') + "?" + location.hash.gsub("#", ""); 
+    var url = moderation_panel.getAttribute('url') + "?" + $H(this.filters).toQueryString(); 
     this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
   },
 
