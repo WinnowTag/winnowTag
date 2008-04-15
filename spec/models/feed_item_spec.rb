@@ -51,7 +51,7 @@ describe FeedItem do
       feed_item_1 = valid_feed_item!(:updated => Date.today)
       feed_item_2 = valid_feed_item!(:updated => Date.today - 1)
         
-      FeedItem.find_with_filters(:user => user_1, :order => 'newest').should == [feed_item_1, feed_item_2]
+      FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc").should == [feed_item_1, feed_item_2]
     end
     
     it "properly sorts the feed items by oldest first" do
@@ -64,7 +64,7 @@ describe FeedItem do
       feed_item_1 = valid_feed_item!(:updated => Date.today)
       feed_item_2 = valid_feed_item!(:updated => Date.today - 1)
         
-      FeedItem.find_with_filters(:user => user_1, :order => 'oldest').should == [feed_item_2, feed_item_1]
+      FeedItem.find_with_filters(:user => user_1, :order => 'date').should == [feed_item_2, feed_item_1]
     end
     
     xit "properly sorts the feed items by tag strength first" do
@@ -82,7 +82,7 @@ describe FeedItem do
       tagging_2 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id, :strength => 1      
       tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_3.id, :strength => 1
       
-      FeedItem.find_with_filters(:user => user_1, :order => 'oldest').should == [feed_item_2, feed_item_1]
+      FeedItem.find_with_filters(:user => user_1, :order => 'date').should == [feed_item_2, feed_item_1]
     end
   end
   
