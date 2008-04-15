@@ -66,6 +66,6 @@
 
   <div class="clear">
     <%= button_to_function "", "itemBrowser.setFilters({text_filter: ''})", :id => "clear_selected_filters" %>
-    <%= link_to_function "Feed with selected filters", "itemBrowser.openFeed(#{formatted_feed_items_path(:atom).to_json})", :class => "feed_icon" %>
+    <%= link_to "Feed with selected filters", "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>
   </div>
 </div>

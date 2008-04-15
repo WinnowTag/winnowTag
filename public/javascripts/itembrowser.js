@@ -615,6 +615,11 @@ ItemBrowser.prototype = {
         clear_selected_filters.value = "No Filters Selected";
       }
     }
+    
+    var feed_with_selected_filters = $("feed_with_selected_filters");
+    if(feed_with_selected_filters) {
+      feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + location.hash.gsub('#', '');
+    }
   },
   
   showLoadingIndicator: function(message) {
@@ -873,10 +878,6 @@ ItemBrowser.prototype = {
           }
       });  
     }
-  },
-  
-  openFeed: function(url) {
-    window.open(url + '?' + location.hash.gsub('#', ''));
   },
   
   selectNextItem: function() {
