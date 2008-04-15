@@ -4,14 +4,13 @@
 // to use, modify, or create derivate works.
 // Please contact info@peerworks.org for further information.
 
-var ItemBrowser = Class.create();
-ItemBrowser.instance = null;
 /** Provides the ItemBrowser functionality.
  *
  *  The Item Browser is a scrollable view over the entire list of items
  *  in the database.  Items are lazily loaded into the browser as the 
  *  users scrolls the view around.
  */
+var ItemBrowser = Class.create();
 ItemBrowser.prototype = {
   /** Initialization function.
    *
@@ -28,13 +27,13 @@ ItemBrowser.prototype = {
    *
    */
   initialize: function(container, options) {
-    ItemBrowser.instance = this;
-    
     this.options = {
       update_threshold: 8,
       controller: container,
       url: container,
+      tags: [],
       orders: [],
+      default_order: null,
       default_direction: "asc"
     };
     Object.extend(this.options, options || {});
@@ -362,11 +361,12 @@ ItemBrowser.prototype = {
     if(sidebar) {
       sidebar.addClassName("loading");
 
+      var self = this;
       new Ajax.Updater("sidebar", "/" + this.options.controller + "/sidebar", { method: 'get', parameters: this.filters, evalScripts: true,
         onComplete: function() {
           sidebar.removeClassName("loading");
           AppleSearch.setup();
-          ItemBrowser.instance.styleFilters();
+          self.styleFilters();
         }
       });
     }
@@ -748,9 +748,7 @@ ItemBrowser.prototype = {
   },
   
   removeTag: function(tag) {
-    if(this.options.tags) {
-      this.options.tags = this.options.tags.without(tag);
-    }
+    this.options.tags = this.options.tags.without(tag);
   },
 
   closeItemModerationPanel: function(item) {
