@@ -39,12 +39,12 @@ describe "filter controls" do
     
   describe "text filter" do    
     it "sets the text filter" do
-      get_location.should =~ /\#$/
+      get_location.should =~ /\#order=date&direction=desc$/
 
       type "text_filter", "ruby"
       hit_enter "text_filter"
 
-      get_location.should =~ /\#text_filter=ruby$/
+      get_location.should =~ /\#order=date&direction=desc&text_filter=ruby$/
     end
     
     it "keeps mode and tag/feed filters intact" do
@@ -52,12 +52,12 @@ describe "filter controls" do
       open feed_items_path(:anchor => "mode=moderated&tag_ids=1&feed_ids=1")
       wait_for_ajax
 
-      get_location.should =~ /\#mode=moderated&tag_ids=1&feed_ids=1$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=moderated$/
 
       type "text_filter", "ruby"
       hit_enter "text_filter"
 
-      get_location.should =~ /\#mode=moderated&tag_ids=1&feed_ids=1&text_filter=ruby$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=moderated&text_filter=ruby$/
     end
   end
   
@@ -72,11 +72,11 @@ describe "filter controls" do
     end
     
     it "sets the tag filter" do
-      get_location.should =~ /\#$/
+      get_location.should =~ /\#order=date&direction=desc$/
 
       click "css=#name_tag_#{@tag.id}"
 
-      get_location.should =~ /\#tag_ids=#{@tag.id}$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}$/
     end
     
     it "resets feed/tag filters only" do
@@ -84,11 +84,11 @@ describe "filter controls" do
       open feed_items_path(:anchor => "mode=moderated&text_filter=ruby&feed_ids=1&tag_ids=999")
       wait_for_ajax
 
-      get_location.should =~ /\#mode=moderated&text_filter=ruby&feed_ids=1&tag_ids=999$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=999&feed_ids=1&mode=moderated&text_filter=ruby$/
 
       click "css=#name_tag_#{@tag.id}"
       
-      get_location.should =~ /\#mode=moderated&text_filter=ruby&tag_ids=#{@tag.id}$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}&mode=moderated&text_filter=ruby$/
     end
     
     it "turns off a tag filter" do
@@ -96,28 +96,28 @@ describe "filter controls" do
       open feed_items_path(:anchor => "tag_ids=1,#{@tag.id}")
       wait_for_ajax
 
-      get_location.should =~ /\#tag_ids=1%2C#{@tag.id}$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=1%2C#{@tag.id}$/
 
       click "css=#name_tag_#{@tag.id}"
       
-      get_location.should =~ /\#tag_ids=#{@tag.id}$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}$/
     end
     
     it "sets tag filter for all in folder" do
-      get_location.should =~ /\#$/
+      get_location.should =~ /\#order=date&direction=desc$/
 
       click "css=#tag_filters_control"
       
-      get_location.should =~ /\#tag_ids=#{@tag.id}%2C#{@sql.id}$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
     
     xit "filters by all tags in the folder, even when the tag was just added"
 
     it "filters by all tags in the folder, even when a tag was just removed" do
-      get_location.should =~ /\#$/
+      get_location.should =~ /\#order=date&direction=desc$/
       click "css=#tag_#{@tag.id} .show_tag_control .remove"
       click "css=#tag_filters_control"      
-      get_location.should =~ /\#tag_ids=#{@sql.id}$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@sql.id}$/
     end
     
     xit "doesnt scroll the sidebar to the top"
