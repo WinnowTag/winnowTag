@@ -1,11 +1,11 @@
 <ul class="control_bar">
-  <li>
+  <li class="order">
     Sort:
-    <%= link_to_function "Name",             "itemBrowser.addFilters({order: 'name'})",             :id => "order_name" %>, 
-    <%= link_to_function "Last Trained",     "itemBrowser.addFilters({order: 'last_used_by'})",     :id => "order_last_used_by" %>, 
-    <%= link_to_function "Training (+/-)",   "itemBrowser.addFilters({order: 'training_count'})",   :id => "order_training_count" %>,
-    <%= link_to_function "Automatic",        "itemBrowser.addFilters({order: 'classifier_count'})", :id => "order_classifier_count" %>,
-    <%= link_to_function "Globally Exclude", "itemBrowser.addFilters({order: 'globally_exclude'})", :id => "globally_exclude" %>
+    <%= link_to_function "Name",             "itemBrowser.setOrder('name')",             :id => "order_name" %>, 
+    <%= link_to_function "Last Trained",     "itemBrowser.setOrder('last_used_by')",     :id => "order_last_used_by" %>, 
+    <%= link_to_function "Training (+/-)",   "itemBrowser.setOrder('training_count')",   :id => "order_training_count" %>,
+    <%= link_to_function "Automatic",        "itemBrowser.setOrder('classifier_count')", :id => "order_classifier_count" %>,
+    <%= link_to_function "Globally Exclude", "itemBrowser.setOrder('globally_exclude')", :id => "globally_exclude" %>
   </li>
 </ul>
 

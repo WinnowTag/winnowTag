@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feeds');
+			itemBrowser = new ItemBrowser('feeds', {orders: ["title", "globally_exclude", "feed_items_count", "updated_on"], default_order: "title"});
 		});
 	</script>
 <% end -%>

@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('invites');
+			itemBrowser = new ItemBrowser('invites', {orders: ["created", "email", "status"], default_order: "created"});
 		});
 	</script>
 <% end -%>

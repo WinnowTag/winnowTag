@@ -88,6 +88,11 @@ class Feed < ActiveRecord::Base
       "feeds.title"
     end
     
+    case options[:direction]
+    when "asc", "desc"
+      order = "#{order} #{options[:direction].upcase}"
+    end
+    
     options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
     
     results = find(:all, options_for_find.merge(:select => select.join(","), :order => order, :limit => options[:limit], :offset => options[:offset]))

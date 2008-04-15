@@ -116,6 +116,11 @@ class User < ActiveRecord::Base
         # :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}"
         "users.login"
       end
+
+      case options[:direction]
+      when "asc", "desc"
+        order = "#{order} #{options[:direction].upcase}"
+      end
     
       options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
       

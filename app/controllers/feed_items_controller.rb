@@ -32,11 +32,9 @@ class FeedItemsController < ApplicationController
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
 
-        filters = { :order => params[:order],
-                    :limit => limit,
-                    :offset => params[:offset],
-                    :feed_ids => params[:feed_ids],
-                    :tag_ids => params[:tag_ids],
+        filters = { :order => params[:order], :direction => params[:direction],
+                    :limit => limit, :offset => params[:offset],
+                    :feed_ids => params[:feed_ids], :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :mode => params[:mode],
                     :user => current_user }
@@ -46,9 +44,8 @@ class FeedItemsController < ApplicationController
       end
       format.atom do
         filters = { :limit => 20,
-                    :order => params[:order],
-                    :feed_ids => params[:feed_ids],
-                    :tag_ids => params[:tag_ids],
+                    :order => params[:order], :direction => params[:direction],
+                    :feed_ids => params[:feed_ids], :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :mode => params[:mode],
                     :user => current_user }

@@ -33,7 +33,9 @@ ItemBrowser.prototype = {
     this.options = {
       update_threshold: 8,
       controller: container,
-      url: container
+      url: container,
+      orders: [],
+      default_direction: "asc"
     };
     Object.extend(this.options, options || {});
     
@@ -267,46 +269,6 @@ ItemBrowser.prototype = {
     });  
   },
   
-  /** This is old and not used, but we might need something like so it is here for reference. */
-  pruneExcessItems: function(options) {
-    if (this.options.window_size < this.items.length) {
-      var going_up = options && options.direction == 'up';
-      var index_to_remove_from = 0;
-      var items = this.items;
-      var totalHeight = 0;
-      var number_to_remove = this.items.length - this.options.window_size;
-      
-      // If the view is being scrolled up prune items from the bottom
-      if (going_up) {
-        items = items.reverse(false);
-        index_to_remove_from = items.length - number_to_remove;
-      }
-      
-      // This may look like it can be done in the one loop, however
-      // removing an item seems to make the next request for the offsetHeight
-      // very slow, I assume it must have to recalculate the height when the DOM
-      // is changed.  It is much faster to loop through once and get the heights
-      // of the elements to remove and then loop through again to remove the elements.
-      // Then once this is done we adjust the position of the scroll view to 
-      // compensate for the items that have been removed.
-      for (var i = 0; i < number_to_remove; i++) {
-        if (going_up) {
-          this.pruned_items--;          
-        } else {
-          this.pruned_items++;
-          totalHeight += items[i].element.offsetHeight;          
-        }
-      }
-      for (var i = 0; i < number_to_remove; i++) {
-        items[i].element.remove();
-        this.items[items[i].element.getAttribute('id')] = false;
-      }
-      
-      this.items.splice(index_to_remove_from, number_to_remove);
-      this.container.scrollTop -= totalHeight;
-    }
-  },
-  
   /** Inserts an item into the item container.
    *
    *  Items are inserted by using their position within the list of items to
@@ -536,22 +498,7 @@ ItemBrowser.prototype = {
   		}
     }
     
-    if($("order_newest")) {
-  	  var orders = ["newest", "oldest", "strength"];
-  		if(params.order) {
-  			orders.without(params.order).each(function(order) {
-  			  $("order_" + order).removeClassName("selected")
-  			});
-			
-  			$("order_" + params.order).addClassName("selected");
-  		} else {
-  			orders.without("newest").each(function(order) {
-  			  $("order_" + order).removeClassName("selected")
-  			});
-
-  			$("order_newest").addClassName("selected");
-  		}
-    }
+    this.styleOrders();
     
     var feed_ids = params.feed_ids ? params.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
@@ -620,6 +567,47 @@ ItemBrowser.prototype = {
     if(feed_with_selected_filters) {
       feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + location.hash.gsub('#', '');
     }
+  },
+  
+  setOrder: function(order) {
+    var params = location.hash.gsub('#', '').toQueryParams();
+    if(params.order == order) {
+      params.direction = (params.direction == "asc" ? "desc" : "asc");
+    } else if(!params.order && this.options.default_order == order) {
+      params.order = order;
+      params.direction = (this.options.default_direction == "asc" ? "desc" : "asc");
+    } else {
+      params.order = order;
+      params.direction = this.options.default_direction;
+    }
+    location.hash = "#" + $H(params).toQueryString();
+    this.styleOrders();
+    Cookie.set(this.container.getAttribute("id") + "_filters", $H(params).toQueryString(), 365);
+    this.reload();
+  },
+  
+  styleOrders: function() {
+    var params = location.hash.gsub('#', '').toQueryParams();
+
+		this.options.orders.each(function(order) {
+		  var order_control = $("order_" + order);
+		  if(order_control) {
+		    order_control.removeClassName("asc");
+		    order_control.removeClassName("desc");
+		  }
+		});
+
+		if(params.order) {
+		  var order_control = $("order_" + params.order);
+		  if(order_control) {
+		    order_control.addClassName(params.direction || this.options.default_direction);
+		  }
+		} else if(this.options.default_order) {
+		  var order_control = $("order_" + this.options.default_order);
+		  if(order_control) {
+		    order_control.addClassName(this.options.default_direction);
+		  }
+		}
   },
   
   showLoadingIndicator: function(message) {

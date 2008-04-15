@@ -270,23 +270,28 @@ class FeedItem < ActiveRecord::Base
   # This will return a Hash of options suitable for passing to FeedItem.find.
   # 
   def self.options_for_filters(filters) # :doc:
-    filters.assert_valid_keys(:limit, :order, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
+    filters.assert_valid_keys(:limit, :order, :direction, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
     options = {:limit => filters[:limit], :offset => filters[:offset]}
     
-    case filters[:order]
+    direction = case filters[:direction]
+      when "asc", "desc"
+        filters[:direction].upcase
+    end
+    
+    options[:order] = case filters[:order]
     when "strength"
       if filters[:tag_ids].blank?
         tag_ids = (filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags).map(&:id).join(',')
       else
         tag_ids = Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]]).join(",")
       end
-      options[:order] = "(SELECT MAX(taggings.strength) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) DESC, feed_items.updated DESC"
-    when "oldest"
-      options[:order] = "feed_items.updated"
+      "(SELECT MAX(taggings.strength) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) #{direction}, feed_items.updated #{direction}"
+    when "date"
+      "feed_items.updated #{direction}"
     when "id"
-      options[:order] = "feed_items.id"
+      "feed_items.id #{direction}"
     else
-      options[:order] = "feed_items.updated DESC"
+      "feed_items.updated DESC"
     end
 
     filters[:mode] ||= "unread"

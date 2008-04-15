@@ -1481,3 +1481,17 @@ a.desc {
   color: #999;
   float: right;
 }
+
+.order .asc { 
+  background-image: url(../images/bullet_arrow_up.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  padding: 0 1.5em 0 0;
+}
+
+.order .desc {
+  background-image: url(../images/bullet_arrow_down.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  padding: 0 1.5em 0 0;  
+}

@@ -288,6 +288,11 @@ class Tag < ActiveRecord::Base
     else
       "tags.name"
     end
+    
+    case options[:direction]
+    when "asc", "desc"
+      order = "#{order} #{options[:direction].upcase}"
+    end
 
     options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
     

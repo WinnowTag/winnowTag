@@ -6,10 +6,9 @@
 
   </div>
 
-  <div class="choice_filter">
-    Sort: <%= link_to_function "Newest", "itemBrowser.addFilters({order: 'newest'})", :id => "order_newest" %>, 
-          <%= link_to_function "Oldest", "itemBrowser.addFilters({order: 'oldest'})", :id => "order_oldest" %>, 
-          <%= link_to_function "Strength", "itemBrowser.addFilters({order: 'strength'})", :id => "order_strength" %>
+  <div class="choice_filter order">
+    Sort: <%= link_to_function "Date", "itemBrowser.setOrder('date')", :id => "order_date" %>, 
+          <%= link_to_function "Strength", "itemBrowser.setOrder('strength')", :id => "order_strength" %>
   </div>  
 
   <div id="folders">

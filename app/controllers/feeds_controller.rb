@@ -24,7 +24,8 @@ class FeedsController < ApplicationController
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @feeds, @feeds_count = Feed.search(:text_filter => params[:text_filter], :excluder => current_user, 
-                                           :order => params[:order], :limit => limit, :offset => params[:offset],
+                                           :order => params[:order], :direction => params[:direction], 
+                                           :limit => limit, :offset => params[:offset],
                                            :count => true)
       end
     end
