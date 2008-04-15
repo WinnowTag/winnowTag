@@ -172,7 +172,7 @@ ItemBrowser.prototype = {
     
     this.item_loading_timeout = setTimeout(function() {
       if (this.loading) {
-        this.update_queue.push(this.updateItems.bind(this, {offset: offset}););
+        this.update_queue.push(this.updateItems.bind(this, {offset: offset}));
       } else {
         this.updateItems({offset: offset});        
       }
