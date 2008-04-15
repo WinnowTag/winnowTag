@@ -14,11 +14,11 @@ var ItemBrowser = Class.create();
 ItemBrowser.prototype = {
   /** Initialization function.
    *
-   *  @param container The element or id of the container div.
+   *  @param container The id of the container div.
    *         This is the div that lies within scrollable div.
    *         The container div holds the item elements
    *         The ItemBrowser will look for another element with the id
-   *         container + '_scrollable' that will be used as the
+   *         'content' that will be used as the
    *         scrollable div.
    *
    *  @param options A hash of options.  Supported options are:
@@ -38,28 +38,19 @@ ItemBrowser.prototype = {
     };
     Object.extend(this.options, options || {});
     
-    document.observe('keypress', this.keypress.bindAsEventListener(this));
-    
-    this.update_queue = new Array();
-    
-    // counts of the number of pruned items
-    this.pruned_items = 0;
-    
-    // Flag for loading item - so we don't load them more than once at a time.
+    this.update_queue = [];
+    this.auto_completers = {};
     this.loading = false;    
+    
     this.container = $(container);
     this.scrollable = $('content');
 
+    document.observe('keypress', this.keypress.bindAsEventListener(this));
+    this.scrollable.observe('scroll', this.scrollView.bind(this));
+    
     this.initializeItemList();
-    
-    var self = this;
-    Event.observe(this.scrollable, 'scroll', function() { self.scrollView(); });
-    
-    this.auto_completers = {};
-    
     this.initializeFilters();
-
-    this.loadSidebar();    
+    this.loadSidebar();
   },
 
   initializeFilters: function() {
@@ -181,10 +172,7 @@ ItemBrowser.prototype = {
     
     this.item_loading_timeout = setTimeout(function() {
       if (this.loading) {
-        var self = this;
-        this.update_queue.push(function() {
-          self.updateItems({offset: offset});
-        });
+        this.update_queue.push(this.updateItems.bind(this, {offset: offset}););
       } else {
         this.updateItems({offset: offset});        
       }
