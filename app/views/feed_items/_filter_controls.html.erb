@@ -63,8 +63,9 @@
   
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
-    
+
   <div class="clear">
     <%= button_to_function "", "itemBrowser.setFilters({text_filter: ''})", :id => "clear_selected_filters" %>
+    <%= link_to_function "Feed with selected filters", "itemBrowser.openFeed(#{formatted_feed_items_path(:atom).to_json})", :class => "feed_icon" %>
   </div>
 </div>

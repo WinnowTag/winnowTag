@@ -222,10 +222,8 @@ class FeedItem < ActiveRecord::Base
   # of the complexity of the joining in the query produced by options_with_filters.
   #
   def self.find_with_filters(filters = {})    
-    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(
-                                                  :select => 'feed_items.id, feed_items.updated, feed_items.title, feed_items.link, ' +
-                                                             'feed_items.feed_id, feed_items.created_on, feeds.title AS feed_title'))
-    
+    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => 'feed_items.*, feeds.title AS feed_title'))
+
     if user = filters[:user]
       feed_item_ids = feed_items.map(&:id)
       user_taggings = user.taggings.find(:all, :conditions => ['taggings.feed_item_id in (?)', feed_item_ids], :include => :tag)

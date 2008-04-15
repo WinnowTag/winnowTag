@@ -44,6 +44,24 @@ class FeedItemsController < ApplicationController
         @feed_items = FeedItem.find_with_filters(filters)    
         @feed_item_count = FeedItem.count_with_filters(filters)
       end
+      format.atom do
+        filters = { :limit => 20,
+                    :order => params[:order],
+                    :feed_ids => params[:feed_ids],
+                    :tag_ids => params[:tag_ids],
+                    :text_filter => params[:text_filter],
+                    :mode => params[:mode],
+                    :user => current_user }
+  
+        @feed_items = FeedItem.find_with_filters(filters)
+        
+        feed = Atom::Feed.new do |feed|
+          @feed_items.each do |feed_item|
+            feed.entries << feed_item.to_atom
+          end
+        end
+        render :xml => feed.to_xml
+      end
     end
   end
   

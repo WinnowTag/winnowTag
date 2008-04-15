@@ -875,6 +875,10 @@ ItemBrowser.prototype = {
     }
   },
   
+  openFeed: function(url) {
+    window.open(url + '?' + location.hash.gsub('#', ''));
+  },
+  
   selectNextItem: function() {
     var next_item;
     if(this.selectedItem) {

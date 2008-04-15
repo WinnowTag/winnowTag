@@ -258,6 +258,18 @@ optgroup {
   text-align: center;
 }
 
+#sidebar .section .clear input {
+  display: block;
+  margin: 1em auto;
+}
+
+#sidebar .section .clear .feed_icon {
+  margin: 0 0 1em 0;
+  padding: 0 0 0 20px;
+  background-image: url(../images/vertical_sprite.png);
+  background-repeat: no-repeat;
+}
+
 .progress_bar_container {
   margin-top: 5px;
   width: 100%;
@@ -282,7 +294,6 @@ optgroup {
 
 #sidebar .classification_controls {
   text-align: center;
-  margin-top: 5px;
 }
 
 #header_controls {
