@@ -129,9 +129,7 @@ class Tag < ActiveRecord::Base
   def potentially_undertrained?
     self.positive_taggings.size < Tag.undertrained_threshold
   end
-  
-  CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier' unless defined?(CLASSIFIER_NAMESPACE)
-  
+    
   # This needs to be fast so we'll bypass Active Record
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
@@ -202,22 +200,7 @@ class Tag < ActiveRecord::Base
       
       self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], 
                                :order => 'feed_items.updated DESC', :include => [{:feed_item, :content}]).each do |tagging|
-        entry = tagging.feed_item.to_atom(options)
-        
-        if tagging.strength > 0.9
-          entry.categories << Atom::Category.new do |cat|
-            cat.term = self.name
-            cat.scheme = "#{options[:base_uri]}/#{user.login}/tags/"
-            if tagging.classifier_tagging?
-              cat[CLASSIFIER_NAMESPACE, 'strength'] << tagging.strength.to_s
-              cat[CLASSIFIER_NAMESPACE, 'strength'].as_attribute = true
-            end
-          end
-        elsif tagging.strength == 0            
-          entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/negative-example", :href => feed.id)
-        end
-        
-        feed.entries << entry
+        feed.entries << tagging.feed_item.to_atom(options.merge({:include_tags => self}))
       end
     end
   end

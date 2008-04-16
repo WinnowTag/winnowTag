@@ -165,6 +165,26 @@ class FeedItem < ActiveRecord::Base
           entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'LATIN1', self.content.content).first)
         end
       end
+      
+      if options[:include_tags]
+        include_tags = Array(options[:include_tags])
+        
+        self.taggings.select {|t| include_tags.include?(t.tag) }.each do |tagging|
+          if tagging.strength > 0.9
+            entry.categories << Atom::Category.new do |cat|
+              cat.term = tagging.tag.name
+              cat.scheme = "#{options[:base_uri]}/#{tagging.tag.user.login}/tags/"
+              if tagging.classifier_tagging?
+                cat[CLASSIFIER_NAMESPACE, 'strength'] << tagging.strength.to_s
+                cat[CLASSIFIER_NAMESPACE, 'strength'].as_attribute = true
+              end
+            end
+          elsif tagging.strength == 0            
+            entry.links << Atom::Link.new(:rel  => "#{CLASSIFIER_NAMESPACE}/negative-example", 
+                                          :href => "#{options[:base_uri]}/#{tagging.tag.user.login}/tags/#{tagging.tag.name}")
+          end
+        end
+      end
     end
   end
     

@@ -350,8 +350,14 @@ describe FeedItem do
   describe "to_atom" do
     fixtures :feed_item_contents
     before(:each) do
+      @user = users(:quentin)
+      @tag1 = Tag.create!(:name => 'tag1', :user => @user)
+      @tag2 = Tag.create!(:name => 'tag2', :user => @user)
       @item = FeedItem.find(1)
-      @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org')
+      @item.taggings.create(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
+      @item.taggings.create(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 0)
+      @item.taggings.create(:tag => @tag2, :user => @user, :classifier_tagging => 0, :strength => 1)
+      @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org', :include_tags => @tag1)
     end
     
     it "should include the title" do
@@ -382,6 +388,18 @@ describe FeedItem do
     
     it "should include the content" do
       @atom.content.to_s.should == @item.content.content
+    end
+    
+    it "should include positive tags for the specified tag" do
+      @atom.categories.detect {|cat| cat.scheme == 'http://winnow.mindloom.org/quentin/tags/' && cat.term == @tag1.name }.should_not be_nil
+    end
+    
+    it "should include negative tags for the specified tag" do
+      @atom.links.detect {|l| l.rel == 'http://peerworks.org/classifier/negative-example' && l.href == "http://winnow.mindloom.org/quentin/tags/tag1"}.should_not be_nil
+    end
+    
+    it "should not include positive tags for non-specified tags" do
+      @atom.categories.detect {|cat| cat.scheme == 'http://winnow.mindloom.org/quentin/tags' && cat.term == @tag2.name }.should be_nil
     end
   end
   
