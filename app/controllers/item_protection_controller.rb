@@ -11,7 +11,7 @@ class ItemProtectionController < ApplicationController
       @protector = Protector.protector(request.host)
     rescue ActiveResource::ConnectionError
       flash.now[:error] = _(:item_protection_status)
-      render :template => 'shared/error', :status => :not_found
+      render :nothing => true, :status => :not_found
     end
   end
   
