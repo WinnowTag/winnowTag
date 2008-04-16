@@ -1,7 +1,0 @@
-<%= render(:text => @message) %>
-
-<% open(WINNOW_COLLECT_LOG) do |f| -%>
-  <% f.each_line do |line| -%>
-    <%= render(:text => line) if line.match('ERROR') %>
-  <% end -%>
-<% end -%>
