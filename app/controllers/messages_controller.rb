@@ -15,7 +15,7 @@ class MessagesController < ApplicationController
     @message = Message.new(params[:message])
 
     if @message.save
-      flash[:notice] = 'Message was successfully created.'
+      flash[:notice] = _(:message_created)
       redirect_to messages_path
     else
       render :action => "new"
@@ -26,7 +26,7 @@ class MessagesController < ApplicationController
     @message = Message.find(params[:id])
 
     if @message.update_attributes(params[:message])
-      flash[:notice] = 'Message was successfully updated.'
+      flash[:notice] = _(:message_updated)
       redirect_to messages_path
     else
       render :action => "edit"

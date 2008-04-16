@@ -72,14 +72,14 @@ class TagsController < ApplicationController
       if to
         if params[:overwrite] =~ /true/i
           from.overwrite(to)
-          flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
+          flash[:notice] = _(:tag_copied, from.name, to.name)
           render :update do |page|
             page.redirect_to tags_path
           end
         else
           render :update do |page|
             page << <<-EOJS
-              if(confirm("Tag '#{params[:name]}' already exists. This copy will completely replace it with a copy of '#{from.name}'")) {
+              if(confirm(#{_(:tag_replace, params[:name], from.name)}) {
                 #{remote_function(:url => hash_for_tags_path(:copy => from, :name => params[:name], :overwrite => true))};
               }
             EOJS
@@ -89,7 +89,7 @@ class TagsController < ApplicationController
         to = Tag(current_user, params[:name])
         from.copy(to)
       
-        flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
+        flash[:notice] = _(:tag_copied, from.name, to.name)
       
         render :update do |page|
           page.redirect_to tags_path
@@ -111,7 +111,7 @@ class TagsController < ApplicationController
         render :action => "merge.js.rjs"
       else
         if @tag.update_attributes(:name => @name)
-          flash[:notice] = "Tag Renamed"
+          flash[:notice] = _(:tag_renamed)
         else
           flash[:error] = @tag.errors.full_messages.join('<br/>')
         end
@@ -133,7 +133,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if merge_to = current_user.tags.find_by_name(params[:tag][:name])
         @tag.merge(merge_to)
-        flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
+        flash[:notice] = _(:tag_merged, @tag.name, merge_to.name)
       end
       
       format.html { redirect_to tags_path }
@@ -259,13 +259,13 @@ private
     if params[:user] && params[:tag_name]
       @user = User.find_by_login(params[:user])
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
-        render :status => 404, :text => "#{params[:user]} and no tag '#{params[:tag_name]}'."      
+        render :status => 404, :text => _(:tag_not_found, @user.login, params[:tag_name])
       end
     elsif params[:id]
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render :status => 404, :text => "Tag with id #{params[:id]} not found."
+        render :status => 404, :text => _(:tag_id_not_found, params[:id])
       end
     end
     

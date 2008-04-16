@@ -78,7 +78,7 @@ describe TagsController do
       assert_difference("users(:quentin).tags.count") do
         post :create, :copy => @tag, :name => "tag - copy"
         assert_response :success
-        assert_equal("'tag' successfully copied to 'tag - copy'", flash[:notice])
+        assert_equal("tag successfully copied to tag - copy", flash[:notice])
       end
       assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])
       assert_equal(2, users(:quentin).taggings.size)
@@ -108,7 +108,7 @@ describe TagsController do
       assert_difference("users(:quentin).tags.count", 0) do
         post :create, :copy => @tag, :name => "tag2", :overwrite => "true"
         assert_response :success
-        assert_equal("'tag' successfully copied to 'tag2'", flash[:notice])
+        assert_equal("tag successfully copied to tag2", flash[:notice])
       end
 
       assert_equal [feed_item_1], tag2.taggings(:reload).map(&:feed_item)
@@ -519,7 +519,7 @@ describe TagsController do
     
       put :merge, :id => old, :tag => {:name => 'new'}, :merge => "true"
       assert_redirected_to tags_path
-      assert_equal("'old' merged with 'new'", flash[:notice])
+      assert_equal("old merged with new", flash[:notice])
     end
   
     it "renaming_when_merge_will_happen" do

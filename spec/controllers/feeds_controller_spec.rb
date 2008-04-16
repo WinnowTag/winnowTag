@@ -113,8 +113,8 @@ describe FeedsController do
         Remote::Feed.should_receive(:find).with("12").and_raise(ActiveResource::ResourceNotFound.new(mock('response', :null_object => true)))
       
         get 'show', :id => 12
-        flash[:error].should == "We couldn't find this feed in any of our databases.  Maybe it has been deleted or " +
-                                "never existed.  If you think this is an error, please contact us."
+        flash[:error].should == "We couldn't find this feed in any of our databases. Maybe it has been deleted or " +
+                                "never existed. If you think this is an error, please contact us."
         response.code.should == "404"
         response.should render_template('feeds/error')
       end
@@ -157,7 +157,7 @@ describe FeedsController do
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
     
-      message_body = "Thanks for adding the feed from 'http://example.com'. " +
+      message_body = "Thanks for adding the feed from http://example.com. " +
                      "We will fetch the items soon and we'll let you know when it is done. " +
                      "The feed has also been added to your feeds folder in the sidebar."
       message = mock_model(Message, :body => message_body)
@@ -178,7 +178,7 @@ describe FeedsController do
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
   
-      message_body = "We already have the feed from 'http://example.com', however we will update it " +
+      message_body = "We already have the feed from http://example.com, however we will update it " +
                      "now and we'll let you know when it is done. " +
                      "The feed has also been added to your feeds folder in the sidebar."
       message = mock_model(Message, :body => message_body)
