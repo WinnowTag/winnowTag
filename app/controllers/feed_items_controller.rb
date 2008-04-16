@@ -53,8 +53,9 @@ class FeedItemsController < ApplicationController
         @feed_items = FeedItem.find_with_filters(filters)
         
         feed = Atom::Feed.new do |feed|
-          @feed_items.each do |feed_item|
-            feed.entries << feed_item.to_atom
+          @feed_items.each do |feed_item|            
+            feed.entries << feed_item.to_atom(:base_uri => "http://#{request.host}:#{request.port}",
+                                              :include_tags => current_user.tags + current_user.subscribed_tags)
           end
         end
         render :xml => feed.to_xml
