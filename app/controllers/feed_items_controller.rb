@@ -48,17 +48,12 @@ class FeedItemsController < ApplicationController
                     :feed_ids => params[:feed_ids], :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :mode => params[:mode],
-                    :user => current_user }
+                    :user => current_user,
+                    :base_uri => "http://#{request.host}:#{request.port}",
+                    :self_link => url_for(params),
+                    :alt_link => url_for(params.update(:format => nil)) }
   
-        @feed_items = FeedItem.find_with_filters(filters)
-        
-        feed = Atom::Feed.new do |feed|
-          @feed_items.each do |feed_item|            
-            feed.entries << feed_item.to_atom(:base_uri => "http://#{request.host}:#{request.port}",
-                                              :include_tags => current_user.tags + current_user.subscribed_tags)
-          end
-        end
-        render :xml => feed.to_xml
+        render :xml => FeedItem.atom_with_filters(filters).to_xml
       end
     end
   end
