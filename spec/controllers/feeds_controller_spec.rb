@@ -48,7 +48,7 @@ describe FeedsController do
     
       @message = mock_model(Message)
       @messages = stub("messages")
-      @messages.should_receive(:create!).with(:body => "We have finished fetching new items for '#{feed.title}'.").and_return(@message)
+      @messages.should_receive(:create!).with(:body => "We have finished fetching new items for #{feed.title}").and_return(@message)
       @user.stub!(:messages).and_return(@messages)
 
       get :index

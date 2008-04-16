@@ -12,7 +12,7 @@ module ApplicationHelper
   
   def show_flash
     [:notice, :warning, :error, :confirm].map do |name|
-      close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => 'Close Message')
+      close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => _(:close_flash_tooltip))
       content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display:none" : nil
     end.join
   end
@@ -109,7 +109,7 @@ module ApplicationHelper
   
   def search_field_tag(name, value = nil, options = {})
     options[:clear] ||= {}
-    options[:placeholder] ||= "Search..."
+    options[:placeholder] ||= _(:default_search_placeholder)
     content_tag :div, 
       content_tag(:span, nil, :class => "sbox_l") +      
       content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]) +
@@ -131,12 +131,12 @@ module ApplicationHelper
   end
   
   def tag_name_with_tooltip(tag, options = {})
-    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil : "from #{tag.user.display_name}")
+    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil : _(:public_tag_tooltip, tag.user.display_name))
   end
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, "Create Feed: '#{options[:auto_complete]}'", :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, _(:create_feed, options[:auto_complete]), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -146,7 +146,7 @@ module ApplicationHelper
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
     html = link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
-    html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name", :title => "#{feed.feed_items.size} items in this feed")
+    html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name", :title => _(:feed_items_count_tooltip, feed.feed_items.size))
     
     html =  content_tag(:div, html, :class => "show_feed_control")
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
@@ -160,7 +160,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content << content_tag(:li, "Create Tag: '#{options[:auto_complete]}'", :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, _(:create_tag, options[:auto_complete]), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -176,7 +176,7 @@ module ApplicationHelper
     end
     html =  link_to_function(image_tag("cross.png"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}; itemBrowser.removeFilters({tag_ids: '#{tag.id}'});", :class => "remove") << " "
     html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
-    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  "from #{tag.user.display_name}")
+    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
               :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
               :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",

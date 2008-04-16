@@ -33,6 +33,7 @@ module FeedItemsHelper
   
   def toggle_read_unread_button
     link_to_function "", "itemBrowser.toggleReadUnreadItem(this.up('.item'))", 
+          # TODO: localization
           :onmouseover => "this.title = 'Click to mark as ' + ($(this).up('.item').match('.read') ? 'unread' : 'read');"
   end
     
@@ -50,15 +51,11 @@ module FeedItemsHelper
   # to the current user.
   #
   def classification_button
-    button_to_function 'Auto-tag', "Classification.startItemBrowserClassification(#{classifier_path.to_json});", :id => 'classification_button'
+    button_to_function _(:start_classifier_button), "Classification.startItemBrowserClassification(#{classifier_path.to_json});", :id => 'classification_button'
   end
   
   def cancel_classification_button
-    button_to_function("Stop", 'Classification.cancel();', :style => "display: none", :id => 'cancel_classification_button')
-  end
-  
-  def classifier_progress_title
-    "Classify changed tags"
+    button_to_function(_(:stop_classifier_button), 'Classification.cancel();', :style => "display: none", :id => 'cancel_classification_button')
   end
   
   def tag_controls(feed_item)
@@ -146,7 +143,7 @@ module FeedItemsHelper
     if not feed_item.title.blank?
       feed_item.title
     else
-      content_tag :span, "(no title)", :class => "notitle"
+      content_tag :span, _(:feed_item_no_title), :class => "notitle"
     end
   end
 end

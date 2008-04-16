@@ -16,6 +16,8 @@
 # operates on the many +Taggings+ that use a given +Tag+.
 #
 class TagsController < ApplicationController
+  helper :bias_slider
+  
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
   before_filter :login_required_unless_local, :only => :index

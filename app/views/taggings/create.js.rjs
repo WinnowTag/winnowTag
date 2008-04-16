@@ -9,5 +9,5 @@ page << "}"
 
 page << "if ($('classification_button')) {"
   page['classification_button'].disabled = false
-  page.replace_html 'progress_title', classifier_progress_title
+  page.replace_html 'progress_title', _(:classclassifier_progress)
 page << "}"
