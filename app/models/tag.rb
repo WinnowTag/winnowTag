@@ -69,6 +69,7 @@ class Tag < ActiveRecord::Base
     if other.is_a? Tag
       self.name.downcase <=> other.name.downcase
     else
+      # TODO: localization
       raise ArgumentError, "Cannot compare Tag to #{other.class}"
     end
   end
@@ -85,10 +86,12 @@ class Tag < ActiveRecord::Base
   
   def copy(to)
     if self == to 
+      # TODO: localization
       raise ArgumentError, "Can't copy tag to tag of the same name."
     end
     
     if to.taggings.size > 0
+      # TODO: localization
       raise ArgumentError, "Target tagger already has a #{to.name} tag"
     end
     
@@ -103,6 +106,7 @@ class Tag < ActiveRecord::Base
   
   def merge(to)
     if self == to 
+      # TODO: localization
       raise ArgumentError, "Can't copy tag to tag of the same name."
     end
     
@@ -121,7 +125,7 @@ class Tag < ActiveRecord::Base
   end
     
   def delete_classifier_taggings!
-    Tagging.delete_all("classifier_tagging = 1 and tag_id = #{self.id}")
+    Tagging.delete_all("classifier_tagging = 1 AND tag_id = #{self.id}")
   end
   
   def potentially_undertrained?
@@ -206,6 +210,7 @@ class Tag < ActiveRecord::Base
   def self.to_atomsvc(options = {})
     Atom::Pub::Service.new do |service|
       service.workspaces << Atom::Pub::Workspace.new  do |wkspc|
+        # TODO: localization
         wkspc.title = "Tag Training"
         Tag.find(:all).each do |tag|
           wkspc.collections << Atom::Pub::Collection.new do |collection|

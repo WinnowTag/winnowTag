@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
   has_many :messages, :order => "created_at DESC"
   has_many :collection_job_results
   has_one :collection_job_result_to_display, :class_name => "CollectionJobResult", :foreign_key => 'user_id',
-              :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on asc', 
+              :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on ASC', 
               :include => :feed
   has_many :tags, :dependent => :delete_all
   has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
@@ -146,7 +146,7 @@ class User < ActiveRecord::Base
     
   # Gets the number of items tagged by this tagger
   def number_of_tagged_items
-    self.taggings.find(:first, :select => 'count(distinct feed_item_id) as count').count.to_i
+    self.taggings.find(:first, :select => 'COUNT(DISTINCT feed_item_id) AS count').count.to_i
   end
 
   # Gets the percentage of items tagged by this tagger
@@ -157,13 +157,13 @@ class User < ActiveRecord::Base
   # Gets the average number of tags a user has applied to an item.
   def average_taggings_per_item
     Tagging.find_by_sql(<<-END_SQL
-      select avg(count) as average from (
-         select count(id) as count
-         from taggings
-         where
+      SELECT AVG(count) AS average FROM (
+         SELECT COUNT(id) AS count
+         FROM taggings
+         WHERE
            user_id = #{self.id}
-         group by feed_item_id
-       ) as counts;
+         GROUP BY feed_item_id
+       ) AS counts;
       END_SQL
     ).first.average.to_f
   end
@@ -184,6 +184,7 @@ class User < ActiveRecord::Base
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
   validates_uniqueness_of   :login, :email, :case_sensitive => false
+  # TODO: localization
   validates_inclusion_of    :time_zone, :in => TZInfo::Timezone.all_identifiers, :message => "is not a valid timezone"
   before_create :make_activation_code
   after_create :make_owner_of_self
@@ -191,7 +192,7 @@ class User < ActiveRecord::Base
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
-    u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login]
+    u = find :first, :conditions => ['login = ? AND activated_at IS NOT NULL', login]
     u && u.authenticated?(password) ? u : nil
   end
 

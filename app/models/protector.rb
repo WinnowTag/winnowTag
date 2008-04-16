@@ -28,6 +28,7 @@ class Protector < ActiveRecord::Base
   protected
   def validates_as_singleton
     if Protector.count > 0
+      # TODO: localization
       self.errors.add_to_base("A Protector already exists, there can be only one!")
     end
   end

@@ -92,11 +92,12 @@ class FeedItem < ActiveRecord::Base
   #
   def self.find_random_items_with_tokens(size)
     self.find(:all,
-      :joins => "inner join random_backgrounds as rnd on feed_items.id = rnd.feed_item_id ",
+      :joins => "INNER JOIN random_backgrounds AS rnd ON feed_items.id = rnd.feed_item_id ",
       :limit => size)
   end
   
   def self.find_or_create_from_atom(entry)
+    # TODO: localization
     raise ActiveRecord::RecordNotSaved, 'Atom::Entry missing id' if entry.id.nil?
     id = self.parse_id_uri(entry)
     
@@ -111,9 +112,11 @@ class FeedItem < ActiveRecord::Base
   end
   
   def update_from_atom(entry)
+    # TODO: localization
     raise ArgumentError, "Atom entry has different id" if self.id != self.class.parse_id_uri(entry)
     
     self.attributes = {
+      # TODO: localization
       :title   => (entry.title or 'Unknown Title'),
       :link    => (entry.alternate and entry.alternate.href),
       :author  => (entry.authors.empty? ? nil : entry.authors.first.name),
@@ -186,7 +189,6 @@ class FeedItem < ActiveRecord::Base
   # You could do this in the one SQL statement, however using ActiveRecord,
   # while taking slightly longer, will break this up into multiple transactions
   # and reduce the chance of getting a deadlock with a long transaction.
-  #
   def self.archive_items(since = 30.days.ago.getutc)
     taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
     conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
@@ -215,6 +217,7 @@ class FeedItem < ActiveRecord::Base
     @tags = filters[:tag_ids].to_s.split(",").map {|t| Tag.find(t) }
     
     feed = Atom::Feed.new do |feed|
+      # TODO: localization
       feed.title = "Feed for #{@tags.to_sentence}"
       feed.id = self_link
       feed.updated = Time.now
@@ -360,7 +363,7 @@ class FeedItem < ActiveRecord::Base
   def self.add_text_filter_joins!(text_filter, joins)
     if !text_filter.blank?
       joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
-               " and MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+               " AND MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
     end
   end
   
@@ -435,13 +438,15 @@ class FeedItem < ActiveRecord::Base
       uri = URI.parse(entry.id)
     
       if uri.fragment.nil?
+        # TODO: localization
         raise ActiveRecord::RecordNotSaved, "Atom::Entry id is missing fragment: '#{entry.id}'"
       end
     
       uri.fragment.to_i
     rescue ActiveRecord::RecordNotSaved => e
       raise e
-    rescue 
+    rescue
+      # TODO: localization
       raise ActiveRecord::RecordNotSaved, "Atom::Entry has missing or invalid id: '#{entry.id}'" 
     end
   end

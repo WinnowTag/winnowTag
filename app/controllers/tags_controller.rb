@@ -104,7 +104,6 @@ class TagsController < ApplicationController
   end
 
   # Rename, or change the comment on a tag.
-  #
   def update
     if @name = params[:tag][:name]
       if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])

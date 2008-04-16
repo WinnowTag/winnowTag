@@ -13,7 +13,7 @@ class Role < ActiveRecord::Base
   belongs_to :authorizable, :polymorphic => true
   
   def self.delete_all_non_admin_roles!
-    connection.delete "delete from roles_users where role_id in (select id from roles where name <> 'admin');"
+    connection.delete "DELETE FROM roles_users WHERE role_id IN (SELECT id FROM roles WHERE name <> 'admin');"
     delete_all "name <> 'admin'"
   end
 end

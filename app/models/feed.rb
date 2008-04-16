@@ -13,6 +13,7 @@
 class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
+  # TODO: localization
   validates_uniqueness_of :via, :message => 'Feed already exists'
   alias_attribute :name, :title
   before_save :update_sort_title
@@ -35,6 +36,7 @@ class Feed < ActiveRecord::Base
   end
   
   def self.find_or_create_from_atom_entry(entry)
+    # TODO: localization
     raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
     id = parse_id_uri(entry)
     
@@ -91,6 +93,7 @@ class Feed < ActiveRecord::Base
   
   def update_from_atom(entry)
     if self.id != self.class.parse_id_uri(entry)
+      # TODO: localization
       raise ArgumentError, "Tried to update feed attributes from entry with different id"
     else
       self.attributes = {
@@ -127,13 +130,15 @@ private
       uri = URI.parse(entry.id)
     
       if uri.fragment.nil?
+        # TODO: localization
         raise ActiveRecord::RecordNotSaved, "Atom::Entry id is missing fragment: '#{entry.id}'"
       end
     
       uri.fragment.to_i
     rescue ActiveRecord::RecordNotSaved => e
       raise e
-    rescue 
+    rescue
+      # TODO: localization
       raise ActiveRecord::RecordNotSaved, "Atom::Entry has missing or invalid id: '#{entry.id}'" 
     end
   end  

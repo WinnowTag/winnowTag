@@ -85,4 +85,8 @@ Localization.define do |l|
   
   # app/models/collection_job_result.rb
   l.store :unknown_feed,                          "Unknown Feed"
+
+  # app/models/invite.rb
+  l.store :default_invite_accepted_subject,       "Invite Accepted"
+  l.store :default_invite_accepted_body,          "You request for an invitation to Winnow has been accepted!"
 end

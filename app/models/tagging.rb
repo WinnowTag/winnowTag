@@ -75,7 +75,6 @@ class Tagging < ActiveRecord::Base
   
   # Returns true if this tagging is positive based on the definition
   # of positive defined by the Tagger.
-  #
   def positive?
     !negative?
   end
@@ -98,10 +97,6 @@ class Tagging < ActiveRecord::Base
     # Has this user tagged this item with this tag before?
     # This ensures that taggings are unique by user, taggable, tag and classifier_tagging
     user.taggings.find_by_feed_item(feed_item, :all, 
-                                     :conditions => {
-                                       :tag_id => tag.id,
-                                       :classifier_tagging => classifier_tagging?
-                                      }).
-                                     each(&:destroy)
+      :conditions => { :tag_id => tag.id, :classifier_tagging => classifier_tagging? }).each(&:destroy)
   end
 end

@@ -7,12 +7,13 @@ class Invite < ActiveRecord::Base
   belongs_to :user
   
   validates_presence_of :email
+  # TODO: localization
   validates_uniqueness_of :email, :message => "has already been submitted"
   
   def initialize(*args, &block)
     super(*args, &block)
-    self.subject ||= "Invitation Accepted"
-    self.body ||= "You request for an invitation to Winnow has been accepted!"
+    self.subject ||= _(:default_invite_accepted_subject)
+    self.body ||= _(:default_invite_accepted_body)
   end
   
   def activate!
