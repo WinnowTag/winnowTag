@@ -95,5 +95,42 @@ Localization.define do |l|
   
   # app/views/account/activate.html.erb
   l.store :activation_code_label,                 "Activation Code"
-  l.store :activate_button,                       "Activate"
+  l.store :activate_submit_button,                "Activate"
+  
+  # app/views/account/edit.html.erb
+  l.store :edit_profile_header,                   "Account Details"
+  l.store :login_label,                           "Login"
+  l.store :password_label,                        "Password"
+  l.store :password_confirmation_label,           "Password Confirmation"
+  l.store :email_label,                           "Email"
+  l.store :firstname_label,                       "First Name"
+  l.store :lastname_label,                        "Last Name"
+  l.store :time_zone_label,                       "Time Zone"
+  l.store :edit_profile_submit_button,            "Save"
+
+  # app/views/account/login.html.erb
+  l.store :login_header,                          "Login"
+  l.store :remember_me_label,                     "Remember Me"
+  l.store :forgot_password_link,                  "Forgot your password?"
+  l.store :login_submit_button,                   "Login"
+  l.store :reminder_header,                       "Password Reminder"
+  l.store :login_link,                            "Back to login"
+  l.store :reminder_submit_button,                "Submit"
+  l.store :signup_submit_button,                  "Signup"
+  l.store :invite_header,                         "Request Invitation"
+  l.store :questions_header,                      "Questions"
+  l.store :questions_description,                 "optional, answers may encourage a response"
+  l.store :hear_question,                         "How did you hear about Winnow?"
+  l.store :use_question,                          "How/why do you want to use Winnow?"
+  l.store :invite_submit_button,                  "Request Invitation"
+  l.store :welcome_header,                        "Welcome to Winnow"
+  l.store :welcome_text,                          %|
+    <p>
+      Winnow is the demonstration environment for the auto-tagging classifier built by <a href="http://www.peerworks.org">Peerworks</a>.
+    </p>
+    <p>
+      This version of Winnow is only tested in the  <a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser, 
+      as such things may not work correctly in other browsers.
+    </p>
+  |
 end
