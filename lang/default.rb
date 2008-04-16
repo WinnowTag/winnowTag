@@ -133,4 +133,19 @@ Localization.define do |l|
       as such things may not work correctly in other browsers.
     </p>
   |
+
+  # app/views/admin
+  # app/views/collection_job_results
+  # app/views/feed_items
+  # app/views/feeds
+  # app/views/invites
+  # app/views/item_protection
+  # app/views/layouts
+  # app/views/messages
+  # app/views/notifier
+  # app/views/taggings
+  # app/views/tags
+  # app/views/user_notifier
+  # app/views/users
+  # ActiveRecord validation messages
 end
