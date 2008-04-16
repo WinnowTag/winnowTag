@@ -9,10 +9,6 @@
 # feed creation requests on to the collector using Remote::Feed.
 #
 class FeedsController < ApplicationController
-  FEED_NOT_FOUND = "We couldn't find this feed in any of our databases.  Maybe it has been deleted or " +
-                   "never existed.  If you think this is an error, please contact us." unless defined?(FEED_NOT_FOUND)
-  COLLECTOR_DOWN = "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. " +
-                   "We are aware of this problem and will fix it soon. Please try again later." unless defined?(COLLECTOR_DOWN)
   include CollectionJobResultsHelper
   include ActionView::Helpers::TextHelper
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
@@ -43,11 +39,9 @@ class FeedsController < ApplicationController
                                       :callback_url => collection_job_results_url(current_user))
                                       
       if @feed.updated_on.nil?
-        flash[:notice] = current_user.messages.create!(:body => "Thanks for adding the feed from '#{@feed.url}'. We will fetch the " <<
-          "items soon and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar.")
+        flash[:notice] = current_user.messages.create!(:body => _(:feed_added, @feed.url))
       else
-        flash[:notice] = current_user.messages.create!(:body => "We already have the feed from '#{@feed.url}', however we will " <<
-          "update it now and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar.")
+        flash[:notice] = current_user.messages.create!(:body => _(:feed_existed, @feed.url))
       end
       
       respond_to do |format|
@@ -68,7 +62,7 @@ class FeedsController < ApplicationController
         feed.collect(:created_by   => current_user.login, 
                      :callback_url => collection_job_results_url(current_user))
       end
-      flash[:notice] = current_user.messages.create!(:body => "Imported #{pluralize(@feeds.size, 'feed')} from your OPML file")
+      flash[:notice] = current_user.messages.create!(:body => _(:feeds_imported, @feeds.size))
       redirect_to feeds_url
     end
   end
@@ -88,10 +82,10 @@ class FeedsController < ApplicationController
       begin
         @feed = Remote::Feed.find(params[:id])
       rescue Errno::ECONNREFUSED
-        flash[:error] = COLLECTOR_DOWN
+        flash[:error] = _(:collector_down)
         render :action => 'error', :status => '503'
       rescue ActiveResource::ResourceNotFound
-        flash[:error] = FEED_NOT_FOUND
+        flash[:error] = _(:feed_not_found)
         render :action => 'error', :status => '404'
       rescue ActiveResource::Redirection => redirect
         if id = redirect.response['Location'][/\/([^\/]*?)(\.\w+)?$/, 1]
