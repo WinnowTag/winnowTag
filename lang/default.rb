@@ -89,4 +89,11 @@ Localization.define do |l|
   # app/models/invite.rb
   l.store :default_invite_accepted_subject,       "Invite Accepted"
   l.store :default_invite_accepted_body,          "You request for an invitation to Winnow has been accepted!"
+  
+  # app/views/about/index.html.erb
+  l.store :winnow_info,                           "This is build %s of Winnow."
+  
+  # app/views/account/activate.html.erb
+  l.store :activation_code_label,                 "Activation Code"
+  l.store :activate_button,                       "Activate"
 end
