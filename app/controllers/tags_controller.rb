@@ -27,10 +27,8 @@ class TagsController < ApplicationController
     respond_to do |format|
       format.html
       format.js do
-        @tags  = current_user.tags.search(:excluder => current_user, :text_filter => params[:text_filter], :order => params[:order])
-        @tags += Tag.search(:excluder => current_user, :text_filter => params[:text_filter], :subscribed_by => current_user, :order => params[:order])
-        @tags  = @tags.sort_by { |tag| tag.name.downcase }
-        @tags_count = @tags.size
+        @tags, @tags_count = Tag.search(:user => current_user, :text_filter => params[:text_filter], :own => true,
+                                        :order => params[:order], :direction => params[:direction], :count => true)
       end
       format.atomsvc do        
         conditional_render(Tag.maximum(:created_on)) do
@@ -46,8 +44,9 @@ class TagsController < ApplicationController
       format.html
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
-        @tags, @tags_count = Tag.search(:text_filter => params[:text_filter], :conditions => ["tags.public = ?", true], :subscriber => current_user,
-                                        :order => params[:order], :limit => limit, :offset => params[:offset], :count => true)
+        @tags, @tags_count = Tag.search(:user => current_user, :text_filter => params[:text_filter], :conditions => ["tags.public = ?", true], 
+                                        :order => params[:order], :direction => params[:direction], 
+                                        :limit => limit, :offset => params[:offset], :count => true)
       end
     end
   end

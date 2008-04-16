@@ -105,22 +105,22 @@ class User < ActiveRecord::Base
         conditions << "(" + ored_conditions.join(" OR ") + ")"
       end
       
+      direction = case options[:direction]
+      when "asc", "desc"
+        options[:direction].upcase
+      end
+
       order = case options[:order]
       when "login", "email", "logged_in_at", "last_accessed_at", "id"
-        "users.#{options[:order]}"
+        "users.#{options[:order]} #{direction}"
       when "name"
-        "lastname, firstname"
+        "lastname #{direction}, firstname #{direction}"
       when "last_tagging_on", "tag_count"
-        options[:order]
+        "#{options[:order]} #{direction}"
       else
-        # :order => "prototype DESC, #{sortable_order('users', :alias => 'login', :sort_direction => :asc)}"
         "users.login"
       end
 
-      case options[:direction]
-      when "asc", "desc"
-        order = "#{order} #{options[:direction].upcase}"
-      end
     
       options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
       

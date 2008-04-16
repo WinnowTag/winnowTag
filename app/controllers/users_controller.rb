@@ -14,7 +14,8 @@ class UsersController < ApplicationController
       format.html
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
-        @users, @users_count = User.search(:text_filter => params[:text_filter], :order => params[:order], 
+        @users, @users_count = User.search(:text_filter => params[:text_filter], 
+                                           :order => params[:order], :direction => params[:direction],
                                            :limit => limit, :offset => params[:offset], :count => true)
       end
       format.csv do

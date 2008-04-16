@@ -42,7 +42,7 @@ describe Tag do
       Tagging.create(:user => u, :feed_item => fi1, :tag => test)
       Tagging.create(:user => u, :feed_item => fi2, :tag => test, :strength => 0)
 
-      tags = u.tags.search(:order => "tags.name")
+      tags = u.tags.search(:user => u, :order => "name")
       assert_equal 7, tags.size
 
       assert_equal classifier, tag = tags.shift
@@ -89,6 +89,8 @@ describe Tag do
     end
   
     it "is properly calculated for subscribed tags" do
+      Tag.delete_all
+
       u = users(:quentin)
       fi1 = FeedItem.find(1)
       fi2 = FeedItem.find(4)
@@ -100,7 +102,7 @@ describe Tag do
       Tagging.create(:user => u, :feed_item => fi1, :tag => test)
       TagSubscription.create(:tag_id => tag.id, :user_id => users(:aaron).id)
 
-      tags = Tag.search(:order => "tags.name", :subscribed_by => users(:aaron))
+      tags = Tag.search(:user => users(:aaron), :own => true, :order => "name")
       assert_equal 1, tags.size
       assert_equal 'tag', tags[0].name
       assert_equal 0, tags[0].positive_count.to_i
@@ -116,16 +118,16 @@ describe Tag do
       tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "Another Tag", :comment => "The second best tag ever")
       tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
     
-      tags = Tag.search(:text_filter => "ever", :order => "id")
+      tags = Tag.search(:user => user_1, :text_filter => "ever", :order => "id")
       tags.should == [tag_1, tag_2, tag_3]
     
-      tags = Tag.search(:text_filter => "world")
+      tags = Tag.search(:user => user_1, :text_filter => "world")
       tags.should == [tag_1]
     
-      tags = Tag.search(:text_filter => "second")
+      tags = Tag.search(:user => user_1, :text_filter => "second")
       tags.should == [tag_2]
     
-      tags = Tag.search(:text_filter => "man")
+      tags = Tag.search(:user => user_1, :text_filter => "man")
       tags.should == [tag_3]
     end
   
@@ -137,7 +139,7 @@ describe Tag do
       tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :public => true, :name => "Another Tag", :comment => "The second best tag ever")
       tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
     
-      tags = Tag.search(:text_filter => "ever", :conditions => { :public => true }, :order => "id")
+      tags = Tag.search(:user => user_1, :text_filter => "ever", :conditions => { :public => true }, :order => "id")
       tags.should == [tag_1, tag_2]
     end
   

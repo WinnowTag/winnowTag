@@ -550,7 +550,7 @@ ItemBrowser.prototype = {
       this.filters.direction = this.options.default_direction;
     }
     this.saveFilters();
-    this.styleOrders();
+    this.styleFilters();
     this.reload();
   },
   

@@ -221,11 +221,6 @@ class Tag < ActiveRecord::Base
   end
   
   def self.search(options = {})
-    joins = ["LEFT JOIN users ON tags.user_id = users.id"]
-    if options[:subscribed_by]
-      joins << "INNER JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscribed_by].id}"
-    end
-    
     select = ['tags.*', 
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
@@ -233,23 +228,23 @@ class Tag < ActiveRecord::Base
                 '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
                   'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
-              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by']
-    if options[:excluder]
-      select << "((SELECT COUNT(*) FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:excluder].id}) > 0) AS globally_exclude"
-    else
-      select << "0 AS globally_exclude"
-    end
-    if options[:subscriber]
-      select << "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscriber].id}) > 0) AS subscribe"
-    else
-      select << "0 AS subscribe"
-    end
+              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by',
+              "((SELECT COUNT(*) FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) > 0) AS globally_exclude",
+              "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) > 0) AS subscribe"]
     
+    joins = ["LEFT JOIN users ON tags.user_id = users.id"]
+
     conditions, values = [], []
     if options[:conditions]
       conditions << sanitize_sql(options[:conditions])
     end
-    
+
+    if options[:own]
+      joins << "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
+      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL)"
+      values << options[:user].id
+    end
+        
     if !options[:text_filter].blank?
       ored_conditions = []
       ored_conditions << "LOWER(tags.name) LIKE LOWER(?)"
@@ -277,9 +272,9 @@ class Tag < ActiveRecord::Base
       order = "#{order} #{options[:direction].upcase}"
     end
 
-    options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
+    options_for_find = { :joins => joins.join(" "), :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
     
-    results = find(:all, options_for_find.merge(:select => select.join(","),  :joins => joins.join(" "),
+    results = find(:all, options_for_find.merge(:select => select.join(","),
                    :order => order, :group => "tags.id", :limit => options[:limit], :offset => options[:offset]))
     
     if options[:count]
