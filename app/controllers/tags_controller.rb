@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # The tags controller provides an interface to a users tags.
 #
@@ -14,7 +13,6 @@
 # You can think of it as the +TaggingsController+ operates on 
 # single uses of the tag by the user and the +TagsController+
 # operates on the many +Taggings+ that use a given +Tag+.
-#
 class TagsController < ApplicationController
   helper :bias_slider
   

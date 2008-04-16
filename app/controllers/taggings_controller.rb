@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # Required for the Tag() function.  Rails can sometimes auto-load this and
 # sometimes it doesn't so lets put it here explicitly so we can always be

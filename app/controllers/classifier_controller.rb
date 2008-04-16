@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # Controller for the user's classifier.
 #
@@ -14,7 +13,6 @@
 # <tt>classify</tt>:: Starts a background classification process for the classifier.
 # <tt>status</tt>: Gets JSON object containing the classification progress.
 # <tt>cancel</tt>: Cancels the in progress classification.
-#
 class ClassifierController < ApplicationController
   class ClassificationStartException < StandardError
     attr_reader :code

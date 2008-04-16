@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # Provides a representation of an item from an RSS/Atom feed.
 #
@@ -20,27 +19,7 @@
 #
 # Tokens are stored in a FeedItemTokensContainer.
 #
-#
 # See also FeedItemContent and FeedItemTokensContainer.
-# 
-# == Schema Information
-# Schema version: 57
-#
-# Table name: feed_items
-#
-#  id             :integer(11)   not null, primary key
-#  feed_id        :integer(11)   
-#  sort_title     :string(255)   
-#  time           :datetime      
-#  created_on     :datetime      
-#  unique_id      :string(255)   default("")
-#  time_source    :string(255)   default("unknown")
-#  xml_data_size  :integer(11)   
-#  link           :string(255)   
-#  content_length :integer(11)   
-#  position       :integer(11)   
-#
-
 class FeedItem < ActiveRecord::Base
   validates_presence_of :link
   validates_uniqueness_of :link

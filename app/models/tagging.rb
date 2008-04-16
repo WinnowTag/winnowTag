@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # A Tagging represents the relationship between a Tag, a Tagger and
 # a Taggable. It is the core class within Winnow's tagging infra-structure.
@@ -55,25 +54,6 @@
 # metadata. 
 #
 # See ClassifierExecution and RenameTagging for examples of classes that can be used as tagging metdata.
-#
-# == Schema Information
-# Schema version: 57
-#
-# Table name: taggings
-#
-#  id            :integer(11)   not null, primary key
-#  taggable_type :string(255)   
-#  taggable_id   :integer(11)   
-#  tagger_type   :string(255)   
-#  tagger_id     :integer(11)   
-#  created_on    :datetime      
-#  tag_id        :integer(11)   
-#  strength      :float         default(1.0)
-#  deleted_at    :datetime      
-#  metadata_type :string(255)   
-#  metadata_id   :integer(11)   
-#
-
 class Tagging < ActiveRecord::Base
   acts_as_immutable
   belongs_to :tag

@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # Represents a Feed provided by an RSS/Atom source.
 #
@@ -11,24 +10,6 @@
 # collect and collect_all methods. It also provides a way to
 # get a list of feeds with item counts after applying similar
 # filters to those used by FeedItem.find_with_filters.
-#
-#
-# == Schema Information
-# Schema version: 57
-#
-# Table name: feeds
-#
-#  id                :integer(11)   not null, primary key
-#  url               :string(255)   
-#  title             :string(255)   
-#  link              :string(255)   
-#  last_http_headers :text          
-#  updated_on        :datetime      
-#  active            :boolean(1)    default(TRUE)
-#  created_on        :datetime      
-#  sort_title        :string(255)   
-#
-
 class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all

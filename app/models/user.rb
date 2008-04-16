@@ -3,32 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-#
-  
-# == Schema Information
-# Schema version: 57
-#
-# Table name: users
-#
-#  id                        :integer(11)   not null, primary key
-#  login                     :string(80)    default(""), not null
-#  crypted_password          :string(255)    
-#  email                     :string(60)    default(""), not null
-#  firstname                 :string(40)    
-#  lastname                  :string(40)    
-#  activation_code           :string(40)    
-#  created_at                :datetime      
-#  updated_at                :datetime      
-#  logged_in_at              :datetime      
-#  deleted_at                :datetime      
-#  activated_at              :datetime      
-#  remember_token            :string(255)   
-#  remember_token_expires_at :datetime      
-#  last_accessed_at          :datetime      
-#  last_session_ended_at     :datetime      
-#
-
 class User < ActiveRecord::Base   
   module FindByFeedItem
     def find_by_feed_item(feed_item, type = :all, options = {})

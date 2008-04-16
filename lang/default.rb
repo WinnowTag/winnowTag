@@ -82,4 +82,7 @@ Localization.define do |l|
 
   # app/mailers/notifier.rb
   l.store :reminder_subject,                      "Password Reminder"
+  
+  # app/models/collection_job_result.rb
+  l.store :unknown_feed,                          "Unknown Feed"
 end
