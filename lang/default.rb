@@ -74,4 +74,12 @@ Localization.define do |l|
   l.store :stop_classifier_button,                "Stop"
   l.store :classifier_progress,                   "Classify changed tags"
   l.store :feed_item_no_title,                    "(no title)"
+  
+  # app/mailers/notifier.rb
+  l.store :subject_prefix,                        "[WINNOW]"
+  l.store :deployed_subject,                      "[DEPLOYMENT] r%s deployed"
+  l.store :invite_requested_subject,              "Invite Requested"
+
+  # app/mailers/notifier.rb
+  l.store :reminder_subject,                      "Password Reminder"
 end

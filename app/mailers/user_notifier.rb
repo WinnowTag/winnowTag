@@ -5,12 +5,12 @@
 # Please contact info@peerworks.org for further information.
 class UserNotifier < ActionMailer::Base
   def reminder(user, url)
-    setup_email user.email, :subject => "Password Reminder"
+    setup_email user.email, :subject => _(:reminder_subject)
     body        :user => user, :url => url
   end
   
   def invite_requested(invite)
-    setup_email invite.email, :subject => "Invitation Requested"
+    setup_email invite.email, :subject => _(:invite_requested_subject)
     body        :invite => invite
   end
   
@@ -40,6 +40,6 @@ protected
   def setup_email(email, options = {})
     recipients  email
     from        "winnowadmin@mindloom.org"
-    subject     "[Winnow] #{options[:subject]}"
+    subject     "#{_(:subject_prefix)} #{options[:subject]}"
   end
 end

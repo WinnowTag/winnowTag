@@ -3,16 +3,14 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 class Notifier < ActionMailer::Base
   def deployed(host, repository, revision, deployer, comment)
-    setup_email :subject => "[DEPLOYMENT] r#{revision} deployed"
+    setup_email :subject => _(:deployed_subject, revision)
     body        :host => host, :repository => repository, :revision => revision, :deployer => deployer, :comment => comment
   end
 
   def invite_requested(invite)
-    setup_email :subject => "[WINNOW] Invite Requested"
+    setup_email :subject => "#{_(:subject_prefix)} #{_(:invite_requested_subject)}"
     body        :invite => invite
   end
     
