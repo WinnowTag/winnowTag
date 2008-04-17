@@ -1,7 +1,7 @@
 Localization.define do |l|
   # app/controllers/account_controller.rb
   l.store :profile_update,                        "Information Updated"
-  l.store :credentials_invalid,                   "Invalid credentials. Please try again"
+  l.store :credentials_invalid,                   "Invalid credentials. Please try again."
   l.store :update_password,                       "Please update your password"
   l.store :reminder_invalid,                      "Invalid reminder code"
   l.store :reminder_sent,                         "A password reminder has been sent"
