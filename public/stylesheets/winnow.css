@@ -258,6 +258,18 @@ optgroup {
   text-align: center;
 }
 
+#sidebar .section .clear input {
+  display: block;
+  margin: 1em auto;
+}
+
+#sidebar .section .clear .feed_icon {
+  margin: 0 0 1em 0;
+  padding: 0 0 0 20px;
+  background-image: url(../images/vertical_sprite.png);
+  background-repeat: no-repeat;
+}
+
 .progress_bar_container {
   margin-top: 5px;
   width: 100%;
@@ -282,7 +294,6 @@ optgroup {
 
 #sidebar .classification_controls {
   text-align: center;
-  margin-top: 5px;
 }
 
 #header_controls {
@@ -707,13 +718,13 @@ a.editor_cancel {
   margin-left: 5px;
 }
 
-#footer #feed_item_count {
+#footer .count {
   float: right;
 }
 
-#footer #feed_items_indicator {
-  float: left;
-  background: url(../images/indicator.gif) center left no-repeat;
+#footer .loading {
+  float: right;
+  background: url(../images/indicator.gif) top left no-repeat;
   padding-left: 20px;
   margin-left: 1em;
 }
@@ -1469,4 +1480,18 @@ a.desc {
 .messages ul li.sidebar_message .date {
   color: #999;
   float: right;
+}
+
+.order .asc { 
+  background-image: url(../images/bullet_arrow_up.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  padding: 0 1.5em 0 0;
+}
+
+.order .desc {
+  background-image: url(../images/bullet_arrow_down.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  padding: 0 1.5em 0 0;  
 }

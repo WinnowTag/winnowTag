@@ -1,4 +1,4 @@
-page << "if(ItemBrowser.instance) { itemBrowser.addTag(#{@tagging.tag.name.to_json}); }"
+page << "if(itemBrowser) { itemBrowser.addTag(#{@tagging.tag.name.to_json}); }"
 
 page << "if(!$('#{dom_id(@tagging.tag)}')) {"
   page.call(:insert_in_order, 'tag_filters', 'li', '.name', tag_filter_control(@tagging.tag, :remove => :subscription), @tagging.tag.name)
@@ -9,5 +9,5 @@ page << "}"
 
 page << "if ($('classification_button')) {"
   page['classification_button'].disabled = false
-  page.replace_html 'progress_title', classifier_progress_title
+  page.replace_html 'progress_title', _(:classifier_progress)
 page << "}"

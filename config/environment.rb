@@ -15,6 +15,8 @@ STORE_LOCATION_METHOD = :store_location
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.0.2' unless defined? RAILS_GEM_VERSION
 
+CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier' unless defined?(CLASSIFIER_NAMESPACE)
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 

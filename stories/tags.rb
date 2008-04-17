@@ -10,11 +10,11 @@ require File.dirname(__FILE__) + '/helper'
 steps_for(:tags) do
   Given("a public tag in the system") do
     @user = User.create!(valid_user_attributes)
-    @tag = Tag.create!(:name => 'storytag', :user => @user)
+    @tag = Tag.create!(:name => 'storytag', :user => @user, :public => true)
   end
   
   When("I access /tags/public/username/tag_id.atom") do
-    get "/tags/public/#{@tag.user.login}/#{@tag.id}.atom"
+    get "/#{@tag.user.login}/tags/#{@tag.name}.atom"
   end
   
   Then("the response is $code") do |code|

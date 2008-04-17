@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feed_items', {tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %>});
+			itemBrowser = new ItemBrowser('feed_items', {orders: ["date", "strength"], default_order: "date", default_direction: "desc", tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %>});
 		});
 	</script>
 <% end -%>
@@ -19,6 +19,6 @@
 		<%= image_submit_tag "next.png", :onclick => "itemBrowser.openNextItem();" %>
 		<%= image_submit_tag "mark_read.png", :onclick => "itemBrowser.markAllItemsRead();" %>
 	</span>
-	<span id="feed_items_indicator" style="display:none;"></span>
-	<span id="feed_item_count"></span>
+	<span id="feed_items_indicator" class="loading" style="display:none;"></span>
+	<span id="feed_items_count" class="count"></span>
 <% end -%>

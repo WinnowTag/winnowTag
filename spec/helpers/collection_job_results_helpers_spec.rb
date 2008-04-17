@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe CollectionJobResultsHelper do
@@ -22,7 +20,7 @@ describe CollectionJobResultsHelper do
       
       @message = mock_model(Message)
       @messages = stub("messages")
-      @messages.should_receive(:create!).with(:body => 'We have finished fetching new items for \'Title\'.').and_return(@message)
+      @messages.should_receive(:create!).with(:body => 'We have finished fetching new items for Title').and_return(@message)
       @current_user.stub!(:messages).and_return(@messages)
     end
       

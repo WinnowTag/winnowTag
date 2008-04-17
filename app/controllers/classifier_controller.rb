@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # Controller for the user's classifier.
 #
@@ -14,7 +13,6 @@
 # <tt>classify</tt>:: Starts a background classification process for the classifier.
 # <tt>status</tt>: Gets JSON object containing the classification progress.
 # <tt>cancel</tt>: Cancels the in progress classification.
-#
 class ClassifierController < ApplicationController
   class ClassificationStartException < StandardError
     attr_reader :code
@@ -29,11 +27,11 @@ class ClassifierController < ApplicationController
     respond_to do |wants|
       begin
         if job_running?
-          raise ClassificationStartException.new("The classifier is already running.", 500)
+          raise ClassificationStartException.new(_(:classifier_running), 500)
         elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
           raise ClassificationStartException.new(puct.map{|t| t.name}.to_json, 412)
         elsif current_user.changed_tags.empty?
-          raise ClassificationStartException.new("There are no changes to your tags", 500)
+          raise ClassificationStartException.new(_(:tags_not_changed), 500)
         else
           job = Remote::ClassifierJob.create(:user_id => current_user.id)          
           session[:classification_job_id] = job.id
@@ -52,7 +50,7 @@ class ClassifierController < ApplicationController
   
   def status
     respond_to do |wants|
-      status = {:error_message => 'No classification process running', :progress => 100}
+      status = {:error_message => _(:classifier_not_running), :progress => 100}
       
       if (job_id = session[:classification_job_id]) && (job = Remote::ClassifierJob.find(job_id))
         status = {:progress => job.progress, :status => job.status}

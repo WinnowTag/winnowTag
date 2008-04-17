@@ -1,27 +1,19 @@
-<% content_for :header_controls do -%>
-  <ul class="control_bar">
-    <li>
-      Sort By:
-      <%= sort_link "Name", 'tags', :alias => 'name' %>, 
-      <%= sort_link "Last Trained", 'tags', :alias => 'last_used_by' %>,
-      <%= sort_link "Training (+/-)", 'tags', :alias => 'training_count' %>,
-      <%= sort_link "Automatic", 'tags', :alias => 'classifier_count' %>,
-      <%= sort_link "Globally Exclude", 'tags', :alias => 'globally_exclude' %>
-    </li>
-  </ul>
-  <% form_tag(tags_path, :method => :get) do -%>
-	  <%= search_field_tag "search_term", @search_term, :placeholder => "Search Tags...", :clear => { :onclick => "window.location = '#{tags_path}';" } %>
-  <% end -%>
+<% content_for :head do -%>
+	<script type="text/javascript" charset="utf-8">
+		var itemBrowser;
+		document.observe('dom:loaded', function() {
+		  itemBrowser = new ItemBrowser('tags', {orders: ["name", "last_used_by", "training_count", "classifier_count", "globally_exclude"], default_order: "name"});
+		});
+	</script>
 <% end -%>
 
-<% if @tags.empty? && @subscribed_tags.empty? -%>
-  <div class="empty">No tags matched your search criteria.</div>
-<% else -%>
-  <% @tags.each do |tag| -%>
-    <% if tag.user == current_user -%>
-      <%= render :partial => 'tag', :locals => { :tag => tag } %>
-    <% else -%>
-      <%= render :partial => 'subscribed_tag', :locals => { :subscribed_tag => tag } %>
-    <% end -%>
-  <% end -%>
+<% content_for :header_controls do -%>
+  <%= render :partial => 'index_header_controls' %>
+<% end -%>
+
+<div id="tags"></div>
+
+<% content_for :footer do -%>
+	<span id="tags_indicator" class="loading" style="display:none;"></span>
+	<span id="tags_count" class="count"></span>
 <% end -%>

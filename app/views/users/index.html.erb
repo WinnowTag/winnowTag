@@ -1,7 +1,19 @@
-<%= render :partial => 'header_controls' %>
+<% content_for :head do -%>
+	<script type="text/javascript" charset="utf-8">
+		var itemBrowser;
+		document.observe('dom:loaded', function() {
+		  itemBrowser = new ItemBrowser('users', {orders: ["login", "name", "email", "logged_in_at", "last_accessed_at", "last_tagging_on", "tag_count"], default_order: "login"});
+		});
+	</script>
+<% end -%>
 
-<% if @users.empty? -%>
-  <div class="empty">No users matched your search criteria.</div>
-<% else -%>
-  <%= render :partial => 'user', :collection => @users %>
+<% content_for :header_controls do -%>
+  <%= render :partial => 'header_controls' %>
+<% end -%>
+
+<div id="users"></div>
+
+<% content_for :footer do -%>
+	<span id="users_indicator" class="loading" style="display:none;"></span>
+	<span id="users_count" class="count"></span>
 <% end -%>

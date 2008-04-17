@@ -4,69 +4,69 @@
 // to use, modify, or create derivate works.
 // Please contact info@peerworks.org for further information.
 
-var ItemBrowser = Class.create();
-ItemBrowser.instance = null;
 /** Provides the ItemBrowser functionality.
  *
  *  The Item Browser is a scrollable view over the entire list of items
  *  in the database.  Items are lazily loaded into the browser as the 
  *  users scrolls the view around.
  */
+var ItemBrowser = Class.create();
 ItemBrowser.prototype = {
   /** Initialization function.
    *
-   *  @param feed_item_container The element or id of the feed item
-   *         container div.  This is the div that lies within scrollable
-   *         div.  The feed item container div holds the feed item elements.
+   *  @param container The id of the container div.
+   *         This is the div that lies within scrollable div.
+   *         The container div holds the item elements
    *         The ItemBrowser will look for another element with the id
-   *         feed_item_container + '_scrollable' that will be used as the
+   *         'content' that will be used as the
    *         scrollable div.
    *
    *  @param options A hash of options.  Supported options are:
-   *         - pruning_threshold: The number of items that can be loaded into
-   *                              the browser before pruning occurs.
    *         - update_threshold: The minimum number of items that will be fetched in
    *                             an update for that update to occur.
    *
    */
-  initialize: function(feed_item_container, options) {
-    ItemBrowser.instance = this;
-    
+  initialize: function(container, options) {
     this.options = {
-      pruning_threshold: 500,
-      update_threshold: 8
+      update_threshold: 8,
+      controller: container,
+      url: container,
+      tags: [],
+      orders: [],
+      default_order: null,
+      default_direction: "asc"
     };
     Object.extend(this.options, options || {});
     
-    document.observe('keypress', this.keypress.bindAsEventListener(this));
-    
-    this.update_queue = new Array();
-    
-    // counts of the number of pruned items
-    this.pruned_items = 0;
-    
-    // Flag for loading item - so we don't load them more than once at a time.
-    this.loading = false;    
-    this.feed_items_container = $(feed_item_container);
-    this.feed_items_scrollable = $('content');
-
-    this.initializeItemList();
-    
-    var self = this;
-    Event.observe(this.feed_items_scrollable, 'scroll', function() { self.scrollFeedItemView(); });
-    
+    this.update_queue = [];
     this.auto_completers = {};
+    this.loading = false;    
+    
+    this.container = $(container);
+    this.scrollable = $('content');
 
-    if(location.hash.gsub('#', '').blank() && Cookie.get("filters")) {
-      this.setFilters(Cookie.get("filters").toQueryParams());
+    document.observe('keypress', this.keypress.bindAsEventListener(this));
+    this.scrollable.observe('scroll', this.scrollView.bind(this));
+    
+    this.initializeItemList();
+    this.initializeFilters();
+    this.loadSidebar();
+  },
+
+  initializeFilters: function() {
+    this.filters = {
+      order: this.options.default_order,
+      direction: this.options.default_direction
+    };
+    
+    if(location.hash.gsub('#', '').blank() && Cookie.get(this.container.getAttribute("id") + "_filters")) {
+      this.setFilters(Cookie.get(this.container.getAttribute("id") + "_filters").toQueryParams());
     } else {
       this.setFilters(location.hash.gsub('#', '').toQueryParams());
     }
-
-    this.loadSidebar();    
   },
   
-  /** Called to initialize the internal list of items from the items loaded into the feed_item_container.
+  /** Called to initialize the internal list of items from the items loaded into the container.
    *
    *  An items position within the list corresponds to it's position within the sort order of the item
    *  list in the database.
@@ -82,28 +82,28 @@ ItemBrowser.prototype = {
       }
     });
     
-    this.feed_items_container.select('.item').each(function(fi) {
+    this.container.select('.item').each(function(fi) {
       this.items.insert(this.items.length, fi.getAttribute('id'), fi.getAttribute('position'), fi);
     }.bind(this));
   },
   
   itemHeight: function() {
     if (this.items[0] && this.items[1]) {
-      return Math.min(this.items[0].element.offsetHeight, this.items[1].element.offsetHeight);
+      var height = Math.min(this.items[0].element.offsetHeight, this.items[1].element.offsetHeight);
+      height += parseInt(this.items[0].element.getStyle("padding-bottom"));
+      return height;
     } else {
       return 0;
     }
   },
   
-  /** Updates the display of the feed item count.
-   */  
-  updateFeedItemCount: function() {
-    $('feed_item_count').update("About " + this.items.compact().length + " items");
+  updateCount: function() {
+    $(this.container.getAttribute("id") + '_count').update("About " + this.items.compact().length + " items");
   },
   
   /** Returns the number of items in the viewable area of the scrollable container */
   numberOfItemsInView: function() {
-    return Math.round(this.feed_items_scrollable.getHeight() / this.itemHeight());
+    return Math.round(this.scrollable.getHeight() / this.itemHeight());
   },
   
   /** Sets the total number of items.
@@ -124,22 +124,22 @@ ItemBrowser.prototype = {
    */
   updateInitialSpacer: function() {
     var height = (this.total_items - this.items.length) * this.itemHeight();
-    var spacer = this.feed_items_container.down(".item_spacer");
+    var spacer = this.container.down(".item_spacer");
     
     if (!spacer) {
-      new Insertion.Bottom(this.feed_items_container, '<div class="item_spacer"></div>');
-      spacer = this.feed_items_container.down(".item_spacer");
+      new Insertion.Bottom(this.container, '<div class="item_spacer"></div>');
+      spacer = this.container.down(".item_spacer");
     }
     
     spacer.setStyle({height: '' + height + 'px'});    
   },
   
   updateEmptyMessage: function() {
-    var spacer = this.feed_items_container.down(".empty");
+    var spacer = this.container.down(".empty");
     
     if (!spacer) {
-      new Insertion.Bottom(this.feed_items_container, '<div class="empty" style="display:none">No items matched your search criteria.</div>');
-      spacer = this.feed_items_container.down(".empty");
+      new Insertion.Bottom(this.container, '<div class="empty" style="display:none">No items matched your search criteria.</div>');
+      spacer = this.container.down(".empty");
     }
     
     if(this.total_items == 0) {
@@ -149,22 +149,22 @@ ItemBrowser.prototype = {
     }
   },
   
-  /** Responds to scrolling events on the feed_item_scrollable.
+  /** Responds to scrolling events on the scrollable.
    *
    *  When a scrolling event occurs a function will be registered with
-   *  a 500ms delay to call the updateFeedItems method. Subsequent scrolling
+   *  a 500ms delay to call the updateItems method. Subsequent scrolling
    *  events within 500ms will clear that function and register a new one.
    *  The reason for this is that the scroll event is dispatched constantly by 
    *  the browser as the viewport is scrolled, so the prevent multiple updates
    *  being requested we only issue an update when the user has stopped scrolling
    *  for at least 500ms.
    */
-  scrollFeedItemView: function() {
+  scrollView: function() {
     if (this.item_loading_timeout) {      
       clearTimeout(this.item_loading_timeout);
     }
     
-    var scrollTop = this.feed_items_scrollable.scrollTop;
+    var scrollTop = this.scrollable.scrollTop;
     // bail out of scrollTop is zero - this prevents prematurely 
     // getting items when the list is cleared.
     if (scrollTop == 0) {return;}
@@ -172,19 +172,16 @@ ItemBrowser.prototype = {
     
     this.item_loading_timeout = setTimeout(function() {
       if (this.loading) {
-        var self = this;
-        this.update_queue.push(function() {
-          self.updateFeedItems({offset: offset});
-        });
+        this.update_queue.push(this.updateItems.bind(this, {offset: offset}));
       } else {
-        this.updateFeedItems({offset: offset});        
+        this.updateItems({offset: offset});        
       }
     }.bind(this), 300);
   }, 
   
   /** Creates the update URL from a list of options. */
   buildUpdateURL: function(parameters) {
-    return '/feed_items?' + $H(location.hash.gsub('#', '').toQueryParams()).merge($H(parameters)).toQueryString();
+    return '/' + this.options.url + '?' + $H(this.filters).merge($H(parameters)).toQueryString();
   },
   
   updateFromQueue: function() {
@@ -197,37 +194,24 @@ ItemBrowser.prototype = {
   /** This function is responsible for determining which items to fetch
    *  from the server and invoking doUpdate with those parameters.
    * 
-   *  In it's normal mode, updateFeedItems accepts an offset parameter as one
+   *  updateItems accepts an offset parameter as one
    *  of the options.  This parameter is interpreted as the position of the
    *  top of the scroll viewport, it then attempts to gets item to cover the
    *  previous half page, the current page and the first half of the next page.
-   *
-   *  The second mode is the incremental mode, which currently uses the explicit
-   *  offset and limit specified in the arguments.  Also in the incremental mode
-   *  if the number of items currently loaded is greater than the pruning_threshold,
-   *  no items will be fetched, just the counts are updatd, i.e. the total_items 
-   *  and the tag count filters.
    */
-  updateFeedItems: function(options) {
-    if (this.loading) {
-      return;
-    }
+  updateItems: function(options) {
+    if(this.items.compact().length == this.total_items) { return; }
+    if(this.loading)                                    { return; }
     this.loading = true;
     
     var update_options = Object.clone(options);
-    
-    if (options && options.incremental && this.items.length >= this.options.pruning_threshold) {
-      update_options.count_only = true;
-      // Set loading to false because this request won't trigger an item load
-      this.loading = false;
-    }
     
     var do_update = false;
     // This is the standard update method.
     //
     // Start half a page ahead and behind the current page and 
     // 'squeeze' in until we have a set of items to load.     
-    if (update_options && !(update_options.incremental || update_options.count_only)) {
+    if (update_options) {
       var items_in_view = this.numberOfItemsInView();
       // The raw_offset is the item half a page behind the current page
       var raw_offset = Math.floor(options.offset - (items_in_view / 2));
@@ -250,10 +234,8 @@ ItemBrowser.prototype = {
       }      
     }
         
-    if (do_update || update_options.incremental) {
-      if (!update_options.count_only) {
-        this.showLoadingIndicator();
-      }
+    if (do_update) {
+      this.showLoadingIndicator();
       this.doUpdate(update_options);
     } else {
       this.loading = false;
@@ -265,10 +247,8 @@ ItemBrowser.prototype = {
     options = options || {};
     new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
       onComplete: function() {
-        this.updateFeedItemCount();
-        if (!options.count_only) {
-          this.hideLoadingIndicator();
-        }
+        this.updateCount();
+        this.hideLoadingIndicator();
         this.loading = false;
         this.updateFromQueue();
       }.bind(this)
@@ -285,54 +265,14 @@ ItemBrowser.prototype = {
     });  
   },
   
-  /** This is old and not used, but we might need something like so it is here for reference. */
-  pruneExcessItems: function(options) {
-    if (this.options.window_size < this.items.length) {
-      var going_up = options && options.direction == 'up';
-      var index_to_remove_from = 0;
-      var items = this.items;
-      var totalHeight = 0;
-      var number_to_remove = this.items.length - this.options.window_size;
-      
-      // If the view is being scrolled up prune items from the bottom
-      if (going_up) {
-        items = items.reverse(false);
-        index_to_remove_from = items.length - number_to_remove;
-      }
-      
-      // This may look like it can be done in the one loop, however
-      // removing an item seems to make the next request for the offsetHeight
-      // very slow, I assume it must have to recalculate the height when the DOM
-      // is changed.  It is much faster to loop through once and get the heights
-      // of the elements to remove and then loop through again to remove the elements.
-      // Then once this is done we adjust the position of the scroll view to 
-      // compensate for the items that have been removed.
-      for (var i = 0; i < number_to_remove; i++) {
-        if (going_up) {
-          this.pruned_items--;          
-        } else {
-          this.pruned_items++;
-          totalHeight += items[i].element.offsetHeight;          
-        }
-      }
-      for (var i = 0; i < number_to_remove; i++) {
-        items[i].element.remove();
-        this.items[items[i].element.getAttribute('id')] = false;
-      }
-      
-      this.items.splice(index_to_remove_from, number_to_remove);
-      this.feed_items_container.scrollTop -= totalHeight;
-    }
-  },
-  
-  /** Inserts an item into the feed item container.
+  /** Inserts an item into the item container.
    *
    *  Items are inserted by using their position within the list of items to
    *  find how many items not yet loaded come before and after the new item.
    *  This empty space is filled with a spacer div whose height is equal to the
-   *  number of items that would fit in the gap * the height of a feed item.
-   *  This ensures that each feed item is positioned both in the items list and
-   *  the feed item container that corresponds to their position in the list
+   *  number of items that would fit in the gap * the height of an item.
+   *  This ensures that each item is positioned both in the items list and
+   *  the item container that corresponds to their position in the list
    *  of items in the database, with empty space between items filled in by 
    *  a spacer div for each gap.
    * 
@@ -354,7 +294,7 @@ ItemBrowser.prototype = {
       if (this.items[previous_position]) {
         existing_spacer = this.items[previous_position].element.nextSiblings().first();
       } else {
-        existing_spacer = this.feed_items_container.immediateDescendants().first();
+        existing_spacer = this.container.immediateDescendants().first();
       }
       
       var first_spacer_height = (position - previous_position - 1) * this.itemHeight();
@@ -374,68 +314,15 @@ ItemBrowser.prototype = {
       if (existing_spacer) {
         existing_spacer.replace(first_spacer_content + content + next_spacer_content);
       } else {
-        new Insertion.Bottom('feed_items', first_spacer_content + content + next_spacer_content);
+        new Insertion.Bottom(this.container, first_spacer_content + content + next_spacer_content);
       }
       this.items[position] = {element: $(item_id), position: $(item_id).getAttribute('position')};
       this.items[item_id] = true;
     }
   },
   
-  /** Inserts a item in it's correct position.
-   *
-   *  This function is used during the incremental update process to ensure that items
-   *  which come in during classification are placed in the correct order.  Ordering is done
-   *  by the position attribute.
-   */
-  insertInOrder: function(item_id, position, content) {    
-    if (!this.items[item_id] && this.items.length == 0) {
-      new Insertion.Top(this.feed_items_container, content);
-      this.items.insert(0, item_id, position, $(item_id));
-    } else if (!this.items[item_id]) {
-      var inserted = false;
-      var skippedOver = null;
-      
-      for (var i = this.items.length - 1; i >= 0; i--) {
-        if (!this.items[i]) {
-          skippedOver = i;          
-        } else if (this.items[i].position >= position) {
-          inserted = true;              
-          if (skippedOver) {
-            this.removeEmptySpaceAt(skippedOver);
-          }
-          new Insertion.After(this.items[i].element, content);
-          this.items.insert(i + 1, item_id, position, this.items[i].element.next());  
-          break;
-        } 
-      }
-      
-      if (!inserted) {
-        if (skippedOver) {
-          this.removeEmptySpaceAt(skippedOver);
-        }
-        new Insertion.Before(this.items[0].element, content);
-        this.items.insert(0, item_id, position, $(item_id));
-
-      }            
-    }
-    
-    this.updateInitialSpacer();
-  },
-
-  removeEmptySpaceAt: function(index) {
-    if (this.items[index - 1]) {
-      var space = this.items[index - 1].element.nextSiblings().first();
-      if (space) {
-        space.setStyle({height: space.getHeight() - this.itemHeight() + 'px'});
-      }
-    }
-    
-    this.items.splice(index, 1);
-  },
-
-  /** Clears all the items. */
   clear: function() {
-    this.feed_items_container.update('');
+    this.container.update('');
     this.selectedItem = null;
     this.initializeItemList();
   },
@@ -459,15 +346,18 @@ ItemBrowser.prototype = {
   
   loadSidebar: function() {
     var sidebar = $("sidebar");
-    sidebar.addClassName("loading");
+    if(sidebar) {
+      sidebar.addClassName("loading");
 
-    new Ajax.Updater("sidebar", "/feed_items/sidebar", { method: 'get', parameters: location.hash.gsub('#', ''), evalScripts: true,
-      onComplete: function() {
-        sidebar.removeClassName("loading");
-        AppleSearch.setup();
-        ItemBrowser.instance.styleFilters();
-      }
-    });  
+      var self = this;
+      new Ajax.Updater("sidebar", "/" + this.options.controller + "/sidebar", { method: 'get', parameters: this.filters, evalScripts: true,
+        onComplete: function() {
+          sidebar.removeClassName("loading");
+          AppleSearch.setup();
+          self.styleFilters();
+        }
+      });
+    }
   },
   
   expandFolderParameters: function(parameters) {
@@ -520,7 +410,7 @@ ItemBrowser.prototype = {
   removeFilters: function(parameters) {
     this.expandFolderParameters(parameters);
     
-    var new_parameters = location.hash.gsub('#', '').toQueryParams();
+    var new_parameters = Object.clone(this.filters);
     if(parameters.feed_ids) {
       new_parameters.feed_ids = (new_parameters.feed_ids || "").split(",").reject(function(feed_id) {
         return parameters.feed_ids.split(",").include(feed_id);
@@ -536,92 +426,54 @@ ItemBrowser.prototype = {
   
   setFilters: function(parameters) {
     this.expandFolderParameters(parameters);
-
-    // Clear out any tag/feed ids
-    var old_parameters = $H(location.hash.gsub('#', '').toQueryParams());
-    old_parameters.unset("tag_ids");
-    old_parameters.unset("feed_ids");
-    if(old_parameters.keys().size() == 0) {
-      location.hash = " ";
-    } else {
-      location.hash = "#" + old_parameters.toQueryString();
-    }
-    
+    this.filters.tag_ids = null;
+    this.filters.feed_ids = null;
     this.addFilters(parameters);
   },
   
   addFilters: function(parameters) {
     this.expandFolderParameters(parameters);
 
-    // Update location.hash
-    var old_parameters = location.hash.gsub('#', '').toQueryParams();
-    if(old_parameters.tag_ids && parameters.tag_ids) {
-      var tag_ids = old_parameters.tag_ids.split(",");
+    if(this.filters.tag_ids && parameters.tag_ids) {
+      var tag_ids = this.filters.tag_ids.split(",");
       tag_ids.push(parameters.tag_ids.split(","));
       parameters.tag_ids = tag_ids.flatten().uniq().join(",");
     }
-    if(old_parameters.feed_ids && parameters.feed_ids) {
-      var feed_ids = old_parameters.feed_ids.split(",");
+    if(this.filters.feed_ids && parameters.feed_ids) {
+      var feed_ids = this.filters.feed_ids.split(",");
       feed_ids.push(parameters.feed_ids.split(","));
       parameters.feed_ids = feed_ids.flatten().uniq().join(",");
     }
     
-    var new_parameters = $H(old_parameters).merge($H(parameters));
-    new_parameters.each(function(key_value) {
-      var key = key_value[0];
-      var value = key_value[1];
-      if(value == null || Object.isUndefined(value) || (typeof(value) == 'string' && value.blank())) {
-        new_parameters.unset(key);
-      }
-    });
-    location.hash = "#" + new_parameters.toQueryString();
+    var new_parameters = $H(this.filters).merge($H(parameters));
+    this.filters = new_parameters.toQueryString().toQueryParams();
     
+    this.saveFilters();    
     this.styleFilters();
-    
-    // Store filters for page reload
-    Cookie.set("filters", new_parameters.toQueryString(), 365);
-    
-    // Reload the item browser
     this.reload();
   },
   
   styleFilters: function() {
-    // Make sure this is not run if the sidebar is not loaded yet
-    if(!$("mode_all")) { return; }
-    
-    var params = location.hash.gsub('#', '').toQueryParams();
-
-	  var modes = ["all", "unread", "moderated"];
-		if(params.mode) {
-			modes.without(params.mode).each(function(mode) {
-			  $("mode_" + mode).removeClassName("selected")
-			});
+    if($("mode_all")) {
+  	  var modes = ["all", "unread", "moderated"];
+  		if(this.filters.mode) {
+  			modes.without(this.filters.mode).each(function(mode) {
+  			  $("mode_" + mode).removeClassName("selected")
+  			});
 			
-			$("mode_" + params.mode).addClassName("selected");
-		} else {
-			modes.without("unread").each(function(mode) {
-			  $("mode_" + mode).removeClassName("selected")
-			});
+  			$("mode_" + this.filters.mode).addClassName("selected");
+  		} else {
+  			modes.without("unread").each(function(mode) {
+  			  $("mode_" + mode).removeClassName("selected")
+  			});
 
-			$("mode_unread").addClassName("selected");
-		}
+  			$("mode_unread").addClassName("selected");
+  		}
+    }
     
-	  var orders = ["newest", "oldest", "strength"];
-		if(params.order) {
-			orders.without(params.order).each(function(order) {
-			  $("order_" + order).removeClassName("selected")
-			});
-			
-			$("order_" + params.order).addClassName("selected");
-		} else {
-			orders.without("newest").each(function(order) {
-			  $("order_" + order).removeClassName("selected")
-			});
-
-			$("order_newest").addClassName("selected");
-		}
+    this.styleOrders();
     
-    var feed_ids = params.feed_ids ? params.feed_ids.split(",") : [];
+    var feed_ids = this.filters.feed_ids ? this.filters.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
       var feed_id = element.getAttribute("id").gsub("feed_", "");
       if(feed_ids.include(feed_id)) {
@@ -631,7 +483,7 @@ ItemBrowser.prototype = {
       }
     });
     
-    var tag_ids = params.tag_ids ? params.tag_ids.split(",") : [];
+    var tag_ids = this.filters.tag_ids ? this.filters.tag_ids.split(",") : [];
     $$(".tags li").each(function(element) {
       var tag_id = element.getAttribute("id").gsub("tag_", "");
       if(tag_ids.include(tag_id)) {
@@ -663,39 +515,105 @@ ItemBrowser.prototype = {
     });
     
     var text_filter = $("text_filter");
-    if(params.text_filter) {
-      text_filter.value = params.text_filter;
-    } else {
-      text_filter.value = "";
-      // TODO: Why doesn't this work?
-      text_filter.fire("blur");
+    if(text_filter) {
+      if(this.filters.text_filter) {
+        text_filter.value = this.filters.text_filter;
+      } else {
+        text_filter.value = "";
+        // TODO: Why doesn't this work?
+        text_filter.fire("blur");
+      }
     }
     
     var clear_selected_filters = $("clear_selected_filters");
-    if(params.tag_ids || params.feed_ids || params.text_filter) {
-      clear_selected_filters.disabled = false;
-      clear_selected_filters.value = "Clear Selected Filters";
-    } else {
-      clear_selected_filters.disabled = true;
-      clear_selected_filters.value = "No Filters Selected";
+    if(clear_selected_filters) {
+      if(this.filters.tag_ids || this.filters.feed_ids || this.filters.text_filter) {
+        clear_selected_filters.disabled = false;
+        clear_selected_filters.value = "Clear Selected Filters";
+      } else {
+        clear_selected_filters.disabled = true;
+        clear_selected_filters.value = "No Filters Selected";
+      }
+    }
+    
+    var feed_with_selected_filters = $("feed_with_selected_filters");
+    if(feed_with_selected_filters) {
+      feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + $H(this.filters).toQueryString();
     }
   },
   
-  showLoadingIndicator: function(message) {
-    var indicator = $('feed_items_indicator')
-    indicator.update(message || "Loading feed items...");
+  setOrder: function(order) {
+    if(this.filters.order == order) {
+      this.filters.direction = (this.filters.direction == "asc" ? "desc" : "asc");
+    } else {
+      this.filters.order = order;
+      this.filters.direction = this.options.default_direction;
+    }
+    this.saveFilters();
+    this.styleFilters();
+    this.reload();
+  },
+  
+  saveFilters: function() {
+    // Remove empty values
+    var filters_hash = $H(this.filters);
+    filters_hash.each(function(key_value) {
+      var key = key_value[0];
+      var value = key_value[1];
+      if(value == null || Object.isUndefined(value) || (typeof(value) == 'string' && value.blank())) {
+        filters_hash.unset(key);
+      }
+    });
+    this.filters = filters_hash.toQueryString().toQueryParams();
+    
+    // Update the url
+    // if(this.filters.keys().size() == 0) {
+    //   location.hash = " ";
+    // } else {
+      location.hash = "#" + $H(this.filters).toQueryString();
+    // }
+    
+    // Save to a cookie
+    Cookie.set(this.container.getAttribute("id") + "_filters", $H(this.filters).toQueryString(), 365);
+  },
+  
+  styleOrders: function() {
+		this.options.orders.each(function(order) {
+		  var order_control = $("order_" + order);
+		  if(order_control) {
+		    order_control.removeClassName("asc");
+		    order_control.removeClassName("desc");
+		  }
+		});
 
-    var left = this.feed_items_scrollable.getWidth() / 2 - indicator.getWidth() / 2 + this.feed_items_scrollable.offsetLeft;
+		if(this.filters.order) {
+		  var order_control = $("order_" + this.filters.order);
+		  if(order_control) {
+		    order_control.addClassName(this.filters.direction);
+		  }
+		} else if(this.options.default_order) {
+		  var order_control = $("order_" + this.options.default_order);
+		  if(order_control) {
+		    order_control.addClassName(this.options.default_direction);
+		  }
+		}
+  },
+  
+  showLoadingIndicator: function(message) {
+    var indicator = $(this.container.getAttribute('id') + '_indicator');
+    indicator.update(message || "Loading items...");
+
+    var left = this.scrollable.getWidth() / 2 - indicator.getWidth() / 2 + this.scrollable.offsetLeft;
     indicator.style.left = left + "px";
 
-    // var top = this.feed_items_scrollable.getHeight() / 2 - indicator.getHeight() / 2 - this.feed_items_scrollable.offsetTop;
+    // var top = this.scrollable.getHeight() / 2 - indicator.getHeight() / 2 - this.scrollable.offsetTop;
     // indicator.style.top = top + "px";
     
     indicator.show();
   },
   
   hideLoadingIndicator: function() {
-    $('feed_items_indicator').hide();
+    $(this.container.getAttribute('id') + '_indicator').hide();
   },
   
   selectItem: function(item) {
@@ -758,8 +676,7 @@ ItemBrowser.prototype = {
 
     $$('.new_tag_form').invoke("hide");
 
-    var container = $('new_tag_form_' + $(item).getAttribute('id'));
-    container.show();
+    $('new_tag_form_' + $(item).getAttribute('id')).show();
     this.scrollToItem(item);
     this.loadItemModerationPanel(item);
     
@@ -807,7 +724,7 @@ ItemBrowser.prototype = {
 
       cancel.observe("click", this.closeItemModerationPanel.bind(this, item));
       
-      new Effect.ScrollToInDiv(this.feed_items_scrollable, list, {duration: 0.3, bottom_margin: 5});
+      new Effect.ScrollToInDiv(this.scrollable, list, {duration: 0.3, bottom_margin: 5});
     }
   },
   
@@ -819,7 +736,7 @@ ItemBrowser.prototype = {
   },
   
   removeTag: function(tag) {
-    this.options.tags = this.options.tags.without(tag)
+    this.options.tags = this.options.tags.without(tag);
   },
 
   closeItemModerationPanel: function(item) {
@@ -862,14 +779,14 @@ ItemBrowser.prototype = {
     item = $(item);
     item.addClassName('read');
     item.removeClassName('unread');
-    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/mark_read', {method: 'put'});
+    new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_read', {method: 'put'});
   },
   
   markItemUnread: function(item) {
     item = $(item);
     item.addClassName('unread'); 
     item.removeClassName('read');    
-    new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/mark_unread', {method: 'put'});
+    new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_unread', {method: 'put'});
   },
   
   toggleReadUnreadItem: function(item) {
@@ -889,11 +806,11 @@ ItemBrowser.prototype = {
   
   markAllItemsRead: function() {
     $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
-    new Ajax.Request('/feed_items/mark_read', {method: 'put'});
+    new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
   },
   
   scrollToItem: function(item) {
-    new Effect.ScrollToInDiv(this.feed_items_scrollable, $(item).getAttribute('id'), {duration: 0.3});
+    new Effect.ScrollToInDiv(this.scrollable, $(item).getAttribute('id'), {duration: 0.3});
   },
   
   loadItemDescription: function(item) {
@@ -904,7 +821,7 @@ ItemBrowser.prototype = {
    
   loadItemModerationPanel: function(item) { 
     var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id')); 
-    var url = moderation_panel.getAttribute('url') + "?" + location.hash.gsub("#", ""); 
+    var url = moderation_panel.getAttribute('url') + "?" + $H(this.filters).toQueryString(); 
     this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
   },
 
@@ -945,7 +862,7 @@ ItemBrowser.prototype = {
     if(this.selectedItem) {
       next_item = $(this.selectedItem).nextSiblings().first();
     } else {
-      next_item = this.feed_items_container.descendants().first();
+      next_item = this.container.descendants().first();
     }
     if(next_item && next_item.hasClassName("item")) {
       this.selectItem(next_item);
@@ -967,7 +884,7 @@ ItemBrowser.prototype = {
     if(this.selectedItem) {
       next_item = $(this.selectedItem).nextSiblings().first();
     } else {
-      next_item = this.feed_items_container.descendants().first();
+      next_item = this.container.descendants().first();
     }
     if(next_item && next_item.hasClassName("item")) {
       this.toggleOpenCloseItem(next_item);

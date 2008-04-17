@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 class ApplicationController < ActionController::Base
   # helper :all # include all helpers, all the time
   
@@ -16,6 +15,9 @@ class ApplicationController < ActionController::Base
   helper_method :render_to_string, :controller_name, :action_name
   
   before_filter :login_from_cookie, :login_required
+
+  DEFAULT_LIMIT = 40
+  MAX_LIMIT = 100
 
 protected
   def check_atom

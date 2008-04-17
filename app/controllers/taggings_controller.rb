@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # Required for the Tag() function.  Rails can sometimes auto-load this and
 # sometimes it doesn't so lets put it here explicitly so we can always be
@@ -19,10 +18,10 @@ class TaggingsController < ApplicationController
   helper :feed_items
 
   verify :method => :post, :render => {
-    :text => 'Bad Request. Should be POST. Please report this bug. Make sure you have Javascript enabled too!', :status => 400
+    :text => _(:bad_method), :status => 400
   }
   verify :params => :tagging, :render => {
-    :text => 'Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!', :status => 400
+    :text => _(:bad_params), :status => 400
   }
   
   # Creates a single tagging for a <Taggable, Tagger, Tag>
@@ -36,7 +35,7 @@ class TaggingsController < ApplicationController
         wants.js
       else
         wants.js do
-          flash.now[:error] = "Tagging Failed"
+          flash.now[:error] = _(:tagging_failed)
           render :template => "messages/error"
         end
       end

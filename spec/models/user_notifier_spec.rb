@@ -32,7 +32,7 @@ describe UserNotifier do
     end
 
     it "is described as a invite request" do
-      @email.subject.should =~ /Invitation Requested/
+      @email.subject.should =~ /Invite Requested/
     end
   end
   

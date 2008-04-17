@@ -19,8 +19,8 @@ describe '/about' do
     
     render "/about/index"
     
-    response.should have_tag('span.classifier_version', '1.0')
-    response.should have_tag('span.classifier_gitrevision', '2808')
+    response.should have_text(/1\.0/)
+    response.should have_text(/2808/)
   end
   
   it "should display classifier error when classifier_info is nil" do

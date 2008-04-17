@@ -1,9 +1,19 @@
+<% content_for :head do -%>
+	<script type="text/javascript" charset="utf-8">
+		var itemBrowser;
+		document.observe('dom:loaded', function() {
+			itemBrowser = new ItemBrowser('feeds', {orders: ["title", "globally_exclude", "feed_items_count", "updated_on"], default_order: "title"});
+		});
+	</script>
+<% end -%>
+
 <% content_for :header_controls do -%>
   <%= render :partial => "index_header_controls" %>
 <% end -%>
 
-<% if @presenter.feeds.empty? -%>
-  <div class="empty">No feeds matched your search criteria.</div>
-<% else -%>
-  <%= render :partial => @presenter.feeds %>
+<div id="feeds"></div>
+
+<% content_for :footer do -%>
+	<span id="feeds_indicator" class="loading" style="display:none;"></span>
+	<span id="feeds_count" class="count"></span>
 <% end -%>

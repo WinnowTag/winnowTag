@@ -1,0 +1,8 @@
+page.call 'itemBrowser.hideLoadingIndicator'
+
+page.call "itemBrowser.setTotalItems", @tags_count
+
+@tags.each_with_index do |tag, index|
+  page.call 'itemBrowser.insertItem', dom_id(tag), params[:offset].to_i + index, 
+    render_to_string(:partial => 'public_tag.html.erb', :locals => {:public_tag => tag})
+end

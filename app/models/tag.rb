@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 def Tag(user, tag)
   if tag.nil? || tag.is_a?(Tag) 
     tag
@@ -71,6 +69,7 @@ class Tag < ActiveRecord::Base
     if other.is_a? Tag
       self.name.downcase <=> other.name.downcase
     else
+      # TODO: localization
       raise ArgumentError, "Cannot compare Tag to #{other.class}"
     end
   end
@@ -87,10 +86,12 @@ class Tag < ActiveRecord::Base
   
   def copy(to)
     if self == to 
+      # TODO: localization
       raise ArgumentError, "Can't copy tag to tag of the same name."
     end
     
     if to.taggings.size > 0
+      # TODO: localization
       raise ArgumentError, "Target tagger already has a #{to.name} tag"
     end
     
@@ -105,6 +106,7 @@ class Tag < ActiveRecord::Base
   
   def merge(to)
     if self == to 
+      # TODO: localization
       raise ArgumentError, "Can't copy tag to tag of the same name."
     end
     
@@ -123,15 +125,13 @@ class Tag < ActiveRecord::Base
   end
     
   def delete_classifier_taggings!
-    Tagging.delete_all("classifier_tagging = 1 and tag_id = #{self.id}")
+    Tagging.delete_all("classifier_tagging = 1 AND tag_id = #{self.id}")
   end
   
   def potentially_undertrained?
     self.positive_taggings.size < Tag.undertrained_threshold
   end
-  
-  CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier' unless defined?(CLASSIFIER_NAMESPACE)
-  
+    
   # This needs to be fast so we'll bypass Active Record
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
@@ -202,22 +202,7 @@ class Tag < ActiveRecord::Base
       
       self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], 
                                :order => 'feed_items.updated DESC', :include => [{:feed_item, :content}]).each do |tagging|
-        entry = tagging.feed_item.to_atom(options)
-        
-        if tagging.strength > 0.9
-          entry.categories << Atom::Category.new do |cat|
-            cat.term = self.name
-            cat.scheme = "#{options[:base_uri]}/#{user.login}/tags/"
-            if tagging.classifier_tagging?
-              cat[CLASSIFIER_NAMESPACE, 'strength'] << tagging.strength.to_s
-              cat[CLASSIFIER_NAMESPACE, 'strength'].as_attribute = true
-            end
-          end
-        elsif tagging.strength == 0            
-          entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/negative-example", :href => feed.id)
-        end
-        
-        feed.entries << entry
+        feed.entries << tagging.feed_item.to_atom(options.merge({:include_tags => self}))
       end
     end
   end
@@ -225,6 +210,7 @@ class Tag < ActiveRecord::Base
   def self.to_atomsvc(options = {})
     Atom::Pub::Service.new do |service|
       service.workspaces << Atom::Pub::Workspace.new  do |wkspc|
+        # TODO: localization
         wkspc.title = "Tag Training"
         Tag.find(:all).each do |tag|
           wkspc.collections << Atom::Pub::Collection.new do |collection|
@@ -237,12 +223,7 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  def self.find_all_with_count(options = {})
-    joins = ["LEFT JOIN users ON tags.user_id = users.id"]
-    if options[:subscribed_by]
-      joins << "INNER JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscribed_by].id}"
-    end
-    
+  def self.search(options = {})
     select = ['tags.*', 
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
@@ -250,39 +231,59 @@ class Tag < ActiveRecord::Base
                 '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
                   'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
-              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by']
-    if options[:excluder]
-      select << "((SELECT COUNT(*) FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:excluder].id}) > 0) AS globally_exclude"
-    else
-      select << "0 AS globally_exclude"
-    end
-    if options[:subscriber]
-      select << "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:subscriber].id}) > 0) AS subscribe"
-    else
-      select << "0 AS subscribe"
-    end
+              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by',
+              "((SELECT COUNT(*) FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) > 0) AS globally_exclude",
+              "((SELECT COUNT(*) FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) > 0) AS subscribe"]
     
+    joins = ["LEFT JOIN users ON tags.user_id = users.id"]
+
     conditions, values = [], []
     if options[:conditions]
       conditions << sanitize_sql(options[:conditions])
     end
-    
-    if !options[:search_term].blank?
+
+    if options[:own]
+      joins << "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
+      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL)"
+      values << options[:user].id
+    end
+        
+    if !options[:text_filter].blank?
       ored_conditions = []
       ored_conditions << "LOWER(tags.name) LIKE LOWER(?)"
       ored_conditions << "LOWER(tags.comment) LIKE LOWER(?)"
       ored_conditions << "LOWER(users.login) LIKE LOWER(?)"
       conditions << "(#{ored_conditions.join(" OR ")})"
       
-      value = "%#{options[:search_term]}%"
+      value = "%#{options[:text_filter]}%"
       values << value << value << value
     end
     
-    find(:all, 
-       :select => select.join(","),
-       :joins => joins.join(" "),
-       :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
-       :group => 'tags.id',
-       :order => options[:order])
+    order = case options[:order]
+    when "name", "public", "id"
+      "tags.#{options[:order]}"
+    when "subscribe", "training_count", "classifier_count", "last_used_by", "globally_exclude"
+      options[:order]
+    when "login"
+      "users.#{options[:order]}"
+    else
+      "tags.name"
+    end
+    
+    case options[:direction]
+    when "asc", "desc"
+      order = "#{order} #{options[:direction].upcase}"
+    end
+
+    options_for_find = { :joins => joins.join(" "), :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
+    
+    results = find(:all, options_for_find.merge(:select => select.join(","),
+                   :order => order, :group => "tags.id", :limit => options[:limit], :offset => options[:offset]))
+    
+    if options[:count]
+      [results, count(options_for_find)]
+    else
+      results
+    end
   end
 end

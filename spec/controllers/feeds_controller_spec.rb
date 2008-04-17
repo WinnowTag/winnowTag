@@ -10,9 +10,6 @@ describe FeedsController do
     before(:each) do
       @user = User.create! valid_user_attributes
       login_as @user
-      
-      @presenter = stub("presenter")
-      FeedsPresenter.stub!(:new).and_return(@presenter)
     end
 
     def do_get(params = {})
@@ -28,18 +25,8 @@ describe FeedsController do
       do_get
       response.should render_template("index")
     end
-
-    it "assigns the presenter for the view" do
-      FeedsPresenter.should_receive(:new).with(:current_user => @user, :search_term => "Ruby", :page => "2", :order => "title ASC").and_return(@presenter)
-      do_get :search_term => "Ruby", :page => "2"
-      assigns[:presenter].should == @presenter
-    end
   end
-  
-  describe "#unsubscribe" do
     
-  end
-  
   describe "old specs" do
   
     before(:each) do
@@ -61,7 +48,7 @@ describe FeedsController do
     
       @message = mock_model(Message)
       @messages = stub("messages")
-      @messages.should_receive(:create!).with(:body => "We have finished fetching new items for '#{feed.title}'.").and_return(@message)
+      @messages.should_receive(:create!).with(:body => "We have finished fetching new items for #{feed.title}").and_return(@message)
       @user.stub!(:messages).and_return(@messages)
 
       get :index
@@ -126,8 +113,8 @@ describe FeedsController do
         Remote::Feed.should_receive(:find).with("12").and_raise(ActiveResource::ResourceNotFound.new(mock('response', :null_object => true)))
       
         get 'show', :id => 12
-        flash[:error].should == "We couldn't find this feed in any of our databases.  Maybe it has been deleted or " +
-                                "never existed.  If you think this is an error, please contact us."
+        flash[:error].should == "We couldn't find this feed in any of our databases. Maybe it has been deleted or " +
+                                "never existed. If you think this is an error, please contact us."
         response.code.should == "404"
         response.should render_template('feeds/error')
       end
@@ -170,7 +157,7 @@ describe FeedsController do
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
     
-      message_body = "Thanks for adding the feed from 'http://example.com'. " +
+      message_body = "Thanks for adding the feed from http://example.com. " +
                      "We will fetch the items soon and we'll let you know when it is done. " +
                      "The feed has also been added to your feeds folder in the sidebar."
       message = mock_model(Message, :body => message_body)
@@ -191,7 +178,7 @@ describe FeedsController do
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
   
-      message_body = "We already have the feed from 'http://example.com', however we will update it " +
+      message_body = "We already have the feed from http://example.com, however we will update it " +
                      "now and we'll let you know when it is done. " +
                      "The feed has also been added to your feeds folder in the sidebar."
       message = mock_model(Message, :body => message_body)
@@ -278,6 +265,8 @@ describe FeedsController do
     end
   
     describe "auto_complete_for_feed_title" do
+      fixtures :feeds
+      
       before(:each) do
         @user.stub!(:subscribed_feeds).and_return([])
       end

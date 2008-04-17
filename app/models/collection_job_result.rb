@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 class CollectionJobResult < ActiveRecord::Base
   belongs_to :user
   belongs_to :feed
@@ -22,7 +21,7 @@ class CollectionJobResult < ActiveRecord::Base
         the_feed.title
       end
     else
-      "Unknown Feed"
+      _(:unknown_feed)
     end
   end
 end

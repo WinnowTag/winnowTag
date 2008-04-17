@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 module BiasSliderHelper
   # Creates a Bias slider for setting the sensitivity of the classifier
   #
@@ -17,7 +15,6 @@ module BiasSliderHelper
   # When tag is nil, a disabled slider is shown with the default
   # bias. When tag is :default the default bias will be show, but it will be editable.
   # When tag is a user tag the bias for that tag will be shown and it will be editable.
-  #
   def bias_slider(tag, options = {})    
     bias = ((tag.is_a?(Tag) ? tag.bias : 1.0) or 1.0)   
     # Don't let it go over 1.3
@@ -51,15 +48,17 @@ module BiasSliderHelper
     bias_slider_html(prefix) + javascript_tag(js)
   end
   
-  private
+private
   def bias_slider_html(prefix)
-    content_tag 'div', content_tag('div', 
-        content_tag('div', '', :id => "#{prefix}_0_9", :class => 'bias_marker', :title => "Very Negative") +
-        content_tag('div', '', :id => "#{prefix}_1_0", :class => 'bias_marker neutral', :title => "Neutral") +
-        content_tag('div', '', :id => "#{prefix}_1_1", :class => 'bias_marker', :title => "Slightly Positive") +
-        content_tag('div', '', :id => "#{prefix}_1_2", :class => 'bias_marker', :title => "Strongly Positive") +
-        content_tag('div', '', :id => "#{prefix}_1_3", :class => 'bias_marker', :title => "Very Strongly Positive") +
-        content_tag('div','', :id => "#{prefix}_handle", :class => 'slider_handle', :title => "Drag to set the sensitvity of the classifier."),
-     :id => "#{prefix}_track", :class => 'slider_track'), :class => "slider"
+    content_tag 'div', 
+      content_tag('div', 
+        content_tag('div', '', :id => "#{prefix}_0_9",    :class => 'bias_marker',         :title => _(:first_slider_marker))  +
+        content_tag('div', '', :id => "#{prefix}_1_0",    :class => 'bias_marker neutral', :title => _(:second_slider_marker)) +
+        content_tag('div', '', :id => "#{prefix}_1_1",    :class => 'bias_marker',         :title => _(:third_slider_marker))  +
+        content_tag('div', '', :id => "#{prefix}_1_2",    :class => 'bias_marker',         :title => _(:fourth_slider_marker)) +
+        content_tag('div', '', :id => "#{prefix}_1_3",    :class => 'bias_marker',         :title => _(:fifth_slider_marker))  +
+        content_tag('div', '', :id => "#{prefix}_handle", :class => 'slider_handle',       :title => _(:slider_handle_tooltip)),
+        :id => "#{prefix}_track", :class => 'slider_track'), 
+      :class => "slider"
   end
 end

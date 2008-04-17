@@ -264,12 +264,12 @@ describe Feed do
   
   describe 'search' do
     it "should find items by search term" do
-      Feed.search(:search_term => 'ruby').size.should == 2
+      Feed.search(:text_filter => 'ruby').size.should == 2
     end
     
     it "should skip duplicates" do
       Feed.create! valid_feed_attributes(:title => 'Duplicate', :duplicate_id => 1)
-      Feed.search(:search_term => 'Duplicate').should be_empty
+      Feed.search(:text_filter => 'Duplicate').should be_empty
     end
   end
   

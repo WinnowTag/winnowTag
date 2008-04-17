@@ -200,7 +200,7 @@ describe User do
       
       expected_users = [user1, user2, user3, user4]
       
-      users = User.search :q => "mark", :page => 1
+      users = User.search :text_filter => "mark", :order => "id"
       users.should == expected_users
     end
   end

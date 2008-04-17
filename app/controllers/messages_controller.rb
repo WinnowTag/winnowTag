@@ -1,3 +1,8 @@
+# Copyright (c) 2005 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please contact info@peerworks.org for further information.
 class MessagesController < ApplicationController
   def index
     @messages = Message.find_global
@@ -15,7 +20,7 @@ class MessagesController < ApplicationController
     @message = Message.new(params[:message])
 
     if @message.save
-      flash[:notice] = 'Message was successfully created.'
+      flash[:notice] = _(:message_created)
       redirect_to messages_path
     else
       render :action => "new"
@@ -26,7 +31,7 @@ class MessagesController < ApplicationController
     @message = Message.find(params[:id])
 
     if @message.update_attributes(params[:message])
-      flash[:notice] = 'Message was successfully updated.'
+      flash[:notice] = _(:message_updated)
       redirect_to messages_path
     else
       render :action => "edit"

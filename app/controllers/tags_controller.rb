@@ -3,7 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # The tags controller provides an interface to a users tags.
 #
@@ -14,24 +13,24 @@
 # You can think of it as the +TaggingsController+ operates on 
 # single uses of the tag by the user and the +TagsController+
 # operates on the many +Taggings+ that use a given +Tag+.
-#
 class TagsController < ApplicationController
+  helper :bias_slider
+  
   include ActionView::Helpers::TextHelper
-  skip_before_filter :login_required, :only => [:show, :index]
+  skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
   before_filter :login_required_unless_local, :only => :index
-  before_filter :find_tag, :except => [:index, :show, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar, :training, :classifier_taggings]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
+  before_filter :ensure_user_is_tag_owner_unless_local, :only => :classifier_taggings
   
   def index
-    respond_to do |wants|
-      wants.html do
-        @search_term = params[:search_term]
-        
-        setup_sortable_columns
-        @tags  = current_user.tags.find_all_with_count(:excluder => current_user, :search_term => @search_term, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @tags += Tag.find_all_with_count(:excluder => current_user, :search_term => @search_term, :subscribed_by => current_user, :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-        @tags = @tags.sort_by(&:name)
+    respond_to do |format|
+      format.html
+      format.js do
+        @tags, @tags_count = Tag.search(:user => current_user, :text_filter => params[:text_filter], :own => true,
+                                        :order => params[:order], :direction => params[:direction], :count => true)
       end
-      wants.atomsvc do        
+      format.atomsvc do        
         conditional_render(Tag.maximum(:created_on)) do
           atomsvc = Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
           render :xml => atomsvc.to_xml
@@ -40,19 +39,26 @@ class TagsController < ApplicationController
     end
   end
   
-  def show
-    user = User.find_by_login(params[:user_id])
+  def public
+    respond_to do |format|
+      format.html
+      format.js do
+        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
+        @tags, @tags_count = Tag.search(:user => current_user, :text_filter => params[:text_filter], :conditions => ["tags.public = ?", true], 
+                                        :order => params[:order], :direction => params[:direction], 
+                                        :limit => limit, :offset => params[:offset], :count => true)
+      end
+    end
+  end
 
-    if user and @tag = user.tags.find_by_id(params[:id])
-      respond_to do |wants|
-        wants.atom do        
-          conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do
-            render 
-          end
+  def show
+    respond_to do |wants|
+      wants.atom do        
+        conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
+          atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
+          render :xml => atom.to_xml
         end
       end
-    else
-      render :text => "#{params[:id]} has not been published by #{params[:user_id]}", :status => 404
     end
   end
 
@@ -66,14 +72,14 @@ class TagsController < ApplicationController
       if to
         if params[:overwrite] =~ /true/i
           from.overwrite(to)
-          flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
+          flash[:notice] = _(:tag_copied, from.name, to.name)
           render :update do |page|
             page.redirect_to tags_path
           end
         else
           render :update do |page|
             page << <<-EOJS
-              if(confirm("Tag '#{params[:name]}' already exists. This copy will completely replace it with a copy of '#{from.name}'")) {
+              if(confirm(#{_(:tag_replace, params[:name], from.name)}) {
                 #{remote_function(:url => hash_for_tags_path(:copy => from, :name => params[:name], :overwrite => true))};
               }
             EOJS
@@ -83,7 +89,7 @@ class TagsController < ApplicationController
         to = Tag(current_user, params[:name])
         from.copy(to)
       
-        flash[:notice] = "'#{from.name}' successfully copied to '#{to.name}'"
+        flash[:notice] = _(:tag_copied, from.name, to.name)
       
         render :update do |page|
           page.redirect_to tags_path
@@ -96,35 +102,22 @@ class TagsController < ApplicationController
       render :nothing => true
     end
   end
-  
-  def edit
-    respond_to do |wants|
-      wants.html
-      wants.js { headers['Content-Type'] = 'text/html'; render :partial => 'form' }
-    end
-  end
 
-  # Merge, rename, or change the comment on a tag.
+  # Rename, or change the comment on a tag.
   def update
     if @name = params[:tag][:name]
-      if (merge_to = current_user.tags.find_by_name(@name)) && (merge_to != @tag)
-        if params[:merge] =~ /true/i
-          @tag.merge(merge_to)
-          flash[:notice] = "'#{@tag}' merged with '#{merge_to}'"
-        else
-          render :action => "merge.js.rjs"
-          return
-        end
+      if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
+        render :action => "merge.js.rjs"
       else
-        if @tag.update_attributes :name => @name
-          flash[:notice] = "Tag Renamed"
+        if @tag.update_attributes(:name => @name)
+          flash[:notice] = _(:tag_renamed)
         else
           flash[:error] = @tag.errors.full_messages.join('<br/>')
         end
-      end
-      respond_to do |format|
-        format.html { redirect_to tags_path }
-        format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
+        respond_to do |format|
+          format.html { redirect_to tags_path }
+          format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
+        end        
       end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
@@ -132,6 +125,18 @@ class TagsController < ApplicationController
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true
+    end
+  end
+  
+  def merge    
+    respond_to do |format|
+      if merge_to = current_user.tags.find_by_name(params[:tag][:name])
+        @tag.merge(merge_to)
+        flash[:notice] = _(:tag_merged, @tag.name, merge_to.name)
+      end
+      
+      format.html { redirect_to tags_path }
+      format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
     end
   end
 
@@ -142,22 +147,19 @@ class TagsController < ApplicationController
   end
   
   def training
-    tag = Tag.find(params[:id])    
     base_uri = "http://#{request.host}:#{request.port}"
-    atom = tag.to_atom(:training_only => true, :base_uri => base_uri)
     
     respond_to do |wants|
       wants.atom do
-        conditional_render(tag.updated_on) do
+        conditional_render(@tag.updated_on) do
+          atom = @tag.to_atom(:training_only => true, :base_uri => base_uri)
           render :text => atom.to_xml
         end
       end
     end
   end
   
-  def classifier_taggings
-    @tag = Tag.find(params[:id])
-    
+  def classifier_taggings    
     if !(request.post? || request.put?)
       render :status => "405", :nothing => true
     elsif params[:atom].nil?
@@ -204,13 +206,6 @@ class TagsController < ApplicationController
     render :nothing => true
   end
   
-  def public
-    @search_term = params[:search_term]
-    setup_sortable_columns
-    @tags = Tag.find_all_with_count(:search_term => @search_term, :conditions => ["tags.public = ?", true], :subscriber => current_user,
-                                    :order => sortable_order('tags', :field => 'name', :sort_direction => :asc))
-  end
-
   def globally_exclude
     @tag = Tag.find(params[:id])
     if params[:globally_exclude] =~ /true/i
@@ -251,26 +246,39 @@ class TagsController < ApplicationController
 
       unless @tag.show_in_sidebar?
         Folder.remove_tag(current_user, @tag.id)
+        respond_to :js
+        return
       end
     end
-    respond_to :js
+    render :nothing => true
   end
   
 private
   def find_tag
-    @tag = current_user.tags.find_by_id(params[:id])    
-    render :status => 404, :text => "#{params[:id]} not found." unless @tag
+    if params[:user] && params[:tag_name]
+      @user = User.find_by_login(params[:user])
+      unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
+        render :status => 404, :text => _(:tag_not_found, @user.login, params[:tag_name])
+      end
+    elsif params[:id]
+      begin
+        @tag = current_user.tags.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render :status => 404, :text => _(:tag_id_not_found, params[:id])
+      end
+    end
+    
+    if @tag && !@tag.public? && !local_request? && (current_user.nil? || @tag.user_id != current_user.id)
+      access_denied
+    end
   end
   
-  def setup_sortable_columns
-    add_to_sortable_columns('tags', :field => 'name')
-    add_to_sortable_columns('tags', :field => 'subscribe')
-    add_to_sortable_columns('tags', :field => 'public')
-    add_to_sortable_columns('tags', :field => 'training_count')
-    add_to_sortable_columns('tags', :field => 'classifier_count')
-    add_to_sortable_columns('tags', :field => 'last_used_by')
-    add_to_sortable_columns('tags', :field => 'login')
-    add_to_sortable_columns('tags', :field => 'globally_exclude')
+  def ensure_user_is_tag_owner
+    access_denied if current_user.nil? || current_user.id != @tag.user_id
+  end
+  
+  def ensure_user_is_tag_owner_unless_local
+    ensure_user_is_tag_owner unless local_request?
   end
   
   def conditional_render(last_modified)   
@@ -280,7 +288,7 @@ private
       head :not_modified
     else
       response.headers['Last-Modified'] = last_modified.httpdate if last_modified
-      yield
+      yield(since)
     end
   end
 end

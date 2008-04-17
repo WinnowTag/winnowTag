@@ -11,7 +11,7 @@ class AccountController < ApplicationController
     if request.post?
       params[:current_user].delete(:login)
       if current_user.update_attributes(params[:current_user])
-        flash[:notice] = "Information updated"
+        flash[:notice] = _(:profile_update)
         redirect_to :back
       end
     end
@@ -29,16 +29,16 @@ class AccountController < ApplicationController
         end
         redirect_back_or_default feed_items_path
       else
-        flash[:warning] = "Invalid credentials. Please try again."
+        flash[:warning] = _(:credentials_invalid)
       end
     elsif params[:code]
       self.current_user = User.find(:first, :conditions => ["reminder_code = ? AND reminder_expires_at > ?", params[:code], Time.now])
       if current_user
         current_user.reminder_login!
-        flash[:warning] = "Please update your password"
+        flash[:warning] = _(:update_password)
         redirect_to edit_account_path
       else
-        flash[:error] = "Invalid reminder code"
+        flash[:error] = _(:reminder_invalid)
         redirect_to login_path(:code => nil)
       end
     elsif params[:invite]
@@ -66,7 +66,7 @@ class AccountController < ApplicationController
     if @invite.save
       UserNotifier.deliver_invite_requested(@invite)
       Notifier.deliver_invite_requested(@invite)
-      flash[:notice] = "Your invitation request has been submitted"
+      flash[:notice] = _(:invitation_submitted)
       redirect_to login_path
     else
       render :action => "login"
@@ -87,9 +87,9 @@ class AccountController < ApplicationController
       if @user and @user.activate
         self.current_user = @user
         redirect_back_or_default(root_path)
-        flash[:notice] = "Your account has been activated." 
+        flash[:notice] = _(:account_activated)
       else
-        flash[:error] = "Unable to activate the account.  Did you provide the correct information?" 
+        flash[:error] = _(:account_activation_failed)
       end
     else
       flash.clear
@@ -101,18 +101,18 @@ class AccountController < ApplicationController
       user.enable_reminder!
       UserNotifier.deliver_reminder(user, login_url(user.reminder_code))
       render :update do |page|
-        page[:notice].update "A password reminder has been sent"
+        page[:notice].update _(:reminder_sent)
         page[:notice].show
         page[:error].hide
       end
     else
       render :update do |page|
-        page[:error].update "Invalid login"
+        page[:error].update _(:login_invalid)
         page[:error].show
         page[:notice].hide
       end
     end
-  end 
+  end
   
 # private
 # 

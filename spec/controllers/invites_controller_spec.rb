@@ -28,16 +28,6 @@ describe InvitesController do
       do_get
       response.should render_template("index")
     end
-    
-    it "sets @invites for the view" do
-      do_get
-      assigns[:invites].should_not be_nil
-    end
-    
-    it "find invites based on the search criteria" do
-      Invite.should_receive(:search).with(:q => "ruby", :per_page => 20, :page => nil, :order => "created_at ASC")
-      do_get("ruby")
-    end
   end
   
   describe "#new" do

@@ -23,7 +23,6 @@ describe UsersController do
     login_as(:admin)
     get :index
     assert_response :success
-    assert_not_nil assigns(:users)
   end
   
   def test_new

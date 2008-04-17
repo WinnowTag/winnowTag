@@ -51,7 +51,7 @@ describe FeedItem do
       feed_item_1 = valid_feed_item!(:updated => Date.today)
       feed_item_2 = valid_feed_item!(:updated => Date.today - 1)
         
-      FeedItem.find_with_filters(:user => user_1, :order => 'newest').should == [feed_item_1, feed_item_2]
+      FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc").should == [feed_item_1, feed_item_2]
     end
     
     it "properly sorts the feed items by oldest first" do
@@ -64,10 +64,10 @@ describe FeedItem do
       feed_item_1 = valid_feed_item!(:updated => Date.today)
       feed_item_2 = valid_feed_item!(:updated => Date.today - 1)
         
-      FeedItem.find_with_filters(:user => user_1, :order => 'oldest').should == [feed_item_2, feed_item_1]
+      FeedItem.find_with_filters(:user => user_1, :order => 'date').should == [feed_item_2, feed_item_1]
     end
     
-    xit "properly sorts the feed items by tag strength first" do
+    it "properly sorts the feed items by tag strength first" do
       user_1 = User.create! valid_user_attributes
         
       tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
@@ -79,10 +79,10 @@ describe FeedItem do
       feed_item_2 = valid_feed_item!
       
       tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id, :strength => 1
-      tagging_2 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id, :strength => 1      
-      tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_3.id, :strength => 1
+      tagging_2 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id, :strength => 0.5      
+      tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_3.id, :strength => 0.7
       
-      FeedItem.find_with_filters(:user => user_1, :order => 'oldest').should == [feed_item_2, feed_item_1]
+      FeedItem.find_with_filters(:user => user_1, :order => 'strength').should == [feed_item_2, feed_item_1]
     end
   end
   
@@ -350,8 +350,14 @@ describe FeedItem do
   describe "to_atom" do
     fixtures :feed_item_contents
     before(:each) do
+      @user = users(:quentin)
+      @tag1 = Tag.create!(:name => 'tag1', :user => @user)
+      @tag2 = Tag.create!(:name => 'tag2', :user => @user)
       @item = FeedItem.find(1)
-      @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org')
+      @item.taggings.create(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
+      @item.taggings.create(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 0)
+      @item.taggings.create(:tag => @tag2, :user => @user, :classifier_tagging => 0, :strength => 1)
+      @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org', :include_tags => @tag1)
     end
     
     it "should include the title" do
@@ -382,6 +388,18 @@ describe FeedItem do
     
     it "should include the content" do
       @atom.content.to_s.should == @item.content.content
+    end
+    
+    it "should include positive tags for the specified tag" do
+      @atom.categories.detect {|cat| cat.scheme == 'http://winnow.mindloom.org/quentin/tags/' && cat.term == @tag1.name }.should_not be_nil
+    end
+    
+    it "should include negative tags for the specified tag" do
+      @atom.links.detect {|l| l.rel == 'http://peerworks.org/classifier/negative-example' && l.href == "http://winnow.mindloom.org/quentin/tags/tag1"}.should_not be_nil
+    end
+    
+    it "should not include positive tags for non-specified tags" do
+      @atom.categories.detect {|cat| cat.scheme == 'http://winnow.mindloom.org/quentin/tags' && cat.term == @tag2.name }.should be_nil
     end
   end
   

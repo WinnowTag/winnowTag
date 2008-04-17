@@ -3,32 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-#
-  
-# == Schema Information
-# Schema version: 57
-#
-# Table name: users
-#
-#  id                        :integer(11)   not null, primary key
-#  login                     :string(80)    default(""), not null
-#  crypted_password          :string(255)    
-#  email                     :string(60)    default(""), not null
-#  firstname                 :string(40)    
-#  lastname                  :string(40)    
-#  activation_code           :string(40)    
-#  created_at                :datetime      
-#  updated_at                :datetime      
-#  logged_in_at              :datetime      
-#  deleted_at                :datetime      
-#  activated_at              :datetime      
-#  remember_token            :string(255)   
-#  remember_token_expires_at :datetime      
-#  last_accessed_at          :datetime      
-#  last_session_ended_at     :datetime      
-#
-
 class User < ActiveRecord::Base   
   module FindByFeedItem
     def find_by_feed_item(feed_item, type = :all, options = {})
@@ -51,7 +25,7 @@ class User < ActiveRecord::Base
   has_many :messages, :order => "created_at DESC"
   has_many :collection_job_results
   has_one :collection_job_result_to_display, :class_name => "CollectionJobResult", :foreign_key => 'user_id',
-              :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on asc', 
+              :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on ASC', 
               :include => :feed
   has_many :tags, :dependent => :delete_all
   has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
@@ -96,28 +70,43 @@ class User < ActiveRecord::Base
     def search(options = {})
       conditions, values = [], []
       
-      q = options.delete(:q)
-      unless q.blank?
+      unless options[:text_filter].blank?
         ored_conditions = []
         [:login, :email, :firstname, :lastname].each do |attribute|
           ored_conditions << "users.#{attribute} LIKE ?"
-          values          << "%#{q}%"
+          values          << "%#{options[:text_filter]}%"
         end
         conditions << "(" + ored_conditions.join(" OR ") + ")"
       end
       
-      conditions = conditions.empty? ? nil : [conditions.join(" AND "), *values]
-      
-      options_for_find = options.merge(
-        :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
-        :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
-        :conditions => conditions,
-        :group => "users.id")
-      
-      if options.has_key?(:page) or options.has_key?(:per_page)
-        paginate(options_for_find)
+      direction = case options[:direction]
+      when "asc", "desc"
+        options[:direction].upcase
+      end
+
+      order = case options[:order]
+      when "login", "email", "logged_in_at", "last_accessed_at", "id"
+        "users.#{options[:order]} #{direction}"
+      when "name"
+        "lastname #{direction}, firstname #{direction}"
+      when "last_tagging_on", "tag_count"
+        "#{options[:order]} #{direction}"
       else
-        find(:all, options_for_find)
+        "users.login"
+      end
+
+    
+      options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
+      
+      results = find(:all, options_for_find.merge(
+                     :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
+                     :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
+                     :order => order, :group => "users.id", :limit => options[:limit], :offset => options[:offset]))
+      
+      if options[:count]
+        [results, count(options_for_find)]
+      else
+        results
       end
     end
   end
@@ -157,7 +146,7 @@ class User < ActiveRecord::Base
     
   # Gets the number of items tagged by this tagger
   def number_of_tagged_items
-    self.taggings.find(:first, :select => 'count(distinct feed_item_id) as count').count.to_i
+    self.taggings.find(:first, :select => 'COUNT(DISTINCT feed_item_id) AS count').count.to_i
   end
 
   # Gets the percentage of items tagged by this tagger
@@ -168,13 +157,13 @@ class User < ActiveRecord::Base
   # Gets the average number of tags a user has applied to an item.
   def average_taggings_per_item
     Tagging.find_by_sql(<<-END_SQL
-      select avg(count) as average from (
-         select count(id) as count
-         from taggings
-         where
+      SELECT AVG(count) AS average FROM (
+         SELECT COUNT(id) AS count
+         FROM taggings
+         WHERE
            user_id = #{self.id}
-         group by feed_item_id
-       ) as counts;
+         GROUP BY feed_item_id
+       ) AS counts;
       END_SQL
     ).first.average.to_f
   end
@@ -195,6 +184,7 @@ class User < ActiveRecord::Base
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
   validates_uniqueness_of   :login, :email, :case_sensitive => false
+  # TODO: localization
   validates_inclusion_of    :time_zone, :in => TZInfo::Timezone.all_identifiers, :message => "is not a valid timezone"
   before_create :make_activation_code
   after_create :make_owner_of_self
@@ -202,7 +192,7 @@ class User < ActiveRecord::Base
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
-    u = find :first, :conditions => ['login = ? and activated_at IS NOT NULL', login]
+    u = find :first, :conditions => ['login = ? AND activated_at IS NOT NULL', login]
     u && u.authenticated?(password) ? u : nil
   end
 

@@ -1,24 +1,18 @@
-<% content_for :header_controls do -%>
-  <ul class="control_bar">
-    <li><%= will_paginate(@users) %></li>
-    <li><%= link_to 'Create User', new_user_url, :class => "add" %></li>
-    <li><%= link_to 'Export (CSV)', formatted_users_path(:csv, params.except(:controller, :action)), :class => "add" %></li>
+<ul class="control_bar">
+  <li><%= link_to 'Create User', new_user_url, :class => "add" %></li>
+  <li><%= link_to 'Export (CSV)', formatted_users_path(:csv, params.except(:controller, :action)), :class => "add" %></li>
+  <li class="order">
+    Sort:
+    <%= link_to_function "Login",          "itemBrowser.setOrder('login')",            :id => "order_login" %>, 
+    <%= link_to_function "Name",           "itemBrowser.setOrder('name')",             :id => "order_name" %>, 
+    <%= link_to_function "Email",          "itemBrowser.setOrder('email')",            :id => "order_email" %>, 
+    <%= link_to_function "Last Logged In", "itemBrowser.setOrder('logged_in_at')",     :id => "order_logged_in_at" %>,
+    <%= link_to_function "Last Accessed",  "itemBrowser.setOrder('last_accessed_at')", :id => "order_last_accessed_at" %>,
+    <%= link_to_function "Last Moderated", "itemBrowser.setOrder('last_tagging_on')",  :id => "order_last_tagging_on" %>,
+    <%= link_to_function "Number of Tags", "itemBrowser.setOrder('tag_count')",        :id => "order_tag_count" %>
+  </li>    
+</ul>
 
-    <% if params[:action] == "index" -%>
-    <li>
-      Sort By:
-      <%= sort_link "Login", 'users', :alias => 'login' %>,
-      <%= sort_link "Name", 'users', :alias => 'name' %>,
-      <%= sort_link "Email", 'users', :alias => 'email' %>,
-      <%= sort_link "Last Logged In", 'users', :alias => 'logged_in_at' %>,
-      <%= sort_link "Last Accessed", 'users', :alias => 'last_accessed_at' %>,
-      <%= sort_link "Last Moderated", 'users', :alias => 'last_tagging_on' %>,
-      <%= sort_link "Number of Tags", 'users', :alias => 'tag_count' %>
-    </li>    
-    <% end -%>
-  </ul>
-
-  <% form_tag(users_path, :method => :get) do -%>
-	  <%= search_field_tag "q", params[:q], :placeholder => "Search Users...", :clear => { :onclick => "window.location = '#{users_path}'" } %>
-  <% end -%>
+<% form_tag users_path, :method => :get, :onsubmit => "resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Users...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>

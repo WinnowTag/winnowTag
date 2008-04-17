@@ -1,40 +1,39 @@
 <div id="forms">
   <% form_tag login_path, :id => 'login_form' do -%>
-    <h1>Login</h1>
+    <h1><%= _(:login_header) %></h1>
   
   	<p>
-  	  <label for="login">Login</label>
+  	  <label for="login"><%= _(:login_label) %></label>
   	  <%= text_field_tag :login %>
   	</p>
 
   	<p>
-  	  <label for="password">Password</label>
+  	  <label for="password"><%= _(:password_label) %></label>
   	  <%= password_field_tag :password %>
   	</p>
 
-
   	<p>
   	  <%= check_box_tag :remember_me %>
-  	  <label for="remember_me" class="inline">Remember me</label>
+  	  <label for="remember_me" class="inline"><%= _(:remember_me_label) %></label>
   	</p>
 
   	<p>
-  	  <%= link_to_function "Forgot your password?", "$('login_form').hide(); $('reminder_form').show();", :class => "forgot_password_link" %>
-  	  <%= submit_tag 'Login' %>
+  	  <%= link_to_function _(:forgot_password_link), "$('login_form').hide(); $('reminder_form').show();", :class => "forgot_password_link" %>
+  	  <%= submit_tag _(:login_submit_button) %>
   	</p>
   <% end -%>
   
   <% form_remote_tag :url => reminder_path, :html => { :id => 'reminder_form', :style => "display: none" } do -%>
-    <h1>Password Reminder</h1>
+    <h1><%= _(:reminder_header) %></h1>
   
   	<p>
-  	  <label for="login">Login</label>
+  	  <label for="login"><%= _(:login_label) %></label>
   	  <%= text_field_tag :login %>
   	</p>
 
   	<p>
-  	  <%= link_to_function "Back to login", "$('login_form').show(); $('reminder_form').hide();", :class => "forgot_password_link" %>
-  	  <%= submit_tag 'Submit' %>
+  	  <%= link_to_function _(:login_link), "$('login_form').show(); $('reminder_form').hide();", :class => "forgot_password_link" %>
+  	  <%= submit_tag _(:reminder_submit_button) %>
   	</p>
   <% end -%>
 
@@ -46,61 +45,56 @@
     <%= hidden_field_tag :invite, @invite.code %>
 
     <p>
-      <label for="login">Login</label>
+      <label for="login"><%= _(:login_label) %></label>
       <%= f.text_field :login %>
     </p>
 
     <p>
-      <label for="password">Password</label>
+      <label for="password"><%= _(:password_label) %></label>
       <%= f.password_field :password %>
     </p>
 
     <p>
-      <label for="password_confirmation">Confirm Password</label>
+      <label for="password_confirmation"><%= _(:password_confirmation_label) %></label>
       <%= f.password_field :password_confirmation %>
     </p>
 
     <p>
-      <label for="email">Email</label>
+      <label for="email"><%= _(:email_label) %></label>
       <%= f.text_field :email, :value => @invite.email %>
     </p>
 
-    <p><%= submit_tag 'Signup' %></p>
+    <p><%= submit_tag _(:signup_submit_button) %></p>
   <% end -%>
 <% else -%>
   <% form_for :invite, :url => signup_invite_path, :id => "invite_form" do |f| -%>
-    <h1>Request Invitation</h1>
+    <h1><%= _(:invite_header) %></h1>
 
     <%= error_messages_for :invite %>
 
     <p>
-      <%= f.label :email %>
+      <%= f.label :email, _(:email_label) %>
       <%= f.text_field :email %>
     </p>
 
-    <h4>Questions</h4>
-    <span class="description">optional, answers may encourage a response</span>
+    <h4><%= _(:questions_header) %></h4>
+    <span class="description"><%= _(:questions_description) %></span>
     
     <p>
-      <%= f.label :hear, "How did you hear about Winnow?" %>
+      <%= f.label :hear, _(:hear_question) %>
       <%= f.text_area :hear, :size => "28x2" %>
     </p>
     
     <p>
-      <%= f.label :use, "How/why do you want to use Winnow?" %>
+      <%= f.label :use, _(:use_question) %>
       <%= f.text_area :use, :size => "28x2" %>
     </p>
 
-    <p><%= submit_tag 'Request Invitation' %></p>
+    <p><%= submit_tag _(:invite_submit_button) %></p>
   <% end -%>
 <% end -%>
 </div>
 
-<h3>Welcome to Winnow</h3>
-<p>
-  Winnow is the demonstration environment for the auto-tagging classifier built by <a href="http://www.peerworks.org">Peerworks</a>.
-</p>
-<p>
-  This version of Winnow is only tested in the  <a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser, 
-  as such things may not work correctly in other browsers.
-</p>
+<h3><%= _(:welcome_header) %></h3>
+
+<%= _(:welcome_text) %>

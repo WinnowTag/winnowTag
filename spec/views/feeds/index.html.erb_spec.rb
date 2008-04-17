@@ -7,11 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feeds/index.html.erb' do
   before(:each) do
-    login_as stub("user")
     template.stub_render(:partial => "index_header_controls")
-
-    @presenter = stub("presenter", :feeds => [].paginate)
-    assigns[:presenter] = @presenter
   end
   
   def render_it
@@ -24,29 +20,18 @@ describe '/feeds/index.html.erb' do
     response.capture(:header_controls).should match(/header controls/)
   end
 
-  describe "with an empty result set" do
-    it "shows an empty message" do
-      render_it
-      response.should have_tag(".empty")
-    end
+  it "shows a container for the feeds" do
+    render_it
+    response.should have_tag("#feeds")
   end
 
-  describe "with a non-empty result set" do
-    before(:each) do
-      @feeds = [mock_model(Feed), mock_model(Feed)].paginate
-      @presenter.stub!(:feeds).and_return(@feeds)
-      
-      template.stub_render :partial => @feeds
-    end
-    
-    it "does not show an empty message" do
-      render_it
-      response.should_not have_tag(".empty")
-    end
-  
-    it "shows each feed" do
-      template.expect_render :partial => @feeds
-      render_it
-    end
+  it "shows a container for the loading indicator in the footer" do
+    render_it
+    response.capture(:footer).should have_tag("#feeds_indicator")
+  end
+
+  it "shows a container for the feeds count in the footer" do
+    render_it
+    response.capture(:footer).should have_tag("#feeds_count")
   end
 end

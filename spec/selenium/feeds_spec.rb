@@ -22,12 +22,12 @@ describe "/feeds" do
   end
   
   it "should show the search field on the index page" do
-    see_element '#search_term'
+    see_element '#text_filter'
   end
   
   it "should hide the search field on a feed page" do
     feed = Feed.find(:first)
     click_and_wait "link_to_feed_#{feed.id}"
-    dont_see_element '#search_term'
+    dont_see_element '#text_filter'
   end
 end
