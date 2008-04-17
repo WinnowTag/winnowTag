@@ -9,6 +9,7 @@ describe "Tags" do
     
     login
     open tags_path
+    wait_for_ajax
   end
   
   describe 'merging' do
