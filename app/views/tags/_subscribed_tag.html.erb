@@ -21,7 +21,7 @@
 
     <ul class="controls">
       <li class="first">
-        <%= link_to "Feed", formatted_public_tag_path(subscribed_tag.user, subscribed_tag, :atom), :class => "feed_icon" %>
+        <%= link_to "Feed", url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %>
       </li>
       <li><%= bias_slider(subscribed_tag, :disabled => true) %></li>
       <li><%= globally_exclude_check_box(subscribed_tag) %> Globally Exclude</li>
