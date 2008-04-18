@@ -260,12 +260,14 @@ private
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
         render :status => 404, :text => _(:tag_not_found, @user.login, params[:tag_name])
       end
-    elsif params[:id]
+    elsif params[:id] && !current_user.nil?
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render :status => 404, :text => _(:tag_id_not_found, params[:id])
       end
+    else
+      render :status => 404, :text => _(:tag_id_not_found, params[:id])
     end
     
     if @tag && !@tag.public? && !local_request? && (current_user.nil? || @tag.user_id != current_user.id)

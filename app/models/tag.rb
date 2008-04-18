@@ -196,11 +196,11 @@ class Tag < ActiveRecord::Base
       end
       
       if options[:since]
-        conditions << 'feed_items.updated > ?'
+        conditions << 'taggings.created_on > ?'
         condition_values << options[:since].getutc
       end
       
-      self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], 
+      self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], :limit => 100,
                                :order => 'feed_items.updated DESC', :include => [{:feed_item, :content}]).each do |tagging|
         feed.entries << tagging.feed_item.to_atom(options.merge({:include_tags => self}))
       end
