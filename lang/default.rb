@@ -155,12 +155,35 @@ Localization.define do |l|
   l.store :manage_help_link,                      "Help Links"
   l.store :manage_help_description,               "View and manage the help links in winnow."
 
+  # app/views/feed_items/_description.html.erb
+  l.store :feed_item_feed_metadata,               "from %s"
+  l.store :feed_item_metadata,                    "from %s by %s"
+  
   # app/views/feed_items/_feed_item.html.erb
   l.store :add_tag_link,                          "Add Tag"
   
-  # app/views/feed_items/index.html.erb
-  l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
-    
+  # app/views/feed_items/_filter_controls.html.erb
+  l.store :show_label,                            "Show:"
+  l.store :show_all_label,                        "All"
+  l.store :show_unread_label,                     "Unread"
+  l.store :show_moderated_label,                  "Moderated"
+  l.store :sort_label,                            "Sort:"
+  l.store :sort_date_label,                       "Date"
+  l.store :sort_strength_label,                   "Strength"
+  l.store :sidebar_tags_header,                   "Tags"
+  l.store :sidebar_add_tag_link,                  "Add"
+  l.store :sidebar_cancel_add_tag_link,           "cancel"
+  l.store :sidebar_feeds_header,                  "Feeds"
+  l.store :sidebar_add_feed_link,                 "Add"
+  l.store :sidebar_cancel_add_feed_link,          "cancel"
+  l.store :sidebar_folders_header,                "My Folders"
+  l.store :sidebar_add_folder_link,               "Add"
+  l.store :sidebar_cancel_add_folder_link,        "cancel"
+  l.store :feed_for_selected_filters_link,        "Feed with selected filters"
+  
+  # app/views/feed_items/_info.html.erb
+  l.store :confirm_destroy_folder,                "Are you sure?"
+  
   # app/views/feed_items/_info.html.erb
   l.store :info_header,                           "Classifier Taggings"
   l.store :info_description,                      %|
@@ -168,6 +191,18 @@ Localization.define do |l|
 	  <span style="color:red">red</span> text have also been applied by you on the item.
 	|
 
+  # app/views/feed_items/_moderation_panel.html.erb
+  l.store :add_tag_button,                        "Add Tag"
+  l.store :cancel_add_tag_link,                   "cancel"
+
+
+  # app/views/feed_items/_text_filter_controls.html.erb
+  l.store :feed_items_search_placeholder,         "Search Items..."
+  l.store :search_term_too_short,                 "Search requires a word with at least 4 characters"
+
+  # app/views/feed_items/index.html.erb
+  l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+  
   # app/views/feeds
   # app/views/invites
   # app/views/item_protection
@@ -180,4 +215,5 @@ Localization.define do |l|
   # app/views/users
   # ActiveRecord validation messages
   # Javascript
+  # Icons + tooltips
 end

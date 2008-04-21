@@ -7,14 +7,6 @@ describe FeedItemsController do
     assert_requires_login {|c| c.get :index, {}}
   end
 
-  # TODO: Fix to work with C classifier
-  # def test_html_show
-  #   login_as :quentin
-  #   get :show, :id => 1
-  #   assert assigns(:user_tags_on_item)
-  #   assert_response :success
-  # end
-  
   def test_index
     login_as :quentin
     get :index
@@ -33,17 +25,7 @@ describe FeedItemsController do
     # regex = /itemBrowser\.insertItem\("#{dom_id(assigns(:feed_items).first)}", 1/
     # assert @response.body =~ regex, "#{regex} does match #{@response.body}"
   end
-  
-  def test_negative_classifier_tagging_should_not_appear_in_moderation_panel
-    login_as(:quentin)
-    user = users(:quentin)
-    fi = FeedItem.find(1)
-    Tagging.create(:tag => Tag(user, 'tag1'), :user => user, :feed_item => fi, :strength => 0.8, :classifier_tagging => true)
     
-    get :show, :id => 1, :format => "js"
-    assert_select("span#tag_control_for_tag1_on_feed_item_1.negative.classifier", false, @response.body)
-  end
-  
   it "/description" do
     login_as(:quentin)
     get :description, :id => 1, :format => "js"
