@@ -24,6 +24,6 @@ class AboutController < ApplicationController
   
   def using
     @using = Setting.find_or_initialize_by_name("Using Winnow")
-    @messages = Message.find_for_user_and_global(current_user.id)
+    @messages = Message.find_for_user_and_global(current_user.id, :order => "created_at DESC")
   end
 end
