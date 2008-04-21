@@ -40,7 +40,7 @@ a.close img {
   height: 12px;
 }
 
-#notice, #warning, #error, #confirm {
+#notice, #warning, #error, #confirm, #message {
   margin: 5px;
   padding: 5px 5px 5px 26px;
 }
@@ -67,6 +67,12 @@ a.close img {
   background: #FDDFD7 url(../images/vertical_sprite.png) no-repeat;
   background-position: 5px -443px;
   border: 1px solid #FF260B;
+}
+
+#message {
+  background: #F0FFE0 url(../images/vertical_sprite.png) no-repeat;
+  background-position: 5px -411px;
+  border: 1px solid #A0DC11;
 }
 
 #forms {

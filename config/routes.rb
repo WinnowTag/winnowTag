@@ -94,7 +94,13 @@ ActionController::Routing::Routes.draw do |map|
                   :remove_item => :put
                 }
               
-  map.resources :messages
+  map.resources :messages,
+                :member => {
+                  :mark_read => :put
+                },
+                :collection => { 
+                  :mark_read => :put
+                }
                 
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit", :action => "edit"

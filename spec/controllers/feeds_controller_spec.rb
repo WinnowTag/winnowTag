@@ -52,7 +52,6 @@ describe FeedsController do
       @user.stub!(:messages).and_return(@messages)
 
       get :index
-      flash[:notice].should == @message
     end
   
     it "should flash failed collection result" do
@@ -67,8 +66,6 @@ describe FeedsController do
       @user.stub!(:messages).and_return(@messages)
 
       get :index
-
-      flash[:warning].should == @message
     end
   
     describe "#show" do
@@ -167,7 +164,6 @@ describe FeedsController do
     
       post 'create', :feed => {:url => 'http://example.com'}
       response.should redirect_to(feed_path(feed))
-      flash[:notice].should == message
     end
   
     it "should collect it a feed even if it already exists" do    
@@ -188,7 +184,6 @@ describe FeedsController do
   
       post 'create', :feed => {:url => 'http://example.com'}
       response.should redirect_to(feed_path(feed))
-      flash[:notice].should == message
     end
       
     it "should render import form" do
@@ -217,7 +212,6 @@ describe FeedsController do
                    and_return([mock_feed1, mock_feed2])
       post :import, :opml => fixture_file_upload("example.opml")
       response.should redirect_to(feeds_path)
-      flash[:notice].should == message
     end 
   
     it "should create a feed subscription for the subscribe action" do

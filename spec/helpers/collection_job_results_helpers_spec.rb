@@ -26,7 +26,6 @@ describe CollectionJobResultsHelper do
       
     it "show message for result" do
       flash_collection_job_result
-      flash[:notice].should == @message
     end
   end
 end

@@ -50,6 +50,7 @@ Localization.define do |l|
 
   # app/helpers/application_helper.rb
   l.store :close_flash_tooltip,                   "Close Message"
+  l.store :multiple_unread_messages,              "You have multiple messages, see the <a href='%s'>log</a>" 
   l.store :default_search_placeholder,            "Search..."
   l.store :create_feed,                           "Create Feed: '%s'"
   l.store :create_feed,                           "Create Tag: '%s'"
