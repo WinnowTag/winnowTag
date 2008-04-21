@@ -25,7 +25,7 @@
 	<% end -%>
 
 	<%= show_flash %>
-	<%= show_unread_messages %>
+	<%= show_unread_messages if current_user %>
 	
   <% if sidebar_content = yield(:sidebar) -%>
 		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
