@@ -55,20 +55,10 @@ class FeedItemsController < ApplicationController
       end
     end
   end
-  
-  def show
-    respond_to do |wants|
-      @feed_item = FeedItem.find(params[:id])
-      wants.html {inspect; render :action => 'inspect'}
-    end    
-  end
-  
-  def inspect
+
+  def info
     @feed_item = FeedItem.find(params[:id])
-    @user_tags_on_item = @feed_item.taggings.find_by_user(current_user).map(&:tag)
-    
-    options = current_user.classifier.classification_options.merge({:include_evidence => true})        
-    @classifications = current_user.classifier.guess(@feed_item, options)    
+    respond_to :js
   end
   
   def mark_read
@@ -98,11 +88,6 @@ class FeedItemsController < ApplicationController
     respond_to :js
   end
   
-  def info
-    @feed_item = FeedItem.find(params[:id])
-    respond_to :js
-  end
-
   def moderation_panel 
     @feed_item = FeedItem.find(params[:id]) 
     respond_to :js

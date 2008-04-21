@@ -155,7 +155,19 @@ Localization.define do |l|
   l.store :manage_help_link,                      "Help Links"
   l.store :manage_help_description,               "View and manage the help links in winnow."
 
-  # app/views/feed_items
+  # app/views/feed_items/_feed_item.html.erb
+  l.store :add_tag_link,                          "Add Tag"
+  
+  # app/views/feed_items/index.html.erb
+  l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+    
+  # app/views/feed_items/_info.html.erb
+  l.store :info_header,                           "Classifier Taggings"
+  l.store :info_description,                      %|
+    This section shows how your current classifier will classify this item. Tags with 
+	  <span style="color:red">red</span> text have also been applied by you on the item.
+	|
+
   # app/views/feeds
   # app/views/invites
   # app/views/item_protection

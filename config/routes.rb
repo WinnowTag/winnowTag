@@ -27,12 +27,11 @@ ActionController::Routing::Routes.draw do |map|
                 }
   map.resources :feed_items,
                 :member => {
-                  :inspect => :get,
-                  :mark_read => :put,
-                  :mark_unread => :put,
                   :info => :get,
                   :description => :get,
-                  :moderation_panel => :get
+                  :moderation_panel => :get,
+                  :mark_read => :put,
+                  :mark_unread => :put
                 },
                 :collection => { 
                   :mark_read => :put,
