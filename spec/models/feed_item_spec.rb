@@ -390,6 +390,18 @@ describe FeedItem do
       @atom.content.to_s.should == @item.content.content
     end
     
+    it "should include the source with the title of the feed" do
+      @atom.source.title.should == @item.feed.title
+    end
+    
+    it "should include the source with the alternate link of the feed" do
+      @atom.source.links.detect{|l| l.rel == 'alternate'}.href.should == @item.feed.alternate
+    end
+    
+    it "should include the source with the feed link of the feed" do
+      @atom.source.links.detect {|l| l.rel == 'self'}.href.should == @item.feed.via
+    end
+    
     it "should include positive tags for the specified tag" do
       @atom.categories.detect {|cat| cat.scheme == 'http://winnow.mindloom.org/quentin/tags/' && cat.term == @tag1.name }.should_not be_nil
     end
