@@ -155,7 +155,6 @@ Localization.define do |l|
   l.store :manage_help_link,                      "Help Links"
   l.store :manage_help_description,               "View and manage the help links in winnow."
 
-  # app/views/collection_job_results
   # app/views/feed_items
   # app/views/feeds
   # app/views/invites

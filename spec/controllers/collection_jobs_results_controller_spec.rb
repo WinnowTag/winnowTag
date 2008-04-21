@@ -15,7 +15,7 @@ describe CollectionJobResultsController do
   end
   
   it "should get index" do
-    results = mock('results')
+    results = mock('results', :to_xml => "XML")
     @user.should_receive(:collection_job_results).and_return(results)
     
     get :index, :user_id => @user.id

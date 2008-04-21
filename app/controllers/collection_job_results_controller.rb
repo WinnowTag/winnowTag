@@ -8,30 +8,22 @@ class CollectionJobResultsController < ApplicationController
   before_filter :login_required_unless_local
   before_filter :find_user
   
-  # GET /collection_job_results
-  # GET /collection_job_results.xml
   def index
     @collection_job_results = @user.collection_job_results
 
     respond_to do |format|
-      format.html # index.rhtml
       format.xml  { render :xml => @collection_job_results.to_xml }
     end
   end
 
-  # GET /collection_job_results/1
-  # GET /collection_job_results/1.xml
   def show
     @collection_job_result = @user.collection_job_results.find(params[:id])
 
     respond_to do |format|
-      format.html # show.rhtml
       format.xml  { render :xml => @collection_job_result.to_xml }
     end
   end  
 
-  # POST /collection_job_results
-  # POST /collection_job_results.xml
   def create
     @collection_job_result = @user.collection_job_results.build(
                                       :message => params[:collection_job_result][:message],
