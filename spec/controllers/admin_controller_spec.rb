@@ -15,47 +15,47 @@ describe AdminController do
     end
   end
   
-  describe "#using" do
+  describe "#info" do
     it "cannot be accessed by a non admin user" do
-      cannot_access(:quentin, :get, :using)
+      cannot_access(:quentin, :get, :info)
     end
     
     it "can be accessed by an admin user" do
       login_as(:admin)
-      get :using
+      get :info
       response.should be_success
     end
     
     describe "GET" do
-      it "sets the using winnow setting for the view" do
+      it "sets the winnow info setting for the view" do
         login_as(:admin)
         
-        using = mock_model(Setting)
-        Setting.should_receive(:find_or_initialize_by_name).with("Using Winnow").and_return(using)
+        info = mock_model(Setting)
+        Setting.should_receive(:find_or_initialize_by_name).with("Info").and_return(info)
 
-        get :using
+        get :info
 
-        assigns[:using].should == using
+        assigns[:info].should == info
       end
     end
     
     describe "POST" do
       before(:each) do
         login_as(:admin)
-        @using = mock_model(Setting, :value= => nil, :save! => nil)
-        Setting.stub!(:find_or_initialize_by_name).and_return(@using)
+        @info = mock_model(Setting, :value= => nil, :save! => nil)
+        Setting.stub!(:find_or_initialize_by_name).and_return(@info)
       end
       
       it "updates the settings value" do
-        @using.should_receive(:value=).with("The new value")
-        @using.should_receive(:save!)
+        @info.should_receive(:value=).with("The new value")
+        @info.should_receive(:save!)
 
-        post :using, :value => "The new value"
+        post :info, :value => "The new value"
       end
       
-      it "redirects to the using winnow page" do
-        post :using, :value => "The new value"
-        response.should redirect_to(using_path)
+      it "redirects to the winnow info page" do
+        post :info, :value => "The new value"
+        response.should redirect_to(info_path)
       end
     end
   end

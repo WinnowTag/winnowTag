@@ -22,11 +22,11 @@ describe AccountController do
     assert_response :success
   end
 
-  def test_should_allow_signup_and_redirect_to_using_path
+  def test_should_allow_signup_and_redirect_to_info_path
     assert_difference "User.count" do
       create_user
       assert session[:user]
-      response.should redirect_to(using_path)
+      response.should redirect_to(info_path)
     end
   end
 

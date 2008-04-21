@@ -161,7 +161,7 @@ describe ApplicationHelper do
       end
       
       it "returns an element with the a message to view all unread messages text" do
-        show_unread_messages.should have_tag("#message a[href=?]", using_path)
+        show_unread_messages.should have_tag("#message a[href=?]", info_path)
       end
       
       it "contains a link to mark all messages read" do

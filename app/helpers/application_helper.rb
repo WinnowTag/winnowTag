@@ -27,7 +27,7 @@ module ApplicationHelper
       content_tag :div, "#{close} #{message.body}", :id => "message", :class => "clearfix"
     else
       close = link_to_remote(image_tag('cross.png'), :url => mark_read_messages_path, :method => :put, :html => { :class => 'close' })
-      content_tag :div, "#{close} #{_(:multiple_unread_messages, using_path)}", :id => "message", :class => "clearfix"
+      content_tag :div, "#{close} #{_(:multiple_unread_messages, info_path)}", :id => "message", :class => "clearfix"
     end
   end
   

@@ -139,7 +139,7 @@ Localization.define do |l|
   l.store :content_label,                         "Content"
   l.store :save_button,                           "Save"
   
-  # app/views/admin/using.html.erb
+  # app/views/admin/info.html.erb
   l.store :textile_reference,                     "Accepts <a href='http://www.textism.com/tools/textile/index.php'>textile</a> formatting"
   
   # app/views/admin/index.html.erb
@@ -151,8 +151,8 @@ Localization.define do |l|
   l.store :manage_item_protection_description,    "View and manage the Item Protection."
   l.store :manage_messages_link,                  "Messages"
   l.store :manage_messages_description,           "View and manage messages."
-  l.store :manage_using_winnow_link,              "Using Winnow"
-  l.store :manage_using_winnow_description,       "View and manage the using winnow content."
+  l.store :manage_info_link,                      "Winnow Info"
+  l.store :manage_info_description,               "View and manage the winnow info content."
   l.store :manage_help_link,                      "Help Links"
   l.store :manage_help_description,               "View and manage the help links in winnow."
 

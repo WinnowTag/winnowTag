@@ -1447,14 +1447,14 @@ a.desc {
   color: #666;
 }
 
-.using { 
-  margin-right: 26%;
+.info { 
+  margin-left: 35%;
 }
 
 /* =messages */
 .messages {
-  float: right;
-  width: 25%;
+  float: left;
+  width: 33%;
 }
 
 .messages .empty {

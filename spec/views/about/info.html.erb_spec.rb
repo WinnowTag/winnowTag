@@ -7,21 +7,21 @@
 
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe '/about/using' do
+describe '/about/info' do
   before(:each) do
     assigns[:messages] = @messages = []
-    assigns[:using] = stub("using", :value => "foo")
+    assigns[:info] = stub("info", :value => "foo")
 
     template.stub_render(:partial => "messages/sidebar", :locals => { :messages => @messages })
   end
   
   def render_it
-    render "/about/using"
+    render "/about/info"
   end
   
-  it "renders the using winnow content" do
+  it "renders the info winnow content" do
     render_it
-    response.should have_tag(".using", "foo")
+    response.should have_tag(".info", "foo")
   end
   
   it "render the list of messages" do

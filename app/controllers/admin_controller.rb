@@ -9,12 +9,12 @@ class AdminController < ApplicationController
   def index
   end
   
-  def using
-    @using = Setting.find_or_initialize_by_name("Using Winnow")
+  def info
+    @info = Setting.find_or_initialize_by_name("Info")
     if request.post?
-      @using.value = params[:value]
-      @using.save!
-      redirect_to using_path
+      @info.value = params[:value]
+      @info.save!
+      redirect_to info_path
     end
   end
   
