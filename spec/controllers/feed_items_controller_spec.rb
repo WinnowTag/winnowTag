@@ -3,18 +3,18 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe FeedItemsController do
   fixtures :users, :feeds, :feed_items, :tags
 
-  def test_requires_login
+  it "requires_login" do
     assert_requires_login {|c| c.get :index, {}}
   end
 
-  def test_index
+  it "index" do
     login_as :quentin
     get :index
     assert_response :success
     assert_template 'index'
   end
   
-  def test_index_with_ajax
+  it "index_with_ajax" do
     login_as(:quentin)
     get :index, :offset => '1', :limit => '1', :show_untagged => true, :format => "js"
     assert_response :success
@@ -35,7 +35,7 @@ describe FeedItemsController do
   end
   
   # TODO: Fix to use C classifier
-  # def test_info
+  # it "info" do
   #     accept('text/javascript')
   #     login_as(:quentin)
   #     get :info, :id => 1
@@ -43,7 +43,7 @@ describe FeedItemsController do
   #     assert_rjs :replace_html, 'tag_information_feed_item_1'
   #   end
   #   
-  #   def test_info_with_user_tagging
+  #   it "info_with_user_tagging" do
   #     user = users(:quentin)
   #     user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag'))
   #     BayesClassifier.any_instance.expects(:guess).returns({'tag' => [0.95, [[0.4,1]]]})
@@ -54,7 +54,7 @@ describe FeedItemsController do
   #     assert_select "h4[style= 'color: red;']", /tag - 0.9500/, @response.body
   #   end
   #   
-  #   def test_info_with_classifier_tagging
+  #   it "info_with_classifier_tagging" do
   #     user = users(:quentin)
   #     user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag'), :classifier_tagging => true)
   #     BayesClassifier.any_instance.expects(:guess).returns({'tag' => [0.95, [[0.4,1]]]})
@@ -66,7 +66,7 @@ describe FeedItemsController do
   #     assert_select "h4[style= 'color: red;']", false, @response.body
   #   end
     
-  def test_sets_last_accessed_time_on_each_request
+  it "sets_last_accessed_time_on_each_request" do
     login_as(:quentin)
     user = User.find(users(:quentin).id)
     old_time = user.last_accessed_at = 1.minute.ago
@@ -76,7 +76,7 @@ describe FeedItemsController do
     assert(old_time < User.find(users(:quentin).id).last_accessed_at)
   end
   
-  def test_mark_read
+  it "mark_read" do
     assert_difference("ReadItem.count", 1) do
       login_as(:quentin)
       put :mark_read, :id => 1, :format => "js"
@@ -84,7 +84,7 @@ describe FeedItemsController do
     end
   end
   
-  def test_mark_read_twice_only_creates_one_entry_and_doesnt_fail
+  it "mark_read_twice_only_creates_one_entry_and_doesnt_fail" do
     assert_difference("ReadItem.count", 1) do
       login_as(:quentin)
       put :mark_read, :id => 1, :format => "js"
@@ -94,7 +94,7 @@ describe FeedItemsController do
     end
   end
   
-  def test_mark_many_read
+  it "mark_many_read" do
     users(:quentin).read_items.create(:feed_item_id => 1)
     users(:quentin).read_items.create(:feed_item_id => 2)
     assert_difference("ReadItem.count", 2) do
@@ -104,7 +104,7 @@ describe FeedItemsController do
     end
   end
   
-  def test_mark_unread
+  it "mark_unread" do
     users(:quentin).read_items.create(:feed_item_id => 2)
     assert_difference("ReadItem.count", -1) do
       login_as(:quentin)

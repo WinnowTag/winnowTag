@@ -3,50 +3,39 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe TaggingsController do
   fixtures :users, :feed_items
 
-  before(:each) do
-    @request.env['HTTP_REFERER'] = '/feed_items'
-  end
-
-  def test_create_requires_post
+  it "create_requires_post" do
     login_as(:quentin)
     get :create
     assert_response 400
   end
   
-  def test_destroy_requires_post
+  it "destroy_requires_post" do
     login_as(:quentin)
     get :destroy
     assert_response 400
   end
-  
-  def assert_all_actions_require_login
-    assert_requires_login do |c|
-      c.get :create
-      c.get :destroy
-    end
-  end
     
-  def test_create_without_parameters_fails
+  it "create_without_parameters_fails" do
     login_as(:quentin)
     post :create, {}
     assert_response 400
   end
   
-  def test_create_without_tag_doesnt_create_tagging
+  it "create_without_tag_doesnt_create_tagging" do
     login_as(:quentin)
     assert_no_difference("Tagging.count") do
       post :create, :tagging => {:feed_item_id => '1'}
     end
   end
   
-  def test_create_with_blank_tag_doesnt_create_tagging
+  it "create_with_blank_tag_doesnt_create_tagging" do
     login_as(:quentin)
     assert_no_difference("Tagging.count") do
       post :create, :tagging => {:feed_item_id => '1', :tag => ''}
     end
   end
   
-  def test_create_with_other_user_fails
+  it "create_with_other_user_fails" do
     login_as(:aaron)
     tag = Tag(users(:aaron), 'peerworks')
     accept('text/javascript')
@@ -55,7 +44,7 @@ describe TaggingsController do
     assert_nil Tagging.find(:first, :conditions => ["user_id = 1 and feed_item_id = 1 and tag_id = ?", tag.id])
   end
   
-  def test_create_tagging_with_strength_zero
+  it "create_tagging_with_strength_zero" do
     accept('text/javascript')
     login_as(:quentin)
     tag = Tag(users(:quentin), 'peerworks')
@@ -73,7 +62,7 @@ describe TaggingsController do
                                             "tag_id = ?", tag.id])
   end
       
-  def test_destroy_tagging_specified_by_taggable_and_tag_name_with_ajax
+  it "destroy_tagging_specified_by_taggable_and_tag_name_with_ajax" do
     tagger = User.find(1)
     tag = Tag(tagger, 'peerworks')
     taggable = FeedItem.find(1)
@@ -86,7 +75,7 @@ describe TaggingsController do
     assert_raise (ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
   end
   
-  def test_destroy_does_not_destroy_classifier_taggings
+  it "destroy_does_not_destroy_classifier_taggings" do
     Tagging.delete_all
     
     login_as(:quentin)
@@ -103,5 +92,13 @@ describe TaggingsController do
     post :destroy, :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
 
     assert_equal 1, Tagging.count
+  end
+  
+private
+  def assert_all_actions_require_login
+    assert_requires_login do |c|
+      c.get :create
+      c.get :destroy
+    end
   end
 end

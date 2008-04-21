@@ -589,26 +589,22 @@ describe Tag do
   describe "from test/unit" do
     fixtures :users
 
-    before(:each) do
-      Tag.delete_all
-    end
-
-    def test_cant_create_duplicate_tags
+    it "cant_create_duplicate_tags" do
       Tag.create!(:user => users(:quentin), :name => 'foo')
       Tag.new(:user => users(:quentin), :name => 'foo').should_not be_valid
     end
   
-    def test_cant_create_empty_tags
+    it "cant_create_empty_tags" do
       Tag.new(:user => users(:quentin), :name => '').should_not be_valid
     end
   
-    def test_case_sensitive
+    it "case_sensitive" do
       tag1 = Tag(users(:quentin), 'TAG1')
       tag2 = Tag(users(:quentin), 'tag1')
       assert_not_equal tag1, tag2
     end
   
-    def test_tag_function
+    it "tag_function" do
       tag = Tag(users(:quentin), 'tag1')
       assert tag.is_a?(Tag)
       assert_equal 'tag1', tag.name
@@ -617,40 +613,40 @@ describe Tag do
       assert_equal tag, tag2
     end
   
-    def test_tag_to_s_returns_name
+    it "tag_to_s_returns_name" do
       tag = Tag(users(:quentin), 'tag1')
       assert_equal('tag1', tag.to_s)
     end
   
-    # def test_tag_to_param_returns_name
+    # it "tag_to_param_returns_name" do
     #   tag = Tag(users(:quentin), 'tag1')
     #   assert_equal('tag1', tag.to_param)
     # end
   
-    def test_sorting
+    it "sorting" do
       tag1 = Tag(users(:quentin), 'aaa')
       tag2 = Tag(users(:quentin), 'bbb')
       assert_equal([tag1, tag2], [tag1, tag2].sort)
       assert_equal([tag1, tag2], [tag2, tag1].sort)
     end
   
-    def test_sorting_is_case_insensitive
+    it "sorting_is_case_insensitive" do
       tag1 = Tag(users(:quentin), 'aaa')
       tag2 = Tag(users(:quentin), 'Abb')
       assert_equal([tag1, tag2], [tag1, tag2].sort)
       assert_equal([tag1, tag2], [tag2, tag1].sort)
     end
   
-    def test_sorting_with_non_tag_raises_exception
+    it "sorting_with_non_tag_raises_exception" do
       tag = Tag(users(:quentin), 'tag')
       assert_raise(ArgumentError) { tag <=> 42 }
     end
   
-    def test_two_tags_belonging_to_different_users_are_different
+    it "two_tags_belonging_to_different_users_are_different" do
       assert_not_equal(Tag(users(:quentin), "tag"), Tag(users(:aaron), "tag"))    
     end
   
-    def test_copy_tag_to_self
+    it "copy_tag_to_self" do
       u = users(:quentin)
       tag = Tag(u, 'tag1')
       copy = Tag(u, 'copy of tag1')
@@ -663,7 +659,7 @@ describe Tag do
       assert_equal(3, u.taggings.find_by_tag(tag).size)
     end
   
-    def test_copy_tag_to_another_user
+    it "copy_tag_to_another_user" do
       u = users(:quentin)
       u2 = users(:aaron)
       tag_quent = Tag(u, 'tag1')
@@ -677,7 +673,7 @@ describe Tag do
       assert_equal(3, u2.taggings.find_by_tag(tag_aaron).size)
     end
   
-    def test_copy_with_the_same_name_raises_error
+    it "copy_with_the_same_name_raises_error" do
       u = users(:quentin)
       tag = Tag(u, 'tag1')
       u.taggings.create(:feed_item => FeedItem.find(1), :tag => tag)
@@ -687,7 +683,7 @@ describe Tag do
       assert_raise(ArgumentError) { tag.copy(tag) }
     end
   
-    def test_copy_to_other_user_when_tag_already_exists_raises_error
+    it "copy_to_other_user_when_tag_already_exists_raises_error" do
       u = users(:quentin)
       u2 = users(:aaron)
       u.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(u, 'tag1'))
@@ -696,7 +692,7 @@ describe Tag do
       assert_raise(ArgumentError) { Tag(u, 'tag1').copy(Tag(u, 'tag1')) }
     end
   
-    def test_copying_a_tag_skips_classifier_taggings
+    it "copying_a_tag_skips_classifier_taggings" do
       u = users(:quentin)
       tag = Tag(u, 'tag1')
       copy = Tag(u, 'copy of tag1')
@@ -708,7 +704,7 @@ describe Tag do
       assert_equal(1, u.classifier_taggings.size)
     end
   
-    def test_copying_copies_the_tag_comment_and_bias
+    it "copying_copies_the_tag_comment_and_bias" do
       user = users(:quentin)
       old_tag = Tag(user, 'old')
       old_tag.update_attributes :comment => "old tag comment", :bias => 0.9
@@ -723,7 +719,7 @@ describe Tag do
       assert_equal "old tag comment", new_tag.comment
     end
   
-    def test_merge_into_another_tag
+    it "merge_into_another_tag" do
       u = users(:quentin)
       old = Tag(u, 'old')
       new_tag = Tag(u, 'new')
@@ -737,7 +733,7 @@ describe Tag do
       assert_equal([1, 2], new_tag.taggings.map(&:feed_item_id).sort)
     end
   
-    def test_merge_when_tag_exists_on_item
+    it "merge_when_tag_exists_on_item" do
       u = users(:quentin)
       old = Tag(u, 'old')
       new_tag = Tag(u, 'new')
@@ -751,7 +747,7 @@ describe Tag do
       assert_equal([1], new_tag.taggings.map(&:feed_item_id))    
     end
   
-    def test_overwriting_a_tag
+    it "overwriting_a_tag" do
       user = users(:quentin)
       old_tag = Tag(user, 'old')
       old_tag.update_attributes :comment => "old tag comment", :bias => 0.9

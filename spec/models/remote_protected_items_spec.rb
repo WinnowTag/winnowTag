@@ -18,7 +18,7 @@ describe Remote::ProtectedItem do
     end
   end
   
-  def test_update_sends_create_with_each_user_tagging
+  it "update_sends_create_with_each_user_tagging" do
     require 'tag'
     u1 = users(:quentin)
     u2 = users(:aaron)
@@ -43,7 +43,7 @@ describe Remote::ProtectedItem do
     assert_equal([1, 2, 3], items[:protected_items].collect {|item| item['feed_item_id'] })
   end
   
-  def test_rebuild_sends_delete_all
+  it "rebuild_sends_delete_all" do
     delete_all_path = "/protectors/1/protected_items/delete_all.xml"
     ActiveResource::HttpMock.respond_to do |mock|
       mock.delete delete_all_path,    {}, nil
@@ -55,7 +55,7 @@ describe Remote::ProtectedItem do
     ActiveResource::HttpMock.requests.should include(ActiveResource::Request.new(:delete, delete_all_path))
   end
   
-  def test_rebuild_sends_create_with_each_user_tagging
+  it "rebuild_sends_create_with_each_user_tagging" do
     require 'tag'
     u1 = users(:quentin)
     u2 = users(:aaron)
