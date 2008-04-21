@@ -1,10 +1,10 @@
 <% form_tag do -%>
   <p>
-    <b><label for="value">Content</label></b> Accepts <%= link_to "textile", "http://www.textism.com/tools/textile/index.php" %> formatting<br/>
+    <b><label for="value"><%= _(:content_label) %></label></b> <%= _(:textile_reference) %><br/>
     <%= text_area_tag :value, @using.value, :class => "content" %>
   </p>
   
   <p>
-    <%= submit_tag "Save" %>
+    <%= submit_tag _(:save_button) %>
   </p>
 <% end %>

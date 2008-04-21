@@ -134,7 +134,27 @@ Localization.define do |l|
     </p>
   |
 
-  # app/views/admin
+  # app/views/admin/help.html.erb
+  l.store :content_label,                         "Content"
+  l.store :save_button,                           "Save"
+  
+  # app/views/admin/using.html.erb
+  l.store :textile_reference,                     "Accepts <a href='http://www.textism.com/tools/textile/index.php'>textile</a> formatting"
+  
+  # app/views/admin/index.html.erb
+  l.store :manage_users_link,                     "User Management"
+  l.store :manage_users_description,              "View and manage users of winnow."
+  l.store :manage_invites_link,                   "Invites"
+  l.store :manage_invites_description,            "View and manage invites."
+  l.store :manage_item_protection_link,           "Item Protection Management"
+  l.store :manage_item_protection_description,    "View and manage the Item Protection."
+  l.store :manage_messages_link,                  "Messages"
+  l.store :manage_messages_description,           "View and manage messages."
+  l.store :manage_using_winnow_link,              "Using Winnow"
+  l.store :manage_using_winnow_description,       "View and manage the using winnow content."
+  l.store :manage_help_link,                      "Help Links"
+  l.store :manage_help_description,               "View and manage the help links in winnow."
+
   # app/views/collection_job_results
   # app/views/feed_items
   # app/views/feeds
@@ -148,4 +168,5 @@ Localization.define do |l|
   # app/views/user_notifier
   # app/views/users
   # ActiveRecord validation messages
+  # Javascript
 end

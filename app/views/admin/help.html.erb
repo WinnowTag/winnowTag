@@ -1,10 +1,10 @@
 <% form_tag do -%>
   <p>
-    <b><label for="value">Content</label></b><br/>
+    <b><label for="value"><%= _(:content_label) %></label></b><br/>
     <%= text_area_tag :value, @help.value, :class => "content" %>
   </p>
   
   <p>
-    <%= submit_tag "Save" %>
+    <%= submit_tag _(:save_button) %>
   </p>
 <% end %>
