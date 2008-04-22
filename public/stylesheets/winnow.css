@@ -779,9 +779,14 @@ ul.tag_list li.negative .name {
 
 ul.tag_list li.public .name {
   background-image: url(../images/public.png);
-  background-position: 2px center;
-  padding-left: 16px;
+  background-position: 5px center;
+  padding-left: 20px;
 /*  color: #2691BF;*/
+}
+
+ul.tag_list li.public:hover .name {
+  background-position: 4px center;
+  padding-left: 19px;
 }
 
 ul.tag_list li:hover .name {
