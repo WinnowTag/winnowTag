@@ -53,7 +53,7 @@ Localization.define do |l|
   l.store :multiple_unread_messages,              "You have multiple messages, see the <a href='%s'>log</a>" 
   l.store :default_search_placeholder,            "Search..."
   l.store :create_feed,                           "Create Feed: '%s'"
-  l.store :create_feed,                           "Create Tag: '%s'"
+  l.store :create_tag,                            "Create Tag: '%s'"
   l.store :public_tag_tooltip,                    "from %s"
   l.store :feed_items_count_tooltip, :singular => "%d item in this feed",
                                      :plural   => "%d items in this feed"
