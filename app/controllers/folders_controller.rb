@@ -32,10 +32,12 @@ class FoldersController < ApplicationController
     case params[:item_id]
       when /^feed_(\d+)$/
         @folder.add_feed!($1)
+        @feed = Feed.find($1)
       when /^tag_(\d+)$/
         @folder.add_tag!($1)
+        @tag = Tag.find($1)
     end
-    render :nothing => true
+    respond_to :js
   end
   
   def remove_item

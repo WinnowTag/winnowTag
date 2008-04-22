@@ -155,11 +155,14 @@ module ApplicationHelper
   end
   
   def feed_filter_control(feed, options = {})   
-    url  =  case options[:remove]
+    url      = case options[:remove]
       when :subscription then subscribe_feed_path(feed, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
-    html = link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    function = case options[:remove]
+      when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
+    end
+    html = link_to_function(image_tag("cross.png"), "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name", :title => _(:feed_items_count_tooltip, feed.feed_items.size))
     
     html =  content_tag(:div, html, :class => "show_feed_control")
@@ -183,12 +186,15 @@ module ApplicationHelper
       options = options.except(:remove)
       options[:remove] = :sidebar
     end
-    url  =  case options[:remove]
-      when :subscription then unsubscribe_tag_path(tag)
-      when :sidebar      then sidebar_tag_path(tag, :sidebar => false)
-      when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
+    url      = case options[:remove]
+      when :subscription           then unsubscribe_tag_path(tag)
+      when :sidebar                then sidebar_tag_path(tag, :sidebar => false)
+      when Folder                  then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
-    html =  link_to_function(image_tag("cross.png"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}; itemBrowser.removeFilters({tag_ids: '#{tag.id}'});", :class => "remove") << " "
+    function = case options[:remove]
+      when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
+    end
+    html =  link_to_function(image_tag("cross.png"), "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)};", :class => "remove") << " "
     html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
