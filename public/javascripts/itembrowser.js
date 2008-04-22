@@ -698,7 +698,7 @@ ItemBrowser.prototype = {
           afterUpdateElement: function() { 
             this.closeItemModerationPanel(item);
             // TODO: Move this call into item browser...
-            window.add_tag($(item).getAttribute("id"), field.value);
+            window.add_tagging($(item).getAttribute("id"), field.value, 'positive');
             field.blur();
             field.value = "";
           }.bind(this)

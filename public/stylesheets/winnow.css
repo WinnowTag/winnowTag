@@ -749,84 +749,114 @@ ul.tag_list {
 ul.tag_list li {
   display: inline;
   color: #666;
-  padding: 0 0 0 14px;
+  padding: 0;
   margin: 0 0 0 4px;
   line-height: 1.8;
   white-space: nowrap;
   cursor: default;
   position: relative;
+}
+
+ul.tag_list li .name {
+  padding: 3px 6px 3px 15px;
   background-position: left center;
   background-repeat: no-repeat;
 }
 
-ul.tag_list li.classifier {
+ul.tag_list li.classifier .name {
   background-image: url(../images/bullet_black.png);
 }
 
-ul.tag_list li.positive {
+ul.tag_list li.positive .name {
   background-image: url(../images/bullet_green.png);
   color: #52984B;
 }
 
-ul.tag_list li.negative {
+ul.tag_list li.negative .name {
   background-image: url(../images/bullet_red.png);
   color: #C12A2F;
 }
 
-ul.tag_list li.public {
+ul.tag_list li.public .name {
   background-image: url(../images/public.png);
   background-position: 2px center;
   padding-left: 16px;
 /*  color: #2691BF;*/
 }
 
+ul.tag_list li:hover .name {
+  z-index: 1000;
+  background-color: #fff;
+  background-position: -1px center;
+  padding: 2px 5px 2px 14px;
+  border: 1px solid #aaa;
+  border-width: 1px 1px 0 1px;
+  -moz-border-radius-topleft: 0.4em;
+  -moz-border-radius-topright: 0.4em;
+  -webkit-border-top-left-radius: 0.4em;  
+  -webkit-border-top-right-radius: 0.4em;  
+}
+
 ul.tag_list li .controls {
+  display: none;
   position: absolute;
-  top: -8px;
-  left: -5px;
+  top: 16px;
+  left: 0;
   z-index: 900;
+  padding: 3px;
   background: #fff;
   border: 1px solid #aaa;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 0.7em;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
 }
 
-ul.tag_list li .controls span {
-  display: block;
-  width: 16px;
-  height: 16px;
+ul.tag_list li:hover .controls {
+  display: inline;
 }
 
-ul.tag_list li .controls .add {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -32px;
+ul.tag_list li .controls .positive, ul.tag_list li .controls .negative, ul.tag_list li .controls .remove {
   cursor: pointer;
+  padding: 0 0 0 1.5em;
+  margin-left: 0.2em;
+}
+
+ul.tag_list li .controls .positive {
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 -1px;
+}
+
+ul.tag_list li .controls .negative {
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 -65px;
 }
 
 ul.tag_list li .controls .remove {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -96px;
-  cursor: pointer;
+  background: url(../images/close.png) no-repeat;
+  display: none;
 }
 
-ul.tag_list li.positive .controls .add {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 0;
+ul.tag_list li.positive .controls .positive {
+  display: none;
+}
+
+ul.tag_list li.positive .controls .negative {
+  display: inline;
 }
 
 ul.tag_list li.positive .controls .remove {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -96px;
+  display: inline;
 }
 
-ul.tag_list li.negative .controls .add {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -32px;
+ul.tag_list li.negative .controls .positive {
+  display: inline;
+}
+
+ul.tag_list li.negative .controls .negative {
+  display: none;
 }
 
 ul.tag_list li.negative .controls .remove {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -64px;
+  display: inline;
 }
 
 .cursor {

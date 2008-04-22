@@ -113,9 +113,10 @@ describe FeedItemsHelper do
       classes = ["positive", "classifier"]
       tag_control_for(feed_item, tag, classes, nil).should have_tag("li.positive.classifier##{dom_id(feed_item, "tag_control_for_tag1_on")}") do
         with_tag "span.name", "tag1"
-        with_tag "span.controls[style=?]", /display:none/ do
-          with_tag "span.add"
-          with_tag "span.remove"
+        with_tag "span.controls" do
+          with_tag "a.positive"
+          with_tag "a.negative"
+          with_tag "a.remove"
         end
       end
     end

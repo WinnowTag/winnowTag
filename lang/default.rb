@@ -71,6 +71,9 @@ Localization.define do |l|
   l.store :collection_finished,                   "We have finished fetching new items for %s"
 
   # app/helpers/feed_items_helper.rb
+  l.store :positive_training_control,             "Make Positive"
+  l.store :negative_training_control,             "Make Negative"
+  l.store :remove_training_control,               "Remove Training"
   l.store :start_classifier_button,               "Auto-tag"
   l.store :stop_classifier_button,                "Stop"
   l.store :classifier_progress,                   "Classify changed tags"
