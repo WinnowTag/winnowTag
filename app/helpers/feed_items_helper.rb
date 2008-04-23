@@ -70,7 +70,7 @@ module FeedItemsHelper
       else
         if tagging = Array(taggings).first
           controls  = content_tag(:span, nil, :class => "status")
-          controls << content_tag(:span, nil, :class => "info")
+          controls << content_tag(:span, tag_training(tag), :class => "info")
 
           content   = content_tag(:span, h(tag.name), :class => "name")
           content  << content_tag(:span, controls, :class => "controls")
@@ -102,13 +102,22 @@ module FeedItemsHelper
     controls << link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive") << " "
     controls << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative") << " "
     controls << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove") << " "
-    controls << content_tag(:span, nil, :class => "info")
+    controls << content_tag(:span, tag_training(tag), :class => "info")
 
     content   = content_tag(:span, h(tag.name), :class => "name")
     content  << content_tag(:span, controls, :class => "controls")
 
     content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
         :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json});")
+  end
+  
+  def tag_training(tag)
+    %|<dl>
+      <dt>Training</dt>
+      <dd>+#{tag.positive_count} / -#{tag.negative_count}</dd>
+      <dt>Automatic</dt>
+      <dd>#{tag.classifier_count}</dd>
+    </dl>|
   end
   
 	def classes_for_taggings(taggings, classes = [])

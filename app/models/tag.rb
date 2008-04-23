@@ -60,6 +60,18 @@ class Tag < ActiveRecord::Base
   #   self.name
   # end
   
+  def positive_count
+    read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
+  end
+  
+  def negative_count
+    read_attribute(:negative_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 0")
+  end
+  
+  def classifier_count
+    read_attribute(:classifier_count) || taggings.count(:conditions => "classifier_tagging = 1 AND NOT EXISTS (SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)")
+  end
+  
   def inspect
     "<Tag name=#{name}, user=#{user.login}>"
   end

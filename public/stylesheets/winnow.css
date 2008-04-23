@@ -810,6 +810,7 @@ ul.tag_list li .controls {
   padding: 3px;
   background: #fff;
   border: 1px solid #aaa;
+  color: #000;
   -moz-border-radius: 0.4em;
   -webkit-border-radius: 0.4em;
 }
@@ -822,6 +823,25 @@ ul.tag_list li .controls .status {
   display: block;
   text-align: center;
   color: #666;
+}
+
+ul.tag_list li .controls .info dl {
+  margin: 0;
+  padding: 0;
+}
+
+ul.tag_list li .controls .info dt {
+  width: 25%;
+  float: left;
+  clear: both;
+}
+
+ul.tag_list li .controls .info dt:after {
+  content: ":";
+}
+
+ul.tag_list li .controls .info dd {
+  float: left;
 }
 
 ul.tag_list li.positive .controls .status {
