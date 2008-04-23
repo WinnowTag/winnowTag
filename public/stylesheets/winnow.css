@@ -181,12 +181,8 @@ a.close img {
 
 .navigation .extra li {
   float: left;
-  padding: 0;
-  margin: 0;
-}
-
-.navigation .extra li a {
   padding: 0 10px;
+  margin: 0;
 }
 
 .navigation .extra li a.help {
@@ -194,6 +190,25 @@ a.close img {
   background-repeat: no-repeat;
   padding-left: 18px;
   font-weight: bold;
+}
+
+#feedback {
+  position: relative;
+}
+
+#feedback form {
+  position: absolute;
+  top: 1.5em;
+  left: -5em;
+  z-index: 1000;
+  padding: 1em;
+  background-color: #fff;
+  border: 1px solid #666;
+}
+
+#feedback form textarea {
+  width: 20em;
+  height: 5em;
 }
 
 optgroup {

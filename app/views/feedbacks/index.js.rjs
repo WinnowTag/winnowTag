@@ -1,0 +1,8 @@
+page.call 'itemBrowser.hideLoadingIndicator'
+
+page.call "itemBrowser.setTotalItems", @feedbacks_count
+
+@feedbacks.each_with_index do |feedback, index|
+  page.call 'itemBrowser.insertItem', dom_id(feedback), params[:offset].to_i + index, 
+    render_to_string(:partial => 'feedback.html.erb', :locals => {:feedback => feedback})
+end

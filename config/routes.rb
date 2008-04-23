@@ -101,6 +101,8 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { 
                   :mark_read => :put
                 }
+  
+  map.resources :feedbacks
                 
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit", :action => "edit"

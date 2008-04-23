@@ -45,4 +45,9 @@ describe '/admin/index' do
     render_it
     response.should have_tag("a[href=?]", admin_help_path)
   end  
+  
+  it "renders link to help links page" do
+    render_it
+    response.should have_tag("a[href=?]", feedbacks_path)
+  end  
 end

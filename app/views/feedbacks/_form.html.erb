@@ -1,0 +1,4 @@
+<% form_remote_for feedback do |form| -%>
+  <%= form.text_area :body %>
+  <%= submit_tag _(:feedback_submit_button) %> or <%= link_to_function _(:feedback_cancel_link), "this.up('form').remove()" %>
+<% end -%>

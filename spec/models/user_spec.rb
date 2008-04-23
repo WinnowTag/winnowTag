@@ -19,6 +19,10 @@ describe User do
     it "has many messages" do
       @user.should have_many(:messages)
     end
+    
+    it "has many messages" do
+      @user.should have_many(:feedbacks)
+    end
   end
   
   describe "prototype" do

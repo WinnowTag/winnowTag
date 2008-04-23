@@ -1,0 +1,19 @@
+<% content_for :head do -%>
+	<script type="text/javascript" charset="utf-8">
+		var itemBrowser;
+		document.observe('dom:loaded', function() {
+		  itemBrowser = new ItemBrowser('feedbacks', {orders: ["user", "created_at"], default_order: "created_at"});
+		});
+	</script>
+<% end -%>
+
+<% content_for :header_controls do -%>
+  <%= render :partial => 'header_controls' %>
+<% end -%>
+
+<div id="feedbacks"></div>
+
+<% content_for :footer do -%>
+	<span id="feedbacks_indicator" class="loading" style="display:none;"></span>
+	<span id="feedbacks_count" class="count"></span>
+<% end -%>

@@ -71,6 +71,8 @@ Localization.define do |l|
   l.store :collection_finished,                   "We have finished fetching new items for %s"
 
   # app/helpers/feed_items_helper.rb
+  l.store :training_label,                        "Training"
+  l.store :automatic_label,                       "Automatic"
   l.store :positive_training_control,             "Make Positive"
   l.store :negative_training_control,             "Make Negative"
   l.store :remove_training_control,               "Remove Training"
@@ -158,6 +160,8 @@ Localization.define do |l|
   l.store :manage_info_description,               "View and manage the winnow info content."
   l.store :manage_help_link,                      "Help Links"
   l.store :manage_help_description,               "View and manage the help links in winnow."
+  l.store :manage_feedback_link,                  "Feedback"
+  l.store :manage_feedback_description,           "View feedback left by the users of winnow."
 
   # app/views/feed_items/_description.html.erb
   l.store :feed_item_feed_metadata,               "from %s"
@@ -206,6 +210,19 @@ Localization.define do |l|
 
   # app/views/feed_items/index.html.erb
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+  
+  # app/views/feedbacks/_feedback.html.erb
+  l.store :feedback_metadata,                     "By %s on %s"
+  
+  # app/views/feedbacks/_form.html.erb
+  l.store :feedback_submit_button,                "Submit"
+  l.store :feedback_cancel_link,                  "cancel"
+  
+  # app/views/feedbacks/_header_controls.html.erb
+  l.store :feedback_sort_label,                   "Sort:"
+  l.store :feedback_sort_user_label,              "User"
+  l.store :feedback_sort_date_label,              "Date"
+  l.store :feedback_search_placeholder,           "Search Feedback..."
   
   # app/views/feeds
   # app/views/invites

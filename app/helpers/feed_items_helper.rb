@@ -113,9 +113,9 @@ module FeedItemsHelper
   
   def tag_training(tag)
     %|<dl>
-      <dt>Training</dt>
+      <dt>#{_(:training_label)}</dt>
       <dd>+#{tag.positive_count} / -#{tag.negative_count}</dd>
-      <dt>Automatic</dt>
+      <dt>#{_(:automatic_label)}</dt>
       <dd>#{tag.classifier_count}</dd>
     </dl>|
   end

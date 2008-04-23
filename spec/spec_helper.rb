@@ -143,7 +143,15 @@ Spec::Runner.configure do |config|
       when Symbol;  users(user_id_or_fixture_name).id
     end
   end
-    
+  
+  def current_user
+    @controller.send(:current_user)
+  end
+  
+  def print_response_body
+    puts ERB::Util.html_escape(response.body)
+  end
+  
   def mock_new_model(model_class, options_and_stubs = {})
     mock_model(model_class, options_and_stubs.reverse_merge(:id => nil, :to_param => nil, :new_record? => true))
   end
