@@ -162,7 +162,10 @@ module ApplicationHelper
     function = case options[:remove]
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
     end
-    html = link_to_function(image_tag("cross.png"), "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+
+    html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html  = content_tag :div, html, :class => "controls"
+    
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name", :title => _(:feed_items_count_tooltip, feed.feed_items.size))
     
     html =  content_tag(:div, html, :class => "show_feed_control")
@@ -194,8 +197,12 @@ module ApplicationHelper
     function = case options[:remove]
       when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
     end
-    html =  link_to_function(image_tag("cross.png"), "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)};", :class => "remove") << " "
-    html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
+
+    html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
+    html << tag_training(tag)
+    html  = content_tag :div, html, :class => "controls"
+    
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
               :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
@@ -215,6 +222,15 @@ module ApplicationHelper
     html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url)
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
+  end
+  
+  def tag_training(tag)
+    %|<dl class="info">
+      <dt>#{_(:training_label)}</dt>
+      <dd>+#{tag.positive_count} / -#{tag.negative_count}</dd>
+      <dt>#{_(:automatic_label)}</dt>
+      <dd>#{tag.classifier_count}</dd>
+    </dl>|
   end
   
   def help_path

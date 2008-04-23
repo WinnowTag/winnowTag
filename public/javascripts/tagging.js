@@ -106,8 +106,6 @@ function add_tag_control(taggable_id, tag) {
       '<a class="positive" onclick="add_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', \'positive\'); return false;" href="#">Make Positive</a> ' + 
       '<a class="negative" onclick="add_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', \'negative\'); return false;" href="#">Make Negative</a> ' + 
       '<a class="remove" onclick="remove_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\'); return false;" href="#">Remove Training</a> ' + 
-      // TODO: Need to load this info
-      '<span class="info"></span>' +
     '</span>' +
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);

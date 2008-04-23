@@ -840,25 +840,6 @@ ul.tag_list li .controls .status {
   color: #666;
 }
 
-ul.tag_list li .controls .info dl {
-  margin: 0;
-  padding: 0;
-}
-
-ul.tag_list li .controls .info dt {
-  width: 25%;
-  float: left;
-  clear: both;
-}
-
-ul.tag_list li .controls .info dt:after {
-  content: ":";
-}
-
-ul.tag_list li .controls .info dd {
-  float: left;
-}
-
 ul.tag_list li.positive .controls .status {
   color: #52984B;
 }
@@ -1140,13 +1121,13 @@ a.bookmarklet:hover {
 .folder.open ul.filter_list {
   display: block;
   margin-left: 15px;
+  list-style: none;
 }
 
 .folder ul.filter_list li {
   margin: 0;
-  padding: 0 0 0 15px;
+  padding: 3px 1px 0 19px;
   height: 1.5em;
-  overflow: hidden;
   font-style: normal;
   font-weight: normal;
   position: relative;
@@ -1157,45 +1138,111 @@ a.bookmarklet:hover {
 }
 
 .folder ul.filter_list.tags li {
-  background: url(../images/tag.png) 0 2px no-repeat;
+  background: url(../images/tag.png) 4px 5px no-repeat;
 }
 
 .folder ul.filter_list.feeds li {
-  background: url(../images/vertical_sprite.png) 0 -608px no-repeat;  
+  background: url(../images/vertical_sprite.png) 3px -605px no-repeat;  
 }
 
-.folder ul.filter_list li:hover {
-  background-color: #eee;
+.folder ul.filter_list.feeds li .name {
+  height: 1em;
+  overflow: hidden;
 }
 
-.folder ul.filter_list li.selected {
+.folder ul.filter_list li.selected .name {
   font-weight: bold;
 }
 
 .folder ul.filter_list li.public {
   background-image: url(../images/public.png);
-  background-position: 1px 2px;
+  background-position: 5px 6px;
   background-repeat: no-repeat;
 }
 
 .folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
-  position: absolute;
-  display: none;
   cursor: pointer;
   padding-bottom: 3px;
-  background-color: #E2ECFD;
 }
 
-.folder ul.filter_list li:hover .remove, .folder ul.filter_list li:hover .edit {
+/* =sidebar-hover */
+.folder ul.filter_list li:hover {
+  padding: 2px 0 0 18px;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-width: 1px 1px 0 1px;
+  -moz-border-radius-topleft: 0.4em;
+  -moz-border-radius-topright: 0.4em;
+  -webkit-border-top-left-radius: 0.4em;
+  -webkit-border-top-right-radius: 0.4em;
+}
+
+.folder ul.filter_list.tags li:hover {
+  background-position: 3px 4px;
+}
+
+.folder ul.filter_list li.public:hover {
+  background-position: 4px 5px;
+}
+
+.folder ul.filter_list.feeds li:hover {
+  background-position: 2px -606px;
+}
+
+.folder ul.filter_list li .controls {
+  display: none;
+  padding: 3px 0;
+  position: absolute;
+  top: 1.5em;
+  left: -1px;
+  width: 100%;
+  z-index: 900;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-width: 0 1px 1px 1px;
+  -moz-border-radius-bottomleft: 0.4em;
+  -moz-border-radius-bottomright: 0.4em;
+  -webkit-border-bottom-left-radius: 0.4em;
+  -webkit-border-bottom-right-radius: 0.4em;
+}
+
+.folder ul.filter_list li:hover .controls {
   display: block;
 }
 
+.folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
+  background-position: left center;
+  background-repeat: no-repeat;
+  margin: 0 3px;
+}
+
 .folder ul.filter_list li .remove {
-  right: 0px;
+  padding: 0 0 0 16px;
+  background-image: url(../images/close.png);
 }
 
 .folder ul.filter_list li .edit {
-  right: 16px;
+  padding: 0 0 0 18px;
+  background-image: url(../images/pencil.png);
+}
+
+.folder ul.filter_list li .controls dl.info {
+  margin: 0 3px;
+  padding: 0;
+}
+
+.folder ul.filter_list li .controls dl.info dt {
+  width: 25%;
+  float: left;
+  clear: both;
+}
+
+.folder ul.filter_list li .controls dl.info dt:after {
+/*  content: ":";*/
+}
+
+.folder ul.filter_list li .controls dl.info dd {
+  float: left;
 }
 
 .folder ul.filter_list li a.name {
@@ -1537,9 +1584,9 @@ a.desc {
   color: #666;
 }
 
-.info { 
+/*.info { 
   margin-left: 35%;
-}
+}*/
 
 /* =messages */
 .messages {
