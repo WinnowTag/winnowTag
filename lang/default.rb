@@ -211,7 +211,6 @@ Localization.define do |l|
   # app/views/feed_items/index.html.erb
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
   
-<<<<<<< Updated upstream:lang/default.rb
   # app/views/feedbacks/_feedback.html.erb
   l.store :feedback_metadata,                     "%s on %s"
   
@@ -224,16 +223,7 @@ Localization.define do |l|
   l.store :feedback_sort_user_label,              "User"
   l.store :feedback_sort_date_label,              "Date"
   l.store :feedback_search_placeholder,           "Search Feedback..."
-  
-  # app/views/feeds
-  # app/views/invites
-  # app/views/item_protection
-  # app/views/layouts
-  # app/views/messages
-  # app/views/notifier
-  # app/views/taggings
-  # app/views/tags
-=======
+
   # app/views/feeds/_feed.html.erb
   l.store :last_updated,                          "Last Updated"
   l.store :number_of_items,                       "# of Items"
@@ -430,7 +420,6 @@ Localization.define do |l|
   l.store :tags_remove_tag,                         "Remove %s from the sidebar and keep on My Tags page"
   l.store :tags_unsubscribe_text,                   "You have been unsubscribed from the public %s. You can subscribe on the Public Tags page."
   
->>>>>>> Stashed changes:lang/default.rb
   # app/views/user_notifier
   l.store :user_notifier_activation_text,           "%s, your account has been activated.  You may now visit winnow at: %s"
   l.store :user_notifier_invite_accepted,            %|%s
