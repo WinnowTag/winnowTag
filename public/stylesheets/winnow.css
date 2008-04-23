@@ -821,7 +821,7 @@ ul.tag_list li:hover .controls {
 ul.tag_list li .controls .status {
   display: block;
   text-align: center;
-  color: #fff;
+  color: #000;
 }
 
 ul.tag_list li.positive .controls .status {
