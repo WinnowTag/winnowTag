@@ -1,7 +1,7 @@
 <div class="messages">
-  <h4>Messages</h4>
+  <h4><%= _(:messages_messages) %></h4>
   <% if messages.blank? -%>
-    <span class="empty">You have no recent messages.</span>
+    <span class="empty"><%= _(:messages_empty) %></span>
   <% else -%>
     <ul>
       <%= render :partial => "messages/sidebar_message", :collection => messages %>

@@ -2,27 +2,27 @@
 
 <table id="<%= "feed_#{@feed.id}" %>" class="property_table">
 	<tr>
-		<th>Title</th>
+		<th><%= _(:feeds_title) %></th>
 		<td>
-		  <%= link_to("Feed Home", @feed.alternate, :class => "home_icon replace", :style => 'float: right') if @feed.alternate %>
-		  <%= link_to("Feed", @feed.via, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
+		  <%= link_to(_(:feeds_feed_home), @feed.alternate, :class => "home_icon replace", :style => 'float: right') if @feed.alternate %>
+		  <%= link_to(_(:feeds_feed), @feed.via, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
 		  <%= @feed.title %>
 		</td>		
 	</tr>
 	<tr>
-	    <th>Created On</th>
+	    <th><%= _(:created_on) %></th>
 	    <td><%= format_date(@feed.created_on) %></td>
 	</tr>
 	<tr>
-	  <th>Number of Items</th>
+	  <th><%= _(:number_of_items) %></th>
 		<td><span class="item_count"><%= @feed.feed_items_count %></span></td>
 	</tr>
 	<tr>
-	  <th>Last Collected</th>
+	  <th><%= _(:last_collected) %></th>
 	  <td><%= format_date @feed.updated_on %></td>
 	</tr>
   <tr>
-    <th>Globally Excluded</th>
+    <th><%= _(:globally_excluded) %></th>
     <td><%= globally_exclude_check_box(@feed) %></td>
   </tr>
 </table>

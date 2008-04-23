@@ -5,36 +5,36 @@
       <%= in_place_completing_editor_field :tag, :name, { :id => dom_id(tag, 'editor') },
           { :param_name => "'tag[name]'", :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false, 
             :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'), 
-            :click_to_edit_text => "Click to edit tag name", :save_text => "Save" },  
+            :click_to_edit_text => _(:tags_click_to_edit_tag_text), :save_text => _(:tags_save_text) },  
           { :skip_style => true, :update => dom_id(tag, 'auto_complete'), :url => auto_complete_for_tag_name_tag_path(tag) } %> 
     </div>
 
     <div class="comment" id="<%= dom_id(tag, "edit_comment") %>">
-      <% if tag.comment.blank?; tag.comment = "..."; end %>
+      <% if tag.comment.blank?; tag.comment = _(:tags_blank_comment); end %>
       <%= in_place_editor_field :tag, :comment, {}, :param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
-          :click_to_edit_text => "Click to edit tag comment", :save_text => "Save", :rows => 5, :cols => 50 %>
+          :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50 %>
     </div>
   </div>
   
   <div class="right clearfix">
     <dl class="training">
-      <dt>Last Trained</dt>
+      <dt><%= _(:tags_last_trained) %></dt>
       <dd><%= format_date(tag.last_used_by) %></dd>
-      <dt>Training</dt>
-      <dd><%= link_to "+#{tag.positive_count} / -#{tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=moderated"), :title => "Inspect #{tag.name}" %></dd>
-      <dt>Automatic</dt>
+      <dt><%= _(:tags_training) %></dt>
+      <dd><%= link_to _(:tags_count, tag.positive_count, tag.negative_count), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=moderated"), :title =>  _(:tags_inspect, tag.name) %></dd>
+      <dt><%= _(:tags_automatic) %></dt>
       <dd class="last"><%= tag.classifier_count %></dd>
     </dl>
     
     <ul class="controls">
       <li class="first"><%= bias_slider(tag) %></li>
-      <li><%= globally_exclude_check_box(tag) %> Globally Exclude</li>
+      <li><%= globally_exclude_check_box(tag) %> <%= _(:tags_globally_exclude) %></li>
       <li>
-        <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> Public
+        <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <%= _(:tags_public) %>
       </li>
-      <li><%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show_icon', :title => "Show Only Items Tagged With #{tag.name}" %></li>
-      <li><%= link_to_remote "Copy", :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => "Copy #{tag.name}", :class => "duplicate_icon" } %></li>
-      <li><%= link_to_remote "Destroy", :url => tag_path(tag), :method => 'delete', :confirm => "Do you really want to delete #{tag.name}?\n\nThis can't be undone.", :html => { :title => "Destroy #{tag.name}", :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
+      <li><%= link_to _(:show), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show_icon', :title => _(:tags_show_link_title, tag.name) %></li>
+      <li><%= link_to_remote _(:copy), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, tag.name), :class => "duplicate_icon" } %></li>
+      <li><%= link_to_remote _(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => _(:tags_destroy_confirm_text, tag.name), :html => { :title => _(:tags_destroy_link_title, tag.name), :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
     </ul>
   </div>
 </div>

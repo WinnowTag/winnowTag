@@ -3,7 +3,7 @@
 <% end -%>
 
 <% if @messages.empty? -%>
-  <div class="empty">No messages matched your search criteria.</div>
+  <div class="empty"><%= _(:messages_no_messages_match) %></div>
 <% else -%>
   <%= render :partial => @messages %>
 <% end -%>

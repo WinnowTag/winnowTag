@@ -1,4 +1,4 @@
-<h1>Editing message</h1>
+<h1><%= _(:messages_editing_messages) %></h1>
 
 <%= error_messages_for :message %>
 
@@ -9,9 +9,9 @@
   </p>
 
   <p>
-    <%= f.submit "Update" %>
+    <%= f.submit _(:update) %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @message %> |
-<%= link_to 'Back', messages_path %>
+<%= link_to _(:show), @message %> |
+<%= link_to _(:back), messages_path %>

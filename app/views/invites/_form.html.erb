@@ -7,7 +7,7 @@
 	</p>
 	
 	<p>
-	  <label for="activate">Activate?</label>
+	  <label for="activate"><%= _(:invites_activate) %></label>
 	  <%= check_box_tag :activate, true, true %>
 	</p>
 	
@@ -23,6 +23,6 @@
 
 	<p>
 		<label>&nbsp;</label>
-		<%= submit_tag @invite.new_record? ? "Create" : "Update" %> or <%= link_to "cancel", invites_path %>
+		<%= submit_tag @invite.new_record? ? _(:create) : _(:update) %> or <%= link_to _(:cancel), invites_path %>
 	</p>
 <%  end -%>

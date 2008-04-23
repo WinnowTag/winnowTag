@@ -1,11 +1,9 @@
 if @tag.taggings.empty?
+  # TODO: replace #{0} for real numbers
   page << <<-EOJS
-    new ConfirmationMessage("You have just removed the last example of tag '" + #{@tag.name.to_json} + "'.<br/>" +
-                            "Do you want to completely destroy the tag '" + #{@tag.name.to_json} + 
-                            "' with #{0} positive examples and #{0} negative examples, or leave " + 
-                            #{@tag.name.to_json} + " on the My Tags page?<br/>", {
-      yes: "Destroy " + #{@tag.name.to_json},
-      no: "Keep " + #{@tag.name.to_json} + " on My Tags",
+    new ConfirmationMessage(#{simple_format(_(:taggings_destroy_message, @tag.name.to_json, @tag.name.to_json, 0, 0, @tag.name.to_json)).to_json}, {
+      yes: #{_(:taggings_destroy_tag, @tag.name).to_json},
+      no: #{_(:taggings_keep_tag, @tag.name).to_json},
       onConfirmed: function() {
         #{remote_function(:url => tag_path(@tag), :method => :delete)}
       }

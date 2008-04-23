@@ -1,5 +1,5 @@
 page << <<-EOJS
-  if(confirm("This will merge #{@tag.name} with #{@name}. Are you sure you want to do this?")) {
+  if(confirm("#{_(:tags_merge_confirm_text, @tag.name, @name).to_json})) {
     #{remote_function(:url => hash_for_merge_tag_path(:id => @tag, "tag[name]" => @name), :method => :put)};
   }
 EOJS

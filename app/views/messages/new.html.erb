@@ -1,4 +1,4 @@
-<h1>New message</h1>
+<h1><%= _(:messages_new_message) %></h1>
 
 <%= error_messages_for :message %>
 
@@ -9,8 +9,8 @@
   </p>
 
   <p>
-    <%= f.submit "Create" %>
+    <%= f.submit _(:create) %>
   </p>
 <% end %>
 
-<%= link_to 'Back', messages_path %>
+<%= link_to _(:back), messages_path %>

@@ -1,15 +1,15 @@
 <ul class="control_bar">
-  <li><%= link_to "Add", new_feed_path %></li>
-  <li><%= link_to "Import", import_feeds_path %></li>
+  <li><%= link_to _(:feeds_header_add), new_feed_path %></li>
+  <li><%= link_to _(:feeds_header_import), import_feeds_path %></li>
   <li class="order">
-    Sort:                                                                                                               
-    <%= link_to_function "Title",            "itemBrowser.setOrder('title')",            :id => "order_title" %>, 
-    <%= link_to_function "Globally Exclude", "itemBrowser.setOrder('globally_exclude')", :id => "order_globally_exclude" %>, 
-    <%= link_to_function "Items",            "itemBrowser.setOrder('feed_items_count')", :id => "order_feed_items_count" %>, 
-    <%= link_to_function "Last Updated",     "itemBrowser.setOrder('updated_on')",       :id => "order_updated_on" %>
+    <%= _(:sort_label) %>                                                                                                              
+    <%= link_to_function _(:feeds_header_title),            "itemBrowser.setOrder('title')",            :id => "order_title" %>, 
+    <%= link_to_function _(:feeds_header_globally_exclude), "itemBrowser.setOrder('globally_exclude')", :id => "order_globally_exclude" %>, 
+    <%= link_to_function _(:feeds_header_items),            "itemBrowser.setOrder('feed_items_count')", :id => "order_feed_items_count" %>, 
+    <%= link_to_function _(:feeds_header_last_updated),     "itemBrowser.setOrder('updated_on')",       :id => "order_updated_on" %>
   </li>                                                                                                                 
 </ul>
 
-<% form_tag feeds_path, :method => :get, :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage('Search requires a word with at least 4 characters.'); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Feeds...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% form_tag feeds_path, :method => :get, :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage(#{_(:feeds_search_error_message)}); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feeds_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>

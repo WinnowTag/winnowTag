@@ -7,15 +7,15 @@
   
   <div class="right clearfix">
     <dl class="training">
-      <dt>Last Updated</dt>
+      <dt><%= _(:last_updated) %></dt>
       <dd><%= format_date(feed.updated_on) %></dd>
-      <dt># of Items</dt>
+      <dt><%= _(:number_of_items) %></dt>
       <dd class="last"><%= feed.feed_items_count %></dd>
     </dl>
     
     <ul class="controls">
-      <li class="first"><%= globally_exclude_check_box(feed) %> Globally Exclude</li>
-      <li><%= link_to "Show", feed_items_path(:anchor => "feed_ids=#{feed.id}"), :class => 'show_icon', :title => "Show Only Items From #{feed.title}" %></li>
+      <li class="first"><%= globally_exclude_check_box(feed) %> <%= _(:globally_exclude) %></li>
+      <li><%= link_to _(:show), feed_items_path(:anchor => "feed_ids=#{feed.id}"), :class => 'show_icon', :title => _(:feeds_show_link_title, feed.title) %></li>
     </ul>
   </div>
 </div>
