@@ -212,7 +212,7 @@ Localization.define do |l|
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
   
   # app/views/feedbacks/_feedback.html.erb
-  l.store :feedback_metadata,                     "By %s on %s"
+  l.store :feedback_metadata,                     "%s on %s"
   
   # app/views/feedbacks/_form.html.erb
   l.store :feedback_submit_button,                "Submit"

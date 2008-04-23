@@ -1217,12 +1217,17 @@ textarea.content {
   height: 40em;
 }
 
-.tag, .feed, .user, .invite, .message {
+.tag, .feed, .user, .invite, .message, .feedback {
 	position: relative;
   border: 1px solid #666;
   background: #eee;
   padding: .5em;
   margin: 0 0 .5em 0;
+}
+
+.feedback .metadata {
+  float: right;
+  color: #666;
 }
 
 .tag .left, .feed .left {
