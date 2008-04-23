@@ -128,7 +128,7 @@ function set_tag_status(tag, tag_name, classifier_strength, user) {
   } else if (tag.match('.positive')) {
     status = "Positive training";
   } else if (tag.match('.classifier')) {
-    status = "Automatic Tagging (" + classifier_strength + ")";
+    status = "Automatic tag (" + classifier_strength + ")";
   }
   
   if(user) {
