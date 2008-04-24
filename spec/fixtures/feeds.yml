@@ -21,13 +21,16 @@ dummy_feed:
   title: Ruby Language
   sort_title: ruby language
   updated_on: <%= Time.now.to_formatted_s(:db) %>
+  alternate: http://ruby-lang.org/
 another_dummy_feed:
   id: 2
   via: http://ruby-doc.org/en/index.rdf
   title: Ruby Documentation
   sort_title: ruby documentation
+  alternate: http://ruby-doc.org
 inactive_feed:
   id: 3
   via: http://rss.slashdot.org/Slashdot
   title: Slashdot
   sort_title: slashdot
+  alternate: http://slashdot.org

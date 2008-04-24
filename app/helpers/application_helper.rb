@@ -17,6 +17,20 @@ module ApplicationHelper
     end.join
   end
   
+  def show_unread_messages
+    unread_messages = Message.find_unread_for_user_and_global(current_user)
+    if unread_messages.empty?
+      content_tag :div, "", :id => "message", :class => "clearfix", :style => "display:none"
+    elsif unread_messages.size == 1
+      message = unread_messages.first
+      close = link_to_remote(image_tag('cross.png'), :url => mark_read_message_path(message), :method => :put, :html => { :class => 'close' })
+      content_tag :div, "#{close} #{message.body}", :id => "message", :class => "clearfix"
+    else
+      close = link_to_remote(image_tag('cross.png'), :url => mark_read_messages_path, :method => :put, :html => { :class => 'close' })
+      content_tag :div, "#{close} #{_(:multiple_unread_messages, info_path)}", :id => "message", :class => "clearfix"
+    end
+  end
+  
   # Provides some assistance over link_to for special control links
   #
   # == New Parameters
@@ -141,11 +155,18 @@ module ApplicationHelper
   end
   
   def feed_filter_control(feed, options = {})   
-    url  =  case options[:remove]
+    url      = case options[:remove]
       when :subscription then subscribe_feed_path(feed, :subscribe => false)
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
-    html = link_to_function(image_tag("cross.png"), "itemBrowser.removeFilters({feed_ids: '#{feed.id}'}); this.up('li').remove(); #{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    function = case options[:remove]
+      when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
+    end
+
+    html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html  = content_tag :div, html, :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)"
+    
+    html << content_tag(:div, nil, :class => "hover_target", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name", :title => _(:feed_items_count_tooltip, feed.feed_items.size))
     
     html =  content_tag(:div, html, :class => "show_feed_control")
@@ -169,13 +190,21 @@ module ApplicationHelper
       options = options.except(:remove)
       options[:remove] = :sidebar
     end
-    url  =  case options[:remove]
-      when :subscription then unsubscribe_tag_path(tag)
-      when :sidebar      then sidebar_tag_path(tag, :sidebar => false)
-      when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
+    url      = case options[:remove]
+      when :subscription           then unsubscribe_tag_path(tag)
+      when :sidebar                then sidebar_tag_path(tag, :sidebar => false)
+      when Folder                  then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
-    html =  link_to_function(image_tag("cross.png"), "this.up('li').remove(); #{remote_function(:url => url, :method => :put)}; itemBrowser.removeFilters({tag_ids: '#{tag.id}'});", :class => "remove") << " "
-    html << image_tag("pencil.png", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
+    function = case options[:remove]
+      when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
+    end
+
+    html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
+    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
+    html << tag_training(tag)
+    html  = content_tag :div, html, :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)"
+    
+    html << content_tag(:div, nil, :class => "hover_target", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
               :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
@@ -195,6 +224,15 @@ module ApplicationHelper
     html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url)
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
     html
+  end
+  
+  def tag_training(tag)
+    %|<dl class="info">
+      <dt>#{_(:training_label)}</dt>
+      <dd>+#{tag.positive_count} / -#{tag.negative_count}</dd>
+      <dt>#{_(:automatic_label)}</dt>
+      <dd>#{tag.classifier_count}</dd>
+    </dl>|
   end
   
   def help_path

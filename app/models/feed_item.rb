@@ -140,6 +140,12 @@ class FeedItem < ActiveRecord::Base
       entry.links << Atom::Link.new(:rel => 'alternate', :href => self.link)
       entry.links << Atom::Link.new(:rel => 'http://peerworks.org/feed', :href => "urn:peerworks.org:feed##{self.id}")
       
+      entry.source = Atom::Source.new do |source|
+        source.title = self.feed.title
+        source.links << Atom::Link.new(:rel => 'self', :href => self.feed.via) if self.feed.via
+        source.links << Atom::Link.new(:rel => 'alternate', :href => self.feed.alternate) if self.feed.alternate
+      end if self.feed
+      
       if self.content
         begin
           entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'utf-8', self.content.content).first)

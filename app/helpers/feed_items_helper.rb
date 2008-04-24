@@ -69,8 +69,13 @@ module FeedItemsHelper
         tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
       else
         if tagging = Array(taggings).first
-          content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes_for_taggings(tagging, [:public]).join(" "),
-              :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}, #{format_classifier_strength(taggings).to_json}, #{tag.user.display_name.to_json}); show_tag_controls(this);")
+          controls  = content_tag(:span, nil, :class => "status")
+
+          content   = content_tag(:span, h(tag.name), :class => "name")
+          content  << content_tag(:span, controls, :class => "controls")
+
+          content_tag(:li, content, :class => classes_for_taggings(tagging, [:public]).join(" "),
+              :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{format_classifier_strength(taggings).to_json}, #{tag.user.display_name.to_json});")
         end
       end
     end.compact.join(" ")
@@ -92,17 +97,16 @@ module FeedItemsHelper
   end
   
   def tag_control_for(feed_item, tag, classes, classifier_strength)
-    controls  = content_tag(:span, nil, :class => "add", :onclick => "add_tag('#{dom_id(feed_item)}', #{tag.name.to_json}, true);", 
-                                        :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
-    controls << content_tag(:span, nil, :class => "remove", :onclick => "remove_tag('#{dom_id(feed_item)}', #{tag.name.to_json});", 
-                                        :onmouseover => "show_control_tooltip(this, $(this).up('li'), #{tag.name.to_json});")
+    controls  = content_tag(:span, nil, :class => "status") << " "
+    controls << link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive") << " "
+    controls << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative") << " "
+    controls << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove") << " "
 
     content   = content_tag(:span, h(tag.name), :class => "name")
-    content  << content_tag(:span, controls, :class => "controls", :style => "display:none")
+    content  << content_tag(:span, controls, :class => "controls")
 
-    content_tag(:li, content, 
-        :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "), 
-        :onmouseover => "show_tag_tooltip(this, #{tag.name.to_json}, #{classifier_strength.to_json}); show_tag_controls(this);")
+    content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
+        :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json});")
   end
   
 	def classes_for_taggings(taggings, classes = [])

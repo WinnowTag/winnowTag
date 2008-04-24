@@ -20,7 +20,7 @@ describe Tagging do
                                   :title => "This is a test"
   end
 
-  def test_create_tagging
+  it "create_tagging" do
     user = User.find(1)
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
@@ -43,7 +43,7 @@ describe Tagging do
     assert_not_nil user.taggings.find(:first, :conditions => "tag_id = #{tag.id} and feed_item_id = #{feed_item.id}")
   end
   
-  def test_tagging_strength_is_set
+  it "tagging_strength_is_set" do
     user = User.find(1)
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
@@ -52,7 +52,7 @@ describe Tagging do
     assert_equal 0, tagging.strength
   end
   
-  def test_strength_outside_0_to_1_is_invalid
+  it "strength_outside_0_to_1_is_invalid" do
     user = User.find(1)
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
@@ -64,14 +64,14 @@ describe Tagging do
     Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0).should be_valid
   end
   
-  def test_strength_must_be_a_number
+  it "strength_must_be_a_number" do
     user = User.find(1)
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 'string').should_not be_valid
   end
   
-  def test_creating_duplicate_deletes_existing
+  it "creating_duplicate_deletes_existing" do
     user = users(:quentin)
     item = @feed_item
     tag = Tag(user, 'tag')
@@ -82,7 +82,7 @@ describe Tagging do
     assert_raise(ActiveRecord::RecordNotFound) { Tagging.find(first_tagging.id) }
   end
   
-  def test_users_is_allowed_manual_and_classifier_taggings_on_an_item
+  it "users_is_allowed_manual_and_classifier_taggings_on_an_item" do
     user = users(:quentin)
     item = @feed_item
     tag  = Tag(user, 'tag')
@@ -94,23 +94,23 @@ describe Tagging do
     assert_equal(2, user.taggings.size)
   end
   
-  def test_cannot_create_taggings_without_user
+  it "cannot_create_taggings_without_user" do
     Tagging.new(:feed_item => @feed_item, :tag => Tag(users(:quentin), 'peerworks')).should_not be_valid
   end
   
-  def test_cannot_create_taggings_without_feed_item
+  it "cannot_create_taggings_without_feed_item" do
     Tagging.new(:user => User.find(1), :tag => Tag(users(:quentin), 'peerworks')).should_not be_valid
   end
   
-  def test_cannot_create_taggings_without_tag
+  it "cannot_create_taggings_without_tag" do
     Tagging.new(:feed_item => @feed_item, :user => User.find(1)).should_not be_valid
   end
   
-  def test_cannot_create_tagging_with_invalid_tag
+  it "cannot_create_tagging_with_invalid_tag" do
     Tagging.new(:feed_item => @feed_item, :user => User.find(1), :tag => Tag(users(:quentin), '')).should_not be_valid
   end
   
-  def test_create_with_tag_user_feed_item_is_valid
+  it "create_with_tag_user_feed_item_is_valid" do
     Tagging.new(:user => User.find(1), :feed_item => @feed_item, :tag => Tag(users(:quentin), 'peerworks')).should be_valid
   end
   
@@ -122,7 +122,7 @@ describe Tagging do
     lambda { feed_item.destroy }.should raise_error(ActiveRecord::StatementInvalid)
   end
 
-  def test_deletion_copies_tagging_to_deleted_taggings_table
+  it "deletion_copies_tagging_to_deleted_taggings_table" do
     user = User.find(1)
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
@@ -139,7 +139,7 @@ describe Tagging do
                                                         user, feed_item, tag, 0.75])
   end
   
-  def test_taggings_are_immutable
+  it "taggings_are_immutable" do
     user = users(:quentin)
     item = @feed_item
     tag = Tag(user, 'peerworks')
@@ -155,7 +155,7 @@ describe Tagging do
     assert_equal item, tagging.feed_item
   end
    
-  def test_classifier_tagging_defaults_to_false
+  it "classifier_tagging_defaults_to_false" do
     assert !users(:quentin).taggings.create(:feed_item => @feed_item, :tag => Tag(users(:quentin), 'tag')).classifier_tagging?  
   end
 end

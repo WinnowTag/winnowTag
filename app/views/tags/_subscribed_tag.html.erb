@@ -11,26 +11,26 @@
   
   <div class="right clearfix">
     <dl class="training clearfix">
-      <dt>Last Trained</dt>
+      <dt><%= _(:tags_last_trained) %></dt>
       <dd><%= format_date(subscribed_tag.last_used_by) %></dd>
-      <dt>Training</dt>
-      <dd><%= link_to "+#{subscribed_tag.positive_count} / -#{subscribed_tag.negative_count}", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :title => "Inspect #{subscribed_tag.name}" %></dd>
-      <dt>Automatic</dt>
+      <dt><%= _(:tags_training) %></dt>
+      <dd><%= link_to _(:tags_count, subscribed_tag.positive_count, subscribed_tag.negative_count), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :title =>  _(:tags_inspect, subscribed_tag.name) %></dd>
+      <dt><%= _(:tags_automatic) %></dt>
       <dd class="last"><%= subscribed_tag.classifier_count %></dd>
     </dl>
 
     <ul class="controls">
       <li class="first">
-        <%= link_to "Feed", url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %>
+        <%= link_to _(:tags_feed_link), url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %>
       </li>
       <li><%= bias_slider(subscribed_tag, :disabled => true) %></li>
-      <li><%= globally_exclude_check_box(subscribed_tag) %> Globally Exclude</li>
+      <li><%= globally_exclude_check_box(subscribed_tag) %> <%= _(:tags_globally_exclude) %></li>
       <li>
-        <%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %> Public
+        <%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %> <%= _(:tags_public) %>
       </li>
-      <li><%= link_to "Show", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'show_icon', :title => "Show Only Items Tagged With #{subscribed_tag.name}" %></li>
-      <li><%= link_to_remote "Copy", :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => "Copy #{subscribed_tag.name}", :class => "duplicate_icon" } %></li>
-      <li><%= link_to_remote "Destroy", :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => "Unsubscribe #{subscribed_tag.name}", :class => "destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %></li>
+      <li><%= link_to _(:show), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'show_icon', :title => _(:tags_show_link_title, subscribed_tag.name) %></li>
+      <li><%= link_to_remote _(:copy), :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, subscribed_tag.name), :class => "duplicate_icon" } %></li>
+      <li><%= link_to_remote _(:destroy), :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => _(:tags_destroy_link_title, subscribed_tag.name), :class => "destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %></li>
     </ul>
   </div>
 </div>

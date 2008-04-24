@@ -2,8 +2,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe MessagesController do
   before(:each) do
-    user = User.create! valid_user_attributes
-    login_as user
+    @current_user = User.create! valid_user_attributes
+    login_as @current_user
   end
   
   describe "handling GET /messages" do
@@ -219,5 +219,37 @@ describe MessagesController do
       do_delete
       response.should redirect_to(messages_path)
     end
+  end
+
+  describe "handling PUT /messages/1/mark_read" do
+    def do_put
+      put :mark_read, :id => "1"
+    end
+
+    it "should mark the message requested read" do
+      Message.should_receive(:mark_read_for).with(@current_user.id, "1")
+      do_put
+    end
+  
+    it "should render the mark_read template" do
+      do_put
+      response.should render_template('mark_read')
+    end    
+  end
+  
+  describe "handling PUT /messages/mark_read" do
+    def do_put
+      put :mark_read
+    end
+
+    it "should mark all messages for the current user read" do
+      Message.should_receive(:mark_read_for).with(@current_user.id)
+      do_put
+    end
+  
+    it "should render the mark_read template" do
+      do_put
+      response.should render_template('mark_read')
+    end    
   end
 end

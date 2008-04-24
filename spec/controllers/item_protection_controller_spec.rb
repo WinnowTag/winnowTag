@@ -14,26 +14,24 @@ describe ItemProtectionController do
     end
   end
   
-  def test_admin_required
+  it "admin_required" do
     cannot_access(:quentin, :get, :show)
   end
   
-  def test_index_displays_protector_info
-    login_as(:admin)
+  it "index_displays_protector_info" do
     get :show
     assert_response :success
     assert_instance_of(Remote::Protector, assigns(:protector))
   end
   
-  def test_rebuild_calls_rebuild_on_protector_and_redirects_to_show
-    login_as(:admin)
+  it "rebuild_calls_rebuild_on_protector_and_redirects_to_show" do
     Remote::ProtectedItem.should_receive(:rebuild)
     post :rebuild
     assert_redirected_to item_protection_path
   end
 
   # TODO: Needs to be moved to a view test
-  # def test_cant_fetch_protector_should_display_error
+  # it "cant_fetch_protector_should_display_error" do
   #   ActiveResource::HttpMock.respond_to do |mock|
   #     mock.get "/protectors/1.xml", {}, nil, 500
   #   end

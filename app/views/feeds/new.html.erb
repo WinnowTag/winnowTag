@@ -2,25 +2,24 @@
 
 <% form_for :feed, @feed, :url => feeds_path do |f| %>
 	<fieldset>
-		<legend>Enter a new Feed URL</legend>
-		<p>Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains.</p>
-		<p>Only items with enough text for the classifier to use will be collected from the feed.</p>
-		<p><%= f.label(:url, "URL:") %><%= f.text_field :url, :size => 70 %></p>
+		<legend><%= _(:feeds_enter_new_feed_url) %></legend>
+		<p><%= _(:feeds_new_description1) %></p>
+		<p><%= _(:feeds_new_description2) %></p>
+		<p><%= f.label(:url, _(:feeds_new_url_label)) %><%= f.text_field :url, :size => 70 %></p>
 		<p><label>&nbsp;</label>
-			<%= submit_tag "Create Feed" %> 
-			<%= link_to "Cancel", feeds_path %>
+			<%= submit_tag _(:create_feed) %> 
+			<%= link_to _(:cancel), feeds_path %>
 		</p>
 	</fieldset>
 <% end %>
 
-<h3>Bookmarklet</h3>
+<h3><%= _(:bookmarklet) %></h3>
 <p>
-    Drag this button
-    <a 
-        href="<%= bookmarklet_js %>" 
-        title="Add to Winnow"
-        class="bookmarklet"
-        onclick="new ErrorMessage('Drag this button to your bookmark or right click and select Bookmark this Link...');return false;"
-        >Add to Winnow</a>
-    to your bookmark bar, then when you find a site you want to add to Winnow, just click the button.
+    <%= _(:feeds_new_bookmarklet_description1) %>
+    <a href="<%= bookmarklet_js %>" 
+       title="<%= _(:feeds_add_to_winnow) %>"
+       class="bookmarklet"
+       onclick="new ErrorMessage(<%= _(:feeds_bookmarklet_js_error_message) %>);return false;"
+       ><%= _(:feeds_add_to_winnow) %></a>
+    <%= _(:feeds_new_bookmarklet_description2) %>
 </p>

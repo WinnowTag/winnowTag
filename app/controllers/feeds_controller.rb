@@ -37,9 +37,9 @@ class FeedsController < ApplicationController
                                       :callback_url => collection_job_results_url(current_user))
                                       
       if @feed.updated_on.nil?
-        flash[:notice] = current_user.messages.create!(:body => _(:feed_added, @feed.url))
+        current_user.messages.create!(:body => _(:feed_added, @feed.url))
       else
-        flash[:notice] = current_user.messages.create!(:body => _(:feed_existed, @feed.url))
+        current_user.messages.create!(:body => _(:feed_existed, @feed.url))
       end
       
       respond_to do |format|
@@ -60,7 +60,7 @@ class FeedsController < ApplicationController
         feed.collect(:created_by   => current_user.login, 
                      :callback_url => collection_job_results_url(current_user))
       end
-      flash[:notice] = current_user.messages.create!(:body => _(:feeds_imported, @feeds.size))
+      current_user.messages.create!(:body => _(:feeds_imported, @feeds.size))
       redirect_to feeds_url
     end
   end

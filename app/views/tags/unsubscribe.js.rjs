@@ -1,4 +1,4 @@
-page[:notice].update "You have been unsubscribed from the public #{@tag.name}. You can subscribe on the Public Tags page."
+page[:notice].update _(:tags_unsubscribe_text, @tag.name)
 page[:notice].show
 
 page << "if($('#{dom_id(@tag)}')) {"

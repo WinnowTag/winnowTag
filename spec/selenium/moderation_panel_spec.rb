@@ -73,7 +73,7 @@ describe "moderation panel" do
     see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
     
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .negative"
     wait_for_ajax
     
     dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -89,7 +89,7 @@ describe "moderation panel" do
     see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
     dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .positive"
     wait_for_ajax
     
     dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -105,7 +105,7 @@ describe "moderation panel" do
     see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
     dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .positive"
     wait_for_ajax
     
     see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -121,7 +121,7 @@ describe "moderation panel" do
     see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
     dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
     
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .negative"
     wait_for_ajax
     
     see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -138,7 +138,7 @@ describe "moderation panel" do
     see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
     see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
     wait_for_ajax
     
     see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -170,7 +170,7 @@ describe "moderation panel" do
     
     see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
     
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
     wait_for_ajax
     wait_for_effects
     
@@ -199,79 +199,40 @@ describe "moderation panel" do
     wait_for_ajax
     
     assert_not_visible "open_feed_item_4"
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .negative"
     assert_not_visible "open_feed_item_4"
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
+    click "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .positive"
     assert_not_visible "open_feed_item_4"
   end
   
-  it "shows the proper tooltip for a negative tagging" do
+  it "shows the proper status for a negative tagging" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
 
     open feed_items_path
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Negative training example for Winnow", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4']@title")
+    assert_equal "Negative training", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
-  it "shows the proper tooltip for a positive tagging" do
+  it "shows the proper status for a positive tagging" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
 
     open feed_items_path
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Positive training example for Winnow", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4']@title")
+    assert_equal "Positive training", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
-  it "shows the proper tooltip for a classifier tagging" do
+  it "shows the proper status for a classifier tagging" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true, :strength => 0.9523
 
     open feed_items_path
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Winnow is 95.23% sure this item fit your examples", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4']@title")
-  end
-  
-  it "shows the proper tooltip for controls in a negative tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
-
-    open feed_items_path
-    wait_for_ajax
-    
-    mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
-    assert_equal "Click if this is a very good example of existing tag", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add@title")
-
-    mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
-    assert_equal "Click to remove this negative example of existing tag", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove@title")
-  end
-  
-  it "shows the proper tooltip for controls in a positive tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
-
-    open feed_items_path
-    wait_for_ajax
-    
-    mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
-    assert_equal "Click to remove this positive example of existing tag", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add@title")
-
-    mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
-    assert_equal "Click if this is a bad example of existing tag", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove@title")
-  end
-  
-  it "shows the proper tooltip for controls in a classifier tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
-
-    open feed_items_path
-    wait_for_ajax
-    
-    mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add"
-    assert_equal "Click if this is a very good example of existing tag", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .add@title")
-
-    mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove"
-    assert_equal "Click if this is a bad example of existing tag", get_attribute("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .remove@title")
+    assert_equal "Automatic Tagging (95.23%)", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
   it "shows tagging controls when hovering the tag" do

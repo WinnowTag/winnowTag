@@ -1,22 +1,23 @@
 <% if current_user -%>
   <div id="navigation" class="navigation clearfix">
   	<ul class="extra">
-      <li><%= link_to("About", about_path, :class => tab_selected('about')) %></li>
-      <li><%= link_to('My Info', edit_account_path(:id => current_user), :class => tab_selected('account', 'edit')) %></li>
-      <li><%= link_to("Logout", logout_path) %></li>
+      <li id="feedback"><%= link_to_remote(_(:leave_feedback), :url => new_feedback_path, :method => :get) %></li>
+      <li><%= link_to(_(:about), about_path) %></li>
+      <li><%= link_to(_(:my_info), edit_account_path(:id => current_user)) %></li>
+      <li><%= link_to(_(:logout), logout_path) %></li>
     </ul>
 
   	<ul class="main clearfix">
-      <li><%= link_to('Using Winnow', using_path, :class => tab_selected('about', "using")) %></li>
-      <li><%= link_to('Items', feed_items_path, :class => tab_selected('feed_items')) %></li>
-  	  <li><%= link_to('My Tags', tags_path, :class => tab_selected('tags', 'index')) %></li>
-  	  <li><%= link_to('Public Tags', public_tags_path, :class => tab_selected('tags', 'public')) %></li>
-      <li><%= link_to('Feeds', feeds_path, :class => tab_selected('feeds')) %></li>
+      <li><%= link_to(_(:winnow_info), info_path, :class => tab_selected('about', "info")) %></li>
+      <li><%= link_to(_(:items), feed_items_path, :class => tab_selected('feed_items')) %></li>
+  	  <li><%= link_to(_(:my_tags), tags_path, :class => tab_selected('tags', 'index')) %></li>
+  	  <li><%= link_to(_(:public_tags), public_tags_path, :class => tab_selected('tags', 'public')) %></li>
+      <li><%= link_to(_(:feeds), feeds_path, :class => tab_selected('feeds')) %></li>
       <% if is_admin? -%>
-        <li><%= link_to('Admin', admin_path, :class => tab_selected('admin')) %></li>
+        <li><%= link_to(_(:admin), admin_path, :class => tab_selected('admin')) %></li>
       <% end -%>
       <% if help_path -%>
-        <li><%= link_to('Help', help_path, :target => "_blank", :class => "help") %></li>
+        <li><%= link_to(_(:help), help_path, :target => "_blank", :class => "help") %></li>
       <% end -%>
   	</ul>
 	</div>

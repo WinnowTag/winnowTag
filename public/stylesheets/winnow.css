@@ -40,7 +40,7 @@ a.close img {
   height: 12px;
 }
 
-#notice, #warning, #error, #confirm {
+#notice, #warning, #error, #confirm, #message {
   margin: 5px;
   padding: 5px 5px 5px 26px;
 }
@@ -67,6 +67,12 @@ a.close img {
   background: #FDDFD7 url(../images/vertical_sprite.png) no-repeat;
   background-position: 5px -443px;
   border: 1px solid #FF260B;
+}
+
+#message {
+  background: #F0FFE0 url(../images/vertical_sprite.png) no-repeat;
+  background-position: 5px -411px;
+  border: 1px solid #A0DC11;
 }
 
 #forms {
@@ -175,12 +181,8 @@ a.close img {
 
 .navigation .extra li {
   float: left;
-  padding: 0;
-  margin: 0;
-}
-
-.navigation .extra li a {
   padding: 0 10px;
+  margin: 0;
 }
 
 .navigation .extra li a.help {
@@ -188,6 +190,25 @@ a.close img {
   background-repeat: no-repeat;
   padding-left: 18px;
   font-weight: bold;
+}
+
+#feedback {
+  position: relative;
+}
+
+#feedback form {
+  position: absolute;
+  top: 1.5em;
+  left: -5em;
+  z-index: 1000;
+  padding: 1em;
+  background-color: #fff;
+  border: 1px solid #666;
+}
+
+#feedback form textarea {
+  width: 20em;
+  height: 5em;
 }
 
 optgroup {
@@ -386,7 +407,6 @@ ul.control_bar li {
   color: #eee;
 }
 
-/* remove form padding */
 form {
   margin: 0px;
 }
@@ -743,84 +763,136 @@ ul.tag_list {
 ul.tag_list li {
   display: inline;
   color: #666;
-  padding: 0 0 0 14px;
+  padding: 0;
   margin: 0 0 0 4px;
   line-height: 1.8;
   white-space: nowrap;
   cursor: default;
   position: relative;
+}
+
+ul.tag_list li .name {
+  padding: 3px 6px 3px 15px;
   background-position: left center;
   background-repeat: no-repeat;
 }
 
-ul.tag_list li.classifier {
+ul.tag_list li.classifier .name {
   background-image: url(../images/bullet_black.png);
 }
 
-ul.tag_list li.positive {
+ul.tag_list li.positive .name {
   background-image: url(../images/bullet_green.png);
   color: #52984B;
 }
 
-ul.tag_list li.negative {
+ul.tag_list li.negative .name {
   background-image: url(../images/bullet_red.png);
   color: #C12A2F;
 }
 
-ul.tag_list li.public {
+ul.tag_list li.public .name {
   background-image: url(../images/public.png);
-  background-position: 2px center;
-  padding-left: 16px;
+  background-position: 5px center;
+  padding-left: 20px;
 /*  color: #2691BF;*/
 }
 
+ul.tag_list li.public:hover .name {
+  background-position: 4px center;
+  padding-left: 19px;
+}
+
+ul.tag_list li:hover .name {
+  z-index: 1000;
+  background-color: #fff;
+  background-position: -1px center;
+  padding: 2px 5px 2px 14px;
+  border: 1px solid #aaa;
+  border-width: 1px 1px 0 1px;
+  -moz-border-radius-topleft: 0.4em;
+  -moz-border-radius-topright: 0.4em;
+  -webkit-border-top-left-radius: 0.4em;  
+  -webkit-border-top-right-radius: 0.4em;  
+}
+
 ul.tag_list li .controls {
+  display: none;
   position: absolute;
-  top: -8px;
-  left: -5px;
+  top: 16px;
+  left: 0;
   z-index: 900;
+  padding: 3px;
   background: #fff;
   border: 1px solid #aaa;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 0.7em;
+  color: #000;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
 }
 
-ul.tag_list li .controls span {
+ul.tag_list li:hover .controls {
+  display: inline;
+}
+
+ul.tag_list li .controls .status {
   display: block;
-  width: 16px;
-  height: 16px;
+  text-align: center;
+  color: #666;
 }
 
-ul.tag_list li .controls .add {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -32px;
+ul.tag_list li.positive .controls .status {
+  color: #52984B;
+}
+
+ul.tag_list li.negative .controls .status {
+  color: #C12A2F;
+}
+
+ul.tag_list li .controls .positive, ul.tag_list li .controls .negative, ul.tag_list li .controls .remove {
   cursor: pointer;
+  padding: 0 0 0 1.6em;
+}
+
+ul.tag_list li .controls .positive {
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 -1px;
+  color: #52984B;
+}
+
+ul.tag_list li .controls .negative {
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 -65px;
+  color: #C12A2F;
 }
 
 ul.tag_list li .controls .remove {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -96px;
-  cursor: pointer;
+  background: url(../images/close.png) no-repeat;
+  display: none;
+  color: #666;
 }
 
-ul.tag_list li.positive .controls .add {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 0;
+ul.tag_list li.positive .controls .positive {
+  display: none;
+}
+
+ul.tag_list li.positive .controls .negative {
+  display: inline;
 }
 
 ul.tag_list li.positive .controls .remove {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -96px;
+  display: inline;
 }
 
-ul.tag_list li.negative .controls .add {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -32px;
+ul.tag_list li.negative .controls .positive {
+  display: inline;
+}
+
+ul.tag_list li.negative .controls .negative {
+  display: none;
 }
 
 ul.tag_list li.negative .controls .remove {
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -64px;
+  display: inline;
 }
 
 .cursor {
@@ -828,7 +900,7 @@ ul.tag_list li.negative .controls .remove {
 }
 
 .inplaceeditor-form {
-  display: inline;
+  float: left;
 }
 
 label {
@@ -957,6 +1029,7 @@ a.bookmarklet:hover {
 }
 
 .folder .header ul.actions li {
+  clear: both;
   float: left;
   padding: 0;
   margin: 0;
@@ -1048,14 +1121,14 @@ a.bookmarklet:hover {
 
 .folder.open ul.filter_list {
   display: block;
-  margin-left: 15px;
+  margin-left: 10px;
+  list-style: none;
 }
 
 .folder ul.filter_list li {
   margin: 0;
-  padding: 0 0 0 15px;
+  padding: 3px 1px 0 1px;
   height: 1.5em;
-  overflow: hidden;
   font-style: normal;
   font-weight: normal;
   position: relative;
@@ -1065,46 +1138,119 @@ a.bookmarklet:hover {
   cursor: move;
 }
 
-.folder ul.filter_list.tags li {
-  background: url(../images/tag.png) 0 2px no-repeat;
+.folder ul.filter_list li .hover_target {
+  float: left;
+  width: 18px;
+  height: 18px;
 }
 
-.folder ul.filter_list.feeds li {
-  background: url(../images/vertical_sprite.png) 0 -608px no-repeat;  
+.folder ul.filter_list.tags li .hover_target {
+  background: url(../images/tag.png) 3px 1px no-repeat;
 }
 
-.folder ul.filter_list li:hover {
-  background-color: #eee;
+.folder ul.filter_list.feeds li .hover_target {
+  background: url(../images/vertical_sprite.png) 2px -608px no-repeat;  
 }
 
-.folder ul.filter_list li.selected {
+.folder ul.filter_list li .name {
+  height: 1.3em;
+  overflow: hidden;
+  padding: 0 0 0 3px;
+}
+
+.folder ul.filter_list li.selected .name {
   font-weight: bold;
 }
 
-.folder ul.filter_list li.public {
+.folder ul.filter_list li.public .hover_target {
   background-image: url(../images/public.png);
-  background-position: 1px 2px;
+  background-position: 4px 2px;
   background-repeat: no-repeat;
 }
 
 .folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
-  position: absolute;
-  display: none;
   cursor: pointer;
   padding-bottom: 3px;
-  background-color: #E2ECFD;
 }
 
-.folder ul.filter_list li:hover .remove, .folder ul.filter_list li:hover .edit {
+/* =sidebar-hover */
+.folder ul.filter_list li.hover {
+  padding: 2px 0 0 0;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-width: 1px 1px 0 1px;
+  -moz-border-radius-topleft: 0.4em;
+  -moz-border-radius-topright: 0.4em;
+  -webkit-border-top-left-radius: 0.4em;
+  -webkit-border-top-right-radius: 0.4em;
+}
+
+.folder ul.filter_list.tags li.hover {
+  background-position: 3px 4px;
+}
+
+.folder ul.filter_list li.public.hover {
+  background-position: 4px 5px;
+}
+
+.folder ul.filter_list.feeds li.hover {
+  background-position: 2px -606px;
+}
+
+.folder ul.filter_list li .controls {
+  display: none;
+  padding: 3px 0;
+  position: absolute;
+  top: 1.5em;
+  left: -1px;
+  width: 100%;
+  z-index: 900;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-width: 0 1px 1px 1px;
+  -moz-border-radius-bottomleft: 0.4em;
+  -moz-border-radius-bottomright: 0.4em;
+  -webkit-border-bottom-left-radius: 0.4em;
+  -webkit-border-bottom-right-radius: 0.4em;
+}
+
+.folder ul.filter_list li.hover .controls {
   display: block;
 }
 
+.folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
+  background-position: left center;
+  background-repeat: no-repeat;
+  margin: 0 3px;
+}
+
 .folder ul.filter_list li .remove {
-  right: 0px;
+  padding: 0 0 0 16px;
+  background-image: url(../images/close.png);
 }
 
 .folder ul.filter_list li .edit {
-  right: 16px;
+  padding: 0 0 0 18px;
+  background-image: url(../images/pencil.png);
+}
+
+.folder ul.filter_list li .controls dl.info {
+  margin: 0 3px;
+  padding: 0;
+}
+
+.folder ul.filter_list li .controls dl.info dt {
+  width: 25%;
+  float: left;
+  clear: both;
+}
+
+.folder ul.filter_list li .controls dl.info dt:after {
+/*  content: ":";*/
+}
+
+.folder ul.filter_list li .controls dl.info dd {
+  float: left;
 }
 
 .folder ul.filter_list li a.name {
@@ -1126,12 +1272,17 @@ textarea.content {
   height: 40em;
 }
 
-.tag, .feed, .user, .invite, .message {
+.tag, .feed, .user, .invite, .message, .feedback {
 	position: relative;
   border: 1px solid #666;
   background: #eee;
   padding: .5em;
   margin: 0 0 .5em 0;
+}
+
+.feedback .metadata {
+  float: right;
+  color: #666;
 }
 
 .tag .left, .feed .left {
@@ -1441,14 +1592,14 @@ a.desc {
   color: #666;
 }
 
-.using { 
-  margin-right: 26%;
-}
+/*.info { 
+  margin-left: 35%;
+}*/
 
 /* =messages */
 .messages {
-  float: right;
-  width: 25%;
+  float: left;
+  width: 33%;
 }
 
 .messages .empty {

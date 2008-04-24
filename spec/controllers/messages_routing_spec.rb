@@ -22,6 +22,14 @@ describe MessagesController do
     it "should map { :controller => 'messages', :action => 'destroy', :id => 1} to /messages/1" do
       route_for(:controller => "messages", :action => "destroy", :id => 1).should == "/messages/1"
     end
+  
+    it "should map { :controller => 'messages', :action => 'mark_read', :id => 1} to /messages/1/mark_read" do
+      route_for(:controller => "messages", :action => "mark_read", :id => 1).should == "/messages/1/mark_read"
+    end
+  
+    it "should map { :controller => 'messages', :action => 'mark_read'} to /messages/mark_read" do
+      route_for(:controller => "messages", :action => "mark_read").should == "/messages/mark_read"
+    end
   end
 
   describe "route recognition" do
@@ -48,6 +56,14 @@ describe MessagesController do
   
     it "should generate params { :controller => 'messages', action => 'destroy', id => '1' } from DELETE /messages/1" do
       params_from(:delete, "/messages/1").should == {:controller => "messages", :action => "destroy", :id => "1"}
+    end
+  
+    it "should generate params { :controller => 'messages', action => 'mark_read', id => '1' } from PUT /messages/1/mark_read" do
+      params_from(:put, "/messages/1/mark_read").should == {:controller => "messages", :action => "mark_read", :id => "1"}
+    end
+  
+    it "should generate params { :controller => 'messages', action => 'mark_read' } from PUT /messages/mark_read" do
+      params_from(:put, "/messages/mark_read").should == {:controller => "messages", :action => "mark_read"}
     end
   end
 end

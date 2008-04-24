@@ -2,7 +2,7 @@
   <div class="header" onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('<%= dom_id(folder) %>', $(this).up('.folder').hasClassName('open'), 365);">
     <ul class="actions">
       <li><%= image_tag "pencil.png", :id => dom_id(folder, "edit"), :class => "edit" %></li>
-      <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => "Are you sure?", :html => { :class => "destroy replace cross_icon" } %></li>
+      <li><%= link_to_remote "Destroy", :url => folder_path(folder), :method => :delete, :confirm => _(:confirm_destroy_folder), :html => { :class => "destroy replace cross_icon" } %></li>
     </ul>
     <%= link_to_function folder.name, "itemBrowser.toggleSetFilters({folder_ids: '#{folder.id}'}, event); event.stop()", :class => "name", :id => dom_id(folder, "name") %>
     <%= in_place_editor(dom_id(folder, "name"), :url => folder_path(folder), :options => "{method: 'put'}", :param_name => "folder[name]",
@@ -16,11 +16,7 @@
 <%= drop_receiving_element(dom_id(folder), :hoverclass => "hover",
       :onDrop => "function(element, folder) {" <<
         "if(folder.down('#' + element.getAttribute('id'))) { return; }" <<  
-        "var new_element = element.cloneNode(true); new_element.setAttribute('style', '');" <<
-        "insert_in_order('#{dom_id(folder)}_' + (element.getAttribute('id').match(/^feed_/) ? 'feed' : 'tag') + '_items', 'li', " <<
-          "'.name', new_element, element.down('.name').innerHTML);" << 
         "folder.addClassName('open');" <<
-        "itemBrowser.styleFilters();" <<
         "Cookie.set('#{dom_id(folder)}', true, 365);" <<
         remote_function(:url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") <<
         "}") %>

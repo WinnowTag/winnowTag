@@ -1,12 +1,9 @@
 <% classifications = current_user.classifier.guess(feed_item, current_user.classifier.classification_options.merge({:include_evidence => true})) -%>
 <% user_tags_on_item = current_user.manual_taggings.find(:all, :conditions => ["taggings.feed_item_id = ?", feed_item]).map(&:tag) %>
 
-<h3>Classifier Taggings</h3>
+<h3><%= _(:info_header) %></h3>
 	
-<p>
-	This section shows how your current classifier will classify this item. Tags with 
-	<span style="color: red">red</span> text have also been applied by you on the item.
-</p>
+<p><%= _(:info_description) %></p>
 
 <% sorted_classifications = classifications.sort_by{|tag, cls| cls.first}.reverse -%>
 <% sorted_classifications.each_with_index do |(tag, cls), i| -%>

@@ -27,12 +27,11 @@ ActionController::Routing::Routes.draw do |map|
                 }
   map.resources :feed_items,
                 :member => {
-                  :inspect => :get,
-                  :mark_read => :put,
-                  :mark_unread => :put,
                   :info => :get,
                   :description => :get,
-                  :moderation_panel => :get
+                  :moderation_panel => :get,
+                  :mark_read => :put,
+                  :mark_unread => :put
                 },
                 :collection => { 
                   :mark_read => :put,
@@ -95,7 +94,15 @@ ActionController::Routing::Routes.draw do |map|
                   :remove_item => :put
                 }
               
-  map.resources :messages
+  map.resources :messages,
+                :member => {
+                  :mark_read => :put
+                },
+                :collection => { 
+                  :mark_read => :put
+                }
+  
+  map.resources :feedbacks
                 
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit", :action => "edit"
@@ -109,12 +116,12 @@ ActionController::Routing::Routes.draw do |map|
   
   map.with_options :controller => "about" do |about_map|
     about_map.about "about"
-    about_map.using "using", :action => "using"
+    about_map.info "info", :action => "info"
   end
   
   map.with_options :controller => "admin" do |admin_map|
     admin_map.admin "admin"
-    admin_map.admin_using "admin/using", :action => "using"
+    admin_map.admin_info "admin/info", :action => "info"
     admin_map.admin_help "admin/help", :action => "help"
   end
   

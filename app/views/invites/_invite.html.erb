@@ -1,42 +1,42 @@
 <div id="invite_<%= invite.id %>" class="invite clearfix">
 	<ul class="controls">
     <% unless invite.code? -%>
-    <li><%= control_link "Activate", activate_invite_path(invite), :method => :put, :html => { :class => :active_icon } %></li>
-    <li><%= control_link "Edit", edit_invite_path(invite), :html => { :class => :edit_icon } %></li>
+    <li><%= control_link _(:activate) activate_invite_path(invite), :method => :put, :html => { :class => :active_icon } %></li>
+    <li><%= control_link _(:edit), edit_invite_path(invite), :html => { :class => :edit_icon } %></li>
     <% end -%>
-    <li><%= control_link "Destroy", invite, :method => :delete, :html => { :class => :destroy_icon }, :confirm => "Are you sure?" %></li>
+    <li><%= control_link _(:destroy) , invite, :method => :delete, :html => { :class => :destroy_icon }, :confirm => _(:are_you_sure) %></li>
 	</ul>
 	
 	<dl class="created clearfix">
-	  <dt>Created</dt>
+	  <dt><%= _(:created) %></dt>
 	  <dd><%= format_date(invite.created_at) %></dd>
-    <dt>Email Address</dt>
+    <dt><%= _(:email_address) %></dt>
     <dd><%= mail_to invite.email %></dd>
-	  <dt>Status</dt>
+	  <dt><%= _(:status) %></dt>
     <dd>
 	  <% if invite.user -%>
-	    Accepted: <%= link_to truncate(invite.user.login), invite.user %>
+	    <%= _(:invites_accepted) %> <%= link_to truncate(invite.user.login), invite.user %>
 	  <% elsif invite.code? -%>
-	    Activated: <%= truncate(invite.code, 15) %>
+	    <%= _(:invites_activated_label) %> <%= truncate(invite.code, 15) %>
 	  <% else -%>
-	    Requested
+	    <%= _(:invites_requested) %>
 	  <% end -%>
 	  </dd>
 	</dl>
 	  
 	<dl class="question clearfix">
-	  <dt>Question</dt>
+	  <dt><%= _(:invites_question) %></dt>
 	  <dd>
 	    <% if invite.hear.blank? && invite.use.blank? -%>
-	      <em>The user did not answer any questions.</em>
+	      <em><%= _(:invities_no_answers) %></em>
 	    <% else -%>
     	  <% unless invite.hear.blank? -%>
-          <strong>How did you hear about Winnow?</strong><br />
+          <strong><%= _(:invites_how_did_you_hear) %></strong><br />
           <%= invite.hear %><br />
           <br />
         <% end -%>
     	  <% unless invite.use.blank? -%>
-          <strong>How/why do you want to use Winnow?</strong><br />
+          <strong><%= _(:invites_how_do_you_want_to_use_winnow) %></strong><br />
           <%= invite.use %><br />
         <% end -%>
       <% end -%>
@@ -44,15 +44,15 @@
 	</dl>
 	
 	<dl class="email clearfix">
-	  <dt>Email</dt>
+	  <dt><%= _(:email) %></dt>
 	  <dd>
     <% unless invite.subject.blank? -%>
-      <strong>Subject:</strong><br />
+      <strong><%= _(:invites_subject_label) %></strong><br />
       <%= invite.subject %><br />
       <br />
     <% end -%>
     <% unless invite.body.blank? -%>
-      <strong>Body:</strong><br /> 
+      <strong><%= _(:invites_body_label) %></strong><br /> 
       <%= invite.body %><br />
     <% end -%>
     </dd>

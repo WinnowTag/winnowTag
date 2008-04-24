@@ -120,6 +120,55 @@ describe ApplicationHelper do
       show_flash.should have_tag("div#notice[style=display:none]")
     end
   end
+  
+  describe "show unread messages" do
+    describe "when no unread messages" do
+      before(:each) do
+        Message.stub!(:find_unread_for_user_and_global).and_return([])
+      end
+
+      it "returns an empty, hidden" do
+        show_unread_messages.should have_tag("#message[style=display:none]")
+      end
+    end
+    
+    describe "when there is 1 unread message" do
+      before(:each) do
+        @message = mock_model(Message, :body => "Alert! Downtime Coming!")
+        Message.stub!(:find_unread_for_user_and_global).and_return([@message])
+      end
+      
+      it "return a non-hidden element" do
+        show_unread_messages.should_not have_tag("#message[style]")
+      end
+      
+      it "returns an element with the message text" do
+        show_unread_messages.should have_tag("#message", "Alert! Downtime Coming!")
+      end
+      
+      it "contains a link to mark the message read" do
+        show_unread_messages.should have_tag("#message a[onclick*=?]", mark_read_message_path(@message))
+      end
+    end
+    
+    describe "when there is 1 unread message" do
+      before(:each) do
+        Message.stub!(:find_unread_for_user_and_global).and_return([mock_model(Message, :body => "Alert! Downtime Coming!"), mock_model(Message, :body => "Feed collection complete.")])
+      end
+      
+      it "return a non-hidden element" do
+        show_unread_messages.should_not have_tag("#message[style]")
+      end
+      
+      it "returns an element with the a message to view all unread messages text" do
+        show_unread_messages.should have_tag("#message a[href=?]", info_path)
+      end
+      
+      it "contains a link to mark all messages read" do
+        show_unread_messages.should have_tag("#message a[onclick*=?]", mark_read_messages_path)
+      end
+    end
+  end
 
   describe "show_sidebar?" do
     it "is true when cookies[:show_sidebar] is set to a truthy value" do
@@ -258,9 +307,9 @@ describe ApplicationHelper do
     it "creates a list with an li for each tag" do
       user = mock_model(User, :display_name => "Mark")
       tags = [
-        mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user),
-        mock_model(Tag, :name => "Tag 2", :user_id => user.id, :user => user),
-        mock_model(Tag, :name => "Tag 3", :user_id => user.id, :user => user)
+        mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0),
+        mock_model(Tag, :name => "Tag 2", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0),
+        mock_model(Tag, :name => "Tag 3", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       ]
       tag_filter_controls(tags, :remove => :subscription).should have_tag("ul") do
         with_tag("li", 3)
@@ -268,7 +317,7 @@ describe ApplicationHelper do
     end
 
     it "creates a filter control for a tag" do
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}") do
         with_tag "div.show_tag_control" do
           with_tag "a.remove[onclick=?]", /.*#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
@@ -279,7 +328,7 @@ describe ApplicationHelper do
     
     it "creates a filter control for a tag with the remove link for a subscription" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription).should have_tag("li[subscribe_url=?]", subscribe_tag_path(tag, :subscribe => true)) do
         with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(unsubscribe_tag_path(tag))}.*/)
       end
@@ -287,40 +336,40 @@ describe ApplicationHelper do
     
     it "creates a filter control for a tag with the remove link for a subscription" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       folder = mock_model(Folder)
       tag_filter_control(tag, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(tag)))}.*/)
     end
     
     it "creates a filter control for a tag with the remove link for a sidebar" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :sidebar).should have_tag("li[subscribe_url=?]", sidebar_tag_path(tag, :sidebar => true)) do
         with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => false))}.*/)
       end
     end
     
     it "creates a filter control for a tag with the remove link for a subscription and current_user" do
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => false))}.*/)
     end
     
     it "creates a filter control for a tag with a span for autocomplete" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription, :auto_complete => "ed").should have_tag("span.tag_name")
     end
     
     it "creates a filter control for a tag with draggable controls" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
       tag_filter_control(tag, :remove => :subscription, :draggable => true).should have_tag("script", /.*Draggable.*/)
     end
     
     it "creates a filter control for a public tag" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription).should have_tag("li.public") do
         with_tag "a.name[title=?]", "from Mark"
       end
@@ -328,13 +377,13 @@ describe ApplicationHelper do
     
     it "creates a filter control without an edit control for public tags" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription).should_not have_tag("img.edit")
     end
     
     it "creates a filter control with and edit control for private tags" do
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user)
-      tag_filter_control(tag, :remove => :subscription).should have_tag("img.edit")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag_filter_control(tag, :remove => :subscription).should have_tag(".edit")
       tag_filter_control(tag, :remove => :subscription).should have_tag("script", /.*InPlaceEditor.*/)
     end
   end
