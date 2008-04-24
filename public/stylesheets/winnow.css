@@ -900,7 +900,7 @@ ul.tag_list li.negative .controls .remove {
 }
 
 .inplaceeditor-form {
-  display: inline;
+  float: left;
 }
 
 label {
@@ -1029,6 +1029,7 @@ a.bookmarklet:hover {
 }
 
 .folder .header ul.actions li {
+  clear: both;
   float: left;
   padding: 0;
   margin: 0;
@@ -1120,13 +1121,13 @@ a.bookmarklet:hover {
 
 .folder.open ul.filter_list {
   display: block;
-  margin-left: 15px;
+  margin-left: 10px;
   list-style: none;
 }
 
 .folder ul.filter_list li {
   margin: 0;
-  padding: 3px 1px 0 19px;
+  padding: 3px 1px 0 1px;
   height: 1.5em;
   font-style: normal;
   font-weight: normal;
@@ -1137,26 +1138,33 @@ a.bookmarklet:hover {
   cursor: move;
 }
 
-.folder ul.filter_list.tags li {
-  background: url(../images/tag.png) 4px 5px no-repeat;
+.folder ul.filter_list li .hover_target {
+  float: left;
+  width: 18px;
+  height: 18px;
 }
 
-.folder ul.filter_list.feeds li {
-  background: url(../images/vertical_sprite.png) 3px -605px no-repeat;  
+.folder ul.filter_list.tags li .hover_target {
+  background: url(../images/tag.png) 3px 1px no-repeat;
 }
 
-.folder ul.filter_list.feeds li .name {
-  height: 1em;
+.folder ul.filter_list.feeds li .hover_target {
+  background: url(../images/vertical_sprite.png) 2px -608px no-repeat;  
+}
+
+.folder ul.filter_list li .name {
+  height: 1.3em;
   overflow: hidden;
+  padding: 0 0 0 3px;
 }
 
 .folder ul.filter_list li.selected .name {
   font-weight: bold;
 }
 
-.folder ul.filter_list li.public {
+.folder ul.filter_list li.public .hover_target {
   background-image: url(../images/public.png);
-  background-position: 5px 6px;
+  background-position: 4px 2px;
   background-repeat: no-repeat;
 }
 
@@ -1166,8 +1174,8 @@ a.bookmarklet:hover {
 }
 
 /* =sidebar-hover */
-.folder ul.filter_list li:hover {
-  padding: 2px 0 0 18px;
+.folder ul.filter_list li.hover {
+  padding: 2px 0 0 0;
   background-color: #fff;
   border: 1px solid #aaa;
   border-width: 1px 1px 0 1px;
@@ -1177,15 +1185,15 @@ a.bookmarklet:hover {
   -webkit-border-top-right-radius: 0.4em;
 }
 
-.folder ul.filter_list.tags li:hover {
+.folder ul.filter_list.tags li.hover {
   background-position: 3px 4px;
 }
 
-.folder ul.filter_list li.public:hover {
+.folder ul.filter_list li.public.hover {
   background-position: 4px 5px;
 }
 
-.folder ul.filter_list.feeds li:hover {
+.folder ul.filter_list.feeds li.hover {
   background-position: 2px -606px;
 }
 
@@ -1206,7 +1214,7 @@ a.bookmarklet:hover {
   -webkit-border-bottom-right-radius: 0.4em;
 }
 
-.folder ul.filter_list li:hover .controls {
+.folder ul.filter_list li.hover .controls {
   display: block;
 }
 
