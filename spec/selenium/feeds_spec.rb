@@ -6,6 +6,7 @@ describe "/feeds" do
   before(:each) do
     login
     open feeds_path
+    wait_for_ajax
   end    
   
   # These test just make sure that the headers are correct.

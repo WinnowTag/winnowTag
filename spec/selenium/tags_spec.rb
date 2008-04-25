@@ -16,6 +16,7 @@ describe "Tags" do
     before(:each) do
       @other = Tag.create!(:user_id => 1, :name => 'other')
       open tags_path
+      wait_for_ajax
     end
     
     it "can merge two tags by changing their names" do
@@ -54,6 +55,7 @@ describe "Tags" do
     mouse_up "css=div.tag.public div.slider_handle"
     assert_equal initial_position, get_element_position_left("css=div.tag.public div.slider_handle")
     refresh_and_wait
+    wait_for_ajax
     assert_equal initial_position, get_element_position_left("css=div.tag.public div.slider_handle")
   end
   
@@ -65,6 +67,7 @@ describe "Tags" do
     assert_not_equal initial_position, get_element_position_left("css=div.tag.private div.slider_handle")
     new_position = get_element_position_left "css=div.tag.private div.slider_handle"
     refresh_and_wait
+    wait_for_ajax
     assert_equal new_position, get_element_position_left("css=div.tag.private div.slider_handle")
   end
   
@@ -94,11 +97,13 @@ describe "Tags" do
     click "public_tag_#{tag_1.id}"
     assert is_checked("public_tag_#{tag_1.id}")
     refresh_and_wait
+    wait_for_ajax
     assert is_checked("public_tag_#{tag_1.id}")
 
     click "public_tag_#{tag_1.id}"
     assert !is_checked("public_tag_#{tag_1.id}")
     refresh_and_wait
+    wait_for_ajax
     assert !is_checked("public_tag_#{tag_1.id}")
   end
   
