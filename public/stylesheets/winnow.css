@@ -850,7 +850,7 @@ ul.tag_list li.negative .controls .status {
 
 ul.tag_list li .controls .positive, ul.tag_list li .controls .negative, ul.tag_list li .controls .remove {
   cursor: pointer;
-  padding: 0 0 0 1.6em;
+  padding: 1px 0 1px 1.6em;
 }
 
 ul.tag_list li .controls .positive {
