@@ -72,6 +72,11 @@ Spec::Runner.configure do |config|
   config.include ValidationMatchers, AssociationMatchers, :type => :model
   config.include CustomSeleniumHelpers, :type => :selenium
 
+  # Stub out User.encrypt for faster testing
+  config.before(:each) do
+    User.stub!(:encrypt).and_return('password')
+  end
+  
   # You can declare fixtures for each behaviour like this:
   #   describe "...." do
   #     fixtures :table_a, :table_b

@@ -256,14 +256,14 @@ describe User do
     end
   end
   
-  describe "from test/unit" do
+  describe "password" do
     fixtures :users, :feed_items
     
-    it "should_be_owner_of_self" do
-      u = create_user
-      assert u.has_role?('owner', u)
+    before(:each) do
+      # Re-enable password hashing which is stubbed out in spec_helper.rb
+      User.rspec_reset
     end
-  
+    
     it "should_require_login" do
       user = User.new valid_user_attributes(:login => nil)
       user.should have(1).error_on(:login)
@@ -273,12 +273,7 @@ describe User do
       user = User.new valid_user_attributes(:password => nil)
       user.should have(2).errors_on(:password)
     end
-
-    it "should_require_email" do
-      user = User.new valid_user_attributes(:email => nil)
-      user.should have(1).error_on(:email)
-    end
-
+    
     it "should_reset_password" do
       users(:quentin).update_attributes(:password => 'new password', :password_confirmation => 'new password')
       assert_equal users(:quentin), User.authenticate('quentin', 'new password')
@@ -291,6 +286,20 @@ describe User do
 
     it "should_authenticate_user" do
       assert_equal users(:quentin), User.authenticate('quentin', 'test')
+    end
+  end
+  
+  describe "from test/unit" do
+    fixtures :users, :feed_items
+    
+    it "should_be_owner_of_self" do
+      u = create_user
+      assert u.has_role?('owner', u)
+    end
+  
+    it "should_require_email" do
+      user = User.new valid_user_attributes(:email => nil)
+      user.should have(1).error_on(:email)
     end
 
     it "should_set_remember_token" do
