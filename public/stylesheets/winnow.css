@@ -26,6 +26,10 @@ body {
   height: 100%;
 }
 
+div#content > div.info {
+  margin-left: 35%;
+}
+
 body > h2, body > h3, body > h4 {
   margin-left: 10px;
 }
