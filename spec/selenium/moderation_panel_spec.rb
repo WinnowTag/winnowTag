@@ -232,7 +232,7 @@ describe "moderation panel" do
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Automatic Tagging (95.23%)", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
+    assert_equal "Automatic tag (95.23%)", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
   it "shows tagging controls when hovering the tag" do
