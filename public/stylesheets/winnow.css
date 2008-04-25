@@ -26,6 +26,10 @@ body {
   height: 100%;
 }
 
+div#content > div.info {
+  margin-left: 35%;
+}
+
 body > h2, body > h3, body > h4 {
   margin-left: 10px;
 }
@@ -1610,16 +1614,11 @@ a.desc {
   color: #666;
 }
 
-.messages > h4 {
-  font-size: 1.5em;
-  margin: 0;
-  border-bottom: 2px solid #000;
-}
-
 .messages > ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  border-top: 2px solid #666;
 }
 
 .messages ul li.sidebar_message {
