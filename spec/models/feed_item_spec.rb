@@ -86,6 +86,34 @@ describe FeedItem do
     end
   end
   
+  describe ".find_with_filters select" do
+    it "can flag items as unread" do
+      user_1 = User.create! valid_user_attributes
+        
+      FeedItem.delete_all
+      feed_item_1 = valid_feed_item!(:updated => Date.today)
+      
+      expected, actual = [feed_item_1], FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc", :mode => "all")
+      expected.should == actual
+      
+      actual.first.should_not be_read_by_current_user
+    end
+    
+    it "can flag items as read" do
+      user_1 = User.create! valid_user_attributes
+        
+      FeedItem.delete_all
+      feed_item_1 = valid_feed_item!(:updated => Date.today)
+
+      ReadItem.create! :feed_item => feed_item_1, :user => user_1
+      
+      expected, actual = [feed_item_1], FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc", :mode => "all")
+      expected.should == actual
+      
+      actual.first.should be_read_by_current_user
+    end
+  end
+  
   describe ".find_with_filters" do    
     it "Properly filters feed items with included private tag and excluded public tag" do
       user_1 = User.create! valid_user_attributes

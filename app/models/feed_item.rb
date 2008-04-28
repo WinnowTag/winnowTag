@@ -250,19 +250,21 @@ class FeedItem < ActiveRecord::Base
   # of the complexity of the joining in the query produced by options_with_filters.
   #
   def self.find_with_filters(filters = {})    
-    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => 'feed_items.*, feeds.title AS feed_title'))
+    user = filters[:user]
+    
+    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => [
+      'feed_items.*', 'feeds.title AS feed_title', 
+      "EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = #{user.id}) AS read_by_current_user"
+    ].join(",")))
 
-    if user = filters[:user]
-      feed_item_ids = feed_items.map(&:id)
-      user_taggings = user.taggings.find(:all, :conditions => ['taggings.feed_item_id in (?)', feed_item_ids], :include => :tag)
-            
-      feed_items.each do |feed_item|
-        user_taggings_for_item = user_taggings.select do |tagging|          
-          tagging.feed_item_id == feed_item.id
-        end
-        
-        feed_item.taggings.cached_taggings.merge!(user => user_taggings_for_item)
+    feed_item_ids = feed_items.map(&:id)
+    user_taggings = user.taggings.find(:all, :conditions => ['taggings.feed_item_id in (?)', feed_item_ids], :include => :tag)
+    feed_items.each do |feed_item|
+      user_taggings_for_item = user_taggings.select do |tagging|          
+        tagging.feed_item_id == feed_item.id
       end
+      
+      feed_item.taggings.cached_taggings.merge!(user => user_taggings_for_item)
     end
     
     feed_items
