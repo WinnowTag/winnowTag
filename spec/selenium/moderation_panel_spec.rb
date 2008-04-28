@@ -235,7 +235,8 @@ describe "moderation panel" do
     assert_equal "Automatic tag (95.23%)", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
-  it "shows tagging controls when hovering the tag" do
+  # TODO: This does not work with selenium + :hover
+  xit "shows tagging controls when hovering the tag" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
 
     open feed_items_path
