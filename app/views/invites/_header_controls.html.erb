@@ -2,7 +2,7 @@
   <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
   <li class="order">
     <%= _(:sort_label) %>
-    <%= link_to_function _(:invites_header_created), "itemBrowser.setOrder('created')", :id => "order_created" %>, 
+    <%= link_to_function _(:created), "itemBrowser.setOrder('created')", :id => "order_created" %>, 
     <%= link_to_function _(:email),   "itemBrowser.setOrder('email')",   :id => "order_email" %>, 
     <%= link_to_function _(:status),  "itemBrowser.setOrder('status')",  :id => "order_status" %>
   </li>

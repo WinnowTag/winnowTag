@@ -5,8 +5,7 @@ module Localization
   @@lang = :default
   
   def self._(key, *args)
-    translated = @@l10s[@@lang][key]
-    raise "LocalizationError: could not find text for #{key.inspect}" unless translated
+    translated = @@l10s[@@lang][key] || "missing text"
 
     if translated.is_a?(Hash)
       translated = if args[0] == 1
@@ -30,6 +29,10 @@ module Localization
   
   def self.load
     Dir.glob("#{RAILS_ROOT}/lang/*.rb"){ |t| require t }
+  end
+  
+  def self.mappings
+    @@l10s[@@lang]
   end
   
   def self.generate_l10n_file

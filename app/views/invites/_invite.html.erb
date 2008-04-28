@@ -17,7 +17,7 @@
 	  <% if invite.user -%>
 	    <%= _(:invites_accepted) %> <%= link_to truncate(invite.user.login), invite.user %>
 	  <% elsif invite.code? -%>
-	    <%= _(:invites_activated_label) %> <%= truncate(invite.code, 15) %>
+	    <%= _(:invites_activated) %> <%= truncate(invite.code, 15) %>
 	  <% else -%>
 	    <%= _(:invites_requested) %>
 	  <% end -%>
@@ -28,7 +28,7 @@
 	  <dt><%= _(:invites_question) %></dt>
 	  <dd>
 	    <% if invite.hear.blank? && invite.use.blank? -%>
-	      <em><%= _(:invities_no_answers) %></em>
+	      <em><%= _(:invites_no_answers) %></em>
 	    <% else -%>
     	  <% unless invite.hear.blank? -%>
           <strong><%= _(:invites_how_did_you_hear) %></strong><br />

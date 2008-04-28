@@ -250,7 +250,6 @@ Localization.define do |l|
   l.store :feeds_upload_opml_file,                 "Upload an OPML file"
   l.store :feeds_import_description,               "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
   l.store :feeds_opml_file,                        "OPML File"
-  l.store :submit,                                 "Submit"
   l.store :import,                                 "Import"
   l.store :cancel,                                 "cancel"
   
@@ -275,7 +274,7 @@ Localization.define do |l|
   l.store :globally_excluded,                       "Globally Excluded"              
   
   # app/views/invites/_form.html.erb
-  l.store :invites_activate,                         "Activate?"
+  l.store :invites_activate,                        "Activate?"
   l.store :create,                                  "Create"
   l.store :update,                                  "Update"
 
@@ -293,15 +292,15 @@ Localization.define do |l|
   l.store :email_address,                           "Email Address"
   l.store :status,                                  "Status"
   l.store :invites_accepted,                        "Accepted:"
-  l.store :invites_activate,                        "Activated:"
+  l.store :invites_activated,                       "Activated:"
   l.store :invites_requested,                       "Requested"
   l.store :invites_question,                        "Question"
   l.store :invites_no_answers,                      "The user did not answer any questions."
   l.store :invites_how_did_you_hear,                "How did you hear about Winnow?"
-  l.store :invites_how_do_you_want_to_use_winnow,    "How/why do you want to use Winnow?"
+  l.store :invites_how_do_you_want_to_use_winnow,   "How/why do you want to use Winnow?"
   
-  l.store :invites_subject_label,                    "Subject:"
-  l.store :invites_body_label,                       "Body:"
+  l.store :invites_subject_label,                   "Subject:"
+  l.store :invites_body_label,                      "Body:"
   
   # app/views/invites/edit.html.erb
   l.store :invites_edit_invite,                     "Edit Invite"
@@ -338,10 +337,10 @@ Localization.define do |l|
 
   # app/views/messages/_sidebar.html.erb
   l.store :messages_messages,                       "Messages"
-  l.store :messages_empty,                           "You have no recent messages."
+  l.store :messages_empty,                          "You have no recent messages."
 
   # app/views/messages/edit.html.erb
-  l.store :messages_editing_messages,                "Editing message"
+  l.store :messages_editing_messages,               "Editing message"
   l.store :back,                                    "Back"
   
   # app/views/messages/index.html.erb
