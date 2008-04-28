@@ -5,7 +5,11 @@ module Localization
   @@lang = :default
   
   def self._(key, *args)
-    translated = @@l10s[@@lang][key] || "missing text"
+    translated = @@l10s[@@lang][key]
+    unless translated
+      RAILS_DEFAULT_LOGGER.error("Localization missing for #{key.inspect}")
+      translated = "missing text"
+    end
 
     if translated.is_a?(Hash)
       translated = if args[0] == 1
