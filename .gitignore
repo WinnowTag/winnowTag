@@ -4,4 +4,5 @@ config/database.yml
 db/development_structure.sql
 doc/TODO
 log
+tmp
 .DS_Store
