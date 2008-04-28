@@ -10,11 +10,11 @@ require 'ruby-prof'
 require 'action_controller/integration'
 
 app = ActionController::Integration::Session.new
-app.post '/account/login', :login => 'seangeo', :password => 'password'
-app.get '/feed_items/index/0.js?tag_filter=all'
+app.post '/account/login', :login => 'seangeo', :password => 'flurgen'
+app.get '/feed_items.js'
 
 result = RubyProf.profile do
-  app.get '/feed_items/index/0.js?tag_filter=all'
+  app.get '/feed_items.js'
 end
 
 if app.status != 200
@@ -24,6 +24,6 @@ end
 
 # Print a graph profile to text
 printer = RubyProf::GraphHtmlPrinter.new(result)
-printer.print(STDOUT, 10)
+printer.print(STDOUT)
 
 
