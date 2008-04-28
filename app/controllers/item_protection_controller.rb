@@ -20,7 +20,7 @@ class ItemProtectionController < ApplicationController
       Remote::ProtectedItem.rebuild
       redirect_to item_protection_path      
     rescue ActiveResource::ConnectionError => e
-      flash[:error] = _(:item_protection_rebuild, e.message)
+      flash[:error] = _(:item_protection_rebuild_failure, e.message)
       redirect_to item_protection_path
     end
   end

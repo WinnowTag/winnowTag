@@ -25,7 +25,7 @@ Localization.define do |l|
 
   # app/controllers/item_protection_controller.rb
   l.store :item_protection_status,                "Unable to fetch protection status from the collector"
-  l.store :item_protection_rebuild,               "Could not rebuild item protection: %s"
+  l.store :item_protection_rebuild_failure,       "Could not rebuild item protection: %s"
 
   # app/controllers/messages_controller.rb
   l.store :message_created,                       "Message was successfully created"
@@ -97,7 +97,7 @@ Localization.define do |l|
   l.store :default_invite_accepted_body,          "You request for an invitation to Winnow has been accepted!"
   
   # app/views/about/index.html.erb
-  l.store :winnow_info,                           "This is build %s of Winnow."
+  l.store :winnow_revision,                       "This is build %s of Winnow."
   
   # app/views/account/activate.html.erb
   l.store :activation_code_label,                 "Activation Code"
@@ -258,7 +258,7 @@ Localization.define do |l|
   l.store :feeds_new_description1,                 "Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains."
   l.store :feeds_new_description2,                 "Only items with enough text for the classifier to use will be collected from the feed."
   l.store :feeds_new_url_label,                    "URL:"
-  l.store :create_feed,                            "Create Feed"
+  l.store :create_feed_button,                     "Create Feed"
   l.store :bookmarklet,                            "Bookmarklet"
   l.store :feeds_add_to_winnow,                    "Add to Winnow"
   l.store :feeds_new_bookmarklet_description1,     "Drag this button"
@@ -288,9 +288,7 @@ Localization.define do |l|
   l.store :edit,                                    "Edit"
   l.store :destroy,                                 "Destroy"
   l.store :are_you_sure,                            "Are you sure?"
-  l.store :created,                                 "Created"
   l.store :email_address,                           "Email Address"
-  l.store :status,                                  "Status"
   l.store :invites_accepted,                        "Accepted:"
   l.store :invites_activated,                       "Activated:"
   l.store :invites_requested,                       "Requested"

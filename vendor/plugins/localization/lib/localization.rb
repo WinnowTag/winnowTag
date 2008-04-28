@@ -2,6 +2,14 @@ module Localization
   mattr_accessor :lang
   
   @@l10s = { :default => {} }
+  class << @@l10s[:default]
+    def store_with_noise(key, value)
+      puts "REDEFINING KEY #{key.inspect}" if has_key?(key)
+      store_without_noise(key, value)
+    end
+    alias_method_chain :store, :noise
+  end
+  
   @@lang = :default
   
   def self._(key, *args)
