@@ -37,7 +37,12 @@ namespace :localization do
     end
   end
   
+  task :duplicate do
+    Rake::Task["environment"].invoke
+  end
+  
   task :check do
+    Rake::Task["localization:duplicate"].invoke
     Rake::Task["localization:undefined"].invoke
     Rake::Task["localization:unused"].invoke
   end
