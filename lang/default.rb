@@ -454,7 +454,7 @@ Are you sure you want to continue?|
   
   l.store :users_display_name,                      "Display Name"
   l.store :users_last_logged_in,                    "Last Logged In"
-  l.store :users_accessed,                          "Last Accessed"
+  l.store :users_last_accessed,                     "Last Accessed"
   l.store :users_last_moderated,                    "Last Moderated"
   l.store :users_number_of_tags,                    "Number of Tags"
   l.store :users_save_changes,                      'Save changes'
