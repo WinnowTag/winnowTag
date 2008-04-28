@@ -461,5 +461,6 @@ Are you sure you want to continue?|
   l.store :users_average_tags_per_item,             "Average Tags per Item"
   l.store :users_percentage_tagged,                 "Percentage Tagged"
   
+  # ActiveRecord validation messages
   # Javascript
 end
