@@ -59,12 +59,12 @@ module FeedItemsHelper
   end
   
   def tag_controls(feed_item)
-    tags = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
-    current_user.subscribed_tags.group_by(&:user).map do |user|
-      tags += feed_item.taggings_by_user(user, :tags => tags_to_display)
+    taggings = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
+    current_user.subscribed_tags.group_by(&:user).each do |user, tags|
+      taggings += feed_item.taggings_by_user(user, :tags => tags_to_display)
     end
 
-    html = tags.sort_by { |tag, taggings| tag.name.downcase }.map do |tag, taggings|
+    html = taggings.sort_by { |tag, taggings| tag.name.downcase }.map do |tag, taggings|
       if tag.user == current_user
         tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
       else
@@ -91,9 +91,11 @@ module FeedItemsHelper
   end
   
   def tags_to_display
-    (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + 
-      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
-    ).uniq
+    (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + selected_tags).uniq
+  end
+  
+  def selected_tags
+    @selected_tags ||= params[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
   end
   
   def tag_control_for(feed_item, tag, classes, classifier_strength)
