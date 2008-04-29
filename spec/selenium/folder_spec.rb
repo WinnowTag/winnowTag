@@ -52,7 +52,7 @@ describe "folders" do
   it "can be destroyed" do
     see_element "#folder_#{@existing_folder.id}"
 
-    click "css=#folder_#{@existing_folder.id} .actions .destroy"
+    click "css=#folder_#{@existing_folder.id} .remove"
     get_confirmation.should == "Are you sure?"
     wait_for_ajax
     
