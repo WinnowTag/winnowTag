@@ -129,7 +129,7 @@ describe FeedItemsHelper do
         [ mock_model(Tag, :name => "tag2", :user => current_user), [] ],
         [ mock_model(Tag, :name => "tag3", :user => current_user), [] ]
       ]
-      feed_item = mock_model(FeedItem, :taggings_by_user => taggings)
+      feed_item = mock_model(FeedItem, :taggings_for => taggings)
     
       tag_controls(feed_item).should have_tag("ul.tag_list##{dom_id(feed_item, 'tag_controls')}") do
         with_tag("li", 3)

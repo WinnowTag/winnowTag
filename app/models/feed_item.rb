@@ -440,6 +440,21 @@ class FeedItem < ActiveRecord::Base
       hash
     end.to_a.sort
   end
+  
+  def taggings_for(tags)
+    # taggings = self.taggings.find_all_by_tag_id(tags)
+    taggings = self.taggings.find(:all, :conditions => ['tag_id in (?)', tags.map { |t| t.id }.join(',')])
+
+    taggings.inject({}) do |hash, tagging|
+      hash[tagging.tag] ||= []
+      if tagging.classifier_tagging?
+        hash[tagging.tag] << tagging
+      else
+        hash[tagging.tag].unshift(tagging)
+      end
+      hash
+    end.to_a.sort_by { |tag, taggings| tag.name.downcase }
+  end
 
   def self.parse_id_uri(entry)
     begin

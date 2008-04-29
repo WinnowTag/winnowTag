@@ -59,12 +59,9 @@ module FeedItemsHelper
   end
   
   def tag_controls(feed_item)
-    taggings = feed_item.taggings_by_user(current_user, :tags => tags_to_display)
-    current_user.subscribed_tags.group_by(&:user).each do |user, tags|
-      taggings += feed_item.taggings_by_user(user, :tags => tags_to_display)
-    end
+    taggings = feed_item.taggings_for(tags_to_display)
 
-    html = taggings.sort_by { |tag, taggings| tag.name.downcase }.map do |tag, taggings|
+    html = taggings.map do |tag, taggings|
       if tag.user == current_user
         tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
       else
