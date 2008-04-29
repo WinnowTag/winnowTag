@@ -783,7 +783,7 @@ describe FeedItem do
       assert_match(/MATCH/, FeedItem.send(:options_for_filters, :user => users(:quentin), :text_filter => "text")[:joins])
     end
     
-    it "taggings_by_user_and_classifier_where_user_taggins_float_up" do
+    it "taggings_for_and_classifier_where_user_taggings_float_up" do
       user = users(:quentin)
       tag1 = Tag(user, 'tag1')
       tag2 = Tag(user, 'tag2')
@@ -796,7 +796,7 @@ describe FeedItem do
       u_tagging3 = Tagging.create(:user => user, :feed_item => fi, :tag => tag3)
     
       expected = [[tag1, [u_tagging1, c_tagging1]], [tag2, [c_tagging2]], [tag3, [u_tagging3]]]
-      result = fi.taggings_by_user(user)
+      result = fi.taggings_for([tag1, tag2, tag3])
     
       assert_equal expected, result
     end

@@ -411,8 +411,9 @@ class FeedItem < ActiveRecord::Base
   def uid 
     "Winnow::FeedItem::#{self.id}"
   end
+
   
-  # Gets taggings between a list of taggers and this taggable.
+  # Gets taggings between a list of tags and this taggable.
   #
   # The priority functionality of this method is used to enforce the user taggings overriding classifier
   # taggings in the display.
@@ -421,29 +422,9 @@ class FeedItem < ActiveRecord::Base
   #
   # The structure will be a 2D array where each element is an array with the first 
   # element being the tag and the second element being an array of taggings using that tag, 
-  # in order of the taggers array.
-  def taggings_by_user(user, options = {})
-    options.assert_valid_keys([:tags])  
-    if options[:tags]
-      taggings = self.taggings.find(:all, :conditions => ['tag_id in (?)', options[:tags].map {|t| t.id }.join(',')])
-    else
-      taggings = self.taggings.find(:all, :conditions => ['user_id = ?', user.id])
-    end
-
-    taggings.inject({}) do |hash, tagging|
-      hash[tagging.tag] ||= []
-      if tagging.classifier_tagging?
-        hash[tagging.tag] << tagging
-      else
-        hash[tagging.tag].unshift(tagging)
-      end
-      hash
-    end.to_a.sort
-  end
-  
+  # in order of user tagging, classifier tagging
   def taggings_for(tags)
-    # taggings = self.taggings.find_all_by_tag_id(tags)
-    taggings = self.taggings.find(:all, :conditions => ['tag_id in (?)', tags.map { |t| t.id }.join(',')])
+    taggings = self.taggings.find(:all, :conditions => ['tag_id IN (?)', tags])
 
     taggings.inject({}) do |hash, tagging|
       hash[tagging.tag] ||= []
