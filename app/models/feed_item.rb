@@ -253,10 +253,13 @@ class FeedItem < ActiveRecord::Base
   def self.find_with_filters(filters = {})    
     user = filters[:user]
     
-    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => [
+    options_for_find = options_for_filters(filters).merge(:select => [
       'feed_items.*', 'feeds.title AS feed_title', 
       "EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = #{user.id}) AS read_by_current_user"
-    ].join(",")))
+    ].join(","))
+    options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
+
+    feed_items = FeedItem.find(:all, options_for_find)
 
     feed_item_ids = feed_items.map(&:id)
     user_taggings = user.taggings.find(:all, :conditions => ['taggings.feed_item_id in (?)', feed_item_ids], :include => :tag)
@@ -327,7 +330,7 @@ class FeedItem < ActiveRecord::Base
 
     filters[:mode] ||= "unread"
 
-    joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
+    joins = []
     add_text_filter_joins!(filters[:text_filter], joins)
 
     conditions = []
