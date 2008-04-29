@@ -425,9 +425,9 @@ class FeedItem < ActiveRecord::Base
   def taggings_by_user(user, options = {})
     options.assert_valid_keys([:tags])  
     if options[:tags]
-      taggings = self.taggings.find_all_by_user_id_and_tag_id(user, options[:tags])
+      taggings = self.taggings.find(:all, :conditions => ['tag_id in (?)', options[:tags].map {|t| t.id }.join(',')])
     else
-      taggings = self.taggings.find_by_user(user)
+      taggings = self.taggings.find(:all, :conditions => ['user_id = ?', user.id])
     end
 
     taggings.inject({}) do |hash, tagging|
