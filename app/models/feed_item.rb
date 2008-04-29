@@ -209,11 +209,7 @@ class FeedItem < ActiveRecord::Base
   #
   # See options_for_filters.
   def self.count_with_filters(filters = {})
-    options = options_for_filters(filters)
-    options[:select] = 'feed_items.id'
-    options.delete(:limit)
-    options.delete(:offset)
-    options.delete(:order)
+    options = options_for_filters(filters).merge(:select => "feed_items.id").except(:limit, :offset, :order)
     FeedItem.count(options)
   end
   
