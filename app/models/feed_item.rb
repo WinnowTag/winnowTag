@@ -21,6 +21,8 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
+  attr_accessor :taggings_to_display
+
   validates_presence_of :link
   validates_uniqueness_of :link
   belongs_to :feed, :counter_cache => true
@@ -35,42 +37,7 @@ class FeedItem < ActiveRecord::Base
   #
   # See FeedItem.find_by_filters for how this is done.
   #
-  has_many :taggings do 
-    def cached_taggings
-      if @cached_taggings.nil?
-        @cached_taggings = Hash.new([])
-      end
-
-      @cached_taggings
-    end
-
-    def find_by_user_with_caching(user, tag = nil)
-      taggings = cached_taggings[user].select do |tagging|
-        (tag.nil? or tagging.tag == tag)
-      end
-
-      cached_taggings.has_key?(user) ? taggings : find_by_user_without_caching(user, tag)
-    end
-
-    # Finds all taggings on this item by the given user.  You can also constrain
-    # it to just taggings by a given tagger with a given tag by passing the tag in as
-    # the second variable.
-    #
-    # This is an extension on the taggings association so use it like so:
-    #
-    #   taggable.taggings.find_by_user(user, tag)
-    #
-    def find_by_user(user, tag = nil)
-      conditions = 'taggings.user_id = ? '
-      conditions += ' and taggings.tag_id = ?' if tag
-      conditions = [conditions, user.id]
-      conditions += [tag.id] if tag
-
-      find(:all, :conditions => conditions, :include => :tag, :order => 'tags.name ASC')
-    end
-
-    alias_method_chain :find_by_user, :caching
-  end
+  has_many :taggings
   
   has_many :tags, :through => :taggings do
     def from_user
@@ -256,15 +223,23 @@ class FeedItem < ActiveRecord::Base
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
 
     feed_items = FeedItem.find(:all, options_for_find)
+    
+    selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
+    tags_to_display = (user.sidebar_tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
+    taggings = Tagging.find(:all, 
+      :include => :tag,
+      :conditions => ['feed_item_id IN (?) AND tag_id IN (?)', feed_items, tags_to_display]).group_by(&:feed_item_id)
 
-    feed_item_ids = feed_items.map(&:id)
-    user_taggings = user.taggings.find(:all, :conditions => ['taggings.feed_item_id in (?)', feed_item_ids], :include => :tag)
     feed_items.each do |feed_item|
-      user_taggings_for_item = user_taggings.select do |tagging|          
-        tagging.feed_item_id == feed_item.id
-      end
-      
-      feed_item.taggings.cached_taggings.merge!(user => user_taggings_for_item)
+      feed_item.taggings_to_display = (taggings[feed_item.id] || []).inject({}) do |hash, tagging|
+        hash[tagging.tag] ||= []
+        if tagging.classifier_tagging?
+          hash[tagging.tag] << tagging
+        else
+          hash[tagging.tag].unshift(tagging)
+        end
+        hash
+      end.to_a.sort_by { |tag, _taggings| tag.name.downcase }
     end
     
     feed_items
@@ -403,31 +378,6 @@ class FeedItem < ActiveRecord::Base
   # Gets a UID suitable for use within the classifier
   def uid 
     "Winnow::FeedItem::#{self.id}"
-  end
-
-  
-  # Gets taggings between a list of tags and this taggable.
-  #
-  # The priority functionality of this method is used to enforce the user taggings overriding classifier
-  # taggings in the display.
-  #
-  # === Return Structure
-  #
-  # The structure will be a 2D array where each element is an array with the first 
-  # element being the tag and the second element being an array of taggings using that tag, 
-  # in order of user tagging, classifier tagging
-  def taggings_for(tags)
-    taggings = self.taggings.find(:all, :conditions => ['tag_id IN (?)', tags])
-
-    taggings.inject({}) do |hash, tagging|
-      hash[tagging.tag] ||= []
-      if tagging.classifier_tagging?
-        hash[tagging.tag] << tagging
-      else
-        hash[tagging.tag].unshift(tagging)
-      end
-      hash
-    end.to_a.sort_by { |tag, taggings| tag.name.downcase }
   end
 
   def self.parse_id_uri(entry)

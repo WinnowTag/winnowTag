@@ -129,7 +129,7 @@ describe FeedItemsHelper do
         [ mock_model(Tag, :name => "tag2", :user => current_user), [] ],
         [ mock_model(Tag, :name => "tag3", :user => current_user), [] ]
       ]
-      feed_item = mock_model(FeedItem, :taggings_for => taggings)
+      feed_item = mock_model(FeedItem, :taggings_to_display => taggings)
     
       tag_controls(feed_item).should have_tag("ul.tag_list##{dom_id(feed_item, 'tag_controls')}") do
         with_tag("li", 3)
@@ -137,29 +137,6 @@ describe FeedItemsHelper do
     end
     
     xit "needs to be tested with public tags"
-  end
-  
-  describe "tags_to_display" do
-    it "only shows the tags the user has in the sidebar (public and private) that are not excluded plus any filtered tags which are theirs or public" do
-      ruby = mock_model(Tag)
-      svn = mock_model(Tag)
-      tech = mock_model(Tag)
-      langs = mock_model(Tag)
-      
-      current_user.stub!(:sidebar_tags).and_return([ruby, svn])
-      current_user.stub!(:subscribed_tags).and_return([tech, langs])
-      current_user.stub!(:excluded_tags).and_return([ruby, langs])
-      
-      Tag.delete_all
-      non_sidebar_tag = Tag.create! :name => "non_sidebar_tag", :public => true, :user => current_user
-      other_user = User.create! valid_user_attributes
-      other_public_tag = Tag.create! :name => "other_public_tag", :public => true, :user => other_user
-      other_private_tag = Tag.create! :name => "other_private_tag", :user => other_user
-      
-      params[:tag_ids] = [non_sidebar_tag.id, other_public_tag.id, other_private_tag.id].join(",")
-
-      tags_to_display.should == [svn, tech, non_sidebar_tag, other_public_tag]
-    end
   end
   
   describe "feed_item_title" do

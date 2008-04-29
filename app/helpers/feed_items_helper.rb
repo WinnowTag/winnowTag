@@ -59,9 +59,7 @@ module FeedItemsHelper
   end
   
   def tag_controls(feed_item)
-    taggings = feed_item.taggings_for(tags_to_display)
-
-    html = taggings.map do |tag, taggings|
+    html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user
         tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
       else
@@ -85,14 +83,6 @@ module FeedItemsHelper
     if classifier_tagging = taggings.detect {|t| t.classifier_tagging? }
       "%.2f%" % (classifier_tagging.strength * 100)
     end
-  end
-  
-  def tags_to_display
-    (current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + selected_tags).uniq
-  end
-  
-  def selected_tags
-    @selected_tags ||= params[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
   end
   
   def tag_control_for(feed_item, tag, classes, classifier_strength)
