@@ -213,6 +213,7 @@ class FeedItem < ActiveRecord::Base
     options[:select] = 'feed_items.id'
     options.delete(:limit)
     options.delete(:offset)
+    options.delete(:order)
     FeedItem.count(options)
   end
   
@@ -339,28 +340,23 @@ class FeedItem < ActiveRecord::Base
     else
       tags = []
     end
-    conditions += tags.map do |tag|
-      build_tag_inclusion_filter(tag, filters[:mode])  # TODO: Compact this into one statement?
-    end
-    conditions = ["(#{conditions.join(" OR ")})"] unless conditions.blank? 
+    conditions << build_tag_inclusion_filter(tags, filters[:mode])
+
+    conditions = ["(#{conditions.compact.join(" OR ")})"] unless conditions.compact.blank? 
     
     unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
-      conditions += filters[:user].excluded_tags.map do |tag|
-        build_tag_exclusion_filter(tag) # TODO: Compact this into one statement?
-      end
+      conditions << build_tag_exclusion_filter(filters[:user].excluded_tags)
+    end
+    
+    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+      add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, conditions)
     end
     
     if filters[:mode] =~ /unread/i # only filter out read items when showing unread items
       add_read_items_filter_conditions!(filters[:user], conditions)
     end
         
-    options[:conditions] = conditions.join(" AND ")
-
-    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
-      add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
-    end
-    
-    options[:conditions] = nil if options[:conditions].blank?    
+    options[:conditions] = conditions.compact.blank? ? nil : conditions.compact.join(" AND ")
     options[:joins] = joins.uniq.join(" ")
     
     options
@@ -369,7 +365,7 @@ class FeedItem < ActiveRecord::Base
   # Add any text_filter. This is done using a inner join on feed_item_contents with an
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
-    if !text_filter.blank?
+    unless text_filter.blank?
       joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
                " AND MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
     end
@@ -377,34 +373,32 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_feed_filter_conditions!(feed_ids, conditions)
     feeds = Feed.find_all_by_id(feed_ids.to_s.split(','))
-    if !feeds.empty?
+    unless feeds.empty?
       conditions << "feed_items.feed_id IN (#{feeds.map(&:id).join(",")})"
     end
   end
 
-  def self.build_tag_inclusion_filter(tag, mode)
-    manual_taggings_sql = mode =~ /moderated/i ? " AND classifier_tagging = 0" : nil
-    "EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id#{manual_taggings_sql})"
+  def self.build_tag_inclusion_filter(tags, mode)
+    unless tags.empty?
+      manual_taggings_sql = mode =~ /moderated/i ? " AND classifier_tagging = 0" : nil
+      "EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id#{manual_taggings_sql})"
+    end
   end
 
-  def self.build_tag_exclusion_filter(tag)
-    "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id)"
+  def self.build_tag_exclusion_filter(tags)
+    unless tags.empty?
+      "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id)"
+    end
+  end
+  
+  def self.add_globally_exclude_feed_filter_conditions!(feeds, conditions)
+    unless feeds.empty?
+      conditions << "feed_items.feed_id NOT IN (#{feeds.map(&:id).join(",")})"
+    end
   end
   
   def self.add_read_items_filter_conditions!(user, conditions)
     conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
-  end
-  
-  def self.add_globally_exclude_feed_filter_conditions!(feed_filters, conditions)
-    return if feed_filters.blank?
-
-    exclude_conditions = "feed_items.feed_id NOT IN (#{feed_filters.map(&:id).join(",")})"
-
-    if conditions.blank?
-      conditions.replace exclude_conditions
-    else
-      conditions.replace "#{exclude_conditions} AND (#{conditions})"
-    end
   end
   
   # Gets a UID suitable for use within the classifier
