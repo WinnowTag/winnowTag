@@ -36,6 +36,7 @@ class Tag < ActiveRecord::Base
             :dependent => :delete_all
   has_many :feed_items, :through => :taggings
   has_many :tag_subscriptions
+  has_many :comments
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name

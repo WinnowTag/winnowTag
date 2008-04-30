@@ -14,4 +14,10 @@ describe Comment do
       Generate.comment.should validate(:body, ["Example Body"], [nil, ""])
     end
   end
+  
+  describe "associations" do
+    it "belongs to user" do
+      Generate.comment.should belong_to(:user)
+    end
+  end
 end
