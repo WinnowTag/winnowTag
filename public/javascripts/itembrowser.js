@@ -32,7 +32,7 @@ ItemBrowser.prototype = {
       controller: container,
       url: container,
       tags: [],
-      orders: []
+      orders: {}
     };
     Object.extend(this.options, options || {});
     
@@ -62,23 +62,21 @@ ItemBrowser.prototype = {
   },
   
   defaultOrder: function() {
-    var order = this.options.orders.first();
-	  if(!Object.isString(order)) {
-	    order = $H(order).keys().first();
-	  }
-    return order;
+    return this.options.orders["default"];
   },
   
   defaultDirection: function(order) {
     order = order || this.defaultOrder();
     
-    var direction = "asc";
-    this.options.orders.each(function(order_directions) {
-      if(!Object.isString(order_directions) && $H(order_directions).keys().first() == order) {
-        direction = $H(order_directions).values().first();
-      }
-    });
-    return direction;
+    if(this.options.orders.desc.include(order)) {
+      return "desc";
+    } else {
+      return "asc";
+    }
+  },
+  
+  orders: function() {
+    return (this.options.orders.asc || []).concat(this.options.orders.desc || []);
   },
   
   /** Called to initialize the internal list of items from the items loaded into the container.
@@ -593,7 +591,7 @@ ItemBrowser.prototype = {
   },
   
   styleOrders: function() {
-		this.options.orders.each(function(order) {
+		this.orders().each(function(order) {
 		  if(!Object.isString(order)) {
 		    order = $H(order).keys().first();
 		  }

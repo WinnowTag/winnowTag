@@ -2,10 +2,11 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feeds', { orders: [
-			  "title", "globally_exclude", "feed_items_count", 
-			  { updated_on: "desc" }
-			]});
+			itemBrowser = new ItemBrowser('feeds', { orders: {
+			  asc:       ["title", "globally_exclude", "feed_items_count"], 
+			  desc:      ["updated_on"],
+			  "default": "title"
+			}});
 		});
 	</script>
 <% end -%>

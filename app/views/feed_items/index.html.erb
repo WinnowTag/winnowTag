@@ -2,10 +2,10 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feed_items', { orders: [
-			  { date:     "desc" },
-			  { strength: "desc" }
-			], tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %> });
+			itemBrowser = new ItemBrowser('feed_items', { orders: {
+			  desc:      ["date", "strength"],
+			  "default": "date"
+			}, tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %> });
 		});
 	</script>
 <% end -%>
