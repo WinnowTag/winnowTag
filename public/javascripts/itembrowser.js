@@ -592,10 +592,6 @@ ItemBrowser.prototype = {
   
   styleOrders: function() {
 		this.orders().each(function(order) {
-		  if(!Object.isString(order)) {
-		    order = $H(order).keys().first();
-		  }
-		  
 		  var order_control = $("order_" + order);
 		  if(order_control) {
 		    order_control.removeClassName("asc");
