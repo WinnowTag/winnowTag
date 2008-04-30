@@ -8,6 +8,8 @@ require 'authenticated_test_helper'
 require 'active_resource/http_mock'
 require File.join(RAILS_ROOT, *%w[vendor plugins mhs_testing lib selenium example_group])
 
+require File.expand_path(File.join(File.dirname(__FILE__), "generate"))
+
 module CustomSeleniumHelpers
   def login(login = "quentin", password = "test")
     open login_path
