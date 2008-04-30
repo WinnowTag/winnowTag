@@ -2,7 +2,10 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-		  itemBrowser = new ItemBrowser('feedbacks', {orders: ["user", "created_at"], default_order: "created_at"});
+		  itemBrowser = new ItemBrowser('feedbacks', { orders: [
+	      { created_at: ["desc", "asc"] }, 
+	      "user"
+	    ]});
 		});
 	</script>
 <% end -%>

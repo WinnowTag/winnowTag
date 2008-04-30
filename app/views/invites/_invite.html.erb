@@ -1,10 +1,10 @@
 <div id="invite_<%= invite.id %>" class="invite clearfix">
 	<ul class="controls">
     <% unless invite.code? -%>
-    <li><%= control_link _(:activate) activate_invite_path(invite), :method => :put, :html => { :class => :active_icon } %></li>
+    <li><%= control_link _(:activate), activate_invite_path(invite), :method => :put, :html => { :class => :active_icon } %></li>
     <li><%= control_link _(:edit), edit_invite_path(invite), :html => { :class => :edit_icon } %></li>
     <% end -%>
-    <li><%= control_link _(:destroy) , invite, :method => :delete, :html => { :class => :destroy_icon }, :confirm => _(:are_you_sure) %></li>
+    <li><%= control_link _(:destroy), invite, :method => :delete, :html => { :class => :destroy_icon }, :confirm => _(:are_you_sure) %></li>
 	</ul>
 	
 	<dl class="created clearfix">
@@ -23,7 +23,7 @@
 	  <% end -%>
 	  </dd>
 	</dl>
-	  
+
 	<dl class="question clearfix">
 	  <dt><%= _(:invites_question) %></dt>
 	  <dd>
@@ -57,4 +57,4 @@
     <% end -%>
     </dd>
 	</dl>
-</div> <!-- /#invite_<%= invite.id %> -->
+</div>
