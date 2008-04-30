@@ -4,9 +4,9 @@
 		document.observe('dom:loaded', function() {
 		  itemBrowser = new ItemBrowser('users', { orders: [
 		    "login", "name", "email", "tag_count",
-		    { logged_in_at:     ["desc", "asc"] },
-		    { last_accessed_at: ["desc", "asc"] },
-		    { last_tagging_on:  ["desc", "asc"] }
+		    { logged_in_at:     "desc" },
+		    { last_accessed_at: "desc" },
+		    { last_tagging_on:  "desc" }
 		  ]});
 		});
 	</script>

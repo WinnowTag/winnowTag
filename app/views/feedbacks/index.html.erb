@@ -3,7 +3,7 @@
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
 		  itemBrowser = new ItemBrowser('feedbacks', { orders: [
-	      { created_at: ["desc", "asc"] }, 
+	      { created_at: "desc" }, 
 	      "user"
 	    ]});
 		});

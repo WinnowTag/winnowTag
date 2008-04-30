@@ -75,7 +75,7 @@ ItemBrowser.prototype = {
     var direction = "asc";
     this.options.orders.each(function(order_directions) {
       if(!Object.isString(order_directions) && $H(order_directions).keys().first() == order) {
-        direction = $H(order_directions).values().first().first();
+        direction = $H(order_directions).values().first();
       }
     });
     return direction;

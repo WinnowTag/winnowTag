@@ -4,7 +4,7 @@
 		document.observe('dom:loaded', function() {
 			itemBrowser = new ItemBrowser('tags', { orders: [
 			  "name", "training_count", "classifier_count", "globally_exclude", "subscribe",
-			  { last_used_by: ["desc", "asc"] } 
+			  { last_used_by: "desc" } 
 			], url: "tags/public"});
 		});
 	</script>
