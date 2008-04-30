@@ -32,9 +32,7 @@ ItemBrowser.prototype = {
       controller: container,
       url: container,
       tags: [],
-      orders: [],
-      default_order: null,
-      default_direction: "asc"
+      orders: []
     };
     Object.extend(this.options, options || {});
     
@@ -54,16 +52,33 @@ ItemBrowser.prototype = {
   },
 
   initializeFilters: function() {
-    this.filters = {
-      order: this.options.default_order,
-      direction: this.options.default_direction
-    };
+    this.filters = { order: this.defaultOrder(), direction: this.defaultDirection() };
     
     if(location.hash.gsub('#', '').blank() && Cookie.get(this.container.getAttribute("id") + "_filters")) {
       this.setFilters(Cookie.get(this.container.getAttribute("id") + "_filters").toQueryParams());
     } else {
       this.setFilters(location.hash.gsub('#', '').toQueryParams());
     }
+  },
+  
+  defaultOrder: function() {
+    var order = this.options.orders.first();
+	  if(!Object.isString(order)) {
+	    order = $H(order).keys().first();
+	  }
+    return order;
+  },
+  
+  defaultDirection: function(order) {
+    order = order || this.defaultOrder();
+    
+    var direction = "asc";
+    this.options.orders.each(function(order_directions) {
+      if(!Object.isString(order_directions) && $H(order_directions).keys().first() == order) {
+        direction = $H(order_directions).values().first().first();
+      }
+    });
+    return direction;
   },
   
   /** Called to initialize the internal list of items from the items loaded into the container.
@@ -547,7 +562,7 @@ ItemBrowser.prototype = {
       this.filters.direction = (this.filters.direction == "asc" ? "desc" : "asc");
     } else {
       this.filters.order = order;
-      this.filters.direction = this.options.default_direction;
+      this.filters.direction = this.defaultDirection(order);
     }
     this.saveFilters();
     this.styleFilters();
@@ -579,6 +594,10 @@ ItemBrowser.prototype = {
   
   styleOrders: function() {
 		this.options.orders.each(function(order) {
+		  if(!Object.isString(order)) {
+		    order = $H(order).keys().first();
+		  }
+		  
 		  var order_control = $("order_" + order);
 		  if(order_control) {
 		    order_control.removeClassName("asc");
@@ -591,10 +610,10 @@ ItemBrowser.prototype = {
 		  if(order_control) {
 		    order_control.addClassName(this.filters.direction);
 		  }
-		} else if(this.options.default_order) {
-		  var order_control = $("order_" + this.options.default_order);
+		} else if(this.defaultOrder()) {
+		  var order_control = $("order_" + this.defaultOrder());
 		  if(order_control) {
-		    order_control.addClassName(this.options.default_direction);
+		    order_control.addClassName(this.defaultDirection());
 		  }
 		}
   },
