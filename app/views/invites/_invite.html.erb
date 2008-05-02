@@ -1,10 +1,10 @@
 <div id="invite_<%= invite.id %>" class="invite clearfix">
 	<ul class="controls">
     <% unless invite.code? -%>
-    <li><%= control_link _(:activate) activate_invite_path(invite), :method => :put, :html => { :class => :active_icon } %></li>
+    <li><%= control_link _(:activate), activate_invite_path(invite), :method => :put, :html => { :class => :active_icon } %></li>
     <li><%= control_link _(:edit), edit_invite_path(invite), :html => { :class => :edit_icon } %></li>
     <% end -%>
-    <li><%= control_link _(:destroy) , invite, :method => :delete, :html => { :class => :destroy_icon }, :confirm => _(:are_you_sure) %></li>
+    <li><%= control_link _(:destroy), invite, :method => :delete, :html => { :class => :destroy_icon }, :confirm => _(:are_you_sure) %></li>
 	</ul>
 	
 	<dl class="created clearfix">
@@ -17,18 +17,18 @@
 	  <% if invite.user -%>
 	    <%= _(:invites_accepted) %> <%= link_to truncate(invite.user.login), invite.user %>
 	  <% elsif invite.code? -%>
-	    <%= _(:invites_activated_label) %> <%= truncate(invite.code, 15) %>
+	    <%= _(:invites_activated) %> <%= truncate(invite.code, 15) %>
 	  <% else -%>
 	    <%= _(:invites_requested) %>
 	  <% end -%>
 	  </dd>
 	</dl>
-	  
+
 	<dl class="question clearfix">
 	  <dt><%= _(:invites_question) %></dt>
 	  <dd>
 	    <% if invite.hear.blank? && invite.use.blank? -%>
-	      <em><%= _(:invities_no_answers) %></em>
+	      <em><%= _(:invites_no_answers) %></em>
 	    <% else -%>
     	  <% unless invite.hear.blank? -%>
           <strong><%= _(:invites_how_did_you_hear) %></strong><br />
@@ -57,4 +57,4 @@
     <% end -%>
     </dd>
 	</dl>
-</div> <!-- /#invite_<%= invite.id %> -->
+</div>

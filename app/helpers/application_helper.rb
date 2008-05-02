@@ -164,10 +164,11 @@ module ApplicationHelper
     end
 
     html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html  = content_tag :div, html, :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)"
-    
+
+    html << content_tag(:div, content_tag(:span, _(:feed_items_count_tooltip, feed.feed_items.size), :class => "info"), :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
     html << content_tag(:div, nil, :class => "hover_target", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
-    html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name", :title => _(:feed_items_count_tooltip, feed.feed_items.size))
+
+    html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name")
     
     html =  content_tag(:div, html, :class => "show_feed_control")
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
@@ -201,17 +202,17 @@ module ApplicationHelper
 
     html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
     html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
-    html << tag_training(tag)
-    html  = content_tag :div, html, :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)"
-    
+
+    html << content_tag(:div, tag_training(tag), :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
     html << content_tag(:div, nil, :class => "hover_target", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
+
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
               :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
               :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
               :save_control => false, :cancel_control => false) if tag.user_id == current_user.id
     
-    html =  content_tag(:div, html, :class => "show_tag_control")
+    html =  content_tag(:div, html, :class => "show_tag_control clearfix")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
     
     class_names = [dom_id(tag)]

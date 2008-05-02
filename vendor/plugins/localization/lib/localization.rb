@@ -2,11 +2,22 @@ module Localization
   mattr_accessor :lang
   
   @@l10s = { :default => {} }
+  class << @@l10s[:default]
+    def store_with_noise(key, value)
+      puts "REDEFINING KEY #{key.inspect}" if has_key?(key)
+      store_without_noise(key, value)
+    end
+    alias_method_chain :store, :noise
+  end
+  
   @@lang = :default
   
   def self._(key, *args)
     translated = @@l10s[@@lang][key]
-    raise "LocalizationError: could not find text for #{key.inspect}" unless translated
+    unless translated
+      RAILS_DEFAULT_LOGGER.error("Localization missing for #{key.inspect}")
+      translated = "missing text"
+    end
 
     if translated.is_a?(Hash)
       translated = if args[0] == 1
@@ -30,6 +41,10 @@ module Localization
   
   def self.load
     Dir.glob("#{RAILS_ROOT}/lang/*.rb"){ |t| require t }
+  end
+  
+  def self.mappings
+    @@l10s[@@lang]
   end
   
   def self.generate_l10n_file

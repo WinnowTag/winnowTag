@@ -43,6 +43,7 @@ describe "Tags" do
     hit_enter "css=input.editor_field"
     wait_for_ajax
     wait_for_page_to_load(30000)
+    wait_for_ajax
     see_element "#editor_tag_#{tag.id}"
     tag.reload
     tag.name.should == new_name

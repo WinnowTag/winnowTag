@@ -59,7 +59,7 @@ class Feed < ActiveRecord::Base
   
     select = ["feeds.*"]
     if options[:excluder]
-      select << "((SELECT COUNT(*) FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) > 0) AS globally_exclude"
+      select << "NOT EXISTS(SELECT 1 FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) AS globally_exclude"
     end
 
     order = case options[:order]

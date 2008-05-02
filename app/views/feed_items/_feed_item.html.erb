@@ -1,4 +1,4 @@
-<div class="item<%= current_user.has_read_item?(feed_item) ? " read" : " unread" %>" id="<%= dom_id(feed_item) %>">
+<div class="item<%= feed_item.read_by_current_user? ? " read" : " unread" %>" id="<%= dom_id(feed_item) %>">
   <div class="closed">
     <span id="<%= dom_id(feed_item, 'status') %>" class="status"><%= toggle_read_unread_button %></span>
     <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>', event);">

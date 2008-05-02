@@ -341,19 +341,6 @@ describe User do
       user.should have(1).error_on(:time_zone)
     end
   
-    it "has_read_item_when_read_item_entry_doesnt_exist" do
-      u = User.find(1)
-      f = FeedItem.find(1)
-      assert !u.has_read_item?(f)
-    end
-  
-    it "is_item_unread_when_it_exists" do
-      u = User.find(1)
-      f = FeedItem.find(2)
-      u.read_items.create(:feed_item => f)
-      assert u.has_read_item?(f)
-    end
-  
     it "tagging_statistics" do
       u = users(:quentin)
       pw = Tag(u, 'peerworks')

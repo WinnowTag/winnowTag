@@ -1,10 +1,14 @@
 <% content_for :head do -%>
-	<script type="text/javascript" charset="utf-8">
-		var itemBrowser;
-		document.observe('dom:loaded', function() {
-		  itemBrowser = new ItemBrowser('feedbacks', {orders: ["user", "created_at"], default_order: "created_at"});
-		});
-	</script>
+  <script type="text/javascript" charset="utf-8">
+    var itemBrowser;
+    document.observe('dom:loaded', function() {
+      itemBrowser = new ItemBrowser('feedbacks', { orders: {
+        asc:       ["user"],
+        desc:      ["created_at"],
+        "default": "created_at"
+      }});
+    });
+  </script>
 <% end -%>
 
 <% content_for :header_controls do -%>
@@ -14,6 +18,6 @@
 <div id="feedbacks"></div>
 
 <% content_for :footer do -%>
-	<span id="feedbacks_indicator" class="loading" style="display:none;"></span>
-	<span id="feedbacks_count" class="count"></span>
+  <span id="feedbacks_indicator" class="loading" style="display:none;"></span>
+  <span id="feedbacks_count" class="count"></span>
 <% end -%>

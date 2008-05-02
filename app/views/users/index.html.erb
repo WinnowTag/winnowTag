@@ -1,10 +1,14 @@
 <% content_for :head do -%>
-	<script type="text/javascript" charset="utf-8">
-		var itemBrowser;
-		document.observe('dom:loaded', function() {
-		  itemBrowser = new ItemBrowser('users', {orders: ["login", "name", "email", "logged_in_at", "last_accessed_at", "last_tagging_on", "tag_count"], default_order: "login"});
-		});
-	</script>
+  <script type="text/javascript" charset="utf-8">
+    var itemBrowser;
+    document.observe('dom:loaded', function() {
+      itemBrowser = new ItemBrowser('users', { orders: {
+        asc:       ["login", "name", "email", "tag_count"],
+        desc:      ["logged_in_at", "last_accessed_at", "last_tagging_on"],
+        "default": "login"
+      }});
+    });
+  </script>
 <% end -%>
 
 <% content_for :header_controls do -%>
@@ -14,6 +18,6 @@
 <div id="users"></div>
 
 <% content_for :footer do -%>
-	<span id="users_indicator" class="loading" style="display:none;"></span>
-	<span id="users_count" class="count"></span>
+  <span id="users_indicator" class="loading" style="display:none;"></span>
+  <span id="users_count" class="count"></span>
 <% end -%>

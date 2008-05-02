@@ -25,7 +25,7 @@ Localization.define do |l|
 
   # app/controllers/item_protection_controller.rb
   l.store :item_protection_status,                "Unable to fetch protection status from the collector"
-  l.store :item_protection_rebuild,               "Could not rebuild item protection: %s"
+  l.store :item_protection_rebuild_failure,       "Could not rebuild item protection: %s"
 
   # app/controllers/messages_controller.rb
   l.store :message_created,                       "Message was successfully created"
@@ -97,7 +97,7 @@ Localization.define do |l|
   l.store :default_invite_accepted_body,          "You request for an invitation to Winnow has been accepted!"
   
   # app/views/about/index.html.erb
-  l.store :winnow_info,                           "This is build %s of Winnow."
+  l.store :winnow_revision,                       "This is build %s of Winnow."
   
   # app/views/account/activate.html.erb
   l.store :activation_code_label,                 "Activation Code"
@@ -250,7 +250,6 @@ Localization.define do |l|
   l.store :feeds_upload_opml_file,                 "Upload an OPML file"
   l.store :feeds_import_description,               "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
   l.store :feeds_opml_file,                        "OPML File"
-  l.store :submit,                                 "Submit"
   l.store :import,                                 "Import"
   l.store :cancel,                                 "cancel"
   
@@ -259,7 +258,7 @@ Localization.define do |l|
   l.store :feeds_new_description1,                 "Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains."
   l.store :feeds_new_description2,                 "Only items with enough text for the classifier to use will be collected from the feed."
   l.store :feeds_new_url_label,                    "URL:"
-  l.store :create_feed,                            "Create Feed"
+  l.store :create_feed_button,                     "Create Feed"
   l.store :bookmarklet,                            "Bookmarklet"
   l.store :feeds_add_to_winnow,                    "Add to Winnow"
   l.store :feeds_new_bookmarklet_description1,     "Drag this button"
@@ -275,7 +274,7 @@ Localization.define do |l|
   l.store :globally_excluded,                       "Globally Excluded"              
   
   # app/views/invites/_form.html.erb
-  l.store :invites_activate,                         "Activate?"
+  l.store :invites_activate,                        "Activate?"
   l.store :create,                                  "Create"
   l.store :update,                                  "Update"
 
@@ -289,19 +288,17 @@ Localization.define do |l|
   l.store :edit,                                    "Edit"
   l.store :destroy,                                 "Destroy"
   l.store :are_you_sure,                            "Are you sure?"
-  l.store :created,                                 "Created"
   l.store :email_address,                           "Email Address"
-  l.store :status,                                  "Status"
   l.store :invites_accepted,                        "Accepted:"
-  l.store :invites_activate,                        "Activated:"
+  l.store :invites_activated,                       "Activated:"
   l.store :invites_requested,                       "Requested"
   l.store :invites_question,                        "Question"
   l.store :invites_no_answers,                      "The user did not answer any questions."
   l.store :invites_how_did_you_hear,                "How did you hear about Winnow?"
-  l.store :invites_how_do_you_want_to_use_winnow,    "How/why do you want to use Winnow?"
+  l.store :invites_how_do_you_want_to_use_winnow,   "How/why do you want to use Winnow?"
   
-  l.store :invites_subject_label,                    "Subject:"
-  l.store :invites_body_label,                       "Body:"
+  l.store :invites_subject_label,                   "Subject:"
+  l.store :invites_body_label,                      "Body:"
   
   # app/views/invites/edit.html.erb
   l.store :invites_edit_invite,                     "Edit Invite"
@@ -338,10 +335,10 @@ Localization.define do |l|
 
   # app/views/messages/_sidebar.html.erb
   l.store :messages_messages,                       "Messages"
-  l.store :messages_empty,                           "You have no recent messages."
+  l.store :messages_empty,                          "You have no recent messages."
 
   # app/views/messages/edit.html.erb
-  l.store :messages_editing_messages,                "Editing message"
+  l.store :messages_editing_messages,               "Editing message"
   l.store :back,                                    "Back"
   
   # app/views/messages/index.html.erb
@@ -454,7 +451,7 @@ Are you sure you want to continue?|
   
   l.store :users_display_name,                      "Display Name"
   l.store :users_last_logged_in,                    "Last Logged In"
-  l.store :users_accessed,                          "Last Accessed"
+  l.store :users_last_accessed,                     "Last Accessed"
   l.store :users_last_moderated,                    "Last Moderated"
   l.store :users_number_of_tags,                    "Number of Tags"
   l.store :users_save_changes,                      'Save changes'
@@ -466,5 +463,4 @@ Are you sure you want to continue?|
   
   # ActiveRecord validation messages
   # Javascript
-  # Icons + tooltips
 end

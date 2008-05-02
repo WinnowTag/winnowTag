@@ -86,6 +86,34 @@ describe FeedItem do
     end
   end
   
+  describe ".find_with_filters select" do
+    it "can flag items as unread" do
+      user_1 = User.create! valid_user_attributes
+        
+      FeedItem.delete_all
+      feed_item_1 = valid_feed_item!(:updated => Date.today)
+      
+      expected, actual = [feed_item_1], FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc", :mode => "all")
+      expected.should == actual
+      
+      actual.first.should_not be_read_by_current_user
+    end
+    
+    it "can flag items as read" do
+      user_1 = User.create! valid_user_attributes
+        
+      FeedItem.delete_all
+      feed_item_1 = valid_feed_item!(:updated => Date.today)
+
+      ReadItem.create! :feed_item => feed_item_1, :user => user_1
+      
+      expected, actual = [feed_item_1], FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc", :mode => "all")
+      expected.should == actual
+      
+      actual.first.should be_read_by_current_user
+    end
+  end
+  
   describe ".find_with_filters" do    
     it "Properly filters feed items with included private tag and excluded public tag" do
       user_1 = User.create! valid_user_attributes
@@ -755,71 +783,6 @@ describe FeedItem do
       assert_match(/MATCH/, FeedItem.send(:options_for_filters, :user => users(:quentin), :text_filter => "text")[:joins])
     end
     
-    it "taggings_by_user_and_classifier_where_user_taggins_float_up" do
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      tag3 = Tag(user, 'tag3')
-      fi = FeedItem.find(1)
-    
-      u_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1)
-      c_tagging1 = Tagging.create(:user => user, :feed_item => fi, :tag => tag1, :classifier_tagging => true)
-      c_tagging2 = Tagging.create(:user => user, :feed_item => fi, :tag => tag2, :classifier_tagging => true)
-      u_tagging3 = Tagging.create(:user => user, :feed_item => fi, :tag => tag3)
-    
-      expected = [[tag1, [u_tagging1, c_tagging1]], [tag2, [c_tagging2]], [tag3, [u_tagging3]]]
-      result = fi.taggings_by_user(user)
-    
-      assert_equal expected, result
-    end
-  
-    it "find_by_user_with_caching" do
-      user = users(:quentin)
-      fi = FeedItem.find(1)
-      tagging_1 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag1'))
-      tagging_2 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag2'))
-    
-      fi.taggings.cached_taggings.merge!({user => [tagging_1, tagging_2]})
-      assert_equal([tagging_1, tagging_2], fi.taggings.find_by_user(user))
-    end
-  
-    it "find_by_user_with_caching_and_tag" do
-      user = users(:quentin)
-      fi = FeedItem.find(1)
-      tagging_1 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag1'))
-      tagging_2 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag2'))
-    
-      fi.taggings.cached_taggings.merge!({user => [tagging_1, tagging_2]})
-      assert_equal([tagging_1], fi.taggings.find_by_user(user, Tag(user, 'tag1')))
-    end
-  
-    it "find_by_user_with_caching_and_multiple_users" do
-      user = users(:quentin)
-      u2 = users(:aaron)
-      fi = FeedItem.find(1)
-      tagging_1 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag1'))
-      tagging_2 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag2'))
-      tagging_3 = Tagging.create(:user => u2, :feed_item => fi, :tag => Tag(u2, 'tag1'))
-      tagging_4 = Tagging.create(:user => u2, :feed_item => fi, :tag => Tag(u2, 'tag2'))
-    
-      fi.taggings.cached_taggings.merge!(user => [tagging_1, tagging_2], u2 => [tagging_3, tagging_4])
-      assert_equal([tagging_1, tagging_2], fi.taggings.find_by_user(user))
-      assert_equal([tagging_3, tagging_4], fi.taggings.find_by_user(u2))
-    end
-  
-    it "find_by_tagger_with_caching_and_missing_tagger" do
-      user = users(:quentin)
-      u2 = users(:aaron)
-      fi = FeedItem.find(1)
-      tagging_1 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag1'))
-      tagging_2 = Tagging.create(:user => user, :feed_item => fi, :tag => Tag(user, 'tag2'))
-      tagging_3 = Tagging.create(:user => u2, :feed_item => fi, :tag => Tag(u2, 'tag1'))
-      tagging_4 = Tagging.create(:user => u2, :feed_item => fi, :tag => Tag(u2, 'tag2'))
-    
-      fi.taggings.cached_taggings.merge!({user => [tagging_1, tagging_2]})
-      assert_equal([tagging_3, tagging_4], fi.taggings.find_by_user(u2))
-    end
-
     it "find_with_non_existent_include_tag_filter_should_ignore_the_nonexistent_tag" do
       user = users(:quentin)
       tag = Tag(user, 'tag1')

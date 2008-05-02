@@ -903,10 +903,6 @@ ul.tag_list li.negative .controls .remove {
   cursor: pointer;
 }
 
-.inplaceeditor-form {
-  float: left;
-}
-
 label {
   cursor: pointer;
 }
@@ -1028,21 +1024,39 @@ a.bookmarklet:hover {
   padding: 0;
 }
 
-.folder .header:hover ul.actions {
-  display: inline;
+
+.folder .header .remove, .folder .header .edit {
+  float: right;
+  background-position: left center;
+  background-repeat: no-repeat;
+  text-indent: -9000px;
+  display: none;
 }
 
-.folder .header ul.actions li {
-  clear: both;
-  float: left;
-  padding: 0;
-  margin: 0;
+.folder .header .remove {
+  padding: 0 0 0 16px;
+  background-image: url(../images/close.png);
+}
+
+.folder .header .edit {
+  padding: 0 0 0 18px;
+  background-image: url(../images/pencil.png);
+}
+
+.folder .header:hover .remove, .folder .header:hover .edit {
+  display: block;
 }
 
 .folder .header {
+  height: 1.4em;
   padding: 5px 0 5px 15px;
   background: transparent url(../images/expansion_arrows.gif) no-repeat 3px -52px;
   cursor: pointer;
+}
+
+.folder .header .inplaceeditor-form .editor_field {
+  margin: -3px 0 0 -3px;
+  width: 14.5em;
 }
 
 .folder.open .header {
@@ -1162,6 +1176,11 @@ a.bookmarklet:hover {
   padding: 0 0 0 3px;
 }
 
+.folder ul.filter_list li .inplaceeditor-form .editor_field {
+  margin-top: -3px;
+  width: 13em;
+}
+
 .folder ul.filter_list li.selected .name {
   font-weight: bold;
 }
@@ -1223,9 +1242,11 @@ a.bookmarklet:hover {
 }
 
 .folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
+  float: right;
   background-position: left center;
   background-repeat: no-repeat;
-  margin: 0 3px;
+  text-indent: -9000px;
+  display: none;
 }
 
 .folder ul.filter_list li .remove {
@@ -1238,8 +1259,12 @@ a.bookmarklet:hover {
   background-image: url(../images/pencil.png);
 }
 
-.folder ul.filter_list li .controls dl.info {
-  margin: 0 3px;
+.folder ul.filter_list li:hover .remove, .folder ul.filter_list li:hover .edit {
+  display: block;
+}
+
+.folder ul.filter_list li .controls .info {
+  margin: 0 5px;
   padding: 0;
 }
 

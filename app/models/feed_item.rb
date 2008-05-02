@@ -21,6 +21,8 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
+  attr_accessor :taggings_to_display
+
   validates_presence_of :link
   validates_uniqueness_of :link
   belongs_to :feed, :counter_cache => true
@@ -35,42 +37,7 @@ class FeedItem < ActiveRecord::Base
   #
   # See FeedItem.find_by_filters for how this is done.
   #
-  has_many :taggings do 
-    def cached_taggings
-      if @cached_taggings.nil?
-        @cached_taggings = Hash.new([])
-      end
-
-      @cached_taggings
-    end
-
-    def find_by_user_with_caching(user, tag = nil)
-      taggings = cached_taggings[user].select do |tagging|
-        (tag.nil? or tagging.tag == tag)
-      end
-
-      cached_taggings.has_key?(user) ? taggings : find_by_user_without_caching(user, tag)
-    end
-
-    # Finds all taggings on this item by the given user.  You can also constrain
-    # it to just taggings by a given tagger with a given tag by passing the tag in as
-    # the second variable.
-    #
-    # This is an extension on the taggings association so use it like so:
-    #
-    #   taggable.taggings.find_by_user(user, tag)
-    #
-    def find_by_user(user, tag = nil)
-      conditions = 'taggings.user_id = ? '
-      conditions += ' and taggings.tag_id = ?' if tag
-      conditions = [conditions, user.id]
-      conditions += [tag.id] if tag
-
-      find(:all, :conditions => conditions, :include => :tag, :order => 'tags.name ASC')
-    end
-
-    alias_method_chain :find_by_user, :caching
-  end
+  has_many :taggings
   
   has_many :tags, :through => :taggings do
     def from_user
@@ -209,10 +176,7 @@ class FeedItem < ActiveRecord::Base
   #
   # See options_for_filters.
   def self.count_with_filters(filters = {})
-    options = options_for_filters(filters)
-    options[:select] = 'feed_items.id'
-    options.delete(:limit)
-    options.delete(:offset)
+    options = options_for_filters(filters).merge(:select => "feed_items.id").except(:limit, :offset, :order)
     FeedItem.count(options)
   end
   
@@ -250,19 +214,32 @@ class FeedItem < ActiveRecord::Base
   # of the complexity of the joining in the query produced by options_with_filters.
   #
   def self.find_with_filters(filters = {})    
-    feed_items = FeedItem.find(:all, options_for_filters(filters).merge(:select => 'feed_items.*, feeds.title AS feed_title'))
+    user = filters[:user]
+    
+    options_for_find = options_for_filters(filters).merge(:select => [
+      'feed_items.*', 'feeds.title AS feed_title', 
+      "EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = #{user.id}) AS read_by_current_user"
+    ].join(","))
+    options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
 
-    if user = filters[:user]
-      feed_item_ids = feed_items.map(&:id)
-      user_taggings = user.taggings.find(:all, :conditions => ['taggings.feed_item_id in (?)', feed_item_ids], :include => :tag)
-            
-      feed_items.each do |feed_item|
-        user_taggings_for_item = user_taggings.select do |tagging|          
-          tagging.feed_item_id == feed_item.id
+    feed_items = FeedItem.find(:all, options_for_find)
+    
+    selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
+    tags_to_display = (user.sidebar_tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
+    taggings = Tagging.find(:all, 
+      :include => :tag,
+      :conditions => ['feed_item_id IN (?) AND tag_id IN (?)', feed_items, tags_to_display]).group_by(&:feed_item_id)
+
+    feed_items.each do |feed_item|
+      feed_item.taggings_to_display = (taggings[feed_item.id] || []).inject({}) do |hash, tagging|
+        hash[tagging.tag] ||= []
+        if tagging.classifier_tagging?
+          hash[tagging.tag] << tagging
+        else
+          hash[tagging.tag].unshift(tagging)
         end
-        
-        feed_item.taggings.cached_taggings.merge!(user => user_taggings_for_item)
-      end
+        hash
+      end.to_a.sort_by { |tag, _taggings| tag.name.downcase }
     end
     
     feed_items
@@ -324,7 +301,7 @@ class FeedItem < ActiveRecord::Base
 
     filters[:mode] ||= "unread"
 
-    joins = ["LEFT JOIN feeds ON feed_items.feed_id = feeds.id"]
+    joins = []
     add_text_filter_joins!(filters[:text_filter], joins)
 
     conditions = []
@@ -337,28 +314,23 @@ class FeedItem < ActiveRecord::Base
     else
       tags = []
     end
-    conditions += tags.map do |tag|
-      build_tag_inclusion_filter(tag, filters[:mode])  # TODO: Compact this into one statement?
-    end
-    conditions = ["(#{conditions.join(" OR ")})"] unless conditions.blank? 
+    conditions << build_tag_inclusion_filter(tags, filters[:mode])
+
+    conditions = ["(#{conditions.compact.join(" OR ")})"] unless conditions.compact.blank? 
     
     unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
-      conditions += filters[:user].excluded_tags.map do |tag|
-        build_tag_exclusion_filter(tag) # TODO: Compact this into one statement?
-      end
+      conditions << build_tag_exclusion_filter(filters[:user].excluded_tags)
+    end
+    
+    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+      add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, conditions)
     end
     
     if filters[:mode] =~ /unread/i # only filter out read items when showing unread items
       add_read_items_filter_conditions!(filters[:user], conditions)
     end
         
-    options[:conditions] = conditions.join(" AND ")
-
-    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
-      add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, options[:conditions])
-    end
-    
-    options[:conditions] = nil if options[:conditions].blank?    
+    options[:conditions] = conditions.compact.blank? ? nil : conditions.compact.join(" AND ")
     options[:joins] = joins.uniq.join(" ")
     
     options
@@ -367,7 +339,7 @@ class FeedItem < ActiveRecord::Base
   # Add any text_filter. This is done using a inner join on feed_item_contents with an
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
-    if !text_filter.blank?
+    unless text_filter.blank?
       joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
                " AND MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
     end
@@ -375,68 +347,37 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_feed_filter_conditions!(feed_ids, conditions)
     feeds = Feed.find_all_by_id(feed_ids.to_s.split(','))
-    if !feeds.empty?
+    unless feeds.empty?
       conditions << "feed_items.feed_id IN (#{feeds.map(&:id).join(",")})"
     end
   end
 
-  def self.build_tag_inclusion_filter(tag, mode)
-    manual_taggings_sql = mode =~ /moderated/i ? " AND classifier_tagging = 0" : nil
-    "EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id#{manual_taggings_sql})"
+  def self.build_tag_inclusion_filter(tags, mode)
+    unless tags.empty?
+      manual_taggings_sql = mode =~ /moderated/i ? " AND classifier_tagging = 0" : nil
+      "EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id#{manual_taggings_sql})"
+    end
   end
 
-  def self.build_tag_exclusion_filter(tag)
-    "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id = #{tag.id} AND feed_item_id = feed_items.id)"
+  def self.build_tag_exclusion_filter(tags)
+    unless tags.empty?
+      "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id)"
+    end
+  end
+  
+  def self.add_globally_exclude_feed_filter_conditions!(feeds, conditions)
+    unless feeds.empty?
+      conditions << "feed_items.feed_id NOT IN (#{feeds.map(&:id).join(",")})"
+    end
   end
   
   def self.add_read_items_filter_conditions!(user, conditions)
     conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
   end
   
-  def self.add_globally_exclude_feed_filter_conditions!(feed_filters, conditions)
-    return if feed_filters.blank?
-
-    exclude_conditions = "feed_items.feed_id NOT IN (#{feed_filters.map(&:id).join(",")})"
-
-    if conditions.blank?
-      conditions.replace exclude_conditions
-    else
-      conditions.replace "#{exclude_conditions} AND (#{conditions})"
-    end
-  end
-  
   # Gets a UID suitable for use within the classifier
   def uid 
     "Winnow::FeedItem::#{self.id}"
-  end
-  
-  # Gets taggings between a list of taggers and this taggable.
-  #
-  # The priority functionality of this method is used to enforce the user taggings overriding classifier
-  # taggings in the display.
-  #
-  # === Return Structure
-  #
-  # The structure will be a 2D array where each element is an array with the first 
-  # element being the tag and the second element being an array of taggings using that tag, 
-  # in order of the taggers array.
-  def taggings_by_user(user, options = {})
-    options.assert_valid_keys([:tags])  
-    if options[:tags]
-      taggings = self.taggings.find_all_by_user_id_and_tag_id(user, options[:tags])
-    else
-      taggings = self.taggings.find_by_user(user)
-    end
-
-    taggings.inject({}) do |hash, tagging|
-      hash[tagging.tag] ||= []
-      if tagging.classifier_tagging?
-        hash[tagging.tag] << tagging
-      else
-        hash[tagging.tag].unshift(tagging)
-      end
-      hash
-    end.to_a.sort
   end
 
   def self.parse_id_uri(entry)

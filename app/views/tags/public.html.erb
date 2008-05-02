@@ -2,7 +2,11 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('tags', {orders: ["name", "last_used_by", "training_count", "classifier_count", "globally_exclude", "subscribe"], default_order: "name", url: "tags/public"});
+			itemBrowser = new ItemBrowser('tags', { orders: {
+			  asc:       ["name", "training_count", "classifier_count", "globally_exclude", "subscribe"],
+			  desc:      ["last_used_by"],
+			  "default": "name"
+			}, url: "tags/public"});
 		});
 	</script>
 <% end -%>

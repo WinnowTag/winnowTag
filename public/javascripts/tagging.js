@@ -56,8 +56,6 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
     tag_control.addClassName(tagging_type);
   } else if (tag_control.hasClassName('classifier')) {
     tag_control.addClassName(tagging_type); 
-  } else {
-    new ErrorMessage("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
   }
   
   sendTagRequest(url, parameters);
@@ -79,8 +77,6 @@ function remove_tagging(taggable_id, tag_name) {
     if(!tag_control.match('.classifier')) {
       remove_tag_control(taggable_id, tag_name); 
     }
-  } else {
-    new ErrorMessage("Invalid tag control state: " + tag_control.classNames().toArray().join(' '));
   }
 
   sendTagRequest(url, parameters);  

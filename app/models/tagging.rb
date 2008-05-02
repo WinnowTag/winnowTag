@@ -48,18 +48,12 @@
 # the classifier would assign the tag and a probability over the classifier's positive_cutoff 
 # should be considered positive.
 #
-# == Metadata
-# 
-# A Tagging allows additional metadata to be associated with it. This is also a polymorphic association,
-# metadata. 
-#
 # See ClassifierExecution and RenameTagging for examples of classes that can be used as tagging metdata.
 class Tagging < ActiveRecord::Base
   acts_as_immutable
   belongs_to :tag
   belongs_to :feed_item
   belongs_to :user
-  belongs_to :metadata, :polymorphic => true
   
   validates_presence_of [:tag, :user, :feed_item]
   validates_numericality_of :strength

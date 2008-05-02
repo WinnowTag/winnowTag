@@ -141,10 +141,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def has_read_item?(feed_item)
-    self.read_items.exists?(['feed_item_id = ?', feed_item])
-  end
-    
   # Gets the number of items tagged by this tagger
   def number_of_tagged_items
     self.taggings.find(:first, :select => 'COUNT(DISTINCT feed_item_id) AS count').count.to_i

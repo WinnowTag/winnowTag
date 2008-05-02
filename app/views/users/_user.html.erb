@@ -1,6 +1,6 @@
 <div id="user_<%= user.id %>" class="user clearfix">
   <ul class="controls">
-    <li class="first"><%= control_link _(:login), login_as_user_url(user), :html => { :class => :home_icon }, :disabled => user == current_user,
+    <li class="first"><%= control_link _(:login_label), login_as_user_url(user), :html => { :class => :home_icon }, :disabled => user == current_user,
   										:method => :post, :confirm => _(:users_login_confirm, user.display_name) %></li>
     <li class="last"><%= control_link _(:destroy), user_url(user), :method => :delete, :html => { :class => :destroy_icon },
   											:disabled => user == current_user,
@@ -17,16 +17,16 @@
   		<dd><%= user.email %></dd>
     </dl>
     <dl class="login_detail">
-      <dt><%= _(:last_logged_in) %></dt>
+      <dt><%= _(:users_last_logged_in) %></dt>
       <dd><%= format_date(user.logged_in_at) %></dd>
-      <dt><%= _(:last_accessed) %></dt>
+      <dt><%= _(:users_last_accessed) %></dt>
       <dd><%= format_date(user.last_accessed_at) %></dd>      
     </dl>
     <dl class="tag_detail">      
-      <dt><%= _(:last_moderated) %></dt>
+      <dt><%= _(:users_last_moderated) %></dt>
       <dd><%= format_date(user.last_tagging_on) %></dd>
-      <dt><%= _(:number_of_tags) %></dt>      
+      <dt><%= _(:users_number_of_tags) %></dt>      
       <dd class="last"><%= user.tags.size %></dd>
     </dl>
   </div>    
-</div> <!-- /#user_<%= user.id %>-->
+</div>
