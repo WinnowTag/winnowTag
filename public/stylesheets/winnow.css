@@ -1698,6 +1698,43 @@ a.bookmarklet:hover {
   margin: 0 0 .5em 0;
 }
 
+.tag .controls li {
+  float: left;
+  padding: 0;
+  margin: 0 0 0 1.5em;
+}
+
+.tag .controls li a {
+  padding: 0 0 0 20px;
+  background-image: url(../images/vertical_sprite.png);
+  background-repeat: no-repeat;
+}
+
+.tag .controls li input {
+  margin: 0;
+  padding: 0;
+}
+
+.tag .controls li.first {
+  margin-left: 0;
+}
+
+.tag .controls li .slider {
+  margin: .5em 4px 0 0;
+  float: left;
+}
+
+/*
+** =invite
+*/
+.invite {
+	position: relative;
+  border: 1px solid #666;
+  background: #eee;
+  padding: .5em;
+  margin: 0 0 .5em 0;
+}
+
 .invite .controls {
 	position: absolute;
 	top: 1em;
