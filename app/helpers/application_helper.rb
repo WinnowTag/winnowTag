@@ -245,4 +245,12 @@ module ApplicationHelper
     end
   rescue ArgumentError # Swallow malformed yaml exceptions
   end
+  
+  def tag_classes(tag)
+    if current_user.globally_excluded?(tag)
+      "globally_excluded"
+    elsif current_user.subscribed?(tag)
+      "subscribed"
+    end
+  end
 end
