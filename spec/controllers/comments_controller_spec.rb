@@ -5,7 +5,9 @@ describe CommentsController do
     before(:each) do
       referer("/tags/public")
 
-      @comments = stub("comments", :create! => nil)
+      @comment = mock_model(Comment)
+      
+      @comments = stub("comments", :create! => @comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
@@ -18,14 +20,18 @@ describe CommentsController do
     end
     
     it "creates a new comment" do
-      @comments.should_receive(:create!).with({})
+      @comments.should_receive(:create!).with({}).and_return(@comment)
       do_post
     end
     
-    it "redirects back to the last page" do
-      referer("/tags/public")
+    it "sets the comment for the view" do
       do_post
-      response.should redirect_to("/tags/public")
+      assigns(:comment).should == @comment
+    end
+    
+    it "renders the create partial" do
+      do_post
+      response.should render_template("create")
     end
   end
 end
