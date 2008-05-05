@@ -10,12 +10,17 @@
   </div>
   
   <div class="right clearfix">
+    <dl class="training clearfix">
+      <dt><%= _(:tags_last_trained) %></dt>
+      <dd><%= format_date(public_tag.last_used_by) %></dd>
+      <dt><%= _(:tags_training) %></dt>
+      <dd><%= link_to _(:tags_count, public_tag.positive_count, public_tag.negative_count), feed_items_path(:anchor => "tag_ids=#{public_tag.id}&mode=moderated"), :title => _(:tags_inspect, public_tag.name) %></dd>
+      <dt><%= _(:tags_automatic) %></dt>
+      <dd class="last"><%= public_tag.classifier_count %></dd>
+    </dl>
+
     <ul class="controls">
       <li class="first">
-        <%= link_to_function "Show Comments", "$(this).hide();$(this).next('.hide').show();$('#{dom_id(public_tag)}').down('.comments').show()", :class => "show comment_icon" %>
-        <%= link_to_function "Hide Comments", "$(this).hide();$(this).previous('.show').show();$('#{dom_id(public_tag)}').down('.comments').hide()", :class => "hide comment_icon", :style => "display:none" %>
-      </li>
-      <li>
         <%= link_to _(:tags_feed_link), url_for(:user => public_tag.user, :tag_name => public_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %>
       </li>
       <li><%= bias_slider(public_tag, :disabled => true) %></li>
@@ -27,29 +32,5 @@
       <li><%= link_to _(:show), feed_items_path(:anchor => "tag_ids=#{public_tag.id}"), :class => 'show_icon', :title => _(:tags_show_link_title, public_tag.name) %></li>
       <li><%= link_to_remote _(:copy), :url => tags_path(:copy => public_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{public_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, public_tag.name), :class => "duplicate_icon" } %></li>
     </ul>
-
-    <dl class="training clearfix">
-      <dt><%= _(:tags_last_trained) %></dt>
-      <dd><%= format_date(public_tag.last_used_by) %></dd>
-      <dt><%= _(:tags_training) %></dt>
-      <dd><%= link_to _(:tags_count, public_tag.positive_count, public_tag.negative_count), feed_items_path(:anchor => "tag_ids=#{public_tag.id}&mode=moderated"), :title => _(:tags_inspect, public_tag.name) %></dd>
-      <dt><%= _(:tags_automatic) %></dt>
-      <dd class="last"><%= public_tag.classifier_count %></dd>
-    </dl>
-  </div>
-  
-  <div class="comments" style="display:none">
-    <% if public_tag.comments.empty? -%>
-      <div class="empty">There are no comments for this tag.</div>
-    <% else -%>
-      <% public_tag.comments.each do |comment| -%>
-        <div class="comment">
-          <%= comment.body %>
-          <div class="metadata">
-            <%= comment.user.display_name %> on <%= format_date(comment.updated_at) %>
-          </div>
-        </div>
-      <% end -%>
-    <% end -%>
   </div>
 </div>

@@ -1443,8 +1443,12 @@ textarea.content {
 .tag dl.training, .feed dl.training {
   clear: both;
   float: left;
-  margin: 1em 0 1em 0;
+  margin: 0 0 1em 0;
   padding: 0;
+}
+
+.tag.public dl.training {
+  margin-left: 5.5em;
 }
 
 .tag dl.training dt, .feed dl.training dt {
@@ -1452,7 +1456,7 @@ textarea.content {
   color: #666;
   float: left;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 2em;
 }
 
 .tag dl.training dt:after, .feed dl.training dt:after, .user dl.details dt:after {
@@ -1461,7 +1465,7 @@ textarea.content {
 
 .tag dl.training dd, .feed dl.training dd {
   float: left;
-  margin: 0 3em 0 0.5em;
+  margin: 0 0 0 0.5em;
   padding: 0;
   width: 6.5em;
 }
@@ -1502,7 +1506,6 @@ textarea.content {
 .tag .controls li input, .feed .controls li input, .user .controls li input, .invite .controls li input {
   margin: 0;
   padding: 0;
-  vertical-align: top;
 }
 
 .tag .controls li.first, .feed .controls li.first, .user .controls li.first, .invite .controls li.first {
@@ -1512,11 +1515,6 @@ textarea.content {
 .tag .controls li .slider {
   margin: .5em 4px 0 0;
   float: left;
-}
-
-.tag .comments {
-  clear: both;
-  border-top: 1px dotted #666;
 }
 
 .message .date {
