@@ -1698,30 +1698,31 @@ a.bookmarklet:hover {
   margin: 0 0 .5em 0;
 }
 
-.tag .controls li {
-  float: left;
-  padding: 0;
-  margin: 0 0 0 1.5em;
+.tag ul.controls {
+  float: right;
+	width: 20%;
+	list-style: none;
+	margin: 1em 0;
+	padding: 0;
 }
 
-.tag .controls li a {
-  padding: 0 0 0 20px;
-  background-image: url(../images/vertical_sprite.png);
-  background-repeat: no-repeat;
+.tag ul.controls li {
+	padding: 0.3em 0;
+	height: 1.2em;
 }
 
-.tag .controls li input {
-  margin: 0;
-  padding: 0;
+.tag ul.controls li .slider_track {
+	margin: 0.3em 0;
 }
 
-.tag .controls li.first {
-  margin-left: 0;
+.tag ul.controls .view_icon {
+	padding: 1px 0 1px 20px;
+  background: url(../images/show.png) left center no-repeat;
 }
 
-.tag .controls li .slider {
-  margin: .5em 4px 0 0;
-  float: left;
+.tag ul.controls .duplicate_icon {
+	padding: 1px 0 1px 20px;
+  background: url(../images/copy.png) left center no-repeat;
 }
 
 /*
