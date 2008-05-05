@@ -19,5 +19,9 @@ describe Comment do
     it "belongs to user" do
       Generate.comment.should belong_to(:user)
     end
+    
+    it "belongs to tag" do
+      Generate.comment.should belong_to(:tag)
+    end
   end
 end
