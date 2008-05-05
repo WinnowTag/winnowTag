@@ -1439,93 +1439,90 @@ a.bookmarklet:hover {
 */
 .tag {
 	position: relative;
-  border: 1px solid #ddd;
-  background: #efefef;
-  padding: .5em;
   margin: 0 0 .5em 0;
 }
 
-.tag .left {
-  float: left;
-  width: 80%;
-  margin: 0 1em 0 0;
+.tag .summary {
+  padding: .5em;
+	border: 1px solid #ddd;
+  background: #efefef;
 }
 
-.tag .left h4 {
-  float: left;
+.tag.subscribed .summary {
+	border: 1px solid "#189D1F";
+  background: #54B25A;
+}
+
+.tag.globally_excluded .summary {
+	border: 1px solid #CB2428;
+  background: #E18285;
+}
+.tag .info {
+	float: left;
+	width: 80%;
+	overflow: hidden;
+}
+
+.tag .feed_icon {
+	display: block;
+	float: left;
+	width: 16px;
+	height: 16px;	
+	margin-right: 0.5em;
+	text-indent: -1000em;
+	background-image: url(../images/vertical_sprite.png);
+  background-repeat: no-repeat;
+	background-position: 0 -608px;
+}
+
+.tag h4 {
+	display: inline;
 	margin: 0 1em 0 0;
 }
 
-.tag .left .comment {
+.tag .description {
   color: #777;
 }
 
-.tag .right {
+.tag.subscribed .description, .tag.globally_excluded .description {
+	color: #fff;
+}
+
+.tag .training {
   float: right;
+	width: 20%;
 }
 
-.tag dl.training {
-  clear: both;
-  float: left;
-  margin: 0 0 1em 0;
-  padding: 0;
+.tag .extended .comments {
+	float: left;
+	width: 80%;
 }
 
-.tag.public dl.training {
-  margin-left: 5.5em;
-}
-
-.tag dl.training dt {
-  font-weight: bold;
-  color: #666;
-  float: left;
-  padding: 0;
-  margin: 0 0 0 2em;
-}
-
-.tag dl.training dd {
-  float: left;
-  margin: 0 0 0 0.5em;
-  padding: 0;
-  width: 6.5em;
-}
-
-.tag dl.training dd.last {
-  width: 3em
-}
-
-.tag .controls {
-  clear: both;
+.tag ul.controls {
   float: right;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+	width: 20%;
+	list-style: none;
+	margin: 1em 0;
+	padding: 0;
 }
 
-.tag .controls li {
-  float: left;
-  padding: 0;
-  margin: 0 0 0 1.5em;
+.tag ul.controls li {
+	padding: 0.3em 0;
+	height: 1.2em;
 }
 
-.tag .controls li a {
-  padding: 0 0 0 20px;
-  background-image: url(../images/vertical_sprite.png);
-  background-repeat: no-repeat;
+.tag ul.controls li .slider_track {
+	margin: 0.3em 0;
 }
 
-.tag .controls li input {
-  margin: 0;
-  padding: 0;
+.tag ul.controls .view_icon {
+	padding: 1px 0 1px 20px;
+  background: url(../images/show.png) left center no-repeat;
 }
 
-.tag .controls li.first {
-  margin-left: 0;
-}
-
-.tag .controls li .slider {
-  margin: .5em 4px 0 0;
-  float: left;
+.tag ul.controls .duplicate_icon {
+	padding: 1px 0 1px 20px;
+  background: url(../images/copy.png) left center no-repeat;
 }
 
 /*
@@ -1611,7 +1608,6 @@ a.bookmarklet:hover {
 /*
 ** =icons
 */
-
 .blank_icon {
   background-position: 0 -720px;
 }
