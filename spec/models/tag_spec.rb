@@ -14,6 +14,10 @@ describe Tag do
     it "belongs to user" do
       @tag.should belong_to(:user)
     end
+
+    it "has many comments" do
+      @tag.should have_many(:comments)
+    end
   end
   
   describe "tagging counts" do
