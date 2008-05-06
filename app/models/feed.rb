@@ -96,13 +96,18 @@ class Feed < ActiveRecord::Base
       # TODO: localization
       raise ArgumentError, "Tried to update feed attributes from entry with different id"
     else
+      duplicate_id = if duplicate_link = entry.links.detect {|l| l.rel == "http://peerworks.org/duplicateOf"}
+        URI.parse(duplicate_link.href).fragment.to_i rescue nil
+      end
+      
       self.attributes = {
         :title      => (entry.title or ''),
         :updated    => entry.updated,
         :published  => entry.published,
         :alternate  => (entry.alternate and entry.alternate.href),
         :via        => (entry.via and entry.via.href),
-        :collector_link => (entry.self and entry.self.href)
+        :collector_link => (entry.self and entry.self.href),
+        :duplicate_id => duplicate_id
       }
     
       self.save!
