@@ -1449,13 +1449,13 @@ a.bookmarklet:hover {
 }
 
 .tag.subscribed .summary {
-	border: 1px solid #189D1F;
-  background: #54B25A;
+	border: 1px solid #9DC482;
+  background: #D7F3A9;
 }
 
 .tag.globally_excluded .summary {
-	border: 1px solid #CB2428;
-  background: #E18285;
+	border: 1px solid #E7ACAD;
+  background: #F6E0E0;
 }
 
 .tag .public_tag_icon {
@@ -1468,17 +1468,27 @@ a.bookmarklet:hover {
 	background: url(../images/public.png) center center no-repeat;
 }
 
+.tag .tag_icon {
+	display: block;
+	float: left;
+	width: 16px;
+	height: 16px;
+	margin-right: 0.5em;
+	text-indent: -1000em;
+	background: url(../images/tag.png) center center no-repeat;
+}
+
 .tag h4 {
 	display: inline;
 	margin: 0 1em 0 0;
 }
 
-.tag .description {
-  color: #777;
+.tag h4 div {
+	float: left;
 }
 
-.tag.subscribed .description, .tag.globally_excluded .description {
-	color: #fff;
+.tag .description {
+  color: #777;
 }
 
 .tag .summary .training {
@@ -1487,14 +1497,6 @@ a.bookmarklet:hover {
 	padding-left: 1em;
 	margin-left: 1.5em;
 	color: #666;
-}
-
-.tag.subscribed .training {
-	color: #fff;
-}
-
-.tag.globally_excluded .training {
-	color: #fff;
 }
 
 .tag .extended .comments {
@@ -1651,6 +1653,11 @@ a.bookmarklet:hover {
 .tag ul.controls .feed_icon {
 	padding: 1px 0 1px 20px;	
 	background: url(../images/feed.png) left center no-repeat;
+}
+
+.tag ul.controls .destroy_icon {
+	padding: 1px 0 1px 20px;	
+	background: url(../images/destroy.png) left center no-repeat;
 }
 
 .tag .sidebar .comment_form {
