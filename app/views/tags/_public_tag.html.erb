@@ -1,16 +1,34 @@
-<div id="<%= dom_id(public_tag) %>" class="tag clearfix <%= tag_classes(public_tag) %>">
-  <div class="summary clearfix" onclick="$(this).next('.extended').toggle()">
-    <div class="training">
-    </div>
-        
-    <div class="info">
-      <span class="public_tag_icon">Public Tag</span>
-      
+<div id="<%= dom_id(public_tag) %>" class="tag public clearfix <%= tag_classes(public_tag) %>">
+  <div class="summary clearfix" onclick="$(this).next('.extended').toggle()">        
+    <div class="training">      
+      <div class="details">
+        <p><!-- <span>Author</span> --> John Hwang</p>
+        <strong class="state"><%= tag_state(public_tag) %></strong>
+      </div>
+      <div class="positive">
+        <p>Positive</p>
+        <strong><%= public_tag.positive_count %></strong>
+      </div>
+      <div class="negative">
+        <p>Negative</p>
+        <strong><%= public_tag.negative_count %></strong>
+      </div>
+      <div class="automatic">
+        <p>Automatic</p>
+        <strong><%= public_tag.classifier_count %></strong>
+      </div>
+      <div class="date">
+         <p><%= _(:tags_last_trained) %></p> 
+         <strong><%= format_date(public_tag.last_used_by) %></strong>
+      </div>
+    </div>    
+    
+    <div class="info">      
       <h4><%= tag_name_with_tooltip(public_tag) %></h4>
 
-      <span class="description">
+      <div class="description">
         <%= public_tag.comment %>
-      </span>
+      </div>
     </div>
   </div> <!-- /.summary -->
   
@@ -23,25 +41,7 @@
       <% end -%>
     </div>
       
-    <div class="sidebar">
-      
-      <div class="block training clearfix">
-        <span class="date"><%= _(:tags_last_trained) %> <strong><%= format_date(public_tag.last_used_by) %></strong></span>
-        <h5>Training </h5>
-        <div class="positive">
-          <strong><%= public_tag.positive_count %></strong>
-          <p>Positive</p>
-        </div>
-        <div class="negative">
-          <strong><%= public_tag.negative_count %></strong>
-          <p>Negative</p>
-        </div>
-        <div class="automatic">
-          <strong><%= public_tag.classifier_count %></strong>
-          <p>Automatic</p>
-        </div>
-      </div> <!-- /.training -->
-      
+    <div class="sidebar">      
       <div class="block actions clearfix">
         <h5>Actions</h5>
         <ul class="controls">
