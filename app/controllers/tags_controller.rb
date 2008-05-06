@@ -29,7 +29,7 @@ class TagsController < ApplicationController
       format.js do
         @tags = Tag.search(:user => current_user, :text_filter => params[:text_filter], :own => true,
                            :order => params[:order], :direction => params[:direction])
-        @full = @tags.size < limit
+        @full = true
       end
       format.atomsvc do        
         conditional_render(Tag.maximum(:created_on)) do
