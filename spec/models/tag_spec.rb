@@ -306,6 +306,7 @@ describe 'to_atom', :shared => true do
 end
 
 describe Tag do
+  fixtures :feed_items, :feed_item_contents
   describe "#to_atom" do
     CLASSIFIER_NS = 'http://peerworks.org/classifier'
     before(:all) do
