@@ -1473,6 +1473,16 @@ a.bookmarklet:hover {
 	background: url(../images/tag.png) center center no-repeat;
 }
 
+.tag .tag_icon {
+	display: block;
+	float: left;
+	width: 16px;
+	height: 16px;
+	margin-right: 0.5em;
+	text-indent: -1000em;
+	background: url(../images/tag.png) center center no-repeat;
+}
+
 .tag h4 {
 	display: inline;
 	margin: 0 1em 0 0;
@@ -1846,6 +1856,11 @@ a.bookmarklet:hover {
 .tag ul.controls .feed_icon {
 	padding: 1px 0 1px 20px;	
 	background: url(../images/feed.png) left center no-repeat;
+}
+
+.tag ul.controls .destroy_icon {
+	padding: 1px 0 1px 20px;	
+	background: url(../images/destroy.png) left center no-repeat;
 }
 
 .tag .sidebar .comment_form {
