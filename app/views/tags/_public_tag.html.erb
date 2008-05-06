@@ -59,7 +59,7 @@
       </div> <!-- /.actions -->
       
       <div class="block comment_form clearfix">
-        <h5>Make a comment:</h5>
+        <h5>Add a comment:</h5>
         <% form_remote_for :comment, :url => comments_path do |form|  -%>
           <%= form.hidden_field :tag_id, :value => public_tag.id %>
           <%= form.text_area :body %>
