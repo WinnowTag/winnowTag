@@ -240,7 +240,6 @@ Localization.define do |l|
   l.store :feeds_header_globally_exclude,          "Globally Exclude"
   l.store :feeds_header_items,                     "Items"
   l.store :feeds_header_last_updated,              "Last Updated"
-  l.store :feeds_search_error_message,             'Search requires a word with at least 4 characters.'
   l.store :feeds_header_search_placeholder,         "Search Feeds..."
   
   # app/views/feeds/error.html.erb
