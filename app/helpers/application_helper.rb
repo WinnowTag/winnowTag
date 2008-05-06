@@ -253,4 +253,12 @@ module ApplicationHelper
       "subscribed"
     end
   end
+  
+  def tag_state(tag)
+    if current_user.globally_excluded?(tag)
+      "Excluded"
+    elsif current_user.subscribed?(tag)
+      "Subscribed"
+    end
+  end
 end
