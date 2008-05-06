@@ -24,11 +24,11 @@ describe FeedbacksController do
     describe "ajax request" do
       before(:each) do
         @feedback = mock_model(Feedback)
-        Feedback.stub!(:search).and_return([[@feedback], 1])
+        Feedback.stub!(:search).and_return([@feedback])
       end
   
       it "should find all feedbacks" do
-        Feedback.should_receive(:search).with({:text_filter => nil, :order => nil, :direction => nil, :limit => 40, :offset => nil, :count => true}).and_return([[@feedback], 1])
+        Feedback.should_receive(:search).with({:text_filter => nil, :order => nil, :direction => nil, :limit => 40, :offset => nil}).and_return([@feedback])
         do_get(:format => "js")
       end
   
@@ -36,10 +36,15 @@ describe FeedbacksController do
         do_get(:format => "js")
         assigns[:feedbacks].should == [@feedback]
       end
-  
-      it "should assign the found feedbacks count for the view" do
-        do_get(:format => "js")
-        assigns[:feedbacks_count].should == 1
+      
+      it "should assign the full to true when not enough items were found" do
+        do_get(:format => "js", :limit => 5)
+        assigns[:full].should be_true
+      end
+      
+      it "should assign the full to false when enough items were found" do
+        do_get(:format => "js", :limit => 1)
+        assigns[:full].should be_false
       end
     end
   end
