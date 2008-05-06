@@ -1445,27 +1445,22 @@ a.bookmarklet:hover {
 .tag .summary {
   padding: .5em;
 	border: 1px solid #ddd;
-  background: #efefef;
+  background-color: #efefef;
+}
+
+.tag.public .summary {
+	background: #efefef url(../images/public.png) 0.5em 0.6em no-repeat;	
+	padding-left: 2em;
 }
 
 .tag.subscribed .summary {
 	border: 1px solid #9DC482;
-  background: #D7F3A9;
+  background-color: #D7F3A9;
 }
 
 .tag.globally_excluded .summary {
 	border: 1px solid #E7ACAD;
-  background: #F6E0E0;
-}
-
-.tag .public_tag_icon {
-	display: block;
-	float: left;
-	width: 16px;
-	height: 16px;
-	margin-right: 0.5em;
-	text-indent: -1000em;
-	background: url(../images/public.png) center center no-repeat;
+  background-color: #F6E0E0;
 }
 
 .tag .tag_icon {
@@ -1491,12 +1486,100 @@ a.bookmarklet:hover {
   color: #777;
 }
 
+.tag .state {
+	font-size: 1.5em;
+	letter-spacing: -1px;
+	line-height: .97em;
+	text-transform: uppercase;
+}
+
+.tag.subscribed .state {
+	color: #52984B;
+}
+
+.tag.globally_excluded .state {
+	color: #C12A2F;
+}
+
 .tag .summary .training {
   float: right;
-	width: 30%;
-	padding-left: 1em;
 	margin-left: 1.5em;
+	color: #626051;
+	line-height: .7;
+	letter-spacing: -1px;	
+}
+
+.tag .summary .training div {
+	float: left;
+	padding: 0.5em;
+	border-left: 1px solid #ccc;
+}
+
+.tag .summary .training strong {
+	font-size: 1.3em;
+	letter-spacing: -1px;
+	line-height: .97em;
+}
+
+.tag .summary .training .details {
+	border: none;
+	text-align: right;
+	margin-right: 0.5em;	
+	width: 10em;
+}
+
+.tag .summary .training .details p {
+	color: #555;
+}
+
+.tag .summary .training .details p span {
+	font-weight: normal;
+	color: #999;
+}
+
+.tag .summary .training .positive {
+	width: 5em;
+}
+
+.tag .summary .training .negative {
+	width: 5em;
+}
+
+.tag .summary .training .automatic {
+	width: 6em;
+}
+
+.tag .summary .training .date {
+	width: 9.5em;
+}
+
+
+.tag .summary .training .positive strong {
+	color: #52984B;
+}
+
+.tag .summary .training .negative strong {
+	color: #C12A2F;
+}
+
+.tag .summary .training .automatic strong {
 	color: #666;
+}
+
+.tag .summary .training .date strong {
+	color: #555;
+}
+
+.tag .summary .training p {
+	font-size: .7em;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 0 0 0.1em 0;
+	color: #999;
+}
+
+.tag .summary .training .details p {
+
 }
 
 .tag .extended .comments {
@@ -1545,80 +1628,6 @@ a.bookmarklet:hover {
 .tag .extended .sidebar .block {
 	margin-bottom: 1.5em;
 	padding: 1em;
-}
-
-.tag .extended .training {
-	text-align: center;
-	color: #626051;
-	background-color: #FFFFCC;
-}
-
-.tag .extended .training .date {
-	display: block;
-	float: right;
-	margin-right: 0.5em;
-	font-style: italic;
-	font-size: 0.9em;
-}
-
-.tag .extended .training .date strong {
-	font-style: normal;
-}
-
-.tag .extended .training div {
-	margin: 0.5em 0 0;
-	padding: 1em 0;
-	line-height: .8;	
-}
-
-.tag .extended .training .positive {
-	float: left;
-	width: 33%;
-	border-right: 1px solid #ccc;
-}
-
-.tag .extended .training .negative {
-	float: left;
-	width: 33%;
-	border-right: 1px solid #ccc;
-}
-
-.tag .extended .training .automatic {
-	float: left;
-	width: 33%;
-}
-
-.tag .extended .training div strong {
-	font-size: 2em;
-	letter-spacing: -1px;
-	line-height: .97em;
-}
-
-.tag .extended .training .positive strong {
-	color: #52984B;
-}
-
-.tag .extended .training .negative strong {
-	color: #C12A2F;
-}
-
-.tag .extended .training .automatic strong {
-	color: #666;
-}
-
-.tag .extended .training p {
-	font-size: 1em;
-	font-weight: bold;
-	margin: 0.5em 0 0 0;
-	padding: 0;
-	color: #999;
-}
-
-.tag .extended .training a {
-	float: right;
-	margin: 0.5em 0.5em 0 0;
-	padding: 1px 0 1px 20px;
-  background: url(../images/show.png) left center no-repeat;	
 }
 
 .tag .extended .actions {
