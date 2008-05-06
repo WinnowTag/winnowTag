@@ -1,0 +1,8 @@
+<div class="comment">
+  <div class="metadata">
+    by <%= comment.user.display_name %> on <%= format_date(comment.updated_at) %>
+  </div>
+  <div class="body">
+    <%= comment.body %>
+  </div>
+</div>
