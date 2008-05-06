@@ -158,12 +158,19 @@ describe Feed do
     
     describe 'with duplicate link' do
       before(:each) do
+        @atom.id = "urn:peerworks.org:feed#3"
         @atom.links << Atom::Link.new(:rel => "http://peerworks.org/duplicateOf", :href => 'urn:peerworks.org:feeds#2')
+        FeedSubscription.create!(:user_id => 1, :feed_id => 3)        
         @feed = Feed.find_or_create_from_atom_entry(@atom)
       end
       
       it "should set the duplicate_id" do
         @feed.duplicate_id.should == 2
+      end
+      
+      it "should update any subscriptions to point to the 'root' feed" do
+        FeedSubscription.find_by_user_id_and_feed_id(1, 3).should be_nil
+        FeedSubscription.find_by_user_id_and_feed_id(1, 2).should_not be_nil        
       end
     end
   end

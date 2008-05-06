@@ -109,6 +109,10 @@ class Feed < ActiveRecord::Base
         :collector_link => (entry.self and entry.self.href),
         :duplicate_id => duplicate_id
       }
+      
+      if duplicate_id
+        FeedSubscription.update_all("feed_id = #{duplicate_id}", "feed_id = #{self.id}")        
+      end
     
       self.save!
       self
