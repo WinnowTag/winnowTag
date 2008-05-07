@@ -1,0 +1,6 @@
+<% form_remote_for comment, :html => { :class => "clearfix" } do |form|  -%>
+  <%= form.text_area :body %>
+  <div class="input">
+    <%= submit_tag 'Update' %> or <%= link_to_function "cancel", "$(this).up('.comment').down('.body').show();$(this).up('form').remove()" %>
+  </div>
+<% end -%>

@@ -1610,10 +1610,38 @@ a.bookmarklet:hover {
 	font-weight: bold;
 }
 
+.tag .extended .comment .metadata .actions {
+	margin-top: 0.5em;
+}
+
+.tag .extended .comment .metadata .actions a {
+	color: #52718B;
+}
+
+.tag .extended .comment .metadata .actions a.edit {
+	margin-right: 0.5em;
+}
+
 .tag .extended .comment .body {
-	margin: 0 0 0 0;
 	padding: 0.5em 0 0.5em .5em;
 	border-left: 10.22em solid #EAF0F5;
+}
+
+.tag .extended .comment form  {
+	padding: 0.5em 0.5em 0.5em .5em;
+	border-left: 10.22em solid #EAF0F5;
+/*	background-color: #E4F2FF;*/
+}
+
+.tag .extended .comment form  textarea {
+	width: 100%;
+	border: 1px solid #C0C7CD;
+	height: 80px;
+	margin-bottom: 0.5em;
+}
+
+.tag .extended .comment form .input {
+	float: right;
 }
 
 .tag .extended h5 {
@@ -1634,7 +1662,7 @@ a.bookmarklet:hover {
 	padding: 1em;
 }
 
-.tag .extended .actions {
+.tag .extended .sidebar .actions {
 	background-color: #FFFFCC;
 }
 

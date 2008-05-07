@@ -14,7 +14,7 @@
 # single uses of the tag by the user and the +TagsController+
 # operates on the many +Taggings+ that use a given +Tag+.
 class TagsController < ApplicationController
-  helper :bias_slider
+  helper :bias_slider, :comments
   
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
