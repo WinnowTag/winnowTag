@@ -243,7 +243,6 @@ class Tag < ActiveRecord::Base
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND NOT EXISTS' <<
                 '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
                   'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
               '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by',
               "NOT EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) AS globally_exclude",
               "NOT EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) AS subscribe"]
@@ -275,7 +274,7 @@ class Tag < ActiveRecord::Base
     order = case options[:order]
     when "name", "public", "id"
       "tags.#{options[:order]}"
-    when "subscribe", "training_count", "classifier_count", "last_used_by", "globally_exclude"
+    when "subscribe", "positive_count", "negative_count", "classifier_count", "last_used_by", "globally_exclude"
       options[:order]
     when "login"
       "users.#{options[:order]}"
