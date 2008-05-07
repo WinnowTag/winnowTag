@@ -630,13 +630,8 @@ a.editor_cancel {
 }
 
 .item .closed .tag_list {
-  height: 1.8em;
   min-height: 1.8em;
   margin: 0 2px 0 19%;
-}
-
-.item.selected .closed .tag_list {
-  height: auto;
 }
 
 .item .open {
