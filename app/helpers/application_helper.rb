@@ -253,6 +253,13 @@ module ApplicationHelper
       "subscribed"
     end
   end
+
+  def feed_classes(feed)
+    if current_user.globally_excluded?(feed)
+      "globally_excluded"
+    end
+  end
+
   
   def tag_state(tag)
     if current_user.globally_excluded?(tag)

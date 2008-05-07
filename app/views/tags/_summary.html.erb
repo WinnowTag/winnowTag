@@ -1,5 +1,5 @@
 <div class="summary clearfix" onclick="$(this).next('.extended').toggle()">        
-  <div class="training">      
+  <div class="info">      
     <div class="details">
       <p><!-- <span>Author</span> --> <%= tag.user.display_name %></p>
       <strong class="state"><%= tag_state(tag) %></strong>
@@ -22,11 +22,9 @@
     </div>
   </div>    
   
-  <div class="info">      
-    <h4><%= tag_name_with_tooltip(tag) %></h4>
+  <h4><%= tag_name_with_tooltip(tag) %></h4>
 
-    <div class="description">
-      <%= tag.comment %>
-    </div>
+  <div class="description">
+    <%= tag.comment %>
   </div>
 </div> <!-- /.summary -->

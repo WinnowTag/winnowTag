@@ -1252,70 +1252,6 @@ a.bookmarklet:hover {
 }
 
 /*
-** =feed
-*/
-.feed {
-	position: relative;
-  border: 1px solid #666;
-  background: #eee;
-  padding: .5em;
-  margin: 0 0 .5em 0;
-}
-
-.feed .left {
-  float: left;
-  margin: 0 1em 0 0;
-}
-
- .feed .right {
-  float: right;
-} 
-
-.feed dl.training {
-  clear: both;
-  float: left;
-  margin: 0 0 1em 0;
-  padding: 0;
-}
-
-.feed dl.training dt {
-  font-weight: bold;
-  color: #666;
-  float: left;
-  padding: 0;
-  margin: 0 0 0 2em;
-}
-
-.feed dl.training dd {
-  float: left;
-  margin: 0 0 0 0.5em;
-  padding: 0;
-  width: 6.5em;
-}
-
-.feed dl.training dd.last {
-  width: 3em
-}
-
-.feed .controls {
-  clear: both;
-  float: right;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.feed .controls li {
-  float: left;
-  padding: 0;
-  margin: 0 0 0 1.5em;
-}
-
-.feed .controls li.first {
-  margin-left: 0;
-}
-
-/*
 ** =user
 */
 .user {
@@ -1430,26 +1366,124 @@ a.bookmarklet:hover {
 }
 
 /*
-** =tag
+** =record
 */
-.tag {
+.record {
 	position: relative;
   margin: 0 0 .5em 0;
 }
 
-.tag .summary {
+.record .summary {
   padding: .5em;
 	border-top: 1px solid #ddd;
   background-color: #efefef;
+}
+
+.record .summary:hover {
+	background-color: #dfdfdf;
+}
+
+.record h4 {
+	display: inline;
+	margin: 0 1em 0 0;
+}
+
+.record .description {
+  color: #777;
+}
+
+.record .summary .info {
+  float: right;
+	margin-left: 1.5em;
+	color: #626051;
+	line-height: .7;
+	letter-spacing: -1px;	
+}
+
+.record .summary .info div {
+	float: left;
+	padding: 0.5em;
+	border-left: 1px solid #ccc;
+}
+
+.record .summary .info strong {
+	font-size: 1.3em;
+	letter-spacing: -1px;
+	line-height: .97em;
+}
+
+.record .summary .info .details {
+	border: none;
+	text-align: right;
+	margin-right: 0.5em;	
+	width: 10em;
+}
+
+.record .summary .info .details p {
+	color: #555;
+}
+
+.record .summary .info .details p span {
+	font-weight: normal;
+	color: #999;
+}
+
+.record .summary .info p {
+	font-size: .75em;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 0 0 0.1em 0;
+	color: #999;
+}
+
+/*
+** =feed
+*/
+.feed.globally_excluded .summary {
+	border-color: #E7ACAD;
+  background-color: #F6E0E0;
+}
+
+.feed.globally_excluded .summary:hover {
+/*  background-color: #F6d0E0;*/
+  background-color: #F6d0d0;
+}
+
+.feed .summary .description {
+		margin: 0.5em 0 0 60px;
+}
+
+.feed .summary .description input {
+	margin: 0;
+/*	vertical-align: middle;*/
+}
+
+.feed .summary .info .filter {
+	width: 13em;
+}
+
+.feed.globally_excluded .summary .info .filter strong {
+	color: #C12A2F;
+}
+
+.feed .summary .info .count {
+	width: 5em;
+}
+
+.feed .summary .info .date {
+	width: 9.5em;
+}
+
+
+/*
+** =tag
+*/
+.tag .summary {
 	cursor: pointer;
 	background-image: url(../images/tag.png);
 	background-position: 0.5em 0.5em;
 	background-repeat: no-repeat;	
 	padding-left: 2em;	
-}
-
-.tag .summary:hover {
-	background-color: #dfdfdf;
 }
 
 .tag.public .summary {
@@ -1462,41 +1496,18 @@ a.bookmarklet:hover {
   background-color: #D7F3A9;
 }
 
+.tag.subscribed .summary:hover {
+	background-color: #ccf28f;
+}
+
 .tag.globally_excluded .summary {
 	border-color: #E7ACAD;
   background-color: #F6E0E0;
 }
 
-.tag.subscribed .summary:hover {
-	background-color: #ccf28f;
-}
-
 .tag.globally_excluded .summary:hover {
 /*  background-color: #F6d0E0;*/
   background-color: #F6d0d0;
-}
-
-.tag .tag_icon {
-	display: block;
-	float: left;
-	width: 16px;
-	height: 16px;
-	margin-right: 0.5em;
-	text-indent: -1000em;
-	background: url(../images/tag.png) center center no-repeat;
-}
-
-.tag h4 {
-	display: inline;
-	margin: 0 1em 0 0;
-}
-
-.tag h4 div {
-	float: left;
-}
-
-.tag .description {
-  color: #777;
 }
 
 .tag .state {
@@ -1514,85 +1525,37 @@ a.bookmarklet:hover {
 	color: #C12A2F;
 }
 
-.tag .summary .training {
-  float: right;
-	margin-left: 1.5em;
-	color: #626051;
-	line-height: .7;
-	letter-spacing: -1px;	
-}
-
-.tag .summary .training div {
-	float: left;
-	padding: 0.5em;
-	border-left: 1px solid #ccc;
-}
-
-.tag .summary .training strong {
-	font-size: 1.3em;
-	letter-spacing: -1px;
-	line-height: .97em;
-}
-
-.tag .summary .training .details {
-	border: none;
-	text-align: right;
-	margin-right: 0.5em;	
-	width: 10em;
-}
-
-.tag .summary .training .details p {
-	color: #555;
-}
-
-.tag .summary .training .details p span {
-	font-weight: normal;
-	color: #999;
-}
-
-.tag .summary .training .positive {
+.tag .summary .info .positive {
 	width: 5em;
 }
 
-.tag .summary .training .negative {
+.tag .summary .info .negative {
 	width: 5em;
 }
 
-.tag .summary .training .automatic {
+.tag .summary .info .automatic {
 	width: 6em;
 }
 
-.tag .summary .training .date {
+.tag .summary .info .date {
 	width: 9.5em;
 }
 
 
-.tag .summary .training .positive strong {
+.tag .summary .info .positive strong {
 	color: #52984B;
 }
 
-.tag .summary .training .negative strong {
+.tag .summary .info .negative strong {
 	color: #C12A2F;
 }
 
-.tag .summary .training .automatic strong {
+.tag .summary .info .automatic strong {
 	color: #666;
 }
 
-.tag .summary .training .date strong {
+.tag .summary .info .date strong {
 	color: #555;
-}
-
-.tag .summary .training p {
-	font-size: .75em;
-	font-weight: bold;
-	text-transform: uppercase;
-	margin: 0 0 0.1em 0;
-	color: #999;
-}
-
-.tag .summary .training .details p {
-
 }
 
 .tag .extended .comments {
@@ -1669,7 +1632,7 @@ a.bookmarklet:hover {
 	color: #626051;	
 }
 
-.tag .sidebar {
+.tag .extended .sidebar {
   float: right;
 	width: 30%;
 	padding: 1em 0;
