@@ -1439,7 +1439,7 @@ a.bookmarklet:hover {
 
 .tag .summary {
   padding: .5em;
-	border: 1px solid #ddd;
+	border-top: 1px solid #ddd;
   background-color: #efefef;
 }
 
@@ -1449,12 +1449,12 @@ a.bookmarklet:hover {
 }
 
 .tag.subscribed .summary {
-	border: 1px solid #9DC482;
+	border-color: #9DC482;
   background-color: #D7F3A9;
 }
 
 .tag.globally_excluded .summary {
-	border: 1px solid #E7ACAD;
+	border-color: #E7ACAD;
   background-color: #F6E0E0;
 }
 
@@ -1584,6 +1584,7 @@ a.bookmarklet:hover {
 }
 
 .tag .extended .comments .empty {
+	margin-bottom: 1.5em;
   padding: .5em 0;
   text-align: center;
   font-style: italic;
@@ -1591,20 +1592,28 @@ a.bookmarklet:hover {
 }
 
 .tag .extended .comment {
-	margin: 0 1.5em 1.5em 0;
-}
-
-.tag .extended .comment .metadata {
-/*	color: #6D889E;*/
-	color: #52718B;
-	padding: 0.5em 0.4em;
-	font-size: .95em;
-	background-color: #EAF0F5;
+	position: relative;
+	margin: 0 1.5em 0.5em 0;
 	border-top: 1px solid #C0C7CD;
 }
 
+.tag .extended .comment .metadata {
+	float: left;
+	width: 10em;
+	padding: 0.5em 0.3em 0.5em 0.5em;
+	color: #666;	
+	font-size: .95em;
+	background-color: #EAF0F5;
+}
+
+.tag .extended .comment .metadata .author {
+	font-weight: bold;
+}
+
 .tag .extended .comment .body {
-	padding: 1em 0 0 0.5em;
+	margin: 0 0 0 0;
+	padding: 0.5em 0 0.5em .5em;
+	border-left: 10.22em solid #EAF0F5;
 }
 
 .tag .extended h5 {
@@ -1664,22 +1673,24 @@ a.bookmarklet:hover {
 	background: url(../images/destroy.png) left center no-repeat;
 }
 
-.tag .sidebar .comment_form {
+.tag .extended .comment_form {
+	margin-right: 1.5em;
+	padding: 1em;
 	background-color: #E4F2FF;
 }
 
-.tag .sidebar .comment_form h5 {
+.tag .extended .comment_form h5 {
 	color: #52718B;
 }
 
-.tag .sidebar .comment_form textarea {
+.tag .extended .comment_form textarea {
 	width: 100%;
 	border: 1px solid #C0C7CD;
 	height: 80px;
 	margin-bottom: 0.5em;
 }
 
-.tag .sidebar .comment_form input {
+.tag .extended .comment_form input {
 	float: right;
 }
 /*

@@ -39,7 +39,16 @@
       <% else -%>
         <%= render :partial => "comments/comment.html.erb", :collection => public_tag.comments %>
       <% end -%>
-    </div>
+      
+      <div class="block comment_form clearfix">
+        <h5>Add a comment:</h5>
+        <% form_remote_for :comment, :url => comments_path do |form|  -%>
+          <%= form.hidden_field :tag_id, :value => public_tag.id %>
+          <%= form.text_area :body %>
+          <%= submit_tag 'Submit' %>
+        <% end -%>
+      </div> <!-- /.comment_form -->
+    </div> <!-- /.comments -->
       
     <div class="sidebar">      
       <div class="block actions clearfix">
@@ -57,15 +66,6 @@
           <li><%= link_to _(:tags_feed_link), url_for(:user => public_tag.user, :tag_name => public_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %></li>
         </ul>
       </div> <!-- /.actions -->
-      
-      <div class="block comment_form clearfix">
-        <h5>Add a comment:</h5>
-        <% form_remote_for :comment, :url => comments_path do |form|  -%>
-          <%= form.hidden_field :tag_id, :value => public_tag.id %>
-          <%= form.text_area :body %>
-          <%= submit_tag 'Submit' %>
-        <% end -%>
-      </div>
     </div>
   </div> <!-- /.extended -->
 </div>

@@ -1,3 +1,4 @@
 page[@comment.tag].select('.comments .empty').invoke("remove")
-page[@comment.tag].down('.comments').insert render_to_string(:partial => "comments/comment.html.erb", :object => @comment)
+page[@comment.tag].down('.comments .comment_form').insert(:before => render_to_string(:partial => "comments/comment.html.erb", :object => @comment))
+page[@comment].highlight
 page[@comment.tag].down('.comment_form form').reset
