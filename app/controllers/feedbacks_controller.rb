@@ -4,9 +4,9 @@ class FeedbacksController < ApplicationController
       format.html
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
-        @feedbacks, @feedbacks_count = Feedback.search(:text_filter => params[:text_filter], 
-                                                       :order => params[:order], :direction => params[:direction],
-                                                       :limit => limit, :offset => params[:offset], :count => true)
+        @feedbacks = Feedback.search(:text_filter => params[:text_filter], :order => params[:order], :direction => params[:direction],
+                                     :limit => limit, :offset => params[:offset])
+        @full = @feedbacks.size < limit
       end
     end
   end

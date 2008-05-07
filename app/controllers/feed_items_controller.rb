@@ -37,8 +37,8 @@ class FeedItemsController < ApplicationController
                     :mode => params[:mode],
                     :user => current_user }
   
-        @feed_items = FeedItem.find_with_filters(filters)    
-        @feed_item_count = FeedItem.count_with_filters(filters)
+        @feed_items = FeedItem.find_with_filters(filters)
+        @full = @feed_items.size < limit
       end
       format.atom do
         filters = { :limit => 20,
