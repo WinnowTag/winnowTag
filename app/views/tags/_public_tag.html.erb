@@ -2,7 +2,7 @@
   <div class="summary clearfix" onclick="$(this).next('.extended').toggle()">        
     <div class="training">      
       <div class="details">
-        <p><!-- <span>Author</span> --> John Hwang</p>
+        <p><!-- <span>Author</span> --> <%= public_tag.user.display_name %></p>
         <strong class="state"><%= tag_state(public_tag) %></strong>
       </div>
       <div class="positive">
