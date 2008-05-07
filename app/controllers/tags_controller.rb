@@ -215,25 +215,24 @@ class TagsController < ApplicationController
     else
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
-    render :nothing => true
+    respond_to :js
   end
   
   def subscribe
-    if tag = Tag.find_by_id_and_public(params[:id], true)
+    if @tag = Tag.find_by_id_and_public(params[:id], true)
       if params[:subscribe] =~ /true/i
-        TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
+        TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
       else
-        TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
-        TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
+        TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+        Folder.remove_tag(current_user, @tag.id)
       end
     end
-    render :nothing => true
+    respond_to :js
   end
   
   def unsubscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
       Folder.remove_tag(current_user, @tag.id)
     end
     respond_to do |format|
