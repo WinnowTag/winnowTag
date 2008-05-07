@@ -1647,6 +1647,12 @@ a.bookmarklet:hover {
 	background-color: #FFFFCC;
 }
 
+.tag .extended .sidebar .actions input {
+	margin: 0;
+	vertical-align: middle;
+}
+
+
 .tag ul.controls {
 	margin: 0;
 	padding: 0;
