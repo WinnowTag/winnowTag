@@ -52,43 +52,36 @@ describe Tag do
       assert_equal classifier, tag = tags.shift
       assert_equal 0, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 0, tag.training_count.to_i
       assert_equal 1, tag.classifier_count.to_i
 
       assert_equal classifier_diff, tag = tags.shift
       assert_equal 1, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 1, tag.training_count.to_i
       assert_equal 1, tag.classifier_count.to_i
 
       assert_equal classifier_neg, tag = tags.shift
       assert_equal 0, tag.positive_count.to_i
       assert_equal 1, tag.negative_count.to_i
-      assert_equal 1, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal classifier_pos, tag = tags.shift
       assert_equal 1, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 1, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal empty, tag = tags.shift
       assert_equal 0, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 0, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal peerworks, tag = tags.shift
       assert_equal 2, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 2, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal test, tag = tags.shift
       assert_equal 1, tag.positive_count.to_i
       assert_equal 1, tag.negative_count.to_i
-      assert_equal 2, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
     end
   
