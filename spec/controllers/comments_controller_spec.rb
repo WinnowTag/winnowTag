@@ -37,12 +37,10 @@ describe CommentsController do
     before(:each) do
       @comment = mock_model(Comment)
       
-      @comments = stub("comments", :find => @comment)
+      Comment.stub!(:find).and_return(@comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
-
-      current_user.stub!(:comments).and_return(@comments)
     end
     
     def do_get
@@ -50,7 +48,7 @@ describe CommentsController do
     end
     
     it "finds the comment" do
-      @comments.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find).with("1").and_return(@comment)
       do_get
     end
     
@@ -69,12 +67,10 @@ describe CommentsController do
     before(:each) do
       @comment = mock_model(Comment, :update_attributes! => nil)
       
-      @comments = stub("comments", :find => @comment)
+      Comment.stub!(:find).and_return(@comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
-
-      current_user.stub!(:comments).and_return(@comments)
     end
     
     def do_put
@@ -82,7 +78,7 @@ describe CommentsController do
     end
     
     it "finds the comment" do
-      @comments.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find).with("1").and_return(@comment)
       do_put
     end
     
@@ -106,12 +102,10 @@ describe CommentsController do
     before(:each) do
       @comment = mock_model(Comment, :destroy => nil)
       
-      @comments = stub("comments", :find => @comment)
+      Comment.stub!(:find).and_return(@comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
-
-      current_user.stub!(:comments).and_return(@comments)
     end
     
     def do_delete
@@ -119,7 +113,7 @@ describe CommentsController do
     end
     
     it "finds the comment" do
-      @comments.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find).with("1").and_return(@comment)
       do_delete
     end
     
