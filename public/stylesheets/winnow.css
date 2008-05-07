@@ -1442,6 +1442,10 @@ a.bookmarklet:hover {
 	border-top: 1px solid #ddd;
   background-color: #efefef;
 	cursor: pointer;
+	background-image: url(../images/tag.png);
+	background-position: 0.5em 0.5em;
+	background-repeat: no-repeat;	
+	padding-left: 2em;	
 }
 
 .tag .summary:hover {
@@ -1450,9 +1454,7 @@ a.bookmarklet:hover {
 
 .tag.public .summary {
 	background-image: url(../images/public.png);
-	background-position: 0.5em 0.6em;
-	background-repeat: no-repeat;	
-	padding-left: 2em;
+	background-position: 0.5em 0.6em;	
 }
 
 .tag.subscribed .summary {

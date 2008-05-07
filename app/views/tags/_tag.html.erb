@@ -1,12 +1,30 @@
 <div id="<%= dom_id(tag) %>" class="tag clearfix <%= tag_classes(tag) %>">
-  <div class="summary clearfix" onclick="$(this).next('.extended').toggle()">
-    <div class="training">
-    </div>
-        
-    <div class="info">
-      <span class="tag_icon">Tag</span>
+  <%= render :partial => "summary.html.erb", :locals => { :tag => tag } %>
+  
+  <div class="extended" style="display:none">  
+    <%= render :partial => "comments.html.erb", :locals => { :tag => tag } %>
       
-      <h4><% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
+    <div class="sidebar">      
+      <div class="block actions clearfix">
+        <h5>Actions</h5>
+        <ul class="controls">
+          <li class="first"><%= bias_slider(tag) %></li>
+          <li><%= globally_exclude_check_box(tag) %> <%= _(:tags_globally_exclude) %></li>
+          <li>
+            <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <%= _(:tags_public) %>
+          </li>
+          <li><%= link_to_remote _(:copy), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, tag.name), :class => "duplicate_icon" } %></li>
+          <li><%= link_to_remote _(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => _(:tags_destroy_confirm_text, tag.name), :html => { :title => _(:tags_destroy_link_title, tag.name), :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
+          <li><%= link_to _(:view_all_items, tag.name), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'view_icon' %></li>
+          <li><%= link_to _(:view_tagged_items, tag.name), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=moderated"), :class => "view_icon" %></li>
+        </ul>
+      </div> <!-- /.actions -->
+    </div>
+  </div> <!-- /.extended -->
+</div>
+
+
+<!--       <h4><% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
       <%= in_place_completing_editor_field :tag, :name, { :id => dom_id(tag, 'editor') },
           { :param_name => "'tag[name]'", :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false, 
             :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'), 
@@ -19,63 +37,4 @@
             :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50 %>
       </span>
     </div>
-  </div> <!-- /.summary -->
-  
-  <div class="extended" style="display:none">  
-    <div class="comments clearfix">
-      <% if tag.comments.empty? -%>
-        <div class="empty">There are no comments for this tag.</div>
-      <% else -%>
-        <%= render :partial => "comments/comment.html.erb", :collection => tag.comments %>
-      <% end -%>
-    </div>
-      
-    <div class="sidebar">
-      
-      <div class="block training clearfix">
-        <span class="date"><%= _(:tags_last_trained) %> <strong><%= format_date(tag.last_used_by) %></strong></span>
-        <h5>Training </h5>
-        <div class="positive">
-          <strong><%= tag.positive_count %></strong>
-          <p>Positive</p>
-        </div>
-        <div class="negative">
-          <strong><%= tag.negative_count %></strong>
-          <p>Negative</p>
-        </div>
-        <div class="automatic">
-          <strong><%= tag.classifier_count %></strong>
-          <p>Automatic</p>
-        </div>
-      </div> <!-- /.training -->
-      
-      <div class="block actions clearfix">
-        <h5>Actions</h5>
-        <ul class="controls">
-          <li class="first"><%= bias_slider(tag) %></li>
-          <li><%= globally_exclude_check_box(tag) %> <%= _(:tags_globally_exclude) %></li>
-          <li>
-      			<%= check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :disabled => current_user == tag.user,
-      						:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }") %> <%= _(:tags_subscribe) %>
-          </li>
-          <li>
-            <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <%= _(:tags_public) %>
-          </li>
-          <li><%= link_to _(:show), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'view_icon', :title => _(:tags_show_link_title, tag.name) %></li>
-          <li><%= link_to_remote _(:copy), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, tag.name), :class => "duplicate_icon" } %></li>
-          <li><%= link_to "Trained Items", feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=moderated"), :class => "view_icon" %></li>
-          <li><%= link_to_remote _(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => _(:tags_destroy_confirm_text, tag.name), :html => { :title => _(:tags_destroy_link_title, tag.name), :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
-        </ul>
-      </div> <!-- /.actions -->
-      
-      <div class="block comment_form clearfix">
-        <h5>Add a comment:</h5>
-        <% form_remote_for :comment, :url => comments_path do |form|  -%>
-          <%= form.hidden_field :tag_id, :value => tag.id %>
-          <%= form.text_area :body %>
-          <%= submit_tag 'Submit' %>
-        <% end -%>
-      </div>
-    </div>
-  </div> <!-- /.extended -->
-</div>
+  -->

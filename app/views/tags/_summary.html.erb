@@ -1,0 +1,32 @@
+<div class="summary clearfix" onclick="$(this).next('.extended').toggle()">        
+  <div class="training">      
+    <div class="details">
+      <p><!-- <span>Author</span> --> <%= tag.user.display_name %></p>
+      <strong class="state"><%= tag_state(tag) %></strong>
+    </div>
+    <div class="positive">
+      <p>Positive</p>
+      <strong><%= tag.positive_count %></strong>
+    </div>
+    <div class="negative">
+      <p>Negative</p>
+      <strong><%= tag.negative_count %></strong>
+    </div>
+    <div class="automatic">
+      <p>Automatic</p>
+      <strong><%= tag.classifier_count %></strong>
+    </div>
+    <div class="date">
+       <p><%= _(:tags_last_trained) %></p> 
+       <strong><%= format_date(tag.last_used_by) %></strong>
+    </div>
+  </div>    
+  
+  <div class="info">      
+    <h4><%= tag_name_with_tooltip(tag) %></h4>
+
+    <div class="description">
+      <%= tag.comment %>
+    </div>
+  </div>
+</div> <!-- /.summary -->

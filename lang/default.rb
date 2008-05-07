@@ -395,7 +395,8 @@ Localization.define do |l|
   l.store :tags_feed_link,                          "Feed"
   l.store :tags_globally_exclude,                   "Globally Exclude"
   l.store :tags_subscribe,                          "Subscribe"
-  l.store :tags_show_link_title,                    "Show Only Items Tagged With %s"
+  l.store :view_all_items,                          "Show items tagged with %s"
+  l.store :view_tagged_items,                       "Show items trained with %s"
   l.store :copy,                                    "Copy"
   l.store :tags_copy_link_title,                    "Copy %s"
 

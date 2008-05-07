@@ -1,75 +1,22 @@
-<div id="<%= dom_id(subscribed_tag) %>" class="tag clearfix <%= tag_classes(subscribed_tag) %>">
-  <div class="summary clearfix" onclick="$(this).next('.extended').toggle()">
-    <div class="training">
-    </div>
-        
-    <div class="info">
-      <span class="public_tag_icon">Public Tag</span>
-      
-      <h4><%= tag_name_with_tooltip(subscribed_tag) %></h4>
-
-      <span class="description">
-        <%= subscribed_tag.comment %>
-      </span>
-    </div>
-  </div> <!-- /.summary -->
+<div id="<%= dom_id(subscribed_tag) %>" class="tag public clearfix <%= tag_classes(subscribed_tag) %>">
+  <%= render :partial => "summary.html.erb", :locals => { :tag => subscribed_tag } %>
   
   <div class="extended" style="display:none">  
-    <div class="comments clearfix">
-      <% if subscribed_tag.comments.empty? -%>
-        <div class="empty">There are no comments for this tag.</div>
-      <% else -%>
-        <%= render :partial => "comments/comment.html.erb", :collection => subscribed_tag.comments %>
-      <% end -%>
-    </div>
+    <%= render :partial => "comments.html.erb", :locals => { :tag => subscribed_tag } %>
       
-    <div class="sidebar">
-      
-      <div class="block training clearfix">
-        <span class="date"><%= _(:tags_last_trained) %> <strong><%= format_date(subscribed_tag.last_used_by) %></strong></span>
-        <h5>Training </h5>
-        <div class="positive">
-          <strong><%= subscribed_tag.positive_count %></strong>
-          <p>Positive</p>
-        </div>
-        <div class="negative">
-          <strong><%= subscribed_tag.negative_count %></strong>
-          <p>Negative</p>
-        </div>
-        <div class="automatic">
-          <strong><%= subscribed_tag.classifier_count %></strong>
-          <p>Automatic</p>
-        </div>
-      </div> <!-- /.training -->
-      
+    <div class="sidebar">      
       <div class="block actions clearfix">
         <h5>Actions</h5>
         <ul class="controls">
           <li class="first"><%= bias_slider(subscribed_tag, :disabled => true) %></li>
           <li><%= globally_exclude_check_box(subscribed_tag) %> <%= _(:tags_globally_exclude) %></li>
-          <li>
-      			<%= check_box_tag dom_id(subscribed_tag, "subscribe"), "1", current_user.subscribed?(subscribed_tag), :disabled => current_user == subscribed_tag.user,
-      						:onclick => remote_function(:url => subscribe_tag_path(subscribed_tag), :method => 'put', :with => "{ subscribe: this.checked }") %> <%= _(:tags_subscribe) %>
-          </li>
-          <li>
-            <%= check_box_tag dom_id(subscribed_tag, "public"), nil, true, :disabled => true %> <%= _(:tags_public) %>
-          </li>
-          <li><%= link_to _(:show), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'view_icon', :title => _(:tags_show_link_title, subscribed_tag.name) %></li>
           <li><%= link_to_remote _(:copy), :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, subscribed_tag.name), :class => "duplicate_icon" } %></li>
-          <li><%= link_to "Trained Items", feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :class => "view_icon" %></li>
-          <li><%= link_to _(:tags_feed_link), url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %></li>
           <li><%= link_to_remote 'Unsubscribe', :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => _(:tags_destroy_link_title, subscribed_tag.name), :class => "destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %></li>
+          <li><%= link_to _(:view_all_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'view_icon' %></li>
+          <li><%= link_to _(:view_tagged_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :class => "view_icon" %></li>
+          <li><%= link_to _(:tags_feed_link), url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %></li>
         </ul>
       </div> <!-- /.actions -->
-      
-      <div class="block comment_form clearfix">
-        <h5>Add a comment:</h5>
-        <% form_remote_for :comment, :url => comments_path do |form|  -%>
-          <%= form.hidden_field :tag_id, :value => subscribed_tag.id %>
-          <%= form.text_area :body %>
-          <%= submit_tag 'Submit' %>
-        <% end -%>
-      </div>
     </div>
   </div> <!-- /.extended -->
 </div>
