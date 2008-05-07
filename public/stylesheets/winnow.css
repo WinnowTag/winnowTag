@@ -1441,10 +1441,17 @@ a.bookmarklet:hover {
   padding: .5em;
 	border-top: 1px solid #ddd;
   background-color: #efefef;
+	cursor: pointer;
+}
+
+.tag .summary:hover {
+	background-color: #dfdfdf;
 }
 
 .tag.public .summary {
-	background: #efefef url(../images/public.png) 0.5em 0.6em no-repeat;	
+	background-image: url(../images/public.png);
+	background-position: 0.5em 0.6em;
+	background-repeat: no-repeat;	
 	padding-left: 2em;
 }
 
@@ -1456,6 +1463,15 @@ a.bookmarklet:hover {
 .tag.globally_excluded .summary {
 	border-color: #E7ACAD;
   background-color: #F6E0E0;
+}
+
+.tag.subscribed .summary:hover {
+	background-color: #ccf28f;
+}
+
+.tag.globally_excluded .summary:hover {
+/*  background-color: #F6d0E0;*/
+  background-color: #F6d0d0;
 }
 
 .tag .tag_icon {
@@ -1703,7 +1719,7 @@ a.bookmarklet:hover {
 
 .tag .extended .comment_form {
 	margin-right: 1.5em;
-	padding: 1em;
+	padding: 1em 1em 1em 0.75em;
 	background-color: #E4F2FF;
 }
 
