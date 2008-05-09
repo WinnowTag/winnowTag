@@ -14,6 +14,10 @@ describe Tag do
     it "belongs to user" do
       @tag.should belong_to(:user)
     end
+
+    it "has many comments" do
+      @tag.should have_many(:comments)
+    end
   end
   
   describe "tagging counts" do
@@ -302,6 +306,7 @@ describe 'to_atom', :shared => true do
 end
 
 describe Tag do
+  fixtures :feed_items, :feed_item_contents
   describe "#to_atom" do
     CLASSIFIER_NS = 'http://peerworks.org/classifier'
     before(:all) do

@@ -8,6 +8,6 @@
   </li>
 </ul>
 
-<% form_tag invites_path, :method => :get, :onsubmit => "resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
+<% form_tag invites_path, :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Invites...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>

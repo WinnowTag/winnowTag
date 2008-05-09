@@ -10,6 +10,6 @@
   </li>                                                                                                                 
 </ul>
 
-<% form_tag feeds_path, :method => :get, :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage(#{_(:feeds_search_error_message)}); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
+<% form_tag feeds_path, :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feeds_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>

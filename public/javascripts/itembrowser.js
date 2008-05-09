@@ -21,14 +21,10 @@ ItemBrowser.prototype = {
    *         'content' that will be used as the
    *         scrollable div.
    *
-   *  @param options A hash of options.  Supported options are:
-   *         - update_threshold: The minimum number of items that will be fetched in
-   *                             an update for that update to occur.
-   *
+   *  @param options A hash of options.
    */
   initialize: function(container, options) {
     this.options = {
-      update_threshold: 8,
       controller: container,
       url: container,
       tags: [],
@@ -38,13 +34,14 @@ ItemBrowser.prototype = {
     
     this.update_queue = [];
     this.auto_completers = {};
-    this.loading = false;    
+    this.loading = false;
+    this.full = false;
     
     this.container = $(container);
     this.scrollable = $('content');
 
     document.observe('keypress', this.keypress.bindAsEventListener(this));
-    this.scrollable.observe('scroll', this.scrollView.bind(this));
+    this.scrollable.observe('scroll', this.updateItems.bind(this));
     
     this.initializeItemList();
     this.initializeFilters();
@@ -79,120 +76,38 @@ ItemBrowser.prototype = {
     return (this.options.orders.asc || []).concat(this.options.orders.desc || []);
   },
   
-  /** Called to initialize the internal list of items from the items loaded into the container.
-   *
-   *  An items position within the list corresponds to it's position within the sort order of the item
-   *  list in the database.
-   *
-   *  This method should be considered private. 
-   */
+  // Called to initialize the internal list of items from the items loaded into the container.
   initializeItemList: function() {
     this.items = [];
-    Object.extend(this.items, {
-      insert: function(list_postion, item_id, item_position, item_element) {
-        this.splice(list_postion, 0, {position: item_position, element: item_element});
-        this[item_id] = true;
-      }
-    });
     
     this.container.select('.item').each(function(fi) {
-      this.items.insert(this.items.length, fi.getAttribute('id'), fi.getAttribute('position'), fi);
+      this.items.push(fi);
     }.bind(this));
   },
   
-  itemHeight: function() {
-    if (this.items[0] && this.items[1]) {
-      var height = Math.min(this.items[0].element.offsetHeight, this.items[1].element.offsetHeight);
-      height += parseInt(this.items[0].element.getStyle("padding-bottom"));
-      return height;
-    } else {
-      return 0;
-    }
+  setFull: function(full) {
+    this.full = full;
   },
   
   updateCount: function() {
     $(this.container.getAttribute("id") + '_count').update("About " + this.items.compact().length + " items");
   },
   
-  /** Returns the number of items in the viewable area of the scrollable container */
-  numberOfItemsInView: function() {
-    return Math.round(this.scrollable.getHeight() / this.itemHeight());
-  },
-  
-  /** Sets the total number of items.
-   *
-   *  total_items in the number of items in the item database that could be loaded into
-   *  this view.
-   */
-  setTotalItems: function(total_items) {
-    if (this.total_items != total_items) {
-      this.total_items = total_items;
-      this.updateInitialSpacer();
-    }
-    this.updateEmptyMessage();
-  },
-  
-  /** Updates the initial spacer's height to cover the total number of items minus the number of 
-   *  items already loaded.
-   */
-  updateInitialSpacer: function() {
-    var height = (this.total_items - this.items.length) * this.itemHeight();
-    var spacer = this.container.down(".item_spacer");
-    
-    if (!spacer) {
-      new Insertion.Bottom(this.container, '<div class="item_spacer"></div>');
-      spacer = this.container.down(".item_spacer");
-    }
-    
-    spacer.setStyle({height: '' + height + 'px'});    
-  },
-  
   updateEmptyMessage: function() {
-    var spacer = this.container.down(".empty");
+    var message = this.container.down(".empty");
     
-    if (!spacer) {
+    if (!message) {
       new Insertion.Bottom(this.container, '<div class="empty" style="display:none">No items matched your search criteria.</div>');
-      spacer = this.container.down(".empty");
+      message = this.container.down(".empty");
     }
     
-    if(this.total_items == 0) {
-      spacer.show();
+    if(this.full && this.items.size() == 0) {
+      message.show();
     } else {
-      spacer.hide();
+      message.hide();
     }
   },
   
-  /** Responds to scrolling events on the scrollable.
-   *
-   *  When a scrolling event occurs a function will be registered with
-   *  a 500ms delay to call the updateItems method. Subsequent scrolling
-   *  events within 500ms will clear that function and register a new one.
-   *  The reason for this is that the scroll event is dispatched constantly by 
-   *  the browser as the viewport is scrolled, so the prevent multiple updates
-   *  being requested we only issue an update when the user has stopped scrolling
-   *  for at least 500ms.
-   */
-  scrollView: function() {
-    if (this.item_loading_timeout) {      
-      clearTimeout(this.item_loading_timeout);
-    }
-    
-    var scrollTop = this.scrollable.scrollTop;
-    // bail out of scrollTop is zero - this prevents prematurely 
-    // getting items when the list is cleared.
-    if (scrollTop == 0) {return;}
-    var offset = Math.floor(scrollTop / this.itemHeight());
-    
-    this.item_loading_timeout = setTimeout(function() {
-      if (this.loading) {
-        this.update_queue.push(this.updateItems.bind(this, {offset: offset}));
-      } else {
-        this.updateItems({offset: offset});        
-      }
-    }.bind(this), 300);
-  }, 
-  
-  /** Creates the update URL from a list of options. */
   buildUpdateURL: function(parameters) {
     return '/' + this.options.url + '?' + $H(this.filters).merge($H(parameters)).toQueryString();
   },
@@ -204,62 +119,22 @@ ItemBrowser.prototype = {
     }
   },
   
-  /** This function is responsible for determining which items to fetch
-   *  from the server and invoking doUpdate with those parameters.
-   * 
-   *  updateItems accepts an offset parameter as one
-   *  of the options.  This parameter is interpreted as the position of the
-   *  top of the scroll viewport, it then attempts to gets item to cover the
-   *  previous half page, the current page and the first half of the next page.
-   */
-  updateItems: function(options) {
-    if(this.items.compact().length == this.total_items) { return; }
-    if(this.loading)                                    { return; }
-    this.loading = true;
-    
-    var update_options = Object.clone(options);
-    
-    var do_update = false;
-    // This is the standard update method.
-    //
-    // Start half a page ahead and behind the current page and 
-    // 'squeeze' in until we have a set of items to load.     
-    if (update_options) {
-      var items_in_view = this.numberOfItemsInView();
-      // The raw_offset is the item half a page behind the current page
-      var raw_offset = Math.floor(options.offset - (items_in_view / 2));
-      // Keep the actual offset above 0
-      var offset = Math.max(raw_offset, 0);
-      // The number of items is twice the page size, adjust for < 0 raw offsets.
-      var limit = (items_in_view * 2) + Math.min(raw_offset, 0);
-      var last_item = offset + limit - 1;
-    
-      // "squeeze" in the end points to they don't overlap with any loaded items.
-      while (this.items[offset] && offset < last_item) {offset++; limit--;}
-      while (this.items[offset + limit - 1] && limit > 0) {limit--;}
-      Object.extend(update_options, {offset: offset, limit: limit});
-      
-      if (limit >= this.options.update_threshold) {
-        do_update = true;
-      } else if (options.offset <= offset && offset <= options.offset + items_in_view) {
-        // If it is below the limit, but within the current view, do the update
-        do_update = true;
-      }      
-    }
-        
-    if (do_update) {
-      this.showLoadingIndicator();
-      this.doUpdate(update_options);
-    } else {
-      this.loading = false;
+  updateItems: function() {
+    if(this.full || this.loading) { return; }    
+    // + 100 just to force loading a little before the user actually scrolls all the way down
+    var scroll_bottom = this.scrollable.scrollTop + this.scrollable.getHeight() + 100;    
+    if(scroll_bottom >= this.container.getHeight()) {
+      this.loading = true;
+      this.doUpdate({offset: this.items.size()});
     }
   },
   
-  // Issues the request to get new items. 
   doUpdate: function(options) {
-    options = options || {};
-    new Ajax.Request(this.buildUpdateURL(options), {evalScripts: true, method: 'get',
+    this.showLoadingIndicator();
+    
+    new Ajax.Request(this.buildUpdateURL(options || {}), {evalScripts: true, method: 'get',
       onComplete: function() {
+        this.updateEmptyMessage();
         this.updateCount();
         this.hideLoadingIndicator();
         this.loading = false;
@@ -278,60 +153,9 @@ ItemBrowser.prototype = {
     });  
   },
   
-  /** Inserts an item into the item container.
-   *
-   *  Items are inserted by using their position within the list of items to
-   *  find how many items not yet loaded come before and after the new item.
-   *  This empty space is filled with a spacer div whose height is equal to the
-   *  number of items that would fit in the gap * the height of an item.
-   *  This ensures that each item is positioned both in the items list and
-   *  the item container that corresponds to their position in the list
-   *  of items in the database, with empty space between items filled in by 
-   *  a spacer div for each gap.
-   * 
-   */
-  insertItem: function(item_id, position, content) {
-    if (this.items[position] == null) {
-      // find the item immediately before this one
-      var previous_position = position - 1;
-      while (previous_position >= 0 && this.items[previous_position] == null) {previous_position--;}
-      // find the item immediate after this one
-      var next_position = position + 1;
-      while (next_position < this.items.length && this.items[next_position] == null) {next_position++;}
-      if (next_position > this.items.length) {
-        next_position = this.total_items;
-      }
-      
-      var existing_spacer = null;
-      
-      if (this.items[previous_position]) {
-        existing_spacer = this.items[previous_position].element.nextSiblings().first();
-      } else {
-        existing_spacer = this.container.immediateDescendants().first();
-      }
-      
-      var first_spacer_height = (position - previous_position - 1) * this.itemHeight();
-      var next_spacer_height = (next_position - position - 1) * this.itemHeight();
-      var first_spacer_content = '';
-      var next_spacer_content = '';
-
-      if (first_spacer_height > 0) {
-        first_spacer_content = '<div class="item_spacer" style="height: ' + first_spacer_height  + 'px;"></div>';        
-      }
-      
-      if (next_spacer_height > 0) {
-        next_spacer_content = '<div class="item_spacer" style="height: ' + next_spacer_height  + 'px;"></div>';        
-      }
-      
-      // insert the new item, with a spacer on either side, after the previous item
-      if (existing_spacer) {
-        existing_spacer.replace(first_spacer_content + content + next_spacer_content);
-      } else {
-        new Insertion.Bottom(this.container, first_spacer_content + content + next_spacer_content);
-      }
-      this.items[position] = {element: $(item_id), position: $(item_id).getAttribute('position')};
-      this.items[item_id] = true;
-    }
+  insertItem: function(item_id, content) {
+    new Insertion.Bottom(this.container, content);
+    this.items.push($(item_id));
   },
   
   clear: function() {

@@ -464,13 +464,6 @@ kbd {
   font-size: 11px;
 }
 
-.item_spacer {
-  background-image: url(/images/item_spacer_bg.png);
-  opacity: 0.25;
-  -moz-opacity: 0.25;
-  filter:alpha(opacity=25);
-}
-
 p.tag_publications_heading {
   text-decoration: underline;
 }
@@ -637,13 +630,8 @@ a.editor_cancel {
 }
 
 .item .closed .tag_list {
-  height: 1.8em;
   min-height: 1.8em;
   margin: 0 2px 0 19%;
-}
-
-.item.selected .closed .tag_list {
-  height: auto;
 }
 
 .item .open {

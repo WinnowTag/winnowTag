@@ -1,8 +1,6 @@
-page.call 'itemBrowser.hideLoadingIndicator'
-
-page.call "itemBrowser.setTotalItems", @feed_item_count
-
-@feed_items.each_with_index do |feed_item, index|
-  page.call 'itemBrowser.insertItem', dom_id(feed_item), params[:offset].to_i + index, 
-                render_to_string(:partial => 'feed_item.html.erb', :locals => {:feed_item => feed_item})
+if @full
+  page.call 'itemBrowser.setFull', true
+end
+@feed_items.each do |feed_item|
+  page.call 'itemBrowser.insertItem', dom_id(feed_item), render_to_string(:partial => 'feed_item.html.erb', :object => feed_item)
 end

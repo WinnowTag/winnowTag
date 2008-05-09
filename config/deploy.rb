@@ -42,6 +42,10 @@ else
   raise "Set STAGE to beta or trunk"
 end
 
+if ENV['branch']
+  set :branch, "origin/#{ENV['branch']}"
+end
+
 role :web, domain
 role :app, domain
 role :db,  domain, :primary => true

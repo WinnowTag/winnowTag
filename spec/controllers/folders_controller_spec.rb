@@ -105,8 +105,14 @@ describe FoldersController do
 
   describe "#add_item" do
     before(:each) do
-      @folder = mock_model(Folder, :save! => nil, :feed_ids => [], :tag_ids => [])
+      @folder = mock_model(Folder, :save! => nil, :feed_ids => [], :tag_ids => [], :add_feed! => nil, :add_tag! => nil)
       @folders.stub!(:find).and_return(@folder)
+      
+      @feed = mock_model(Feed)
+      Feed.stub!(:find).with("1").and_return(@feed)
+      
+      @tag = mock_model(Tag)
+      Tag.stub!(:find).with("2").and_return(@tag)
     end
 
     def do_put(item_id)
@@ -118,9 +124,21 @@ describe FoldersController do
       do_put("feed_1")
     end
 
+    it "find the feed for the view" do
+      Feed.should_receive(:find).with("1").and_return(@feed)
+      do_put("feed_1")
+      assigns(:feed).should == @feed
+    end
+
     it "adds a new tag to the folder" do
       @folder.should_receive(:add_tag!).with("2")
       do_put("tag_2")
+    end
+
+    it "find the tag for the view" do
+      Tag.should_receive(:find).with("2").and_return(@tag)
+      do_put("tag_2")
+      assigns(:tag).should == @tag
     end
   end
 

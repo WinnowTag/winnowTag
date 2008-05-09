@@ -1,11 +1,10 @@
-page.call 'itemBrowser.hideLoadingIndicator'
-
-page.call "itemBrowser.setTotalItems", @tags_count
-
-@tags.each_with_index do |tag, index|
+if @full
+  page.call 'itemBrowser.setFull', true
+end
+@tags.each do |tag|
   content = tag.user == current_user ? 
-    render_to_string(:partial => 'tag.html.erb', :locals => {:tag => tag}) :
-    render_to_string(:partial => 'subscribed_tag.html.erb', :locals => {:subscribed_tag => tag})
+    render_to_string(:partial => 'tag.html.erb', :object => tag) :
+    render_to_string(:partial => 'subscribed_tag.html.erb', :object => tag)
   
-  page.call 'itemBrowser.insertItem', dom_id(tag), params[:offset].to_i + index, content
+  page.call 'itemBrowser.insertItem', dom_id(tag), content
 end

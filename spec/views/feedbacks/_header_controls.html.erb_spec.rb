@@ -12,15 +12,3 @@ describe '/feedbacks/_header_controls.html.erb' do
   
   it "needs specs"
 end
-
-# <ul class="control_bar">
-#   <li class="order">
-#     Sort:
-#     <%= link_to_function "User", "itemBrowser.setOrder('user')", :id => "order_user" %>, 
-#     <%= link_to_function "Date", "itemBrowser.setOrder('date')", :id => "order_date" %>
-#   </li>    
-# </ul>
-# 
-# <% form_tag feedbacks_path, :method => :get, :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-#   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Feedback...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
-# <% end -%>
