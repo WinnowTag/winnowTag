@@ -28,21 +28,16 @@ module BiasSliderHelper
               "tag_id: #{tag.id}," +
   						"disabled: #{slider_disabled}," +
   						"range: $R(0.9, #{max_bias_value})," +
-  						"values: $R(90,#{max_bias_value * 100}).map(function(i) {return i / 100;})," +
   						"sliderValue: #{bias}" +
   				"});\n"
   	
-  	# Set the position of the slider markers
-  	[0.9, 1.0, 1.1, 1.2, 1.3].each do |v|
-  	  js << "$('#{prefix}_#{v.to_s.sub('.', '_')}').setStyle({left: #{variable}.translateToPx(#{v})});\n"
-  	  
-  	  unless slider_disabled
-  		  js << "Event.observe($('#{prefix}_#{v.to_s.sub('.', '_')}'), 'mousedown', function(){#{variable}.setValue(#{v})});\n"
-		  end
-	  end
-    
-    if slider_disabled
-      js << "$('#{prefix}_track').addClassName('disabled');\n"
+    # Set the position of the slider markers
+    [0.9, 1.0, 1.1, 1.2, 1.3].each do |v|
+      js << "$('#{prefix}_#{v.to_s.sub('.', '_')}').setStyle({left: #{variable}.translateToPx(#{v})});\n"
+      
+      unless slider_disabled
+        js << "Event.observe($('#{prefix}_#{v.to_s.sub('.', '_')}'), 'mousedown', function(){#{variable}.setValue(#{v})});\n"
+      end
     end
     
     bias_slider_html(prefix) + javascript_tag(js)
