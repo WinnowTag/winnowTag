@@ -1945,8 +1945,3 @@ a.bookmarklet:hover {
   background: url(../images/indicator_medium.gif) center center no-repeat;
   height: 32px;
 }
-
-.small_loading {
-  background: url(../images/indicator.gif) center center no-repeat;
-  padding: 8px;
-}
