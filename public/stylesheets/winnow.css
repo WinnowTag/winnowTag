@@ -56,10 +56,6 @@ a img, img.blank {border: 0; vertical-align: baseline; margin-left: 3px;}
 /*
 ** =defaults
 */
-body > p {
-  margin-left: 20px;
-}
-
 .cursor {
   cursor: pointer;
 }
