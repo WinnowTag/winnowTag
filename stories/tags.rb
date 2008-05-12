@@ -17,6 +17,10 @@ steps_for(:tags) do
     get "/#{@tag.user.login}/tags/#{@tag.name}.atom"
   end
   
+  When("I access /tags.atom") do
+    get "/tags.atom"
+  end
+  
   Then("the response is $code") do |code|
     response.code.should == code
   end

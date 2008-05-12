@@ -31,10 +31,10 @@ class TagsController < ApplicationController
                            :order => params[:order], :direction => params[:direction])
         @full = true
       end
-      format.atomsvc do        
+      format.atom do        
         conditional_render(Tag.maximum(:created_on)) do
-          atomsvc = Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
-          render :xml => atomsvc.to_xml
+          atom = Tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}")
+          render :xml => atom.to_xml
         end
       end
     end

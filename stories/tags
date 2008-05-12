@@ -13,3 +13,11 @@ Story: Tag Feeds
     Then the response is 200
     And the body is parseable by ratom
     And the content type is atom
+
+  Scenario: Accessing the tag index as a feed
+
+    When I access /tags.atom
+
+    Then the response is 200
+    And the body is parseable by ratom
+    And the content type is atom

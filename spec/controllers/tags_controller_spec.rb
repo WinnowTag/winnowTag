@@ -133,57 +133,57 @@ describe TagsController do
     end
   end
   
-  describe "index with Accept: application/atomsvc+xml" do
+  describe "index with Accept: application/atom+xml" do
     before(:each) do
       Tag.stub!(:maximum).with(:created_on).and_return(Time.now)
-      Tag.stub!(:to_atomsvc).with(:base_uri => "http://test.host:80").and_return(Atom::Pub::Service.new)
+      Tag.stub!(:to_atom).with(:base_uri => "http://test.host:80").and_return(Atom::Feed.new)
     end
     
-    it "should call Tag.to_atomsvc" do
-      Tag.should_receive(:to_atomsvc).with(:base_uri => "http://test.host:80").and_return(Atom::Pub::Service.new)
-      get :index, :format => 'atomsvc'      
+    it "should call Tag.to_atom" do
+      Tag.should_receive(:to_atom).with(:base_uri => "http://test.host:80").and_return(Atom::Feed.new)
+      get :index, :format => 'atom'      
     end
     
     it "should be successful" do
-      accept('application/atomsvc+xml')
+      accept('application/atom+xml')
       get :index
       response.should be_success
     end
         
-    it "should have application/atomsvc+xml as the content type" do
-      accept('application/atomsvc+xml')
+    it "should have application/atom+xml as the content type" do
+      accept('application/atom+xml')
       get :index
-      response.content_type.should == "application/atomsvc+xml"
+      response.content_type.should == "application/atom+xml"
     end
     
-    it "should have application/atomsvc+xml as the content type when :format is atomsvc" do
-      get :index, :format => 'atomsvc'
-      response.content_type.should == "application/atomsvc+xml"
+    it "should have application/atom+xml as the content type when :format is atom" do
+      get :index, :format => 'atom'
+      response.content_type.should == "application/atom+xml"
     end
     
     it "should have the atom content" do
-      get :index, :format => 'atomsvc'
-      response.body.should match(%r{<service})
+      get :index, :format => 'atom'
+      response.body.should match(%r{<feed})
     end
     
     it "should respond with a 304 if there are no new tags since HTTP_IF_MODIFIED_SINCE" do
       Tag.should_receive(:maximum).with(:created_on).and_return(Time.now.yesterday)
-      Tag.should_not_receive(:to_atom_svc).with(:base_uri => "http://test.host:80")
+      Tag.should_not_receive(:to_atom).with(:base_uri => "http://test.host:80")
       request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
-      get :index, :format => 'atomsvc'
+      get :index, :format => 'atom'
       response.code.should == "304"
     end
     
     it "should responde with a 200 if there are new tags since HTTP_IF_MODIFIED_SINCE" do
       request.env['HTTP_IF_MODIFIED_SINCE'] = 30.days.ago.httpdate
-      get :index, :format => 'atomsvc'
+      get :index, :format => 'atom'
       response.code.should == "200"
     end
     
     it "should not require a login for local requests" do
       login_as(nil)
       @controller.stub!(:local_request?).and_return(true)
-      get :index, :format => 'atomsvc'
+      get :index, :format => 'atom'
       response.should be_success
     end    
   end
