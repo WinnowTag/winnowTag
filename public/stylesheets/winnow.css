@@ -113,13 +113,6 @@ textarea.content {
 }
 
 /*
-** =typography
-*/
-body > h2, body > h3, body > h4 {
-  margin-left: 10px;
-}
-
-/*
 ** =common
 */
 a.close img {
