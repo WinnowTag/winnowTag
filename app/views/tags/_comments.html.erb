@@ -1,12 +1,12 @@
 <div class="comments clearfix">
   <% if tag.comments.empty? -%>
-    <div class="empty">There are no comments for this tag.</div>
+    <div class="empty"><%= _(:no_comments_for_this_tag) %></div>
   <% else -%>
     <%= render :partial => "comments/comment.html.erb", :collection => tag.comments %>
   <% end -%>
   
   <div class="block comment_form clearfix">
-    <h5>Add a comment:</h5>
+    <h5><%= _(:add_a_comment) %></h5>
     <% form_remote_for :comment, :url => comments_path do |form|  -%>
       <%= form.hidden_field :tag_id, :value => tag.id %>
       <%= form.text_area :body %>

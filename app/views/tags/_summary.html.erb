@@ -5,15 +5,15 @@
       <strong class="state"><%= tag_state(tag) %></strong>
     </div>
     <div class="positive">
-      <p>Positive</p>
+      <p><%= _(:positive) %></p>
       <strong><%= tag.positive_count %></strong>
     </div>
     <div class="negative">
-      <p>Negative</p>
+      <p><%= _(:negative) %></p>
       <strong><%= tag.negative_count %></strong>
     </div>
     <div class="automatic">
-      <p>Automatic</p>
+      <p><%= _(:automatic_label) %></p>
       <strong><%= tag.classifier_count %></strong>
     </div>
     <div class="date">
