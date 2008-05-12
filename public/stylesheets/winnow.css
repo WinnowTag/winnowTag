@@ -1457,7 +1457,6 @@ a.bookmarklet:hover {
 	width: 9.5em;
 }
 
-
 /*
 ** =tag
 */
@@ -1689,6 +1688,7 @@ a.bookmarklet:hover {
 .tag .extended .comment_form input {
 	float: right;
 }
+
 /*
 ** =invite
 */
