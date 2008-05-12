@@ -64,7 +64,6 @@ label {
   cursor: pointer;
 }
 
-
 input.example {
   color: #999;
 }
@@ -774,7 +773,6 @@ ul.tag_list li.public .name {
   background-image: url(../images/public.png);
   background-position: 5px center;
   padding-left: 20px;
-/*  color: #2691BF;*/
 }
 
 ul.tag_list li.public:hover .name {
@@ -1427,7 +1425,6 @@ a.bookmarklet:hover {
 }
 
 .feed.globally_excluded .summary:hover {
-/*  background-color: #F6d0E0;*/
   background-color: #F6d0d0;
 }
 
@@ -1437,7 +1434,6 @@ a.bookmarklet:hover {
 
 .feed .summary .description input {
 	margin: 0;
-/*	vertical-align: middle;*/
 }
 
 .feed .summary .info .filter {
@@ -1488,7 +1484,6 @@ a.bookmarklet:hover {
 }
 
 .tag.globally_excluded .summary:hover {
-/*  background-color: #F6d0E0;*/
   background-color: #F6d0d0;
 }
 
@@ -1593,14 +1588,15 @@ a.bookmarklet:hover {
 .tag .extended .comment form  {
 	padding: 0.5em 0.5em 0.5em .5em;
 	border-left: 10.22em solid #EAF0F5;
-/*	background-color: #E4F2FF;*/
 }
 
 .tag .extended .comment form  textarea {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
 	width: 100%;
 	border: 1px solid #C0C7CD;
 	height: 80px;
-	margin-bottom: 0.5em;
+  margin: -1px 0 0.5em -2px;
 }
 
 .tag .extended .comment form .input {
@@ -1755,7 +1751,6 @@ a.bookmarklet:hover {
 
 .invite dl dt {
 	clear: both;
-/*	float: left;*/
   font-weight: bold;
   color: #666;
 }
