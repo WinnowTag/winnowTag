@@ -29,6 +29,11 @@ body {
   height: 100%;
 }
 
+textarea {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;  
+}
+
 div#content > div.info {
   margin-left: 35%;
 }
@@ -1591,8 +1596,6 @@ a.bookmarklet:hover {
 }
 
 .tag .extended .comment form  textarea {
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 12px;
 	width: 100%;
 	border: 1px solid #C0C7CD;
 	height: 80px;
