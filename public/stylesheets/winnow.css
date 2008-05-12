@@ -1586,7 +1586,15 @@ a.bookmarklet:hover {
 
 .tag .extended .comment .body {
 	padding: 0.5em 0 0.5em .5em;
-	border-left: 10.22em solid #EAF0F5;
+	border-left: 10.25em solid #EAF0F5;
+}
+
+.tag .extended .comment .body *:first-child {
+  margin-top: 0;
+}
+
+.tag .extended .comment .body *:last-child {
+  margin-bottom: 0;  
 }
 
 .tag .extended .comment form  {
