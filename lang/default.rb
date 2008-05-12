@@ -389,10 +389,6 @@ Localization.define do |l|
 
   # app/views/tags/_public_tag.html.erb
   l.store :tags_last_trained,                       "Last Trained"
-  l.store :tags_training,                           "Training"
-  l.store :tags_count,                              "+%s / -%s"
-  l.store :tags_inspect,                            "Inspect %s"
-  l.store :tags_automatic,                          "Automatic"
   l.store :tags_feed_link,                          "Feed"
   l.store :tags_globally_exclude,                   "Globally Exclude"
   l.store :tags_subscribe,                          "Subscribe"
