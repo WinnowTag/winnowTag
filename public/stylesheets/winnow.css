@@ -1251,6 +1251,10 @@ a.bookmarklet:hover {
   font-size: 1em;
 }
 
+.folder .feed_name, .folder .tag_name {
+  display: none;
+}
+
 /*
 ** =user
 */
