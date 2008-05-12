@@ -94,11 +94,11 @@ ItemBrowser.prototype = {
   },
   
   updateEmptyMessage: function() {
-    var message = this.container.down(".empty");
+    var message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
     
     if (!message) {
       new Insertion.Bottom(this.container, '<div class="empty" style="display:none">No items matched your search criteria.</div>');
-      message = this.container.down(".empty");
+      message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
     }
     
     if(this.full && this.items.size() == 0) {
