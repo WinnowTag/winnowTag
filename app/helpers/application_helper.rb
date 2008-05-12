@@ -140,8 +140,17 @@ module ApplicationHelper
       globally_exclude_feed_path(:id => tag_or_feed.id)
     end
     
-    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1",current_user.globally_excluded?(tag_or_feed), 
+    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed), 
       :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+  end
+  
+  def subscribed_check_box(tag)
+    check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :disabled => tag_subscription_checkbox_disabled?(tag),
+			:onclick => remote_function(:url => subscribe_tag_path(tag), :method => 'put', :with => "{ subscribe: this.checked }")
+  end
+  
+  def tag_subscription_checkbox_disabled?(tag)
+    (current_user == tag.user || current_user.globally_excluded?(tag))
   end
   
   def tag_name_with_tooltip(tag, options = {})

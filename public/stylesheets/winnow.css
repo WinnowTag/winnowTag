@@ -1652,6 +1652,10 @@ a.bookmarklet:hover {
 	height: 1.2em;
 }
 
+.tag ul.controls li.disabled {
+	color: #aaa;
+}
+
 .tag ul.controls li .slider_track {
 	margin: 0.3em 0;
 }

@@ -1,4 +1,7 @@
 page[@tag].down('.state').update tag_state(@tag)
 page[@tag].remove_class_name("globally_excluded")
 page[@tag].remove_class_name("subscribed")
+page[@tag].down("li.subscribed").remove_class_name("disabled")
 page[@tag].add_class_name tag_classes(@tag)
+page[@tag].down("li.subscribed").add_class_name('disabled') if tag_subscription_checkbox_disabled?(@tag)
+page[@tag].down("##{dom_id(@tag, "subscribe")}").disabled = tag_subscription_checkbox_disabled?(@tag)
