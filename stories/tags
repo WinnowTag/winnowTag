@@ -8,7 +8,7 @@ Story: Tag Feeds
   
     Given a public tag in the system
   
-    When I access /tags/public/username/tag_id.atom  
+    When I access /username/tags/tagname.atom  
     
     Then the response is 200
     And the body is parseable by ratom

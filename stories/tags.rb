@@ -13,7 +13,7 @@ steps_for(:tags) do
     @tag = Tag.create!(:name => 'storytag', :user => @user, :public => true)
   end
   
-  When("I access /tags/public/username/tag_id.atom") do
+  When("I access /username/tags/tagname.atom") do
     get "/#{@tag.user.login}/tags/#{@tag.name}.atom"
   end
   
