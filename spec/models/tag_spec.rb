@@ -213,59 +213,44 @@ describe Tag do
     end
   end
   
-  describe '.to_atomsvc' do
+  describe '.to_atom' do
+    fixtures :tags, :users
     before(:each) do
-      @atomsvc = Tag.to_atomsvc(:base_uri => 'http://winnow.mindloom.org')
+      @atom = Tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
     end
     
-    it "should return an Atom::Pub:Service" do
-      @atomsvc.should be_an_instance_of(Atom::Pub::Service)
+    it "should have feed.updated as the maximum last created time" do
+      @atom.updated.should == Tag.maximum(:created_on)
     end
     
-    it "should have a single workspace" do
-      @atomsvc.should have(1).workspaces
+    it "should have an entry for every tag" do
+      @atom.should have(Tag.count).entries
     end
     
-    it "should have 'Tags' as the title of the workspace" do
-      @atomsvc.workspaces.first.title.should == 'Tag Training'
-    end
-    
-    it "should have a collection for each tag" do
-      @atomsvc.workspaces.first.should have(Tag.count).collections
-    end      
-
-    it "should have some tags" do
-      @atomsvc.workspaces.first.should have_at_least(1).collections
-    end
-    
-    it "should have a title in each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.title.should_not be_nil
-      end
-    end
-      
-    it "should have an empty app:accept element in each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.accepts.should == ['']
+    it "should have a title for every tag" do
+      @atom.entries.each do |e|
+        e.title.should_not be_nil
       end
     end
     
-    it "should have a url for each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.href.should_not be_nil
+    it "should have an id for every tag" do
+      @atom.entries.each do |e|
+        e.id.should_not be_nil
       end
     end
     
-    it "should have :base_uri/tags/:id/training for the url for each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.href.should match(%r{http://winnow.mindloom.org/tags/\d+/training})
+    it "should have a updated for every tag" do
+      @atom.entries.each do |e|
+        e.updated.should_not be_nil
       end
     end
     
-    it "should be parseable by ratom" do
-      lambda { Atom::Pub::Service.load_service(@atomsvc.to_xml) }.should_not raise_error
+    it "should have a link to training for every tag" do
+      @atom.entries.each do |e|
+        e.links.detect {|l| l.rel = "#{CLASSIFIER_NS}/training" && l.href =~ %r{http://winnow.mindloom.org/\w+/tags/\w+/training.atom} }.should_not be_nil
+      end
     end
-  end
+  end  
 end
 
 describe 'to_atom', :shared => true do

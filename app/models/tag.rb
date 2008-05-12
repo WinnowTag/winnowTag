@@ -220,17 +220,18 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  def self.to_atomsvc(options = {})
-    Atom::Pub::Service.new do |service|
-      service.workspaces << Atom::Pub::Workspace.new  do |wkspc|
-        # TODO: localization
-        wkspc.title = "Tag Training"
-        Tag.find(:all).each do |tag|
-          wkspc.collections << Atom::Pub::Collection.new do |collection|
-            collection.title = tag.name
-            collection.href = "#{options[:base_uri]}/tags/#{tag.id}/training"
-            collection.accepts << ''
-          end
+  def self.to_atom(options = {})
+    Atom::Feed.new do |feed|
+      feed.title = "Winnow tags"
+      feed.updated = Tag.maximum(:created_on)
+        
+      Tag.find(:all, :include => :user).each do |tag|
+        feed.entries << Atom::Entry.new do |entry|
+          entry.title = tag.name
+          entry.id    = "#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}"
+          entry.updated = tag.updated_on
+          entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
+                                        :href => "#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}/training.atom") 
         end
       end
     end
