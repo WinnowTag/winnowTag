@@ -4,7 +4,7 @@
     <div class="date"><%= format_date(comment.updated_at) %></div>
     <% if can_edit_comment?(comment) -%>
     <div class="actions">
-      <%= link_to_remote "Edit", :url => edit_comment_path(comment), :method => :get %>
+      <%= link_to_remote "Edit", :url => edit_comment_path(comment), :method => :get, :condition => "!$(this).up('.comment').down('form')" %>
       <%= link_to_remote "Destroy", :url => comment_path(comment), :method => :delete, :confirm => "Are you sure?" %>
     </div>
     <% end -%>
