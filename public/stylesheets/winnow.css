@@ -122,13 +122,6 @@ body > h2, body > h3, body > h4 {
 /*
 ** =common
 */
-.item_spacer {
-  background-image: url(/images/item_spacer_bg.png);
-  opacity: 0.25;
-  -moz-opacity: 0.25;
-  filter:alpha(opacity=25);
-}
-
 a.close img {
   float: right;
   width: 12px;
