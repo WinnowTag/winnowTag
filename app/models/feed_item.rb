@@ -21,6 +21,9 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
+  SEARCH_OPTIONS = :options_for_filters_full_ferret
+  # SEARCH_OPTIONS = :options_for_filters_part_ferret
+  
   acts_as_ferret :fields => [:title, :real_content, :author, :tag_ids_with_spaces, :user_tag_ids_with_spaces, :feed_id, :reader_ids_with_spaces]
 
   def real_content
@@ -237,7 +240,7 @@ class FeedItem < ActiveRecord::Base
   def self.find_with_filters(filters = {})    
     user = filters[:user]
     
-    options_for_find = options_for_filters_from_ferret(filters).merge(:select => [
+    options_for_find = send(SEARCH_OPTIONS, filters).merge(:select => [
       'feed_items.*', 'feeds.title AS feed_title', 
       "EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = #{user.id}) AS read_by_current_user"
     ].join(","))
@@ -274,11 +277,11 @@ class FeedItem < ActiveRecord::Base
   # Completed in 0.09527 (10 reqs/sec) | Rendering: 0.00981 (10%) | DB: 0.01750 (18%) | 200 OK [http://localhost/feed_items?order=date&direction=desc&mode=all&text_filter=lotswholetime]
   
   def self.mark_read(filters)
-    options_for_find = options_for_filters(filters)   
+    options_for_find = send(SEARCH_OPTIONS, filters)   
 
     feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, UTC_TIMESTAMP() FROM feed_items"
     feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
-    feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
+    feed_item_ids_sql << " WHERE #{sanitize_sql(options_for_find[:conditions])}" unless options_for_find[:conditions].blank?
 
     ReadItem.connection.execute "INSERT IGNORE INTO read_items (user_id, feed_item_id, created_at) #{feed_item_ids_sql}"
   end
@@ -302,7 +305,7 @@ class FeedItem < ActiveRecord::Base
   #
   # This will return a Hash of options suitable for passing to FeedItem.find.
   # 
-  def self.options_for_filters(filters) # :doc:
+  def self.options_for_filters_part_ferret(filters) # :doc:
     filters.assert_valid_keys(:limit, :order, :direction, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
     options = {:limit => filters[:limit], :offset => filters[:offset]}
     
@@ -330,14 +333,14 @@ class FeedItem < ActiveRecord::Base
     filters[:mode] ||= "unread"
 
     joins = []
-    add_text_filter_joins!(filters[:text_filter], joins)
+    # add_text_filter_joins!(filters[:text_filter], joins)
 
     conditions = []
 
-    # unless filters[:text_filter].blank?
-    #   feed_item_ids = FeedItem.find_ids_with_ferret(filters[:text_filter], :limit => :all).last.map { |h| h[:id] }
-    #   conditions << "feed_items.id IN (#{feed_item_ids.join(',')})"
-    # end
+    unless filters[:text_filter].blank?
+      feed_item_ids = FeedItem.find_ids_with_ferret(filters[:text_filter], :limit => :all).last.map { |h| h[:id] }
+      conditions << "feed_items.id IN (#{feed_item_ids.join(',')})" unless feed_item_ids.blank?
+    end
     
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
@@ -370,7 +373,7 @@ class FeedItem < ActiveRecord::Base
     options
   end  
   
-  def self.options_for_filters_from_ferret(filters) # :doc:
+  def self.options_for_filters_full_ferret(filters) # :doc:
     filters.assert_valid_keys(:limit, :order, :direction, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
     options = {:limit => filters[:limit], :offset => filters[:offset]}
     
@@ -443,7 +446,12 @@ class FeedItem < ActiveRecord::Base
     feed_item_ids = if query.blank?
       options
     else
-      options.merge(:conditions => ["feed_items.id IN (?)", FeedItem.find_ids_with_ferret(query.join(" "), :limit => :all).last.map { |h| h[:id] }])      
+      feed_item_ids = FeedItem.find_ids_with_ferret(query.join(" "), :limit => :all).last.map { |h| h[:id] }
+      if feed_item_ids.blank?
+        options.merge(:conditions => "feed_items.id IS NULL")
+      else
+        options.merge(:conditions => ["feed_items.id IN (?)", feed_item_ids])
+      end
     end
   end
   
