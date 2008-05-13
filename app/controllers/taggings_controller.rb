@@ -30,6 +30,7 @@ class TaggingsController < ApplicationController
       params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
       @tagging = current_user.taggings.build(params[:tagging])
       @feed_item = @tagging.feed_item
+      @feed_item.reload.save
       
       if @tagging.save
         wants.js
@@ -55,6 +56,7 @@ class TaggingsController < ApplicationController
     
     current_user.taggings.find_by_feed_item(@feed_item, :all, 
       :conditions => { :classifier_tagging => false, :tag_id => @tag }).each(&:destroy)            
+    @feed_item.reload.save
 
     respond_to do |wants|
       wants.js

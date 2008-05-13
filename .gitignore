@@ -3,6 +3,7 @@ config/collector.conf
 config/database.yml
 db/development_structure.sql
 doc/TODO
+index
 log
 tmp
 .DS_Store
