@@ -6,12 +6,12 @@
       
     <div class="sidebar">      
       <div class="block actions clearfix">
-        <h5><%= _(:actions) %></h5>
         <ul class="controls">
           <li class="first"><%= bias_slider(subscribed_tag, :disabled => true) %></li>
-          <li><%= globally_exclude_check_box(subscribed_tag) %> <%= _(:tags_globally_exclude) %></li>
+          <li class="state">
+            <%= render :partial => "state.html.erb", :locals => { :tag => subscribed_tag } %>
+          </li>
           <li><%= link_to_remote _(:copy), :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, subscribed_tag.name), :class => "duplicate_icon" } %></li>
-          <li><%= link_to_remote 'Unsubscribe', :url => unsubscribe_tag_path(subscribed_tag), :method => 'put', :html => { :title => _(:tags_destroy_link_title, subscribed_tag.name), :class => "destroy_icon", :id => dom_id(subscribed_tag, 'unsubscribe') } %></li>
           <li><%= link_to _(:view_all_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'view_icon' %></li>
           <li><%= link_to _(:view_tagged_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :class => "view_icon" %></li>
           <li><%= link_to _(:tags_feed_link), url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %></li>

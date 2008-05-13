@@ -6,10 +6,11 @@
       
     <div class="sidebar">      
       <div class="block actions clearfix">
-        <h5><%= _(:actions) %></h5>
         <ul class="controls">
           <li class="first"><%= bias_slider(tag) %></li>
-          <li><%= globally_exclude_check_box(tag) %> <%= _(:tags_globally_exclude) %></li>
+          <li class="state">
+            <%= render :partial => "state.html.erb", :locals => { :tag => tag } %>
+          </li>
           <li>
             <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <%= _(:tags_public) %>
           </li>

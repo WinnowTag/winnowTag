@@ -6,12 +6,11 @@
       
     <div class="sidebar">      
       <div class="block actions clearfix">
-        <h5><%= _(:actions) %></h5>
         <ul class="controls">
-          <li class="first"><%= bias_slider(public_tag, :disabled => true) %></li>
-          <li class="globally_excluded"><%= globally_exclude_check_box(public_tag) %> <%= _(:tags_globally_exclude) %></li>
-          <li class="subscribed<%= tag_subscription_checkbox_disabled?(public_tag) ? " disabled" : "" %>"><%= subscribed_check_box(public_tag)  %> <%= _(:tags_subscribe) %>
-    			</li>
+          <li class="first"><%= bias_slider(public_tag, :disabled => true) %></li>  
+          <li class="state">
+            <%= render :partial => "state.html.erb", :locals => { :tag => public_tag } %>
+          </li>
           <li><%= link_to_remote _(:copy), :url => tags_path(:copy => public_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{public_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, public_tag.name), :class => "duplicate_icon" } %></li>
           <li><%= link_to _(:view_all_items, public_tag.name), feed_items_path(:anchor => "tag_ids=#{public_tag.id}"), :class => 'view_icon' %></li>
           <li><%= link_to _(:view_tagged_items, public_tag.name), feed_items_path(:anchor => "tag_ids=#{public_tag.id}&mode=moderated"), :class => "view_icon" %></li>

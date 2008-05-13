@@ -1491,19 +1491,23 @@ a.bookmarklet:hover {
   background-color: #F6d0d0;
 }
 
-.tag .state {
+.tag .summary .state {
 	font-size: 1.5em;
 	letter-spacing: -1px;
 	line-height: .97em;
 	text-transform: uppercase;
 }
 
-.tag.subscribed .state {
+.tag.subscribed .summary .state {
 	color: #52984B;
 }
 
-.tag.globally_excluded .state {
+.tag.globally_excluded .summary .state {
 	color: #C12A2F;
+}
+
+.tag .summary .info .comments {
+	width: 6em;
 }
 
 .tag .summary .info .positive {
@@ -1519,9 +1523,13 @@ a.bookmarklet:hover {
 }
 
 .tag .summary .info .date {
-	width: 9.5em;
+	width: 8em;
 }
 
+.tag .summary .info .comments strong {
+/*	color: #52718B;*/
+	color: #105CB6;
+}
 
 .tag .summary .info .positive strong {
 	color: #52984B;
@@ -1597,7 +1605,11 @@ a.bookmarklet:hover {
   margin-bottom: 0;  
 }
 
-.tag .extended .comment form  {
+.tag .extended .comment_form {
+	border-top: 1px solid #C0C7CD;
+}
+
+.tag .extended .comment form {
 	padding: 0.5em 0.5em 0.5em .5em;
 	border-left: 10.22em solid #EAF0F5;
 }
@@ -1640,6 +1652,9 @@ a.bookmarklet:hover {
 	vertical-align: middle;
 }
 
+.tag .extended .sidebar .actions .state label {
+	margin-right: 1.5em;
+}
 
 .tag ul.controls {
 	margin: 0;
@@ -1648,8 +1663,7 @@ a.bookmarklet:hover {
 }
 
 .tag ul.controls li {
-	padding: 0.3em 0;
-	height: 1.2em;
+	padding: 0.5em 0;
 }
 
 .tag ul.controls li.disabled {

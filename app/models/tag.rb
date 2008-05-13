@@ -256,7 +256,8 @@ class Tag < ActiveRecord::Base
 
     if options[:own]
       joins << "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
-      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL)"
+      joins << "LEFT JOIN tag_exclusions ON tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}"
+      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL OR tag_exclusions.id IS NOT NULL)"
       values << options[:user].id
     end
         

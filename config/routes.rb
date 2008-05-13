@@ -56,6 +56,7 @@ ActionController::Routing::Routes.draw do |map|
                   :auto_complete_for_sidebar => :any
                 },
                 :member => { 
+                  :update_state => :put,
                   :globally_exclude => :post,
                   :publicize => :put, 
                   :subscribe => :put,

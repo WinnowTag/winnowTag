@@ -4,6 +4,10 @@
       <p><!-- <span>Author</span> --> <%= tag.user.display_name %></p>
       <strong class="state"><%= tag_state(tag) %></strong>
     </div>
+    <div class="comments">
+      <p><%= _(:comments) %></p>  
+      <strong><%= tag.comments.count %></strong>
+    </div>
     <div class="positive">
       <p><%= _(:positive) %></p>
       <strong><%= tag.positive_count %></strong>

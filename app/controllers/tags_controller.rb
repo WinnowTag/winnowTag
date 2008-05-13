@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
   before_filter :login_required_unless_local, :only => :index
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :update_state, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
   before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
   before_filter :ensure_user_is_tag_owner_unless_local, :only => :classifier_taggings
   
@@ -206,6 +206,25 @@ class TagsController < ApplicationController
       TagSubscription.delete_all(:tag_id => @tag)
     end
     render :nothing => true
+  end
+  
+  def update_state
+    @tag = Tag.find(params[:id])
+    
+    if params[:state] == 'globally_exclude'
+      current_user.tag_exclusions.create! :tag_id => @tag.id
+      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      Folder.remove_tag(current_user, @tag.id)
+    elsif params[:state] == 'subscribe'
+      TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+    else
+      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      Folder.remove_tag(current_user, @tag.id)
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+    end
+    
+    respond_to :js
   end
   
   def globally_exclude

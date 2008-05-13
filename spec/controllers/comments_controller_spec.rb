@@ -37,7 +37,7 @@ describe CommentsController do
     before(:each) do
       @comment = mock_model(Comment)
       
-      Comment.stub!(:find).and_return(@comment)
+      Comment.stub!(:find_for_user).and_return(@comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
@@ -48,7 +48,7 @@ describe CommentsController do
     end
     
     it "finds the comment" do
-      Comment.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find_for_user).with(@current_user, "1").and_return(@comment)
       do_get
     end
     
@@ -67,7 +67,7 @@ describe CommentsController do
     before(:each) do
       @comment = mock_model(Comment, :update_attributes! => nil)
       
-      Comment.stub!(:find).and_return(@comment)
+      Comment.stub!(:find_for_user).and_return(@comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
@@ -78,7 +78,7 @@ describe CommentsController do
     end
     
     it "finds the comment" do
-      Comment.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find_for_user).with(@current_user, "1").and_return(@comment)
       do_put
     end
     
@@ -102,7 +102,7 @@ describe CommentsController do
     before(:each) do
       @comment = mock_model(Comment, :destroy => nil)
       
-      Comment.stub!(:find).and_return(@comment)
+      Comment.stub!(:find_for_user).and_return(@comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
@@ -113,7 +113,7 @@ describe CommentsController do
     end
     
     it "finds the comment" do
-      Comment.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find_for_user).with(@current_user, "1").and_return(@comment)
       do_delete
     end
     
