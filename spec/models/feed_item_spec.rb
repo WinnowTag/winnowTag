@@ -135,6 +135,7 @@ describe FeedItem do
     
       user_1.tag_exclusions.create! :tag_id => tag_2.id
     
+      ActsAsFerret::rebuild_index 'feed_item'
       FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'id').should == [feed_item_1]
     end
 
@@ -162,6 +163,7 @@ describe FeedItem do
       user_1.tag_exclusions.create! :tag_id => tag_2.id
       user_1.tag_exclusions.create! :tag_id => tag_3.id
     
+      ActsAsFerret::rebuild_index 'feed_item'
       FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'id').should == [feed_item_1]
     end
   
@@ -195,6 +197,7 @@ describe FeedItem do
 
       FeedItem.mark_read_for(user_1.id, feed_item_2.id)
       
+      ActsAsFerret::rebuild_index 'feed_item'
       FeedItem.find_with_filters(:user => user_1, :mode => "unread", :order => "id").should == [feed_item_1]
     end
     
@@ -541,6 +544,7 @@ describe FeedItem do
   
     # Tests for the find_with_filters method
     it "find_with_show_untagged_returns_all_items" do
+      ActsAsFerret::rebuild_index 'feed_item'
       feed_items = FeedItem.find_with_filters(:user => users(:quentin), :order => 'id')
       assert_equal FeedItem.find(1, 2, 3, 4), feed_items
     end
@@ -551,6 +555,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag, :strength => 0)
     
+      ActsAsFerret::rebuild_index 'feed_item'
       expected = FeedItem.find(2, 4)
       assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :mode => "moderated", :order => 'id'))
     end
@@ -560,6 +565,7 @@ describe FeedItem do
       tag = Tag(user, 'tag1')
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
     end
   
@@ -570,6 +576,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
     
+      ActsAsFerret::rebuild_index 'feed_item'
       expected = [FeedItem.find(2), FeedItem.find(3)]
       actual = FeedItem.find_with_filters(:user => users(:quentin), :tag_ids => "#{tag.id},#{tag2.id}", :order => 'id')
       assert_equal expected, actual
@@ -581,6 +588,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
 
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id')
     end  
 
@@ -591,6 +599,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :classifier_tagging => true)
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
 
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id')
     end
   
@@ -603,6 +612,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => users(:aaron), :feed_item => FeedItem.find(3), :tag => atag)
 
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
     end
   
@@ -612,6 +622,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :classifier_tagging => true)
 
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id')
     end
   
@@ -624,6 +635,7 @@ describe FeedItem do
   
       user.tag_exclusions.create! :tag_id => tag1.id
     
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal FeedItem.find(1, 3, 4), FeedItem.find_with_filters(:user => user, :order => 'id')
     end
   
@@ -639,6 +651,7 @@ describe FeedItem do
       user.tag_exclusions.create! :tag_id => tag1.id
       user.tag_exclusions.create! :tag_id => tag2.id
     
+      ActsAsFerret::rebuild_index 'feed_item'
       expected = FeedItem.find(1, 4)
       assert_equal expected, FeedItem.find_with_filters(:user => user, :order => 'id')
     end
@@ -652,6 +665,7 @@ describe FeedItem do
   
       user.tag_exclusions.create! :tag_id => tag1.id
     
+      ActsAsFerret::rebuild_index 'feed_item'
       expected = FeedItem.find(1, 3, 4)
       assert_equal expected, FeedItem.find_with_filters(:user => user, :order => 'id')
     end
@@ -666,6 +680,7 @@ describe FeedItem do
   
       user.tag_exclusions.create! :tag_id => tag2.id
     
+      ActsAsFerret::rebuild_index 'feed_item'
       expected = [FeedItem.find(2)]
       assert_equal expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag1.id.to_s, :order => 'id')
     end
@@ -674,6 +689,7 @@ describe FeedItem do
       user = users(:quentin)
       tag1 = Tag(user, 'tag1')
     
+      ActsAsFerret::rebuild_index 'feed_item'
       expected = FeedItem.find(1, 2, 3)
       actual = FeedItem.find_with_filters(:user => user, :feed_ids => "1", :order => 'id')
       assert_equal expected, actual
@@ -682,6 +698,7 @@ describe FeedItem do
     it "find_with_multiple_feed_filters_and_show_untagged_should_return_only_items_from_the_included_feeds" do
       feed_item5 = FeedItem.create!(:feed_id => 3, :link => "http://fifth")
     
+      ActsAsFerret::rebuild_index 'feed_item'
       expected = FeedItem.find(1, 2, 3, 4)
       actual = FeedItem.find_with_filters(:user => users(:quentin), :feed_ids => "1,2", :order => 'id')
       assert_equal expected, actual
@@ -776,18 +793,20 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
       Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag)
   
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal FeedItem.find(2, 4), FeedItem.find_with_filters(:user => user, :feed_ids => "2", :tag_ids => tag.id.to_s, :order => 'id')
     end
   
-    it "options_for_filters_creates_text_filter" do
-      assert_match(/MATCH/, FeedItem.send(:options_for_filters, :user => users(:quentin), :text_filter => "text")[:joins])
-    end
+    # it "options_for_filters_creates_text_filter" do
+    #   assert_match(/MATCH/, FeedItem.send(:options_for_filters, :user => users(:quentin), :text_filter => "text")[:joins])
+    # end
     
     it "find_with_non_existent_include_tag_filter_should_ignore_the_nonexistent_tag" do
       user = users(:quentin)
       tag = Tag(user, 'tag1')
       Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
     
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => "#{tag.id},#{tag.id + 1}")
     end
 
@@ -799,6 +818,7 @@ describe FeedItem do
       user.tag_exclusions.create! :tag_id => tag.id
       user.tag_exclusions.create! :tag_id => tag.id + 1
     
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal FeedItem.find(1,3,4), FeedItem.find_with_filters(:user => user, :order => 'id')
     end
   
@@ -819,8 +839,8 @@ describe FeedItem do
     
       TagSubscription.create! :tag => tag2, :user => quentin
     
+      ActsAsFerret::rebuild_index 'feed_item'
       assert_equal [f1, f2], FeedItem.find_with_filters(:user => quentin, :tag_ids => "#{tag1.id},#{tag2.id}", :order => 'id')
     end
-
   end
 end

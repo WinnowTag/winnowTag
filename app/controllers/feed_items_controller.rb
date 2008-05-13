@@ -65,13 +65,14 @@ class FeedItemsController < ApplicationController
     if params[:id]
       @feed_item_id = params[:id]
       FeedItem.mark_read_for(current_user.id, @feed_item_id)
+      FeedItem.find(@feed_item_id).save
     else
       filters = { :feed_ids => params[:feed_ids],
                   :tag_ids => params[:tag_ids],
                   :text_filter => params[:text_filter],
                   :mode => params[:mode],
                   :user => current_user }
-      
+      # TODO: Update ferret index...
       FeedItem.mark_read(filters)
     end
     render :nothing => true
@@ -80,6 +81,7 @@ class FeedItemsController < ApplicationController
   def mark_unread
     @feed_item = FeedItem.find(params[:id])
     current_user.read_items.find(:all, :conditions => {:feed_item_id => @feed_item}).each {|ri| ri.destroy}
+    @feed_item.reload.save
     render :nothing => true
   end
   

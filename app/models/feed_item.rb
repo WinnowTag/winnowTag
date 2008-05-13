@@ -21,6 +21,24 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
+  acts_as_ferret :fields => [:title, :real_content, :author, :tag_ids_with_spaces, :user_tag_ids_with_spaces, :feed_id, :reader_ids_with_spaces]
+
+  def real_content
+    content.content if content
+  end
+  
+  def tag_ids_with_spaces
+    tag_ids.join(" ")
+  end
+  
+  def user_tag_ids_with_spaces
+    tags.from_user.map(&:id).join(" ")
+  end
+  
+  def reader_ids_with_spaces
+    reader_ids.join(" ")
+  end
+  
   attr_accessor :taggings_to_display
 
   validates_presence_of :link
@@ -45,6 +63,9 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
+  has_many :read_items
+  has_many :readers, :through => :read_items, :source => :user
+    
   # Finds some random items with their tokens.  
   #
   # Instead of using order by rand(), which is very slow for large tables,
@@ -175,10 +196,10 @@ class FeedItem < ActiveRecord::Base
   # Gets a count of the number of items that meet conditions applied by the filters.
   #
   # See options_for_filters.
-  def self.count_with_filters(filters = {})
-    options = options_for_filters(filters).merge(:select => "feed_items.id").except(:limit, :offset, :order)
-    FeedItem.count(options)
-  end
+  # def self.count_with_filters(filters = {})
+  #   options = options_for_filters(filters).merge(:select => "feed_items.id").except(:limit, :offset, :order)
+  #   FeedItem.count(options)
+  # end
   
   def self.atom_with_filters(filters = {})
     base_uri = filters.delete(:base_uri)
@@ -216,10 +237,11 @@ class FeedItem < ActiveRecord::Base
   def self.find_with_filters(filters = {})    
     user = filters[:user]
     
-    options_for_find = options_for_filters(filters).merge(:select => [
+    options_for_find = options_for_filters_from_ferret(filters).merge(:select => [
       'feed_items.*', 'feeds.title AS feed_title', 
       "EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = #{user.id}) AS read_by_current_user"
     ].join(","))
+    options_for_find[:joins] ||= ""
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
 
     feed_items = FeedItem.find(:all, options_for_find)
@@ -244,6 +266,12 @@ class FeedItem < ActiveRecord::Base
     
     feed_items
   end
+  
+  # SELECT feed_items.*,feeds.title AS feed_title,EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = 16) AS read_by_current_user FROM `feed_items` INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id AND MATCH(content) AGAINST('lotswholetime' IN BOOLEAN MODE) LEFT JOIN feeds ON feed_items.feed_id = feeds.id WHERE (feed_items.feed_id NOT IN (256,1024)) ORDER BY feed_items.updated DESC LIMIT 40
+  # Completed in 0.11267 (8 reqs/sec) | Rendering: 0.01139 (10%) | DB: 0.02513 (22%) | 200 OK [http://localhost/feed_items?order=date&direction=desc&mode=all&text_filter=lotswholetime]
+
+  # title|real_content|author: lotswholetime
+  # Completed in 0.09527 (10 reqs/sec) | Rendering: 0.00981 (10%) | DB: 0.01750 (18%) | 200 OK [http://localhost/feed_items?order=date&direction=desc&mode=all&text_filter=lotswholetime]
   
   def self.mark_read(filters)
     options_for_find = options_for_filters(filters)   
@@ -305,6 +333,12 @@ class FeedItem < ActiveRecord::Base
     add_text_filter_joins!(filters[:text_filter], joins)
 
     conditions = []
+
+    # unless filters[:text_filter].blank?
+    #   feed_item_ids = FeedItem.find_ids_with_ferret(filters[:text_filter], :limit => :all).last.map { |h| h[:id] }
+    #   conditions << "feed_items.id IN (#{feed_item_ids.join(',')})"
+    # end
+    
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
     tags = if filters[:tag_ids]
@@ -334,6 +368,83 @@ class FeedItem < ActiveRecord::Base
     options[:joins] = joins.uniq.join(" ")
     
     options
+  end  
+  
+  def self.options_for_filters_from_ferret(filters) # :doc:
+    filters.assert_valid_keys(:limit, :order, :direction, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
+    options = {:limit => filters[:limit], :offset => filters[:offset]}
+    
+    direction = case filters[:direction]
+      when "asc", "desc"
+        filters[:direction].upcase
+    end
+    
+    options[:order] = case filters[:order]
+    when "strength"
+      if filters[:tag_ids].blank?
+        tag_ids = (filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags).map(&:id).join(',')
+      else
+        tag_ids = Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]]).map(&:id).join(",")
+      end
+      "(SELECT MAX(taggings.strength) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) #{direction}, feed_items.updated #{direction}"
+    when "date"
+      "feed_items.updated #{direction}"
+    when "id"
+      "feed_items.id #{direction}"
+    else
+      "feed_items.updated DESC"
+    end
+
+    filters[:mode] ||= "unread"
+
+    query = []
+
+    feeds = Feed.find_all_by_id(filters[:feed_ids].to_s.split(','))
+    unless feeds.blank?
+      query << "feed_id: (#{feeds.map(&:id).join(' OR ')})"
+    end
+    
+    tags = if filters[:tag_ids]
+      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]])
+    elsif filters[:mode] =~ /moderated/i # limit the search to tagged items
+      filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
+    else
+      tags = []
+    end
+    unless tags.blank?
+      if filters[:mode] =~ /moderated/i
+        query << "user_tag_ids_with_spaces: (#{tags.map(&:id).join(' OR ')})"
+      else
+        query << "tag_ids_with_spaces: (#{tags.map(&:id).join(' OR ')})"
+      end
+    end
+    query = ["(#{query.join(' OR ')})"] unless query.blank?
+
+    unless filters[:text_filter].blank?
+      query << "title|real_content|author: #{filters[:text_filter]}"
+    end
+    
+    excluded_tags = filters[:user].excluded_tags
+    if filters[:mode] !~ /moderated/i && excluded_tags.any? # don't filter excluded items when showing moderated items
+      query << "-tag_ids_with_spaces: (#{excluded_tags.map(&:id).join(' OR ')})"
+    end
+    
+    excluded_feeds = filters[:user].excluded_feeds
+    if filters[:mode] !~ /moderated/i && excluded_feeds.any? # don't filter excluded items when showing moderated items
+      query << "-feed_id: (#{excluded_feeds.map(&:id).join(' OR ')})"
+    end
+    
+    if filters[:mode] =~ /unread/i # only filter out read items when showing unread items
+      query << "-reader_ids_with_spaces: #{filters[:user].id}"
+    end
+
+    # puts "FERRET QUERY: #{query.join(' ')}"
+
+    feed_item_ids = if query.blank?
+      options
+    else
+      options.merge(:conditions => ["feed_items.id IN (?)", FeedItem.find_ids_with_ferret(query.join(" "), :limit => :all).last.map { |h| h[:id] }])      
+    end
   end
   
   # Add any text_filter. This is done using a inner join on feed_item_contents with an

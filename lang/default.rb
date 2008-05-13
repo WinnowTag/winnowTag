@@ -203,10 +203,8 @@ Localization.define do |l|
   l.store :add_tag_button,                        "Add Tag"
   l.store :cancel_add_tag_link,                   "cancel"
 
-
   # app/views/feed_items/_text_filter_controls.html.erb
   l.store :feed_items_search_placeholder,         "Search Items..."
-  l.store :search_term_too_short,                 "Search requires a word with at least 4 characters"
 
   # app/views/feed_items/index.html.erb
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
