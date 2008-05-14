@@ -86,6 +86,20 @@ describe ClassifierController do
       post "classify"
       response.should be_success
     end
+    
+    it "should start multiple jobs for multiple changed tags" do
+      @user.stub!(:changed_tags).and_return([mock_model(Tag, :name => 'tag1'), mock_model(Tag, :name => 'tag2')])
+      Remote::ClassifierJob.should_receive(:create).
+                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag1/training.atom").
+                            and_return(mock_model(Remote::ClassifierJob, :id => 'JOB-1'))
+      Remote::ClassifierJob.should_receive(:create).
+                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag2/training.atom").
+                            and_return(mock_model(Remote::ClassifierJob, :id => 'JOB-2'))
+                          
+     post "classify"
+     response.should be_success
+     session[:classification_job_id].should == ['JOB-1', 'JOB-2']
+    end
   end
   
   describe '#status' do
@@ -115,6 +129,18 @@ describe ClassifierController do
       assert_response 500
       response.headers['X-JSON'].should include('"error_message": "No classification process running"')
     end
+    
+    it "should combine the progress for multiple classification jobs" do
+      job1 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 75)
+      job2 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 25)
+      Remote::ClassifierJob.should_receive(:find).with("JOB-1").and_return(job1)
+      Remote::ClassifierJob.should_receive(:find).with("JOB-2").and_return(job2)
+      session[:classification_job_id] = ["JOB-1", "JOB-2"]      
+      
+      get "status"
+      response.should be_success
+      response.headers['X-JSON'].should include('"progress": 50.0')      
+    end
   end
   
   describe '#cancel' do
@@ -125,6 +151,19 @@ describe ClassifierController do
       Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
       session[:classification_job_id] = ["JOB-ID"]
     
+      post "cancel"
+      session[:classification_job_id].should be_nil
+    end
+    
+    it "should cancel all classification jobs" do
+      job1 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 75)
+      job2 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 25)
+      job1.should_receive(:destroy)
+      job2.should_receive(:destroy)
+      Remote::ClassifierJob.should_receive(:find).with("JOB-1").and_return(job1)
+      Remote::ClassifierJob.should_receive(:find).with("JOB-2").and_return(job2)
+      session[:classification_job_id] = ["JOB-1", "JOB-2"]      
+      
       post "cancel"
       session[:classification_job_id].should be_nil
     end
