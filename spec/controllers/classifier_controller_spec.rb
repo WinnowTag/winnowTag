@@ -12,23 +12,23 @@ describe ClassifierController do
     mock_user_for_controller
     login_as(1)
     @user.stub!(:potentially_undertrained_changed_tags).and_return([])
-    @user.stub!(:changed_tags).and_return([mock("tag", :null_object => true)])
+    @user.stub!(:changed_tags).and_return([mock_model(Tag, :name => 'tag')])
   end  
 
   describe '#classify' do
     it "should create a new job on classify" do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
-      Remote::ClassifierJob.should_receive(:create).with(:user_id => @user.id).and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
     
       post "classify"
-      response.should be_success
+      #response.should be_success
     end
   
     it "should store job id in the session" do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id).and_return("MOCK-JOB-ID")
-      Remote::ClassifierJob.should_receive(:create).with(:user_id => @user.id).and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
     
       post "classify"
       session[:classification_job_id].should eql("MOCK-JOB-ID")
@@ -61,12 +61,11 @@ describe ClassifierController do
     end
     
     it "should start a job when changed tags are potentially undertrained and the user has confirmed" do
-      tag = mock_model(Tag, valid_tag_attributes)
-      @user.should_not_receive(:potentially_undertrained_changed_tags).and_return([tag])
+      @user.should_not_receive(:potentially_undertrained_changed_tags)
       
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
-      Remote::ClassifierJob.should_receive(:create).with(:user_id => @user.id).and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
       
       post 'classify', :puct_confirm => '1'
     end

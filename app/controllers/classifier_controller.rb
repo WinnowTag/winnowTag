@@ -33,7 +33,10 @@ class ClassifierController < ApplicationController
         elsif current_user.changed_tags.empty?
           raise ClassificationStartException.new(_(:tags_not_changed), 500)
         else
-          job = Remote::ClassifierJob.create(:user_id => current_user.id)          
+          tag = current_user.changed_tags.first
+          tag_url = url_for(:controller => 'tags', :action => 'training', :format => 'atom', :user => current_user.login, :tag_name => tag.name)
+          puts "create with #{tag_url}"
+          job = Remote::ClassifierJob.create(:tag_url => tag_url)         
           session[:classification_job_id] = job.id
         end
         
