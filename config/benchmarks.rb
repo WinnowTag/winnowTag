@@ -18,4 +18,4 @@ RAILS_BENCHMARKER = RailsBenchmark.new
 # Customize the code below if your benchmark needs session data.
 
 require 'user'
-RAILS_BENCHMARKER.session_data = {:user => User.find_by_login('seangeo').id}
+RAILS_BENCHMARKER.session_data = {:user => 1}
