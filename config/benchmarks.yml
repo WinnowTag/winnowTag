@@ -1,17 +1,22 @@
 default:
-   fi_index, fi_ajax_offset0_limit40, fi_ajax_offset1000_limit40, users_index
+   fi_ajax_single_tag_filter, fi_ajax_single_feed_filter, fi_ajax_single_text_filter
 
-feed_items:
-    fi_index, fi_ajax_offset0_limit40, fi_ajax_offset1000_limit40
-    
 fi_index:
-   uri: /feed_items
+   uri: /feed_items.js
+   session_data:
+      user: 1
    
-fi_ajax_offset0_limit40:
-    uri: /feed_items/index/0.js?feed_filter=all&tag_filter=all
+fi_ajax_single_tag_filter:
+    uri: /feed_items.js?order=date&direction=desc&mode=all&tag_ids=195
+    session_data:
+      user: 1
     
-fi_ajax_offset1000_limit40:
-    uri: /feed_items/index/0.js?feed_filter=all&tag_filter=all&offset=1000
-        
-users_index:
-   uri: /users
+fi_ajax_single_feed_filter:
+    uri: /feed_items.js?order=date&direction=desc&mode=all&feed_ids=771
+    session_data:
+      user: 1
+
+fi_ajax_single_text_filter:
+    uri: /feed_items.js?order=date&direction=desc&mode=all&text_filter=ruby
+    session_data:
+      user: 1
