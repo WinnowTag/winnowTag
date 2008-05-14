@@ -22,7 +22,7 @@ describe ClassifierController do
       Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
     
       post "classify"
-      #response.should be_success
+      response.should be_success
     end
   
     it "should store job id in the session" do
@@ -31,7 +31,7 @@ describe ClassifierController do
       Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
     
       post "classify"
-      session[:classification_job_id].should eql("MOCK-JOB-ID")
+      session[:classification_job_id].should == ["MOCK-JOB-ID"]
     end
   
     it "should not start a job when no tags have changed" do
@@ -46,7 +46,7 @@ describe ClassifierController do
       job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING)
       Remote::ClassifierJob.should_receive(:find).with("EXISTING-JOB-ID").and_return(job)
       Remote::ClassifierJob.should_not_receive(:create)
-      session[:classification_job_id] = "EXISTING-JOB-ID"
+      session[:classification_job_id] = ["EXISTING-JOB-ID"]
       post "classify"
       assert_response 500
     end
@@ -73,7 +73,7 @@ describe ClassifierController do
     it "should start a job when a stored job id is dead" do
       Remote::ClassifierJob.should_receive(:find).with("EXISTING-JOB-ID").once.and_raise(ActiveResource::ResourceNotFound.new(nil, nil))
       Remote::ClassifierJob.should_receive(:create).and_return(mock_model(Remote::ClassifierJob, :id => "NEWJOB"))
-      session[:classification_job_id] = "EXISTING-JOB-ID"
+      session[:classification_job_id] = ["EXISTING-JOB-ID"]
       post "classify"
       response.should be_success
     end
@@ -82,7 +82,7 @@ describe ClassifierController do
       job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::COMPLETE)
       Remote::ClassifierJob.should_receive(:find).with("EXISTING-JOB-ID").and_return(job)
       Remote::ClassifierJob.should_receive(:create).and_return(mock_model(Remote::ClassifierJob, :id => "NEWJOB"))
-      session[:classification_job_id] = "EXISTING-JOB-ID"
+      session[:classification_job_id] = ["EXISTING-JOB-ID"]
       post "classify"
       response.should be_success
     end
@@ -92,7 +92,7 @@ describe ClassifierController do
     it "should return the status" do
       job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 0)
       Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
-      session[:classification_job_id] = "JOB-ID"
+      session[:classification_job_id] = ["JOB-ID"]
       get "status"
       response.should be_success
       response.headers['X-JSON'].should include('"progress": 0')
@@ -103,14 +103,14 @@ describe ClassifierController do
       job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::COMPLETE, :progress => 100)    
       job.should_receive(:destroy)
       Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
-      session[:classification_job_id] = "JOB-ID"
+      session[:classification_job_id] = ["JOB-ID"]
       get "status"
       response.should be_success    
     end
   
     it "should return an error when a stale job key is sent" do
       Remote::ClassifierJob.should_receive(:find).with("STALE").and_return(nil)
-      session[:classification_job_id] = "STALE"
+      session[:classification_job_id] = ["STALE"]
       get "status"
       assert_response 500
       response.headers['X-JSON'].should include('"error_message": "No classification process running"')
@@ -123,7 +123,7 @@ describe ClassifierController do
       job.should_receive(:destroy)
     
       Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
-      session[:classification_job_id] = "JOB-ID"
+      session[:classification_job_id] = ["JOB-ID"]
     
       post "cancel"
       session[:classification_job_id].should be_nil
