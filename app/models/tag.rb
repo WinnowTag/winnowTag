@@ -189,6 +189,7 @@ class Tag < ActiveRecord::Base
       feed.updated = self.updated_on
       feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
       feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
+      feed.categories << Atom::Category.new(:term => self.name, :scheme => "#{options[:base_uri]}/#{user.login}/tags/")
       
       feed.links << Atom::Link.new(:rel => "alternate", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
       feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
