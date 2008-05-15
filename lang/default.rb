@@ -384,6 +384,7 @@ Localization.define do |l|
   l.store :tags_header_negative,                    "Negative"
   l.store :tags_header_automatic,                   "Automatic"
   l.store :tags_header_globally_exclude,            "Globally Exclude"
+  l.store :tags_header_state,                       "State"
   l.store :tags_header_subscribe,                   "Subscribe"
   l.store :tags_header_search_placeholder,          "Search Tags..."
 

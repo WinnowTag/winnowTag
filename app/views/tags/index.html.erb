@@ -3,7 +3,7 @@
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
 			itemBrowser = new ItemBrowser('tags', { orders: {
-			  asc:       ["name", "positive_count", "negative_count", "classifier_count", "globally_exclude", "subscribe"],
+			  asc:       ["name", "state", "positive_count", "negative_count", "classifier_count", "globally_exclude", "subscribe"],
 			  desc:      ["last_used_by"],
 			  "default": "name"
 			}});
@@ -12,7 +12,7 @@
 <% end -%>
 
 <% content_for :header_controls do -%>
-  <%= render :partial => 'index_header_controls' %>
+  <%= render :partial => 'header_controls' %>
 <% end -%>
 
 <div id="tags"></div>
