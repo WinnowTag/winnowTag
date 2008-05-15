@@ -24,10 +24,6 @@ shared_examples_for "Feed updates attributes from Atom::Entry" do
     @feed.updated.should == @atom.updated
   end
 
-  it "should set the published date" do
-    @feed.published.should == @atom.published
-  end
-
   it "should set collector link from self" do
     @feed.collector_link.should == @atom.self.href
   end
@@ -46,7 +42,6 @@ describe Feed do
       @atom = Atom::Entry.new do |atom|
         atom.title = "Feed Title"
         atom.updated = Time.now
-        atom.published = Time.now.yesterday
         atom.id = "urn:peerworks.org:feed#222"
         atom.links << Atom::Link.new(:rel => 'via', :href => 'http://example.com/feed')
         atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
@@ -186,7 +181,6 @@ describe Feed do
           a.id = "urn:peerworks.org:feed#444"
           a.title = "Feed Title"
           a.updated = Time.now
-          a.published = Time.now.yesterday
           a.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/444')
           a.links << Atom::Link.new(:rel => 'via', :href => 'http://example.org/feed')
           a.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.org')
