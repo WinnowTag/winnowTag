@@ -266,6 +266,18 @@ describe 'to_atom', :shared => true do
   it "should set the atom:id to :base_uri/tags/:id" do
     @atom.id.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
   end
+  
+  it "should have a category on the feed" do
+    @atom.should have(1).categories
+  end
+
+  it "should have the right term on the category" do
+    @atom.categories.first.term.should == @tag.name
+  end
+
+  it "should have the right scheme on the category" do
+    @atom.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+  end
 
   it "should have an http://peerworks.org/classifier/edit link that refers to the classifier tagging resource" do
     @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.should_not be_nil
