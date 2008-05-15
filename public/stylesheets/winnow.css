@@ -1652,6 +1652,10 @@ a.bookmarklet:hover {
 	vertical-align: middle;
 }
 
+.tag .extended .sidebar .actions .state span {
+	white-space: nowrap;
+}
+
 .tag .extended .sidebar .actions .state label {
 	margin-right: 1.5em;
 }
