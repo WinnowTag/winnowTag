@@ -4,7 +4,7 @@
 		document.observe('dom:loaded', function() {
 			itemBrowser = new ItemBrowser('tags', { orders: {
 			  asc:       ["name", "state", "comments_number", "positive_count", "negative_count", "classifier_count"],
-			  desc:      ["last_used_by"],
+			  desc:      ["last_trained"],
 			  "default": "name"
 			}});
 		});
