@@ -1,4 +1,5 @@
 page[@comment.tag].select('.comments .empty').invoke("remove")
 page[@comment.tag].down('.comments .comment_form').insert(:before => render_to_string(:partial => "comments/comment.html.erb", :object => @comment))
+page[@comment.tag].down(".summary .comments strong").update @comment.tag.comments.count
 page[@comment].highlight :duration => 3
 page[@comment.tag].down('.comment_form form').reset
