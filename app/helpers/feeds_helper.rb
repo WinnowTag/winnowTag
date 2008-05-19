@@ -17,11 +17,6 @@ module FeedsHelper
   end
   
   def bookmarklet_js
-    "javascript:" +
-    "var f = document.createElement('form'); f.setAttribute('method', 'POST');" +
-      "f.setAttribute('action', '#{feeds_url}'); f.style.display = 'none';" +
-    "var m = document.createElement('input'); m.setAttribute('type', 'hidden');" +
-      "m.setAttribute('name', 'feed[url]'); m.setAttribute('value', location.href);" +
-      "f.appendChild(m); document.body.appendChild(f); f.submit();"    
+    %|javascript:window.location='#{new_feed_url}?feed[url]='+window.location;|
   end
 end
