@@ -238,6 +238,7 @@ class Tag < ActiveRecord::Base
   
   def self.search(options = {})
     select = ['tags.*', 
+              '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_number',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND NOT EXISTS' <<
@@ -277,7 +278,7 @@ class Tag < ActiveRecord::Base
     order = case options[:order]
     when "name", "public", "id"
       "tags.#{options[:order]}"
-    when "positive_count", "negative_count", "classifier_count", "last_used_by", "state"
+    when "state", "comments_number", "positive_count", "negative_count", "classifier_count", "last_used_by"
       options[:order]
     when "login"
       "users.#{options[:order]}"

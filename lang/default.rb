@@ -380,6 +380,7 @@ Localization.define do |l|
   l.store :tags_header_sort_label,                  "Sort:"
   l.store :tags_header_name,                        "Name"
   l.store :tags_header_last_trained,                "Last Trained"
+  l.store :tags_header_comments,                    "Comments"
   l.store :tags_header_positive,                    "Positive"
   l.store :tags_header_negative,                    "Negative"
   l.store :tags_header_automatic,                   "Automatic"
