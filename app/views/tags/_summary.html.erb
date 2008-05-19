@@ -1,4 +1,4 @@
-<div class="summary clearfix" onclick="$(this).next('.extended').toggle()">        
+<div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => disabled) %>">
   <div class="info">      
     <div class="details">
       <p><!-- <span>Author</span> --> <%= tag.user.display_name %></p>

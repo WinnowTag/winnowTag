@@ -1,5 +1,5 @@
 <div id="<%= dom_id(public_tag) %>" class="tag record public clearfix <%= tag_classes(public_tag) %>">
-  <%= render :partial => "summary.html.erb", :locals => { :tag => public_tag } %>
+  <%= render :partial => "summary.html.erb", :locals => { :tag => public_tag, :disabled => true } %>
   
   <div class="extended" style="display:none">  
     <%= render :partial => "comments.html.erb", :locals => { :tag => public_tag } %>
@@ -7,7 +7,7 @@
     <div class="sidebar">      
       <div class="block actions clearfix">
         <ul class="controls">
-          <li class="first"><%= bias_slider(public_tag, :disabled => true) %></li>  
+          <li class="first"><%= bias_slider_html(public_tag) %></li>  
           <li class="state">
             <%= render :partial => "state.html.erb", :locals => { :tag => public_tag } %>
           </li>
