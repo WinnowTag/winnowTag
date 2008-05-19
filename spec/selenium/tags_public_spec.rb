@@ -1,40 +1,56 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "TagsPublicTest" do
-  fixtures :users, :tags
+  fixtures :users
   
   before(:each) do
+    Tag.delete_all
+    user = User.create! valid_user_attributes
+    @tag = Tag.create! :name => "foo", :public => true, :user_id => user.id
+    
     login
     open public_tags_path
-    TagSubscription.delete_all
+    
+    wait_for_ajax
   end
   
-  # it "test_subscribing_to_public_tag" do
-  #   tag_1 = Tag.find(1)
-  #   tag_2 = Tag.find(2)
-  # 
-  #   assert !is_checked("subscribe_tag_#{tag_2.id}")
-  #   click "subscribe_tag_#{tag_2.id}"
-  #   assert is_checked("subscribe_tag_#{tag_2.id}")
-  #   refresh_and_wait
-  #   assert is_checked("subscribe_tag_#{tag_2.id}")
-  # 
-  #   click "subscribe_tag_#{tag_2.id}"
-  #   assert !is_checked("subscribe_tag_#{tag_2.id}")
-  #   refresh_and_wait
-  #   assert !is_checked("subscribe_tag_#{tag_2.id}")
-  # end
+  it "subscribes to a public tag" do    
+    dont_see_element "#tag_#{@tag.id}.subscribed"
+    assert !is_checked("subscribe_tag_#{@tag.id}")
+    assert is_checked("neither_tag_#{@tag.id}")
+    click "subscribe_tag_#{@tag.id}"
+    
+    wait_for_ajax 
   
-  it "cant_subscribe_to_own_public_tag" do
-    tag_1 = Tag.create! :user_id => 1, :name => "public_tag", :public => true
+    see_element "#tag_#{@tag.id}.subscribed"
+    assert is_checked("subscribe_tag_#{@tag.id}")
+    assert !is_checked("neither_tag_#{@tag.id}")
+    
     refresh_and_wait
-    tag_2 = Tag.find(2)
+    wait_for_ajax
+    
+    see_element "#tag_#{@tag.id}.subscribed"
+    assert is_checked("subscribe_tag_#{@tag.id}")
+    assert !is_checked("neither_tag_#{@tag.id}")
+  end
+  
+  it "globally excludes a public tag" do
+    dont_see_element "#tag_#{@tag.id}.globally_excluded"
+    assert !is_checked("globally_exclude_tag_#{@tag.id}")
+    assert is_checked("neither_tag_#{@tag.id}")
+    click "globally_exclude_tag_#{@tag.id}"
+    
+    wait_for_ajax 
 
-    assert_element_disabled "#subscribe_tag_#{tag_1.id}"
-    assert_element_enabled "#subscribe_tag_#{tag_2.id}"
-
-    assert !is_checked("subscribe_tag_#{tag_1.id}")
-    click "subscribe_tag_#{tag_1.id}"
-    assert !is_checked("subscribe_tag_#{tag_1.id}")
+    see_element "#tag_#{@tag.id}.globally_excluded"
+    assert is_checked("globally_exclude_tag_#{@tag.id}")
+    assert !is_checked("neither_tag_#{@tag.id}")
+    
+    refresh_and_wait
+    wait_for_ajax
+    
+    see_element "#tag_#{@tag.id}.globally_excluded"
+    assert is_checked("globally_exclude_tag_#{@tag.id}")
+    assert !is_checked("neither_tag_#{@tag.id}")
   end
 end

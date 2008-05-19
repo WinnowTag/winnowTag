@@ -72,15 +72,6 @@ describe "Tags" do
     assert_equal new_position, get_element_position_left("css=div.tag.private div.slider_handle")
   end
   
-  it "can be unsubscribed by clicking the destroy link" do
-    tag = Tag.find(2)
-  
-    see_element "#unsubscribe_tag_#{tag.id}"
-    click "unsubscribe_tag_#{tag.id}"
-    wait_for_ajax
-    dont_see_element "#unsubscribe_tag_#{tag.id}"
-  end
-
   it "destroying_a_tag" do
     tag = Tag.find(1)
     see_element "#destroy_tag_#{tag.id}"
@@ -108,15 +99,4 @@ describe "Tags" do
     assert !is_checked("public_tag_#{tag_1.id}")
   end
   
-  it "cant_mark_subscribed_tag_public" do
-    tag_1 = Tag.find(1)
-    tag_2 = Tag.find(2)
-
-    assert_element_enabled "#public_tag_#{tag_1.id}"
-    assert_element_disabled "#public_tag_#{tag_2.id}"
-
-    assert is_checked("public_tag_#{tag_2.id}")
-    click "public_tag_#{tag_2.id}"
-    assert is_checked("public_tag_#{tag_2.id}")
-  end
 end

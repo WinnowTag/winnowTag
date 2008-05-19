@@ -87,11 +87,11 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  def last_used_by
-    if last_used_by = read_attribute(:last_used_by)
-      Time.parse(last_used_by)
+  def last_trained
+    if last_trained = read_attribute(:last_trained)
+      Time.parse(last_trained)
     else
-      if tagging = taggings.find(:first, :order => 'created_on DESC')
+      if tagging = taggings.find(:first, :conditions => ['classifier_tagging = ?', false], :order => 'created_on DESC')
         tagging.created_on
       end
     end
@@ -239,15 +239,17 @@ class Tag < ActiveRecord::Base
   
   def self.search(options = {})
     select = ['tags.*', 
+              '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_number',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND NOT EXISTS' <<
                 '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
                   'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
-              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by',
-              "NOT EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) AS globally_exclude",
-              "NOT EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) AS subscribe"]
+              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0) AS last_trained',
+              "CASE " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) THEN 0 " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) THEN 1 " <<
+                "ELSE 2 END AS state"]
     
     joins = ["LEFT JOIN users ON tags.user_id = users.id"]
 
@@ -258,7 +260,8 @@ class Tag < ActiveRecord::Base
 
     if options[:own]
       joins << "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
-      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL)"
+      joins << "LEFT JOIN tag_exclusions ON tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}"
+      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL OR tag_exclusions.id IS NOT NULL)"
       values << options[:user].id
     end
         
@@ -276,7 +279,7 @@ class Tag < ActiveRecord::Base
     order = case options[:order]
     when "name", "public", "id"
       "tags.#{options[:order]}"
-    when "subscribe", "training_count", "classifier_count", "last_used_by", "globally_exclude"
+    when "state", "comments_number", "positive_count", "negative_count", "classifier_count", "last_trained"
       options[:order]
     when "login"
       "users.#{options[:order]}"

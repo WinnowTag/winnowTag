@@ -380,24 +380,31 @@ Localization.define do |l|
   l.store :tags_header_sort_label,                  "Sort:"
   l.store :tags_header_name,                        "Name"
   l.store :tags_header_last_trained,                "Last Trained"
-  l.store :tags_header_training,                    "Training (+/-)"
+  l.store :tags_header_comments,                    "Comments"
+  l.store :tags_header_positive,                    "Positive"
+  l.store :tags_header_negative,                    "Negative"
   l.store :tags_header_automatic,                   "Automatic"
   l.store :tags_header_globally_exclude,            "Globally Exclude"
+  l.store :tags_header_state,                       "State"
   l.store :tags_header_subscribe,                   "Subscribe"
   l.store :tags_header_search_placeholder,          "Search Tags..."
 
   # app/views/tags/_public_tag.html.erb
   l.store :tags_last_trained,                       "Last Trained"
-  l.store :tags_training,                           "Training"
-  l.store :tags_count,                              "+%s / -%s"
-  l.store :tags_inspect,                            "Inspect %s"
-  l.store :tags_automatic,                          "Automatic"
   l.store :tags_feed_link,                          "Feed"
   l.store :tags_globally_exclude,                   "Globally Exclude"
   l.store :tags_subscribe,                          "Subscribe"
-  l.store :tags_show_link_title,                    "Show Only Items Tagged With %s"
+  l.store :view_all_items,                          "Show items tagged with %s"
+  l.store :view_tagged_items,                       "Show items trained with %s"
   l.store :copy,                                    "Copy"
   l.store :tags_copy_link_title,                    "Copy %s"
+  l.store :no_comments_for_this_tag,                "There are no comments for this tag."
+  l.store :add_a_comment,                           "Add a comment:"
+
+  # app/views/tags/_summary.html.erb
+  l.store :positive,                                "Positive"
+  l.store :negative,                                "Negative"
+  l.store :comments,                                "Comments"  
 
   # app/views/tags/_subscribed_tag.html.erb
   l.store :tags_public,                             "Public"

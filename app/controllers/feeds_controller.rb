@@ -118,7 +118,7 @@ class FeedsController < ApplicationController
     else
       FeedExclusion.delete_all :feed_id => @feed.id, :user_id => current_user.id
     end
-    render :nothing => true
+    respond_to :js
   end
 
   def subscribe

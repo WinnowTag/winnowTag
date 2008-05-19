@@ -15,7 +15,7 @@ describe '/tags/index.html.erb' do
   end
   
   it "shows the header controls" do
-    template.expect_render(:partial => "index_header_controls").and_return("header controls")
+    template.expect_render(:partial => "header_controls").and_return("header controls")
     render_it
     response.capture(:header_controls).should match(/header controls/)
   end

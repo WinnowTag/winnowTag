@@ -140,8 +140,12 @@ module ApplicationHelper
       globally_exclude_feed_path(:id => tag_or_feed.id)
     end
     
-    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1",current_user.globally_excluded?(tag_or_feed), 
+    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed), :id => "#{dom_id(tag_or_feed, 'globally_exclude')}",
       :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+  end
+  
+  def tag_subscription_checkbox_disabled?(tag)
+    (current_user == tag.user || current_user.globally_excluded?(tag))
   end
   
   def tag_name_with_tooltip(tag, options = {})
@@ -245,4 +249,28 @@ module ApplicationHelper
     end
   rescue ArgumentError # Swallow malformed yaml exceptions
   end
+  
+  def tag_classes(tag)
+    if current_user.globally_excluded?(tag)
+      "globally_excluded"
+    elsif current_user.subscribed?(tag)
+      "subscribed"
+    end
+  end
+
+  def feed_classes(feed)
+    if current_user.globally_excluded?(feed)
+      "globally_excluded"
+    end
+  end
+
+  
+  def tag_state(tag)
+    if current_user.globally_excluded?(tag)
+      "Excluded"
+    elsif current_user.subscribed?(tag)
+      "Subscribed"
+    end
+  end
+  
 end

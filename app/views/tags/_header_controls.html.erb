@@ -1,12 +1,13 @@
 <ul class="control_bar">
   <li class="order">
     <%= _(:tags_header_sort_label) %>
-    <%= link_to_function _(:tags_header_name), "itemBrowser.setOrder('name')", :id => "order_name" %>, 
-    <%= link_to_function _(:tags_header_last_trained), "itemBrowser.setOrder('last_used_by')", :id => "order_last_used_by" %>, 
-    <%= link_to_function _(:tags_header_training), "itemBrowser.setOrder('training_count')", :id => "order_training_count" %>,
+    <%= link_to_function _(:tags_header_name), "itemBrowser.setOrder('name')", :id => "order_name" %>,
+    <%= link_to_function _(:tags_header_state), "itemBrowser.setOrder('state')", :id => "order_state" %>,
+    <%= link_to_function _(:tags_header_comments), "itemBrowser.setOrder('comments_number')", :id => "order_comments_number" %>,
+    <%= link_to_function _(:tags_header_positive), "itemBrowser.setOrder('positive_count')", :id => "order_positive_count" %>,
+    <%= link_to_function _(:tags_header_negative), "itemBrowser.setOrder('negative_count')", :id => "order_negative_count" %>,  
     <%= link_to_function _(:tags_header_automatic), "itemBrowser.setOrder('classifier_count')", :id => "order_classifier_count" %>,
-    <%= link_to_function _(:tags_header_globally_exclude), "itemBrowser.setOrder('globally_exclude')", :id => "order_globally_exclude" %>,
-    <%= link_to_function _(:tags_header_subscribe), "itemBrowser.setOrder('subscribe')", :id => "order_subscribe" %>
+    <%= link_to_function _(:tags_header_last_trained), "itemBrowser.setOrder('last_trained')", :id => "order_last_trained" %>
   </li>
 </ul>
 

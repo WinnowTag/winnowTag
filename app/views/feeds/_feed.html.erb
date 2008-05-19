@@ -1,21 +1,21 @@
-<div id="<%= dom_id(feed) %>" class="feed clearfix">
-  <div class="left clearfix">
-    <div class="name">
-      <%= feed_link(feed) %>
-    </div>
-  </div>
-  
-  <div class="right clearfix">
-    <dl class="training">
-      <dt><%= _(:last_updated) %></dt>
-      <dd><%= format_date(feed.updated_on) %></dd>
-      <dt><%= _(:number_of_items) %></dt>
-      <dd class="last"><%= feed.feed_items_count %></dd>
-    </dl>
-    
-    <ul class="controls">
-      <li class="first"><%= globally_exclude_check_box(feed) %> <%= _(:globally_exclude) %></li>
-      <li><%= link_to _(:show), feed_items_path(:anchor => "feed_ids=#{feed.id}"), :class => 'show_icon', :title => _(:feeds_show_link_title, feed.title) %></li>
-    </ul>
-  </div>
+<div id="<%= dom_id(feed) %>" class="feed record clearfix <%= feed_classes(feed) %>">
+
+  <div class="summary clearfix">        
+    <div class="info">
+      <div class="filter">
+        <p>Filter</p>
+        <strong><%= _(:globally_exclude) %> <%= globally_exclude_check_box(feed) %></strong>
+      </div>
+      <div class="count">
+        <p>Items</p>
+        <strong><%= feed.feed_items_count %></strong>
+      </div>
+      <div class="date">
+         <p><%= _(:last_updated) %></p> 
+         <strong><%= format_date(feed.updated_on) %></strong>
+      </div>
+    </div>    
+
+    <h4 class="clearfix"><%= feed_link(feed) %></h4>
+  </div> <!-- /.summary -->
 </div>

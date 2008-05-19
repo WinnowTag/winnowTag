@@ -3,8 +3,8 @@
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
 			itemBrowser = new ItemBrowser('tags', { orders: {
-			  asc:       ["name", "training_count", "classifier_count", "globally_exclude", "subscribe"],
-			  desc:      ["last_used_by"],
+			  asc:       ["name", "state", "comments_number", "positive_count", "negative_count", "classifier_count"],
+			  desc:      ["last_trained"],
 			  "default": "name"
 			}, url: "tags/public"});
 		});

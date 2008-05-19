@@ -9,9 +9,11 @@ module FeedsHelper
     feed_home_link = feed.alternate ? 
                         link_to("Feed Home", feed.alternate, :class => "home_icon replace") : 
                         content_tag('span', '', :class => 'blank_icon replace')
+                        
+    feed_items_link = link_to _(:show), feed_items_path(:anchor => "feed_ids=#{feed.id}"), :class => 'show_icon replace', :title => _(:feeds_show_link_title, feed.title)
     feed_page_link = link_to(feed.title, feed_path(feed), :id => dom_id(feed, "link_to"))
     
-    feed_link + ' ' + feed_home_link + ' ' + feed_page_link
+    feed_link + ' ' + feed_home_link + ' ' + feed_items_link + ' ' + feed_page_link
   end
   
   def bookmarklet_js
