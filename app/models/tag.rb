@@ -244,9 +244,10 @@ class Tag < ActiveRecord::Base
                 '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
                   'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
               '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by',
-              "NOT EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) AS globally_exclude",
-              "NOT EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) AS subscribe",
-              "NOT EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) AND NOT EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) AS state"]
+              "CASE " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) THEN 0 " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) THEN 1 " <<
+                "ELSE 2 END AS state"]
     
     joins = ["LEFT JOIN users ON tags.user_id = users.id"]
 
@@ -276,7 +277,7 @@ class Tag < ActiveRecord::Base
     order = case options[:order]
     when "name", "public", "id"
       "tags.#{options[:order]}"
-    when "subscribe", "positive_count", "negative_count", "classifier_count", "last_used_by", "globally_exclude", "state"
+    when "positive_count", "negative_count", "classifier_count", "last_used_by", "state"
       options[:order]
     when "login"
       "users.#{options[:order]}"
@@ -286,11 +287,7 @@ class Tag < ActiveRecord::Base
     
     case options[:direction]
     when "asc", "desc"
-      if options[:order] == "state"
-        order = "#{order} #{options[:direction].upcase}, globally_exclude #{options[:direction].upcase}, subscribe #{options[:direction].upcase}"
-      else
-        order = "#{order} #{options[:direction].upcase}"
-      end
+      order = "#{order} #{options[:direction].upcase}"
     end
 
     options_for_find = { :joins => joins.join(" "), :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
