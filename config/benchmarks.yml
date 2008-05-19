@@ -7,7 +7,7 @@ fi_index:
       user: 1
    
 fi_ajax_single_tag_filter:
-    uri: /feed_items.js?order=date&direction=desc&mode=all&tag_ids=195
+    uri: /feed_items.js?order=date&direction=desc&mode=all&tag_ids=32
     session_data:
       user: 1
     

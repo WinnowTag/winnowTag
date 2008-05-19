@@ -21,12 +21,17 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
-  # SEARCH_OPTIONS = :options_for_filters_full_ferret
-  # SEARCH_OPTIONS = :options_for_filters_part_ferret
   SEARCH_OPTIONS = :options_for_filters_mysql
+  # SEARCH_OPTIONS = :options_for_filters_part_ferret
+  # SEARCH_OPTIONS = :options_for_filters_full_ferret
+  # SEARCH_OPTIONS = :options_for_filters_sphinx
   
   acts_as_ferret :fields => [:title, :real_content, :author, :tag_ids_with_spaces, :user_tag_ids_with_spaces, :feed_id, :reader_ids_with_spaces]
 
+  is_indexed :fields => [:title, :author],
+             :include => [{:association_name => 'content', :field => 'content', :as => 'content'}]
+
+  
   def real_content
     content.content if content
   end
@@ -513,6 +518,10 @@ class FeedItem < ActiveRecord::Base
         options.merge(:conditions => ["feed_items.id IN (?)", feed_item_ids])
       end
     end
+  end
+  
+  def options_for_filters_sphinx(filters)
+    
   end
   
   # Add any text_filter. This is done using a inner join on feed_item_contents with an

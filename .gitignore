@@ -4,6 +4,7 @@ config/database.yml
 db/development_structure.sql
 doc/TODO
 index
+sphinx
 log
 tmp
 .DS_Store
