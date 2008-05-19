@@ -1,6 +1,7 @@
 coverage
 config/collector.conf
 config/database.yml
+config/ultrasphinx/development.conf
 db/development_structure.sql
 doc/TODO
 index
