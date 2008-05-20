@@ -443,6 +443,14 @@ describe FeedItem do
     end
   end
   
+  describe "to_atom without an author" do
+    it "should not output an author" do
+      item = FeedItem.find(1)
+      item.author = nil
+      item.to_atom.should have(0).authors
+    end
+  end
+  
   describe "to_atom with non-utf8" do
     fixtures :feed_item_contents
     before(:each) do
