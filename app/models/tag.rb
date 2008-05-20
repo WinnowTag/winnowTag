@@ -191,22 +191,22 @@ class Tag < ActiveRecord::Base
       feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
       feed.categories << Atom::Category.new(:term => self.name, :scheme => "#{options[:base_uri]}/#{user.login}/tags/")
       
-      feed.links << Atom::Link.new(:rel => "alternate", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
+      feed.links << Atom::Link.new(:rel => "alternate", :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom"))
       feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
-                                   :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom")
+                                   :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom"))
                          
       conditions = []
       condition_values = []
                 
       if options[:training_only]
         conditions << 'classifier_tagging = 0'
-        feed.links << Atom::Link.new(:rel => "self", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")
+        feed.links << Atom::Link.new(:rel => "self", :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom"))
       else
         conditions << 'strength <> 0'
         feed.links << Atom::Link.new(:rel => "self", 
-                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
+                                     :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom"))
         feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
-                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")        
+                                     :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom"))     
       end
       
       if options[:since]
@@ -232,7 +232,7 @@ class Tag < ActiveRecord::Base
           entry.id    = "#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}"
           entry.updated = tag.updated_on
           entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
-                                        :href => "#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}/training.atom") 
+                                        :href => URI.escape("#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}/training.atom"))
         end
       end
     end

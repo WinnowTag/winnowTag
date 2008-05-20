@@ -356,6 +356,21 @@ describe Tag do
       end
     end
     
+    describe "with space in the name" do
+      before(:each) do
+        @tag.name = "my tag"
+        @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
+      end
+      
+      it "should escape the training URL" do
+        @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/training" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/my%20tag/training.atom"
+      end
+      
+      it "should escape the edit URL" do        
+        @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/my%20tag/classifier_taggings.atom"
+      end
+    end
+    
     describe "with training only" do   
       before(:all) do
         @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
