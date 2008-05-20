@@ -9,6 +9,7 @@ module Remote
     class Status
       WAITING = "Waiting"
       COMPLETE = "Complete"
+      ERROR = "Error"
     end
   end
 end

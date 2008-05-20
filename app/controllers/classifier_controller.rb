@@ -65,8 +65,12 @@ class ClassifierController < ApplicationController
           
           status = { :progress => ((status[:progress] * index) + job.progress).to_f / (index + 1),
                      :status   => job.status }
-          
-          if job.status == Remote::ClassifierJob::Status::COMPLETE
+                   
+          if job.status == Remote::ClassifierJob::Status::ERROR
+            status = {:error_message => job.error_message, :progress => 100}
+            job.destroy
+            session[:classification_job_id].delete(job_id)          
+          elsif job.status == Remote::ClassifierJob::Status::COMPLETE
             job.destroy
             session[:classification_job_id].delete(job_id)
           end

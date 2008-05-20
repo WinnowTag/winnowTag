@@ -121,6 +121,15 @@ describe ClassifierController do
       get "status"
       response.should be_success    
     end
+    
+    it "should delete the job when it errors" do
+      job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::ERROR, :error_message => 'blah', :progress => 0)
+      job.should_receive(:destroy)
+      Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
+      session[:classification_job_id] = ["JOB-ID"]
+      get "status"
+      response.code.should == "500"
+    end
   
     it "should return an error when a stale job key is sent" do
       Remote::ClassifierJob.should_receive(:find).with("STALE").and_return(nil)
