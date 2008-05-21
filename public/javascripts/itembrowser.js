@@ -43,9 +43,9 @@ ItemBrowser.prototype = {
     document.observe('keypress', this.keypress.bindAsEventListener(this));
     this.scrollable.observe('scroll', this.updateItems.bind(this));
     
+    this.loadSidebar();
     this.initializeItemList();
     this.initializeFilters();
-    this.loadSidebar();
   },
 
   initializeFilters: function() {
