@@ -21,10 +21,10 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
-  # SEARCH_OPTIONS = :options_for_filters_mysql
+  SEARCH_OPTIONS = :options_for_filters_mysql
   # SEARCH_OPTIONS = :options_for_filters_part_ferret
   # SEARCH_OPTIONS = :options_for_filters_full_ferret
-  SEARCH_OPTIONS = :options_for_filters_sphinx
+  # SEARCH_OPTIONS = :options_for_filters_sphinx
   
   acts_as_ferret :fields => [:title, :real_content, :author, :tag_ids_with_spaces, :user_tag_ids_with_spaces, :feed_id, :reader_ids_with_spaces]
 
