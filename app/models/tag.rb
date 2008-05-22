@@ -169,7 +169,7 @@ class Tag < ActiveRecord::Base
       end
     end
     
-    self.update_attribute(:last_classified_at, Time.now.getutc)
+    connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
   end
   
   private :taggings_from_atom

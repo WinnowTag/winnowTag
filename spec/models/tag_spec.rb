@@ -449,6 +449,18 @@ describe 'create_taggings_from_atom', :shared => true do
     @tag.create_taggings_from_atom(@atom)
     @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and classifier_tagging = 1']).strength.should == 0.99
   end
+  
+  it "should not change the updated timestamp" do
+    orig = @tag.updated_on
+    @tag.create_taggings_from_atom(@atom)
+    @tag.updated_on.should === orig
+  end
+  
+  it "should update the classified_at timestamp" do
+    @tag.create_taggings_from_atom(@atom)
+    @tag.reload
+    @tag.last_classified_at.should_not be_nil
+  end
 end
 
 describe Tag do
