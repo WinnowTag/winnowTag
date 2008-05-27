@@ -20,6 +20,10 @@ AppleSearch.prototype = {
       this.displayClearButton();
       this.insertPlaceholder();
     }.bind(this));
+    this.text_input.observe("applesearch:blur", function() {
+      this.displayClearButton();
+      this.insertPlaceholder();
+    }.bind(this));
 
     this.clear_button = element.down('.srch_clear');
     this.clear_button.observe("click", this.clear.bind(this));

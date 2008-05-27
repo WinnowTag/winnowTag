@@ -357,8 +357,7 @@ ItemBrowser.prototype = {
         text_filter.value = this.filters.text_filter;
       } else {
         text_filter.value = "";
-        // TODO: Why doesn't this work?
-        text_filter.fire("blur");
+        text_filter.fire("applesearch:blur");
       }
     }
     
