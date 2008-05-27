@@ -17,6 +17,6 @@ fi_ajax_single_feed_filter:
       user: 1
 
 fi_ajax_single_text_filter:
-    uri: /feed_items.js?order=date&direction=desc&mode=all&text_filter=ruby
+    uri: /feed_items.js?order=date&direction=desc&mode=all&text_filter=politics
     session_data:
       user: 1

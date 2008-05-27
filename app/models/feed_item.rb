@@ -33,7 +33,6 @@ class FeedItem < ActiveRecord::Base
   is_indexed :fields => [:title, :author],
              :include => [{:association_name => 'content', :field => 'content', :as => 'content'}]
 
-  
   def real_content
     content.content if content
   end
@@ -615,7 +614,7 @@ class FeedItem < ActiveRecord::Base
     conditions = []
 
     unless filters[:text_filter].blank?
-      feed_item_ids = Ultrasphinx::Search.new(:query => filters[:text_filter], :per_page => 9999999).run.results.map(&:id)
+      feed_item_ids = Ultrasphinx::Search.new(:query => filters[:text_filter], :per_page => 9999999).run(false).results
       conditions << "feed_items.id IN (#{feed_item_ids.join(',')})" unless feed_item_ids.blank?
     end
     
