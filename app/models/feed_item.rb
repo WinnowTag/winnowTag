@@ -25,6 +25,7 @@ class FeedItem < ActiveRecord::Base
   # SEARCH_OPTIONS = :options_for_filters_part_ferret
   # SEARCH_OPTIONS = :options_for_filters_full_ferret
   SEARCH_OPTIONS = :options_for_filters_sphinx
+  # SEARCH_OPTIONS = :options_for_filters_sphinx_nose
   
   acts_as_ferret :fields => [:title, :real_content, :author, :tag_ids_with_spaces, :user_tag_ids_with_spaces, :feed_id, :reader_ids_with_spaces]
 
@@ -554,6 +555,70 @@ class FeedItem < ActiveRecord::Base
 
     conditions = []
 
+    add_feed_filter_conditions!(filters[:feed_ids], conditions)
+    
+    tags = if filters[:tag_ids]
+      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]])
+    elsif filters[:mode] =~ /moderated/i # limit the search to tagged items
+      filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
+    else
+      tags = []
+    end
+    conditions << build_tag_inclusion_filter(tags, filters[:mode])
+
+    conditions = ["(#{conditions.compact.join(" OR ")})"] unless conditions.compact.blank? 
+    
+    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+      conditions << build_tag_exclusion_filter(filters[:user].excluded_tags)
+    end
+    
+    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+      add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, conditions)
+    end
+    
+    if filters[:mode] =~ /unread/i # only filter out read items when showing unread items
+      add_read_items_filter_conditions!(filters[:user], conditions)
+    end
+        
+    options[:conditions] = conditions.compact.blank? ? nil : conditions.compact.join(" AND ")
+    
+    options
+  end
+  
+  def self.options_for_filters_sphinx_nose(filters) # :doc:
+    filters.assert_valid_keys(:limit, :order, :direction, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
+    options = {:limit => filters[:limit], :offset => filters[:offset]}
+    
+    direction = case filters[:direction]
+      when "asc", "desc"
+        filters[:direction].upcase
+    end
+    
+    options[:order] = case filters[:order]
+    when "strength"
+      if filters[:tag_ids].blank?
+        tag_ids = (filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags).map(&:id).join(',')
+      else
+        tag_ids = Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]]).map(&:id).join(",")
+      end
+      "(SELECT MAX(taggings.strength) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) #{direction}, feed_items.updated #{direction}"
+    when "date"
+      "feed_items.updated #{direction}"
+    when "id"
+      "feed_items.id #{direction}"
+    else
+      "feed_items.updated DESC"
+    end
+
+    filters[:mode] ||= "unread"
+
+    conditions = []
+
+    unless filters[:text_filter].blank?
+      feed_item_ids = Ultrasphinx::Search.new(:query => filters[:text_filter], :per_page => 9999999).run.results.map(&:id)
+      conditions << "feed_items.id IN (#{feed_item_ids.join(',')})" unless feed_item_ids.blank?
+    end
+    
     add_feed_filter_conditions!(filters[:feed_ids], conditions)
     
     tags = if filters[:tag_ids]
