@@ -21,10 +21,10 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
-  SEARCH_OPTIONS = :options_for_filters_mysql
+  # SEARCH_OPTIONS = :options_for_filters_mysql
   # SEARCH_OPTIONS = :options_for_filters_part_ferret
   # SEARCH_OPTIONS = :options_for_filters_full_ferret
-  # SEARCH_OPTIONS = :options_for_filters_sphinx
+  SEARCH_OPTIONS = :options_for_filters_sphinx
   
   acts_as_ferret :fields => [:title, :real_content, :author, :tag_ids_with_spaces, :user_tag_ids_with_spaces, :feed_id, :reader_ids_with_spaces]
 
@@ -549,7 +549,7 @@ class FeedItem < ActiveRecord::Base
     filters[:mode] ||= "unread"
 
     unless filters[:text_filter].blank?
-      options[:joins] = "INNER JOIN feed_item_search ON feed_items.id = feed_item_search.id AND feed_item_search.query = '#{sanitize_sql(filters[:text_filter])};limit=9999999'"
+      options[:joins] = "INNER JOIN feed_item_search ON feed_items.id = feed_item_search.id AND feed_item_search.query = '#{sanitize_sql(filters[:text_filter])};mode=extended;limit=9999999'"
     end
 
     conditions = []
