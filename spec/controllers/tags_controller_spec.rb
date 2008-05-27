@@ -133,57 +133,57 @@ describe TagsController do
     end
   end
   
-  describe "index with Accept: application/atomsvc+xml" do
+  describe "index with Accept: application/atom+xml" do
     before(:each) do
       Tag.stub!(:maximum).with(:created_on).and_return(Time.now)
-      Tag.stub!(:to_atomsvc).with(:base_uri => "http://test.host:80").and_return(Atom::Pub::Service.new)
+      Tag.stub!(:to_atom).with(:base_uri => "http://test.host:80").and_return(Atom::Feed.new)
     end
     
-    it "should call Tag.to_atomsvc" do
-      Tag.should_receive(:to_atomsvc).with(:base_uri => "http://test.host:80").and_return(Atom::Pub::Service.new)
-      get :index, :format => 'atomsvc'      
+    it "should call Tag.to_atom" do
+      Tag.should_receive(:to_atom).with(:base_uri => "http://test.host:80").and_return(Atom::Feed.new)
+      get :index, :format => 'atom'      
     end
     
     it "should be successful" do
-      accept('application/atomsvc+xml')
+      accept('application/atom+xml')
       get :index
       response.should be_success
     end
         
-    it "should have application/atomsvc+xml as the content type" do
-      accept('application/atomsvc+xml')
+    it "should have application/atom+xml as the content type" do
+      accept('application/atom+xml')
       get :index
-      response.content_type.should == "application/atomsvc+xml"
+      response.content_type.should == "application/atom+xml"
     end
     
-    it "should have application/atomsvc+xml as the content type when :format is atomsvc" do
-      get :index, :format => 'atomsvc'
-      response.content_type.should == "application/atomsvc+xml"
+    it "should have application/atom+xml as the content type when :format is atom" do
+      get :index, :format => 'atom'
+      response.content_type.should == "application/atom+xml"
     end
     
     it "should have the atom content" do
-      get :index, :format => 'atomsvc'
-      response.body.should match(%r{<service})
+      get :index, :format => 'atom'
+      response.body.should match(%r{<feed})
     end
     
     it "should respond with a 304 if there are no new tags since HTTP_IF_MODIFIED_SINCE" do
       Tag.should_receive(:maximum).with(:created_on).and_return(Time.now.yesterday)
-      Tag.should_not_receive(:to_atom_svc).with(:base_uri => "http://test.host:80")
+      Tag.should_not_receive(:to_atom).with(:base_uri => "http://test.host:80")
       request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
-      get :index, :format => 'atomsvc'
+      get :index, :format => 'atom'
       response.code.should == "304"
     end
     
     it "should responde with a 200 if there are new tags since HTTP_IF_MODIFIED_SINCE" do
       request.env['HTTP_IF_MODIFIED_SINCE'] = 30.days.ago.httpdate
-      get :index, :format => 'atomsvc'
+      get :index, :format => 'atom'
       response.code.should == "200"
     end
     
     it "should not require a login for local requests" do
       login_as(nil)
       @controller.stub!(:local_request?).and_return(true)
-      get :index, :format => 'atomsvc'
+      get :index, :format => 'atom'
       response.should be_success
     end    
   end
@@ -557,5 +557,47 @@ describe TagsController do
       assert_redirected_to tags_path
       assert users(:quentin).tags.find_by_name('new')
     end    
+  end
+  
+  describe 'PUT update_state' do
+    before(:each) do
+      @tag = mock_model(Tag, :id => "1")
+      Tag.should_receive(:find).with(@tag.id).and_return(@tag)
+    end
+    
+    after(:each) do
+      response.should be_success
+      response.should render_template("tags/update_state")
+    end
+    
+    def do_put(state)
+      put :update_state, :id => @tag.id, :state => state
+    end
+    
+    it "updates the tag state to globally exclude" do
+      @tag_exclusions = stub("tag_exclusions")
+      current_user.should_receive(:tag_exclusions).and_return(@tag_exclusions)      
+      @tag_exclusions.should_receive(:create!).with(:tag_id => @tag.id)
+            
+      TagSubscription.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
+      Folder.should_receive(:remove_tag).with(current_user, @tag.id)
+      
+      do_put "globally_exclude"
+    end
+    
+    it "updates the tag state to subscribed" do
+      TagSubscription.should_receive(:create!).with(:tag_id => @tag.id, :user_id => current_user.id)
+      TagExclusion.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
+      
+      do_put "subscribe"
+    end
+    
+    it "updates the tag state to neither" do
+      TagSubscription.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
+      Folder.should_receive(:remove_tag).with(current_user, @tag.id)
+      TagExclusion.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
+      
+      do_put "neither"
+    end
   end
 end

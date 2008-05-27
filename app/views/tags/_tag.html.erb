@@ -1,40 +1,25 @@
-<div id="<%= dom_id(tag) %>" class="tag private clearfix">
-  <div class="left clearfix">
-    <div class="name">
-      <% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
-      <%= in_place_completing_editor_field :tag, :name, { :id => dom_id(tag, 'editor') },
-          { :param_name => "'tag[name]'", :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false, 
-            :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'), 
-            :click_to_edit_text => _(:tags_click_to_edit_tag_text), :save_text => _(:tags_save_text) },  
-          { :skip_style => true, :update => dom_id(tag, 'auto_complete'), :url => auto_complete_for_tag_name_tag_path(tag) } %> 
-    </div>
-
-    <div class="comment" id="<%= dom_id(tag, "edit_comment") %>">
-      <% if tag.comment.blank?; tag.comment = _(:tags_blank_comment); end %>
-      <%= in_place_editor_field :tag, :comment, {}, :param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
-          :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50 %>
-    </div>
-  </div>
+<div id="<%= dom_id(tag) %>" class="tag record clearfix <%= tag_classes(tag) %>">
+  <%= render :partial => "summary.html.erb", :locals => { :tag => tag, :editable => true, :disabled => false } %>
   
-  <div class="right clearfix">
-    <dl class="training">
-      <dt><%= _(:tags_last_trained) %></dt>
-      <dd><%= format_date(tag.last_used_by) %></dd>
-      <dt><%= _(:tags_training) %></dt>
-      <dd><%= link_to _(:tags_count, tag.positive_count, tag.negative_count), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=moderated"), :title =>  _(:tags_inspect, tag.name) %></dd>
-      <dt><%= _(:tags_automatic) %></dt>
-      <dd class="last"><%= tag.classifier_count %></dd>
-    </dl>
-    
-    <ul class="controls">
-      <li class="first"><%= bias_slider(tag) %></li>
-      <li><%= globally_exclude_check_box(tag) %> <%= _(:tags_globally_exclude) %></li>
-      <li>
-        <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <%= _(:tags_public) %>
-      </li>
-      <li><%= link_to _(:show), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show_icon', :title => _(:tags_show_link_title, tag.name) %></li>
-      <li><%= link_to_remote _(:copy), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, tag.name), :class => "duplicate_icon" } %></li>
-      <li><%= link_to_remote _(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => _(:tags_destroy_confirm_text, tag.name), :html => { :title => _(:tags_destroy_link_title, tag.name), :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
-    </ul>
-  </div>
+  <div class="extended" style="display:none">  
+    <%= render :partial => "comments.html.erb", :locals => { :tag => tag } %>
+      
+    <div class="sidebar">      
+      <div class="block actions clearfix">
+        <ul class="controls">
+          <li class="first"><%= bias_slider_html(tag) %></li>
+          <li class="state">
+            <%= render :partial => "state.html.erb", :locals => { :tag => tag } %>
+          </li>
+          <li>
+            <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <%= _(:tags_public) %>
+          </li>
+          <li><%= link_to_remote _(:copy), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, tag.name), :class => "duplicate_icon" } %></li>
+          <li><%= link_to_remote _(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => _(:tags_destroy_confirm_text, tag.name), :html => { :title => _(:tags_destroy_link_title, tag.name), :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>
+          <li><%= link_to _(:view_all_items, tag.name), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'view_icon' %></li>
+          <li><%= link_to _(:view_tagged_items, tag.name), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=moderated"), :class => "view_icon" %></li>
+        </ul>
+      </div> <!-- /.actions -->
+    </div>
+  </div> <!-- /.extended -->
 </div>

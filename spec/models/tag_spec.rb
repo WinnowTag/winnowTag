@@ -52,43 +52,36 @@ describe Tag do
       assert_equal classifier, tag = tags.shift
       assert_equal 0, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 0, tag.training_count.to_i
       assert_equal 1, tag.classifier_count.to_i
 
       assert_equal classifier_diff, tag = tags.shift
       assert_equal 1, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 1, tag.training_count.to_i
       assert_equal 1, tag.classifier_count.to_i
 
       assert_equal classifier_neg, tag = tags.shift
       assert_equal 0, tag.positive_count.to_i
       assert_equal 1, tag.negative_count.to_i
-      assert_equal 1, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal classifier_pos, tag = tags.shift
       assert_equal 1, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 1, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal empty, tag = tags.shift
       assert_equal 0, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 0, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal peerworks, tag = tags.shift
       assert_equal 2, tag.positive_count.to_i
       assert_equal 0, tag.negative_count.to_i
-      assert_equal 2, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
 
       assert_equal test, tag = tags.shift
       assert_equal 1, tag.positive_count.to_i
       assert_equal 1, tag.negative_count.to_i
-      assert_equal 2, tag.training_count.to_i
       assert_equal 0, tag.classifier_count.to_i
     end
   
@@ -213,59 +206,44 @@ describe Tag do
     end
   end
   
-  describe '.to_atomsvc' do
+  describe '.to_atom' do
+    fixtures :tags, :users
     before(:each) do
-      @atomsvc = Tag.to_atomsvc(:base_uri => 'http://winnow.mindloom.org')
+      @atom = Tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
     end
     
-    it "should return an Atom::Pub:Service" do
-      @atomsvc.should be_an_instance_of(Atom::Pub::Service)
+    it "should have feed.updated as the maximum last created time" do
+      @atom.updated.should == Tag.maximum(:created_on)
     end
     
-    it "should have a single workspace" do
-      @atomsvc.should have(1).workspaces
+    it "should have an entry for every tag" do
+      @atom.should have(Tag.count).entries
     end
     
-    it "should have 'Tags' as the title of the workspace" do
-      @atomsvc.workspaces.first.title.should == 'Tag Training'
-    end
-    
-    it "should have a collection for each tag" do
-      @atomsvc.workspaces.first.should have(Tag.count).collections
-    end      
-
-    it "should have some tags" do
-      @atomsvc.workspaces.first.should have_at_least(1).collections
-    end
-    
-    it "should have a title in each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.title.should_not be_nil
-      end
-    end
-      
-    it "should have an empty app:accept element in each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.accepts.should == ['']
+    it "should have a title for every tag" do
+      @atom.entries.each do |e|
+        e.title.should_not be_nil
       end
     end
     
-    it "should have a url for each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.href.should_not be_nil
+    it "should have an id for every tag" do
+      @atom.entries.each do |e|
+        e.id.should_not be_nil
       end
     end
     
-    it "should have :base_uri/tags/:id/training for the url for each collection" do
-      @atomsvc.workspaces.first.collections.each do |c|
-        c.href.should match(%r{http://winnow.mindloom.org/tags/\d+/training})
+    it "should have a updated for every tag" do
+      @atom.entries.each do |e|
+        e.updated.should_not be_nil
       end
     end
     
-    it "should be parseable by ratom" do
-      lambda { Atom::Pub::Service.load_service(@atomsvc.to_xml) }.should_not raise_error
+    it "should have a link to training for every tag" do
+      @atom.entries.each do |e|
+        e.links.detect {|l| l.rel = "#{CLASSIFIER_NS}/training" && l.href =~ %r{http://winnow.mindloom.org/\w+/tags/\w+/training.atom} }.should_not be_nil
+      end
     end
-  end
+  end  
 end
 
 describe 'to_atom', :shared => true do
@@ -287,6 +265,18 @@ describe 'to_atom', :shared => true do
 
   it "should set the atom:id to :base_uri/tags/:id" do
     @atom.id.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
+  end
+  
+  it "should have a category on the feed" do
+    @atom.should have(1).categories
+  end
+
+  it "should have the right term on the category" do
+    @atom.categories.first.term.should == @tag.name
+  end
+
+  it "should have the right scheme on the category" do
+    @atom.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
   end
 
   it "should have an http://peerworks.org/classifier/edit link that refers to the classifier tagging resource" do
@@ -363,6 +353,21 @@ describe Tag do
       it "should only return items with updated date after :since" do
         @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org', :since => Time.now)
         @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should be_nil
+      end
+    end
+    
+    describe "with space in the name" do
+      before(:each) do
+        @tag.name = "my tag"
+        @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
+      end
+      
+      it "should escape the training URL" do
+        @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/training" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/my%20tag/training.atom"
+      end
+      
+      it "should escape the edit URL" do        
+        @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/my%20tag/classifier_taggings.atom"
       end
     end
     
@@ -443,6 +448,18 @@ describe 'create_taggings_from_atom', :shared => true do
   it "should have the new classifier tagging" do
     @tag.create_taggings_from_atom(@atom)
     @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and classifier_tagging = 1']).strength.should == 0.99
+  end
+  
+  it "should not change the updated timestamp" do
+    orig = @tag.updated_on
+    @tag.create_taggings_from_atom(@atom)
+    @tag.updated_on.should === orig
+  end
+  
+  it "should update the classified_at timestamp" do
+    @tag.create_taggings_from_atom(@atom)
+    @tag.reload
+    @tag.last_classified_at.should_not be_nil
   end
 end
 

@@ -16,10 +16,6 @@
 <h3><%= _(:bookmarklet) %></h3>
 <p>
     <%= _(:feeds_new_bookmarklet_description1) %>
-    <a href="<%= bookmarklet_js %>" 
-       title="<%= _(:feeds_add_to_winnow) %>"
-       class="bookmarklet"
-       onclick="new ErrorMessage(<%= _(:feeds_bookmarklet_js_error_message) %>);return false;"
-       ><%= _(:feeds_add_to_winnow) %></a>
+    <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :title => _(:feeds_add_to_winnow), :onclick => "new ErrorMessage(#{_(:feeds_bookmarklet_js_error_message).to_json}); return false;", :class => "bookmarklet" %>
     <%= _(:feeds_new_bookmarklet_description2) %>
 </p>

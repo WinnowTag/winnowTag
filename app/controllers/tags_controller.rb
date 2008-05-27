@@ -14,12 +14,12 @@
 # single uses of the tag by the user and the +TagsController+
 # operates on the many +Taggings+ that use a given +Tag+.
 class TagsController < ApplicationController
-  helper :bias_slider
+  helper :bias_slider, :comments
   
   include ActionView::Helpers::TextHelper
   skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
   before_filter :login_required_unless_local, :only => :index
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :update_state, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
   before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
   before_filter :ensure_user_is_tag_owner_unless_local, :only => :classifier_taggings
   
@@ -31,10 +31,10 @@ class TagsController < ApplicationController
                            :order => params[:order], :direction => params[:direction])
         @full = true
       end
-      format.atomsvc do        
+      format.atom do        
         conditional_render(Tag.maximum(:created_on)) do
-          atomsvc = Tag.to_atomsvc(:base_uri => "http://#{request.host}:#{request.port}")
-          render :xml => atomsvc.to_xml
+          atom = Tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}")
+          render :xml => atom.to_xml
         end
       end
     end
@@ -208,6 +208,25 @@ class TagsController < ApplicationController
     render :nothing => true
   end
   
+  def update_state
+    @tag = Tag.find(params[:id])
+    
+    if params[:state] == 'globally_exclude'
+      current_user.tag_exclusions.create! :tag_id => @tag.id
+      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      Folder.remove_tag(current_user, @tag.id)
+    elsif params[:state] == 'subscribe'
+      TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+    else
+      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      Folder.remove_tag(current_user, @tag.id)
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+    end
+    
+    respond_to :js
+  end
+  
   def globally_exclude
     @tag = Tag.find(params[:id])
     if params[:globally_exclude] =~ /true/i
@@ -215,25 +234,24 @@ class TagsController < ApplicationController
     else
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
-    render :nothing => true
+    respond_to :js
   end
   
   def subscribe
-    if tag = Tag.find_by_id_and_public(params[:id], true)
+    if @tag = Tag.find_by_id_and_public(params[:id], true)
       if params[:subscribe] =~ /true/i
-        TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
+        TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
       else
-        TagSubscription.delete_all :tag_id => tag.id, :user_id => current_user.id
-        TagExclusion.delete_all :tag_id => tag.id, :user_id => current_user.id
+        TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+        Folder.remove_tag(current_user, @tag.id)
       end
     end
-    render :nothing => true
+    respond_to :js
   end
   
   def unsubscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
       Folder.remove_tag(current_user, @tag.id)
     end
     respond_to do |format|

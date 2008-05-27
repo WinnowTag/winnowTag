@@ -1,0 +1,51 @@
+<div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => disabled) %>">
+  <div class="info">      
+    <div class="details">
+      <p><!-- <span>Author</span> --> <%= tag.user.display_name %></p>
+      <strong class="state"><%= tag_state(tag) %></strong>
+    </div>
+    <div class="comments">
+      <p><%= _(:comments) %></p>  
+      <strong><%= tag.comments.count %></strong>
+    </div>
+    <div class="positive">
+      <p><%= _(:positive) %></p>
+      <strong><%= tag.positive_count %></strong>
+    </div>
+    <div class="negative">
+      <p><%= _(:negative) %></p>
+      <strong><%= tag.negative_count %></strong>
+    </div>
+    <div class="automatic">
+      <p><%= _(:automatic_label) %></p>
+      <strong><%= tag.classifier_count %></strong>
+    </div>
+    <div class="date">
+       <p><%= _(:tags_last_trained) %></p> 
+       <strong><%= format_date(tag.last_trained) %></strong>
+    </div>
+  </div>
+      
+  <% if local_assigns[:editable] %>
+    <% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
+    <h4>
+      <%= in_place_completing_editor_field :tag, :name, { :id => dom_id(tag, 'editor') },
+          { :param_name => "'tag[name]'", :url => tag_path(tag), :options => "{method: 'put'}", :html_response => false, 
+            :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'), 
+            :click_to_edit_text => _(:tags_click_to_edit_tag_text), :save_text => _(:tags_save_text) },  
+          { :skip_style => true, :update => dom_id(tag, 'auto_complete'), :url => auto_complete_for_tag_name_tag_path(tag) } %>
+      </h4>
+
+    <div class="description">
+      <% if tag.comment.blank?; tag.comment = _(:tags_blank_comment); end %>
+      <%= in_place_editor_field :tag, :comment, {}, :param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
+          :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50 %>
+    </div>
+  <% else %>
+    <h4><%= tag_name_with_tooltip(tag) %></h4>
+
+    <div class="description">
+      <%= tag.comment %>
+    </div>
+  <% end %>
+</div> <!-- /.summary -->

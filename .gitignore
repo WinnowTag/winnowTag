@@ -6,3 +6,10 @@ doc/TODO
 log
 tmp
 .DS_Store
+benchmarks
+classifier.db
+classifier.log
+nbproject
+
+*.sql.gz
+perf.log

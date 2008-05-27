@@ -87,11 +87,11 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  def last_used_by
-    if last_used_by = read_attribute(:last_used_by)
-      Time.parse(last_used_by)
+  def last_trained
+    if last_trained = read_attribute(:last_trained)
+      Time.parse(last_trained)
     else
-      if tagging = taggings.find(:first, :order => 'created_on DESC')
+      if tagging = taggings.find(:first, :conditions => ['classifier_tagging = ?', false], :order => 'created_on DESC')
         tagging.created_on
       end
     end
@@ -144,37 +144,47 @@ class Tag < ActiveRecord::Base
   def potentially_undertrained?
     self.positive_taggings.size < Tag.undertrained_threshold
   end
-    
+      
   # This needs to be fast so we'll bypass Active Record
+  def taggings_from_atom(atom)
+    atom.entries.each do |entry|
+      begin
+        item_id = URI.parse(entry.id).fragment.to_i
+        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
+          category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
+        else 
+          0.0
+        end
+
+        if strength >= 0.9
+          connection.execute "INSERT IGNORE INTO taggings " +
+                              "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
+                              "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                              "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
+        end
+      rescue URI::InvalidURIError => urie
+        logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
+      rescue ActiveRecord::StatementInvalid => arsi
+        logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
+      end
+    end
+    
+    connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
+  end
+  
+  private :taggings_from_atom
+  
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
-      atom.entries.each do |entry|
-        begin
-          item_id = URI.parse(entry.id).fragment.to_i
-          strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
-            category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
-          else 
-            0.0
-          end
-          
-          if strength >= 0.9
-            connection.execute "INSERT IGNORE INTO taggings " +
-                                "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
-                                "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
-                                "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
-          end
-        rescue URI::InvalidURIError => urie
-          logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
-        rescue ActiveRecord::StatementInvalid => arsi
-          logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
-        end
-      end
+      taggings_from_atom(atom)
     end
   end
   
   def replace_taggings_from_atom(atom)
-    self.classifier_taggings.clear
-    self.create_taggings_from_atom(atom)
+    Tagging.transaction do
+      self.delete_classifier_taggings!
+      taggings_from_atom(atom)      
+    end
   end
   
   # Return an Atom document for this tag.
@@ -189,23 +199,24 @@ class Tag < ActiveRecord::Base
       feed.updated = self.updated_on
       feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
       feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
+      feed.categories << Atom::Category.new(:term => self.name, :scheme => "#{options[:base_uri]}/#{user.login}/tags/")
       
-      feed.links << Atom::Link.new(:rel => "alternate", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
+      feed.links << Atom::Link.new(:rel => "alternate", :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom"))
       feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
-                                   :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom")
+                                   :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom"))
                          
       conditions = []
       condition_values = []
                 
       if options[:training_only]
         conditions << 'classifier_tagging = 0'
-        feed.links << Atom::Link.new(:rel => "self", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")
+        feed.links << Atom::Link.new(:rel => "self", :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom"))
       else
         conditions << 'strength <> 0'
         feed.links << Atom::Link.new(:rel => "self", 
-                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
+                                     :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom"))
         feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
-                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")        
+                                     :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom"))     
       end
       
       if options[:since]
@@ -220,17 +231,18 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  def self.to_atomsvc(options = {})
-    Atom::Pub::Service.new do |service|
-      service.workspaces << Atom::Pub::Workspace.new  do |wkspc|
-        # TODO: localization
-        wkspc.title = "Tag Training"
-        Tag.find(:all).each do |tag|
-          wkspc.collections << Atom::Pub::Collection.new do |collection|
-            collection.title = tag.name
-            collection.href = "#{options[:base_uri]}/tags/#{tag.id}/training"
-            collection.accepts << ''
-          end
+  def self.to_atom(options = {})
+    Atom::Feed.new do |feed|
+      feed.title = "Winnow tags"
+      feed.updated = Tag.maximum(:created_on)
+        
+      Tag.find(:all, :include => :user).each do |tag|
+        feed.entries << Atom::Entry.new do |entry|
+          entry.title = tag.name
+          entry.id    = "#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}"
+          entry.updated = tag.updated_on
+          entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
+                                        :href => URI.escape("#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}/training.atom"))
         end
       end
     end
@@ -238,15 +250,17 @@ class Tag < ActiveRecord::Base
   
   def self.search(options = {})
     select = ['tags.*', 
+              '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_number',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND NOT EXISTS' <<
                 '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
                   'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0) AS training_count',
-              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id) AS last_used_by',
-              "NOT EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) AS globally_exclude",
-              "NOT EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) AS subscribe"]
+              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0) AS last_trained',
+              "CASE " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) THEN 0 " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) THEN 1 " <<
+                "ELSE 2 END AS state"]
     
     joins = ["LEFT JOIN users ON tags.user_id = users.id"]
 
@@ -257,7 +271,8 @@ class Tag < ActiveRecord::Base
 
     if options[:own]
       joins << "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
-      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL)"
+      joins << "LEFT JOIN tag_exclusions ON tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}"
+      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL OR tag_exclusions.id IS NOT NULL)"
       values << options[:user].id
     end
         
@@ -275,7 +290,7 @@ class Tag < ActiveRecord::Base
     order = case options[:order]
     when "name", "public", "id"
       "tags.#{options[:order]}"
-    when "subscribe", "training_count", "classifier_count", "last_used_by", "globally_exclude"
+    when "state", "comments_number", "positive_count", "negative_count", "classifier_count", "last_trained"
       options[:order]
     when "login"
       "users.#{options[:order]}"

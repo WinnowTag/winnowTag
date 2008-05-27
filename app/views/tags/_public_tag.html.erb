@@ -1,36 +1,22 @@
-<div id="<%= dom_id(public_tag) %>" class="tag public clearfix">
-  <div class="left clearfix">
-    <div class="name">
-      <%= tag_name_with_tooltip(public_tag) %>
-    </div>
-
-    <div class="comment">
-      <%= public_tag.comment %>
-    </div>
-  </div>
+<div id="<%= dom_id(public_tag) %>" class="tag record public clearfix <%= tag_classes(public_tag) %>">
+  <%= render :partial => "summary.html.erb", :locals => { :tag => public_tag, :disabled => true } %>
   
-  <div class="right clearfix">
-    <dl class="training clearfix">
-      <dt><%= _(:tags_last_trained) %></dt>
-      <dd><%= format_date(public_tag.last_used_by) %></dd>
-      <dt><%= _(:tags_training) %></dt>
-      <dd><%= link_to _(:tags_count, public_tag.positive_count, public_tag.negative_count), feed_items_path(:anchor => "tag_ids=#{public_tag.id}&mode=moderated"), :title => _(:tags_inspect, public_tag.name) %></dd>
-      <dt><%= _(:tags_automatic) %></dt>
-      <dd class="last"><%= public_tag.classifier_count %></dd>
-    </dl>
-
-    <ul class="controls">
-      <li class="first">
-        <%= link_to _(:tags_feed_link), url_for(:user => public_tag.user, :tag_name => public_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %>
-      </li>
-      <li><%= bias_slider(public_tag, :disabled => true) %></li>
-      <li><%= globally_exclude_check_box(public_tag) %> <%= _(:tags_globally_exclude) %></li>
-      <li>
-  			<%= check_box_tag dom_id(public_tag, "subscribe"), "1", current_user.subscribed?(public_tag), :disabled => current_user == public_tag.user,
-  						:onclick => remote_function(:url => subscribe_tag_path(public_tag), :method => 'put', :with => "{ subscribe: this.checked }") %> <%= _(:tags_subscribe) %>
-      </li>
-      <li><%= link_to _(:show), feed_items_path(:anchor => "tag_ids=#{public_tag.id}"), :class => 'show_icon', :title => _(:tags_show_link_title, public_tag.name) %></li>
-      <li><%= link_to_remote _(:copy), :url => tags_path(:copy => public_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{public_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, public_tag.name), :class => "duplicate_icon" } %></li>
-    </ul>
-  </div>
+  <div class="extended" style="display:none">  
+    <%= render :partial => "comments.html.erb", :locals => { :tag => public_tag } %>
+      
+    <div class="sidebar">      
+      <div class="block actions clearfix">
+        <ul class="controls">
+          <li class="first"><%= bias_slider_html(public_tag) %></li>  
+          <li class="state">
+            <%= render :partial => "state.html.erb", :locals => { :tag => public_tag } %>
+          </li>
+          <li><%= link_to_remote _(:copy), :url => tags_path(:copy => public_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{public_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, public_tag.name), :class => "duplicate_icon" } %></li>
+          <li><%= link_to _(:view_all_items, public_tag.name), feed_items_path(:anchor => "tag_ids=#{public_tag.id}"), :class => 'view_icon' %></li>
+          <li><%= link_to _(:view_tagged_items, public_tag.name), feed_items_path(:anchor => "tag_ids=#{public_tag.id}&mode=moderated"), :class => "view_icon" %></li>
+          <li><%= link_to _(:tags_feed_link), url_for(:user => public_tag.user, :tag_name => public_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %></li>
+        </ul>
+      </div> <!-- /.actions -->
+    </div>
+  </div> <!-- /.extended -->
 </div>

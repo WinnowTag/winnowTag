@@ -1,0 +1,2 @@
+page[@feed].remove_class_name("globally_excluded")
+page[@feed].add_class_name feed_classes(@feed)

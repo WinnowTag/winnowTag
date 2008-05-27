@@ -1,0 +1,16 @@
+<div id="<%= dom_id(comment) %>" class="comment clearfix">
+  <div class="metadata">
+    <div class="author"><%= comment.user.display_name %></div>
+    <div class="date"><%= format_date(comment.updated_at) %></div>
+    <% if can_edit_comment?(comment) -%>
+    <div class="actions">
+      <%= link_to_remote _(:edit), :url => edit_comment_path(comment), :method => :get, :condition => "!$(this).up('.comment').down('form')" %>
+      <%= link_to_remote _(:destroy), :url => comment_path(comment), :method => :delete, :confirm => _(:are_you_sure) %>
+    </div>
+    <% end -%>
+  </div>
+  
+  <div class="body">
+    <%= textilize comment.body %>
+  </div>
+</div>

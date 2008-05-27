@@ -1,0 +1,6 @@
+page << "if($(#{dom_id(@tag).to_json}).down('.state')) {"
+  page[@tag].down('.state').update tag_state(@tag)
+  page[@tag].remove_class_name("globally_excluded")
+  page[@tag].remove_class_name("subscribed")
+  page[@tag].add_class_name tag_classes(@tag)
+page << "}"
