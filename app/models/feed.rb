@@ -103,7 +103,6 @@ class Feed < ActiveRecord::Base
       self.attributes = {
         :title      => (entry.title or ''),
         :updated    => entry.updated,
-        :published  => entry.published,
         :alternate  => (entry.alternate and entry.alternate.href),
         :via        => (entry.via and entry.via.href),
         :collector_link => (entry.self and entry.self.href),

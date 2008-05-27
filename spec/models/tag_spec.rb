@@ -266,6 +266,18 @@ describe 'to_atom', :shared => true do
   it "should set the atom:id to :base_uri/tags/:id" do
     @atom.id.should == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
   end
+  
+  it "should have a category on the feed" do
+    @atom.should have(1).categories
+  end
+
+  it "should have the right term on the category" do
+    @atom.categories.first.term.should == @tag.name
+  end
+
+  it "should have the right scheme on the category" do
+    @atom.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+  end
 
   it "should have an http://peerworks.org/classifier/edit link that refers to the classifier tagging resource" do
     @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.should_not be_nil
@@ -341,6 +353,21 @@ describe Tag do
       it "should only return items with updated date after :since" do
         @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org', :since => Time.now)
         @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should be_nil
+      end
+    end
+    
+    describe "with space in the name" do
+      before(:each) do
+        @tag.name = "my tag"
+        @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
+      end
+      
+      it "should escape the training URL" do
+        @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/training" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/my%20tag/training.atom"
+      end
+      
+      it "should escape the edit URL" do        
+        @atom.links.detect {|l| l.rel == "#{CLASSIFIER_NS}/edit" }.href.should == "http://winnow.mindloom.org/#{@user.login}/tags/my%20tag/classifier_taggings.atom"
       end
     end
     
@@ -421,6 +448,18 @@ describe 'create_taggings_from_atom', :shared => true do
   it "should have the new classifier tagging" do
     @tag.create_taggings_from_atom(@atom)
     @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and classifier_tagging = 1']).strength.should == 0.99
+  end
+  
+  it "should not change the updated timestamp" do
+    orig = @tag.updated_on
+    @tag.create_taggings_from_atom(@atom)
+    @tag.updated_on.should === orig
+  end
+  
+  it "should update the classified_at timestamp" do
+    @tag.create_taggings_from_atom(@atom)
+    @tag.reload
+    @tag.last_classified_at.should_not be_nil
   end
 end
 

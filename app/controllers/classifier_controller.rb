@@ -33,8 +33,14 @@ class ClassifierController < ApplicationController
         elsif current_user.changed_tags.empty?
           raise ClassificationStartException.new(_(:tags_not_changed), 500)
         else
-          job = Remote::ClassifierJob.create(:user_id => current_user.id)          
-          session[:classification_job_id] = job.id
+          session[:classification_job_id] = []
+          current_user.changed_tags.each do |tag|
+            tag_url = url_for(:controller => 'tags', :action => 'training', 
+                              :format => 'atom',     :user => current_user.login, 
+                              :tag_name => tag.name)
+            job = Remote::ClassifierJob.create(:tag_url => tag_url)
+            session[:classification_job_id] << job.id
+          end
         end
         
         wants.json   { render :nothing => true }
@@ -52,11 +58,22 @@ class ClassifierController < ApplicationController
     respond_to do |wants|
       status = {:error_message => _(:classifier_not_running), :progress => 100}
       
-      if (job_id = session[:classification_job_id]) && (job = Remote::ClassifierJob.find(job_id))
-        status = {:progress => job.progress, :status => job.status}
-        
-        if job.status == Remote::ClassifierJob::Status::COMPLETE
-          job.destroy
+      session[:classification_job_id] && session[:classification_job_id].dup.each_with_index do |job_id, index|
+        if job = Remote::ClassifierJob.find(job_id)
+          # This combines the progress of all pending jobs 
+          
+          
+          status = { :progress => ((status[:progress] * index) + job.progress).to_f / (index + 1),
+                     :status   => job.status }
+                   
+          if job.status == Remote::ClassifierJob::Status::ERROR
+            status = {:error_message => job.error_message, :progress => 100}
+            job.destroy
+            session[:classification_job_id].delete(job_id)          
+          elsif job.status == Remote::ClassifierJob::Status::COMPLETE
+            job.destroy
+            session[:classification_job_id].delete(job_id)
+          end
         end
       end
       
@@ -73,17 +90,20 @@ class ClassifierController < ApplicationController
   end
   
   def cancel
-    if (job_id = session[:classification_job_id]) && (job = Remote::ClassifierJob.find(job_id))
-      job.destroy
-      session[:classification_job_id] = nil
+    session[:classification_job_id] && session[:classification_job_id].each do |job_id|
+      if job = Remote::ClassifierJob.find(job_id)
+        job.destroy
+      end
     end
+    
+    session[:classification_job_id] = nil
     
     render :nothing => true
   end
   
   private
   def job_running?
-    if job_id = session[:classification_job_id]
+    if session[:classification_job_id] && job_id = session[:classification_job_id].first
       begin
         job = Remote::ClassifierJob.find(job_id)
         return job.status != Remote::ClassifierJob::Status::COMPLETE

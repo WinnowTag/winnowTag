@@ -144,37 +144,47 @@ class Tag < ActiveRecord::Base
   def potentially_undertrained?
     self.positive_taggings.size < Tag.undertrained_threshold
   end
-    
+      
   # This needs to be fast so we'll bypass Active Record
+  def taggings_from_atom(atom)
+    atom.entries.each do |entry|
+      begin
+        item_id = URI.parse(entry.id).fragment.to_i
+        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
+          category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
+        else 
+          0.0
+        end
+
+        if strength >= 0.9
+          connection.execute "INSERT IGNORE INTO taggings " +
+                              "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
+                              "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                              "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
+        end
+      rescue URI::InvalidURIError => urie
+        logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
+      rescue ActiveRecord::StatementInvalid => arsi
+        logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
+      end
+    end
+    
+    connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
+  end
+  
+  private :taggings_from_atom
+  
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
-      atom.entries.each do |entry|
-        begin
-          item_id = URI.parse(entry.id).fragment.to_i
-          strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
-            category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
-          else 
-            0.0
-          end
-          
-          if strength >= 0.9
-            connection.execute "INSERT IGNORE INTO taggings " +
-                                "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
-                                "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
-                                "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
-          end
-        rescue URI::InvalidURIError => urie
-          logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
-        rescue ActiveRecord::StatementInvalid => arsi
-          logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
-        end
-      end
+      taggings_from_atom(atom)
     end
   end
   
   def replace_taggings_from_atom(atom)
-    self.classifier_taggings.clear
-    self.create_taggings_from_atom(atom)
+    Tagging.transaction do
+      self.delete_classifier_taggings!
+      taggings_from_atom(atom)      
+    end
   end
   
   # Return an Atom document for this tag.
@@ -189,23 +199,24 @@ class Tag < ActiveRecord::Base
       feed.updated = self.updated_on
       feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
       feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
+      feed.categories << Atom::Category.new(:term => self.name, :scheme => "#{options[:base_uri]}/#{user.login}/tags/")
       
-      feed.links << Atom::Link.new(:rel => "alternate", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
+      feed.links << Atom::Link.new(:rel => "alternate", :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom"))
       feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/edit", 
-                                   :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom")
+                                   :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/classifier_taggings.atom"))
                          
       conditions = []
       condition_values = []
                 
       if options[:training_only]
         conditions << 'classifier_tagging = 0'
-        feed.links << Atom::Link.new(:rel => "self", :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")
+        feed.links << Atom::Link.new(:rel => "self", :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom"))
       else
         conditions << 'strength <> 0'
         feed.links << Atom::Link.new(:rel => "self", 
-                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom")
+                                     :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}.atom"))
         feed.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
-                                     :href => "#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom")        
+                                     :href => URI.escape("#{options[:base_uri]}/#{user.login}/tags/#{self.name}/training.atom"))     
       end
       
       if options[:since]
@@ -231,7 +242,7 @@ class Tag < ActiveRecord::Base
           entry.id    = "#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}"
           entry.updated = tag.updated_on
           entry.links << Atom::Link.new(:rel => "#{CLASSIFIER_NAMESPACE}/training", 
-                                        :href => "#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}/training.atom") 
+                                        :href => URI.escape("#{options[:base_uri]}/#{tag.user.login}/tags/#{tag.name}/training.atom"))
         end
       end
     end
