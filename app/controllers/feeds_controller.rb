@@ -7,10 +7,8 @@
 # This controller doesn't create feeds directly. Instead it forwards
 # feed creation requests on to the collector using Remote::Feed.
 class FeedsController < ApplicationController
-  include CollectionJobResultsHelper
   include ActionView::Helpers::TextHelper
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
-  before_filter :flash_collection_job_result
   
   def index
     respond_to do |format|
