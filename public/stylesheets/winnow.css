@@ -921,6 +921,11 @@ ul.tag_list li.negative .controls .remove {
 
 .applesearch.non_safari input.placeholder {
   color: #666;
+  font-weight: normal !important;
+}
+
+#feed_items_controller .applesearch.non_safari input {
+  font-weight: bold;
 }
 
 /*
