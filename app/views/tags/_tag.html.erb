@@ -11,8 +11,8 @@
           <li class="state">
             <%= render :partial => "state.html.erb", :locals => { :tag => tag } %>
           </li>
-          <li>
-            <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <%= _(:tags_public) %>
+          <li class="public">
+            <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <label for="<%= dom_id(tag, "public") %>"><%= _(:tags_public) %></label>
           </li>
           <li><%= link_to_remote _(:copy), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, tag.name), :class => "duplicate_icon" } %></li>
           <li><%= link_to_remote _(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => _(:tags_destroy_confirm_text, tag.name), :html => { :title => _(:tags_destroy_link_title, tag.name), :class => "destroy_icon", :id => dom_id(tag, 'destroy') } %></li>

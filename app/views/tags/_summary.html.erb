@@ -34,7 +34,7 @@
             :submit => %Q('validate_tag_edit(#{tag.name.to_json}, $$(".editor_field").first().value)'), 
             :click_to_edit_text => _(:tags_click_to_edit_tag_text), :save_text => _(:tags_save_text) },  
           { :skip_style => true, :update => dom_id(tag, 'auto_complete'), :url => auto_complete_for_tag_name_tag_path(tag) } %>
-      </h4>
+    </h4>
 
     <div class="description">
       <% if tag.comment.blank?; tag.comment = _(:tags_blank_comment); end %>

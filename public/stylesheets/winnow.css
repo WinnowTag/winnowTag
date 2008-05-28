@@ -512,17 +512,6 @@ div.sorting_and_filtering_controls {
   background-color: #E5E5E5;
 }
 
-input.editor_field {
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-a.editor_cancel {
-  font-size: 12px;
-  font-weight: normal;
-  margin-left: 5px;
-}
-
 /*
 ** =item, =feed_item
 */
@@ -1375,7 +1364,6 @@ a.bookmarklet:hover {
 
 .record h4 {
 	display: inline;
-	margin: 0 1em 0 0;
 }
 
 .record .description {
@@ -1439,7 +1427,7 @@ a.bookmarklet:hover {
 }
 
 .feed .summary .description {
-		margin: 0.5em 0 0 60px;
+	margin: 0.5em 0 0 60px;
 }
 
 .feed .summary .description input {
@@ -1654,7 +1642,7 @@ a.bookmarklet:hover {
 
 .tag .extended .sidebar .actions input {
 	margin: 0;
-	vertical-align: middle;
+	vertical-align: bottom;
 }
 
 .tag .extended .sidebar .actions .state span {
@@ -1938,6 +1926,7 @@ a.bookmarklet:hover {
   z-index: 100;
   font-weight: normal;
   font-style: normal;
+  display: none;
 }
 
 .auto_complete ul {
