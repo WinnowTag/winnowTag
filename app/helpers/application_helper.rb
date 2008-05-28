@@ -91,6 +91,7 @@ module ApplicationHelper
     js_options['loadTextURL'] = "'#{url_for(options[:load_text_url])}'" if options[:load_text_url]        
     js_options['ajaxOptions'] = options[:options] if options[:options]
     js_options['evalScripts'] = options[:script] if options[:script]
+    js_options['htmlResponse'] = options[:html_response] if options.key?(:html_response)
     js_options['callback']   = "function(form) { return #{options[:with]} }" if options[:with]
     js_options['clickToEditText'] = %('#{options[:click_to_edit_text]}') if options[:click_to_edit_text]
     js_options['paramName'] = %('#{options[:param_name]}') if options[:param_name]

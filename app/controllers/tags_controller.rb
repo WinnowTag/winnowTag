@@ -112,14 +112,11 @@ class TagsController < ApplicationController
         render :action => "merge.js.rjs"
       else
         if @tag.update_attributes(:name => @name)
-          flash[:notice] = _(:tag_renamed)
+          render :action => "rename.js.rjs"
         else
-          flash[:error] = @tag.errors.full_messages.join('<br/>')
+          @tag.reload
+          render :action => "error.js.rjs"
         end
-        respond_to do |format|
-          format.html { redirect_to tags_path }
-          format.js   { render(:update) { |p| p.redirect_to request.env["HTTP_REFERER"] } }
-        end        
       end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)

@@ -46,7 +46,6 @@ Localization.define do |l|
   # app/controllers/tags_controller.rb
   l.store :tag_copied,                            "%s successfully copied to %s"
   l.store :tag_replace,                           "Tag %s already exists. This copy will completely replace it with a copy of %s."
-  l.store :tag_renamed,                           "Tag Renamed"
   l.store :tag_merged,                            "%s merged with %s"
   l.store :tag_not_found,                         "%s and no tag %s"
   l.store :tag_id_not_found,                      "Tag with id %s not found"

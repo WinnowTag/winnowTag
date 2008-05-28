@@ -1,0 +1,1 @@
+page[dom_id(@tag, 'name')].replace_html :partial => "name.html.erb", :locals => { :tag => @tag }

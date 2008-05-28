@@ -1,5 +1,7 @@
 page << <<-EOJS
   if(confirm(#{_(:tags_merge_confirm_text, @tag.name, @name).to_json})) {
     #{remote_function(:url => hash_for_merge_tag_path(:id => @tag, "tag[name]" => @name), :method => :put)};
-  }
+  } else {
 EOJS
+  page[dom_id(@tag, 'name')].replace_html :partial => "name.html.erb", :locals => { :tag => @tag }
+page << "}"

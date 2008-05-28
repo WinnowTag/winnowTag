@@ -6,33 +6,6 @@ to use, modify, or create derivate works.
 
 Please contact info@peerworks.org for further information.
 */
-
-function validate_tag_edit(original_name, new_name) {
-  if (new_name == original_name) {
-    new ErrorMessage("Can't rename a tag to the same name.");
-    return false;
-  } 
-  
-  if (new_name == "") {
-    new ErrorMessage("Name can't be blank");
-    return false;
-  } 
-  
-  var merging = false;
-  
-  $$('span.in_place_editor_field').each(function(name) {
-    if (name.innerHTML == new_name) {
-      merging = true;
-    }
-  });
-  
-  if (merging) {
-    return confirm("The tag name you have chosen already exists.\n\nMerge the two tags? ");
-  } else {
-    return true;    
-  }  
-}
-
 function add_tagging(taggable_id, tag_name, tagging_type) {
   if( tag_name.match(/^\s*$/) ) { return; }
 

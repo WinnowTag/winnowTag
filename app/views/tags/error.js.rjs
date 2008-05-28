@@ -1,0 +1,5 @@
+page[dom_id(@tag, 'name')].replace_html :partial => "name.html.erb", :locals => { :tag => @tag }
+
+page[:error].update @tag.errors.full_messages.join('<br/>')
+page[:error].show
+page[:notice].hide
