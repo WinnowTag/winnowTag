@@ -1611,7 +1611,7 @@ a.bookmarklet:hover {
 	width: 100%;
 	border: 1px solid #C0C7CD;
 	height: 80px;
-  margin: -1px 0 0.5em -2px;
+  margin: -1px 0 0.5em -1px;
 }
 
 .tag .extended .comment form .input {
