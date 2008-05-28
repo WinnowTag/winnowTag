@@ -25,10 +25,6 @@ class User < ActiveRecord::Base
   has_many :messages, :order => "created_at DESC"
   has_many :feedbacks
   has_many :comments
-  has_many :collection_job_results
-  has_one :collection_job_result_to_display, :class_name => "CollectionJobResult", :foreign_key => 'user_id',
-              :conditions => ['user_notified = ?', false], :order => 'collection_job_results.created_on ASC', 
-              :include => :feed
   has_many :tags, :dependent => :delete_all
   has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
   has_many :taggings, :extend => FindByFeedItem, :dependent => :delete_all

@@ -3,72 +3,46 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe CollectionJobResultsController do
   before(:each) do
-    login_as(1)
-    mock_user_for_controller
-    
     @message = mock_model(Message)
     @messages = stub("messages", :create! => @message)
+
+    @user = mock_model(User)
     @user.stub!(:messages).and_return(@messages)
-    
     User.stub!(:find).with(@user.id.to_s).and_return(@user)
+    
+    @feed = mock_model(Feed, :title => "Some Blog", :duplicate => nil)
+    Feed.stub!(:find_by_id).with(@feed.id.to_s).and_return(@feed)
+    
+    @controller.stub!(:local_request?).and_return(true)
   end
   
-  it "should get index" do
-    results = mock('results', :to_xml => "XML")
-    @user.should_receive(:collection_job_results).and_return(results)
-    
-    get :index, :user_id => @user.id
-    response.should be_success
-    assigns[:collection_job_results].should == results
+  def do_post(message = nil)
+    post :create, :collection_job_result => { :message => message, :failed => message ? "true" : "false", :feed_id => @feed.id.to_s }, :user_id => @user.id
   end
 
-  it "should create collection job result" do
-    @messages.should_receive(:create!).with(:body => "We have finished fetching new items for Some Blog").and_return(@message)
-    
-    result = mock_model(CollectionJobResult, :failed? => false, :feed_title => "Some Blog")
-    results = mock('collection_job_results')
-    @user.should_receive(:collection_job_results).and_return(results)
-    results.should_receive(:build).with({:message => "msg", :failed => 0, :feed_id => nil }).and_return(result)
-    result.should_receive(:save).and_return(true)
-    result.stub!(:feed).and_return(mock_model(Feed, :duplicate => nil))
-    
-    post :create, :collection_job_result => {:message => "msg", :failed => 0 }, :user_id => @user.id
-    
-    response.code.should == "201"
-    response.headers['Location'].should == collection_job_result_url(@user, result)
-  end
-    
-  it "can create without login from local" do
-    login_as(nil)
-    @controller.stub!(:local_request?).and_return(true)
-    
-    result = mock_model(CollectionJobResult, :failed? => false, :feed_title => nil)
-    results = mock('collection_job_results')
-    @user.should_receive(:collection_job_results).and_return(results)
-    results.should_receive(:build).with({:message => "msg", :failed => 0, :feed_id => nil }).and_return(result)
-    result.should_receive(:save).and_return(true)
-    result.stub!(:feed)
-    
-    post :create, :collection_job_result => {:message => "msg", :failed => 0 }, :user_id => @user.id
+  it "is a success" do
+    do_post
+    response.should be_success
   end
   
-  it "should update user's feed state if the feed is a duplicate" do
-    feed = mock_model(Feed, :duplicate => mock('dup'))
-    
-    result = mock_model(CollectionJobResult, :failed? => false, :feed_title => nil)
-    results = mock('collection_job_results')
-    @user.should_receive(:collection_job_results).and_return(results)
-    results.should_receive(:build).with({:message => "msg", :failed => 0, :feed_id => 1 }).and_return(result)
-    result.should_receive(:save).and_return(true)
-    result.should_receive(:feed).and_return(feed)
-    @user.should_receive(:update_feed_state).with(feed)
-    
-    post :create, :collection_job_result => {:message => "msg", :failed => 0, :feed_id => 1 }, :user_id => @user.id
+  it "creates a success messsage when successful" do
+    @messages.should_receive(:create!).with(:body => _(:collection_finished, "Some Blog")).and_return(@message)  
+    do_post
+  end
+  
+  it "creates a failure messsage when unsuccessful" do
+    @messages.should_receive(:create!).with(:body => _(:collection_failed, "Some Blog", "Couldn't contact server")).and_return(@message)  
+    do_post("Couldn't contact server")
+  end
+  
+  it "updates user's feed state if the feed is a duplicate" do
+    @feed.stub!(:duplicate).and_return(mock_model(Feed))
+
+    @user.should_receive(:update_feed_state).with(@feed)
+    do_post
   end
 end

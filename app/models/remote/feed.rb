@@ -28,14 +28,29 @@ module Remote
       Remote::CollectionJob.create(options.merge(:feed_id => self.id))
     end  
     
-    # some handy functions that map the collectors schema into the atom'ish schema used by Winnow
-    def alternate; self.link;           end
-    def via;       self.url;            end
-    
     # Write some of my own attribute getters so they exist when ActiveResource doesnt map write them for us
-    %w[title updated_on].each do |attribute|
+    %w[link url updated_on].each do |attribute|
       define_method(attribute) do
         attributes[attribute]
+      end
+    end
+    
+    # some handy functions that map the collectors schema into the atom'ish schema used by Winnow
+    def alternate
+      self.link
+    end
+    
+    def via
+      self.url
+    end
+    
+    def title
+      if not attributes["title"].blank?
+        attributes["title"]
+      elsif not alternate.blank?
+        URI.parse(alternate).host
+      elsif not via.blank?
+        URI.parse(via).host
       end
     end
 

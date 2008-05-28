@@ -15,6 +15,10 @@ Localization.define do |l|
   l.store :classifier_not_running,                "No classification process running"
   l.store :tags_not_changed,                      "There are no changes to your tags"
 
+  # app/controllers/collection_job_results_controller.rb
+  l.store :collection_failed,                     "Collection Job for %s failed with result: %s"
+  l.store :collection_finished,                   "We have finished fetching new items for %s"
+
   # app/controllers/feeds_controller.rb
   l.store :feed_not_found,                        "We couldn't find this feed in any of our databases. Maybe it has been deleted or never existed. If you think this is an error, please contact us."
   l.store :collector_down,                        "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. We are aware of this problem and will fix it soon. Please try again later."
@@ -66,10 +70,6 @@ Localization.define do |l|
   l.store :fourth_slider_marker,                  "Strongly Positive"
   l.store :fifth_slider_marker,                   "Very Strongly Positive"
 
-  # app/helpers/collection_job_results_helper.rb
-  l.store :collection_failed,                     "Collection Job for %s failed with result: %s"
-  l.store :collection_finished,                   "We have finished fetching new items for %s"
-
   # app/helpers/feed_items_helper.rb
   l.store :training_label,                        "Training"
   l.store :automatic_label,                       "Automatic"
@@ -89,9 +89,6 @@ Localization.define do |l|
   # app/mailers/notifier.rb
   l.store :reminder_subject,                      "Password Reminder"
   
-  # app/models/collection_job_result.rb
-  l.store :unknown_feed,                          "Unknown Feed"
-
   # app/models/invite.rb
   l.store :default_invite_accepted_subject,       "Invite Accepted"
   l.store :default_invite_accepted_body,          "You request for an invitation to Winnow has been accepted!"
