@@ -11,6 +11,11 @@ describe CollectionJobResultsController do
   before(:each) do
     login_as(1)
     mock_user_for_controller
+    
+    @message = mock_model(Message)
+    @messages = stub("messages", :create! => @message)
+    @user.stub!(:messages).and_return(@messages)
+    
     User.stub!(:find).with(@user.id.to_s).and_return(@user)
   end
   
@@ -24,7 +29,9 @@ describe CollectionJobResultsController do
   end
 
   it "should create collection job result" do
-    result = mock_model(CollectionJobResult)
+    @messages.should_receive(:create!).with(:body => "We have finished fetching new items for Some Blog").and_return(@message)
+    
+    result = mock_model(CollectionJobResult, :failed? => false, :feed_title => "Some Blog")
     results = mock('collection_job_results')
     @user.should_receive(:collection_job_results).and_return(results)
     results.should_receive(:build).with({:message => "msg", :failed => 0, :feed_id => nil }).and_return(result)
@@ -36,12 +43,12 @@ describe CollectionJobResultsController do
     response.code.should == "201"
     response.headers['Location'].should == collection_job_result_url(@user, result)
   end
-  
+    
   it "can create without login from local" do
     login_as(nil)
     @controller.stub!(:local_request?).and_return(true)
     
-    result = mock_model(CollectionJobResult)
+    result = mock_model(CollectionJobResult, :failed? => false, :feed_title => nil)
     results = mock('collection_job_results')
     @user.should_receive(:collection_job_results).and_return(results)
     results.should_receive(:build).with({:message => "msg", :failed => 0, :feed_id => nil }).and_return(result)
@@ -53,8 +60,8 @@ describe CollectionJobResultsController do
   
   it "should update user's feed state if the feed is a duplicate" do
     feed = mock_model(Feed, :duplicate => mock('dup'))
-        
-    result = mock_model(CollectionJobResult)
+    
+    result = mock_model(CollectionJobResult, :failed? => false, :feed_title => nil)
     results = mock('collection_job_results')
     @user.should_receive(:collection_job_results).and_return(results)
     results.should_receive(:build).with({:message => "msg", :failed => 0, :feed_id => 1 }).and_return(result)
@@ -63,5 +70,5 @@ describe CollectionJobResultsController do
     @user.should_receive(:update_feed_state).with(feed)
     
     post :create, :collection_job_result => {:message => "msg", :failed => 0, :feed_id => 1 }, :user_id => @user.id
-  end  
+  end
 end

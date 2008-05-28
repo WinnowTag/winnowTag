@@ -34,6 +34,12 @@ class CollectionJobResultsController < ApplicationController
       @user.update_feed_state(feed)
     end
     
+    if @collection_job_result.failed?
+      @user.messages.create!(:body => _(:collection_failed, @collection_job_result.feed_title, @collection_job_result.message))
+    else
+      @user.messages.create!(:body => _(:collection_finished, @collection_job_result.feed_title))
+    end
+    
     respond_to do |format|
       if @collection_job_result.save
         format.xml  { head :created, :location => collection_job_result_url(@user, @collection_job_result) }

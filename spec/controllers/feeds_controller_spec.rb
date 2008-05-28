@@ -32,40 +32,11 @@ describe FeedsController do
     before(:each) do
       login_as(1)
       mock_user_for_controller
-      @user.stub!(:collection_job_result_to_display)
       Feed.stub!(:find_by_url_or_link)
       @feed = mock_model(Feed)
       Feed.stub!(:find_by_id).and_return(@feed)
       @feeds = mock('feeds')
       Feed.stub!(:search).and_return(@feeds)
-    end
-  
-    it "should flash collection result" do
-      feed = mock_model(Feed, valid_feed_attributes(:feed_items => mock('feed_items', :size => 10)))
-      job = mock_model(CollectionJobResult, :message => "Message", :feed_id => feed.id, :failed? => false, :feed_title => feed.title)
-      job.should_receive(:update_attribute).with(:user_notified, true)
-      @user.should_receive(:collection_job_result_to_display).and_return(job)
-    
-      @message = mock_model(Message)
-      @messages = stub("messages")
-      @messages.should_receive(:create!).with(:body => "We have finished fetching new items for #{feed.title}").and_return(@message)
-      @user.stub!(:messages).and_return(@messages)
-
-      get :index
-    end
-  
-    it "should flash failed collection result" do
-      feed = mock_model(Feed, valid_feed_attributes)
-      job = mock_model(CollectionJobResult, :message => "Message", :feed => feed, :failed? => true, :feed_title => feed.title)
-      job.should_receive(:update_attribute).with(:user_notified, true)
-      @user.should_receive(:collection_job_result_to_display).and_return(job)
-    
-      @message = mock_model(Message)
-      @messages = stub("messages")
-      @messages.should_receive(:create!).with(:body => "Collection Job for #{feed.title} failed with result: Message").and_return(@message)
-      @user.stub!(:messages).and_return(@messages)
-
-      get :index
     end
   
     describe "#show" do
