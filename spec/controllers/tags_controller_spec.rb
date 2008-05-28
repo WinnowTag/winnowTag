@@ -543,18 +543,11 @@ describe TagsController do
   describe 'rename' do    
     before(:each) do
       @tag = Tag(users(:quentin), 'tag')
-      @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))
     end
     
-    it "tag_renaming_with_same_tag" do
-      put :update, :id => @tag, :tag => {:name => 'tag' }
-      assert_redirected_to tags_path
-      assert_equal([@tag], users(:quentin).tags)
-    end
-
     it "rename the tag" do
       put :update, :id => @tag, :tag => {:name => 'new'}
-      assert_redirected_to tags_path
+      response.should be_success
       assert users(:quentin).tags.find_by_name('new')
     end    
   end
