@@ -7,10 +7,14 @@
   
   <div class="block comment_form clearfix">
     <h5><%= _(:add_a_comment) %></h5>
+    
     <% form_remote_for :comment, :url => comments_path do |form|  -%>
       <%= form.hidden_field :tag_id, :value => tag.id %>
       <%= form.text_area :body %>
-      <%= submit_tag 'Submit' %>
+      <div class="input">
+        <div class="errors" id="<%= dom_id(tag, 'new_comment_error') %>"></div>
+        <%= submit_tag 'Submit' %>
+      </div>
     <% end -%>
   </div> <!-- /.comment_form -->
 </div> <!-- /.comments -->

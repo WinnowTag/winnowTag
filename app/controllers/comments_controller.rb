@@ -2,8 +2,12 @@ class CommentsController < ApplicationController
   before_filter :find_comment, :only => [:edit, :update, :destroy]
   
   def create
-    @comment = current_user.comments.create!(params[:comment])
-    respond_to :js
+    @comment = current_user.comments.new(params[:comment])
+    if @comment.save
+      respond_to :js
+    else
+      render :action => "error.js.rjs"
+    end
   end
   
   def edit
@@ -11,8 +15,11 @@ class CommentsController < ApplicationController
   end
   
   def update
-    @comment.update_attributes!(params[:comment])
-    respond_to :js
+    if @comment.update_attributes(params[:comment])
+      respond_to :js
+    else
+      render :action => "error.js.rjs"
+    end
   end
   
   def destroy

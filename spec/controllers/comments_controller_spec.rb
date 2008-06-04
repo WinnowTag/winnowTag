@@ -3,9 +3,9 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe CommentsController do
   describe "#create" do
     before(:each) do
-      @comment = mock_model(Comment)
+      @comment = mock_model(Comment, :save => true)
       
-      @comments = stub("comments", :create! => @comment)
+      @comments = stub("comments", :new => @comment)
 
       @current_user = User.create! valid_user_attributes
       login_as @current_user
@@ -18,7 +18,7 @@ describe CommentsController do
     end
     
     it "creates a new comment" do
-      @comments.should_receive(:create!).with({}).and_return(@comment)
+      @comments.should_receive(:new).with({}).and_return(@comment)
       do_post
     end
     
@@ -27,9 +27,20 @@ describe CommentsController do
       assigns(:comment).should == @comment
     end
     
-    it "renders the create partial" do
-      do_post
-      response.should render_template("create")
+    describe "successful create" do
+      it "renders the create partial" do
+        @comment.stub!(:save).and_return(true)
+        do_post
+        response.should render_template("create")
+      end      
+    end
+    
+    describe "unsuccessful create" do
+      it "renders the error partial" do
+        @comment.stub!(:save).and_return(false)
+        do_post
+        response.should render_template("error.js.rjs")
+      end      
     end
   end
   
@@ -65,7 +76,7 @@ describe CommentsController do
   
   describe "#update" do
     before(:each) do
-      @comment = mock_model(Comment, :update_attributes! => nil)
+      @comment = mock_model(Comment, :update_attributes => true)
       
       Comment.stub!(:find_for_user).and_return(@comment)
 
@@ -83,7 +94,7 @@ describe CommentsController do
     end
     
     it "updates the comment attribute" do
-      @comment.should_receive(:update_attributes!).with({})
+      @comment.should_receive(:update_attributes).with({})
       do_put
     end    
     
@@ -91,10 +102,21 @@ describe CommentsController do
       do_put
       assigns(:comment).should == @comment
     end
+
+    describe "successful update" do
+      it "renders the update partial" do
+        @comment.stub!(:update_attributes).and_return(true)
+        do_put
+        response.should render_template("update")
+      end      
+    end
     
-    it "renders the update partial" do
-      do_put
-      response.should render_template("update")
+    describe "unsuccessful update" do
+      it "renders the error partial" do
+        @comment.stub!(:update_attributes).and_return(false)
+        do_put
+        response.should render_template("error.js.rjs")
+      end      
     end
   end
   

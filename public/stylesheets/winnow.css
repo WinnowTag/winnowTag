@@ -1615,7 +1615,14 @@ a.bookmarklet:hover {
 }
 
 .tag .extended .comment form .input {
-	float: right;
+  float: right;
+}
+
+.tag .extended .comment form .errors {
+  display: inline;
+  padding-right: 0.5em;
+  font-weight: bold;
+  color: #FF260B;
 }
 
 .tag .extended h5 {
@@ -1708,8 +1715,15 @@ a.bookmarklet:hover {
 	margin-bottom: 0.5em;
 }
 
-.tag .extended .comment_form input {
+.tag .extended .comment_form .input {
 	float: right;
+}
+
+.tag .extended .comment_form .errors {
+  display: inline;
+  padding-right: 0.5em;
+  font-weight: bold;
+  color: #FF260B;
 }
 
 /*

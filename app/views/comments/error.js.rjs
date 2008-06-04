@@ -1,0 +1,5 @@
+if @comment.new_record?
+  page[dom_id(@comment.tag, "new_comment_error")]
+else
+  page[dom_id(@comment, "error")]
+end.update @comment.errors.full_messages.join
