@@ -34,37 +34,59 @@ describe FeedItemsController do
     # assert_rjs :replace_html, 'body_feed_item_1'
   end
   
-  # TODO: Fix to use C classifier
-  # it "info" do
-  #     accept('text/javascript')
-  #     login_as(:quentin)
-  #     get :info, :id => 1
-  #     assert_response :success
-  #     assert_rjs :replace_html, 'tag_information_feed_item_1'
-  #   end
-  #   
-  #   it "info_with_user_tagging" do
-  #     user = users(:quentin)
-  #     user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag'))
-  #     BayesClassifier.any_instance.expects(:guess).returns({'tag' => [0.95, [[0.4,1]]]})
-  #         
-  #     accept('text/javascript')
-  #     login_as(:quentin)
-  #     get :info, :id => 1
-  #     assert_select "h4[style= 'color: red;']", /tag - 0.9500/, @response.body
-  #   end
-  #   
-  #   it "info_with_classifier_tagging" do
-  #     user = users(:quentin)
-  #     user.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(user, 'tag'), :classifier_tagging => true)
-  #     BayesClassifier.any_instance.expects(:guess).returns({'tag' => [0.95, [[0.4,1]]]})
-  #         
-  #     accept('text/javascript')
-  #     login_as(:quentin)
-  #     get :info, :id => 1
-  #     assert_select "h4", /tag - 0.9500/, @response.body
-  #     assert_select "h4[style= 'color: red;']", false, @response.body
-  #   end
+  describe "/clues" do
+    before(:each) do
+      login_as(:quentin)
+      @user = User.find(1)
+      @tag = Tag(@user, 'tag')
+      
+      @http_response = mock('response')
+      @http_response.stub!(:code).and_return("200")
+      @http_response.stub!(:body).and_return([{'clue' => 'foo', 'prob' => 0.99}, {'clue' => 'bar', 'prob' => 0.01}].to_json)
+      Remote::ClassifierResource.site = "http://classifier.host/classifier"
+      url = Remote::ClassifierResource.site.to_s + "/clues?" +
+              "tag=#{URI.escape('http://test.host/quentin/tags/tag/training.atom')}" +
+              "&item=#{URI.escape('urn:peerworks.org:entry#1234')}"
+      Net::HTTP.should_receive(:get_response).with(URI.parse(url)).and_return(@http_response)
+    end
+    
+    it "should render some rjs that replaces the tag info field" do
+      accept('text/javascript')
+      get :clues, :id => 1234, :tag => @tag.id
+      response.should be_success
+      response.should have_rjs(:replace_html, "feed_item_1234_tag_#{@tag.id}_clues")
+    end
+    
+    it "should render the clues in a table" do
+      accept('text/javascript')
+      get :clues, :id => 1234, :tag => @tag.id
+      response.should be_success
+      response.should have_tag("tr td.clue", "foo")
+      response.should have_tag("tr td.prob", "0.99")
+    end
+    
+    describe "with 424 status code from the classifier" do
+      before(:each) do
+        @http_response.stub!(:code).and_return("424")
+      end
+      
+      it "should result in a redirect with the tries parameter set" do
+        get :clues, :id => 1234, :tag => @tag.id
+        response.should redirect_to("/feed_items/1234/clues?tag=#{@tag.id}&tries=1")
+      end
+      
+      it "should result in a redirect with the tries parameter incremented" do
+        get :clues, :id => 1234, :tag => @tag.id, :tries => 4
+        response.should redirect_to("/feed_items/1234/clues?tag=#{@tag.id}&tries=5")
+      end
+      
+      it "should result in a success when tries is > 7" do
+        get :clues, :id => 1234, :tag => @tag.id, :tries => 8
+        response.should be_success
+        response.should have_tag("p", _(:could_not_load_clues))
+      end
+    end
+  end
     
   it "sets_last_accessed_time_on_each_request" do
     login_as(:quentin)

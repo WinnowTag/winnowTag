@@ -139,4 +139,35 @@ module FeedItemsHelper
       content_tag :span, _(:feed_item_no_title), :class => "notitle"
     end
   end
+  
+  def render_clues(clues)
+    content_tag('table', :class => 'clues') do
+      clue_header +
+      clues.in_groups_of(2).map do |clue_rows|
+        render_clue_row(clue_rows)
+      end.join('')
+    end
+  end
+  
+  def clue_header
+    content_tag('tr', 
+      content_tag('th', 'Clue') +
+      content_tag('th', 'Prob') +
+      content_tag('th', 'Clue') +
+      content_tag('th', 'Prob')
+    )
+  end
+  
+  def render_clue_row(clue_row)
+    content_tag('tr') do
+      clue_row.map do |clue|
+        render_clue(clue)
+      end.join('')
+    end
+  end
+  
+  def render_clue(clue)
+    content_tag('td', clue['clue'], :class => 'clue') +
+      content_tag('td', clue['prob'], :class => 'prob')
+  end
 end

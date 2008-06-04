@@ -27,7 +27,7 @@ ActionController::Routing::Routes.draw do |map|
                 }
   map.resources :feed_items,
                 :member => {
-                  :info => :get,
+                  :clues => :get,
                   :description => :get,
                   :moderation_panel => :get,
                   :mark_read => :put,
