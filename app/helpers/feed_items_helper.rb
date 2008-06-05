@@ -5,15 +5,6 @@
 # Please contact info@peerworks.org for further information.
 module FeedItemsHelper
   include BiasSliderHelper
-  STRIPPED_ELEMENTS = %w(script style link meta) unless const_defined?(:STRIPPED_ELEMENTS)
-  
-  def clean_html(html)
-    unless html.blank? 
-      doc = Hpricot(html)
-      doc.search(STRIPPED_ELEMENTS.join(',')).each {|e| e.parent.children.delete(e) }
-      doc.to_s
-    end
-  end
   
   def link_to_feed(feed, options = {})
     if feed.alternate 

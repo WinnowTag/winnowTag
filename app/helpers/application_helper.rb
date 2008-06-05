@@ -5,6 +5,16 @@
 # Please contact info@peerworks.org for further information.
 module ApplicationHelper  
   include DateHelper
+
+  STRIPPED_ELEMENTS = %w(script style link meta) unless const_defined?(:STRIPPED_ELEMENTS)
+  
+  def clean_html(html)
+    unless html.blank? 
+      doc = Hpricot(html)
+      doc.search(STRIPPED_ELEMENTS.join(',')).each {|e| e.parent.children.delete(e) }
+      doc.to_s
+    end
+  end
   
   def tab_selected(controller, action = nil)
     "selected" if controller_name == controller and (action.nil? or action_name == action)
