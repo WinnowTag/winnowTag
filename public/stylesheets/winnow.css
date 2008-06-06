@@ -349,10 +349,10 @@ ul.help li {
 */
 #sidebar {
   float: left;
-  width: 230px;
+  width: 22em;
   height: auto;
   padding: 5px;
-  background-color: #E1ECFE;
+  background-color: #fff;
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid #999;
@@ -935,12 +935,38 @@ a.bookmarklet:hover {
 /*
 ** =folder
 */
-.folder {
+.folder, .my_folder {
   position: relative;
+  margin-bottom: 0.75em;
+  border-bottom: 1px solid #FFF094;
+	background-color: #ffc;
 }
 
+#folder_feeds {
+  border-bottom: 1px solid #C0C7CD;
+  background-color: #E4F2FF;
+}
+
+.my_folder .folder {
+  margin-bottom: 0;
+  border: none;
+}
+
+.folder .header .toggle_button {
+  float: left;
+  width: 16px;
+  height: 16px;  
+  background: transparent url(../images/plus.gif) left center no-repeat;
+  cursor: pointer;
+}
+
+.folder.open .header .toggle_button {
+  background: transparent url(../images/minus.gif) left center no-repeat;
+}
+
+
 .folder.hover {
-  background-color: #eee;
+  background-color: #FFF094;
 }
 
 .folder.selected {
@@ -949,6 +975,38 @@ a.bookmarklet:hover {
 
 .folder.some_selected {
   font-style: italic;
+}
+
+#folder_tags .header, #folder_feeds .header, .my_folder > .header {
+  padding: 0.3em 0.4em;
+}
+
+.my_folder > .header {
+  font-weight: bold;
+  color: #666;
+}
+
+#folder_tags .header, .my_folder > .header {
+  background-color: #FFF094;  
+}
+
+#folder_feeds .header {
+  background-color: #C0C7CD;
+/*  border-bottom: 1px solid #FFF094;*/
+}
+
+.folder .header .name_thing {
+  float: left;
+  padding-left: 20px;
+  background: transparent url(../images/folder.png) left center no-repeat;
+}
+
+#folder_tags .header .name_thing {
+  background: transparent url(../images/tag.png) left center no-repeat;
+}
+
+#folder_feeds .header .name_thing {
+  background: transparent url(../images/feed.png) left center no-repeat;
 }
 
 .folder .header ul.actions {
@@ -982,70 +1040,60 @@ a.bookmarklet:hover {
   display: block;
 }
 
-.folder .header {
-  height: 1.4em;
-  padding: 5px 0 5px 15px;
-  background: transparent url(../images/expansion_arrows.gif) no-repeat 3px -52px;
-  cursor: pointer;
-}
-
 .folder .header .inplaceeditor-form .editor_field {
   margin: -3px 0 0 -3px;
   width: 14.5em;
 }
 
-.folder.open .header {
-  background-position: 2px 11px;
-}
-
-.folder .header:hover {
-  background-color: #eee;
-}
-
-#new_folder .header {
-  background: none;
-  cursor: inherit;
-  padding-left: 5px;
-  font-weight: bold;
-  color: #666;
-}
-
-.folder .add_link, .folder .cancel_link {
+.my_folder .add_link, .my_folder .cancel_link, .folder .add_link, .folder .cancel_link {
   font-weight: normal;
   font-style: normal;
   float: right;
 }
 
-.folder .add_link {
+.my_folder .add_link, .folder .add_link {
   display: block;
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 0;
-  padding: 0 0 0 19px;
+  padding: 1px 0 1px 19px;
+  width: 5.4em;
+/*  font-size: .9em;*/
+/*  color: #2c50e8;*/
 }
 
-.folder .cancel_link { 
+#folder_tags .add_link {
+  background: url(../images/tag_blue_add.png) left center no-repeat;  
+}
+
+#folder_feeds .add_link {
+  background: url(../images/feed_add.png) left center no-repeat;  
+}
+
+.my_folder .add_link {
+  background: url(../images/folder_add.png) left center no-repeat;  
+}
+
+.my_folder .cancel_link, .folder .cancel_link { 
   display: none;
 }
 
-.folder .add_section {
+.my_folder .add_section, .folder .add_section {
   display: none;
   margin: .2em .5em .2em 15px;
 }
 
-.folder .add_section input {
+.my_folder .add_section input, .folder .add_section input {
   display: block;
   width: 100%;
 }
 
-.folder.add .add_link {
+.my_folder.add .add_link, .folder.add .add_link {
   display: none;
 }
 
-.folder.add .cancel_link {
+.my_folder.add .cancel_link, .folder.add .cancel_link {
   display: block;
 }
 
-.folder.add .add_section {
+.my_folder.add .add_section, .folder.add .add_section {
   display: block;
 }
 
@@ -1074,7 +1122,7 @@ a.bookmarklet:hover {
 
 .folder.open ul.filter_list {
   display: block;
-  margin-left: 10px;
+  margin-left: 1em;
   list-style: none;
 }
 
@@ -1093,16 +1141,20 @@ a.bookmarklet:hover {
 
 .folder ul.filter_list li .hover_target {
   float: left;
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 16px;
 }
 
 .folder ul.filter_list.tags li .hover_target {
-  background: url(../images/tag.png) 3px 1px no-repeat;
+  background: url(../images/tag.png) 3px center no-repeat;
 }
 
 .folder ul.filter_list.feeds li .hover_target {
-  background: url(../images/vertical_sprite.png) 2px -608px no-repeat;  
+  background: url(../images/feed.png) 3px center no-repeat;  
+}
+
+.folder ul.filter_list li.public .hover_target {
+  background: url(../images/public.png) 4px center no-repeat;
 }
 
 .folder ul.filter_list li .name {
@@ -1118,12 +1170,6 @@ a.bookmarklet:hover {
 
 .folder ul.filter_list li.selected .name {
   font-weight: bold;
-}
-
-.folder ul.filter_list li.public .hover_target {
-  background-image: url(../images/public.png);
-  background-position: 4px 2px;
-  background-repeat: no-repeat;
 }
 
 .folder ul.filter_list li .remove, .folder ul.filter_list li .edit {
@@ -1940,7 +1986,7 @@ a.bookmarklet:hover {
   z-index: 100;
   font-weight: normal;
   font-style: normal;
-  display: none;
+/*  display: none;*/
 }
 
 .auto_complete ul {
