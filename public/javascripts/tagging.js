@@ -110,11 +110,11 @@ function set_tag_status(tag, tag_name, classifier_strength, user) {
 var tag_information_timeouts = {};
 function show_tag_information(control) {
   clearTimeout(tag_information_timeouts[$(control).up('li').getAttribute("id")]);
-  $(control).up('li').addClassName('hover');
+  $(control).up('li').addClassName('info');
 }
 
 function hide_tag_information(control) {
   tag_information_timeouts[$(control).up('li').getAttribute("id")] = setTimeout(function() {
-    $(control).up('li').removeClassName('hover');
+    $(control).up('li').removeClassName('info');
   }, 1);
 }
