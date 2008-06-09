@@ -684,6 +684,10 @@ ul.filter_list li .controls .automatic strong {
 /*
 ** =folder
 */
+.folder.hover {
+  background-color: #FFF094;
+}
+
 .folder .header {
   background-color: inherit;
 }
@@ -698,6 +702,14 @@ ul.filter_list li .controls .automatic strong {
 
 .folder.open .header .toggle_button {
   background: transparent url(../images/minus.gif) left center no-repeat;
+}
+
+.folder .header .name {
+  height: 1.5em;
+}
+
+.folder .header .inplaceeditor-form .editor_field {
+  margin: -3px 0 0 -3px;
 }
 
 .folder .header .actions {

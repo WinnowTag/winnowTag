@@ -57,10 +57,9 @@
     <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('folders_section').removeClassName('add'); $('folder_name').value = ''" do |form| -%>
       <%= form.text_field :name, :class => "filter_search" %>
     <% end -%>
-    <div id="new_folder_errors" class="error" style="display:none"></div>
   </div>
 
-  <div class="content">
+  <div class="content" id="folders">
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
 </div>

@@ -5,15 +5,8 @@
 # Please contact info@peerworks.org for further information.
 class FoldersController < ApplicationController
   def create
-    @folder = current_user.folders.new(params[:folder])
-
-    respond_to do |format|
-      if @folder.save
-        format.js
-      else
-        format.js { render :action => "error" }
-      end
-    end
+    @folder = current_user.folders.create!(params[:folder])
+    respond_to :js
   end
   
   def update

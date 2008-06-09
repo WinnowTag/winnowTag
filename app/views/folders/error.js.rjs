@@ -1,2 +1,0 @@
-page[:new_folder_errors].update @folder.errors.full_messages.join("<br />")
-page[:new_folder_errors].show
