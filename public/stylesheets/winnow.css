@@ -539,6 +539,10 @@ ul.filter_list li {
   height: 1.5em;
 }
 
+#tags_section ul.filter_list li, #feeds_section ul.filter_list li {
+  cursor: move;
+}
+
 ul.filter_list.tags li {
   background-image: url(../images/tag.png);
   background-position: 3px 3px;
