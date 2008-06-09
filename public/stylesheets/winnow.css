@@ -542,14 +542,14 @@ ul.filter_list {
 
 ul.filter_list li {
   margin: 0 0 0.5em 0;
-  padding: 1px 0 0 21px;
-  height: 1.5em;
+  padding: 1px 0 1px 21px;
+  background-repeat: no-repeat;
 }
 
 ul.filter_list.tags li {
+  height: 1.5em;
   background-image: url(../images/tag.png);
   background-position: 3px 3px;
-  background-repeat: no-repeat;
 }
 
 ul.filter_list.tags li.public {
@@ -559,10 +559,11 @@ ul.filter_list.tags li.public {
 
 ul.filter_list.feeds li {
   background-image: url(../images/feed.png);
+  background-position: left 2px;
 }
 
 ul.filter_list li.info {
-  padding: 0 0 0 20px;
+  padding: 0 0 1px 20px;
   background-position: 2px 2px;  
   background-color: #fff;
   border: 1px solid #aaa;
