@@ -204,6 +204,9 @@ ItemBrowser.prototype = {
     
       parameters.folder_ids.split(",").each(function(folder_id) {
         var folder = $("folder_" + folder_id);
+        if(folder_id == "tags" || folder_id == "feeds") {
+          folder = $(folder_id + "_section");
+        }
         folder.select(".tags li").each(function(element) {
           tag_ids.push(element.getAttribute("id").gsub("tag_", ""));
         });
@@ -330,7 +333,7 @@ ItemBrowser.prototype = {
       }
     });
     
-    $$(".folder").each(function(folder) {
+    $$(".folder, #tags_section, #feeds_section").each(function(folder) {
       var items = folder.select(".filter_list li");
       var selected = 0;
       items.each(function(item) {

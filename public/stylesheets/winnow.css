@@ -454,6 +454,14 @@ ul.help li {
   background: transparent url(../images/folder.png) left center no-repeat;
 }
 
+.section.selected .header .name {
+  font-weight: bold;
+}
+
+.section.some_selected .header .name {
+  font-style: italic;
+}
+
 .section .header .actions {
   float: right;
 }
@@ -549,6 +557,10 @@ ul.filter_list li .name {
   display: block;
   height: 1.5em;
   overflow: hidden;
+}
+
+ul.filter_list li.selected .name {
+  font-weight: bold;
 }
 
 ul.filter_list li.info {
@@ -706,6 +718,14 @@ ul.filter_list li .controls .automatic strong {
 
 .folder .header .name {
   height: 1.5em;
+}
+
+.folder.selected .header .name {
+  font-weight: bold;
+}
+
+.folder.some_selected .header .name {
+  font-style: italic;
 }
 
 .folder .header .inplaceeditor-form .editor_field {
