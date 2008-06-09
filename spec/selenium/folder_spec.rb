@@ -77,7 +77,7 @@ describe "folders" do
   
   it "can have feeds removed" do
     see_element "#feed_#{@another_example_feed.id}"
-    click "css=#feed_#{@another_example_feed.id} .show_feed_control .remove"
+    click "css=#feed_#{@another_example_feed.id} .filter .remove"
     dont_see_element "#feed_#{@another_example_feed.id}"
   end
   
@@ -85,7 +85,7 @@ describe "folders" do
   
   it "can have private tags removed" do
     see_element "#tag_#{@private_tag.id}"
-    click "css=#tag_#{@private_tag.id} .show_tag_control .remove"
+    click "css=#tag_#{@private_tag.id} .filter .remove"
     dont_see_element "#tag_#{@private_tag.id}"  
   end
 
@@ -93,7 +93,7 @@ describe "folders" do
   
   it "can have public tags removed" do
     see_element "#tag_#{@public_tag.id}"
-    click "css=#tag_#{@public_tag.id} .show_tag_control .remove"
+    click "css=#tag_#{@public_tag.id} .filter .remove"
     dont_see_element "#tag_#{@public_tag.id}"      
   end
   

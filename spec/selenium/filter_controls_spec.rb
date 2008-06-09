@@ -115,7 +115,7 @@ describe "filter controls" do
 
     it "filters by all tags in the folder, even when a tag was just removed" do
       get_location.should =~ /\#order=date&direction=desc$/
-      click "css=#tag_#{@tag.id} .show_tag_control .remove"
+      click "css=#tag_#{@tag.id} .filter .remove"
       click "css=#tag_filters_control"      
       get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@sql.id}$/
     end

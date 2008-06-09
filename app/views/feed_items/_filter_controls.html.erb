@@ -42,7 +42,7 @@
   </div>
 </div>
     
-<div class="section" id="folders_section">
+<div class="section<%= open_folders? ? " open" : "" %>" id="folders_section">
   <div class="header clearfix">
     <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('folders', $(this).up('.section').hasClassName('open'), 365);"></span>        
     <%= content_tag :span, _(:sidebar_folders_header), :class => "name" %>

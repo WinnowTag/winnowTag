@@ -425,7 +425,7 @@ ul.help li {
   background-color: #C0C7CD;
 }
 
-.section .header .toggle_button {
+.section > .header .toggle_button {
   float: left;
   width: 16px;
   height: 16px;  
@@ -433,7 +433,7 @@ ul.help li {
   cursor: pointer;
 }
 
-.section.open .header .toggle_button {
+.section.open > .header .toggle_button {
   background: transparent url(../images/minus.gif) left center no-repeat;
 }
 
@@ -502,16 +502,16 @@ ul.help li {
   width: 100%;
 }
 
-.section .content {
+.section > .content {
   padding: 0.5em;
   display: none;
 }
 
-#folders_section .content {
+#folders_section > .content {
   padding: 0.5em 0;
 }
 
-.section.open .content {
+.section.open > .content {
   display: block;
 }
 
@@ -565,6 +565,10 @@ ul.filter_list li.info {
 
 ul.filter_list li.public.info {
   background-position: 3px 3px;
+}
+
+ul.filter_list li .auto_complete_name {
+  display: none;
 }
 
 ul.filter_list li .actions {
@@ -680,10 +684,20 @@ ul.filter_list li .controls .automatic strong {
 /*
 ** =folder
 */
-.folder {}
-
 .folder .header {
   background-color: inherit;
+}
+
+.folder .header .toggle_button {
+  float: left;
+  width: 16px;
+  height: 16px;  
+  background: transparent url(../images/plus.gif) left center no-repeat;
+  cursor: pointer;
+}
+
+.folder.open .header .toggle_button {
+  background: transparent url(../images/minus.gif) left center no-repeat;
 }
 
 .folder .header .actions {
@@ -710,9 +724,13 @@ ul.filter_list li .controls .automatic strong {
 }
 
 .folder .content {
-  padding: 0 0 0 3em !important;
+  display: none;
+  padding: 0 0 0 3em;
 }
 
+.folder.open .content {
+  display: block;
+}
 
 /*
 ** =classifier
@@ -1961,16 +1979,28 @@ a.bookmarklet:hover {
   font-weight: bold;
 }
 
-.auto_complete ul li .show_feed_control, .auto_complete ul li .show_tag_control {
+.auto_complete ul li .filter {
   display: none;
 }
 
-.auto_complete ul li .feed_name, .auto_complete ul li .tag_name {
+.auto_complete ul li .auto_complete_name {
   display: block;
+  padding: 2px 0 2px 20px;
+  background-position: 2px 2px;
+  background-repeat: no-repeat;
 }
 
-.auto_complete ul li.public .feed_name, .auto_complete ul li.public .tag_name {
-  background: url(../images/public.png) center right no-repeat;
+.auto_complete ul li.tag .auto_complete_name {
+  background-image: url(../images/tag.png);
+}
+
+.auto_complete ul li.tag.public .auto_complete_name {
+  background-position: 2px 4px;
+  background-image: url(../images/public.png);
+}
+
+.auto_complete ul li.feed .auto_complete_name {
+  background-image: url(../images/feed.png);
 }
 
 .loading {
