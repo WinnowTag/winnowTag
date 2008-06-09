@@ -392,26 +392,6 @@ ul.help li {
   color: #999;
 }
 
-#sidebar .section {
-  margin: 0 0 2em 0;
-}
-
-#sidebar .section .clear {
-  text-align: center;
-}
-
-#sidebar .section .clear input {
-  display: block;
-  margin: 1em auto;
-}
-
-#sidebar .section .clear .feed_icon {
-  margin: 0 0 1em 0;
-  padding: 0 0 0 20px;
-  background-image: url(../images/vertical_sprite.png);
-  background-repeat: no-repeat;
-}
-
 .choice_filter {
 	color: #666;
   display: block;
@@ -527,6 +507,10 @@ ul.help li {
   display: none;
 }
 
+#folders_section .content {
+  padding: 0.5em 0;
+}
+
 .section.open .content {
   display: block;
 }
@@ -541,13 +525,12 @@ ul.filter_list {
 }
 
 ul.filter_list li {
-  margin: 0 0 0.5em 0;
+  position: relative;
   padding: 1px 0 1px 21px;
   background-repeat: no-repeat;
 }
 
 ul.filter_list.tags li {
-  height: 1.5em;
   background-image: url(../images/tag.png);
   background-position: 3px 3px;
 }
@@ -559,7 +542,13 @@ ul.filter_list.tags li.public {
 
 ul.filter_list.feeds li {
   background-image: url(../images/feed.png);
-  background-position: left 2px;
+  background-position: 2px 2px;
+}
+
+ul.filter_list li .name {
+  display: block;
+  height: 1.5em;
+  overflow: hidden;
 }
 
 ul.filter_list li.info {
@@ -594,23 +583,31 @@ ul.filter_list li:hover .actions {
 
 ul.filter_list li .actions .edit {
   float: left;
-  padding: 0 0 0 18px;
+  width: 16px;
+  height: 14px;
+  margin-right: 2px;
   background: url(../images/pencil.png) left center no-repeat;
   text-indent: -9000px;
+  overflow: hidden;
 }
 
 ul.filter_list li .actions .remove {
   float: left;
-  padding: 0 0 0 18px;
+  width: 14px;
+  height: 14px;
+  margin-right: 1px;
   background: url(../images/close.png) left center no-repeat;
   text-indent: -9000px;
+  overflow: hidden;
 }
 
 ul.filter_list li .actions .info {
   float: left;
-  padding: 0 0 0 18px;
+  width: 16px;
+  height: 14px;
   background: url(../images/information.png) left center no-repeat;
   text-indent: -9000px;
+  overflow: hidden;
 }
 
 ul.filter_list li .controls {
@@ -657,15 +654,15 @@ ul.filter_list li .controls p {
 
 ul.filter_list li .controls .positive {
   border: none;
-	width: 5.5em;
+	width: 5em;
 }
 
 ul.filter_list li .controls .negative {
-	width: 5.5em;
+	width: 5em;
 }
 
 ul.filter_list li .controls .automatic {
-	width: 6.5em;
+	width: 6em;
 }
 
 ul.filter_list li .controls .positive strong {
@@ -679,6 +676,43 @@ ul.filter_list li .controls .negative strong {
 ul.filter_list li .controls .automatic strong {
 	color: #666;
 }
+
+/*
+** =folder
+*/
+.folder {}
+
+.folder .header {
+  background-color: inherit;
+}
+
+.folder .header .actions {
+  display: none;
+  float: right;
+}
+
+.folder .header:hover .actions {
+  display: block;
+}
+
+.folder .header .actions .edit {
+  float: left;
+  padding: 0 0 0 18px;
+  background: url(../images/pencil.png) left center no-repeat;
+  text-indent: -9000px;
+}
+
+.folder .header .actions .remove {
+  float: left;
+  padding: 0 0 0 18px;
+  background: url(../images/close.png) left center no-repeat;
+  text-indent: -9000px;
+}
+
+.folder .content {
+  padding: 0 0 0 3em !important;
+}
+
 
 /*
 ** =classifier

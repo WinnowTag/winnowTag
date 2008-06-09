@@ -179,7 +179,7 @@ module ApplicationHelper
     end
 
     html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html  = content_tag(:div, html, :class => "actions")
+    html  = content_tag(:div, html, :class => "actions clearfix")
 
     html << content_tag(:div, content_tag(:span, _(:feed_items_count_tooltip, feed.feed_items.size), :class => "info"), :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
 
@@ -188,7 +188,7 @@ module ApplicationHelper
     html =  content_tag(:div, html, :class => "show_feed_control")
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "feed_name") if options[:auto_complete]
 
-    class_names = [dom_id(feed)]
+    class_names = [dom_id(feed), "clearfix", "feed"]
     class_names << "draggable" if options[:draggable]
     html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
     html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
@@ -216,12 +216,12 @@ module ApplicationHelper
     end
 
     html  = ""
-    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") if current_user == tag.user
-    html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove") << " "
-    html << link_to_function("Info", "", :class => "info", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)") << " "
-    html  = content_tag(:div, html, :class => "actions")
+    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") << " " if current_user == tag.user
+    html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html << link_to_function("Info", "", :class => "info", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
+    html  = content_tag(:div, html, :class => "actions clearfix")
 
-    html << content_tag(:div, tag_training(tag), :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
+    html << content_tag(:div, tag_training(tag), :class => "controls clearfix", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
 
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
@@ -232,7 +232,7 @@ module ApplicationHelper
     html =  content_tag(:div, html, :class => "show_tag_control clearfix")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "tag_name") if options[:auto_complete]
     
-    class_names = [dom_id(tag)]
+    class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id
     class_names << "draggable" if options[:draggable]
     url  =  case options[:remove]

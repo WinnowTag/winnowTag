@@ -1,18 +1,22 @@
 <div class="folder<%= open_folder?(folder) ? " open" : "" %>" id="<%= dom_id(folder) %>">
   <div class="header clearfix">
     <span class="toggle_button"  onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('<%= dom_id(folder) %>', $(this).up('.folder').hasClassName('open'), 365);"></span>
-    <%= link_to_remote "Remove", :url => folder_path(folder), :method => :delete, :confirm => _(:confirm_destroy_folder), :html => { :class => "remove" } %>
-    <%= link_to_function "Rename", "", :id => dom_id(folder, "edit"), :class => "edit" %>
-    <div class="name_thing">
-      <%= link_to_function folder.name, "itemBrowser.toggleSetFilters({folder_ids: '#{folder.id}'}, event); event.stop()", :class => "name", :id => dom_id(folder, "name") %>
+    <div class="name">
+      <%= link_to_function folder.name, "itemBrowser.toggleSetFilters({folder_ids: '#{folder.id}'}, event); event.stop()", :id => dom_id(folder, "name") %>
       <%= in_place_editor(dom_id(folder, "name"), :url => folder_path(folder), :options => "{method: 'put'}", :param_name => "folder[name]",
               :external_control => dom_id(folder, "edit"), :external_control_only => true, :click_to_edit_text => "", 
               :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
               :save_control => false, :cancel_control => false) %>
+    </div>    
+    <div class="actions clearfix">
+      <%= link_to_function "Rename", "", :id => dom_id(folder, "edit"), :class => "edit" %>  
+      <%= link_to_remote "Remove", :url => folder_path(folder), :method => :delete, :confirm => _(:confirm_destroy_folder), :html => { :class => "remove" } %>
     </div>
   </div>
-  <%= tag_filter_controls(folder.tags, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_tag_items", :class => "filter_list tags" }) %>
-  <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list feeds" }) %>
+  <div class="content">
+    <%= tag_filter_controls(folder.tags, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_tag_items", :class => "filter_list tags" }) %>
+    <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list feeds" }) %>
+  </div>
 </div>
 <%= drop_receiving_element(dom_id(folder), :hoverclass => "hover",
       :onDrop => "function(element, folder) {" <<

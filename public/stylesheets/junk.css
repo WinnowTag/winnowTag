@@ -1,5 +1,4 @@
 
-
 .folder.hover {
   background-color: #FFF094;
 }
@@ -12,32 +11,18 @@
   font-style: italic;
 }
 
-
-
-.folder .header ul.actions {
-  display: none;
-  float: right;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 .folder .header .inplaceeditor-form .editor_field {
   margin: -3px 0 0 -3px;
   width: 14.5em;
 }
 
-
-
 .folder a {
   outline: none;
 }
 
-
 .folder ul.filter_list li.draggable {
   cursor: move;
 }
-
 
 .folder ul.filter_list li .name {
   height: 1.3em;
@@ -54,38 +39,9 @@
   font-weight: bold;
 }
 
-.folder ul.filter_list.tags li.hover {
-  background-position: 3px 4px;
-}
-
-.folder ul.filter_list li.public.hover {
-  background-position: 4px 5px;
-}
-
-.folder ul.filter_list.feeds li.hover {
-  background-position: 2px -606px;
-}
 
 
-.folder ul.filter_list li.hover .controls {
-  display: block;
-}
 
-
-.folder ul.filter_list li .controls .info {
-  margin: 0 5px;
-  padding: 0;
-}
-
-.folder ul.filter_list li .controls dl.info dt {
-  width: 25%;
-  float: left;
-  clear: both;
-}
-
-.folder ul.filter_list li .controls dl.info dd {
-  float: left;
-}
 
 .folder ul.filter_list li a.name {
   display: block;
