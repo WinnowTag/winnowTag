@@ -6,6 +6,8 @@
       <%= in_place_editor(dom_id(folder, "name"), :url => folder_path(folder), :options => "{method: 'put'}", :param_name => "folder[name]",
               :external_control => dom_id(folder, "edit"), :external_control_only => true, :click_to_edit_text => "", 
               :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
+              :on_enter_edit_mode => "function() { $('#{dom_id(folder)}').addClassName('edit'); }", 
+              :on_leave_edit_mode => "function() { $('#{dom_id(folder)}').removeClassName('edit'); }",
               :save_control => false, :cancel_control => false) %>
     </div>    
     <div class="actions clearfix">

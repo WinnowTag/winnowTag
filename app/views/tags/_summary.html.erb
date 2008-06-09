@@ -27,7 +27,11 @@
   </div>
       
   <% if local_assigns[:editable] %>
-    <h4 id="<%= dom_id(tag, 'name') %>"><%= render :partial => "name.html.erb", :locals => { :tag => tag } %></h4>
+    <h4>
+      <span id="<%= dom_id(tag, 'name') %>" class="name"><%= tag.name %></span>
+      <%= in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
+            :click_to_edit_text => _(:tags_click_to_edit_tag_text), :save_text => _(:tags_save_text), :html_response => false) %>
+    </h4>
 
     <div class="description">
       <% if tag.comment.blank?; tag.comment = _(:tags_blank_comment); end %>

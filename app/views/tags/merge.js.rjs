@@ -3,5 +3,7 @@ page << <<-EOJS
     #{remote_function(:url => hash_for_merge_tag_path(:id => @tag, "tag[name]" => @name), :method => :put)};
   } else {
 EOJS
-  page[dom_id(@tag, 'name')].replace_html :partial => "name.html.erb", :locals => { :tag => @tag }
+  page.select("##{dom_id(@tag)} .name, .#{dom_id(@tag)} .name").each do |element|
+    element.update @tag.name
+  end
 page << "}"

@@ -109,6 +109,8 @@ module ApplicationHelper
     js_options['onEnterHover'] = %('#{options[:on_enter_hover]}') if options[:on_enter_hover]
     js_options['onLeaveHover'] = %('#{options[:on_leave_hover]}') if options[:on_leave_hover]
     js_options['onComplete'] = %('#{options[:on_complete]}') if options[:on_complete]
+    js_options['onEnterEditMode'] = options[:on_enter_edit_mode] if options[:on_enter_edit_mode]
+    js_options['onLeaveEditMode'] = options[:on_leave_edit_mode] if options[:on_leave_edit_mode]
     function << (', ' + options_for_javascript(js_options)) unless js_options.empty?
     
     function << ')'
@@ -220,7 +222,7 @@ module ApplicationHelper
     end
 
     html  = ""
-    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") << " " if current_user == tag.user
+    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") << " " if options[:editable] && current_user == tag.user
     html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html << link_to_function("Info", "", :class => "info", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
     html  = content_tag(:div, html, :class => "actions clearfix")
@@ -231,7 +233,9 @@ module ApplicationHelper
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
               :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
               :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
-              :save_control => false, :cancel_control => false) if tag.user_id == current_user.id
+              :on_enter_edit_mode => "function() { $('#{dom_id(tag)}').addClassName('edit'); }", 
+              :on_leave_edit_mode => "function() { $('#{dom_id(tag)}').removeClassName('edit'); }",
+              :save_control => false, :cancel_control => false, :html_response => false) if options[:editable] && tag.user_id == current_user.id
     
     html =  content_tag(:div, html, :class => "filter clearfix")
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]

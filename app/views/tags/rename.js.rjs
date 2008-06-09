@@ -1,1 +1,3 @@
-page[dom_id(@tag, 'name')].replace_html :partial => "name.html.erb", :locals => { :tag => @tag }
+page.select("##{dom_id(@tag)} .name, .#{dom_id(@tag)} .name").each do |element|
+  element.update @tag.name
+end

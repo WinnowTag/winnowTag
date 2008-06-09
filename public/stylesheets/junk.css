@@ -3,19 +3,6 @@
   background-color: #FFF094;
 }
 
-.folder.selected {
-  font-weight: bold;
-}
-
-.folder.some_selected {
-  font-style: italic;
-}
-
-.folder .header .inplaceeditor-form .editor_field {
-  margin: -3px 0 0 -3px;
-  width: 14.5em;
-}
-
 .folder a {
   outline: none;
 }
@@ -23,24 +10,6 @@
 .folder ul.filter_list li.draggable {
   cursor: move;
 }
-
-.folder ul.filter_list li .name {
-  height: 1.3em;
-  overflow: hidden;
-  padding: 0 0 0 3px;
-}
-
-.folder ul.filter_list li .inplaceeditor-form .editor_field {
-  margin-top: -3px;
-  width: 13em;
-}
-
-.folder ul.filter_list li.selected .name {
-  font-weight: bold;
-}
-
-
-
 
 
 .folder ul.filter_list li a.name {
