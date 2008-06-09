@@ -542,23 +542,28 @@ ul.filter_list {
 
 ul.filter_list li {
   margin: 0 0 0.5em 0;
-  padding: 0 0 0 18px;
+  padding: 1px 0 0 21px;
+  height: 1.5em;
 }
 
 ul.filter_list.tags li {
-  background: url(../images/tag.png) left center no-repeat;
+  background-image: url(../images/tag.png);
+  background-position: 3px 3px;
+  background-repeat: no-repeat;
 }
 
 ul.filter_list.tags li.public {
-  background: url(../images/public.png) left center no-repeat;
+  background-image: url(../images/public.png);
+  background-position: 4px 4px;
 }
 
 ul.filter_list.feeds li {
-  background: url(../images/feed.png) left top no-repeat;
+  background-image: url(../images/feed.png);
 }
 
 ul.filter_list li.info {
-/*  padding: 2px 0 0 0;*/
+  padding: 0 0 0 20px;
+  background-position: 2px 2px;  
   background-color: #fff;
   border: 1px solid #aaa;
   border-width: 1px 1px 0 1px;
@@ -568,9 +573,18 @@ ul.filter_list li.info {
   -webkit-border-top-right-radius: 0.4em;
 }
 
+ul.filter_list li.public.info {
+  background-position: 3px 3px;
+}
+
 ul.filter_list li .actions {
   display: none;
   float: right;
+  margin: 2px 2px 0 0;
+}
+
+ul.filter_list li.info .actions {
+  margin: 2px 1px 0 0;
 }
 
 ul.filter_list li:hover .actions {
@@ -606,7 +620,7 @@ ul.filter_list li .controls {
   left: -1px;
   width: 100%;
   z-index: 900;
-  background: #fff;
+  background-color: #fff;
   border: 1px solid #aaa;
   border-width: 0 1px 1px 1px;
   -moz-border-radius-bottomleft: 0.4em;
@@ -617,6 +631,52 @@ ul.filter_list li .controls {
 
 ul.filter_list li.info .controls {
   display: block;
+}
+
+ul.filter_list li .controls div {
+	float: left;
+	margin: 0.3em 0;
+	padding: 0 0.5em;
+	border-left: 1px solid #ccc;
+}
+
+ul.filter_list li .controls strong {
+	font-size: 1.3em;
+	letter-spacing: -1px;
+	line-height: .97em;
+}
+
+ul.filter_list li .controls p {
+	font-size: .75em;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 0 0 0.1em 0;
+	color: #999;
+}
+
+ul.filter_list li .controls .positive {
+  border: none;
+	width: 5.5em;
+}
+
+ul.filter_list li .controls .negative {
+	width: 5.5em;
+}
+
+ul.filter_list li .controls .automatic {
+	width: 6.5em;
+}
+
+ul.filter_list li .controls .positive strong {
+	color: #52984B;
+}
+
+ul.filter_list li .controls .negative strong {
+	color: #C12A2F;
+}
+
+ul.filter_list li .controls .automatic strong {
+	color: #666;
 }
 
 /*

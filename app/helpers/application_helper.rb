@@ -245,12 +245,18 @@ module ApplicationHelper
   end
   
   def tag_training(tag)
-    %|<dl class="info">
-      <dt>#{_(:training_label)}</dt>
-      <dd>+#{tag.positive_count} / -#{tag.negative_count}</dd>
-      <dt>#{_(:automatic_label)}</dt>
-      <dd>#{tag.classifier_count}</dd>
-    </dl>|
+    %|<div class="positive">
+       <p>#{_(:positive)}</p>
+       <strong>#{tag.positive_count}</strong>
+     </div>
+     <div class="negative">
+       <p>#{_(:negative)}</p>
+       <strong>#{tag.negative_count}</strong>
+     </div>
+     <div class="automatic">
+       <p>#{_(:automatic_label)}</p>
+       <strong>#{tag.classifier_count}</strong>
+     </div>|
   end
   
   def help_path
