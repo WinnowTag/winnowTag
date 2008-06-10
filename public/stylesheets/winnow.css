@@ -1294,7 +1294,7 @@ ul.tag_list li.negative .controls .remove {
   right: 0;
   width: 19px;
   height: 19px;
-  background: #E2ECFD url('../images/search_field.gif') no-repeat;
+  background: url('../images/search_field.gif') no-repeat;
   background-position: -19px 0;
 }
 
