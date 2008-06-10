@@ -246,8 +246,8 @@ a.close img {
 */
 .navigation {
   padding: 10px 10px 0 10px;
-  background-color: #fff;
-  border-bottom: 1px solid #999;
+/*  background-color: #E4F2FF;*/
+  border-bottom: 8px solid #f3f3f3;
 }
 .navigation .main {
   float: left;
@@ -259,19 +259,15 @@ a.close img {
 .navigation .main li {
   float: left;
   padding: 0;
-  margin: 0 10px 0 0;
+  margin: 0 5px 0 0;
 }
 
 .navigation .main li a {
   display: block;
   padding: 5px;
-  border: 1px solid #999;
+  border: 1px solid #ccc;
   border-width: 1px 1px 0 1px;
-  -moz-border-radius-topleft: 1em;
-  -moz-border-radius-topright: 1em;
-  -webkit-border-top-left-radius: 0.7em;
-  -webkit-border-top-right-radius: 0.7em;
-  background: #E1ECFE;
+  background: #f3f3f3;
   font-weight: bold;
   text-decoration: none;
   color: #2C50E8;
