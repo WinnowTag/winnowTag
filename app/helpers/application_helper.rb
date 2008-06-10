@@ -143,9 +143,9 @@ module ApplicationHelper
     options[:placeholder] ||= _(:default_search_placeholder)
     content_tag :div, 
       content_tag(:span, nil, :class => "sbox_l") +      
-      content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]) +
-      tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name), 
-      :class => "applesearch"
+      tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name) +
+      content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]),
+      :class => "applesearch clearfix"
   end
 
   def globally_exclude_check_box(tag_or_feed)

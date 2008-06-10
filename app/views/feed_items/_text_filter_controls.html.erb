@@ -1,4 +1,3 @@
 <% form_tag feed_items_path, :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage(#{_(:search_term_too_short).to_json}); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feed_items_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>
-	

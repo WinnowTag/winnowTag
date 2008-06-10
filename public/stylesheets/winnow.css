@@ -352,7 +352,7 @@ ul.help li {
   width: 22em;
   height: auto;
   padding: 5px;
-  background-color: #fff;
+  background-color: #E1ECFE;
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid #999;
@@ -1254,26 +1254,24 @@ ul.tag_list li.negative .controls .remove {
 */
 .applesearch.non_safari {
   position: relative;
-  overflow: hidden;
-  max-width: 224px;
+  padding: 0 19px 0 19px;
 }
 
 .applesearch.non_safari .sbox_l {
-  background: url('../images/search_field.gif') no-repeat;
   position: absolute;
+  left: 0;
   width: 19px;
   height: 19px;
-  margin-top: 1px;
+  background: url('../images/search_field.gif') no-repeat;
 }
 
 .applesearch.non_safari .sbox_r {
-  background: #E2ECFD url('../images/search_field.gif') no-repeat;
-  background-position: -19px 0;
   position: absolute;
   right: 0;
   width: 19px;
   height: 19px;
-  margin-top: 1px;
+  background: #E2ECFD url('../images/search_field.gif') no-repeat;
+  background-position: -19px 0;
 }
 
 .applesearch.non_safari .sbox_r.clear_button {
@@ -1281,14 +1279,13 @@ ul.tag_list li.negative .controls .remove {
 }
 
 .applesearch.non_safari input {
+  height: 19px;
+  width: 100%;
+  padding: 3px 0;
   background: url('../images/srch_bg.gif') repeat-x top left;
   border: 0;
-  height: 19px;
-  width: 186px;
-  padding: 3px;
   font: 11px/13px arial;
   color: #000;
-  margin: 1px 19px 0 19px;
 }
 
 .applesearch.non_safari input.placeholder {
