@@ -42,6 +42,11 @@ div#content > div.info {
   overflow: auto;
   padding: 10px;
 	position: relative;
+	background-color: #fff;
+  -moz-border-radius-topleft: 0.3em;
+  -moz-border-radius-bottomleft: 0.3em;
+  -webkit-border-top-left-radius: 0.3em;
+  -webkit-border-bottom-left-radius: 0.3em;
 }
 
 #feed_items_controller #content {
@@ -1295,6 +1300,11 @@ ul.tag_list li.negative .controls .remove {
 /*
 ** =applesearch
 */
+.applesearch input {
+  width: 100%;
+  margin-bottom: 0.75em;
+}
+
 .applesearch.non_safari {
   position: relative;
   padding: 0 19px 0 19px;
@@ -1325,6 +1335,7 @@ ul.tag_list li.negative .controls .remove {
   height: 19px;
   width: 100%;
   padding: 3px 0;
+  margin-bottom: 0;
   background: url('../images/srch_bg.gif') repeat-x top left;
   border: 0;
   font: 11px/13px arial;
