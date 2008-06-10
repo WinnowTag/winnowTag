@@ -28,16 +28,18 @@
 	<%= show_unread_messages if current_user %>
 	
   <% if sidebar_content = yield(:sidebar) -%>
-		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>
     <div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
+		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>  
   <% end -%>
 
-  <div id="content">
-    <%= yield %>
-  </div>
+  <div id="container">
+    <div id="content">
+      <%= yield %>
+    </div>
 
-	<% if footer_content = yield(:footer) -%>
-		<div id="footer"><%= footer_content %></div>
-	<% end -%>
+  	<% if footer_content = yield(:footer) -%>
+  		<div id="footer" class="clearfix"><%= footer_content %></div>
+  	<% end -%>
+  </div>
 </body>
 </html>

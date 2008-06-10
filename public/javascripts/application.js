@@ -47,21 +47,37 @@ Ajax.Responders.register({
 });
 
 function resizeContent() {
-	var content = $('content');
-	var body_height = $(document.body).getHeight();
-	var top_of_content = content.offsetTop;
-	var content_padding = parseInt(content.getStyle("padding-top")) + parseInt(content.getStyle("padding-bottom"));
+  var content = $('content');
+  var body_height = $(document.body).getHeight();
+  var top_of_content = content.offsetTop;
+  var content_padding = parseInt(content.getStyle("padding-top")) + parseInt(content.getStyle("padding-bottom"));
   var footer_height = $('footer') ? $('footer').getHeight() : 0;
-	var feed_item_height = body_height - top_of_content - footer_height - content_padding;
-	content.style.height = feed_item_height + 'px';
-	
+  var container = $('container');
+  var container_padding = parseInt(container.getStyle("padding-top")) + parseInt(container.getStyle("padding-bottom"));
+  var feed_item_height = body_height - top_of_content - footer_height - content_padding - container_padding - 3;
+  content.style.height = feed_item_height + 'px';
+  
   var sidebar = $('sidebar');
-	if(sidebar) {
-	  var sidebar_padding = parseInt(sidebar.getStyle("padding-top")) + parseInt(sidebar.getStyle("padding-bottom"));
-	  var sidebar_height = body_height - top_of_content - sidebar_padding;
-		sidebar.style.height = sidebar_height + 'px';
-		$('sidebar_control').style.height = (sidebar_height + sidebar_padding) + 'px';
-	}
+  var sidebar_control = $('sidebar_control');
+  if(sidebar) {
+    var sidebar_padding = parseInt(sidebar.getStyle("padding-top")) + parseInt(sidebar.getStyle("padding-bottom"));
+    var sidebar_height = body_height - top_of_content - sidebar_padding;
+    sidebar.style.height = sidebar_height + 'px';
+    sidebar_control.style.height = (sidebar_height + sidebar_padding) + 'px';
+  }
+  
+
+  var feed_item_width = $(document.body).getWidth();
+  if(sidebar && sidebar.visible()) {
+    var sidebar_margin = parseInt(sidebar.getStyle("margin-left")) + parseInt(sidebar.getStyle("margin-right"));
+    feed_item_width = feed_item_width - sidebar.getWidth() - sidebar_margin;
+  }
+  if(sidebar_control) {
+    var sidebar_control_margin = parseInt(sidebar_control.getStyle("margin-left")) + parseInt(sidebar_control.getStyle("margin-right"));
+    feed_item_width = feed_item_width - sidebar_control.getWidth() - sidebar_control_margin;
+    
+  }
+  container.style.width = (feed_item_width - 7)+ 'px';
 }
 
 function toggleSidebar() {
@@ -75,6 +91,7 @@ function toggleSidebar() {
     sidebar_control.removeClassName('open');
     Cookie.set("show_sidebar", "false", 365);
   }
+  resizeContent();
 }
 
 (function() {

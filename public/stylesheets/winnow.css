@@ -48,6 +48,17 @@ div#content > div.info {
   padding: 0;
 }
 
+#feed_items_controller #container {
+  float: right;
+  margin: 3px 0 3px 0;
+  padding: 0.5em 0 0.5em 0.5em;
+  background-color: #E1ECFE;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-bottomleft: 0.5em;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-bottom-left-radius: 0.5em;
+}
+
 /*
 ** =links
 */
@@ -349,37 +360,37 @@ ul.help li {
 */
 #sidebar {
   float: left;
-  width: 22em;
+  width: 25%;
   height: auto;
-  padding: 5px;
-  background-color: #E1ECFE;
+  padding: 0.5em;
+  background-color: #f3f3f3;
   overflow-y: auto;
   overflow-x: hidden;
-  border-right: 1px solid #999;
+  margin: 3px 0 3px 3px;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
 }
 
 #sidebar_control {
   float: left;
   cursor: pointer;
-  width: 20px;
+  width: 7px;
   height: auto;
-  background: #E1ECFE url(../images/right_aarow.png) 8px center no-repeat;
-  border-right: 1px solid #999;
+  background: #fff url(../images/right_aarow.png) 1px  center no-repeat;
+  margin: 2px 1px 2px 2px;
 }
 
 #sidebar_control:hover {
-  background-color: #E8EEF7;
+  background-color: #e1e1e1;
 }
 
 #sidebar_control.open {
-  width: 10px;
-  background: #E1ECFE url(../images/left_aarow.png) 2px center no-repeat;
-  border-right-color: #E1ECFE;
+  width: 7px;
+  background: #fff url(../images/left_aarow.png) 1px center no-repeat;
 }
 
 #sidebar_control.open:hover {
-  background-color: #E8EEF7;
-  border-right-color: #999;
+  background-color: #e1e1e1;
 }
 
 #sidebar h4 {
@@ -407,18 +418,20 @@ ul.help li {
 */
 .section {
   margin-bottom: 0.75em;
-  border-bottom: 1px solid #FFF094;
 	background-color: #ffc;
+	-moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
 }
 
 #feeds_section {
-  border-bottom: 1px solid #C0C7CD;
   background-color: #E4F2FF;
 }
 
 .section .header {
   padding: 0.3em 0.5em;
   background-color: #FFF094;  
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
 }
 
 #feeds_section .header {
@@ -431,6 +444,13 @@ ul.help li {
   height: 16px;  
   background: transparent url(../images/plus.gif) left center no-repeat;
   cursor: pointer;
+}
+
+.section.open > .header {
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
 }
 
 .section.open > .header .toggle_button {
@@ -902,7 +922,7 @@ div.sorting_and_filtering_controls {
   font-family: Arial;
   font-size: 12px;
   position: relative;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #f1f1f1;
   background-color: #fff;
 }
 
@@ -1084,14 +1104,16 @@ div.sorting_and_filtering_controls {
 */
 #footer {
   height: 25px;
-  padding: 5px;
-  background-color: #E1ECFE;
-  border-top: 1px solid #999;
+  padding: 0.5em 0.5em 0 0;
 }
 
 #footer #previous-next-buttons {
   float: left;
-  margin-left: 5px;
+}
+
+#footer #previous-next-buttons input {
+  margin: 0;
+  height: 25px;
 }
 
 #footer .count {
