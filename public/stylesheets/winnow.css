@@ -362,7 +362,7 @@ ul.help li {
   background-color: #f3f3f3;
   overflow-y: auto;
   overflow-x: hidden;
-  margin: 3px 0 3px 0;
+  margin: 3px 0;
   -moz-border-radius-topright: 0.5em;
   -moz-border-radius-bottomright: 0.5em;
   -webkit-border-top-right-radius: 0.5em;
@@ -383,12 +383,7 @@ ul.help li {
 }
 
 #sidebar_control.open {
-  width: 7px;
-  background: #fff url(../images/left_aarow.png) 1px center no-repeat;
-}
-
-#sidebar_control.open:hover {
-  background-color: #e1e1e1;
+  background-image: url(../images/left_aarow.png);
 }
 
 #sidebar h4 {

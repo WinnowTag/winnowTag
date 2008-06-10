@@ -14,6 +14,7 @@ javascripts:
   - tagging
   - applesearch
   - messages
+  - sidebar
   - application
 stylesheets: 
 - base: 

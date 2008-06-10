@@ -118,10 +118,6 @@ module ApplicationHelper
     javascript_tag(function)
   end
   
-  def show_sidebar?
-    cookies[:show_sidebar] !~ /false/i
-  end
-  
   def open_folder?(folder)
     cookies[dom_id(folder)] =~ /true/i
   end

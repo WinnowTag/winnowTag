@@ -170,20 +170,6 @@ describe ApplicationHelper do
     end
   end
 
-  describe "show_sidebar?" do
-    it "is true when cookies[:show_sidebar] is set to a truthy value" do
-      ["", "true"].each do |truthy_value|
-        cookies[:show_sidebar] = truthy_value
-        show_sidebar?.should be_true
-      end
-    end
-    
-    xit "is false when cookies[:show_sidebar] is set to a falsy value" do
-      cookies[:show_sidebar] = "false"
-      show_sidebar?.should be_false
-    end
-  end
-  
   describe "open_folder?" do
     xit "is true when cookies[folder] is set to a truthy value" do
       folder = mock_model(Folder)

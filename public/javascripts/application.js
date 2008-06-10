@@ -21,7 +21,6 @@ document.observe('dom:loaded', function() {
       }
     });
   });
-  
 });
 
 /** Ajax Responders to Handle time outs of Ajax requests */
@@ -54,18 +53,24 @@ function resizeContent() {
   var footer_height = $('footer') ? $('footer').getHeight() : 0;
   var container = $('container');
   var container_padding = parseInt(container.getStyle("padding-top")) + parseInt(container.getStyle("padding-bottom"));
-  var feed_item_height = body_height - top_of_content - footer_height - content_padding - container_padding - 3;
+  var feed_item_height = body_height - top_of_content - footer_height - content_padding - container_padding;
   content.style.height = feed_item_height + 'px';
   
   var sidebar = $('sidebar');
   var sidebar_control = $('sidebar_control');
   if(sidebar) {
     var sidebar_padding = parseInt(sidebar.getStyle("padding-top")) + parseInt(sidebar.getStyle("padding-bottom"));
-    var sidebar_height = body_height - top_of_content - sidebar_padding;
+    var sidebar_height = body_height - top_of_content - sidebar_padding + 3;
     sidebar.style.height = sidebar_height + 'px';
     sidebar_control.style.height = (sidebar_height + sidebar_padding) + 'px';
   }
   
+  resizeContentWidth();
+}
+
+function resizeContentWidth() {
+  var sidebar = $('sidebar');
+  var sidebar_control = $('sidebar_control');
 
   var feed_item_width = $(document.body).getWidth();
   if(sidebar && sidebar.visible()) {
@@ -77,21 +82,9 @@ function resizeContent() {
     feed_item_width = feed_item_width - sidebar_control.getWidth() - sidebar_control_margin;
     
   }
-  container.style.width = (feed_item_width - 7)+ 'px';
-}
 
-function toggleSidebar() {
-  var sidebar = $('sidebar');
-  var sidebar_control = $('sidebar_control');
-  sidebar.toggle();
-  if(sidebar.visible()) {
-    sidebar_control.addClassName('open');
-    Cookie.set("show_sidebar", "true", 365);
-  } else {
-    sidebar_control.removeClassName('open');
-    Cookie.set("show_sidebar", "false", 365);
-  }
-  resizeContent();
+  var container = $('container');
+  container.style.width = (feed_item_width - 7) + 'px';
 }
 
 (function() {

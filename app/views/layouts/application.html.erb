@@ -28,8 +28,8 @@
 	<%= show_unread_messages if current_user %>
 	
   <% if sidebar_content = yield(:sidebar) -%>
-    <div id="sidebar" style="<%= show_sidebar? ? '' : 'display: none;' %>"><%= sidebar_content %></div>
-		<div id="sidebar_control" class="<%= show_sidebar? ? 'open' : '' %>" onclick="toggleSidebar();"></div>  
+    <div id="sidebar"><%= sidebar_content %></div>
+		<div id="sidebar_control"></div>  
   <% end -%>
 
   <div id="container">
