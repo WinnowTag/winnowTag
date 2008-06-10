@@ -366,9 +366,11 @@ ul.help li {
   background-color: #f3f3f3;
   overflow-y: auto;
   overflow-x: hidden;
-  margin: 3px 0 3px 3px;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
+  margin: 3px 0 3px 0;
+  -moz-border-radius-topright: 0.5em;
+  -moz-border-radius-bottomright: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -webkit-border-bottom-right-radius: 0.5em;
 }
 
 #sidebar_control {
