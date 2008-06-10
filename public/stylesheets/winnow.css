@@ -187,6 +187,10 @@ a.close img {
   background: url(../images/vertical_sprite.png) no-repeat;
 }
 
+#text_filter_form {
+  width: 22em;
+}
+
 /*
 ** =login
 */
@@ -888,7 +892,7 @@ ul.filter_list li .controls .automatic strong {
   padding: 5px 5px 2px 16px;
   border-bottom: 1px solid #999;
   height: 2em;
-  background-color: #e1ecfe;
+  background-color: #f3f3f3;
 }
 
 #header_controls .control_bar {
