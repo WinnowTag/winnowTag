@@ -367,10 +367,16 @@ describe ApplicationHelper do
       tag_filter_control(tag, :remove => :subscription).should_not have_tag("img.edit")
     end
     
-    it "creates a filter control with and edit control for private tags" do
+    it "creates a filter control with an edit control for private tags if editable" do
       tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
-      tag_filter_control(tag, :remove => :subscription).should have_tag(".edit")
-      tag_filter_control(tag, :remove => :subscription).should have_tag("script", /.*InPlaceEditor.*/)
+      tag_filter_control(tag, :editable => true, :remove => :subscription).should have_tag(".edit")
+      tag_filter_control(tag, :editable => true, :remove => :subscription).should have_tag("script", /.*InPlaceEditor.*/)
+    end
+
+    it "creates a filter control without an edit control for private tags if not editable" do
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag_filter_control(tag, :editable => false, :remove => :subscription).should_not have_tag(".edit")
+      tag_filter_control(tag, :editable => false, :remove => :subscription).should_not have_tag("script", /.*InPlaceEditor.*/)
     end
   end
 end

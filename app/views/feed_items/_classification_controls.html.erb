@@ -1,11 +1,13 @@
-<div class="section">
-  <div class="classification_controls">
-  	<%= classification_button %>
-  	<%= cancel_classification_button %>
-  </div>
-  <div class="progress_bar_container" id="classification_progress" style="display:none;">
-  	<div id="progress_message" style="display:none;"></div>
-  	<div id="progress_title"><%= _(:classifier_progress) %></div>
-  	<div id="progress_bar" class="progress_bar" style="width: 0%;"></div>
+<div class="section" id="classification_section">
+  <div class="content">
+    <div class="classification_controls">
+    	<%= classification_button %>
+    	<%= cancel_classification_button %>
+    </div>
+    <div class="progress_bar_container" id="classification_progress" style="display:none;">
+    	<div id="progress_message" style="display:none;"></div>
+    	<div id="progress_title"><%= _(:classifier_progress) %></div>
+    	<div id="progress_bar" class="progress_bar" style="width: 0%;"></div>
+    </div>
   </div>
 </div>
