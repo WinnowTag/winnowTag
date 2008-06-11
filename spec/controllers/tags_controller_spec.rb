@@ -71,6 +71,7 @@ describe TagsController do
   before(:each) do
     Tag.delete_all
     login_as(:quentin)
+
   end
   
   describe "create" do

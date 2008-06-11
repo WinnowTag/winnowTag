@@ -88,3 +88,11 @@ task :cruise do
   Rake::Task['test:stories'].invoke
   Rake::Task['rcov_for_cc'].invoke
 end
+
+desc "Run all specs in spec directory (excluding plugin specs)"
+Spec::Rake::SpecTask.new(:spec => "db:test:prepare") do |t|
+  t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
+  # t.spec_files = FileList['spec/**/*_spec.rb']
+  t.spec_files = FileList['spec/controllers/**/*.rb', 'spec/helpers/*.rb', 'spec/models/*.rb', 'spec/views/*.rb']
+end
+

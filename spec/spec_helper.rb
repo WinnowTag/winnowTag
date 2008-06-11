@@ -147,7 +147,8 @@ Spec::Runner.configure do |config|
       :password => "password",
       :password_confirmation => "password",
       :firstname => "John_#{unique_id}",
-      :lastname => "Doe_#{unique_id}"
+      :lastname => "Doe_#{unique_id}",
+      :time_zone => "UTC"
     }.merge(attributes)
   end
   

@@ -11,7 +11,7 @@ describe FoldersController do
   before(:each) do
     login_as(:quentin)
     
-    @user = mock_model(User)
+    @user = mock_model(User, :time_zone => "UTC")
     User.stub!(:find_by_id).with(users(:quentin).id).and_return(@user)
     @folder = mock_model(Folder, :save => true)
     @folders = mock("folders", :create! => @folder)
