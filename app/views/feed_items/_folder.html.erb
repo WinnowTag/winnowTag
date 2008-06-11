@@ -20,7 +20,7 @@
     <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list feeds" }) %>
   </div>
 </div>
-<%= drop_receiving_element(dom_id(folder), :hoverclass => "hover",
+<%= drop_receiving_element(dom_id(folder), :hoverclass => "hover", :accept => ["feed", "tag"],
       :onDrop => "function(element, folder) {" <<
         "if(folder.down('#' + element.getAttribute('id'))) { return; }" <<  
         "folder.addClassName('open');" <<

@@ -93,6 +93,9 @@ ActionController::Routing::Routes.draw do |map|
                 :member => {
                   :add_item => :put,
                   :remove_item => :put
+                },
+                :collection => {
+                  :sort => :put
                 }
               
   map.resources :messages,

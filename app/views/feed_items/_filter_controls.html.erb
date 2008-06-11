@@ -79,6 +79,7 @@
   <div class="content" id="folders">
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
+  <%= sortable_element("folders", :url => sort_folders_path, :method => :put, :constraint => :vertical, :tag => :div) %>
 </div>
 
 <div class="section" id="clear_section">

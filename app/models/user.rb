@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
   has_many :tag_exclusions, :dependent => :delete_all
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
-  has_many :folders, :dependent => :delete_all
+  has_many :folders, :dependent => :delete_all, :order => "position"
  
   before_save :update_prototype
  

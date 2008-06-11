@@ -55,7 +55,7 @@ div#content > div.info {
 
 #feed_items_controller #container {
   float: right;
-  margin: 3px 0 3px 0;
+  margin: 3px 0;
   padding: 0.5em 0 0.5em 0.5em;
   background-color: #E1ECFE;
   -moz-border-radius-topleft: 0.5em;
@@ -776,6 +776,7 @@ ul.filter_list li .controls .automatic strong {
 .folder .header {
   position: relative;
   background-color: inherit;
+  cursor: move;
 }
 
 .folder .header .toggle_button {

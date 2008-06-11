@@ -43,4 +43,11 @@ class FoldersController < ApplicationController
     end
     render :nothing => true
   end
+  
+  def sort
+    params[:folders].each_with_index do |id, index|
+      Folder.find(id).update_attribute(:position, index+1)
+    end
+    render :nothing => true    
+  end
 end
