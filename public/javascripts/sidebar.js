@@ -1,5 +1,7 @@
 document.observe('dom:loaded', function() {
-  new Sidebar();
+  if($('sidebar')) {
+    new Sidebar();
+  }
 });
 
 var Sidebar = Class.create({
