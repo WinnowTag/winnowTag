@@ -1,2 +1,3 @@
 page.insert_html :bottom, :folders, :partial => "feed_items/folder", :object => @folder
 page.select("##{dom_id(@folder)} .name").first.visual_effect :highlight
+page.sortable("folders", :url => sort_folders_path, :method => :put, :constraint => :vertical, :tag => :div, :handle => ".header")
