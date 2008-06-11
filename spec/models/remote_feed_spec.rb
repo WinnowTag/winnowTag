@@ -10,15 +10,16 @@ require 'active_resource/http_mock'
 
 describe Remote::Feed do
   fixtures :feeds
+  
   it "should send import_opml messages" do
     ActiveResource::HttpMock.respond_to do |http|
-      http.post '/feeds/import_opml.xml', {}, [Feed.find(1)].to_xml, 200
+      http.post '/feeds/import_opml.xml', {"Content-Type" => "text/x-opml"}, [Feed.find(1)].to_xml, 200
     end
     
     feeds = Remote::Feed.import_opml(File.read(File.join(RAILS_ROOT, 'spec', 'fixtures', 'example.opml')))
     feeds.should == [Remote::Feed.new(Feed.find(1).attributes)]
   end
-  
+    
   it "collect_creates_new_collection_job" do
     ActiveResource::HttpMock.respond_to do |mock|
       mock.post   "/feeds/1/collection_jobs.xml",   {}, nil, 201, 'Location' => '/feeds/1/collection_jobs/3'

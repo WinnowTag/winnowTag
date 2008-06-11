@@ -6,6 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe ApplicationHelper do
+  include ApplicationHelper
+
   attr_reader :current_user
   
   before(:each) do

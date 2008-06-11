@@ -11,11 +11,7 @@ describe Remote::ProtectedItem do
   fixtures :users, :feed_items
 
   before(:each) do
-    Protector.create(:protector_id => 1)
-    ActiveResource::HttpMock.respond_to do |http|
-      http.post "/protectors/1/protected_items.xml", {}, nil, 201, 'Location' => '/protectors/1/protected_items/2'
-      http.delete "/protectors/1/protected_items/delete_all.xml?feed_item_id=1", {}, nil, 200
-    end
+    @protector = Protector.create(:protector_id => 1)
   end
   
   it "update_sends_create_with_each_user_tagging" do
@@ -31,11 +27,11 @@ describe Remote::ProtectedItem do
     u1.taggings.create(:tag => tag1, :feed_item => FeedItem.find(4), :classifier_tagging => true)
     
     ActiveResource::HttpMock.respond_to do |mock|
-      mock.delete "/protectors/1/protected_items/delete_all.xml",    {}, nil
+      mock.delete "/protectors/1/protected_items/delete_all.xml", {}, nil
       mock.post   "/protectors/1/protected_items.xml", {}, nil, 201
     end
     
-    Remote::ProtectedItem.update
+    Remote::ProtectedItem.update(@protector.protector_id)
     assert req = ActiveResource::HttpMock.requests.detect {|r| r.method == :post }
     items = HashWithIndifferentAccess.new(Hash.from_xml(req.body))
     assert_instance_of(Array, items[:protected_items], items.inspect)
@@ -50,7 +46,7 @@ describe Remote::ProtectedItem do
     end
 
     Remote::ProtectedItem.should_receive(:update)
-    Remote::ProtectedItem.rebuild
+    Remote::ProtectedItem.rebuild(@protector.protector_id)
     
     ActiveResource::HttpMock.requests.should include(ActiveResource::Request.new(:delete, delete_all_path))
   end
@@ -72,7 +68,7 @@ describe Remote::ProtectedItem do
       mock.post   "/protectors/1/protected_items.xml", {}, nil, 201
     end
     
-    Remote::ProtectedItem.rebuild
+    Remote::ProtectedItem.rebuild(@protector.protector_id)
     assert req = ActiveResource::HttpMock.requests.detect {|r| r.method == :post }
     items = HashWithIndifferentAccess.new(Hash.from_xml(req.body))
     assert_instance_of(Array, items[:protected_items], items.inspect)

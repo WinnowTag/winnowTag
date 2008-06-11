@@ -1,0 +1,1 @@
+CLASSIFIER_NAMESPACE = 'http://peerworks.org/classifier'

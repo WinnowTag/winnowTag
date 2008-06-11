@@ -1,4 +1,4 @@
-// Copyright (c) 2005-2007 Thomas Fuchs (http://script.aculo.us, http://mir.aculo.us)
+// Copyright (c) 2005-2008 Thomas Fuchs (http://script.aculo.us, http://mir.aculo.us)
 //           (c) 2005-2007 Ivan Krstic (http://blogs.law.harvard.edu/ivan)
 //           (c) 2005-2007 Jon Tirsen (http://www.tirsen.com)
 // Contributors:
@@ -470,7 +470,7 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
         }
         if (partial.length)
           ret = ret.concat(partial.slice(0, instance.options.choices - ret.length))
-        
+
         // NOTE: peerworks change
         var bot = [];
         if(!entry.blank()) {
@@ -481,8 +481,8 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
             }
           });
         }
-        ret = [ret, bot].flatten();  
-        
+        ret = [ret, bot].flatten();
+
         return "<ul>" + ret.join('') + "</ul>";
       }
     }, options || { });
@@ -579,6 +579,7 @@ Ajax.InPlaceEditor = Class.create({
     this._controls.editor = fld;
     if (this.options.loadTextURL)
       this.loadExternalText();
+    // NOTE: peerworks change
     fld.observe("keydown", this.checkForEscapeOrReturn.bind(this));
     this._form.appendChild(this._controls.editor);
   },
@@ -940,6 +941,7 @@ Object.extend(Ajax.InPlaceEditor, {
         ipe._effect.cancel();
     },
     onFailure: function(transport, ipe) {
+      // NOTE: peerworks change
       new ErrorMessage('Error communication with the server: ' + transport.responseText.stripTags());
     },
     onFormCustomization: null, // Takes the IPE and its generated form, after editor, before controls.

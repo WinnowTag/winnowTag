@@ -8,6 +8,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 class ProtectorTest < Test::Unit::TestCase
+  before(:each) do
+    Protector.delete_all
+  end
+  
   it "can_create_protector" do
     Protector.new(:protector_id => 1).should be_valid
   end

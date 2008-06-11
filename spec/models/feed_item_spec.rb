@@ -36,9 +36,10 @@ end
 
 describe FeedItem do
   fixtures :users, :tags
-   before(:all) do
-     Tagging.delete_all
-   end
+
+  before(:all) do
+    Tagging.delete_all
+  end
   
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
@@ -382,9 +383,9 @@ describe FeedItem do
       @tag1 = Tag.create!(:name => 'tag1', :user => @user)
       @tag2 = Tag.create!(:name => 'tag2', :user => @user)
       @item = FeedItem.find(1)
-      @item.taggings.create(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
-      @item.taggings.create(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 0)
-      @item.taggings.create(:tag => @tag2, :user => @user, :classifier_tagging => 0, :strength => 1)
+      @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
+      @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 1, :strength => 0)
+      @item.taggings.create!(:tag => @tag2, :user => @user, :classifier_tagging => 0, :strength => 1)
       @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org', :include_tags => @tag1)
     end
     

@@ -94,7 +94,7 @@ describe FeedItemsController do
     old_time = user.last_accessed_at = 1.minute.ago
     
     get :index
-    assert_instance_of(Time, User.find(users(:quentin).id).last_accessed_at)
+    assert_instance_of(ActiveSupport::TimeWithZone, User.find(users(:quentin).id).last_accessed_at)
     assert(old_time < User.find(users(:quentin).id).last_accessed_at)
   end
   

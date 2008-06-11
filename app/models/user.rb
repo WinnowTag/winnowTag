@@ -21,7 +21,6 @@ class User < ActiveRecord::Base
   
   acts_as_authorized_user
   acts_as_authorizable
-  composed_of :tz, :class_name => "TZInfo::Timezone", :mapping => %w(time_zone identifier)
   has_many :messages, :order => "created_at DESC"
   has_many :feedbacks
   has_many :comments
@@ -178,8 +177,6 @@ class User < ActiveRecord::Base
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
   validates_uniqueness_of   :login, :email, :case_sensitive => false
-  # TODO: localization
-  validates_inclusion_of    :time_zone, :in => TZInfo::Timezone.all_identifiers, :message => "is not a valid timezone"
   before_create :make_activation_code
   after_create :make_owner_of_self
   before_save :encrypt_password

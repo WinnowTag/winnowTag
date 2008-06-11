@@ -6,6 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FeedsHelper do
+  include FeedsHelper
+
   describe "#feed_link" do
     before(:each) do
       @feed = mock_model(Feed, :via => "http://example.com/rss", :alternate => "http://example.com/blog", :title => "Feed Title")

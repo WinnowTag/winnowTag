@@ -32,6 +32,7 @@ class Feed < ActiveRecord::Base
     end
     
     feed.save!
+    feed.feed_items(:reload)
     feed
   end
   

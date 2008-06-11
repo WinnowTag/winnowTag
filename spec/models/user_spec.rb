@@ -319,32 +319,6 @@ describe User do
       assert_nil users(:quentin).remember_token
     end
    
-    it "tz_returns_time_zone_object" do
-      user = create_user
-      user.time_zone = 'Australia/Adelaide'
-      assert_kind_of(TZInfo::Timezone, user.tz)
-    end
-  
-    it "tz_returns_utc_as_default" do
-      user = create_user
-      assert_equal(TZInfo::Timezone.get('UTC'), user.tz)
-    end
-  
-    it "create_user_with_timezone" do
-      user = create_user(:tz => TZInfo::Timezone.get('Australia/Adelaide'))
-      assert_equal(TZInfo::Timezone.get('Australia/Adelaide'), user.tz)
-    end
-  
-    it "timezone_should_not_be_nil" do
-      user = User.new valid_user_attributes(:time_zone => nil)
-      user.should have(2).error_on(:time_zone)
-    end
-  
-    it "timezone_must_be_valid" do
-      user = User.new valid_user_attributes(:time_zone => "INVALID")
-      user.should have(1).error_on(:time_zone)
-    end
-  
     it "tagging_statistics" do
       u = users(:quentin)
       pw = Tag(u, 'peerworks')

@@ -9,10 +9,6 @@ module DateHelper
       when_nil
     else
       format = date.midnight == Time.now.utc.midnight ? "%H:%M %p" : "%e %b, %y"
-      if current_user.tz
-        date = current_user.tz.utc_to_local(date)
-      end
-      
       date.strftime(format)      
     end
   end

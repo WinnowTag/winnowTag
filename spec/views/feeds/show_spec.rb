@@ -16,6 +16,7 @@ describe '/feeds/show' do
     login_as(1)
     @user = User.find(1)
     User.should_receive(:find_by_id).with(1).and_return(@user)
+    @user.stub!(:globally_excluded?).any_number_of_times.and_return(false)
     
     @feed = mock_model_with_dom_id(Feed, valid_feed_attributes(:created_on => Time.now, :feed_items_count => 23))
     @feed_items = mock('feed_items')
@@ -58,13 +59,14 @@ describe '/feeds/show' do
   end
   
   it "should show globally exclude state as unchecked when set to false" do
+    @user.stub!(:globally_excluded?).any_number_of_times.and_return(false)
     render '/feeds/show'
     response.should     have_tag("#globally_exclude_feed_#{@feed.id}")
     response.should_not have_tag("#globally_exclude_feed_#{@feed.id}[checked='checked']")
   end
   
   it "should show globally exclude state as checked when set to true" do
-    @user.should_receive(:globally_excluded?).with(@feed).any_number_of_times.and_return(true)
+    @user.stub!(:globally_excluded?).any_number_of_times.and_return(true)
     render '/feeds/show'
     response.should have_tag("#globally_exclude_feed_#{@feed.id}[checked='checked']", true, response.body)
   end

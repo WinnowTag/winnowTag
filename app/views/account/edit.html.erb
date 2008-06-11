@@ -30,7 +30,7 @@
   	</p>
   	<p>
       <%= f.label :time_zone, _(:time_zone_label) %>
-  	  <%= f.time_zone_select :time_zone, TZInfo::Timezone.all.sort, :model => TZInfo::Timezone %>
+      <%= f.time_zone_select :time_zone, TimeZone.us_zones, :include_blank => true %>
   	</p>
   	<p>
   	  <label>&nbsp;</label>

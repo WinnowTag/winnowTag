@@ -6,6 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe CommentsHelper do
+  include CommentsHelper
+
   attr_reader :current_user
   
   before(:each) do

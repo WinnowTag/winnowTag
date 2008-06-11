@@ -10,6 +10,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 require 'tag'
 
 describe FeedItemsHelper do
+  include FeedItemsHelper
+
   attr_reader :current_user
   fixtures :feed_items
 
