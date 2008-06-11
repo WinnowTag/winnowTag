@@ -14,7 +14,7 @@ var Sidebar = Class.create({
       this.sidebar.style.width = Cookie.get("sidebar_width") + 'px';
     }
     
-    if(Cookie.get("show_sidebar")) {
+    if(Cookie.get("show_sidebar") != false) {
       this.sidebar_control.addClassName("open")
       this.enableResize();
     } else {
