@@ -484,7 +484,6 @@ ItemBrowser.prototype = {
     if(item) {
       $(item).removeClassName("open");
       this.closeItemModerationPanel(item);
-      this.closeItemTagInformationPanel(item);
     }
   },
   
@@ -596,24 +595,6 @@ ItemBrowser.prototype = {
     this.toggleOpenCloseModerationPanel(this.selectedItem);
   },
   
-  openItemTagInformationPanel: function(item) {
-    $('tag_information_' + $(item).getAttribute('id')).show();
-    this.scrollToItem(item);
-    this.loadItemInformation(item);
-  },
-  
-  closeItemTagInformationPanel: function(item) {
-    $('tag_information_' + $(item).getAttribute('id')).hide();
-  },
-  
-  toggleOpenCloseTagInformationPanel: function(item) {
-    if($('tag_information_' + $(item).getAttribute('id')).visible()) {
-      this.closeItemTagInformationPanel(item);
-    } else {
-      this.openItemTagInformationPanel(item);
-    }
-  },
-  
   markItemRead: function(item) {
     item = $(item);
     item.addClassName('read');
@@ -664,12 +645,6 @@ ItemBrowser.prototype = {
     this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
   },
 
-  loadItemInformation: function(item) {
-    var tag_information = $("tag_information_" + $(item).getAttribute('id'));
-    var url = tag_information.getAttribute('url');
-    this.loadData(item, tag_information, url, "Unable to connect to the server to get the tag information panel.", this.closeItemTagInformationPanel.bind(this));
-  },
-  
   loadData: function(item, target, url, error_message, error_callback) {
     var item_browser = this;
     var current_item = this.selectedItem;

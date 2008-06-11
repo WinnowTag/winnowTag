@@ -12,8 +12,7 @@
     </div>
   </div>  
   <div id="<%= dom_id(feed_item, 'new_tag_form') %>" class="new_tag_form" style="display: none;" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div> 
-  <div id="<%= dom_id(feed_item, 'open') %>" class="open">
-    <%= link_to_function "Info", "itemBrowser.toggleOpenCloseTagInformationPanel('#{dom_id(feed_item)}');", :class => "info", :style => 'visibility:hidden' %>
+  <div id="<%= dom_id(feed_item, 'open') %>" class="open clearfix">
     <div id="<%= dom_id(feed_item, 'body') %>" class="body" url="<%= description_feed_item_path(feed_item) %>"></div>
   </div>
 </div>

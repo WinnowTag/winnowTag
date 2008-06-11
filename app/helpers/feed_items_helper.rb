@@ -55,13 +55,7 @@ module FeedItemsHelper
         tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
       else
         if tagging = Array(taggings).first
-          controls  = content_tag(:span, nil, :class => "status")
-
-          content   = content_tag(:span, h(tag.name), :class => "name")
-          content  << content_tag(:span, controls, :class => "controls")
-
-          content_tag(:li, content, :class => classes_for_taggings(tagging, [:public]).join(" "),
-              :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{format_classifier_strength(taggings).to_json}, #{tag.user.display_name.to_json});")
+          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:public]), format_classifier_strength(taggings))
         end
       end
     end.compact.join(" ")
@@ -77,16 +71,28 @@ module FeedItemsHelper
   end
   
   def tag_control_for(feed_item, tag, classes, classifier_strength)
-    controls  = content_tag(:span, nil, :class => "status") << " "
-    controls << link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive") << " "
-    controls << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative") << " "
-    controls << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove") << " "
+    if tag.user == current_user
+      training  = link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive")
+      training << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative")
+      training << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove")
+    else
+      training = ""
+    end
+
+    automatic  = content_tag(:span, nil, :class => "status clearfix")
+
+    information  = content_tag(:span, training, :class => "training")
+    information << content_tag(:span, automatic, :class => "automatic")
+    information << content_tag(:div, nil, :id => "feed_item_#{feed_item.id}_tag_#{tag.id}_clues", :class => "clues")
 
     content   = content_tag(:span, h(tag.name), :class => "name")
-    content  << content_tag(:span, controls, :class => "controls")
+    content  << content_tag(:span, information, :class => "information clearfix")
+
+    clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get)
+    tag_owner_name = tag.user == current_user ? nil : tag.user.display_name.to_json
 
     content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
-        :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json});")
+        :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json}, #{tag_owner_name.to_json}, #{clues_link.to_json});")
   end
   
 	def classes_for_taggings(taggings, classes = [])
@@ -132,18 +138,16 @@ module FeedItemsHelper
   end
   
   def render_clues(clues)
-    content_tag('table', :class => 'clues') do
+    content_tag('table') do
       clue_header +
-      clues.in_groups_of(2).map do |clue_rows|
-        render_clue_row(clue_rows)
-      end.join('')
+      clues.map do |clue|
+        render_clue_row([clue])
+      end.join
     end
   end
   
   def clue_header
     content_tag('tr', 
-      content_tag('th', 'Clue') +
-      content_tag('th', 'Prob') +
       content_tag('th', 'Clue') +
       content_tag('th', 'Prob')
     )
@@ -153,11 +157,12 @@ module FeedItemsHelper
     content_tag('tr') do
       clue_row.map do |clue|
         render_clue(clue)
-      end.join('')
+      end.join
     end
   end
   
   def render_clue(clue)
+    return "" unless clue
     content_tag('td', clue['clue'], :class => 'clue') +
       content_tag('td', clue['prob'], :class => 'prob')
   end

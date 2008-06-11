@@ -87,16 +87,16 @@ function remove_tag_control(taggable_id, tag) {
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }
 
-function set_tag_status(tag, tag_name, classifier_strength, user) {
+function set_tag_status(tag, tag_name, classifier_strength, user, clues_link) {
   tag = $(tag);
   var status = "";
   
   if (tag.match('.negative')) {
-    status = "Negative training";
+    status = "Negative<br/>Training";
   } else if (tag.match('.positive')) {
-    status = "Positive training";
+    status = "Positive<br/>Training";
   } else if (tag.match('.classifier')) {
-    status = "Automatic tag (" + classifier_strength + ")";
+    status = "<span class='strength'>" + classifier_strength + "</span> Automatic<br/>Tag " + clues_link;
   }
   
   if(user) {
@@ -104,7 +104,6 @@ function set_tag_status(tag, tag_name, classifier_strength, user) {
   }
   
   tag.down(".status").update(status);
-  tag.down(".controls").style.left = "-" + (tag.down(".controls").getWidth() - tag.down(".name").getWidth()) / 2 + "px";
 }
 
 var tag_information_timeouts = {};
