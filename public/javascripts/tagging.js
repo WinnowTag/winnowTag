@@ -92,18 +92,20 @@ function set_tag_status(tag, tag_name, classifier_strength, user, clues_link) {
   var status = "";
   
   if (tag.match('.negative')) {
-    status = "Negative<br/>Training";
+    status = "Negative<br>Training";
   } else if (tag.match('.positive')) {
-    status = "Positive<br/>Training";
+    status = "Positive<br>Training";
   } else if (tag.match('.classifier')) {
-    status = "<span class='strength'>" + classifier_strength + "</span> Automatic<br/>Tag " + clues_link;
+    status = '<span class="strength">' + classifier_strength + "</span> Automatic<br>Tag " + clues_link;
   }
   
   if(user) {
     status += " (from " + user + ")"
   }
   
-  tag.down(".status").update(status);
+  if(status != tag.down(".status").innerHTML) {
+    tag.down(".status").update(status);
+  }
 }
 
 var tag_information_timeouts = {};
