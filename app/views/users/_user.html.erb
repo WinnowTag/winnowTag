@@ -6,14 +6,14 @@
   </ul>
   <% end -%>
 
-  <h4><%= link_to user.login, user_url(user) %></h4>  
+  <h4><%= link_to sanitize(user.login), user_url(user) %></h4>  
 
   <div class="clearfix">
     <dl class="account_detail">
       <dt><%= _(:users_display_name) %></dt>
-  		<dd><%= user.display_name %></dd>
+  		<dd><%= sanitize user.display_name %></dd>
       <dt><%= _(:email) %></dt>
-  		<dd><%= user.email %></dd>
+  		<dd><%= sanitize user.email %></dd>
     </dl>
     <dl class="login_detail">
       <dt><%= _(:users_last_logged_in) %></dt>

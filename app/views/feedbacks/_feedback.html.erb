@@ -1,6 +1,6 @@
 <div id="<%= dom_id(feedback) %>" class="feedback clearfix">
   <span class="metadata">
-    <%= _(:feedback_metadata, feedback.user.display_name, format_date(feedback.created_at)) %>
+    <%= _(:feedback_metadata, sanitize(feedback.user.display_name), format_date(feedback.created_at)) %>
   </span>
-  <%= feedback.body %>
+  <%= sanitize feedback.body %>
 </div>

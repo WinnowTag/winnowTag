@@ -11,13 +11,13 @@
 	  <dt><%= _(:created) %></dt>
 	  <dd><%= format_date(invite.created_at) %></dd>
     <dt><%= _(:email_address) %></dt>
-    <dd><%= mail_to invite.email %></dd>
+    <dd><%= mail_to sanitize(invite.email) %></dd>
 	  <dt><%= _(:status) %></dt>
     <dd>
 	  <% if invite.user -%>
-	    <%= _(:invites_accepted) %> <%= link_to truncate(invite.user.login), invite.user %>
+	    <%= _(:invites_accepted) %> <%= link_to sanitize(invite.user.login), invite.user %>
 	  <% elsif invite.code? -%>
-	    <%= _(:invites_activated) %> <%= truncate(invite.code, 15) %>
+	    <%= _(:invites_activated) %> <%= invite.code %>
 	  <% else -%>
 	    <%= _(:invites_requested) %>
 	  <% end -%>
@@ -32,12 +32,12 @@
 	    <% else -%>
     	  <% unless invite.hear.blank? -%>
           <strong><%= _(:invites_how_did_you_hear) %></strong><br />
-          <%= invite.hear %><br />
+          <%= sanitize invite.hear %><br />
           <br />
         <% end -%>
     	  <% unless invite.use.blank? -%>
           <strong><%= _(:invites_how_do_you_want_to_use_winnow) %></strong><br />
-          <%= invite.use %><br />
+          <%= sanitize invite.use %><br />
         <% end -%>
       <% end -%>
     </dd>
