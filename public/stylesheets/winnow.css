@@ -1407,10 +1407,6 @@ a.bookmarklet:hover {
   padding: 0;
 }
 
-.user .controls li.first {
-  margin-left: 0;
-}
-
 .user h4 {
 	font-size: 140%;
 	margin: 0 0 0.5em 0;
@@ -1898,10 +1894,6 @@ a.bookmarklet:hover {
 .invite .controls li input {
   margin: 0;
   padding: 0;
-}
-
-.invite .controls li.first {
-  margin-left: 0;
 }
 
 .invite dl {
