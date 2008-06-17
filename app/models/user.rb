@@ -299,7 +299,6 @@ class User < ActiveRecord::Base
   end
   
 protected
-  # before filter 
   def encrypt_password
     return if password.blank?
     self.crypted_password = encrypt(password)

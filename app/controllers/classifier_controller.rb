@@ -29,8 +29,8 @@ class ClassifierController < ApplicationController
       begin
         if job_running?
           raise ClassificationStartException.new(_(:classifier_running), 500)
-        # TODO: sanitize
         elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
+          # TODO: sanitize
           raise ClassificationStartException.new(puct.map{|t| t.name}.to_json, 412)
         elsif current_user.changed_tags.empty?
           raise ClassificationStartException.new(_(:tags_not_changed), 500)
