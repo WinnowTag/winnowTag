@@ -38,11 +38,6 @@ class UsersController < ApplicationController
   def show  
   end
 
-  # currently don't support updates by admins
-  def update      
-    redirect_to :action => 'show'
-  end
-
   def login_as
     self.current_user = @user
     redirect_to('/')
