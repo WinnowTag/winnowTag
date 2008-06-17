@@ -1,13 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-	<title>Winnow<%= " (#{current_user.login})" if current_user %>: <%= controller.controller_name.titleize %> <%= controller.action_name.titleize %></title>
+	<title>Winnow</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  	<%= javascript_include_merged :base %>
 	<%= stylesheet_link_merged :base %>
-	<!--[if IE]>
-	  <link rel="stylesheet" href="stylesheets/ie.css" type="text/css" media="screen, projection">
-	<![endif]-->
 	<%= yield(:head) %>
 	
 	<script type="text/javascript" charset="utf-8">
