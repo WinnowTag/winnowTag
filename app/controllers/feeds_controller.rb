@@ -24,7 +24,7 @@ class FeedsController < ApplicationController
   end
   
   def new
-    @feed = Remote::Feed.new((params[:feed] or {:url => nil}))
+    @feed = Remote::Feed.new(params[:feed] || {:url => nil})
   end
   
   def create
@@ -33,7 +33,8 @@ class FeedsController < ApplicationController
       FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil      
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
-                                      
+      
+      # TODO: sanitize
       if @feed.updated_on.nil?
         current_user.messages.create!(:body => _(:feed_added, @feed.url))
       else
