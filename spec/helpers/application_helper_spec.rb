@@ -258,24 +258,6 @@ describe ApplicationHelper do
     end
   end
 
-  describe "tag_name_with_tooltip" do
-    it "creates a span with the tag name" do
-      tag = mock_model(Tag, :name => "tag1", :user_id => current_user.id)
-      tag_name_with_tooltip(tag).should have_tag("span", "tag1")
-    end
-    
-    it "creates a span with no title when the tag is the current users" do
-      tag = mock_model(Tag, :name => "tag1", :user_id => current_user.id)
-      tag_name_with_tooltip(tag).should_not have_tag("span[title]")
-    end
-    
-    it "creates a span with a title containing the tag owners name when the tags is not the current users" do
-      user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "tag1", :user_id => user.id, :user => user)
-      tag_name_with_tooltip(tag).should have_tag("span[title=?]", "from Mark")
-    end
-  end
-  
   describe "feed filter controls" do
     it "creates a list with an li for each feed" do
       feeds = [

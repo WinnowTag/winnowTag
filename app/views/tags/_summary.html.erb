@@ -40,7 +40,7 @@
             :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50 %>
     </div>
   <% else %>
-    <h4><%= tag_name_with_tooltip(tag) %></h4>
+    <h4><%= tag.name %></h4>
 
     <div class="description">
       <%= tag.comment %>

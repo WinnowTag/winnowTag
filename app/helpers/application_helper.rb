@@ -130,12 +130,9 @@ module ApplicationHelper
     (current_user == tag.user || current_user.globally_excluded?(tag))
   end
   
-  def tag_name_with_tooltip(tag, options = {})
-    content_tag :span, h(tag.name), options.merge(:title => tag.user_id == current_user.id ? nil : _(:public_tag_tooltip, tag.user.display_name))
-  end
-  
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
+    # TODO: sanitize
     content << content_tag(:li, _(:create_feed, options[:auto_complete]), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
@@ -151,12 +148,12 @@ module ApplicationHelper
 
     html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html  = content_tag(:div, html, :class => "actions clearfix")
-
-    # html << content_tag(:div, content_tag(:span, _(:feed_items_count_tooltip, feed.feed_items.size), :class => "info"), :class => "controls", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
-
+    
+    # TODO: sanitize
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name")
     
     html =  content_tag(:div, html, :class => "filter")
+    # TODO: sanitize
     html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
 
     class_names = [dom_id(feed), "clearfix", "feed"]
@@ -168,6 +165,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
+    # TODO: sanitize
     content << content_tag(:li, _(:create_tag, options[:auto_complete]), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
@@ -194,6 +192,7 @@ module ApplicationHelper
 
     html << content_tag(:div, tag_training(tag), :class => "controls clearfix", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
 
+    # TODO: sanitize
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
     html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
               :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
@@ -203,6 +202,7 @@ module ApplicationHelper
               :save_control => false, :cancel_control => false, :html_response => false) if options[:editable] && tag.user_id == current_user.id
     
     html =  content_tag(:div, html, :class => "filter clearfix")
+    # TODO: sanitize
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
     class_names = [dom_id(tag), "clearfix", "tag"]
@@ -264,5 +264,4 @@ module ApplicationHelper
       "Subscribed"
     end
   end
-  
 end
