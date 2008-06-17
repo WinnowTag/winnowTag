@@ -17,6 +17,7 @@ class CollectionJobResultsController < ApplicationController
       user.update_feed_state(feed)
     end
     
+    # TODO: sanitize
     if failed
       user.messages.create!(:body => _(:collection_failed, feed.title, message))
     else
