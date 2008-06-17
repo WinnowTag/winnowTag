@@ -77,7 +77,7 @@ class AccountController < ApplicationController
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session
-    redirect_to(:action => 'login')
+    redirect_to login_path
   end
 
   def activate

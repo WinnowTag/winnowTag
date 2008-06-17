@@ -1,4 +1,4 @@
-<%= error_messages_for 'current_user' %>
+<%= error_messages_for :current_user %>
 
 <% form_for :current_user do |f| %>
   <fieldset>
@@ -6,7 +6,7 @@
   	
   	<p>
   	  <%= f.label :login, _(:login_label) %>
-  	  <%= f.text_field :login, :readonly => true %>
+  	  <%= f.text_field :login, :disabled => true %>
   	</p>
   	<p>
   	  <%= f.label :password, _(:password_label) %>
