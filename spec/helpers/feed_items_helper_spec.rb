@@ -81,11 +81,12 @@ describe FeedItemsHelper do
   describe "tag control for" do
     it "creates a list item with the proper controls inside it" do
       feed_item = mock_model(FeedItem)
-      tag = mock_model(Tag, :name => "tag1")
+      
+      tag = mock_model(Tag, :name => "tag1", :user => @current_user)
       classes = ["positive", "classifier"]
       tag_control_for(feed_item, tag, classes, nil).should have_tag("li.positive.classifier##{dom_id(feed_item, "tag_control_for_tag1_on")}") do
-        with_tag "span.name", "tag1"
-        with_tag "span.controls" do
+        with_tag ".name", "tag1"
+        with_tag ".information" do
           with_tag "a.positive"
           with_tag "a.negative"
           with_tag "a.remove"
