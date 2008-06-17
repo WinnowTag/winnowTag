@@ -24,14 +24,14 @@ describe TaggingsController do
   it "create_without_tag_doesnt_create_tagging" do
     login_as(:quentin)
     assert_no_difference("Tagging.count") do
-      post :create, :tagging => {:feed_item_id => '1'}
+      post :create, :tagging => {:feed_item_id => '1'} rescue ActiveRecord::RecordInvalid
     end
   end
   
   it "create_with_blank_tag_doesnt_create_tagging" do
     login_as(:quentin)
     assert_no_difference("Tagging.count") do
-      post :create, :tagging => {:feed_item_id => '1', :tag => ''}
+      post :create, :tagging => {:feed_item_id => '1', :tag => ''} rescue ActiveRecord::RecordInvalid
     end
   end
   

@@ -193,6 +193,7 @@ Spec::Runner.configure do |config|
     
     User.stub!(:find_by_id).and_return(@user)
     @user.stub!(:tags).and_return(@tags)
+    @user.should_receive(:update_attribute).any_number_of_times.with(:last_accessed_at, anything).and_return(true)
   end
   
   def mock_model_with_dom_id(cls, attributes)
