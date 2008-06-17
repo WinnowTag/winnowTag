@@ -26,20 +26,10 @@ class TaggingsController < ApplicationController
   
   # Creates a single tagging for a <Taggable, Tagger, Tag>
   def create
-    respond_to do |wants|
-      params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
-      @tagging = current_user.taggings.build(params[:tagging])
-      @feed_item = @tagging.feed_item
-      
-      if @tagging.save
-        wants.js
-      else
-        wants.js do
-          flash.now[:error] = _(:tagging_failed)
-          render :template => "messages/error"
-        end
-      end
-    end 
+    params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
+    @tagging = current_user.taggings.create!(params[:tagging])
+    @feed_item = @tagging.feed_item
+    respond_to :js
   end
   
   # Destroys taggings
@@ -48,7 +38,6 @@ class TaggingsController < ApplicationController
   #    - tagging: 
   #         feed_item_id: The type and id of a taggable to destroy a tagging on.
   #         tag: The name of the tag to destroy the tagging on the taggable.
-  #
   def destroy
     @feed_item = FeedItem.find(params[:tagging][:feed_item_id])
     @tag = Tag(current_user, params[:tagging][:tag])
@@ -56,8 +45,6 @@ class TaggingsController < ApplicationController
     current_user.taggings.find_by_feed_item(@feed_item, :all, 
       :conditions => { :classifier_tagging => false, :tag_id => @tag }).each(&:destroy)            
 
-    respond_to do |wants|
-      wants.js
-    end
+    respond_to :js
   end
 end
