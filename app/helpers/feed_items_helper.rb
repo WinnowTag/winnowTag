@@ -7,7 +7,8 @@ module FeedItemsHelper
   include BiasSliderHelper
   
   def link_to_feed(feed, options = {})
-    if feed.alternate 
+    # TODO: sanitize
+    if feed.alternate
       link_to(feed.title, feed.alternate, :target => "_blank") 
     else
       feed.title
@@ -15,6 +16,7 @@ module FeedItemsHelper
   end
   
   def link_to_feed_item(feed_item)
+    # TODO: sanitize
     if feed_item.link 
       link_to(feed_item.title, feed_item.link, :target => "_blank") 
     else
@@ -23,9 +25,9 @@ module FeedItemsHelper
   end
   
   def toggle_read_unread_button
+    # TODO: localization
     link_to_function "", "itemBrowser.toggleReadUnreadItem(this.up('.item'))", 
-          # TODO: localization
-          :onmouseover => "this.title = 'Click to mark as ' + ($(this).up('.item').match('.read') ? 'unread' : 'read');"
+      :onmouseover => "this.title = 'Click to mark as ' + ($(this).up('.item').match('.read') ? 'unread' : 'read');"
   end
     
   # Creates the classification button.
@@ -76,6 +78,7 @@ module FeedItemsHelper
       training << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative")
       training << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove")
     else
+      # TODO: sanitize
       training = content_tag(:div, "#{tag.user.firstname}<br/>#{tag.user.lastname}", :class => "owner")
     end
     
@@ -84,12 +87,14 @@ module FeedItemsHelper
     information  = content_tag(:div, training, :class => "training")
     information << content_tag(:div, automatic, :class => "automatic")
     information << content_tag(:div, nil, :id => "feed_item_#{feed_item.id}_tag_#{tag.id}_clues", :class => "clues")
-        
+    
+    # TODO: sanitize
     content   = content_tag(:span, h(tag.name), :class => "name")
     content  << content_tag(:div, information, :class => "information clearfix")
         
     clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get)
 
+    # TODO: sanitize
     content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
         :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json}, #{clues_link.to_json});")
   end
@@ -129,6 +134,7 @@ module FeedItemsHelper
   end
   
   def feed_item_title(feed_item)
+    # TODO: sanitize
     if not feed_item.title.blank?
       feed_item.title
     else
