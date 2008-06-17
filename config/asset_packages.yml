@@ -6,7 +6,6 @@ javascripts:
   - controls
   - slider
   - dragdrop
-  - in_place_completer
   - cookies
   - itembrowser
   - bias_slider
