@@ -1,6 +1,6 @@
 <div id="<%= dom_id(comment) %>" class="comment clearfix">
   <div class="metadata">
-    <div class="author"><%= comment.user.display_name %></div>
+    <div class="author"><%= sanitize comment.user.display_name %></div>
     <div class="date"><%= format_date(comment.updated_at) %></div>
     <% if can_edit_comment?(comment) -%>
     <div class="actions">
@@ -11,6 +11,6 @@
   </div>
   
   <div class="body">
-    <%= clean_html textilize(comment.body) %>
+    <%= sanitize textilize(comment.body) %>
   </div>
 </div>
