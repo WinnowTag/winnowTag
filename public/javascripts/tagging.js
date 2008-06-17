@@ -87,8 +87,11 @@ function remove_tag_control(taggable_id, tag) {
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }
 
-function set_tag_status(tag, tag_name, classifier_strength, user, clues_link) {
+function set_tag_status(tag, tag_name, classifier_strength, clues_link) {
   tag = $(tag);
+
+  tag.down(".information").setStyle({left: tag.positionedOffset()[0] + 'px', top: tag.positionedOffset()[1] + 16 + 'px'});
+
   var status = "";
   
   if (tag.match('.negative')) {
@@ -98,11 +101,7 @@ function set_tag_status(tag, tag_name, classifier_strength, user, clues_link) {
   } else if (tag.match('.classifier')) {
     status = '<span class="strength">' + classifier_strength + "</span> Automatic<br>Tag " + clues_link;
   }
-  
-  if(user) {
-    status += " (from " + user + ")"
-  }
-  
+    
   if(status != tag.down(".status").innerHTML) {
     tag.down(".status").update(status);
   }

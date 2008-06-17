@@ -1128,7 +1128,7 @@ ul.tag_list li {
   line-height: 1.8;
   white-space: nowrap;
   cursor: default;
-  position: relative;
+/*  position: relative;*/
 }
 
 ul.tag_list li .name {
@@ -1178,24 +1178,15 @@ ul.tag_list li:hover .name {
 ul.tag_list li .information {
   display: none;
   position: absolute;
-  top: 16px;
-  left: 0;
   z-index: 900;
   padding: 1em;
   background: #fff;
   border: 1px solid #aaa;
   color: #000;
-/*  -moz-border-radius: 0.4em;*/
-/*  -webkit-border-radius: 0.4em;*/
-  width: 27em;
-}
-
-ul.tag_list li.positive .information, ul.tag_list li.negative .information {
-  width: 20em;
 }
 
 ul.tag_list li:hover .information {
-  display: inline;
+  display: block;
 }
 
 ul.tag_list li:hover .information .training {
@@ -1228,6 +1219,13 @@ ul.tag_list li.negative .information .automatic .status {
   padding: 0 0 0 35px;
   background: url(../images/negative.png) left center no-repeat;
   color: #C12A2F;
+}
+
+ul.tag_list li.public .information .training .owner {
+  color: #666;
+  font-size: 1.3em;
+  line-height: 1.5;
+  font-weight: bold;
 }
 
 ul.tag_list li .information .training .positive, ul.tag_list li .information .training .negative, ul.tag_list li .information .training .remove {

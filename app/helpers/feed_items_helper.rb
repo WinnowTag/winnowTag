@@ -60,7 +60,7 @@ module FeedItemsHelper
       end
     end.compact.join(" ")
     
-    content_tag "ul", html, :class => "tag_list stop", :id => dom_id(feed_item, "tag_controls")
+    content_tag(:ul, html, :class => "tag_list stop", :id => dom_id(feed_item, "tag_controls"))
   end
   
   # Format a classifier tagging strength as a percentage.
@@ -76,23 +76,22 @@ module FeedItemsHelper
       training << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative")
       training << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove")
     else
-      training = ""
+      training = content_tag(:div, "#{tag.user.firstname}<br/>#{tag.user.lastname}", :class => "owner")
     end
-
-    automatic  = content_tag(:span, nil, :class => "status clearfix")
-
-    information  = content_tag(:span, training, :class => "training")
-    information << content_tag(:span, automatic, :class => "automatic")
+    
+    automatic  = content_tag(:span, nil, :class => "status clearfix")    
+    
+    information  = content_tag(:div, training, :class => "training")
+    information << content_tag(:div, automatic, :class => "automatic")
     information << content_tag(:div, nil, :id => "feed_item_#{feed_item.id}_tag_#{tag.id}_clues", :class => "clues")
-
+        
     content   = content_tag(:span, h(tag.name), :class => "name")
-    content  << content_tag(:span, information, :class => "information clearfix")
-
+    content  << content_tag(:div, information, :class => "information clearfix")
+        
     clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get)
-    tag_owner_name = tag.user == current_user ? nil : tag.user.display_name.to_json
 
     content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
-        :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json}, #{tag_owner_name.to_json}, #{clues_link.to_json});")
+        :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json}, #{clues_link.to_json});")
   end
   
 	def classes_for_taggings(taggings, classes = [])
