@@ -56,28 +56,24 @@ class FeedItemsController < ApplicationController
   end
 
   def clues
-    tries = (params[:tries] or 0).to_i
+    tries = params[:tries].to_i
     tag = Tag.find(params[:tag])
     tag_url = url_for(:controller => 'tags', :action => 'training', :tag_name => tag.name, :user => tag.user, :format => 'atom')
     clues = Remote::ClassifierClues.find_by_item_id_and_tag_url(params[:id], tag_url)
     display_elem = "feed_item_#{params[:id]}_tag_#{tag.id}_clues"
     
-    respond_to do |wants|
-      wants.js do
-        if clues == :redirect && tries < 7
-          redirect_to params.update(:tries => tries + 1)
-        else
-          render :update do |page|
-            content = if clues == :redirect || clues.nil?
-              content_tag('p', _(:could_not_load_clues))            
-            elsif clues            
-              render_clues(clues)
-            end
-              
-            page.replace_html(display_elem, content)
-          end  
+    if clues == :redirect && tries < 7
+      redirect_to params.update(:tries => tries + 1)
+    else
+      render :update do |page|
+        content = if clues == :redirect || clues.nil?
+          content_tag('p', _(:could_not_load_clues))            
+        elsif clues            
+          render_clues(clues)
         end
-      end
+          
+        page.replace_html(display_elem, content)
+      end  
     end
   end
   
@@ -91,7 +87,7 @@ class FeedItemsController < ApplicationController
                   :text_filter => params[:text_filter],
                   :mode => params[:mode],
                   :user => current_user }
-      
+
       FeedItem.mark_read(filters)
     end
     render :nothing => true
@@ -99,7 +95,7 @@ class FeedItemsController < ApplicationController
   
   def mark_unread
     @feed_item = FeedItem.find(params[:id])
-    current_user.read_items.find(:all, :conditions => {:feed_item_id => @feed_item}).each {|ri| ri.destroy}
+    current_user.read_items.find(:all, :conditions => {:feed_item_id => @feed_item}).each { |ri| ri.destroy }
     render :nothing => true
   end
   
