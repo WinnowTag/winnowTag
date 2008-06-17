@@ -16,6 +16,7 @@
 class ClassifierController < ApplicationController
   class ClassificationStartException < StandardError
     attr_reader :code
+    
     def initialize(msg, code)
       super(msg)
       @code = code
@@ -28,6 +29,7 @@ class ClassifierController < ApplicationController
       begin
         if job_running?
           raise ClassificationStartException.new(_(:classifier_running), 500)
+        # TODO: sanitize
         elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
           raise ClassificationStartException.new(puct.map{|t| t.name}.to_json, 412)
         elsif current_user.changed_tags.empty?
@@ -61,7 +63,6 @@ class ClassifierController < ApplicationController
       session[:classification_job_id] && session[:classification_job_id].dup.each_with_index do |job_id, index|
         if job = Remote::ClassifierJob.find(job_id)
           # This combines the progress of all pending jobs 
-          
           
           status = { :progress => ((status[:progress] * index) + job.progress).to_f / (index + 1),
                      :status   => job.status }
@@ -101,7 +102,7 @@ class ClassifierController < ApplicationController
     render :nothing => true
   end
   
-  private
+private
   def job_running?
     if session[:classification_job_id] && job_id = session[:classification_job_id].first
       begin
