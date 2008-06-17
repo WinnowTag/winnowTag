@@ -41,7 +41,6 @@ Localization.define do |l|
   # app/controllers/taggings_controller.rb
   l.store :bad_method,                            "Bad Request. Should be POST. Please report this bug. Make sure you have Javascript enabled too!"
   l.store :bad_params,                            "Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!"
-  l.store :tagging_failed,                        "Tagging Failed"
 
   # app/controllers/tags_controller.rb
   l.store :tag_copied,                            "%s successfully copied to %s"
@@ -73,7 +72,6 @@ Localization.define do |l|
   l.store :fifth_slider_marker,                   "Very Strongly Positive"
 
   # app/helpers/feed_items_helper.rb
-  l.store :training_label,                        "Training"
   l.store :automatic_label,                       "Automatic"
   l.store :positive_training_control,             "Make Positive"
   l.store :negative_training_control,             "Make Negative"
@@ -191,13 +189,6 @@ Localization.define do |l|
   # app/views/feed_items/_info.html.erb
   l.store :confirm_destroy_folder,                "Are you sure?"
   
-  # app/views/feed_items/_info.html.erb
-  l.store :info_header,                           "Classifier Taggings"
-  l.store :info_description,                      %|
-    This section shows how your current classifier will classify this item. Tags with 
-	  <span style="color:red">red</span> text have also been applied by you on the item.
-	|
-
   # app/views/feed_items/_moderation_panel.html.erb
   l.store :add_tag_button,                        "Add Tag"
   l.store :cancel_add_tag_link,                   "cancel"
@@ -383,9 +374,7 @@ Localization.define do |l|
   l.store :tags_header_positive,                    "Positive"
   l.store :tags_header_negative,                    "Negative"
   l.store :tags_header_automatic,                   "Automatic"
-  l.store :tags_header_globally_exclude,            "Globally Exclude"
   l.store :tags_header_state,                       "State"
-  l.store :tags_header_subscribe,                   "Subscribe"
   l.store :tags_header_search_placeholder,          "Search Tags..."
 
   # app/views/tags/_public_tag.html.erb
