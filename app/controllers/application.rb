@@ -19,8 +19,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   helper_method :render_to_string, :controller_name, :action_name
   
-  before_filter :login_from_cookie, :login_required
-  before_filter :set_time_zone
+  before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time
 
   DEFAULT_LIMIT = 40 unless defined?(DEFAULT_LIMIT)
   MAX_LIMIT = 100 unless defined?(MAX_LIMIT)
@@ -41,6 +40,12 @@ protected
     # elsif cookies[:tzoffset].any?
     #   # current_user.update_attribute(:time_zone, browser_timezone.name) unless browser_timezone.name == current_user.time_zone
     #   Time.zone = TimeZone[-cookies[:tzoffset].to_i.minutes]
+    end
+  end
+
+  def update_access_time
+    if current_user
+      current_user.update_attribute(:last_accessed_at, Time.now)
     end
   end
 end

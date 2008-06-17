@@ -7,7 +7,6 @@ class FeedItemsController < ApplicationController
   include FeedItemsHelper
   include ActionView::Helpers::TextHelper
   before_filter :login_required
-  before_filter :update_access_time
      
   # The Index action has two modes.  The normal mode which displays
   # positive user and classifier tagged items and the tag inspect mode
@@ -116,10 +115,5 @@ class FeedItemsController < ApplicationController
   
   def sidebar
     render :layout => false
-  end
-  
-private
-  def update_access_time
-    current_user.update_attribute(:last_accessed_at, Time.now.utc)
   end
 end
