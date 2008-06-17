@@ -60,8 +60,6 @@ Localization.define do |l|
   l.store :create_feed,                           "Create Feed: '%s'"
   l.store :create_tag,                            "Create Tag: '%s'"
   l.store :public_tag_tooltip,                    "from %s"
-  l.store :feed_items_count_tooltip, :singular => "%d item in this feed",
-                                     :plural   => "%d items in this feed"
 
   # app/helpers/bais_slider_helper.rb
   l.store :slider_handle_tooltip,                 "Drag to set the sensitvity of the classifier."
