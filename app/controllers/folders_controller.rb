@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 class FoldersController < ApplicationController
+  include ActionView::Helpers::SanitizeHelper
+  
   def create
     @folder = current_user.folders.create!(params[:folder])
     respond_to :js
@@ -12,7 +14,7 @@ class FoldersController < ApplicationController
   def update
     @folder = current_user.folders.find(params[:id])
     @folder.update_attributes!(params[:folder])
-    render :text => @folder.name
+    render :text => sanitize(@folder.name)
   end
   
   def destroy
