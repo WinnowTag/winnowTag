@@ -8,6 +8,7 @@ module ApplicationHelper
 
   STRIPPED_ELEMENTS = %w(script style link meta) unless const_defined?(:STRIPPED_ELEMENTS)
   
+  # TODO: Replace usages with sanitize
   def clean_html(html)
     unless html.blank? 
       doc = Hpricot(html)
