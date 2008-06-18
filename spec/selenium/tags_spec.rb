@@ -21,55 +21,57 @@ describe "Tags" do
     
     it "can merge two tags by changing their names" do
       tag = Tag.find(1)
-      click "editor_tag_#{@other.id}"
+      click "name_tag_#{@other.id}"
       
-      see_element("#editor_tag_#{@other.id}-inplaceeditor")
+      see_element("#name_tag_#{@other.id}-inplaceeditor")
       type "css=input.editor_field", tag.name
       hit_enter "css=input.editor_field"
       wait_for_ajax
       get_confirmation
       wait_for_page_to_load(30000)
-      dont_see_element "#editor_tag_#{@other.id}"
+      dont_see_element "#name_tag_#{@other.id}"
     end
   end
   
   it "can change the name of a tag" do
     tag = Tag.find(1)
     new_name = "#{tag.name}-renamed"
-    click "editor_tag_#{tag.id}"
+    click "name_tag_#{tag.id}"
     
-    see_element("#editor_tag_#{tag.id}-inplaceeditor")
+    see_element("#name_tag_#{tag.id}-inplaceeditor")
     type "css=input.editor_field", new_name
     hit_enter "css=input.editor_field"
     wait_for_ajax
-    wait_for_page_to_load(30000)
-    wait_for_ajax
-    see_element "#editor_tag_#{tag.id}"
+    see_element "#name_tag_#{tag.id}"
     tag.reload
     tag.name.should == new_name
   end
   
   it "cant_change_bias_of_subscribed_tag" do
-    initial_position = get_element_position_left "css=div.tag.public div.slider_handle"
-    mouse_down "css=div.tag.public div.slider_handle"
-    mouse_move_at "css=div.tag.public div.slider_handle", "30,0"
-    mouse_up "css=div.tag.public div.slider_handle"
-    assert_equal initial_position, get_element_position_left("css=div.tag.public div.slider_handle")
+    tag = Tag.find(2)
+    initial_position = get_element_position_left "css=#tag_#{tag.id} .slider_handle"
+    mouse_down "css=#tag_#{tag.id} .slider_handle"
+    mouse_move_at "css=#tag_#{tag.id} .slider_handle", "30,0"
+    mouse_up "css=#tag_#{tag.id} .slider_handle"
+    assert_equal initial_position, get_element_position_left("css=#tag_#{tag.id} .slider_handle")
     refresh_and_wait
     wait_for_ajax
-    assert_equal initial_position, get_element_position_left("css=div.tag.public div.slider_handle")
+    assert_equal initial_position, get_element_position_left("css=#tag_#{tag.id} .slider_handle")
   end
   
   it "changing_bias" do
-    initial_position = get_element_position_left "css=div.tag.private div.slider_handle"
-    mouse_down "css=div.tag.private div.slider_handle"
-    mouse_move_at "css=div.tag.private div.slider_handle", "30,0"
-    mouse_up "css=div.tag.private div.slider_handle"
-    assert_not_equal initial_position, get_element_position_left("css=div.tag.private div.slider_handle")
-    new_position = get_element_position_left "css=div.tag.private div.slider_handle"
+    tag = Tag.find(1)
+    click "css=#tag_#{tag.id} .summary"
+    initial_position = get_element_position_left "css=#tag_#{tag.id} .slider_handle"
+    mouse_down "css=#tag_#{tag.id} .slider_handle"
+    mouse_move_at "css=#tag_#{tag.id} .slider_handle", "30,0"
+    mouse_up "css=#tag_#{tag.id} .slider_handle"
+    assert_not_equal initial_position, get_element_position_left("css=#tag_#{tag.id} .slider_handle")
+    new_position = get_element_position_left "css=#tag_#{tag.id} .slider_handle"
     refresh_and_wait
     wait_for_ajax
-    assert_equal new_position, get_element_position_left("css=div.tag.private div.slider_handle")
+    click "css=#tag_#{tag.id} .summary"
+    assert_equal new_position, get_element_position_left("css=#tag_#{tag.id} .slider_handle")
   end
   
   it "destroying_a_tag" do

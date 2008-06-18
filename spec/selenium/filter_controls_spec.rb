@@ -12,28 +12,28 @@ describe "filter controls" do
   
   describe "folders" do
     it "is closed by default" do
-      assert_not_visible "css=#folder_tags .filter_list"
-      assert_not_visible "css=#folder_feeds .filter_list"
+      assert_not_visible "css=#tags_section .filter_list"
+      assert_not_visible "css=#feeds_section .filter_list"
     end
     
     it "opens when clicked" do
-      click "css=#folder_tags .header"
-      assert_visible "css=#folder_tags .filter_list"
+      click "css=#tags_section .header .toggle_button"
+      assert_visible "css=#tags_section .filter_list"
       
-      click "css=#folder_feeds .header"
-      assert_visible "css=#folder_feeds .filter_list"
+      click "css=#feeds_section .header .toggle_button"
+      assert_visible "css=#feeds_section .filter_list"
       
       
-      click "css=#folder_tags .header"
-      assert_not_visible "css=#folder_tags .filter_list"
+      click "css=#tags_section .header .toggle_button"
+      assert_not_visible "css=#tags_section .filter_list"
       
-      click "css=#folder_feeds .header"
-      assert_not_visible "css=#folder_feeds .filter_list"
+      click "css=#feeds_section .header .toggle_button"
+      assert_not_visible "css=#feeds_section .filter_list"
     end
     
     # it "is gray when ..." do
-    #   mouse_over "css=#folder_tags .header"
-    #   get_style('#folder_tags .header', 'background-color').should == "#eee"
+    #   mouse_over "css=#tags_section .header .toggle_button"
+    #   get_style('#tags_section .header .toggle_button', 'background-color').should == "#eee"
     # end
   end
     

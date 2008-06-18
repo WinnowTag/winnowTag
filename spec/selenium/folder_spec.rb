@@ -32,7 +32,7 @@ describe "folders" do
   it "can be created" do
     assert_not_visible "add_folder"
 
-    click "css=#new_folder .add_link"
+    click "css=#folders_section .add_link"
     assert_visible "add_folder"
     
     type "folder_name", "new folder"
@@ -110,7 +110,7 @@ describe "folders" do
   xit "can have a feed moved to a custom folder" do
     dont_see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
     
-    click "css=#folder_feeds .header"    
+    click "css=#feeds_section .header .toggle_button"    
     mouse_down "css=#feed_#{@another_example_feed.id}"
     mouse_move_at "css=#feed_#{@another_example_feed.id}", "0,-110"
     mouse_up "css=#feed_#{@another_example_feed.id}"
@@ -124,20 +124,21 @@ describe "folders" do
   
   it "can open tags folder" do
     assert_not_visible "css=#tag_filters"
-    click "css=#folder_tags .header"
+    click "css=#tags_section .header .toggle_button"
     assert_visible "css=#tag_filters"
   end
   
   it "can open feeds folder" do
     assert_not_visible "css=#feed_filters"
-    click "css=#folder_feeds .header"
+    click "css=#feeds_section .header .toggle_button"
     assert_visible "css=#feed_filters"
   end
   
   it "can open custom folder" do
     assert_not_visible "css=#folder_#{@existing_folder.id}_tag_items"
     assert_not_visible "css=#folder_#{@existing_folder.id}_feed_items"
-    click "css=#folder_#{@existing_folder.id} .header"
+    click "css=#folders_section .header .toggle_button"
+    click "css=#folder_#{@existing_folder.id} .header .toggle_button"
     assert_visible "css=#folder_#{@existing_folder.id}_tag_items"
     assert_visible "css=#folder_#{@existing_folder.id}_feed_items"
   end

@@ -212,7 +212,7 @@ describe "moderation panel" do
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Negative training", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
+    assert_equal "Negative\nTraining", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
   it "shows the proper status for a positive tagging" do
@@ -222,7 +222,7 @@ describe "moderation panel" do
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Positive training", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
+    assert_equal "Positive\nTraining", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
   it "shows the proper status for a classifier tagging" do
@@ -232,7 +232,7 @@ describe "moderation panel" do
     wait_for_ajax
     
     mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_equal "Automatic tag (95.23%)", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
+    assert_equal "95.23% Automatic\nTag (clues)", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
   # TODO: This does not work with selenium + :hover
