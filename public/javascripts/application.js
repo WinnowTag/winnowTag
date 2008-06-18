@@ -153,9 +153,8 @@ function insert_in_order(container, sibling_selector, sibling_value_selector, el
 function escape_javascript(string) {
   return string.replace(/'/g, '\\\'');
 }
-
-Effect.ScrollToInDiv = Class.create();
-Object.extend(Object.extend(Effect.ScrollToInDiv.prototype, Effect.Base.prototype), {
+  
+Effect.ScrollToInDiv = Class.create(Effect.Base, {
   initialize: function(container, element) {
     this.container = $(container);
     this.element = $(element);
