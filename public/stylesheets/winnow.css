@@ -1294,8 +1294,8 @@ ul.tag_list li .information .clues {
   overflow: auto;
 }
 
-ul.tag_list li .information .clues table {
-  width: 100%;
+ul.tag_list li .information .clues table tr td.clue {
+  padding-right: 1em;
 }
 
 /*
