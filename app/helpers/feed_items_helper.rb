@@ -72,6 +72,7 @@ module FeedItemsHelper
     end
   end
   
+  # Note: Update tagging.js when this changes
   def tag_control_for(feed_item, tag, classes, classifier_strength)
     if tag.user == current_user
       training  = link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive")
@@ -94,7 +95,8 @@ module FeedItemsHelper
     content  << content_tag(:div, information, :class => "information clearfix")
         
     clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
-                                           :before => "$('#{clues_id}').addClassName('loading')", :complete => "$('#{clues_id}').removeClassName('loading')")
+                                           :before => "$('#{clues_id}').addClassName('loading')", 
+                                           :complete => "$('#{clues_id}').removeClassName('loading')")
 
     # TODO: sanitize
     content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
