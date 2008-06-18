@@ -86,13 +86,15 @@ module FeedItemsHelper
     
     information  = content_tag(:div, training, :class => "training")
     information << content_tag(:div, automatic, :class => "automatic")
-    information << content_tag(:div, nil, :id => "feed_item_#{feed_item.id}_tag_#{tag.id}_clues", :class => "clues")
+    clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
+    information << content_tag(:div, nil, :id => clues_id, :class => "clues")
     
     # TODO: sanitize
     content   = content_tag(:span, h(tag.name), :class => "name")
     content  << content_tag(:div, information, :class => "information clearfix")
         
-    clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get)
+    clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
+                                           :before => "$('#{clues_id}').addClassName('loading')", :complete => "$('#{clues_id}').removeClassName('loading')")
 
     # TODO: sanitize
     content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
