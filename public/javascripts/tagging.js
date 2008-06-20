@@ -79,7 +79,7 @@ function add_tag_control(taggable_id, tag) {
         '<a class="remove" onclick="remove_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\'); return false;" href="#">Remove Training</a> ' + 
       '</div> ' +
       '<div class="automatic">' + 
-        '<span class="status clearfix"></span>'
+        '<span class="status clearfix"></span>' +
       '</div> ' +
     '</div>' +
   '</li> ';
