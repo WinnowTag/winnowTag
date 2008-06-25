@@ -89,6 +89,16 @@ describe "FeedItemsTest" do
     see_element "#feed_1"
   end
   
-  xit "displays an empty message when there are no feed items"
-  xit "does not display an empty message when there are feed items"
+  it "displays an empty message when there are no feed items" do
+    FeedItem.delete_all
+    
+    open feed_items_path
+    wait_for_ajax
+  
+    assert_visible "css=#feed_items .empty"
+  end
+  
+  it "does not display an empty message when there are feed items" do
+    assert_not_visible "css=#feed_items .empty"
+  end
 end

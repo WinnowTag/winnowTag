@@ -30,11 +30,6 @@ describe "filter controls" do
       click "css=#feeds_section .header .toggle_button"
       assert_not_visible "css=#feeds_section .filter_list"
     end
-    
-    # it "is gray when ..." do
-    #   mouse_over "css=#tags_section .header .toggle_button"
-    #   get_style('#tags_section .header .toggle_button', 'background-color').should == "#eee"
-    # end
   end
     
   describe "text filter" do    
@@ -111,15 +106,11 @@ describe "filter controls" do
       get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
     
-    xit "filters by all tags in the folder, even when the tag was just added"
-
     it "filters by all tags in the folder, even when a tag was just removed" do
       get_location.should =~ /\#order=date&direction=desc$/
       click "css=#tag_#{@tag.id} .filter .remove"
       click "css=#tag_filters_control"      
       get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@sql.id}$/
     end
-    
-    xit "doesnt scroll the sidebar to the top"
   end
 end
