@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 class MoveAuthorToFeedItems < ActiveRecord::Migration
   def self.up
     add_column :feed_items, :author, :string

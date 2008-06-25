@@ -1,9 +1,8 @@
-# Copyright (c) 2005 The Kaphan Foundation
+# Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 class CreateXmlDataSizeColumn < ActiveRecord::Migration
   def self.up
     add_column :feed_items, :xml_data_size, :integer

@@ -1,7 +1,8 @@
-#!/usr/bin/env ruby
+# Copyright (c) 2008 The Kaphan Foundation
 #
-#  Created by Sean Geoghegan on 2006-09-30.
-#  Copyright (c) 2006. All rights reserved.
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please contact info@peerworks.org for further information.
 
 # Re-raise errors caught by the controller.
 RAILS_ENV = 'production'

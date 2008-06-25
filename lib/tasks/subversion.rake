@@ -1,13 +1,10 @@
-# Copyright (c) 2007 The Kaphan Foundation
+# Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
 #
-
-# Some helpers for common subversion tasks
 namespace :svn do 
-  
   desc "Create and switch to a bug fix branch"
   task :bugfix do
     if ENV['bug'].nil?

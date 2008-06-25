@@ -1,9 +1,9 @@
-# Copyright (c) 2005 The Kaphan Foundation
+# Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
+
 # This migration marks the beginning of the use of the new tagging design.
 # Documentation for this tagging design can be found at 
 # http://trac.winnow.peerworks.org/wiki/TaggingDesign

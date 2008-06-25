@@ -3,12 +3,10 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
 
 # Since #587 we are abandoning the views concept in favour of
 # replication via atom so Winnow is free to have it's own schema
 # for storing feeds and items.
-#
 class RecreateFeedsTablesIfUsingViews < ActiveRecord::Migration
   def self.up
     if using_views?

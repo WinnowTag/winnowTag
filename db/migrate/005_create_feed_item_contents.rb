@@ -1,7 +1,9 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
+
 # This migration extracts the title, author, link, time and description
 # properties out of the xml data of a feed and stores it in the 
 # feed_item_contents table.  This is in a separate migration because it

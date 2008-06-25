@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please contact info@peerworks.org for further information.
-#
-
 class FixFkOnTaggings < ActiveRecord::Migration
   def self.up
     # Just removes the ON DELETE CASCADE and make sure we can't delete items with taggings

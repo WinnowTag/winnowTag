@@ -1,3 +1,9 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please contact info@peerworks.org for further information.
+
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
 ENV["RAILS_ENV"] = "test"
@@ -65,6 +71,44 @@ module CustomSeleniumHelpers
   end
 end
 
+module WinnowMatchers
+  class KaphanHeaderMatcher
+    def initialize(comment_line, comment_start = nil, comment_end = nil)
+      @header = <<-EOHEADER
+#{comment_start || comment_line} Copyright (c) 2008 The Kaphan Foundation
+#{comment_line}
+#{comment_line} Possession of a copy of this file grants no permission or license
+#{comment_line} to use, modify, or create derivate works.
+#{comment_line} Please contact info@peerworks.org for further information.
+EOHEADER
+      @header << "#{comment_end}\n" if comment_end
+      @header_size = @header.split(/\n/).size
+    end
+
+    def matches?(filename)
+      @filename = filename
+      @match = File.read(filename).match(/(?:.*\n){#{@header_size}}/)
+      @match && @match[0] == @header
+    end
+
+    def failure_message
+      "expected #{@filename} to have the header:\n#{@header}\nbut had the header:\n#{@match}"
+    end
+  end
+  
+  def have_ruby_kaphan_header
+    KaphanHeaderMatcher.new("#")
+  end
+  
+  def have_javascript_kaphan_header
+    KaphanHeaderMatcher.new("//")
+  end
+  
+  def have_stylesheet_kaphan_header
+    KaphanHeaderMatcher.new(" *", "/*", " */")
+  end
+end
+
 Spec::Runner.configure do |config|
   # If you're not using ActiveRecord you should remove these
   # lines, delete config/database.yml and disable :active_record
@@ -108,6 +152,7 @@ Spec::Runner.configure do |config|
   # TODO: Pull this call into mhs_testing
   config.include ValidationMatchers, AssociationMatchers, :type => :model
   config.include CustomSeleniumHelpers, :type => :selenium
+  config.include WinnowMatchers, :type => :code
 
   # Stub out User.encrypt for faster testing
   config.before(:each) do

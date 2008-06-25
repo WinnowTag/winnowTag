@@ -1,3 +1,8 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please contact info@peerworks.org for further information.
 class AddForeignKeyFromTaggingsToFeedItems < ActiveRecord::Migration
   def self.up
     execute "delete from taggings where feed_item_id not in (select id from feed_items);"

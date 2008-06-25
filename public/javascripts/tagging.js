@@ -1,11 +1,8 @@
-/* 
-Copyright (c) 2007 The Kaphan Foundation
-
-Possession of a copy of this file grants no permission or license
-to use, modify, or create derivate works.
-
-Please contact info@peerworks.org for further information.
-*/
+// Copyright (c) 2008 The Kaphan Foundation
+//
+// Possession of a copy of this file grants no permission or license
+// to use, modify, or create derivate works.
+// Please contact info@peerworks.org for further information.
 function add_tagging(taggable_id, tag_name, tagging_type) {
   if( tag_name.match(/^\s*$/) ) { return; }
 

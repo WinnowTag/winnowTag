@@ -1,3 +1,8 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please contact info@peerworks.org for further information.
 class CommentsController < ApplicationController
   before_filter :find_comment, :only => [:edit, :update, :destroy]
   

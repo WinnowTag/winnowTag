@@ -1,3 +1,8 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please contact info@peerworks.org for further information.
 class ReIndexTaggingsTable < ActiveRecord::Migration
   def self.up
 #    remove_index :taggings, :name => :taggings_taggable_id_index

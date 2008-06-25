@@ -1,5 +1,9 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please contact info@peerworks.org for further information.
 namespace :winnow do
-  
   desc "Run a series of benchmarks on the classifier"
   task  :classifier_bm do
     RAILS_ENV = ENV['RAILS_ENV'] = 'classifier_benchmarking'
