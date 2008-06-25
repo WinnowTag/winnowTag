@@ -203,6 +203,7 @@ describe ApplicationHelper do
   end
 
   describe "open_folder?" do
+    # Need to fix rspec for this
     xit "is true when cookies[folder] is set to a truthy value" do
       folder = mock_model(Folder)
       cookies[dom_id(folder)] = "true"
@@ -219,6 +220,7 @@ describe ApplicationHelper do
   end
   
   describe "open_tags?" do
+    # Need to fix rspec for this
     xit "is true when cookies[:tags] is set to a truthy value" do
       cookies[:tags] = "true"
       open_tags?.should be_true
@@ -233,6 +235,7 @@ describe ApplicationHelper do
   end
   
   describe "open_feeds?" do
+    # Need to fix rspec for this
     xit "is true when cookies[:feeds] is set to a truthy value" do
       cookies[:feeds] = "true"
       open_feeds?.should be_true

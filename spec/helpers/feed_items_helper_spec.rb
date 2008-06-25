@@ -108,8 +108,6 @@ describe FeedItemsHelper do
         with_tag("li", 3)
       end
     end
-    
-    xit "needs to be tested with public tags"
   end
   
   describe "feed_item_title" do

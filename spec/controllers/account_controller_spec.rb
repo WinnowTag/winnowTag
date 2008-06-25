@@ -114,20 +114,6 @@ describe AccountController do
     assert_activate_error
   end
 
-  xit "should_activate_user_and_send_activation_email" do
-    get :activate, :activation_code => users(:aaron).activation_code
-    assert_equal 1, @emails.length
-    assert(@emails.first.subject =~ /Your account has been activated/)
-    assert(@emails.first.body    =~ /#{assigns(:user).firstname}, your account has been activated/)
-  end
-
-  xit "should_send_activation_email_after_signup" do
-    create_user
-    assert_equal 1, @emails.length
-    assert(@emails.first.subject =~ /Welcome to Winnow, #{assigns(:user).firstname}/)
-    assert(@emails.first.body    =~ /account\/activate\?activation_code=#{assigns(:user).activation_code}/)
-  end
-  
   it "edit_can_only_change_some_values" do
     referer('')
     login_as(:quentin)
@@ -140,15 +126,6 @@ describe AccountController do
     assert_equal users(:quentin).login, u.login
     assert_redirected_to ''
   end
-
-  # TODO: Move to view test
-  # it "edit_shows_timezone_select_set_to_current_timezone" do
-  #   login_as(:quentin)
-  #   get :edit
-  #   assert_select "select[name='current_user[time_zone]']", true do
-  #     assert_select "option[value='#{users(:quentin).time_zone}']", true
-  #   end
-  # end
   
   it "get_edit_returns_the_form" do
     login_as(:quentin)

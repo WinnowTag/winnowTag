@@ -209,24 +209,24 @@ describe TagsController do
       @tag.stub!(:updated_on).and_return(Time.now.yesterday.yesterday)
       request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
     
-      get "show", :tag_name => @tag.name, :user => 'quentin'
+      get :show, :tag_name => @tag.name, :user => 'quentin'
       response.should be_success
     end
     
-    # it "atom_feed_contains_items_in_tag" do
-    #   user = users(:quentin)
-    #   tag = Tag(user, 'tag')
-    #   tag.update_attribute :public, true
-    # 
-    #   user.taggings.create!(:feed_item => FeedItem.find(1), :tag => tag)
-    #   user.taggings.create!(:feed_item => FeedItem.find(2), :tag => tag)
-    # 
-    #   get :show, :user_id => user.login, :id => tag, :format => "atom"
-    # 
-    #   response.should be_success
-    #   # TODO: Move to view test
-    #   # assert_select("entry", 2, response.body)
-    # end
+    it "atom_feed_contains_items_in_tag" do
+      user = users(:quentin)
+      tag = Tag(user, 'tag')
+      tag.update_attribute :public, true
+    
+      user.taggings.create!(:feed_item => FeedItem.find(1), :tag => tag)
+      user.taggings.create!(:feed_item => FeedItem.find(2), :tag => tag)
+
+      @mock_tags.stub!(:find).with(tag.id.to_s).and_return(tag)
+    
+      get :show, :user_id => user.login, :id => tag.id, :format => "atom"
+    
+      response.should be_success
+    end
 
     it "atom_feed_with_missing_tag_returns_404" do
       @mock_tags.stub!(:find_by_id).with("missing").and_return(nil)

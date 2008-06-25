@@ -30,13 +30,12 @@ describe ItemProtectionController do
     assert_redirected_to item_protection_path
   end
 
-  # TODO: Needs to be moved to a view test
-  # it "cant_fetch_protector_should_display_error" do
-  #   ActiveResource::HttpMock.respond_to do |mock|
-  #     mock.get "/protectors/1.xml", {}, nil, 500
-  #   end
-  #   get :show
-  #   assert_response :not_found
-  #   assert_select "div#error", "Unable to fetch protection status from the collector"
-  # end
+  it "cant_fetch_protector_should_display_error" do
+    ActiveResource::HttpMock.respond_to do |mock|
+      mock.get "/protectors/1.xml", {}, nil, 500
+    end
+    get :show
+    assert_response :not_found
+    flash[:error].should == "Unable to fetch protection status from the collector"
+  end
 end

@@ -146,10 +146,9 @@ describe User do
       @user.logged_in_at.should == @time
     end
 
-    # it "saves the last login time" do
-    #   @user.reload
-    #   @user.logged_in_at.should == @time
-    # end
+    it "saves the last login time" do
+      @user.logged_in_at.should == @time
+    end
   end
   
   describe "logging reminder login" do 
@@ -167,10 +166,9 @@ describe User do
       @user.logged_in_at.should == @time
     end
 
-    # it "saves the last login time" do
-    #   @user.reload
-    #   @user.logged_in_at.should == @time
-    # end
+    it "saves the last login time" do
+      @user.logged_in_at.should == @time
+    end
 
     it "clears the reminder coder" do
       @user.reminder_code.should be_nil
