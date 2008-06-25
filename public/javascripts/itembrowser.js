@@ -562,7 +562,9 @@ ItemBrowser.prototype = {
 
       cancel.observe("click", this.closeItemModerationPanel.bind(this, item));
       
-      new Effect.ScrollToInDiv(this.scrollable, list, {duration: 0.3, bottom_margin: 5});
+      (function() {
+        new Effect.ScrollToInDiv(this.scrollable, list, {duration: 0.3, bottom_margin: 5});
+      }).bind(this).delay(0.3);
     }
   },
   
