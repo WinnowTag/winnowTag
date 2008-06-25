@@ -58,22 +58,23 @@ describe "folders" do
     
     dont_see_element "#folder_#{@existing_folder.id}"
   end  
-  
-  xit "can have feeds added" do
-    assert_not_visible "add_feed"
-  
-    click "add_feed_link"
-    assert_visible "add_feed"
-    
-    dont_see_element "#feed_#{@example_feed.id}"
-    
-    type "feed_title", @example_feed.title
-    wait_for_ajax
-    hit_enter "feed_title"
-    wait_for_ajax
-    
-    see_element "#feed_#{@example_feed.id}"
-  end
+
+  # 686 - auto complete is not triggered
+  # it "can have feeds added" do
+  #   assert_not_visible "css=#feeds_section .add_form"
+  # 
+  #   click "css=#feeds_section .add_link"
+  #   assert_visible "css=#feeds_section .add_form"
+  #   
+  #   dont_see_element "#feed_#{@example_feed.id}"
+  #   
+  #   type "feed_title", @example_feed.title
+  #   wait_for_ajax
+  #   hit_enter "feed_title"
+  #   wait_for_ajax
+  # 
+  #   see_element "#feed_#{@example_feed.id}"
+  # end
   
   it "can have feeds removed" do
     see_element "#feed_#{@another_example_feed.id}"
@@ -81,7 +82,8 @@ describe "folders" do
     dont_see_element "#feed_#{@another_example_feed.id}"
   end
   
-  xit "can have private tags added"
+  # 686 - auto complete is not triggered
+  # it "can have private tags added"
   
   it "can have private tags removed" do
     see_element "#tag_#{@private_tag.id}"
@@ -89,7 +91,8 @@ describe "folders" do
     dont_see_element "#tag_#{@private_tag.id}"  
   end
 
-  xit "can have public tags added"
+  # 686 - auto complete is not triggered
+  # it "can have public tags added"
   
   it "can have public tags removed" do
     see_element "#tag_#{@public_tag.id}"
@@ -106,21 +109,27 @@ describe "folders" do
   it "cannot rename public tags" do
     dont_see_element "#tag_#{@public_tag.id} .edit"
   end
+
+  # 686 - droppable does not trigger
+  # it "can have a feed moved to a custom folder" do
+  #   dont_see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
+  #   
+  #   click "css=#feeds_section .header .toggle_button"    
+  #   click "css=#folders_section .header .toggle_button"    
+  # 
+  #   mouse_down "feed_#{@another_example_feed.id}"
+  #   mouse_move_at "feed_#{@another_example_feed.id}", "0,-125"
+  #   mouse_up "feed_#{@another_example_feed.id}"
+  #   wait_for_ajax
+  #   
+  #   see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
+  # end
+
+  # 686 - droppable does not trigger
+  # it "can have a private tag moved to a custom folder"
   
-  xit "can have a feed moved to a custom folder" do
-    dont_see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
-    
-    click "css=#feeds_section .header .toggle_button"    
-    mouse_down "css=#feed_#{@another_example_feed.id}"
-    mouse_move_at "css=#feed_#{@another_example_feed.id}", "0,-110"
-    mouse_up "css=#feed_#{@another_example_feed.id}"
-    wait_for_ajax
-    
-    see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
-  end
-  
-  xit "can have a private tag moved to a custom folder"
-  xit "can have a public tag moved to a custom folder"
+  # 686 - droppable does not trigger
+  # it "can have a public tag moved to a custom folder"
   
   it "can open tags folder" do
     assert_not_visible "css=#tag_filters"
