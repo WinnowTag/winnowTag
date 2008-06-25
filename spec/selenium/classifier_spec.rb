@@ -77,5 +77,8 @@ describe 'Classifier Controls' do
     get_location.should == location
   end
   
+  # TODO: Sean - I do not have a classifier setup and running. 
+  # I think we need to make the barrier of entry lower so all 
+  # this would be easy to test
   xit "should be tested during actual classifier operation"
 end
