@@ -99,10 +99,6 @@ ssh_options[:port] = 65000
 #   are treated as local variables, which are made available to the (ERb)
 #   template.
 
-task :package_assets, :role => :web do
-  run "cd #{release_path} && rake RAILS_ENV=production asset:packager:build_all"
-end
-
 task :config_collector do
   put("http://collector.mindloom.org", "#{shared_path}/collector.conf")
 end
@@ -123,7 +119,6 @@ task :send_notification do
 end
 
 after :'deploy:update_code', :copy_config
-after :'deploy:update_code', :package_assets
 after :deploy, :send_notification
 
 namespace :deploy do
