@@ -22,47 +22,66 @@ describe "moderation panel" do
     assert_visible "new_tag_form_feed_item_4"
   end
   
-  xit "should focus the new tag field"
+  # 686 - selenium does not seem to have a way to query for the focused item
+  # it "should focus the new tag field" do
+  #   click "add_tag_feed_item_4"
+  #   wait_for_ajax 
+  #   see_element "#new_tag_field_feed_item_4:focus"
+  # end
   
-  # TODO: Enter is not being recognized by the auto complete code
-  xit "can add a positive tagging from a new tag through the 'create a new tag' input" do
-    click "add_tag_feed_item_4"
-    wait_for_ajax
-    
-    dont_see_element "li[id='tag_control_for_new tag_on_feed_item_4']"
+  # 686 - auto complete does not recognize typing
+  # it "can add a positive tagging from a new tag through the 'create a new tag' input" do
+  #   click "add_tag_feed_item_4"
+  #   wait_for_ajax
+  #   
+  #   dont_see_element "li[id='tag_control_for_new tag_on_feed_item_4']"
+  # 
+  #   type "new_tag_field_feed_item_4", "new tag"
+  #   click "css=#new_tag_form_feed_item_4 input[type=submit]"
+  #   wait_for_effects
+  #   
+  #   see_element "li.positive[id='tag_control_for_new tag_on_feed_item_4']"
+  #   get_text("tag_control_for_new tag_on_feed_item_4").should =~ /new tag/
+  # end
+  
+  # 686 - auto complete does not recognize typing
+  # it "can add a positive tagging from an existing tag through the 'create new tag' input" do 
+  #   click "add_tag_feed_item_4" 
+  #   wait_for_ajax 
+  #    
+  #   dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+  #    
+  #   type "new_tag_field_feed_item_4", "existing tag"
+  #   click "css=#new_tag_form_feed_item_4 input[type=submit]"
+  #   wait_for_effects
+  # 
+  #   see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+  #   get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
+  # end
 
-    sleep(2)
-    type "new_tag_field_feed_item_4", "new tag"
-    hit_enter "new_tag_field_feed_item_4"
-    wait_for_effects
-    
-    see_element "li.positive[id='tag_control_for_new tag_on_feed_item_4']"
-    get_text("tag_control_for_new tag_on_feed_item_4").should =~ /new tag/
-
-    tag = Tag.find_by_name("new tag")
-    # Adds tag to the sidebar
-    see_element "li#tag_#{tag.id}"
+  it "selects the first choice in the auto complete list" do
+    click "add_tag_feed_item_4" 
+    wait_for_ajax 
+  
+    see_element "#new_tag_form_feed_item_4 .auto_complete li:first-child.selected"
   end
   
-  # TODO: Enter is not being recognized by the auto complete code
-  xit "can add a positive tagging from an existing tag through the 'create new tag' input" do 
+  it "uses the selected entry when clicking 'Add Tag'" do
     click "add_tag_feed_item_4" 
     wait_for_ajax 
      
-    dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "#tag_controls_feed_item_4 li"
      
-    type "new_tag_field_feed_item_4", "existing tag"
-    hit_enter "new_tag_field_feed_item_4"
+    tag_name = get_text "css=#new_tag_form_feed_item_4 .auto_complete .selected"
+    click "css=#new_tag_form_feed_item_4 input[type=submit]"
     wait_for_effects
   
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#tag_controls_feed_item_4 li[id='tag_control_for_#{tag_name}_on_feed_item_4']"
     get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
   end
 
-  xit "can add a positive tagging from an existing tag through the 'create new tag' input when the tagging already exists"
-  xit "does not select the first choice in the auto complete list"
-  xit "uses the selected entry when clicking 'Add Tag'"
-  xit "creates a new tag when hitting enter and not entry is selected"
+  # 686 - auto complete does not recognize hitting enter
+  # it "uses the selected entry when hitting enter 'Add Tag'"
   
   it "can change a positive tagging to a negative tagging" do
     Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
@@ -235,15 +254,15 @@ describe "moderation panel" do
     assert_equal "95.23% Automatic\nTag (clues)", get_text("css=li[id='tag_control_for_existing tag_on_feed_item_4'] .status")
   end
   
-  # TODO: This does not work with selenium + :hover
-  xit "shows tagging controls when hovering the tag" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
-
-    open feed_items_path
-    wait_for_ajax
-    
-    assert_not_visible "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .controls"
-    mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_visible "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .controls"
-  end
+  # 686 - hover is not recognized
+  # it "shows tagging controls when hovering the tag" do
+  #   Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
+  # 
+  #   open feed_items_path
+  #   wait_for_ajax
+  #   
+  #   assert_not_visible "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .information"
+  #   mouse_over "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
+  #   assert_visible "css=li[id='tag_control_for_existing tag_on_feed_item_4'] .information"
+  # end
 end
