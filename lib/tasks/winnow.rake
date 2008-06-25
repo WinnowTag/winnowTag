@@ -67,6 +67,16 @@ namespace :winnow do
   directory 'corpus'
 end
 
+namespace :assets do
+  task :clean => :environment do
+    joined_javascript_path = File.join(ActionView::Helpers::AssetTagHelper::JAVASCRIPTS_DIR, "all.js")
+    joined_stylesheet_path = File.join(ActionView::Helpers::AssetTagHelper::STYLESHEETS_DIR, "all.css")
+    [joined_javascript_path, joined_stylesheet_path].each do |path|
+      File.delete(path) if File.exist?(path)
+    end
+  end
+end
+
 require File.dirname(__FILE__) + '/../../vendor/plugins/rspec/lib/spec/rake/spectask'
 
 desc "Run all examples with RCov"
