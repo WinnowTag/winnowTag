@@ -36,7 +36,7 @@ if ENV['STAGE'] == 'beta'
 elsif ENV['STAGE'] == 'trunk'
   set :domain, 'trunk.mindloom.org'
   set :deploy_to, "/home/winnow/www/trunk.deploy"
-  set :branch, "origin/master"
+  set :branch, "master"
   set :group, "trunk-mongrels"
 else
   raise "Set STAGE to beta or trunk"
