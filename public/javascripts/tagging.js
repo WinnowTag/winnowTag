@@ -97,7 +97,6 @@ function show_tagging_information(tag, tag_name, classifier_strength, clues_link
   if(tag.hasClassName("hover")) {
     tag.removeClassName("hover");
   } else {
-    tag.addClassName('hover');
     tag.down(".information").setStyle({left: tag.positionedOffset()[0] + 'px', top: tag.positionedOffset()[1] + 16 + 'px'});
 
     var status = "";
@@ -113,6 +112,10 @@ function show_tagging_information(tag, tag_name, classifier_strength, clues_link
     if(status != tag.down(".status").innerHTML) {
       tag.down(".status").update(status);
     }
+
+    tag.addClassName('hover');
+    
+    new Effect.ScrollToInDiv(itemBrowser.scrollable, tag.down(".information"), {duration: 0.3, bottom_margin: 5});
   }
 }
 
