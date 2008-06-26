@@ -1133,7 +1133,6 @@ ul.tag_list li {
   margin: 0 0 0 4px;
   line-height: 1.8;
   white-space: nowrap;
-  cursor: default;
 }
 
 ul.tag_list li .name {
@@ -1188,6 +1187,7 @@ ul.tag_list li .information {
   background: #fff;
   border: 1px solid #aaa;
   color: #000;
+  cursor: default;
 }
 
 ul.tag_list li.hover .information {
