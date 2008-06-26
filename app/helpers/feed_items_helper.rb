@@ -54,15 +54,15 @@ module FeedItemsHelper
   def tag_controls(feed_item)
     html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user
-        tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
+        tag_control_for(feed_item, tag, classes_for_taggings(taggings, [:stop]), format_classifier_strength(taggings))
       else
         if tagging = Array(taggings).first
-          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:public]), format_classifier_strength(taggings))
+          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:stop, :public]), format_classifier_strength(taggings))
         end
       end
     end.compact.join(" ")
     
-    content_tag(:ul, html, :class => "tag_list stop", :id => dom_id(feed_item, "tag_controls"))
+    content_tag(:ul, html, :class => "tag_list", :id => dom_id(feed_item, "tag_controls"))
   end
   
   # Format a classifier tagging strength as a percentage.
