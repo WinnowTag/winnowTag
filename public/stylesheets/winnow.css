@@ -1168,44 +1168,45 @@ ul.tag_list li.public.hover .name {
 
 ul.tag_list li.hover .name {
   z-index: 1000;
-  background-color: #fff;
+  border: 1px solid #ffdb00;
+  background-color: #ffff89;
   background-position: -1px center;
   padding: 2px 5px 2px 14px;
-  border: 1px solid #aaa;
-  border-width: 1px 1px 0 1px;
-  -moz-border-radius-topleft: 0.4em;
-  -moz-border-radius-topright: 0.4em;
-  -webkit-border-top-left-radius: 0.4em;  
-  -webkit-border-top-right-radius: 0.4em;  
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;  
 }
 
-ul.tag_list li .information {
+.information {
   display: none;
-  position: absolute;
-  z-index: 900;
   padding: 1em;
-  background: #fff;
-  border: 1px solid #aaa;
+  border: 2px solid #ffdb00;
+  border-width: 2px 0 0 0;
+  background-color: #ffff89;
   color: #000;
   cursor: default;
+  line-height: 1.8;
 }
 
-ul.tag_list li.hover .information {
+.item.open .information {
+  border-width: 2px 0;
+}
+
+.information.hover {
   display: block;
 }
 
-ul.tag_list li .information .training {
+.information .training {
   float: left;
-  border-right: 1px solid #ccc;
+  border-right: 2px solid #ffdb00;
   padding-right: 1em;
   margin-right: 0.2em;
 }
 
-ul.tag_list li .information .automatic {
+.information .automatic {
   float: left;
 }
 
-ul.tag_list li .information .automatic .status {
+.information .automatic .status {
   display: block;
   color: #666;
   font-size: 1.3em;
@@ -1214,92 +1215,92 @@ ul.tag_list li .information .automatic .status {
   margin: 0.5em 0 0.5em 0.5em;
 }
 
-ul.tag_list li.positive .information .automatic .status {
+.information.positive .automatic .status {
   padding: 0 0 0 35px;
   background: url(../images/positive.png) left center no-repeat;
   color: #52984B;
 }
 
-ul.tag_list li.negative .information .automatic .status {
+.information.negative .automatic .status {
   padding: 0 0 0 35px;
   background: url(../images/negative.png) left center no-repeat;
   color: #C12A2F;
 }
 
-ul.tag_list li.public .information .training .owner {
+.information.public .training .owner {
   color: #666;
   font-size: 1.3em;
   line-height: 1.5;
   font-weight: bold;
 }
 
-ul.tag_list li .information .training .positive, ul.tag_list li .information .training .negative, ul.tag_list li .information .training .remove {
+.information .training .positive, .information .training .negative, .information .training .remove {
   cursor: pointer;
   padding: 1px 0 1px 1.6em;
 }
 
-ul.tag_list li .information .training .positive {
+.information .training .positive {
   display: block;
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 2px;
   color: #52984B;
 }
 
-ul.tag_list li .information .training .negative {
+.information .training .negative {
   display: block;
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -61px;
   color: #C12A2F;
 }
 
-ul.tag_list li .information .training .remove {
+.information .training .remove {
   display: none;
   background: url(../images/close.png) 1px center no-repeat;
   color: #666;
 }
 
-ul.tag_list li.positive .information .training .positive {
+.information.positive .training .positive {
   display: none;
 }
 
-ul.tag_list li.positive .information .training .negative {
+.information.positive .training .negative {
   display: block;
 }
 
-ul.tag_list li.positive .information .training .remove {
+.information.positive .training .remove {
   display: block;
 }
 
-ul.tag_list li.negative .information .training .positive {
+.information.negative .training .positive {
   display: block;
 }
 
-ul.tag_list li.negative .information .training .negative {
+.information.negative .training .negative {
   display: none;
 }
 
-ul.tag_list li.negative .information .training .remove {
+.information.negative .training .remove {
   display: block;
 }
 
-ul.tag_list li .information .automatic .status .strength {
+.information .automatic .status .strength {
   float: left;
   font-size: 2em;
   margin-right: 0.2em;
 }
 
-ul.tag_list li .information .automatic .status a {
+.information .automatic .status a {
   font-size: 0.7692307em;
 }
 
-ul.tag_list li .information .clues {
+.information .clues {
   clear: both;
   width: 100%;
-  max-height: 30em;
   overflow: auto;
+  max-height: 30em;
 }
 
-ul.tag_list li .information .clues table tr td.clue {
+.information .clues table tr td.clue {
   padding-right: 1em;
 }
 

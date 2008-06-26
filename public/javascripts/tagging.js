@@ -10,6 +10,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   if(match) { tag_name = match[1]; }
 
   var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
+  var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
   var url = '/taggings/create';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -24,8 +25,11 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
     tag_control.addClassName(tagging_type);
+    tag_info.removeClassName(other_tagging_type);
+    tag_info.addClassName(tagging_type);
   } else if (tag_control.hasClassName('classifier')) {
     tag_control.addClassName(tagging_type); 
+    tag_info.addClassName(tagging_type); 
   }
   
   sendTagRequest(url, parameters);
@@ -35,6 +39,7 @@ function remove_tagging(taggable_id, tag_name) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
   var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
+  var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
   var url = '/taggings/destroy';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -44,8 +49,11 @@ function remove_tagging(taggable_id, tag_name) {
   if (tag_control) {
     tag_control.removeClassName('positive');
     tag_control.removeClassName('negative');
+    tag_info.removeClassName('positive');
+    tag_info.removeClassName('negative');
     if(!tag_control.match('.classifier')) {
       tag_control.removeClassName('hover');
+      tag_info.removeClassName('hover');
       remove_tag_control(taggable_id, tag_name); 
     }
   }
@@ -62,6 +70,7 @@ function sendTagRequest(url, parameters) {
   });
 }
 
+// TODO: Update!
 function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
@@ -85,19 +94,23 @@ function add_tag_control(taggable_id, tag) {
   Effect.Appear(tag_control_id);
 }
 
+// TODO: Update!
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }
 
-function show_tagging_information(tag, tag_name, classifier_strength, clues_link) {
+function show_tagging_information(tag, information, tag_name, classifier_strength, clues_link) {
   tag = $(tag).up('li');
+  information = $(information);
 
   if(tag.hasClassName("hover")) {
     tag.removeClassName("hover");
+    information.removeClassName("hover");
   } else {
-    tag.down(".information").setStyle({left: tag.positionedOffset()[0] + 'px', top: tag.positionedOffset()[1] + 16 + 'px'});
+    $$('.tag_control').invoke("removeClassName", "hover");
+    $$('.information').invoke("removeClassName", "hover");
 
     var status = "";
   
@@ -109,13 +122,15 @@ function show_tagging_information(tag, tag_name, classifier_strength, clues_link
       status = '<span class="strength">' + classifier_strength + "</span> Automatic<br>Tag " + clues_link;
     }
     
-    if(status != tag.down(".status").innerHTML) {
-      tag.down(".status").update(status);
+    if(status != information.down(".status").innerHTML) {
+      information.down(".status").update(status);
     }
 
+    itemBrowser.selectItem(tag.up('.item'));
     tag.addClassName('hover');
+    information.addClassName('hover');
     
-    new Effect.ScrollToInDiv(itemBrowser.scrollable, tag.down(".information"), {duration: 0.3, bottom_margin: 5});
+    // new Effect.ScrollToInDiv(itemBrowser.scrollable, tag.down(".information"), {duration: 0.3, bottom_margin: 5});
   }
 }
 
