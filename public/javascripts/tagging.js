@@ -65,9 +65,9 @@ function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
-  var tag_control = '<li id="' + tag_control_id + '" class="positive" style="display: none;" onmouseover="set_tag_status(this, \'' + escape_javascript(tag) + '\');">' + 
+  var tag_control = '<li id="' + tag_control_id + '" class="positive" style="display: none;">' + 
     // TODO: sanitize
-    '<span class="name">' + tag + '</span>' + 
+    '<span class="name" onclick="show_tagging_information(this, \'' + escape_javascript(tag) + '\');">' + tag + '</span>' + 
     '<div class="information clearfix">' +
       '<div class="training">' + 
         // TODO: localize
@@ -90,23 +90,28 @@ function remove_tag_control(taggable_id, tag) {
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }
 
-function set_tag_status(tag, tag_name, classifier_strength, clues_link) {
-  tag = $(tag);
+function show_tagging_information(tag, tag_name, classifier_strength, clues_link) {
+  tag = $(tag).up('li');
 
-  tag.down(".information").setStyle({left: tag.positionedOffset()[0] + 'px', top: tag.positionedOffset()[1] + 16 + 'px'});
+  if(tag.hasClassName("hover")) {
+    tag.removeClassName("hover");
+  } else {
+    tag.addClassName('hover');
+    tag.down(".information").setStyle({left: tag.positionedOffset()[0] + 'px', top: tag.positionedOffset()[1] + 16 + 'px'});
 
-  var status = "";
+    var status = "";
   
-  if (tag.match('.negative')) {
-    status = "Negative<br>Training";
-  } else if (tag.match('.positive')) {
-    status = "Positive<br>Training";
-  } else if (tag.match('.classifier')) {
-    status = '<span class="strength">' + classifier_strength + "</span> Automatic<br>Tag " + clues_link;
-  }
+    if (tag.match('.negative')) {
+      status = "Negative<br>Training";
+    } else if (tag.match('.positive')) {
+      status = "Positive<br>Training";
+    } else if (tag.match('.classifier')) {
+      status = '<span class="strength">' + classifier_strength + "</span> Automatic<br>Tag " + clues_link;
+    }
     
-  if(status != tag.down(".status").innerHTML) {
-    tag.down(".status").update(status);
+    if(status != tag.down(".status").innerHTML) {
+      tag.down(".status").update(status);
+    }
   }
 }
 

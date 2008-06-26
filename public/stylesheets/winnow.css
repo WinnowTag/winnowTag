@@ -1134,7 +1134,6 @@ ul.tag_list li {
   line-height: 1.8;
   white-space: nowrap;
   cursor: default;
-/*  position: relative;*/
 }
 
 ul.tag_list li .name {
@@ -1163,12 +1162,12 @@ ul.tag_list li.public .name {
   padding-left: 20px;
 }
 
-ul.tag_list li.public:hover .name {
+ul.tag_list li.public.hover .name {
   background-position: 4px center;
   padding-left: 19px;
 }
 
-ul.tag_list li:hover .name {
+ul.tag_list li.hover .name {
   z-index: 1000;
   background-color: #fff;
   background-position: -1px center;
@@ -1191,18 +1190,18 @@ ul.tag_list li .information {
   color: #000;
 }
 
-ul.tag_list li:hover .information {
+ul.tag_list li.hover .information {
   display: block;
 }
 
-ul.tag_list li:hover .information .training {
+ul.tag_list li .information .training {
   float: left;
   border-right: 1px solid #ccc;
   padding-right: 1em;
   margin-right: 0.2em;
 }
 
-ul.tag_list li:hover .information .automatic {
+ul.tag_list li .information .automatic {
   float: left;
 }
 

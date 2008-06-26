@@ -90,17 +90,17 @@ module FeedItemsHelper
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
     information << content_tag(:div, nil, :id => clues_id, :class => "clues")
     
-    # TODO: sanitize
-    content   = content_tag(:span, h(tag.name), :class => "name")
-    content  << content_tag(:div, information, :class => "information clearfix")
-        
     clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
                                            :before => "$('#{clues_id}').addClassName('loading')", 
                                            :complete => "$('#{clues_id}').removeClassName('loading')")
 
     # TODO: sanitize
-    content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "),
-        :onmouseover => "set_tag_status(this, #{tag.name.to_json}, #{classifier_strength.to_json}, #{clues_link.to_json});")
+    content   = content_tag(:span, h(tag.name), :class => "name", 
+                            :onclick => "show_tagging_information(this, #{tag.name.to_json}, #{classifier_strength.to_json}, #{clues_link.to_json});")
+    content  << content_tag(:div, information, :class => "information clearfix")
+        
+    # TODO: sanitize
+    content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "))
   end
   
 	def classes_for_taggings(taggings, classes = [])
