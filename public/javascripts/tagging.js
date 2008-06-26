@@ -45,6 +45,7 @@ function remove_tagging(taggable_id, tag_name) {
     tag_control.removeClassName('positive');
     tag_control.removeClassName('negative');
     if(!tag_control.match('.classifier')) {
+      tag_control.removeClassName('hover');
       remove_tag_control(taggable_id, tag_name); 
     }
   }
