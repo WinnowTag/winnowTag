@@ -92,7 +92,7 @@ module FeedItemsHelper
     
     clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
                                            :before => "$('#{clues_id}').addClassName('loading')", 
-                                           :complete => "$('#{clues_id}').removeClassName('loading');new Effect.ScrollToInDiv(itemBrowser.scrollable, $(this).up('.information'), {duration: 0.3, bottom_margin: 5});")
+                                           :complete => "$('#{clues_id}').removeClassName('loading')")
 
     # TODO: sanitize
     content   = content_tag(:span, h(tag.name), :class => "name", 
