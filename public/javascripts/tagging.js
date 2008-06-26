@@ -66,7 +66,7 @@ function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
-  var tag_control = '<li id="' + tag_control_id + '" class="positive" style="display: none;">' + 
+  var tag_control = '<li id="' + tag_control_id + '" class="stop positive" style="display: none;">' + 
     // TODO: sanitize
     '<span class="name" onclick="show_tagging_information(this, \'' + escape_javascript(tag) + '\');">' + tag + '</span>' + 
     '<div class="information clearfix">' +
