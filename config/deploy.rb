@@ -43,7 +43,7 @@ else
 end
 
 if ENV['branch']
-  set :branch, "origin/#{ENV['branch']}"
+  set :branch, ENV['branch']
 end
 
 role :web, domain
