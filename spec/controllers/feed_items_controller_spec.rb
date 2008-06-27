@@ -47,7 +47,7 @@ describe FeedItemsController do
       
       @http_response = mock('response')
       @http_response.stub!(:code).and_return("200")
-      @http_response.stub!(:body).and_return([{'clue' => 'foo', 'prob' => 0.99}, {'clue' => 'bar', 'prob' => 0.01}].to_json)
+      @http_response.stub!(:body).and_return([{'clue' => 'bar', 'prob' => 0.01}, {'clue' => 'foo', 'prob' => 0.99}].to_json)
       Remote::ClassifierResource.site = "http://classifier.host/classifier"
       url = Remote::ClassifierResource.site.to_s + "/clues?" +
               "tag=#{URI.escape('http://test.host/quentin/tags/tag/training.atom')}" +
@@ -68,6 +68,12 @@ describe FeedItemsController do
       response.should be_success
       response.should have_tag("tr td.clue", "foo")
       response.should have_tag("tr td.prob", "0.99")
+    end
+        
+    it "should render the clues in descending probability order" do
+      accept('text/javascript')
+      get :clues, :id => 1234, :tag => @tag.id
+      response.body.should match(/foo.*bar/)
     end
     
     describe "with 424 status code from the classifier" do

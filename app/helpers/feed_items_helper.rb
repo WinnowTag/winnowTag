@@ -175,7 +175,7 @@ module FeedItemsHelper
   def render_clues(clues)
     content_tag('table') do
       clue_header +
-      clues.map do |clue|
+      clues.sort_by {|clue| clue['prob'] }.reverse.map do |clue|
         render_clue_row([clue])
       end.join
     end
