@@ -70,7 +70,6 @@ function sendTagRequest(url, parameters) {
   });
 }
 
-// TODO: Update!
 function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
@@ -84,11 +83,12 @@ function add_tag_control(taggable_id, tag) {
   Effect.Appear(tag_control_id);
 }
 
-// TODO: Update!
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
-  Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
+  var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
+  Element.remove(tag_info_id);
+  Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id); } });
 }
 
 var tag_information_timeouts = {};
