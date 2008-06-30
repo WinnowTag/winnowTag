@@ -1,9 +1,5 @@
 <table class="property_table" style="float:left;">
 	<tr>
-		<th><%= _(:email) %></th>
-		<td><%= mail_to sanitize(@user.email) %></td>
-	</tr>
-	<tr>
 		<th><%= _(:users_registered) %></th>
 		<td class="date"><%= format_date(@user.created_at) %></td>
 	</tr>
