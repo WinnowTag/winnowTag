@@ -2,7 +2,7 @@
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
-# Please contact info@peerworks.org for further information.
+# Please visit http://www.peerworks.org/contact for further information.
 namespace :winnow do
   desc "Run a series of benchmarks on the classifier"
   task  :classifier_bm do

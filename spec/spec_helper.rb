@@ -2,7 +2,7 @@
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
-# Please contact info@peerworks.org for further information.
+# Please visit http://www.peerworks.org/contact for further information.
 
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
@@ -79,7 +79,7 @@ module WinnowMatchers
 #{comment_line}
 #{comment_line} Possession of a copy of this file grants no permission or license
 #{comment_line} to use, modify, or create derivate works.
-#{comment_line} Please contact info@peerworks.org for further information.
+#{comment_line} Please visit http://www.peerworks.org/contact for further information.
 EOHEADER
       @header << "#{comment_end}\n" if comment_end
       @header_size = @header.split(/\n/).size

@@ -2,7 +2,7 @@
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
-# Please contact info@peerworks.org for further information.
+# Please visit http://www.peerworks.org/contact for further information.
 
 # This just stores the id for this Winnow's protector instance
 # in the collection database.
