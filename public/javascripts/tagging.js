@@ -75,20 +75,10 @@ function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
-  var tag_control = '<li id="' + tag_control_id + '" class="stop positive" style="display: none;">' + 
+  var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
+  var tag_control = '<li id="' + tag_control_id + '" class="stop tag_control positive" style="display: none;">' + 
     // TODO: sanitize
-    '<span class="name" onclick="show_tagging_information(this, \'' + escape_javascript(tag) + '\');">' + tag + '</span>' + 
-    '<div class="information clearfix">' +
-      '<div class="training">' + 
-        // TODO: localize
-        '<a class="positive" onclick="add_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', \'positive\'); return false;" href="#">Make Positive</a> ' + 
-        '<a class="negative" onclick="add_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', \'negative\'); return false;" href="#">Make Negative</a> ' + 
-        '<a class="remove" onclick="remove_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\'); return false;" href="#">Remove Training</a> ' + 
-      '</div> ' +
-      '<div class="automatic">' + 
-        '<span class="status clearfix"></span>' +
-      '</div> ' +
-    '</div>' +
+    '<span class="name" onclick="itemBrowser.selectTaggingInformation(this, \'' + escape_javascript(tag_info_id) + '\');">' + tag + '</span>' + 
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
