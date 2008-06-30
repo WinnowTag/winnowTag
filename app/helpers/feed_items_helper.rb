@@ -54,10 +54,10 @@ module FeedItemsHelper
   def tag_controls(feed_item)
     html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user
-        tag_control_for(feed_item, tag, classes_for_taggings(taggings, [:stop]), format_classifier_strength(taggings))
+        tag_control_for(feed_item, tag, classes_for_taggings(taggings, [:stop]))
       else
         if tagging = Array(taggings).first
-          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:stop, :public]), format_classifier_strength(taggings))
+          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:stop, :public]))
         end
       end
     end.compact.join(" ")
@@ -73,17 +73,13 @@ module FeedItemsHelper
   end
   
   # Note: Update tagging.js when this changes
-  def tag_control_for(feed_item, tag, classes, classifier_strength)
+  def tag_control_for(feed_item, tag, classes)
     information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
 
-    clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
-                                           :before => "$('#{clues_id}').addClassName('loading')", 
-                                           :complete => "$('#{clues_id}').removeClassName('loading')")
-
     # TODO: sanitize
     content = content_tag(:span, h(tag.name), :class => "name", 
-                            :onclick => "show_tagging_information(this, #{information_id.to_json}, #{tag.name.to_json}, #{classifier_strength.to_json}, #{clues_link.to_json});")
+                            :onclick => "show_tagging_information(this, #{information_id.to_json}, #{tag.name.to_json});")
     
     classes << "tag_control"
     
@@ -94,10 +90,10 @@ module FeedItemsHelper
   def tag_infos(feed_item)
     html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user
-        tag_info_for(feed_item, tag, classes_for_taggings(taggings))
+        tag_info_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
       else
         if tagging = Array(taggings).first
-          tag_info_for(feed_item, tag, classes_for_taggings(tagging, [:public]))
+          tag_info_for(feed_item, tag, classes_for_taggings(tagging, [:public]), format_classifier_strength(taggings))
         end
       end
     end.compact.join(" ")
@@ -105,7 +101,7 @@ module FeedItemsHelper
     content_tag(:div, html)
   end
 
-  def tag_info_for(feed_item, tag, classes)
+  def tag_info_for(feed_item, tag, classes, classifier_strength)
     information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
 
@@ -118,7 +114,14 @@ module FeedItemsHelper
       training = content_tag(:div, "#{tag.user.firstname}<br/>#{tag.user.lastname}", :class => "owner")
     end
     
-    automatic  = content_tag(:span, nil, :class => "status clearfix")    
+    clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
+                                           :before => "$('#{clues_id}').addClassName('loading')", 
+                                           :complete => "$('#{clues_id}').removeClassName('loading')")
+
+    automatic  = content_tag(:span, "Negative<br/>Training", :class => "negative")
+    automatic << content_tag(:span, "Positive<br/>Training", :class => "positive")
+    automatic << content_tag(:span, content_tag(:span, classifier_strength, :class => "strength") + "Automatic<br/>Tag " + clues_link, :class => "classifier")
+    automatic  = content_tag(:span, automatic, :class => "status clearfix")    
     
     information  = content_tag(:div, training, :class => "training")
     information << content_tag(:div, automatic, :class => "automatic")

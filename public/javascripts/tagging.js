@@ -101,7 +101,7 @@ function remove_tag_control(taggable_id, tag) {
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
 }
 
-function show_tagging_information(tag, information, tag_name, classifier_strength, clues_link) {
+function show_tagging_information(tag, information, tag_name) {
   tag = $(tag).up('li');
   information = $(information);
 
@@ -111,20 +111,6 @@ function show_tagging_information(tag, information, tag_name, classifier_strengt
   } else {
     $$('.tag_control').invoke("removeClassName", "hover");
     $$('.information').invoke("removeClassName", "hover");
-
-    var status = "";
-  
-    if (tag.match('.negative')) {
-      status = "Negative<br>Training";
-    } else if (tag.match('.positive')) {
-      status = "Positive<br>Training";
-    } else if (tag.match('.classifier')) {
-      status = '<span class="strength">' + classifier_strength + "</span> Automatic<br>Tag " + clues_link;
-    }
-    
-    if(status != information.down(".status").innerHTML) {
-      information.down(".status").update(status);
-    }
 
     itemBrowser.selectItem(tag.up('.item'));
     tag.addClassName('hover');

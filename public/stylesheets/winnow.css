@@ -1215,16 +1215,36 @@ ul.tag_list li.hover .name {
   margin: 0.5em 0 0.5em 0.5em;
 }
 
+.information .automatic .status .positive, .information .automatic .status .negative {
+  display: none;
+}
+
 .information.positive .automatic .status {
   padding: 0 0 0 35px;
   background: url(../images/positive.png) left center no-repeat;
   color: #52984B;
 }
 
+.information.positive .automatic .status .positive {
+  display: block;
+}
+
+.information.positive .automatic .status .classifier, .information.positive .automatic .status .negative {
+  display: none;
+}
+
 .information.negative .automatic .status {
   padding: 0 0 0 35px;
   background: url(../images/negative.png) left center no-repeat;
   color: #C12A2F;
+}
+
+.information.negative .automatic .status .negative {
+  display: block;
+}
+
+.information.negative .automatic .status .classifier, .information.negative .automatic .status .positive {
+  display: none;
 }
 
 .information.public .training .owner {
