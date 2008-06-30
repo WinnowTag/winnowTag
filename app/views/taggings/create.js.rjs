@@ -7,9 +7,9 @@ page << "if(!$('#{dom_id(@tagging.tag)}')) {"
   page << "itemBrowser.styleFilters()"
 page << "}"
 
-# page << "if(!$(#{dom_id(@tagging.feed_item, 'tag_information').to_json})) {"
+page << "if(!$(#{dom_id(@tagging.feed_item, "tag_info_for_#{@tagging.tag.name}_on").to_json})) {"
   page[dom_id(@tagging.feed_item, 'tag_information')].insert :bottom => tag_info_for(@tagging.feed_item, @tagging.tag, ["positive"], nil)
-# page << "}"
+page << "}"
 
 page << "if ($('classification_button')) {"
   page['classification_button'].disabled = false
