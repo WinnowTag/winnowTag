@@ -2,7 +2,7 @@
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
-# Please contact info@peerworks.org for further information.
+# Please visit http://www.peerworks.org/contact for further information.
 class ChangeBiasDefault < ActiveRecord::Migration
   def self.up
     change_column_default(:tags, :bias, 1.2)

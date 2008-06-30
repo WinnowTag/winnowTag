@@ -2,7 +2,7 @@
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
-# Please contact info@peerworks.org for further information.
+# Please visit http://www.peerworks.org/contact for further information.
 class FeedItemTextIndex < ActiveRecord::Base
   set_primary_key "feed_item_id"
   belongs_to :feed_item
