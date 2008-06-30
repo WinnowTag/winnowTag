@@ -79,7 +79,7 @@ module FeedItemsHelper
 
     # TODO: sanitize
     content = content_tag(:span, h(tag.name), :class => "name", 
-                            :onclick => "show_tagging_information(this, #{information_id.to_json}, #{tag.name.to_json});")
+                            :onclick => "itemBrowser.selectTaggingInformation(this, #{information_id.to_json})")
     
     classes << "tag_control"
     

@@ -52,8 +52,8 @@ function remove_tagging(taggable_id, tag_name) {
     tag_info.removeClassName('positive');
     tag_info.removeClassName('negative');
     if(!tag_control.match('.classifier')) {
-      tag_control.removeClassName('hover');
-      tag_info.removeClassName('hover');
+      tag_control.removeClassName('selected');
+      tag_info.removeClassName('selected');
       remove_tag_control(taggable_id, tag_name); 
     }
   }
@@ -99,25 +99,6 @@ function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
-}
-
-function show_tagging_information(tag, information, tag_name) {
-  tag = $(tag).up('li');
-  information = $(information);
-
-  if(tag.hasClassName("hover")) {
-    tag.removeClassName("hover");
-    information.removeClassName("hover");
-  } else {
-    $$('.tag_control').invoke("removeClassName", "hover");
-    $$('.information').invoke("removeClassName", "hover");
-
-    itemBrowser.selectItem(tag.up('.item'));
-    tag.addClassName('hover');
-    information.addClassName('hover');
-    
-    // new Effect.ScrollToInDiv(itemBrowser.scrollable, tag.down(".information"), {duration: 0.3, bottom_margin: 5});
-  }
 }
 
 var tag_information_timeouts = {};
