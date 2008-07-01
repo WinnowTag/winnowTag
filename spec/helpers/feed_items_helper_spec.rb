@@ -83,13 +83,8 @@ describe FeedItemsHelper do
       
       tag = mock_model(Tag, :name => "tag1", :user => @current_user)
       classes = ["positive", "classifier"]
-      tag_control_for(feed_item, tag, classes, nil).should have_tag("li.positive.classifier##{dom_id(feed_item, "tag_control_for_tag1_on")}") do
+      tag_control_for(feed_item, tag, classes).should have_tag("li.positive.classifier##{dom_id(feed_item, "tag_control_for_tag1_on")}") do
         with_tag ".name", "tag1"
-        with_tag ".information" do
-          with_tag "a.positive"
-          with_tag "a.negative"
-          with_tag "a.remove"
-        end
       end
     end
   end
