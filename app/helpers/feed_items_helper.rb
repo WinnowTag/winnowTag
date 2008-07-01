@@ -115,7 +115,7 @@ module FeedItemsHelper
     end
     
     clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
-                                           :before => "$('#{clues_id}').addClassName('loading')", 
+                                           :before => "$('#{clues_id}').update('');$('#{clues_id}').addClassName('loading')", 
                                            :complete => "$('#{clues_id}').removeClassName('loading')")
 
     automatic  = content_tag(:span, "Negative<br/>Training", :class => "negative")
