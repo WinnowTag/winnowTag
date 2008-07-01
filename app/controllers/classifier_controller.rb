@@ -27,30 +27,18 @@ class ClassifierController < ApplicationController
   def classify
     respond_to do |wants|
       begin
-        if job_running?
-          raise ClassificationStartException.new(_(:classifier_running), 500)
-        elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
-          # TODO: sanitize
-          raise ClassificationStartException.new(puct.map{|t| t.name}.to_json, 412)
-        elsif current_user.changed_tags.empty?
-          raise ClassificationStartException.new(_(:tags_not_changed), 500)
-        else
-          session[:classification_job_id] = []
-          current_user.changed_tags.each do |tag|
-            tag_url = url_for(:controller => 'tags', :action => 'training', 
-                              :format => 'atom',     :user => current_user.login, 
-                              :tag_name => tag.name)
-            job = Remote::ClassifierJob.create(:tag_url => tag_url)
-            session[:classification_job_id] << job.id
-          end
-        end
-        
+        start_classification_job        
         wants.json   { render :nothing => true }
       rescue ClassificationStartException => detail
         wants.json   { render :json => detail.message, :status => detail.code }
+      rescue ActiveResource::TimeoutError => te
+        logger.fatal("Classifier timed out")
+        logger.fatal(te.backtrace.join("\n"))
+        wants.json   { render :json => 'Timeout contacting the classifier. Please try again later.', :status => 500 }
+        ExceptionNotifier.deliver_exception_notification(te, self, request, {})
       rescue => detail       
         logger.fatal(detail) 
-        logger.debug(detail.backtrace.join("\n"))
+        logger.fatal(detail.backtrace.join("\n"))
         wants.json   { render :json => detail.message, :status => 500 }
       end
     end    
@@ -103,6 +91,26 @@ class ClassifierController < ApplicationController
   end
   
 private
+  def start_classification_job
+    if job_running?
+      raise ClassificationStartException.new(_(:classifier_running), 500)
+    elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
+      # TODO: sanitize
+      raise ClassificationStartException.new(puct.map{|t| t.name}.to_json, 412)
+    elsif current_user.changed_tags.empty?
+      raise ClassificationStartException.new(_(:tags_not_changed), 500)
+    else
+      session[:classification_job_id] = []
+      current_user.changed_tags.each do |tag|
+        tag_url = url_for(:controller => 'tags', :action => 'training', 
+                          :format => 'atom',     :user => current_user.login, 
+                          :tag_name => tag.name)
+        job = Remote::ClassifierJob.create(:tag_url => tag_url)
+        session[:classification_job_id] << job.id
+      end
+    end
+  end
+  
   def job_running?
     if session[:classification_job_id] && job_id = session[:classification_job_id].first
       begin

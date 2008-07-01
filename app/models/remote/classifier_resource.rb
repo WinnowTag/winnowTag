@@ -6,6 +6,7 @@
 module Remote
   class ClassifierResource < ActiveResource::Base
     self.logger = ActiveRecord::Base.logger
+    self.timeout = 5
     begin
       self.site = File.read(File.join(RAILS_ROOT, 'config', 'classifier-client.conf'))
     rescue
