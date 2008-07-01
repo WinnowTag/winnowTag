@@ -303,6 +303,7 @@ end
 describe Tag do
   fixtures :feed_items, :feed_item_contents
   describe "#to_atom" do
+    fixtures :feed_items, :feed_item_contents
     CLASSIFIER_NS = 'http://peerworks.org/classifier'
     before(:all) do
       @user = User.create! valid_user_attributes
@@ -377,6 +378,7 @@ describe Tag do
     end
     
     describe "with training only" do   
+      fixtures :feed_items, :feed_item_contents
       before(:all) do
         @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
       end
