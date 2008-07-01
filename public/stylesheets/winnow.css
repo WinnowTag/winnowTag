@@ -1321,7 +1321,7 @@ ul.tag_list li.selected .name {
 }
 
 .information .clues table {
-  margin: 6px 0 0 1px;
+  margin: 6px 0 1px 1px;
   border-collapse: collapse;
   border-bottom: 1px solid #ffdb00;
 }
