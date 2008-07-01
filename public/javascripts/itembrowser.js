@@ -472,7 +472,7 @@ ItemBrowser.prototype = {
   },
   
   selectTaggingInformation: function(tag, information) {
-    tag = $(tag).up('li');
+    tag = $(tag);
     information = $(information);
 
     if(tag.hasClassName("selected")) {

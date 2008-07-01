@@ -74,17 +74,15 @@ module FeedItemsHelper
   
   # Note: Update tagging.js when this changes
   def tag_control_for(feed_item, tag, classes)
+    classes << "tag_control"
+
     information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
-
-    # TODO: sanitize
-    content = content_tag(:span, h(tag.name), :class => "name", 
-                            :onclick => "itemBrowser.selectTaggingInformation(this, #{information_id.to_json})")
-    
-    classes << "tag_control"
     
     # TODO: sanitize
-    content_tag(:li, content, :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "))
+    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), 
+                     :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "), 
+                     :onclick => "itemBrowser.selectTaggingInformation(this, #{information_id.to_json})")
   end
   
   def tag_infos(feed_item)
