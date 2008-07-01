@@ -26,6 +26,8 @@ module Remote
       else
         return nil
       end
+    rescue Errno::ECONNREFUSED
+      return nil
     end
     
     def self.build_clue_url(item_id, tag_url)
