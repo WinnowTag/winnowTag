@@ -8,6 +8,13 @@
 module Remote
   class ClassifierClues
     def self.find_by_item_id_and_tag_url(item_id, tag_url)
+      # require 'md5'
+      # clues = []
+      # 101.times do |i|
+      #   clues << { 'prob' => rand.round(6), 'clue' => "t:#{MD5.hexdigest(rand.to_s)[0..rand(16)]}" }
+      # end
+      # return clues
+
       url = build_clue_url(item_id, tag_url)      
       response = Net::HTTP.get_response(url)
       ActiveRecord::Base.logger.debug "fetching clues from #{build_clue_url(item_id, tag_url)}"
@@ -17,13 +24,6 @@ module Remote
       elsif response.code == "424"
         return :redirect
       else
-        # require 'md5'
-        # clues = []
-        # 100.times do |i|
-        #   clues << { 'prob' => rand.round(6), 'clue' => "t:#{MD5.hexdigest(rand.to_s)[0..rand(16)]}" }
-        # end
-        # return clues
-        
         return nil
       end
     end
