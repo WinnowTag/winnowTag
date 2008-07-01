@@ -98,6 +98,18 @@ describe ClassifierController do
      response.should be_success
      session[:classification_job_id].should == ['JOB-1', 'JOB-2']
     end
+    
+    it "should handle ActiveResource::Timeout errors" do
+      mock_job = mock_model(Remote::ClassifierJob)
+      mock_job.stub!(:id)
+      Remote::ClassifierJob.should_receive(:create).
+                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").
+                            and_raise(ActiveResource::TimeoutError.new('classifier-timeout'))
+      ExceptionNotifier.should_receive(:deliver_exception_notification)
+      post "classify"
+      response.code.should == "500"
+      response.body.should == "Timeout contacting the classifier. Please try again later."
+    end
   end
   
   describe '#status' do
