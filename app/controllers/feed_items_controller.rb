@@ -68,7 +68,7 @@ class FeedItemsController < ApplicationController
       render :update do |page|
         content = if clues == :redirect || clues.nil?
           content_tag('p', _(:could_not_load_clues))            
-        elsif clues            
+        elsif clues   
           render_clues(clues)
         end
           

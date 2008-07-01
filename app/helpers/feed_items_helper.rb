@@ -176,18 +176,18 @@ module FeedItemsHelper
   end
   
   def render_clues(clues)
+    sorted_grouped_clues = clues.sort_by { |clue| clue['prob'] }.reverse.in_groups_of((clues.size.to_f / 3).ceil)
     content_tag('table') do
       clue_header +
-      clues.sort_by {|clue| clue['prob'] }.reverse.map do |clue|
-        render_clue_row([clue])
+      sorted_grouped_clues.shift.zip(*sorted_grouped_clues).map do |clues|
+        render_clue_row(clues)
       end.join
     end
   end
   
   def clue_header
     content_tag('tr', 
-      content_tag('th', 'Clue') +
-      content_tag('th', 'Prob')
+      (content_tag('th', 'Clue', :class => "clue") + content_tag('th', 'Prob', :class => "prob")) * 3
     )
   end
   
@@ -200,8 +200,10 @@ module FeedItemsHelper
   end
   
   def render_clue(clue)
-    return "" unless clue
-    content_tag('td', clue['clue'], :class => 'clue') +
-      content_tag('td', clue['prob'], :class => 'prob')
+    if clue
+      content_tag('td', clue['clue'], :class => 'clue') + content_tag('td', clue['prob'], :class => 'prob')
+    else
+      content_tag('td', nil, :class => 'clue') + content_tag('td', nil, :class => 'prob')
+    end
   end
 end

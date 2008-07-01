@@ -1320,8 +1320,33 @@ ul.tag_list li.selected .name {
   max-height: 30em;
 }
 
-.information .clues table tr td.clue {
+.information .clues table {
+  margin: 6px 0 0 1px;
+  border-collapse: collapse;
+  border-bottom: 1px solid #ffdb00;
+}
+
+.information .clues table th.clue, .information .clues table td.clue {
+  padding-left: 1em;
   padding-right: 1em;
+}
+
+.information .clues table th.clue:first-child, .information .clues table td.clue:first-child {
+  border-left: 1px solid #ffdb00;
+}
+
+.information .clues table th.prob, .information .clues table td.prob {
+  padding-right: 1em;
+}
+
+.information .clues table th {
+  border-top: 1px solid #ffdb00;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.information .clues table th.prob, .information .clues table td.prob {
+  border-right: 1px solid #ffdb00;
 }
 
 /*
