@@ -17,6 +17,13 @@ module Remote
       elsif response.code == "424"
         return :redirect
       else
+        # require 'md5'
+        # clues = []
+        # 100.times do |i|
+        #   clues << { 'prob' => rand.round(6), 'clue' => "t:#{MD5.hexdigest(rand.to_s)[0..rand(16)]}" }
+        # end
+        # return clues
+        
         return nil
       end
     end
