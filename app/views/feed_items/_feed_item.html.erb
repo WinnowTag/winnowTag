@@ -2,9 +2,7 @@
   <div class="closed">
     <div class="status"></div>
     <div class="opener">
-      <span class="feed_title">
-        <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => dom_id(feed_item, "feed_link_for"), :class => "stop" %>
-      </span>
+      <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :target => "_blank", :class => "feed_title stop" %>
       <span class="date"><%= format_date(feed_item.updated) %></span>
       <span class="title"><%= feed_item_title(feed_item) %></span> 
       <%= link_to_function _(:add_tag_link), "itemBrowser.toggleOpenCloseModerationPanel(this.up('.item'));", :id => dom_id(feed_item, "add_tag"), :class => "add_tag stop" %>
