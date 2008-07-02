@@ -124,7 +124,7 @@ class FeedItem < ActiveRecord::Base
       if options[:include_tags]
         include_tags = Array(options[:include_tags])
         
-        self.taggings.select {|t| include_tags.include?(t.tag) }.each do |tagging|
+        self.taggings.select {|t| include_tags.include?(t.tag) && (!t.classifier_tagging? || !options[:training_only])}.each do |tagging|
           if tagging.strength > 0.9
             entry.categories << Atom::Category.new do |cat|
               cat.term = tagging.tag.name

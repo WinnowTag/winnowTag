@@ -1,5 +1,7 @@
 namespace :corpus do
   directory 'corpus/item_cache/items'
+  directory 'corpus/tags'
+  
   task 'corpus/item_cache/catalog.db' do
     catalog_file = 'corpus/item_cache/catalog.db'
     unless File.exists?(catalog_file)
@@ -15,13 +17,13 @@ namespace :corpus do
     end
   end
   
-  task :dump_item_cache => ['corpus/item_cache/items', 'corpus/item_cache/catalog.db'] do
+  task :dump_item_cache => [:environment, 'corpus/item_cache/items', 'corpus/item_cache/catalog.db'] do
     gem 'progressbar'
     require 'progressbar'
     gem 'sqlite3-ruby'
     require 'sqlite3'
     sqlite = SQLite3::Database.open("corpus/item_cache/catalog.db")
-    pb = ProgressBar.new("Item", FeedItem.count)
+    pb = ProgressBar.new("Items", FeedItem.count)
     
     FeedItem.find(:all).each do |fi|
       atom = fi.to_atom
@@ -39,6 +41,22 @@ namespace :corpus do
     pb.finish
   end
   
+  task :dump_tags => [:environment, 'corpus/tags'] do
+    gem 'progressbar'
+    require 'progressbar'
+    pb = ProgressBar.new("Tags", Tag.count)
+    
+    Tag.find(:all).each do |tag|
+      File.open("corpus/tags/#{tag.user.login}-#{tag.name}.atom", "w+") do |out|
+        out << tag.to_atom(:training_only => true, :base_uri => 'http://localhost', :limit => 10000).to_xml
+      end
+      
+      pb.inc
+    end
+    
+    pb.finish
+  end
+  
   desc "dump the corpus"
-  task :dump => [:environment, :dump_item_cache] 
+  task :dump => [:dump_item_cache, :dump_tags] 
 end
