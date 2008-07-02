@@ -14,7 +14,7 @@ class AddedCountsToTokenTable < ActiveRecord::Migration
       tokens = FeedItemTokensContainer.find(fitc.id)
       tokens.distinct_token_count = tokens.tokens.size
       tokens.total_token_count = tokens.tokens.inject(0) do |sum, token|
-        sum + token.last
+        sum + token.last.to_i
       end
       tokens.save!
       

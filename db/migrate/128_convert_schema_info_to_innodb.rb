@@ -5,10 +5,11 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class ConvertSchemaInfoToInnodb < ActiveRecord::Migration
   def self.up
-    execute "ALTER TABLE schema_info ENGINE=INNODB;"
+    # Handled by Rails 2.1
+    #execute "ALTER TABLE schema_info ENGINE=INNODB;"
   end
 
   def self.down
-    execute "ALTER TABLE schema_info ENGINE=MYISAM;"
+    #execute "ALTER TABLE schema_info ENGINE=MYISAM;"
   end
 end

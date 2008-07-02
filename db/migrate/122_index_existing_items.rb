@@ -5,10 +5,10 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class IndexExistingItems < ActiveRecord::Migration
   def self.up
-    say "Adding existing items to full text index... this could take a while."
-    FeedItem.find(:all, :include => :content).each do |item|
-      FeedItemTextIndex.create!(:feed_item => item)
-    end
+    say "Adding existing items to full text index... this could take a while. (disabled)"
+    # FeedItem.find(:all, :include => :content).each do |item|
+    #   FeedItemTextIndex.create!(:feed_item => item)
+    # end
   end
 
   def self.down

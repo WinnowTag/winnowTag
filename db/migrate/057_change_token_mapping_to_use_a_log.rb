@@ -5,9 +5,9 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class ChangeTokenMappingToUseALog < ActiveRecord::Migration
   def self.up
-    say "extracting tokens to token log file"
-    execute("select id, token into outfile '/tmp/tokens.log' fields terminated by ',' from tokens order by id;")
-    say "You now need to manually move /tmp/tokens.log to the log directory and make it R/W for the Winnow user. Sorry."
+    say "extracting tokens to token log file (disabled)"
+    #execute("select id, token into outfile '/tmp/tokens.log' fields terminated by ',' from tokens order by id;")
+    #say "You now need to manually move /tmp/tokens.log to the log directory and make it R/W for the Winnow user. Sorry."
     drop_table :tokens    
   end
 

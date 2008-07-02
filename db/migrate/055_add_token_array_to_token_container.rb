@@ -10,18 +10,18 @@ class AddTokenArrayToTokenContainer < ActiveRecord::Migration
     rename_column :feed_item_tokens_containers, :tokens, :tokens_with_counts
     add_column :feed_item_tokens_containers, :tokens, :text
     
-    say "Extracting token arrays from token count Hashes"
+    say "Extracting token arrays from token count Hashes (disabled)"
     # For each token container, update the tokens attribute
-    items = FeedItemTokensContainer.find(:all, :order => 'id', :limit => 2000)
-    while items.any?
-      items.each do |fitc|
-        fitc.tokens = fitc.tokens_with_counts.keys
-        fitc.save
-      end
-      
-      items = FeedItemTokensContainer.find(:all, :order => 'id', :limit => 2000, 
-                                    :conditions => ['id > ?', items.last.id])
-    end
+    # items = FeedItemTokensContainer.find(:all, :order => 'id', :limit => 2000)
+    #    while items.any?
+    #      items.each do |fitc|
+    #        fitc.tokens = fitc.tokens_with_counts.keys
+    #        fitc.save
+    #      end
+    #      
+    #      items = FeedItemTokensContainer.find(:all, :order => 'id', :limit => 2000, 
+    #                                    :conditions => ['id > ?', items.last.id])
+    #    end
   end
 
   def self.down

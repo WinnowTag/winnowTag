@@ -7,10 +7,6 @@ class MigrateOldTagsToUserTags < ActiveRecord::Migration
   class OldTag < ActiveRecord::Base
   end
 
-  class Tag < ActiveRecord::Base
-    belongs_to :user
-  end
-
   class Tagging < ActiveRecord::Base
     belongs_to :tagger, :polymorphic => true
   end
@@ -20,6 +16,14 @@ class MigrateOldTagsToUserTags < ActiveRecord::Migration
   end
   
   class TagPublication < ActiveRecord::Base
+  end
+
+  class Tag < ActiveRecord::Base
+    belongs_to :user, :class_name => 'MigrateOldTagsToUserTags::User'
+  end
+  
+  class BayesClassifier < ActiveRecord::Base
+    belongs_to :user
   end
   
   def self.up

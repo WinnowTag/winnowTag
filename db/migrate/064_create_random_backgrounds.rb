@@ -7,16 +7,14 @@ class CreateRandomBackgrounds < ActiveRecord::Migration
   def self.up
     # Rails doesn't let me have non-autoincrementing PK
     execute <<-END
-      CREATE TABLE `random_backgrounds` (
-        `feed_item_id` int(11) NOT NULL,
-        `created_on` timestamp NOT NULL,
-        PRIMARY KEY  (`feed_item_id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-    END
+             CREATE TABLE `random_backgrounds` (
+               `feed_item_id` int(11) NOT NULL,
+               `created_on` timestamp NOT NULL,
+               PRIMARY KEY  (`feed_item_id`)
+             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+           END
     
-    say_with_time("Generating Random Background") do
-      RandomBackground.generate
-    end
+    say("Generating Random Background (disabled)")
   end
 
   def self.down

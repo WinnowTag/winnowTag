@@ -11,7 +11,7 @@ class AddedAccessTrackingTimestampsToUser < ActiveRecord::Migration
     say "Setting everyones last accessed time to latter of the login or moderation time"
     User.transaction do
       User.find(:all).each do |user|
-        time = [user.logged_in_at, user.last_tagging_on].compact.max
+        time = [user.logged_in_at].compact.max
         user.last_accessed_at = time
         user.last_session_ended_at = time
         user.save

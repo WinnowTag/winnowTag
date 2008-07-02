@@ -7,7 +7,7 @@ class AtomizeFeeds < ActiveRecord::Migration
   def self.up
     # remove auto-increment from feeds
     execute "alter table feeds modify column id integer not null;"   
-    remove_column :feeds, :is_duplicate
+    # remove_column :feeds, :is_duplicate
     remove_column :feeds, :active
     rename_column :feeds, :link, :alternate
     rename_column :feeds, :url, :via
