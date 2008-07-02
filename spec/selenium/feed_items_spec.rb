@@ -95,6 +95,7 @@ describe "FeedItemsTest" do
   end
   
   it "displays an empty message when there are no feed items" do
+    Tagging.delete_all
     FeedItem.delete_all
     
     open feed_items_path
@@ -104,6 +105,6 @@ describe "FeedItemsTest" do
   end
   
   it "does not display an empty message when there are feed items" do
-    assert_not_visible "css=#feed_items .empty"
+    dont_see_element "#feed_items .empty"
   end
 end
