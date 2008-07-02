@@ -629,26 +629,23 @@ var ItemBrowser = Class.create({
   },
 
   loadData: function(item, target, url, error_message, error_callback) {
-    var item_browser = this;
-    var current_item = this.selectedItem;
-    
     if(target && target.empty()) {
       target.addClassName("loading");
       new Ajax.Request(url,{
         method: 'get',
           onComplete: function() {
             target.removeClassName("loading");
-            if(current_item == $(item)) {
-              item_browser.scrollToItem(item);
+            if(this.selectedItem == $(item)) {
+              this.scrollToItem(item);
             }
-          },
+          }.bind(this),
           onException: function(transport, exception) {
             error_callback(item);
-            item_browser.display_error(item, error_message);
+            new ErrorMessage(error_message);
           },
           onFailure: function(transport, exception) {
             error_callback(item);
-            item_browser.display_error(item, error_message);
+            new ErrorMessage(error_message);
           }
       });  
     }
@@ -696,10 +693,6 @@ var ItemBrowser = Class.create({
     if(previous_item && previous_item.hasClassName("item")) {
       this.toggleOpenCloseItem(previous_item);
     }
-  },
-  
-  display_error: function(item, msg) {
-    new ErrorMessage(msg);
   },
   
   keypress: function(e){
