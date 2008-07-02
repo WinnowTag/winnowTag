@@ -187,10 +187,10 @@ module ApplicationHelper
     html  = ""
     html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") << " " if options[:editable] && current_user == tag.user
     html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html << link_to_function("Info", "", :class => "info", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
+    html << link_to_function("Info", "", :class => "info", :onmouseover => "$(this).up('li').addClassName('info')", :onmouseout => "$(this).up('li').removeClassName('info')")
     html  = content_tag(:div, html, :class => "actions clearfix")
 
-    html << content_tag(:div, tag_training(tag), :class => "controls clearfix", :onmouseover => "show_tag_information(this)", :onmouseout => "hide_tag_information(this)")
+    html << content_tag(:div, tag_training(tag), :class => "controls clearfix")
 
     # TODO: sanitize
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))

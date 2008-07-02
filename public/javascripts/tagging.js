@@ -90,15 +90,3 @@ function remove_tag_control(taggable_id, tag) {
   Element.remove(tag_info_id);
   Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id); } });
 }
-
-var tag_information_timeouts = {};
-function show_tag_information(control) {
-  clearTimeout(tag_information_timeouts[$(control).up('li').getAttribute("id")]);
-  $(control).up('li').addClassName('info');
-}
-
-function hide_tag_information(control) {
-  tag_information_timeouts[$(control).up('li').getAttribute("id")] = setTimeout(function() {
-    $(control).up('li').removeClassName('info');
-  }, 1);
-}
