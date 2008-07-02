@@ -7,7 +7,7 @@
     <%= link_to_function _(:add_tag_link), "", :class => "add_tag stop" %>
     <%= tag_controls(feed_item) %>
     <div class="new_tag_form stop" style="display: none;" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div> 
+    <%= tag_infos(feed_item) %>
   </div>
-  <div id="<%= dom_id(feed_item, 'tag_information') %>"><%= tag_infos(feed_item) %></div>
   <div id="<%= dom_id(feed_item, 'body') %>" class="body" url="<%= description_feed_item_path(feed_item) %>"></div>
 </div>

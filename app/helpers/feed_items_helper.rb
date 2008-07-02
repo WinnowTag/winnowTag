@@ -93,7 +93,7 @@ module FeedItemsHelper
     content_tag(:div, html)
   end
 
-  def tag_info_for(feed_item, tag, classes, classifier_strength)
+  def tag_info_for(feed_item, tag, classes, classifier_strength = nil)
     information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
 
@@ -127,7 +127,7 @@ module FeedItemsHelper
     information << content_tag(:div, automatic, :class => "automatic")
     information << content_tag(:div, nil, :id => clues_id, :class => "clues")
     
-    classes << "information" << "clearfix"
+    classes << "information" << "clearfix" << "stop"
     
     content_tag(:div, information, :id => information_id, :class => classes.join(" "))
   end

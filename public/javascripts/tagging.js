@@ -75,9 +75,9 @@ function add_tag_control(taggable_id, tag) {
   var tag_controls = $('tag_controls_' + taggable_id);
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
   var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
-  var tag_control = '<li id="' + tag_control_id + '" class="stop tag_control positive" style="display: none;">' + 
+  var tag_control = '<li id="' + tag_control_id + '" class="stop positive tag_control" onclick="itemBrowser.selectTaggingInformation(this, \'' + tag_info_id + '\');" style="display: none;">' + 
     // TODO: sanitize
-    '<span class="name" onclick="itemBrowser.selectTaggingInformation(this, \'' + tag_info_id + '\');">' + tag + '</span>' + 
+    '<span class="name">' + tag + '</span>' + 
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
