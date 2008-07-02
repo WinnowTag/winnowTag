@@ -23,14 +23,14 @@ describe "FeedItemsTest" do
   it "mark_read_unread" do
     feed_item_1 = FeedItem.find(1)
         
-    see_element "#feed_item_#{feed_item_1.id}.unread"
+    dont_see_element "#feed_item_#{feed_item_1.id}.read"
 
-    click "css=#feed_item_#{feed_item_1.id} .status a"
+    click "css=#feed_item_#{feed_item_1.id} .status"
     see_element "#feed_item_#{feed_item_1.id}.read"
     
     refresh_and_wait
     wait_for_ajax
-    dont_see_element "#feed_item_#{feed_item_1.id}.unread"
+    see_element "#feed_item_#{feed_item_1.id}.read"
 
     # TODO: Make this work with mode=all
     # click "css=#feed_item_#{feed_item_1.id} .status a"
@@ -75,7 +75,7 @@ describe "FeedItemsTest" do
   it "opening_item_marks_it_read" do
     feed_item_1 = FeedItem.find(1)
 
-    see_element "#feed_item_#{feed_item_1.id}.unread"
+    dont_see_element "#feed_item_#{feed_item_1.id}.read"
 
     click "css=#feed_item_#{feed_item_1.id} .opener"
     see_element "#feed_item_#{feed_item_1.id}.read"
