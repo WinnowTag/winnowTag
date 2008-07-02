@@ -362,11 +362,7 @@ var ItemBrowser = Class.create({
     this.filters = filters_hash.toQueryString().toQueryParams();
     
     // Update the url
-    // if(this.filters.keys().size() == 0) {
-    //   location.hash = " ";
-    // } else {
-      location.hash = "#" + $H(this.filters).toQueryString();
-    // }
+    location.hash = "#" + $H(this.filters).toQueryString();
     
     // Save to a cookie
     Cookie.set(this.name + "_filters", $H(this.filters).toQueryString(), 365);
