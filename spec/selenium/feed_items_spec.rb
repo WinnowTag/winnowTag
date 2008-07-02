@@ -30,7 +30,7 @@ describe "FeedItemsTest" do
     
     refresh_and_wait
     wait_for_ajax
-    see_element "#feed_item_#{feed_item_1.id}.read"
+    dont_see_element "#feed_item_#{feed_item_1.id}"
 
     # TODO: Make this work with mode=all
     # click "css=#feed_item_#{feed_item_1.id} .status a"
@@ -44,13 +44,13 @@ describe "FeedItemsTest" do
   it "open_close_item" do
     feed_item = FeedItem.find(1)
 
-    assert_not_visible "open_feed_item_#{feed_item.id}"
+    assert_not_visible "body_feed_item_#{feed_item.id}"
     
-    click "css=#feed_item_#{feed_item.id} .opener"
-    assert_visible "open_feed_item_#{feed_item.id}"
+    click "css=#feed_item_#{feed_item.id} .closed"
+    assert_visible "body_feed_item_#{feed_item.id}"
     
-    click "css=#feed_item_#{feed_item.id} .opener"
-    assert_not_visible "open_feed_item_#{feed_item.id}"
+    click "css=#feed_item_#{feed_item.id} .closed"
+    assert_not_visible "body_feed_item_#{feed_item.id}"
   end
 
   it "open_close_moderation_panel " do
@@ -58,18 +58,18 @@ describe "FeedItemsTest" do
  
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}" 
  
-    click "add_tag_feed_item_#{feed_item.id}" 
+    click "css=#feed_item_#{feed_item.id} .add_tag" 
     assert_visible "new_tag_form_feed_item_#{feed_item.id}" 
  
-    click "add_tag_feed_item_#{feed_item.id}" 
+    click "css=#feed_item_#{feed_item.id} .add_tag" 
     assert_not_visible "new_tag_form_feed_item_#{feed_item.id}" 
   end 
   
   it "open_close_moderation_panel_does_not_open_close_item" do
     feed_item = FeedItem.find(1)
-    assert_not_visible "open_feed_item_#{feed_item.id}"
-    click "add_tag_feed_item_#{feed_item.id}" 
-    assert_not_visible "open_feed_item_#{feed_item.id}"
+    assert_not_visible "body_feed_item_#{feed_item.id}"
+    click "css=#feed_item_#{feed_item.id} .add_tag" 
+    assert_not_visible "body_feed_item_#{feed_item.id}"
   end
   
   it "opening_item_marks_it_read" do
@@ -77,7 +77,7 @@ describe "FeedItemsTest" do
 
     dont_see_element "#feed_item_#{feed_item_1.id}.read"
 
-    click "css=#feed_item_#{feed_item_1.id} .opener"
+    click "css=#feed_item_#{feed_item_1.id} .closed"
     see_element "#feed_item_#{feed_item_1.id}.read"
 
     refresh_and_wait

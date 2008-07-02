@@ -19,33 +19,33 @@ describe "keyboard shortcuts" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "j"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_1.id}"
+    assert_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "j"
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_2.id}"
+    assert_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "k"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_1.id}"
+    assert_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "k"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_1.id}"
+    assert_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
   end
   
   it "mark_read_unread" do
@@ -106,60 +106,60 @@ describe "keyboard shortcuts" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "n"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "o"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_1.id}"
+    assert_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "o"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
   end
   
   it "closes open items when opening an item" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4)
 
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "n"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "o"
     see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_1.id}"
+    assert_visible "body_feed_item_#{feed_item_1.id}"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "n"
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_1.id}"
+    assert_visible "body_feed_item_#{feed_item_1.id}"
     see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_2.id}"
+    assert_not_visible "body_feed_item_#{feed_item_2.id}"
 
     key_press "css=body", "o"
     dont_see_element "#feed_item_#{feed_item_1.id}.selected"
-    assert_not_visible "open_feed_item_#{feed_item_1.id}"
+    assert_not_visible "body_feed_item_#{feed_item_1.id}"
     see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_visible "open_feed_item_#{feed_item_2.id}"
+    assert_visible "body_feed_item_#{feed_item_2.id}"
   end
   
   it "select_item" do

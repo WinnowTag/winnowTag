@@ -22,21 +22,21 @@ describe "moderation panel" do
   
   it "can be shown by clicking the add tag link" do
     assert_not_visible "new_tag_form_feed_item_4"
-    click "add_tag_feed_item_4"
+    click "css=#feed_item_4 .add_tag"
     wait_for_ajax 
     assert_visible "new_tag_form_feed_item_4"
   end
   
   # 686 - selenium does not seem to have a way to query for the focused item
   # it "should focus the new tag field" do
-  #   click "add_tag_feed_item_4"
+  #   click "css=#feed_item_4 .add_tag"
   #   wait_for_ajax 
   #   see_element "#new_tag_field_feed_item_4:focus"
   # end
   
   # 686 - auto complete does not recognize typing
   # it "can add a positive tagging from a new tag through the 'create a new tag' input" do
-  #   click "add_tag_feed_item_4"
+  #   click "css=#feed_item_4 .add_tag"
   #   wait_for_ajax
   #   
   #   dont_see_element "li[id='tag_control_for_new tag_on_feed_item_4']"
@@ -51,7 +51,7 @@ describe "moderation panel" do
   
   # 686 - auto complete does not recognize typing
   # it "can add a positive tagging from an existing tag through the 'create new tag' input" do 
-  #   click "add_tag_feed_item_4" 
+  #   click "css=#feed_item_4 .add_tag" 
   #   wait_for_ajax 
   #    
   #   dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -65,14 +65,14 @@ describe "moderation panel" do
   # end
 
   it "selects the first choice in the auto complete list" do
-    click "add_tag_feed_item_4" 
+    click "css=#feed_item_4 .add_tag" 
     wait_for_ajax 
   
     see_element "#new_tag_form_feed_item_4 .auto_complete li:first-child.selected"
   end
   
   it "uses the selected entry when clicking 'Add Tag'" do
-    click "add_tag_feed_item_4" 
+    click "css=#feed_item_4 .add_tag"
     wait_for_ajax 
      
     dont_see_element "#tag_controls_feed_item_4 li"
@@ -222,9 +222,9 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    assert_not_visible "open_feed_item_4"
+    assert_not_visible "body_feed_item_4"
     click "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_not_visible "open_feed_item_4"
+    assert_not_visible "body_feed_item_4"
   end
   
   it "shows/hides tagging controls when clicking the tag" do
