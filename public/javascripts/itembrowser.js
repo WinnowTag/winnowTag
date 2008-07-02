@@ -3,25 +3,7 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
-
-/** Provides the ItemBrowser functionality.
- *
- *  The Item Browser is a scrollable view over the entire list of items
- *  in the database.  Items are lazily loaded into the browser as the 
- *  users scrolls the view around.
- */
 var ItemBrowser = Class.create({
-  /** Initialization function.
-   *
-   *  @param container The id of the container div.
-   *         This is the div that lies within scrollable div.
-   *         The container div holds the item elements
-   *         The ItemBrowser will look for another element with the id
-   *         'content' that will be used as the
-   *         scrollable div.
-   *
-   *  @param options A hash of options.
-   */
   initialize: function(name, container, options) {
     this.options = {
       controller: name,
