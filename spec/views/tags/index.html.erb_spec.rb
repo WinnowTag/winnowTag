@@ -20,11 +20,6 @@ describe '/tags/index.html.erb' do
     response.capture(:header_controls).should match(/header controls/)
   end
 
-  it "shows a container for the loading indicator in the footer" do
-    render_it
-    response.capture(:footer).should have_tag("#tags_indicator")
-  end
-
   it "shows a container for the tags count in the footer" do
     render_it
     response.capture(:footer).should have_tag("#tags_count")

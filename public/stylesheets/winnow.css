@@ -55,6 +55,21 @@ div#content > div.info {
   -webkit-border-bottom-left-radius: 0.3em;
 }
 
+#content > .empty {
+  position: absolute;
+  font-size: 2em;
+  padding: 1em 1em 1em 3em;
+  margin: 0 0;
+}
+
+#content > .indicator {
+  position: absolute;
+  background: url(../images/indicator_medium.gif) 1em center no-repeat;
+  font-size: 2em;
+  padding: 1em 1em 1em 2.5em;
+  margin: 0 0;
+}
+
 #feed_items_controller #content {
   padding: 0;
 }
@@ -1107,13 +1122,6 @@ div.sorting_and_filtering_controls {
 
 #footer .count {
   float: right;
-}
-
-#footer .loading {
-  float: right;
-  background: url(../images/indicator.gif) top left no-repeat;
-  padding-left: 20px;
-  margin-left: 1em;
 }
 
 /*

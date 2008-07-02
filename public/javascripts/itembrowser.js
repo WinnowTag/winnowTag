@@ -59,22 +59,35 @@ var ItemBrowser = Class.create({
     this.full = full;
   },
   
+  numberOfItems: function() {
+    return this.container.childElements().select(function(element) {
+      return !element.match(".indicator") && !element.match(".empty");
+    });
+  },
+  
   updateCount: function() {
-    $(this.name + '_count').update("About " + this.container.select('.item').size() + " items");
+    $(this.name + '_count').update("About " + this.numberOfItems().size() + " items");
   },
   
   updateEmptyMessage: function() {
-    var message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
+    if(this.full && this.numberOfItems().size() == 0) {
+      this.container.insert('<div class="empty" style="display:none">No items matched your search criteria.</div>');
+      var message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
+
+      var message_padding = parseInt(message.getStyle("padding-top")) + parseInt(message.getStyle("padding-bottom"));
+      var footer_height = $('footer') ? $('footer').getHeight() : 0;
+      var top = (this.container.getHeight() - message.getHeight() - message_padding) / 2;
+      message.style.top = top + "px";
     
-    if (!message) {
-      new Insertion.Bottom(this.container, '<div class="empty" style="display:none">No items matched your search criteria.</div>');
-      message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
-    }
-    
-    if(this.full && this.container.select('.item').size() == 0) {
+      var left = (this.container.getWidth() - message.getWidth()) / 2;
+      message.style.left = left + "px";
+
       message.show();
     } else {
-      message.hide();
+      var message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
+      if(message) {
+        message.remove();
+      }
     }
   },
   
@@ -94,7 +107,7 @@ var ItemBrowser = Class.create({
     var scroll_bottom = this.container.scrollHeight - this.container.scrollTop - this.container.getHeight();
     if(scroll_bottom <= 100) {
       this.loading = true;
-      this.doUpdate({offset: this.container.select('.item').size()});
+      this.doUpdate({offset: this.numberOfItems().size()});
     }
   },
   
@@ -381,21 +394,26 @@ var ItemBrowser = Class.create({
 		}
   },
   
-  showLoadingIndicator: function(message) {
-    var indicator = $(this.name + '_indicator');
-    indicator.update(message || "Loading items...");
+  showLoadingIndicator: function() {
+    this.container.insert('<div class="indicator" style="display:none">Loading Items...</div>');
+    var indicator = $$("#" + this.container.getAttribute("id") + " > .indicator").first();
 
-    var left = this.container.getWidth() / 2 - indicator.getWidth() / 2 + this.container.offsetLeft;
+    if(this.numberOfItems().size() == 0) {
+      var indicator_padding = parseInt(indicator.getStyle("padding-top")) + parseInt(indicator.getStyle("padding-bottom"));
+      var footer_height = $('footer') ? $('footer').getHeight() : 0;
+      var top = (this.container.getHeight() - indicator.getHeight() - indicator_padding) / 2;
+      indicator.style.top = top + "px";
+    }
+
+    var left = (this.container.getWidth() - indicator.getWidth()) / 2;
     indicator.style.left = left + "px";
-
-    // var top = this.container.getHeight() / 2 - indicator.getHeight() / 2 - this.container.offsetTop;
-    // indicator.style.top = top + "px";
     
     indicator.show();
   },
   
   hideLoadingIndicator: function() {
-    $(this.name + '_indicator').hide();
+    var indicator = $$("#" + this.container.getAttribute("id") + " > .indicator").first();
+    indicator.remove();
   },
   
   selectItem: function(item) {
