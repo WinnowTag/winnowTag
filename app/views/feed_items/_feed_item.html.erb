@@ -1,7 +1,7 @@
 <div class="item<%= ' read' if feed_item.read_by_current_user? %>" id="<%= dom_id(feed_item) %>">
   <div class="closed">
     <div class="status"></div>
-    <div class="opener" onclick="itemBrowser.toggleOpenCloseItem('<%= dom_id(feed_item) %>', event);">
+    <div class="opener">
       <span class="feed_title">
         <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :id => dom_id(feed_item, "feed_link_for"), :class => "stop" %>
       </span>

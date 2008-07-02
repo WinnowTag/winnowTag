@@ -7,6 +7,7 @@ var Item = Class.create({
   initialize: function(element) {
     this.element = element;
     this.status = this.element.down(".status");
+    this.opener = this.element.down(".opener");
     
     this.setupEventListeners();
     
@@ -21,6 +22,10 @@ var Item = Class.create({
     this.status.observe("mouseover", function() {
       // # TODO: localization
       this.status.title = 'Click to mark as ' + (this.element.match(".read") ? 'unread' : 'read');
+    }.bind(this));
+    
+    this.opener.observe("click", function(event) {
+      itemBrowser.toggleOpenCloseItem(this.element, event);
     }.bind(this));
   }
 });
