@@ -3,14 +3,8 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
-document.observe('dom:loaded', function() {
-  if($('sidebar')) {
-    new Sidebar();
-  }
-});
-
 var Sidebar = Class.create({
-  initialize: function() {
+  initialize: function(url, parameters, onLoad) {
     this.sidebar = $('sidebar');
     this.sidebar_control = $('sidebar_control');
     this.toggleListener = this.toggle.bind(this);
@@ -27,6 +21,7 @@ var Sidebar = Class.create({
     }
     
     this.enableToggle();
+    this.load(url, parameters, onLoad);
   },
   
   enableToggle: function() {
@@ -79,5 +74,16 @@ var Sidebar = Class.create({
 
     Cookie.set("sidebar_width", sidebar_width, 365);
     resizeContentWidth();
+  },
+  
+  load: function(url, parameters, onComplete) {
+    this.sidebar.addClassName("loading");
+
+    new Ajax.Updater(this.sidebar, url, { method: 'get', evalScripts: true, parameters: parameters,
+      onComplete: function() {
+        this.sidebar.removeClassName("loading");
+        onComplete();
+      }.bind(this)
+    });
   }
 });

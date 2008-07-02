@@ -45,7 +45,6 @@ ItemBrowser.prototype = {
     
     this.initializeItemList();
     this.initializeFilters();
-    this.loadSidebar();
   },
 
   initializeFilters: function() {
@@ -169,22 +168,6 @@ ItemBrowser.prototype = {
       this.showLoadingIndicator();
       this.clear();
       this.doUpdate();
-    }
-  },
-  
-  loadSidebar: function() {
-    var sidebar = $("sidebar");
-    if(sidebar) {
-      sidebar.addClassName("loading");
-
-      var self = this;
-      new Ajax.Updater("sidebar", "/" + this.options.controller + "/sidebar", { method: 'get', parameters: this.filters, evalScripts: true,
-        onComplete: function() {
-          sidebar.removeClassName("loading");
-          AppleSearch.setup();
-          self.styleFilters();
-        }
-      });
     }
   },
   
