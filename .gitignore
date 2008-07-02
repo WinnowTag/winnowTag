@@ -13,3 +13,4 @@ nbproject
 
 *.sql.gz
 perf.log
+corpus
