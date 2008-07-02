@@ -42,12 +42,6 @@ describe FeedItemsHelper do
     end
   end
   
-  describe "toggle_read_unread_button" do
-    it "creates a link which triggers the itemBrowser's read/unread function" do
-      toggle_read_unread_button.should have_tag("a[onclick=?]", /itemBrowser.toggleReadUnreadItem.*/)
-    end
-  end
-
   describe "classes_for_taggings" do
     it "provides the class classifier when only a classifier tagging exists" do
       taggings = mock_model(Tagging, :classifier_tagging? => true)

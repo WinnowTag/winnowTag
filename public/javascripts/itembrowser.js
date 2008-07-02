@@ -129,6 +129,9 @@ var ItemBrowser = Class.create({
   
   insertItem: function(item_id, content) {
     new Insertion.Bottom(this.container, content);
+    if(this.name == "feed_items") {
+      new Item($(item_id));
+    }
   },
   
   clear: function() {
@@ -574,23 +577,20 @@ var ItemBrowser = Class.create({
   markItemRead: function(item) {
     item = $(item);
     item.addClassName('read');
-    item.removeClassName('unread');
     new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_read', {method: 'put'});
   },
   
   markItemUnread: function(item) {
     item = $(item);
-    item.addClassName('unread'); 
     item.removeClassName('read');    
     new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_unread', {method: 'put'});
   },
   
   toggleReadUnreadItem: function(item) {
-    var status = $$('#status_' + $(item).getAttribute('id') + " a").first();
-    if (status && $(item).hasClassName('unread')) {
-      this.markItemRead(item);
-    } else {
+    if($(item).hasClassName('read')) {
       this.markItemUnread(item);      
+    } else {
+      this.markItemRead(item);
     }
   },
   

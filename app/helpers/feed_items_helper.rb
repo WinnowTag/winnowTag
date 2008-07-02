@@ -23,12 +23,6 @@ module FeedItemsHelper
       feed_item.title
     end
   end
-  
-  def toggle_read_unread_button
-    # TODO: localization
-    link_to_function "", "itemBrowser.toggleReadUnreadItem(this.up('.item'))", 
-      :onmouseover => "this.title = 'Click to mark as ' + ($(this).up('.item').match('.read') ? 'unread' : 'read');"
-  end
     
   # Creates the classification button.
   #

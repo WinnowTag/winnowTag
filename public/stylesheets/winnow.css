@@ -998,20 +998,16 @@ div.sorting_and_filtering_controls {
   border-width: 0 0 1px 0;
 }
 
-.item .closed > .status a {
+.item .closed > .status {
   position: absolute;
   left: 1px;
   height: 1.6em;
   width: 16px;
-}
-
-.item.unread .closed > .status a {
+  cursor: pointer;
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -638px;
 }
-
-.item.read .closed > .status a {
-  background: url(../images/vertical_sprite.png) no-repeat;
+.item.read .closed > .status {
   background-position: 0 -670px;
 }
 
