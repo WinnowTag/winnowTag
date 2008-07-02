@@ -136,8 +136,3 @@ function insert_in_order(container, sibling_selector, sibling_value_selector, el
 		new Insertion.Bottom(container, element_html);
 	}
 }
-
-function escape_javascript(string) {
-  return string.replace(/'/g, '\\\'');
-}
-  

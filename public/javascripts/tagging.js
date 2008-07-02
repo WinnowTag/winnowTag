@@ -77,7 +77,7 @@ function add_tag_control(taggable_id, tag) {
   var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
   var tag_control = '<li id="' + tag_control_id + '" class="stop tag_control positive" style="display: none;">' + 
     // TODO: sanitize
-    '<span class="name" onclick="itemBrowser.selectTaggingInformation(this, \'' + escape_javascript(tag_info_id) + '\');">' + tag + '</span>' + 
+    '<span class="name" onclick="itemBrowser.selectTaggingInformation(this, \'' + tag_info_id + '\');">' + tag + '</span>' + 
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
