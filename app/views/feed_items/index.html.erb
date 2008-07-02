@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feed_items', { orders: {
+			itemBrowser = new ItemBrowser('feed_items', 'content', { orders: {
 			  desc:      ["date", "strength"],
 			  "default": "date"
 			}, tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %> });
@@ -13,8 +13,6 @@
 <noscript><%= _(:no_script_message) %></noscript>
 
 <% content_for :sidebar, "" -%>
-
-<div id="feed_items"></div>
 
 <% content_for :footer do -%>
 	<span id="previous-next-buttons">

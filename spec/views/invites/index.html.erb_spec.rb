@@ -20,11 +20,6 @@ describe '/invites/index.html.erb' do
     response.capture(:header_controls).should match(/header controls/)
   end
 
-  it "shows a container for the invites" do
-    render_it
-    response.should have_tag("#invites")
-  end
-
   it "shows a container for the loading indicator in the footer" do
     render_it
     response.capture(:footer).should have_tag("#invites_indicator")

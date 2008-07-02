@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feeds', { orders: {
+			itemBrowser = new ItemBrowser('feeds', 'content', { orders: {
 			  asc:       ["title", "globally_exclude", "feed_items_count"], 
 			  desc:      ["updated_on"],
 			  "default": "title"
@@ -14,8 +14,6 @@
 <% content_for :header_controls do -%>
   <%= render :partial => "index_header_controls" %>
 <% end -%>
-
-<div id="feeds"></div>
 
 <% content_for :footer do -%>
 	<span id="feeds_indicator" class="loading" style="display:none;"></span>

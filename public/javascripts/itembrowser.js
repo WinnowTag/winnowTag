@@ -23,25 +23,25 @@ ItemBrowser.prototype = {
    *
    *  @param options A hash of options.
    */
-  initialize: function(container, options) {
+  initialize: function(name, container, options) {
     this.options = {
-      controller: container,
-      url: container,
+      controller: name,
+      url: name,
       tags: [],
       orders: {}
     };
     Object.extend(this.options, options || {});
     
+    this.name = name;
     this.update_queue = [];
     this.auto_completers = {};
     this.loading = false;
     this.full = false;
     
     this.container = $(container);
-    this.scrollable = $('content');
 
     document.observe('keypress', this.keypress.bindAsEventListener(this));
-    this.scrollable.observe('scroll', this.updateItems.bind(this));
+    this.container.observe('scroll', this.updateItems.bind(this));
     
     this.initializeItemList();
     this.initializeFilters();
@@ -51,8 +51,8 @@ ItemBrowser.prototype = {
   initializeFilters: function() {
     this.filters = { order: this.defaultOrder(), direction: this.defaultDirection() };
     
-    if(location.hash.gsub('#', '').blank() && Cookie.get(this.container.getAttribute("id") + "_filters")) {
-      this.setFilters(Cookie.get(this.container.getAttribute("id") + "_filters").toQueryParams());
+    if(location.hash.gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {
+      this.setFilters(Cookie.get(this.name + "_filters").toQueryParams());
     } else {
       this.setFilters(location.hash.gsub('#', '').toQueryParams());
     }
@@ -90,7 +90,7 @@ ItemBrowser.prototype = {
   },
   
   updateCount: function() {
-    $(this.container.getAttribute("id") + '_count').update("About " + this.items.compact().length + " items");
+    $(this.name + '_count').update("About " + this.items.compact().length + " items");
   },
   
   updateEmptyMessage: function() {
@@ -121,9 +121,8 @@ ItemBrowser.prototype = {
   
   updateItems: function() {
     if(this.full || this.loading) { return; }    
-    // + 100 just to force loading a little before the user actually scrolls all the way down
-    var scroll_bottom = this.scrollable.scrollTop + this.scrollable.getHeight() + 100;    
-    if(scroll_bottom >= this.container.getHeight()) {
+    var scroll_bottom = this.container.scrollHeight - this.container.scrollTop - this.container.getHeight();
+    if(scroll_bottom <= 100) {
       this.loading = true;
       this.doUpdate({offset: this.items.size()});
     }
@@ -132,7 +131,9 @@ ItemBrowser.prototype = {
   doUpdate: function(options) {
     this.showLoadingIndicator();
     
-    new Ajax.Request(this.buildUpdateURL(options || {}), {evalScripts: true, method: 'get',
+    new Ajax.Request(this.buildUpdateURL(options || {}), { 
+      evalScripts: true, 
+      method: 'get',
       onComplete: function() {
         this.updateEmptyMessage();
         this.updateCount();
@@ -140,16 +141,6 @@ ItemBrowser.prototype = {
         this.loading = false;
         this.updateFromQueue();
       }.bind(this)
-      // onFailure: function(request) {
-      //   // we get a status code of 2147746065 when the request gets interrupted in FF3B4
-      //   if(request.status == 2147746065) { return; }
-      //   new ErrorMessage("Failure: " + request.status);
-      // },
-      // onException: function(request, exception) {
-      //   if (!exceptionToIgnore(exception)) {
-      //     new ErrorMessage("Exception: " + exception.toString());
-      //   }
-      // }
     });  
   },
   
@@ -413,7 +404,7 @@ ItemBrowser.prototype = {
     // }
     
     // Save to a cookie
-    Cookie.set(this.container.getAttribute("id") + "_filters", $H(this.filters).toQueryString(), 365);
+    Cookie.set(this.name + "_filters", $H(this.filters).toQueryString(), 365);
   },
   
   styleOrders: function() {
@@ -439,20 +430,20 @@ ItemBrowser.prototype = {
   },
   
   showLoadingIndicator: function(message) {
-    var indicator = $(this.container.getAttribute('id') + '_indicator');
+    var indicator = $(this.name + '_indicator');
     indicator.update(message || "Loading items...");
 
-    var left = this.scrollable.getWidth() / 2 - indicator.getWidth() / 2 + this.scrollable.offsetLeft;
+    var left = this.container.getWidth() / 2 - indicator.getWidth() / 2 + this.container.offsetLeft;
     indicator.style.left = left + "px";
 
-    // var top = this.scrollable.getHeight() / 2 - indicator.getHeight() / 2 - this.scrollable.offsetTop;
+    // var top = this.container.getHeight() / 2 - indicator.getHeight() / 2 - this.container.offsetTop;
     // indicator.style.top = top + "px";
     
     indicator.show();
   },
   
   hideLoadingIndicator: function() {
-    $(this.container.getAttribute('id') + '_indicator').hide();
+    $(this.name + '_indicator').hide();
   },
   
   selectItem: function(item) {
@@ -583,7 +574,7 @@ ItemBrowser.prototype = {
       cancel.observe("click", this.closeItemModerationPanel.bind(this, item));
       
       (function() {
-        new Effect.ScrollToInDiv(this.scrollable, list, {duration: 0.3, bottom_margin: 5});
+        new Effect.ScrollToInDiv(this.container, list, {duration: 0.3, bottom_margin: 5});
       }).bind(this).delay(0.3);
     }
   },
@@ -652,7 +643,7 @@ ItemBrowser.prototype = {
   },
   
   scrollToItem: function(item) {
-    new Effect.ScrollToInDiv(this.scrollable, $(item).getAttribute('id'), {duration: 0.3});
+    new Effect.ScrollToInDiv(this.container, $(item).getAttribute('id'), {duration: 0.3});
   },
   
   loadItemDescription: function(item) {

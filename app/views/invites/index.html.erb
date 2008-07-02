@@ -2,7 +2,7 @@
   <script type="text/javascript" charset="utf-8">
     var itemBrowser;
     document.observe('dom:loaded', function() {
-      itemBrowser = new ItemBrowser('invites', { orders: {
+      itemBrowser = new ItemBrowser('invites', 'content', { orders: {
         asc:       ["email", "status"],
         desc:      ["created"],
         "default": "created"
@@ -14,8 +14,6 @@
 <% content_for :header_controls do -%>
   <%= render :partial => 'header_controls' %>
 <% end -%>
-
-<div id="invites"></div>
 
 <% content_for :footer do -%>
   <span id="invites_indicator" class="loading" style="display:none;"></span>
