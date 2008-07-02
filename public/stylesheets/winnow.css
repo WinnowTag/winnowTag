@@ -1004,7 +1004,6 @@ div.sorting_and_filtering_controls {
   left: 1px;
   height: 1.6em;
   width: 16px;
-  cursor: pointer;
   background: url(../images/vertical_sprite.png) no-repeat;
   background-position: 0 -638px;
 }

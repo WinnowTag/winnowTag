@@ -6,8 +6,9 @@
 var Item = Class.create({
   initialize: function(element) {
     this.element = element;
-    this.status = this.element.down(".status");
     this.closed = this.element.down(".closed");
+    this.status = this.element.down(".status");
+    this.add_tag = this.element.down(".add_tag");
     
     this.setupEventListeners();
     
@@ -15,6 +16,10 @@ var Item = Class.create({
   },
   
   setupEventListeners: function() {
+    this.closed.observe("click", function(event) {
+      itemBrowser.toggleOpenCloseItem(this.element, event);
+    }.bind(this));
+
     this.status.observe("click", function() {
       itemBrowser.toggleReadUnreadItem(this.element);
     }.bind(this));
@@ -23,9 +28,9 @@ var Item = Class.create({
       // # TODO: localization
       this.status.title = 'Click to mark as ' + (this.element.match(".read") ? 'unread' : 'read');
     }.bind(this));
-    
-    this.closed.observe("click", function(event) {
-      itemBrowser.toggleOpenCloseItem(this.element, event);
+
+    this.add_tag.observe("click", function() {
+      itemBrowser.toggleOpenCloseModerationPanel(this.element);
     }.bind(this));
   }
 });
