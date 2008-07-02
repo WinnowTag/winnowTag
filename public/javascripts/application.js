@@ -8,30 +8,6 @@ function exceptionToIgnore(e) {
   return e.name == "NS_ERROR_NOT_AVAILABLE"
 }
 
-Position.includeScrollOffsets = true;
-
-/** Ajax Responders to Handle time outs of Ajax requests */
-Ajax.Responders.register({
-	onCreate: function(request) {
-		request.timeoutId = window.setTimeout(function() {
-			var state = Ajax.Request.Events[request.transport.readyState];
-			
-			if (!['Uninitialized', 'Complete'].include(state)) {				
-				if (request.options.onTimeout) {
-					request.options.onTimeout(request.transport, request.json);
-				} else {
-					request.timeout_message = new TimeoutMessage(request);
-				}				
-			}
-		}, 10000);
-	},
-	onComplete: function(request) {
-		if (request.timeout_message) {
-			request.timeout_message.clear();			
-		}
-	}
-});
-
 function resizeContent() {
   var content = $('content');
   var body_height = $(document.body).getHeight();
