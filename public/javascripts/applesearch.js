@@ -3,16 +3,7 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
-var AppleSearch = Class.create();
-AppleSearch.setup = function() {
-  if(navigator.userAgent.toLowerCase().indexOf('safari') >= 0) { return; }
-  
-  $$(".applesearch").each(function(element) {
-    new AppleSearch(element);
-  });
-};
-
-AppleSearch.prototype = {
+var AppleSearch = Class.create({
   initialize: function(element) {
     this.element = element;
     this.element.addClassName("non_safari");
@@ -65,4 +56,12 @@ AppleSearch.prototype = {
     }
     this.text_input.removeClassName("placeholder");
   }
-}
+});
+
+AppleSearch.setup = function() {
+  if(navigator.userAgent.toLowerCase().indexOf('safari') >= 0) { return; }
+  
+  $$(".applesearch").each(function(element) {
+    new AppleSearch(element);
+  });
+};
