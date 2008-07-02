@@ -222,9 +222,9 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    assert_not_visible "body_feed_item_4"
+    assert_not_visible "css=#feed_item_4 .body"
     click "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
-    assert_not_visible "body_feed_item_4"
+    assert_not_visible "css=#feed_item_4 .body"
   end
   
   it "shows/hides tagging controls when clicking the tag" do

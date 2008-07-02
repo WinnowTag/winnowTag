@@ -610,7 +610,7 @@ var ItemBrowser = Class.create({
   },
   
   loadItemDescription: function(item) {
-    var body = $("body_" + $(item).getAttribute('id'));
+    var body = $(item).down('.body');
     var url = body.getAttribute('url');
     this.loadData(item, body, url, "Unable to connect to the server to get the item body.", this.closeItem.bind(this));
   },

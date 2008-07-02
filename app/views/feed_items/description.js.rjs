@@ -1,1 +1,1 @@
-page.replace_html dom_id(@feed_item, 'body'), :partial => 'description', :locals => { :feed_item => @feed_item }
+page[@feed_item].down(".body").update render_to_string(:partial => 'description', :locals => { :feed_item => @feed_item })
