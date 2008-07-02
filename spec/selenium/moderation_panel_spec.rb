@@ -21,10 +21,10 @@ describe "moderation panel" do
   end
   
   it "can be shown by clicking the add tag link" do
-    assert_not_visible "new_tag_form_feed_item_4"
+    assert_not_visible "css=#feed_item_4 .new_tag_form"
     click "css=#feed_item_4 .add_tag"
     wait_for_ajax 
-    assert_visible "new_tag_form_feed_item_4"
+    assert_visible "css=#feed_item_4 .new_tag_form"
   end
   
   # 686 - selenium does not seem to have a way to query for the focused item
@@ -42,7 +42,7 @@ describe "moderation panel" do
   #   dont_see_element "li[id='tag_control_for_new tag_on_feed_item_4']"
   # 
   #   type "new_tag_field_feed_item_4", "new tag"
-  #   click "css=#new_tag_form_feed_item_4 input[type=submit]"
+  #   click "css=#feed_item_4 .new_tag_form input[type=submit]"
   #   wait_for_effects
   #   
   #   see_element "li.positive[id='tag_control_for_new tag_on_feed_item_4']"
@@ -57,7 +57,7 @@ describe "moderation panel" do
   #   dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
   #    
   #   type "new_tag_field_feed_item_4", "existing tag"
-  #   click "css=#new_tag_form_feed_item_4 input[type=submit]"
+  #   click "css=#feed_item_4 .new_tag_form input[type=submit]"
   #   wait_for_effects
   # 
   #   see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
@@ -68,7 +68,7 @@ describe "moderation panel" do
     click "css=#feed_item_4 .add_tag" 
     wait_for_ajax 
   
-    see_element "#new_tag_form_feed_item_4 .auto_complete li:first-child.selected"
+    see_element "#feed_item_4 .new_tag_form .auto_complete li:first-child.selected"
   end
   
   it "uses the selected entry when clicking 'Add Tag'" do
@@ -77,8 +77,8 @@ describe "moderation panel" do
      
     dont_see_element "#tag_controls_feed_item_4 li"
      
-    tag_name = get_text "css=#new_tag_form_feed_item_4 .auto_complete .selected"
-    click "css=#new_tag_form_feed_item_4 input[type=submit]"
+    tag_name = get_text "css=#feed_item_4 .new_tag_form .auto_complete .selected"
+    click "css=#feed_item_4 .new_tag_form input[type=submit]"
     wait_for_effects
   
     see_element "#tag_controls_feed_item_4 li[id='tag_control_for_#{tag_name}_on_feed_item_4']"

@@ -491,7 +491,7 @@ var ItemBrowser = Class.create({
 
     $$('.new_tag_form').invoke("hide");
 
-    $('new_tag_form_' + $(item).getAttribute('id')).show();
+    $(item).down(".new_tag_form").show();
     this.scrollToItem(item);
     this.loadItemModerationPanel(item);
     
@@ -559,11 +559,11 @@ var ItemBrowser = Class.create({
   closeItemModerationPanel: function(item) {
     var input = $('new_tag_field_' + $(item).getAttribute('id'));
     if(input) { input.blur(); }
-    $('new_tag_form_' + $(item).getAttribute('id')).hide();
+    $(item).down(".new_tag_form").hide();
   },
   
   toggleOpenCloseModerationPanel: function(item) {
-    if($('new_tag_form_' + $(item).getAttribute('id')).visible()) {
+    if($(item).down(".new_tag_form").visible()) {
       this.closeItemModerationPanel(item);
     } else {
       this.openItemModerationPanel(item);
@@ -616,7 +616,7 @@ var ItemBrowser = Class.create({
   },
    
   loadItemModerationPanel: function(item) { 
-    var moderation_panel = $("new_tag_form_" + $(item).getAttribute('id')); 
+    var moderation_panel = $(item).down(".new_tag_form");
     var url = moderation_panel.getAttribute('url') + "?" + $H(this.filters).toQueryString(); 
     this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
   },
