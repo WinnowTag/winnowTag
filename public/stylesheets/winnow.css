@@ -46,6 +46,7 @@ div#content > div.info {
 
 #content {
   overflow: auto;
+  overflow-x: hidden;
   padding: 10px;
 	position: relative;
 	background-color: #fff;
