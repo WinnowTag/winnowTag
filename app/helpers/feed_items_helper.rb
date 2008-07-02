@@ -112,9 +112,17 @@ module FeedItemsHelper
       training = content_tag(:div, "#{tag.user.firstname}<br/>#{tag.user.lastname}", :class => "owner")
     end
     
-    clues_link = link_to_remote("(clues)", :url => clues_feed_item_path(feed_item, :tag => tag), :method => :get,
-                                           :before => "$('#{clues_id}').update('');$('#{clues_id}').addClassName('loading')", 
-                                           :complete => "$('#{clues_id}').removeClassName('loading')")
+    clues_link = link_to_function "(clues)", "
+      var clues = $('#{clues_id}');
+      if(clues.empty()) {
+        clues.addClassName('loading');
+        #{remote_function(:url => clues_feed_item_path(feed_item, :tag => tag), :method => :get, :complete => "clues.removeClassName('loading');")};
+      } else if(clues.visible()) {
+        clues.hide();
+      } else {
+        clues.show();
+      }
+    ".squish
 
     automatic  = content_tag(:span, "Negative<br/>Training", :class => "negative")
     automatic << content_tag(:span, "Positive<br/>Training", :class => "positive")
