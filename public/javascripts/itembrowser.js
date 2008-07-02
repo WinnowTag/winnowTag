@@ -10,8 +10,7 @@
  *  in the database.  Items are lazily loaded into the browser as the 
  *  users scrolls the view around.
  */
-var ItemBrowser = Class.create();
-ItemBrowser.prototype = {
+var ItemBrowser = Class.create({
   /** Initialization function.
    *
    *  @param container The id of the container div.
@@ -749,4 +748,4 @@ ItemBrowser.prototype = {
       Event.stop(e);
     }
   }
-};
+});
