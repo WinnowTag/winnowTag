@@ -59,7 +59,6 @@ div#content > div.info {
   position: absolute;
   font-size: 2em;
   padding: 1em 1em 1em 3em;
-  margin: 0 0;
 }
 
 #content > .indicator {
@@ -67,7 +66,6 @@ div#content > div.info {
   background: url(../images/indicator_medium.gif) 1em center no-repeat;
   font-size: 2em;
   padding: 1em 1em 1em 2.5em;
-  margin: 0 0;
 }
 
 #feed_items_controller #content {
