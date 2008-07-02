@@ -482,6 +482,8 @@ module ActionController #:nodoc:
       #   => reverses the value to all keys matching /secret/i, and
       #      replaces the value to all keys matching /foo|bar/i with "[FILTERED]"
       def filter_parameter_logging(*filter_words, &block)
+        filter_words = filter_words.flatten
+        
         parameter_filter = Regexp.new(filter_words.collect{ |s| s.to_s }.join('|'), true) if filter_words.length > 0
 
         define_method(:filter_parameters) do |unfiltered_parameters|
@@ -506,6 +508,9 @@ module ActionController #:nodoc:
         end
         protected :filter_parameters
       end
+      
+      # So we can declare filter_parameter_logging in the Rails initializer.
+      alias_method :filter_parameter_logging=, :filter_parameter_logging
 
       # Don't render layouts for templates with the given extensions.
       def exempt_from_layout(*extensions)

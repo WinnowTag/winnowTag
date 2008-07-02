@@ -67,7 +67,9 @@ Rails::Initializer.run do |config|
     :session_key => '_winnow_session',
     :secret      => 'd768f297dcbe7a3afaebeb4d2f7022b30822109291263eec7af980b787d5a1a8ca56833de2bc75f8a26777d5d974d20aac2c6316e2f4786fdd7f17771f9ee1be'
   }
-
+  
+  config.action_controller.filter_parameter_logging = :password
+  
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with "rake db:sessions:create")
