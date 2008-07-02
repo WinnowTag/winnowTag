@@ -10,6 +10,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   if(match) { tag_name = match[1]; }
 
   var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
+  var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
   var url = '/taggings/create';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -24,8 +25,11 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
     tag_control.addClassName(tagging_type);
+    tag_info.removeClassName(other_tagging_type);
+    tag_info.addClassName(tagging_type);
   } else if (tag_control.hasClassName('classifier')) {
     tag_control.addClassName(tagging_type); 
+    tag_info.addClassName(tagging_type); 
   }
   
   sendTagRequest(url, parameters);
@@ -35,6 +39,7 @@ function remove_tagging(taggable_id, tag_name) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
   var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
+  var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
   var url = '/taggings/destroy';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -44,8 +49,11 @@ function remove_tagging(taggable_id, tag_name) {
   if (tag_control) {
     tag_control.removeClassName('positive');
     tag_control.removeClassName('negative');
+    tag_info.removeClassName('positive');
+    tag_info.removeClassName('negative');
     if(!tag_control.match('.classifier')) {
-      tag_control.removeClassName('hover');
+      tag_control.removeClassName('selected');
+      tag_info.removeClassName('selected');
       remove_tag_control(taggable_id, tag_name); 
     }
   }
@@ -66,20 +74,10 @@ function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
-  var tag_control = '<li id="' + tag_control_id + '" class="stop positive" style="display: none;">' + 
+  var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
+  var tag_control = '<li id="' + tag_control_id + '" class="stop tag_control positive" style="display: none;">' + 
     // TODO: sanitize
-    '<span class="name" onclick="show_tagging_information(this, \'' + escape_javascript(tag) + '\');">' + tag + '</span>' + 
-    '<div class="information clearfix">' +
-      '<div class="training">' + 
-        // TODO: localize
-        '<a class="positive" onclick="add_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', \'positive\'); return false;" href="#">Make Positive</a> ' + 
-        '<a class="negative" onclick="add_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\', \'negative\'); return false;" href="#">Make Negative</a> ' + 
-        '<a class="remove" onclick="remove_tagging(\'' + taggable_id + '\', \'' + escape_javascript(tag) + '\'); return false;" href="#">Remove Training</a> ' + 
-      '</div> ' +
-      '<div class="automatic">' + 
-        '<span class="status clearfix"></span>' +
-      '</div> ' +
-    '</div>' +
+    '<span class="name" onclick="itemBrowser.selectTaggingInformation(this, \'' + escape_javascript(tag_info_id) + '\');">' + tag + '</span>' + 
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
   Effect.Appear(tag_control_id);
@@ -88,35 +86,9 @@ function add_tag_control(taggable_id, tag) {
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
   var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
-  Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id) } });
-}
-
-function show_tagging_information(tag, tag_name, classifier_strength, clues_link) {
-  tag = $(tag).up('li');
-
-  if(tag.hasClassName("hover")) {
-    tag.removeClassName("hover");
-  } else {
-    tag.down(".information").setStyle({left: tag.positionedOffset()[0] + 'px', top: tag.positionedOffset()[1] + 16 + 'px'});
-
-    var status = "";
-  
-    if (tag.match('.negative')) {
-      status = "Negative<br>Training";
-    } else if (tag.match('.positive')) {
-      status = "Positive<br>Training";
-    } else if (tag.match('.classifier')) {
-      status = '<span class="strength">' + classifier_strength + "</span> Automatic<br>Tag " + clues_link;
-    }
-    
-    if(status != tag.down(".status").innerHTML) {
-      tag.down(".status").update(status);
-    }
-
-    tag.addClassName('hover');
-    
-    new Effect.ScrollToInDiv(itemBrowser.scrollable, tag.down(".information"), {duration: 0.3, bottom_margin: 5});
-  }
+  var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
+  Element.remove(tag_info_id);
+  Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id); } });
 }
 
 var tag_information_timeouts = {};

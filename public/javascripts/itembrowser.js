@@ -466,6 +466,26 @@ ItemBrowser.prototype = {
     this.selectedItem = null;
     if(item) {
       $(item).removeClassName('selected');
+      $(item).select(".tag_control").invoke("removeClassName", 'selected');
+      $(item).select(".information").invoke("removeClassName", 'selected');
+    }
+  },
+  
+  selectTaggingInformation: function(tag, information) {
+    tag = $(tag);
+    information = $(information);
+
+    if(tag.hasClassName("selected")) {
+      tag.removeClassName("selected");
+      information.removeClassName("selected");
+    } else {
+      var item = tag.up('.item');
+
+      itemBrowser.selectItem(item);
+      tag.addClassName('selected');
+      information.addClassName('selected');
+    
+      this.scrollToItem(item);
     }
   },
   

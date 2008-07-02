@@ -17,7 +17,7 @@ describe "headers" do
   it "all javascript files should have the kaphan foundation header" do
     vendor = %w[
       public/javascripts/controls.js public/javascripts/dragdrop.js public/javascripts/effects.js public/javascripts/prototype.js
-      public/javascripts/slider.js public/javascripts/unittest.js
+      public/javascripts/slider.js public/javascripts/unittest.js public/javascripts/all.js
     ]
     
     (Dir["public/javascripts/**/*.js"] - vendor).each do |filename|
@@ -26,7 +26,7 @@ describe "headers" do
   end
   
   it "all stylesheets files should have the kaphan foundation header" do
-    vendor = %w[]
+    vendor = %w[public/stylesheets/all.css]
     
     (Dir["public/stylesheets/**/*.css"] - vendor).each do |filename|
       filename.should have_stylesheet_kaphan_header
