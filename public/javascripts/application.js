@@ -10,24 +10,6 @@ function exceptionToIgnore(e) {
 
 Position.includeScrollOffsets = true;
 
-document.observe('dom:loaded', function() {
-  $$("input.example[type=text]").each(function(element) {
-    var example_value = element.value;
-    element.observe("focus", function() {
-      if(element.value == example_value) {
-        element.value = "";
-        element.removeClassName("example");
-      }
-    });
-    element.observe("blur", function() {
-      if(element.value == "") {
-        element.value = example_value;
-        element.addClassName("example");
-      }
-    });
-  });
-});
-
 /** Ajax Responders to Handle time outs of Ajax requests */
 Ajax.Responders.register({
 	onCreate: function(request) {
@@ -159,39 +141,3 @@ function escape_javascript(string) {
   return string.replace(/'/g, '\\\'');
 }
   
-Effect.ScrollToInDiv = Class.create(Effect.Base, {
-  initialize: function(container, element) {
-    this.container = $(container);
-    this.element = $(element);
-    this.bottom_margin = (arguments[2] && arguments[2].bottom_margin) || 0;
-    this.start(arguments[2] || {});      
-  },
-  setup: function() {
-    var containerOffset = Position.cumulativeOffset(this.container);
-    var offsets = Position.cumulativeOffset(this.element);
-    if(this.options.offset) {
-      offsets[1] += this.options.offset;
-    }
-
-    this.scrollStart = this.container.scrollTop;
-     var top_of_element = offsets[1] - this.scrollStart;
-     var top_of_container = containerOffset[1];
-     var bottom_of_element = offsets[1] + this.element.getHeight() - this.scrollStart;
-     var bottom_of_container = containerOffset[1] + this.container.getHeight();
-     
-     // If the item is above the top of the container, or the item is taller than the container, scroll to the top of the item
-     if(top_of_element < top_of_container || this.element.getHeight() > this.container.getHeight()) {
-       this.delta = top_of_element - top_of_container;
-
-     // If the item is below the bottom of the container, scroll to the bottom of the item
-     } else if(bottom_of_element > bottom_of_container) {
-       this.delta = bottom_of_element - bottom_of_container + this.bottom_margin;
-
-     } else {
-       this.delta = 0;
-     }
-  },
-  update: function(factor) {
-    this.container.scrollTop = this.scrollStart + (factor * this.delta);
-  }
-});
