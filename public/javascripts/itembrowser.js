@@ -42,7 +42,6 @@ var ItemBrowser = Class.create({
     document.observe('keypress', this.keypress.bindAsEventListener(this));
     this.container.observe('scroll', this.updateItems.bind(this));
     
-    this.initializeItemList();
     this.initializeFilters();
   },
 
@@ -74,21 +73,12 @@ var ItemBrowser = Class.create({
     return (this.options.orders.asc || []).concat(this.options.orders.desc || []);
   },
   
-  // Called to initialize the internal list of items from the items loaded into the container.
-  initializeItemList: function() {
-    this.items = [];
-    
-    this.container.select('.item').each(function(fi) {
-      this.items.push(fi);
-    }.bind(this));
-  },
-  
   setFull: function(full) {
     this.full = full;
   },
   
   updateCount: function() {
-    $(this.name + '_count').update("About " + this.items.compact().length + " items");
+    $(this.name + '_count').update("About " + this.container.select('.item').size() + " items");
   },
   
   updateEmptyMessage: function() {
@@ -99,7 +89,7 @@ var ItemBrowser = Class.create({
       message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
     }
     
-    if(this.full && this.items.size() == 0) {
+    if(this.full && this.container.select('.item').size() == 0) {
       message.show();
     } else {
       message.hide();
@@ -122,7 +112,7 @@ var ItemBrowser = Class.create({
     var scroll_bottom = this.container.scrollHeight - this.container.scrollTop - this.container.getHeight();
     if(scroll_bottom <= 100) {
       this.loading = true;
-      this.doUpdate({offset: this.items.size()});
+      this.doUpdate({offset: this.container.select('.item').size()});
     }
   },
   
@@ -144,13 +134,11 @@ var ItemBrowser = Class.create({
   
   insertItem: function(item_id, content) {
     new Insertion.Bottom(this.container, content);
-    this.items.push($(item_id));
   },
   
   clear: function() {
     this.container.update('');
     this.selectedItem = null;
-    this.initializeItemList();
   },
   
   reload: function() {
