@@ -1310,6 +1310,14 @@ ul.tag_list li.selected .name {
 }
 
 .information .automatic .status a {
+  display: none;
+}
+
+.information.classifier .automatic .status a {
+  display: inline;
+}
+
+.information .automatic .status a {
   font-size: 0.7692307em;
 }
 

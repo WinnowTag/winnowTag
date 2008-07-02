@@ -124,9 +124,9 @@ module FeedItemsHelper
       }
     ".squish
 
-    automatic  = content_tag(:span, "Negative<br/>Training", :class => "negative")
-    automatic << content_tag(:span, "Positive<br/>Training", :class => "positive")
-    automatic << content_tag(:span, content_tag(:span, classifier_strength, :class => "strength") + "Automatic<br/>Tag " + clues_link, :class => "classifier")
+    automatic  = content_tag(:span, "Negative<br/>Training #{clues_link}", :class => "negative")
+    automatic << content_tag(:span, "Positive<br/>Training #{clues_link}", :class => "positive")
+    automatic << content_tag(:span, content_tag(:span, classifier_strength, :class => "strength") + "Automatic<br/>Tag #{clues_link}", :class => "classifier")
     automatic  = content_tag(:span, automatic, :class => "status clearfix")    
     
     information  = content_tag(:div, training, :class => "training")
