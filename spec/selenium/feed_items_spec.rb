@@ -97,11 +97,11 @@ describe "FeedItemsTest" do
   it "displays an empty message when there are no feed items" do
     Tagging.delete_all
     FeedItem.delete_all
-    
+
     open feed_items_path
     wait_for_ajax
   
-    assert_visible "css=#feed_items .empty"
+    see_element "#feed_items .empty"
   end
   
   it "does not display an empty message when there are feed items" do
