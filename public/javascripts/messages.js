@@ -3,12 +3,10 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
-var errorTimeout = null;
-var ErrorMessage = Class.create();
-ErrorMessage.prototype = {
+var ErrorMessage = Class.create({
 	initialize: function(message) {
-		if (errorTimeout) {
-			clearTimeout(errorTimeout);
+		if (ErrorMessage.timeout) {
+			clearTimeout(ErrorMessage.timeout);
 		}
 		this.error_message = $('error');
 		this.error_message.update(message);
@@ -16,15 +14,13 @@ ErrorMessage.prototype = {
 		
 		resizeContent();
 
-		self = this;
-		errorTimeout = setTimeout(function() {
-			new Effect.Fade(self.error_message, {duration: 4, afterFinish: resizeContent});
-		}, 10000);
+		ErrorMessage.timeout = setTimeout(function() {
+			new Effect.Fade(this.error_message, {duration: 4, afterFinish: resizeContent});
+		}.bind(this), 10000);
 	}	
-};
+});
 
-var ConfirmationMessage = Class.create();
-ConfirmationMessage.prototype = {
+var ConfirmationMessage = Class.create({
   initialize: function(message, options) {
     this.options = {
       yes: "Yes",
@@ -38,7 +34,7 @@ ConfirmationMessage.prototype = {
     $('confirm_no').observe('click', function() { 
       $('confirm').hide();
       resizeContent(); 
-      return false
+      return false;
     });
     $('confirm_yes').observe('click', function() { 
       $('confirm').hide(); 
@@ -54,13 +50,11 @@ ConfirmationMessage.prototype = {
     $('confirm').show();
     resizeContent();
   }
-};
+});
 
-var timeout_id = 1;
-var TimeoutMessage = Class.create();
-TimeoutMessage.prototype = {
+var TimeoutMessage = Class.create({
   initialize: function(ajax) {
-    this.timeout_id = timeout_id++;
+    this.timeout_id = TimeoutMessage.identifier++;
     this.error_message = $('error');
     this.ajax = ajax;
     
@@ -94,4 +88,5 @@ TimeoutMessage.prototype = {
     
     this.clear();
   }
-};
+});
+TimeoutMessage.identifier = 1;
