@@ -1,32 +1,32 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-	<title>Winnow</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Winnow</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <%= javascript_include_tag :defaults, :winnow, :cache => true %>
   <%= stylesheet_link_tag :winnow, :cache => true %>
-	<script type="text/javascript" charset="utf-8">
+  <script type="text/javascript" charset="utf-8">
     document.observe('dom:loaded', resizeContent);
     document.observe('dom:loaded', AppleSearch.setup);
     document.observe('font:resized', resizeContent);
     Event.observe(window, 'resize', resizeContent);
-	</script>
+  </script>
 
   <%= yield(:head) %>
 </head>
 <body id="<%= controller.controller_name %>_controller">
-	<%= render :partial => 'layouts/navbar' %>
-	
-	<% if header_controls = yield(:header_controls) -%>
-	  <div id="header_controls"><%= header_controls %></div>
-	<% end -%>
+  <%= render :partial => 'layouts/navbar' %>
+  
+  <% if header_controls = yield(:header_controls) -%>
+    <div id="header_controls"><%= header_controls %></div>
+  <% end -%>
 
-	<%= show_flash %>
-	<%= show_unread_messages if current_user %>
-	
+  <%= show_flash %>
+  <%= show_unread_messages if current_user %>
+  
   <% if sidebar_content = yield(:sidebar) -%>
     <div id="sidebar"><%= sidebar_content %></div>
-		<div id="sidebar_control"></div>  
+    <div id="sidebar_control"></div>  
   <% end -%>
 
   <div id="container">
@@ -35,9 +35,9 @@
       <%= yield %>
     </div>
 
-  	<% if footer_content = yield(:footer) -%>
-  		<div id="footer" class="clearfix"><%= footer_content %></div>
-  	<% end -%>
+    <% if footer_content = yield(:footer) -%>
+      <div id="footer" class="clearfix"><%= footer_content %></div>
+    <% end -%>
   </div>
 </body>
 </html>

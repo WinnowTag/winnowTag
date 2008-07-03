@@ -64,11 +64,7 @@ var ItemBrowser = Class.create({
       return !element.match(".indicator") && !element.match(".empty");
     });
   },
-  
-  updateCount: function() {
-    $(this.name + '_count').update("About " + this.numberOfItems().size() + " items");
-  },
-  
+    
   updateEmptyMessage: function() {
     if(this.full && this.numberOfItems().size() == 0) {
       this.container.insert('<div class="empty" style="display:none">No items matched your search criteria.</div>');
@@ -119,7 +115,6 @@ var ItemBrowser = Class.create({
       method: 'get',
       onComplete: function() {
         this.updateEmptyMessage();
-        this.updateCount();
         this.hideLoadingIndicator();
         this.loading = false;
         this.updateFromQueue();
