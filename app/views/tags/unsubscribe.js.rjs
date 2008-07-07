@@ -1,9 +1,7 @@
-page[:notice].update _(:tags_unsubscribe_text, @tag.name)
-page[:notice].show
-
 page << "if($('#{dom_id(@tag)}')) {"
   page[@tag].remove
 page << "}"
 
 page.select(".#{dom_id(@tag)}").invoke("remove")
-page.call "resizeContent"
+
+page << "new NoticeMessage(" + _(:tags_unsubscribe_text, @tag.name).to_json + ");"

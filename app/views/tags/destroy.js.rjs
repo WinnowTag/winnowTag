@@ -1,7 +1,6 @@
 page << "if(itemBrowser) { itemBrowser.removeTag(#{@tag.name.to_json}); }"
-page[:notice].update "Deleted #{@tag.name}"
-page[:notice].show
 page << "if($('#{dom_id(@tag)}')) {"
   page[@tag].remove
 page << "}"
-page.call "resizeContent"
+
+page << "new NoticeMessage(" + "Deleted #{@tag.name}".to_json + ");"

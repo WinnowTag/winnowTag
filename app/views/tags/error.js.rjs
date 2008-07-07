@@ -1,7 +1,5 @@
 page.select("##{dom_id(@tag)} .name, .#{dom_id(@tag)} .name").each do |element|
   element.update @tag.name
 end
-page[:error].update @tag.errors.full_messages.join('<br/>')
-page[:error].show
-page[:notice].hide
-page.call "resizeContent"
+
+page << "new ErrorMessage(" + @tag.errors.full_messages.join('<br/>').to_json + ");"

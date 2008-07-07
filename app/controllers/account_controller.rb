@@ -101,15 +101,11 @@ class AccountController < ApplicationController
       user.enable_reminder!
       UserNotifier.deliver_reminder(user, login_url(user.reminder_code))
       render :update do |page|
-        page[:notice].update _(:reminder_sent)
-        page[:notice].show
-        page[:error].hide
+        page << "new NoticeMessage(" + _(:reminder_sent).to_json + ");"
       end
     else
       render :update do |page|
-        page[:error].update _(:login_invalid)
-        page[:error].show
-        page[:notice].hide
+        page << "new ErrorMessage(" + _(:login_invalid).to_json + ");"
       end
     end
   end

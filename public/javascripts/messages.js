@@ -8,14 +8,31 @@ var ErrorMessage = Class.create({
 		if (ErrorMessage.timeout) {
 			clearTimeout(ErrorMessage.timeout);
 		}
-		this.error_message = $('error');
-		this.error_message.update(message);
-		this.error_message.show();
+		this.element = $('error');
+		this.element.update(message);
+		this.element.show();
 		
 		resizeContent();
 
 		ErrorMessage.timeout = setTimeout(function() {
-			new Effect.Fade(this.error_message, {duration: 4, afterFinish: resizeContent});
+			new Effect.Fade(this.element, { duration: 4, afterFinish: resizeContent });
+		}.bind(this), 10000);
+	}	
+});
+
+var NoticeMessage = Class.create({
+	initialize: function(message) {
+		if (NoticeMessage.timeout) {
+			clearTimeout(NoticeMessage.timeout);
+		}
+		this.element = $('notice');
+		this.element.update(message);
+		this.element.show();
+		
+		resizeContent();
+
+		ErrorMessage.timeout = setTimeout(function() {
+			new Effect.Fade(this.element, { duration: 4, afterFinish: resizeContent });
 		}.bind(this), 10000);
 	}	
 });
