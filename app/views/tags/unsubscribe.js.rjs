@@ -6,3 +6,4 @@ page << "if($('#{dom_id(@tag)}')) {"
 page << "}"
 
 page.select(".#{dom_id(@tag)}").invoke("remove")
+page.call "resizeContent"

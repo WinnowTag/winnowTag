@@ -4,3 +4,4 @@ page[:notice].show
 page << "if($('#{dom_id(@tag)}')) {"
   page[@tag].remove
 page << "}"
+page.call "resizeContent"

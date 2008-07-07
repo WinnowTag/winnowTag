@@ -4,3 +4,4 @@ end
 page[:error].update @tag.errors.full_messages.join('<br/>')
 page[:error].show
 page[:notice].hide
+page.call "resizeContent"
