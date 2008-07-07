@@ -108,7 +108,8 @@ module FeedItemsHelper
     
     clues_link = link_to_function "(clues)", "
       var clues = $('#{clues_id}');
-      if(clues.empty()) {
+      if(!clues.down('table')) {
+        clues.update("");
         clues.addClassName('loading');
         #{remote_function(:url => clues_feed_item_path(feed_item, :tag => tag), :method => :get, :complete => "clues.removeClassName('loading');")};
       } else if(clues.visible()) {
