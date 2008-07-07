@@ -68,7 +68,7 @@ module FeedItemsHelper
   
   # Note: Update tagging.js when this changes
   def tag_control_for(feed_item, tag, classes)
-    classes << "tag_control"
+    classes << "tag_control" << dom_id(tag)
 
     # TODO: Get rid of tag.name in id
     information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")

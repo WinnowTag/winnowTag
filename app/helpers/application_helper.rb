@@ -247,7 +247,7 @@ module ApplicationHelper
       "globally_excluded"
     elsif current_user.subscribed?(tag)
       "subscribed"
-    end
+    end.to_s + " " + dom_id(tag)
   end
 
   def feed_classes(feed)
