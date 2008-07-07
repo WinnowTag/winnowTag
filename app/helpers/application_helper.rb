@@ -256,7 +256,6 @@ module ApplicationHelper
     end
   end
 
-  
   def tag_state(tag)
     if current_user.globally_excluded?(tag)
       "Excluded"
