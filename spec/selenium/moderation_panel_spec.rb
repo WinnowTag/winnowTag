@@ -74,15 +74,14 @@ describe "moderation panel" do
   it "uses the selected entry when clicking 'Add Tag'" do
     click "css=#feed_item_4 .add_tag"
     wait_for_ajax 
-     
-    dont_see_element "#tag_controls_feed_item_4 li"
-     
-    tag_name = get_text "css=#feed_item_4 .new_tag_form .auto_complete .selected"
+         
+    tag_name = get_text("css=#feed_item_4 .new_tag_form .auto_complete .selected")
+    dont_see_element "#feed_item_4 .tag_control:contains(#{tag_name})"
+
     click "css=#feed_item_4 .new_tag_form input[type=submit]"
     wait_for_effects
   
-    see_element "#tag_controls_feed_item_4 li[id='tag_control_for_#{tag_name}_on_feed_item_4']"
-    get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
+    see_element "#feed_item_4 .tag_control:contains(#{tag_name})"
   end
 
   # 686 - auto complete does not recognize hitting enter
@@ -94,14 +93,14 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
-    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
     
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .negative"
     wait_for_ajax
     
-    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
   end
   
   it "can change a negative tagging to a positive tagging" do
@@ -110,14 +109,14 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
-    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
     
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .positive"
     wait_for_ajax
     
-    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
   end
   
   it "can change a classifier tagging to a positive tagging" do
@@ -126,14 +125,13 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
     
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .positive"
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier.positive:contains(existing tag)"
   end
   
   it "can change a classifier tagging to a negative tagging" do
@@ -142,14 +140,13 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
     
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .negative"
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier.negative:contains(existing tag)"
   end
   
   it "can change a positive tagging to a classifier tagging" do
@@ -159,14 +156,13 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier.positive:contains(existing tag)"
     
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .remove"
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    dont_see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
   end
   
   it "can change a negative tagging to a classifier tagging" do
@@ -176,14 +172,13 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier.negative:contains(existing tag)"
     
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .remove"
     wait_for_ajax
     
-    see_element "li.classifier[id='tag_control_for_existing tag_on_feed_item_4']"
-    dont_see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
+    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
   end
   
   it "can change a positive tagging to a nothing tagging" do
@@ -192,13 +187,13 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
+    see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
     
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .remove"
     wait_for_ajax
     wait_for_effects
     
-    dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
   end
   
   it "can change a negative tagging to a nothing tagging" do
@@ -207,13 +202,13 @@ describe "moderation panel" do
     open feed_items_path
     wait_for_ajax
     
-    see_element "li.negative[id='tag_control_for_existing tag_on_feed_item_4']"
-    
+    see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
+
     click "css=div[id='tag_info_for_existing tag_on_feed_item_4'] .remove"
     wait_for_ajax
     wait_for_effects
     
-    dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
+    dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
   end
   
   it "open tag info does not open/close item" do
@@ -223,7 +218,7 @@ describe "moderation panel" do
     wait_for_ajax
     
     assert_not_visible "css=#feed_item_4 .body"
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
+    click "css=#feed_item_4 .tag_control:contains(existing tag)"
     assert_not_visible "css=#feed_item_4 .body"
   end
   
@@ -234,9 +229,9 @@ describe "moderation panel" do
     wait_for_ajax
     
     assert_not_visible "css=div[id='tag_info_for_existing tag_on_feed_item_4']"
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
+    click "css=#feed_item_4 .tag_control:contains(existing tag)"
     assert_visible "css=div[id='tag_info_for_existing tag_on_feed_item_4']"
-    click "css=li[id='tag_control_for_existing tag_on_feed_item_4']"
+    click "css=#feed_item_4 .tag_control:contains(existing tag)"
     assert_not_visible "css=div[id='tag_info_for_existing tag_on_feed_item_4']"
   end
 end

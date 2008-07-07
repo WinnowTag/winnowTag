@@ -19,9 +19,4 @@ describe '/tags/public.html.erb' do
     render_it
     response.capture(:header_controls).should match(/header controls/)
   end
-
-  it "shows a container for the tags count in the footer" do
-    render_it
-    response.capture(:footer).should have_tag("#tags_count")
-  end
 end

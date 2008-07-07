@@ -70,12 +70,12 @@ module FeedItemsHelper
   def tag_control_for(feed_item, tag, classes)
     classes << "tag_control"
 
+    # TODO: Get rid of tag.name in id
     information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
     
     # TODO: sanitize
-    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), 
-                     :id => dom_id(feed_item, "tag_control_for_#{tag.name}_on"), :class => classes.join(" "), 
+    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), 
                      :onclick => "itemBrowser.selectTaggingInformation(this, #{information_id.to_json})")
   end
   
@@ -94,6 +94,7 @@ module FeedItemsHelper
   end
 
   def tag_info_for(feed_item, tag, classes, classifier_strength = nil)
+    # TODO: Get rid of tag.name in id
     information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
 

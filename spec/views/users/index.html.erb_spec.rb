@@ -19,9 +19,4 @@ describe '/users/index.html.erb' do
     render_it
     response.capture(:header_controls).should match(/header controls/)
   end
-
-  it "shows a container for the users count in the footer" do
-    render_it
-    response.capture(:footer).should have_tag("#users_count")
-  end
 end

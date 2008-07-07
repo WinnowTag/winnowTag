@@ -9,7 +9,10 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   var match = tag_name.match(/^Create Tag: '(.+)'$/);
   if(match) { tag_name = match[1]; }
 
-  var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
+  var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
+    return element.down(".name").innerHTML == tag_name;
+  });
+  // TODO: Get rid of tag.name in id
   var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
   var url = '/taggings/create';
   var parameters = {
@@ -38,7 +41,10 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
 function remove_tagging(taggable_id, tag_name) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
-  var tag_control = $("tag_control_for_" + tag_name + "_on_" + taggable_id);
+  var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
+    return element.down(".name").innerHTML == tag_name;
+  });
+  // TODO: Get rid of tag.name in id
   var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
   var url = '/taggings/destroy';
   var parameters = {
@@ -73,20 +79,27 @@ function sendTagRequest(url, parameters) {
 function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
-  var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
+  // TODO: Get rid of tag.name in id
   var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
-  var tag_control = '<li id="' + tag_control_id + '" class="stop positive tag_control" onclick="itemBrowser.selectTaggingInformation(this, \'' + tag_info_id + '\');" style="display: none;">' + 
+  var tag_control = '<li class="stop positive tag_control" onclick="itemBrowser.selectTaggingInformation(this, \'' + tag_info_id + '\');" style="display: none;">' + 
     // TODO: sanitize
     '<span class="name">' + tag + '</span>' + 
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
-  Effect.Appear(tag_control_id);
+
+  tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
+    return element.down(".name").innerHTML == tag;
+  });
+  Effect.Appear(tag_control);
 }
 
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
-  var tag_control_id = 'tag_control_for_' + tag + '_on_' + taggable_id;
+  var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
+    return element.down(".name").innerHTML == tag;
+  });
+  // TODO: Get rid of tag.name in id
   var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
   Element.remove(tag_info_id);
-  Effect.Fade(tag_control_id, { afterFinish: function() { Element.remove(tag_control_id); } });
+  Effect.Fade(tag_control, { afterFinish: function() { tag_control.remove(); } });
 }
