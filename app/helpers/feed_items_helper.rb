@@ -69,17 +69,12 @@ module FeedItemsHelper
   # Note: Update tagging.js when this changes
   def tag_control_for(feed_item, tag, classes)
     classes << "tag_control" << dom_id(tag)
-
-    clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
-    
     # TODO: sanitize
     content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), 
                      :onclick => "itemBrowser.selectTaggingInformation(this, #{tag.id})")
   end
   
   def tag_info_for(feed_item, tag, classifier_strength = nil)
-    clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
-
     if tag.user == current_user
       training  = link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive")
       training << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative")
@@ -89,18 +84,7 @@ module FeedItemsHelper
       training = content_tag(:div, "#{tag.user.firstname}<br/>#{tag.user.lastname}", :class => "owner")
     end
     
-    clues_link = link_to_function "(clues)", "
-      var clues = $('#{clues_id}');
-      if(!clues.down('table')) {
-        clues.update("");
-        clues.addClassName('loading');
-        #{remote_function(:url => clues_feed_item_path(feed_item, :tag => tag), :method => :get, :complete => "clues.removeClassName('loading');")};
-      } else if(clues.visible()) {
-        clues.hide();
-      } else {
-        clues.show();
-      }
-    ".squish
+    clues_link = link_to_function "(clues)", "", :class => "clues_link"
 
     automatic  = content_tag(:span, "Negative<br/>Training #{clues_link}", :class => "negative")
     automatic << content_tag(:span, "Positive<br/>Training #{clues_link}", :class => "positive")
@@ -109,7 +93,7 @@ module FeedItemsHelper
     
     information  = content_tag(:div, training, :class => "training")
     information << content_tag(:div, automatic, :class => "automatic")
-    information << content_tag(:div, nil, :id => clues_id, :class => "clues")
+    information << content_tag(:div, "", :class => "clues", :style => "display: none")
     
     information
   end

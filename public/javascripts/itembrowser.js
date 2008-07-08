@@ -443,6 +443,13 @@ var ItemBrowser = Class.create({
     
       if(tag.informationHTML) {
         information.update(tag.informationHTML);
+
+        var clues_link = information.down(".clues_link");
+        if(clues_link) {
+          clues_link.observe("click", function() {
+            this.toggleTagClues(tag, tag_id);
+          }.bind(this));
+        }
       } else {
         information.update("");
         information.addClassName("loading");
@@ -453,7 +460,14 @@ var ItemBrowser = Class.create({
 
             information.removeClassName("loading");
             information.update(tag.informationHTML)
-
+            
+            var clues_link = information.down(".clues_link");
+            if(clues_link) {
+              clues_link.observe("click", function() {
+                this.toggleTagClues(tag, tag_id);
+              }.bind(this));
+            }
+            
             this.scrollToItem(item);
           }.bind(this)
         });
@@ -463,6 +477,36 @@ var ItemBrowser = Class.create({
       tag.addClassName('selected');
       information.addClassName('selected');
 
+      this.scrollToItem(item);
+    }
+  },
+  
+  toggleTagClues: function(tag, tag_id) {
+    var item = tag.up(".item");
+    var clues = item.down(".information .clues");
+    
+    if(clues.visible()) {
+      clues.hide();
+    } else {
+      if(tag.cluesHTML && tag.cluesHTML.match(/<table>/)) {
+        clues.update(tag.cluesHTML);
+      } else {
+        clues.update("");
+        clues.addClassName('loading');
+
+        new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/clues', { 
+          method: 'get', parameters: { tag: tag_id }, onComplete: function(transport) {
+            tag.cluesHTML = transport.responseText;
+          
+            clues.removeClassName("loading");
+            clues.update(tag.cluesHTML)
+          
+            this.scrollToItem(item);
+          }.bind(this)
+        });
+      }
+      
+      clues.show();
       this.scrollToItem(item);
     }
   },

@@ -55,25 +55,11 @@ describe FeedItemsController do
       Net::HTTP.should_receive(:get_response).with(URI.parse(url)).and_return(@http_response)
     end
     
-    it "should render some rjs that replaces the tag info field" do
+    it "should render the clues" do
       accept('text/javascript')
       get :clues, :id => 1234, :tag => @tag.id
       response.should be_success
-      response.should have_rjs(:replace_html, "feed_item_1234_tag_#{@tag.id}_clues")
-    end
-    
-    it "should render the clues in a table" do
-      accept('text/javascript')
-      get :clues, :id => 1234, :tag => @tag.id
-      response.should be_success
-      response.should have_tag("tr td.clue", "foo")
-      response.should have_tag("tr td.prob", "0.99")
-    end
-        
-    it "should render the clues in descending probability order" do
-      accept('text/javascript')
-      get :clues, :id => 1234, :tag => @tag.id
-      response.body.should match(/foo.*bar/)
+      response.should render_template("clues")
     end
     
     describe "with 424 status code from the classifier" do
@@ -94,7 +80,7 @@ describe FeedItemsController do
       it "should result in a success when tries is > 7" do
         get :clues, :id => 1234, :tag => @tag.id, :tries => 8
         response.should be_success
-        response.should have_tag("p", _(:could_not_load_clues))
+        response.should render_template("clues")
       end
     end
   end
