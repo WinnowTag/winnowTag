@@ -562,7 +562,7 @@ var ItemBrowser = Class.create({
 
     item.down(".new_tag_form").show();
     item._item.scrollTo();
-    this.loadItemModerationPanel(item);
+    item._item.loadAddTagForm();
     
     this.initializeItemModerationPanel(item);
   },
@@ -653,38 +653,7 @@ var ItemBrowser = Class.create({
     $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
     new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
   },
-  
-  loadItemModerationPanel: function(item) { 
-    var moderation_panel = $(item).down(".new_tag_form");
-    var url = moderation_panel.getAttribute('url') + "?" + $H(this.filters).toQueryString(); 
-    this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
-  },
 
-  loadData: function(item, target, url, error_message, error_callback) {
-    item = $(item);
-    
-    if(target && target.empty()) {
-      target.addClassName("loading");
-      new Ajax.Request(url,{
-        method: 'get',
-          onComplete: function() {
-            target.removeClassName("loading");
-            if(this.selectedItem == item) {
-              item._item.scrollTo();
-            }
-          }.bind(this),
-          onException: function(transport, exception) {
-            error_callback(item);
-            new ErrorMessage(error_message);
-          },
-          onFailure: function(transport, exception) {
-            error_callback(item);
-            new ErrorMessage(error_message);
-          }
-      });  
-    }
-  },
-  
   selectNextItem: function() {
     var next_item;
     if(this.selectedItem) {

@@ -5,12 +5,13 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Item = Class.create({
   initialize: function(element) {
-    this.element = element;
-    this.id      = this.element.getAttribute('id').match(/\d+/).first();
-    this.closed  = this.element.down(".closed");
-    this.status  = this.element.down(".status");
-    this.add_tag = this.element.down(".add_tag");
-    this.body    = this.element.down(".body");
+    this.element      = element;
+    this.id           = this.element.getAttribute('id').match(/\d+/).first();
+    this.closed       = this.element.down(".closed");
+    this.status       = this.element.down(".status");
+    this.add_tag      = this.element.down(".add_tag");
+    this.add_tag_form = this.element.down(".new_tag_form");
+    this.body         = this.element.down(".body");
     
     this.setupEventListeners();
     
@@ -63,12 +64,20 @@ var Item = Class.create({
   },
   
   loadBody: function() {
-    if(!this.body.empty()) { return; }
+    this.load(this.body);
+  },
+  
+  loadAddTagForm: function() {
+    this.load(this.add_tag_form);
+  },
+  
+  load: function(target) {
+    if(!target.empty()) { return; }
     
-    this.body.addClassName("loading");
-    new Ajax.Request(this.body.getAttribute('url'), { method: 'get',
+    target.addClassName("loading");
+    new Ajax.Request(target.getAttribute('url'), { method: 'get',
       onComplete: function() {
-        this.body.removeClassName("loading");
+        target.removeClassName("loading");
         if(this.isSelected()) {
           this.scrollTo();
         }
