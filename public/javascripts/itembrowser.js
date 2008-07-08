@@ -444,12 +444,11 @@ var ItemBrowser = Class.create({
       if(tag.informationHTML) {
         information.update(tag.informationHTML);
 
-        var clues_link = information.down(".clues_link");
-        if(clues_link) {
-          clues_link.observe("click", function() {
+        information.select(".clues_link").each(function(element) {
+          element.observe("click", function() {
             this.toggleTagClues(tag, tag_id);
           }.bind(this));
-        }
+        }.bind(this));
       } else {
         information.update("");
         information.addClassName("loading");
@@ -461,12 +460,11 @@ var ItemBrowser = Class.create({
             information.removeClassName("loading");
             information.update(tag.informationHTML)
             
-            var clues_link = information.down(".clues_link");
-            if(clues_link) {
-              clues_link.observe("click", function() {
+            information.select(".clues_link").each(function(element) {
+              element.observe("click", function() {
                 this.toggleTagClues(tag, tag_id);
               }.bind(this));
-            }
+            }.bind(this));
             
             this.scrollToItem(item);
           }.bind(this)
