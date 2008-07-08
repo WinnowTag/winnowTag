@@ -77,18 +77,11 @@ var Item = Class.create({
     if(!target.empty()) { return; }
     
     target.addClassName("loading");
-    new Ajax.Request(target.getAttribute("url"), { method: 'get',
-      onComplete: function(transport) {
+    new Ajax.Updater(target, target.getAttribute("url"), { method: 'get',
+      onComplete: function() {
         target.removeClassName("loading");
-        target.update(transport.responseText);
-        
-        if(onComplete) {
-          onComplete();
-        }
-        
-        if(this.isSelected()) {
-          this.scrollTo();
-        }
+        if(onComplete)        { onComplete();    }
+        if(this.isSelected()) { this.scrollTo(); }
       }.bind(this)
     });
   }
