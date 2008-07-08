@@ -10,6 +10,7 @@ var Item = Class.create({
     this.closed  = this.element.down(".closed");
     this.status  = this.element.down(".status");
     this.add_tag = this.element.down(".add_tag");
+    this.body    = this.element.down(".body");
     
     this.setupEventListeners();
     
@@ -51,5 +52,27 @@ var Item = Class.create({
   
   toggleReadUnread: function() {
    this.isRead() ? this.markUnread() : this.markRead();
+  },
+  
+  isSelected: function() {
+    return this.element.hasClassName("selected");
+  },
+  
+  scrollTo: function() {
+    new Effect.ScrollToInDiv(this.element.up(), this.element, { duration: 0.3 });
+  },
+  
+  loadBody: function() {
+    if(!this.body.empty()) { return; }
+    
+    this.body.addClassName("loading");
+    new Ajax.Request(this.body.getAttribute('url'), { method: 'get',
+      onComplete: function() {
+        this.body.removeClassName("loading");
+        if(this.isSelected()) {
+          this.scrollTo();
+        }
+      }.bind(this)
+    });
   }
 });

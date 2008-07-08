@@ -408,10 +408,12 @@ var ItemBrowser = Class.create({
   },
 
   selectItem: function(item) {
+    item = $(item);
+    
     this.deselectItem(this.selectedItem);
-    this.selectedItem = $(item);
+    this.selectedItem = item;
     this.selectedItem.addClassName('selected');
-    this.scrollToItem(item);
+    item._item.scrollTo();
   },
   
   deselectItem: function(item) {
@@ -466,7 +468,7 @@ var ItemBrowser = Class.create({
               }.bind(this));
             }.bind(this));
             
-            this.scrollToItem(item);
+            item._item.scrollTo();
           }.bind(this)
         });
       }
@@ -475,7 +477,7 @@ var ItemBrowser = Class.create({
       tag.addClassName('selected');
       information.addClassName('selected');
 
-      this.scrollToItem(item);
+      item._item.scrollTo();
     }
   },
   
@@ -499,13 +501,13 @@ var ItemBrowser = Class.create({
             clues.removeClassName("loading");
             clues.update(tag.cluesHTML)
           
-            this.scrollToItem(item);
+            item._item.scrollTo();
           }.bind(this)
         });
       }
       
       clues.show();
-      this.scrollToItem(item);
+      item._item.scrollTo();
     }
   },
   
@@ -518,8 +520,8 @@ var ItemBrowser = Class.create({
     }
     item.addClassName("open");
     item._item.markRead();
-    this.scrollToItem(item);
-    this.loadItemDescription(item);
+    item._item.scrollTo();
+    item._item.loadBody();
   },
   
   closeItem: function(item) {
@@ -549,15 +551,17 @@ var ItemBrowser = Class.create({
   },
   
   openItemModerationPanel: function(item) {
-    if(this.selectedItem != $(item)) {
+    item = $(item);
+    
+    if(this.selectedItem != item) {
       this.closeItem(this.selectedItem);
       this.selectItem(item);
     }
 
     $$('.new_tag_form').invoke("hide");
 
-    $(item).down(".new_tag_form").show();
-    this.scrollToItem(item);
+    item.down(".new_tag_form").show();
+    item._item.scrollTo();
     this.loadItemModerationPanel(item);
     
     this.initializeItemModerationPanel(item);
@@ -650,16 +654,6 @@ var ItemBrowser = Class.create({
     new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
   },
   
-  scrollToItem: function(item) {
-    new Effect.ScrollToInDiv(this.container, $(item).getAttribute('id'), {duration: 0.3});
-  },
-  
-  loadItemDescription: function(item) {
-    var body = $(item).down('.body');
-    var url = body.getAttribute('url');
-    this.loadData(item, body, url, "Unable to connect to the server to get the item body.", this.closeItem.bind(this));
-  },
-   
   loadItemModerationPanel: function(item) { 
     var moderation_panel = $(item).down(".new_tag_form");
     var url = moderation_panel.getAttribute('url') + "?" + $H(this.filters).toQueryString(); 
@@ -667,14 +661,16 @@ var ItemBrowser = Class.create({
   },
 
   loadData: function(item, target, url, error_message, error_callback) {
+    item = $(item);
+    
     if(target && target.empty()) {
       target.addClassName("loading");
       new Ajax.Request(url,{
         method: 'get',
           onComplete: function() {
             target.removeClassName("loading");
-            if(this.selectedItem == $(item)) {
-              this.scrollToItem(item);
+            if(this.selectedItem == item) {
+              item._item.scrollTo();
             }
           }.bind(this),
           onException: function(transport, exception) {
