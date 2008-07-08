@@ -203,60 +203,60 @@ Localization.define do |l|
   l.store :feedback_metadata,                     "%s on %s"
   
   # app/views/feedbacks/_form.html.erb
-  l.store :feedback_submit_button,                "Submit"
-  l.store :feedback_cancel_link,                  "cancel"
+  l.store :feedback_submit_button,                  "Submit"
+  l.store :feedback_cancel_link,                    "cancel"
   
   # app/views/feedbacks/_header_controls.html.erb
-  l.store :feedback_sort_label,                   "Sort:"
-  l.store :feedback_sort_user_label,              "User"
-  l.store :feedback_sort_date_label,              "Date"
-  l.store :feedback_search_placeholder,           "Search Feedback..."
+  l.store :feedback_sort_label,                     "Sort:"
+  l.store :feedback_sort_user_label,                "User"
+  l.store :feedback_sort_date_label,                "Date"
+  l.store :feedback_search_placeholder,             "Search Feedback..."
 
   # app/views/feeds/_feed.html.erb
-  l.store :last_updated,                          "Last Updated"
-  l.store :number_of_items,                       "# of Items"
-  l.store :globally_exclude,                      "Globally Exclude"
-  l.store :show,                                  "Show"
-  l.store :feeds_show_link_title,                 "Show Only Items From %s"
+  l.store :last_updated,                            "Last Updated"
+  l.store :number_of_items,                         "# of Items"
+  l.store :globally_exclude,                        "Globally Exclude"
+  l.store :show,                                    "Show"
+  l.store :feeds_show_link_title,                   "Show Only Items From %s"
   
   # app/views/feeds/_header_controls.html.erb
-  l.store :feeds_header_add,                       "Add"
-  l.store :feeds_header_import,                    "Import"
+  l.store :feeds_header_add,                        "Add"
+  l.store :feeds_header_import,                     "Import"
   
   # app/views/feeds/_index_header_controls.html.erb
-  l.store :feeds_header_title,                     "Title"
-  l.store :feeds_header_globally_exclude,          "Globally Exclude"
-  l.store :feeds_header_items,                     "Items"
-  l.store :feeds_header_last_updated,              "Last Updated"
+  l.store :feeds_header_title,                      "Title"
+  l.store :feeds_header_globally_exclude,           "Globally Exclude"
+  l.store :feeds_header_items,                      "Items"
+  l.store :feeds_header_created,                    "Created"
+  l.store :feeds_header_last_updated,               "Last Updated"
   l.store :feeds_header_search_placeholder,         "Search Feeds..."
   
   # app/views/feeds/error.html.erb
-  l.store :feeds_back_to_feeds,                    'Back to Feeds'
+  l.store :feeds_back_to_feeds,                     "Back to Feeds"
 
   # app/views/feeds/import.html.erb
-  l.store :feeds_upload_opml_file,                 "Upload an OPML file"
-  l.store :feeds_import_description,               "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
-  l.store :feeds_opml_file,                        "OPML File"
-  l.store :import,                                 "Import"
-  l.store :cancel,                                 "cancel"
+  l.store :feeds_upload_opml_file,                  "Upload an OPML file"
+  l.store :feeds_import_description,                "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
+  l.store :feeds_opml_file,                         "OPML File"
+  l.store :import,                                  "Import"
+  l.store :cancel,                                  "cancel"
   
   # app/views/feeds/new.html.erb
-  l.store :feeds_enter_new_feed_url,               "Enter a new Feed URL"
-  l.store :feeds_new_description1,                 "Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains."
-  l.store :feeds_new_description2,                 "Only items with enough text for the classifier to use will be collected from the feed."
-  l.store :feeds_new_url_label,                    "URL:"
-  l.store :create_feed_button,                     "Create Feed"
-  l.store :bookmarklet,                            "Bookmarklet"
-  l.store :feeds_add_to_winnow,                    "Add to Winnow"
-  l.store :feeds_new_bookmarklet_description1,     "Drag this button"
-  l.store :feeds_new_bookmarklet_description2,     "to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
-  l.store :feeds_bookmarklet_js_error_message,     "Drag this button to your bookmark or right click and select Bookmark this Link..."
+  l.store :feeds_enter_new_feed_url,                "Enter a new Feed URL"
+  l.store :feeds_new_description1,                  "Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains."
+  l.store :feeds_new_description2,                  "Only items with enough text for the classifier to use will be collected from the feed."
+  l.store :feeds_new_url_label,                     "URL:"
+  l.store :create_feed_button,                      "Create Feed"
+  l.store :bookmarklet,                             "Bookmarklet"
+  l.store :feeds_add_to_winnow,                     "Add to Winnow"
+  l.store :feeds_new_bookmarklet_description1,      "Drag this button"
+  l.store :feeds_new_bookmarklet_description2,      "to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
+  l.store :feeds_bookmarklet_js_error_message,      "Drag this button to your bookmark or right click and select Bookmark this Link..."
 
   # app/views/feeds/show.html.erb
   l.store :feeds_title,                             "Title"
   l.store :feeds_feed_home,                         "Feed Home"
   l.store :feeds_feed,                              "Feed"
-  l.store :created_on,                              "Created On"
   l.store :last_collected,                          "Last Collected"
   l.store :globally_excluded,                       "Globally Excluded"              
   
@@ -318,7 +318,7 @@ Localization.define do |l|
   l.store :leave_feedback,                          "Leave Feedback"
 
   # app/views/messages/_header_controls.html.erb  
-  l.store :messages_create_message,                 'Create message'
+  l.store :messages_create_message,                 "Create message"
 
   # app/views/messages/_sidebar.html.erb
   l.store :messages_messages,                       "Messages"
@@ -357,8 +357,7 @@ Localization.define do |l|
   %s|
   
   # app/views/taggings/destroy.js.rjs
-  l.store :taggings_destroy_message,
-  %|You have just removed the last example of tag %s
+  l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s
     "Do you want to completely destroy the tag %s.
     "with %s positive examples and %s negative examples, or leave %s on the My Tags page?|
   l.store :taggings_destroy_tag,                    "Destroy %s"
@@ -411,12 +410,12 @@ Localization.define do |l|
   
   # app/views/user_notifier
   l.store :user_notifier_activation_text,           "%s, your account has been activated.  You may now visit winnow at: %s"
-  l.store :user_notifier_invite_accepted,            %|%s
+  l.store :user_notifier_invite_accepted,           %|%s
 
 Please visit %s to signup for your account.|
-  l.store :user_notifier_invite_requested,           "Your request for an invitation to Winnow has been submitted. You will be notified at %s when your invitation is accepted."
-  l.store :user_notifier_reminder_text,              "To update your password, visit %s"
-  l.store :user_notifier_signup_notification_text,   %|Welcome to Winnow, %s.
+  l.store :user_notifier_invite_requested,          "Your request for an invitation to Winnow has been submitted. You will be notified at %s when your invitation is accepted."
+  l.store :user_notifier_reminder_text,             "To update your password, visit %s"
+  l.store :user_notifier_signup_notification_text,  %|Welcome to Winnow, %s.
 
 Please click on the following link to confirm your registration:
 

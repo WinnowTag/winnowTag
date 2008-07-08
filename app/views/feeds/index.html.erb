@@ -4,7 +4,7 @@
 		document.observe('dom:loaded', function() {
 			itemBrowser = new ItemBrowser('feeds', 'content', { orders: {
 			  asc:       ["title", "globally_exclude", "feed_items_count"], 
-			  desc:      ["updated_on"],
+			  desc:      ["created_on", "updated_on"],
 			  "default": "title"
 			}});
 		});

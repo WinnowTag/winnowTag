@@ -64,7 +64,7 @@ class Feed < ActiveRecord::Base
     end
 
     order = case options[:order]
-    when "title", "updated_on", "feed_items_count"
+    when "title", "created_on", "updated_on", "feed_items_count"
       "feeds.#{options[:order]}"
     when "globally_exclude"
       options[:order]
