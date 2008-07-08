@@ -2174,6 +2174,9 @@ a.bookmarklet:hover {
 }
 
 .loading {
-  background: url(../images/indicator_medium.gif) center center no-repeat;
-  height: 32px;
+  background-image: url(../images/indicator_medium.gif);
+  background-position: center center;
+  background-repeat: no-repeat;
+  min-height: 32px;
+  min-width: 32px;
 }

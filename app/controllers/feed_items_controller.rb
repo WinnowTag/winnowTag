@@ -109,6 +109,12 @@ class FeedItemsController < ApplicationController
     respond_to :js
   end
   
+  def information
+    @feed_item = FeedItem.find(params[:id]) 
+    @tag = Tag.find(params[:tag_id]) 
+    @taggings = @feed_item.taggings.select { |tagging| tagging.tag == @tag }
+  end
+  
   def sidebar
     render :layout => false
   end

@@ -31,7 +31,7 @@ describe '/feeds/show' do
   
   it "should show the created on date" do
     render '/feeds/show'
-    response.should have_tag('th', 'Created On')
+    response.should have_tag('th', 'Created')
     response.should have_tag('td', /\d+ \w+, \d+/)
   end
   

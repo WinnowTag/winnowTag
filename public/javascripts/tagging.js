@@ -12,8 +12,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML == tag_name;
   });
-  // TODO: Get rid of tag.name in id
-  var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
+  var tag_information = $(taggable_id).down(".information");
   var url = '/taggings/create';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -28,11 +27,11 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
     tag_control.addClassName(tagging_type);
-    tag_info.removeClassName(other_tagging_type);
-    tag_info.addClassName(tagging_type);
+    tag_information.removeClassName(other_tagging_type);
+    tag_information.addClassName(tagging_type);
   } else if (tag_control.hasClassName('classifier')) {
     tag_control.addClassName(tagging_type); 
-    tag_info.addClassName(tagging_type); 
+    tag_information.addClassName(tagging_type); 
   }
   
   sendTagRequest(url, parameters);
@@ -44,8 +43,7 @@ function remove_tagging(taggable_id, tag_name) {
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML == tag_name;
   });
-  // TODO: Get rid of tag.name in id
-  var tag_info = $("tag_info_for_" + tag_name + "_on_" + taggable_id);
+  var tag_information = $(taggable_id).down(".information");
   var url = '/taggings/destroy';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -55,11 +53,11 @@ function remove_tagging(taggable_id, tag_name) {
   if (tag_control) {
     tag_control.removeClassName('positive');
     tag_control.removeClassName('negative');
-    tag_info.removeClassName('positive');
-    tag_info.removeClassName('negative');
+    tag_information.removeClassName('positive');
+    tag_information.removeClassName('negative');
     if(!tag_control.match('.classifier')) {
       tag_control.removeClassName('selected');
-      tag_info.removeClassName('selected');
+      tag_information.removeClassName('selected');
       remove_tag_control(taggable_id, tag_name); 
     }
   }
@@ -79,9 +77,8 @@ function sendTagRequest(url, parameters) {
 function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
-  // TODO: Get rid of tag.name in id
-  var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
-  var tag_control = '<li class="stop positive tag_control" onclick="itemBrowser.selectTaggingInformation(this, \'' + tag_info_id + '\');" style="display: none;">' + 
+  // TODO: needs to know the tag id to load the information panel
+  var tag_control = '<li class="stop positive tag_control" onclick="itemBrowser.selectTaggingInformation(this);" style="display: none;">' + 
     // TODO: sanitize
     '<span class="name">' + tag + '</span>' + 
   '</li> ';
@@ -98,8 +95,5 @@ function remove_tag_control(taggable_id, tag) {
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML == tag;
   });
-  // TODO: Get rid of tag.name in id
-  var tag_info_id = 'tag_info_for_' + tag + '_on_' + taggable_id;
-  Element.remove(tag_info_id);
   Effect.Fade(tag_control, { afterFinish: function() { tag_control.remove(); } });
 }

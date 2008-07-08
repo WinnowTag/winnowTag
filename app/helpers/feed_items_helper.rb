@@ -48,7 +48,7 @@ module FeedItemsHelper
   def tag_controls(feed_item)
     html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user
-        tag_control_for(feed_item, tag, classes_for_taggings(taggings, [:stop]))
+        tag_control_for(feed_item, tag, classes_for_taggings(taggings, :stop))
       else
         if tagging = Array(taggings).first
           tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:stop, :public]))
@@ -61,7 +61,7 @@ module FeedItemsHelper
   
   # Format a classifier tagging strength as a percentage.
   def format_classifier_strength(taggings)
-    if classifier_tagging = taggings.detect {|t| t.classifier_tagging? }
+    if classifier_tagging = taggings.detect {|tagging| tagging.classifier_tagging? }
       "%.2f%" % (classifier_tagging.strength * 100)
     end
   end
@@ -70,32 +70,14 @@ module FeedItemsHelper
   def tag_control_for(feed_item, tag, classes)
     classes << "tag_control" << dom_id(tag)
 
-    # TODO: Get rid of tag.name in id
-    information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
     
     # TODO: sanitize
     content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), 
-                     :onclick => "itemBrowser.selectTaggingInformation(this, #{information_id.to_json})")
+                     :onclick => "itemBrowser.selectTaggingInformation(this, #{tag.id})")
   end
   
-  def tag_infos(feed_item)
-    html = feed_item.taggings_to_display.map do |tag, taggings|
-      if tag.user == current_user
-        tag_info_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
-      else
-        if tagging = Array(taggings).first
-          tag_info_for(feed_item, tag, classes_for_taggings(tagging, [:public]), format_classifier_strength(taggings))
-        end
-      end
-    end.compact.join(" ")
-    
-    content_tag(:div, html)
-  end
-
-  def tag_info_for(feed_item, tag, classes, classifier_strength = nil)
-    # TODO: Get rid of tag.name in id
-    information_id = dom_id(feed_item, "tag_info_for_#{tag.name}_on")
+  def tag_info_for(feed_item, tag, classifier_strength = nil)
     clues_id = "feed_item_#{feed_item.id}_tag_#{tag.id}_clues"
 
     if tag.user == current_user
@@ -129,14 +111,13 @@ module FeedItemsHelper
     information << content_tag(:div, automatic, :class => "automatic")
     information << content_tag(:div, nil, :id => clues_id, :class => "clues")
     
-    classes << "information" << "clearfix" << "stop"
-    
-    content_tag(:div, information, :id => information_id, :class => classes.join(" "))
+    information
   end
   
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
-    
+	  classes  = Array(classes)
+
     if tagging = taggings.first
       if tagging.classifier_tagging?
         classes << "classifier"

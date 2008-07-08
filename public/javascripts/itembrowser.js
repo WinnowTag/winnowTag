@@ -423,20 +423,46 @@ var ItemBrowser = Class.create({
     }
   },
   
-  selectTaggingInformation: function(tag, information) {
+  selectTaggingInformation: function(tag, tag_id) {
     tag = $(tag);
-    information = $(information);
+    
+    var item = tag.up('.item');
+    var information = item.down(".information");
 
     if(tag.hasClassName("selected")) {
       tag.removeClassName("selected");
       information.removeClassName("selected");
     } else {
-      var item = tag.up('.item');
+      ["public", "classifier", "positive", "negative"].each(function(clazz) {
+        if(tag.hasClassName(clazz)) {
+          information.addClassName(clazz);
+        } else {
+          information.removeClassName(clazz);
+        }
+      });
+    
+      if(tag.informationHTML) {
+        information.update(tag.informationHTML);
+      } else {
+        information.update("");
+        information.addClassName("loading");
+        
+        new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/information', { 
+          method: 'get', parameters: { tag_id: tag_id }, onComplete: function(transport) {
+            tag.informationHTML = transport.responseText;
 
+            information.removeClassName("loading");
+            information.update(tag.informationHTML)
+
+            this.scrollToItem(item);
+          }.bind(this)
+        });
+      }
+    
       itemBrowser.selectItem(item);
       tag.addClassName('selected');
       information.addClassName('selected');
-    
+
       this.scrollToItem(item);
     }
   },
