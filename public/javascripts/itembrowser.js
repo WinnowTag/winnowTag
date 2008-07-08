@@ -406,7 +406,7 @@ var ItemBrowser = Class.create({
     var indicator = $$("#" + this.container.getAttribute("id") + " > .indicator").first();
     indicator.remove();
   },
-  
+
   selectItem: function(item) {
     this.deselectItem(this.selectedItem);
     this.selectedItem = $(item);
@@ -510,12 +510,14 @@ var ItemBrowser = Class.create({
   },
   
   openItem: function(item) {
+    item = $(item);
+    
     this.closeAllItems();
-    if(this.selectedItem != $(item)) {
+    if(this.selectedItem != item) {
       this.selectItem(item);
     }
-    $(item).addClassName("open");
-    this.markItemRead(item);
+    item.addClassName("open");
+    item._item.markRead();
     this.scrollToItem(item);
     this.loadItemDescription(item);
   },
@@ -637,29 +639,9 @@ var ItemBrowser = Class.create({
     this.toggleOpenCloseModerationPanel(this.selectedItem);
   },
   
-  markItemRead: function(item) {
-    item = $(item);
-    item.addClassName('read');
-    new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_read', {method: 'put'});
-  },
-  
-  markItemUnread: function(item) {
-    item = $(item);
-    item.removeClassName('read');    
-    new Ajax.Request('/' + this.options.controller + '/' + item.getAttribute('id').match(/\d+/).first() + '/mark_unread', {method: 'put'});
-  },
-  
-  toggleReadUnreadItem: function(item) {
-    if($(item).hasClassName('read')) {
-      this.markItemUnread(item);      
-    } else {
-      this.markItemRead(item);
-    }
-  },
-  
   toggleReadUnreadSelectedItem: function() {
     if(this.selectedItem) {
-      this.toggleReadUnreadItem(this.selectedItem);
+      this.selectedItem._item.toggleReadUnread();
     }
   },
   
