@@ -68,16 +68,24 @@ var Item = Class.create({
   },
   
   loadAddTagForm: function() {
-    this.load(this.add_tag_form);
+    this.load(this.add_tag_form, function() {
+      itemBrowser.initializeItemModerationPanel(this.element);
+    }.bind(this));
   },
   
-  load: function(target) {
+  load: function(target, onComplete) {
     if(!target.empty()) { return; }
     
     target.addClassName("loading");
-    new Ajax.Request(target.getAttribute('url'), { method: 'get',
-      onComplete: function() {
+    new Ajax.Request(target.getAttribute("url"), { method: 'get',
+      onComplete: function(transport) {
         target.removeClassName("loading");
+        target.update(transport.responseText);
+        
+        if(onComplete) {
+          onComplete();
+        }
+        
         if(this.isSelected()) {
           this.scrollTo();
         }

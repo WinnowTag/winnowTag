@@ -27,10 +27,10 @@ ActionController::Routing::Routes.draw do |map|
                 }
   map.resources :feed_items,
                 :member => {
-                  :clues => :get,
-                  :description => :get,
-                  :moderation_panel => :get,
                   :information => :get,
+                  :clues => :get,
+                  :add_tag_form => :get,
+                  :body => :get,
                   :mark_read => :put,
                   :mark_unread => :put
                 },

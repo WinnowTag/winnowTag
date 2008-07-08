@@ -1,4 +1,4 @@
-<% cache(:action => 'index', :action_suffix => dom_id(feed_item, 'description')) do -%>
+<% cache(:action => 'index', :action_suffix => dom_id(feed_item, 'body')) do -%>
 	<h3><%= link_to_feed_item(feed_item) %></h3>
 	<p class="metadata">
 		<% if feed_item.author.blank? -%>

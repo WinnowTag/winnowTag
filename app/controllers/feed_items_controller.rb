@@ -88,14 +88,12 @@ class FeedItemsController < ApplicationController
     render :nothing => true
   end
   
-  def description
+  def body
     @feed_item = FeedItem.find(params[:id])
-    respond_to :js
   end
   
-  def moderation_panel 
+  def add_tag_form 
     @feed_item = FeedItem.find(params[:id]) 
-    respond_to :js
   end
   
   def information
