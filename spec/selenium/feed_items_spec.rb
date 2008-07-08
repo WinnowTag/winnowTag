@@ -56,13 +56,13 @@ describe "FeedItemsTest" do
   it "open_close_moderation_panel " do
     feed_item = FeedItem.find(1)
  
-    assert_not_visible "css=#feed_item_#{feed_item.id} .new_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item.id} .add_tag_form"
  
     click "css=#feed_item_#{feed_item.id} .add_tag" 
-    assert_visible "css=#feed_item_#{feed_item.id} .new_tag_form"
+    assert_visible "css=#feed_item_#{feed_item.id} .add_tag_form"
  
     click "css=#feed_item_#{feed_item.id} .add_tag" 
-    assert_not_visible "css=#feed_item_#{feed_item.id} .new_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item.id} .add_tag_form"
   end 
   
   it "open_close_moderation_panel_does_not_open_close_item" do

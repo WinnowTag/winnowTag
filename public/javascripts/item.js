@@ -10,7 +10,7 @@ var Item = Class.create({
     this.closed       = this.element.down(".closed");
     this.status       = this.element.down(".status");
     this.add_tag      = this.element.down(".add_tag");
-    this.add_tag_form = this.element.down(".new_tag_form");
+    this.add_tag_form = this.element.down(".add_tag_form");
     this.body         = this.element.down(".body");
     
     this.setupEventListeners();

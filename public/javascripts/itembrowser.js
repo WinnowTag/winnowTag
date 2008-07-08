@@ -558,9 +558,9 @@ var ItemBrowser = Class.create({
       this.selectItem(item);
     }
 
-    $$('.new_tag_form').invoke("hide");
+    $$('.add_tag_form').invoke("hide");
 
-    item.down(".new_tag_form").show();
+    item.down(".add_tag_form").show();
     item._item.scrollTo();
     item._item.loadAddTagForm();
     
@@ -569,7 +569,7 @@ var ItemBrowser = Class.create({
   
   // TODO: need to update this local list when tag controls are clicked so they are always in sync
   initializeItemModerationPanel: function(item) {
-    var panel = $(item).down(".new_tag_form");
+    var panel = $(item).down(".add_tag_form");
     var field = panel.down("input[type=text]");
     var list = panel.down(".auto_complete");
     var add = panel.down("input[type=submit]");
@@ -628,11 +628,11 @@ var ItemBrowser = Class.create({
   closeItemModerationPanel: function(item) {
     var input = $('new_tag_field_' + $(item).getAttribute('id'));
     if(input) { input.blur(); }
-    $(item).down(".new_tag_form").hide();
+    $(item).down(".add_tag_form").hide();
   },
   
   toggleOpenCloseModerationPanel: function(item) {
-    if($(item).down(".new_tag_form").visible()) {
+    if($(item).down(".add_tag_form").visible()) {
       this.closeItemModerationPanel(item);
     } else {
       this.openItemModerationPanel(item);

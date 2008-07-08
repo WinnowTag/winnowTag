@@ -1073,7 +1073,7 @@ div.sorting_and_filtering_controls {
   color: #999;
 }
 
-.item .new_tag_form {
+.item .add_tag_form {
   position: absolute;
   right: 2px;
   top: 3px;
