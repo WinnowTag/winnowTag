@@ -102,7 +102,7 @@ describe "FeedItemsTest" do
     open feed_items_path
     wait_for_ajax
   
-    see_element "#feed_items .empty"
+    see_element "#content .empty"
   end
   
   it "does not display an empty message when there are feed items" do
