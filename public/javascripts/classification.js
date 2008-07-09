@@ -61,7 +61,7 @@ Classification.startItemBrowserClassification = function(classifier_url, puct_co
         var training = tag.down(".training");
         training.addClassName("loading");
 
-        new Ajax.Updater(training, "/tags/" + tag.getAttribute('id').match(/\d+/).first(); + "/information", { method: 'get',
+        new Ajax.Updater(training, "/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
           onComplete: function() {
             training.removeClassName("loading");
           }
