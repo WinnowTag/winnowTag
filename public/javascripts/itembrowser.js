@@ -525,9 +525,11 @@ var ItemBrowser = Class.create({
   },
   
   closeItem: function(item) {
+    item = $(item);
+    
     if(item) {
-      $(item).removeClassName("open");
-      this.closeItemModerationPanel(item);
+      item.removeClassName("open");
+      item._item.hideAddTagForm();
     }
   },
   
@@ -550,63 +552,51 @@ var ItemBrowser = Class.create({
     }
   },
   
-  openItemModerationPanel: function(item) {
+  // TODO: need to update this local list when tag controls are clicked so they are always in sync
+  initializeItemModerationPanel: function(item, attach_events) {
     item = $(item);
     
-    if(this.selectedItem != item) {
-      this.closeItem(this.selectedItem);
-      this.selectItem(item);
-    }
-
-    $$('.add_tag_form').invoke("hide");
-
-    item.down(".add_tag_form").show();
-    item._item.scrollTo();
-    item._item.loadAddTagForm();
-    
-    this.initializeItemModerationPanel(item);
-  },
-  
-  // TODO: need to update this local list when tag controls are clicked so they are always in sync
-  initializeItemModerationPanel: function(item) {
-    var panel = $(item).down(".add_tag_form");
+    var panel = item.down(".add_tag_form");
     var field = panel.down("input[type=text]");
     var list = panel.down(".auto_complete");
     var add = panel.down("input[type=submit]");
     var cancel = panel.down("a");
 
     if(field && list && add && cancel) {
-      if(!this.auto_completers[$(item).getAttribute("id")]) {
-        this.auto_completers[$(item).getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
+      if(!this.auto_completers[item.getAttribute("id")]) {
+        this.auto_completers[item.getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
           partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
           afterUpdateElement: function() { 
-            this.closeItemModerationPanel(item);
+            item._item.hideAddTagForm();
             // TODO: Move this call into item browser...
-            window.add_tagging($(item).getAttribute("id"), field.value, 'positive');
+            window.add_tagging(item.getAttribute("id"), field.value, 'positive');
             field.blur();
             field.value = "";
           }.bind(this)
         });
       }
-      var used_tags = $$("#tag_controls_" + $(item).getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
-      this.auto_completers[$(item).getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
+      var used_tags = $$("#tag_controls_" + item.getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
+      this.auto_completers[item.getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
         return used_tags.include(tag);
       });
-      this.auto_completers[$(item).getAttribute("id")].activate();
+      this.auto_completers[item.getAttribute("id")].activate();
 
-      field.observe("blur", function() {
-        setTimeout(this.closeItemModerationPanel.bind(this, item), 200);
-      }.bind(this));
-      field.observe("keydown", function(event) {
-        if(event.keyCode == Event.KEY_ESC) { this.closeItemModerationPanel(item); }
-      }.bind(this));
-      field.focus();
+      if(attach_events) {
+        field.observe("blur", function() {
+          setTimeout(item._item.hideAddTagForm.bind(item._item), 200);
+        }.bind(this));
+        field.observe("keydown", function(event) {
+          if(event.keyCode == Event.KEY_ESC) { item._item.hideAddTagForm(); }
+        }.bind(this));
       
-      add.observe("click", function() {
-        this.auto_completers[$(item).getAttribute("id")].selectEntry();
-      }.bind(this));
+        add.observe("click", function() {
+          this.auto_completers[item.getAttribute("id")].selectEntry();
+        }.bind(this));
 
-      cancel.observe("click", this.closeItemModerationPanel.bind(this, item));
+        cancel.observe("click", item._item.hideAddTagForm.bind(item._item));
+      }
+      
+      field.focus();
       
       (function() {
         new Effect.ScrollToInDiv(this.container, list, {duration: 0.3, bottom_margin: 5});
@@ -625,22 +615,8 @@ var ItemBrowser = Class.create({
     this.options.tags = this.options.tags.without(tag);
   },
 
-  closeItemModerationPanel: function(item) {
-    var input = $('new_tag_field_' + $(item).getAttribute('id'));
-    if(input) { input.blur(); }
-    $(item).down(".add_tag_form").hide();
-  },
-  
-  toggleOpenCloseModerationPanel: function(item) {
-    if($(item).down(".add_tag_form").visible()) {
-      this.closeItemModerationPanel(item);
-    } else {
-      this.openItemModerationPanel(item);
-    }
-  },
-  
   toggleOpenCloseSelectedItemModerationPanel: function() {
-    this.toggleOpenCloseModerationPanel(this.selectedItem);
+    this.selectedItem._item.toggleAddTagForm();
   },
   
   toggleReadUnreadSelectedItem: function() {

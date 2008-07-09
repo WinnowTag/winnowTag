@@ -5,13 +5,14 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Item = Class.create({
   initialize: function(element) {
-    this.element      = element;
-    this.id           = this.element.getAttribute('id').match(/\d+/).first();
-    this.closed       = this.element.down(".closed");
-    this.status       = this.element.down(".status");
-    this.add_tag      = this.element.down(".add_tag");
-    this.add_tag_form = this.element.down(".add_tag_form");
-    this.body         = this.element.down(".body");
+    this.element       = element;
+    this.id            = this.element.getAttribute('id').match(/\d+/).first();
+    this.closed        = this.element.down(".closed");
+    this.status        = this.element.down(".status");
+    this.add_tag       = this.element.down(".add_tag");
+    this.add_tag_form  = this.element.down(".add_tag_form");
+    this.add_tag_field = this.add_tag_form.down("input[type=text]");
+    this.body          = this.element.down(".body");
     
     this.setupEventListeners();
     
@@ -33,7 +34,7 @@ var Item = Class.create({
     }.bind(this));
 
     this.add_tag.observe("click", function() {
-      itemBrowser.toggleOpenCloseModerationPanel(this.element);
+      this.toggleAddTagForm();
     }.bind(this));
   },
   
@@ -67,9 +68,38 @@ var Item = Class.create({
     this.load(this.body);
   },
   
+  toggleAddTagForm: function() {
+    if(this.add_tag_form.visible()) {
+      this.hideAddTagForm();
+    } else {
+      this.showAddTagForm();
+    }
+  },
+  
+  showAddTagForm: function() {
+    if(!this.isSelected()) {
+      itemBrowser.closeItem(itemBrowser.selectedItem);
+      itemBrowser.selectItem(this.element);
+    }
+
+    // $$('.add_tag_form').invoke("hide");
+
+    this.add_tag_form.show();
+    this.loadAddTagForm();
+    this.scrollTo();
+
+    itemBrowser.initializeItemModerationPanel(this.element, false);
+  },
+  
+  hideAddTagForm: function() {
+    if(this.add_tag_field) { this.add_tag_field.blur(); }
+    this.add_tag_form.hide()
+  },
+
   loadAddTagForm: function() {
     this.load(this.add_tag_form, function() {
-      itemBrowser.initializeItemModerationPanel(this.element);
+      this.add_tag_field = this.add_tag_form.down("input[type=text]");
+      itemBrowser.initializeItemModerationPanel(this.element, true);
     }.bind(this));
   },
   
