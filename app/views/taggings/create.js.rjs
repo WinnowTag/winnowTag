@@ -5,6 +5,8 @@ page << "if(!$('#{dom_id(@tagging.tag)}')) {"
   page.draggable(dom_id(@tagging.tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :constraint => "'vertical'", 
     :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }")
   page << "itemBrowser.styleFilters()"
+page << "} else {"
+  page[@tagging.tag].down(".controls").update tag_training(@tagging.tag)
 page << "}"
 
 page << "if ($('classification_button')) {"
