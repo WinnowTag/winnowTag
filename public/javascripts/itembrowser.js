@@ -565,7 +565,7 @@ var ItemBrowser = Class.create({
     if(field && list && add && cancel) {
       if(!this.auto_completers[item.getAttribute("id")]) {
         this.auto_completers[item.getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
-          partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
+          minChars: 0, partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
           afterUpdateElement: function() { 
             item._item.hideAddTagForm();
             // TODO: Move this call into item browser...
