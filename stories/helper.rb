@@ -18,6 +18,7 @@ def valid_user_attributes(attributes = {})
     :password => "password",
     :password_confirmation => "password",
     :firstname => "John_#{unique_id}",
-    :lastname => "Doe_#{unique_id}"
+    :lastname => "Doe_#{unique_id}",
+    :activated_at => Time.now
   }.merge(attributes)
 end

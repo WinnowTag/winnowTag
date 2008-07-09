@@ -11,9 +11,9 @@ module Remote
       end
     end
     
-    def self.find_or_create_by_url(url)
+    def self.find_or_create_by_url_and_created_by(url, created_by)
       with_redirect do
-        self.create(:url => url)
+        self.create(:url => url, :created_by => created_by)
       end
     end
     

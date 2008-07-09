@@ -108,7 +108,7 @@ describe FeedsController do
       feed = mock_model(Remote::Feed)
       feed.errors.should_receive(:empty?).and_return(false)
       feed.errors.should_receive(:on).with(:url).and_return("Error")
-      Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
+      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
     
       post 'create', :feed => {:url => 'http://example.com'}
       response.should be_success
@@ -121,7 +121,7 @@ describe FeedsController do
       feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
       feed.errors.should_receive(:empty?).and_return(true)
       feed.should_receive(:collect)
-      Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
+      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
     
@@ -141,7 +141,7 @@ describe FeedsController do
       feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now)
       feed.errors.should_receive(:empty?).and_return(true)
       feed.should_receive(:collect)
-      Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
+      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
   
@@ -199,7 +199,7 @@ describe FeedsController do
       feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
       feed.errors.should_receive(:empty?).and_return(true)
       feed.should_receive(:collect)
-      Remote::Feed.should_receive(:find_or_create_by_url).with('http://example.com').and_return(feed)
+      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id).and_raise(ActiveRecord::StatementInvalid)
     
@@ -221,7 +221,7 @@ describe FeedsController do
         
         feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now, :collect => nil)
         feed.errors.stub!(:empty?).and_return(true)
-        Remote::Feed.stub!(:find_or_create_by_url).with('http://example.com').and_return(feed)
+        Remote::Feed.stub!(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
         FeedSubscription.stub!(:find_or_create_by_feed_id_and_user_id)
     
         post :create, :feed => {:url => 'http://example.com'}, :format => 'js'

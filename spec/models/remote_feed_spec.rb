@@ -62,10 +62,10 @@ describe Remote::Feed do
   
   it "find_or_create_by_url" do
     ActiveResource::HttpMock.respond_to do |http|
-      http.post  "/feeds.xml", {}, {:url => 'http://example.com'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
+      http.post  "/feeds.xml", {}, {:url => 'http://example.com', :created_by => 'quentin'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
     end
     
-    job = Remote::Feed.find_or_create_by_url("http://example.com")
+    job = Remote::Feed.find_or_create_by_url_and_created_by("http://example.com", 'quentin')
     assert_equal "http://example.com", job.url
     assert_equal "23", job.id
     assert job.errors.empty?
@@ -73,13 +73,14 @@ describe Remote::Feed do
   
   it "find_or_create_by_url_with_duplicate    " do
     ActiveResource::HttpMock.respond_to do |http|
-      http.post  "/feeds.xml", {}, {:url => 'http://example.com'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
-      http.get   "/feeds/24.xml", {}, {:url => 'http://www.example.com', :id => 24}.to_xml(:root => 'feed'), 200
+      http.post  "/feeds.xml", {}, {:url => 'http://example.com', :created_by => 'quentin'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
+      http.get   "/feeds/24.xml", {}, {:url => 'http://www.example.com', :id => 24, :created_by => 'quentin'}.to_xml(:root => 'feed'), 200
     end
     
-    job = Remote::Feed.find_or_create_by_url("http://example.com")
+    job = Remote::Feed.find_or_create_by_url_and_created_by("http://example.com", 'quentin')
     assert_equal "http://www.example.com", job.url
     assert_equal 24, job.id
+    job.created_by.should == 'quentin'
     assert job.errors.empty?
   end
   
@@ -89,7 +90,7 @@ describe Remote::Feed do
       http.get   "/feeds/24.xml", {}, nil, 302, 'Location' => '/feeds/24'
     end
     
-    assert_raise(ActiveResource::Redirection) { job = Remote::Feed.find_or_create_by_url('http://example.com') }    
+    assert_raise(ActiveResource::Redirection) { job = Remote::Feed.find_or_create_by_url_and_created_by('http://example.com', 'quentin') }    
   end
   
   describe "attributes" do

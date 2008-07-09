@@ -28,7 +28,7 @@ class FeedsController < ApplicationController
   end
   
   def create
-    @feed = Remote::Feed.find_or_create_by_url(params[:feed][:url])
+    @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
     if @feed.errors.empty?
       FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil      
       @collection_job = @feed.collect(:created_by => current_user.login, 
