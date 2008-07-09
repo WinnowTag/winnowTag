@@ -57,10 +57,11 @@ Classification.startItemBrowserClassification = function(classifier_url, puct_co
       if (confirm("Classification has completed.\nDo you want to reload the items?")) {
         itemBrowser.reload();
       }
-      $$("#tag_filters .tag").each(function(tag) {
-        var training = tag.down(".training");
-        training.addClassName("loading");
+      $$(".tag .training").each(function(training) {
+        var tag = tag.up(".tag");
 
+        training.update("");
+        training.addClassName("loading");
         new Ajax.Updater(training, "/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
           onComplete: function() {
             training.removeClassName("loading");

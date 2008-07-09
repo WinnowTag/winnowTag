@@ -11,7 +11,7 @@ if @tag.taggings.empty?
   EOJS
 end
 
-page[@tag].down(".training").update tag_training(@tag)
+page.select(".#{dom_id(@tag)} .training").invoke :update, tag_training(@tag)
 
 page << "if ($('classification_button')) {"
   page['classification_button'].disabled = false
