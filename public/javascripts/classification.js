@@ -57,6 +57,16 @@ Classification.startItemBrowserClassification = function(classifier_url, puct_co
       if (confirm("Classification has completed.\nDo you want to reload the items?")) {
         itemBrowser.reload();
       }
+      $$("#tag_filters .tag").each(function(tag) {
+        var training = tag.down(".training");
+        training.addClassName("loading");
+
+        new Ajax.Updater(training, "/tags/" + tag.getAttribute('id').match(/\d+/).first(); + "/information", { method: 'get',
+          onComplete: function() {
+            training.removeClassName("loading");
+          }
+        });
+      });
     },
     onProgressUpdated: function(c, progress) {
       $('progress_bar').setStyle({width: progress.progress + '%'});      

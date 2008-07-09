@@ -719,7 +719,7 @@ ul.filter_list li .actions .info {
   overflow: hidden;
 }
 
-ul.filter_list li .controls {
+ul.filter_list li .training {
   display: none;
   padding: 3px 0;
   position: absolute;
@@ -736,24 +736,24 @@ ul.filter_list li .controls {
   -webkit-border-bottom-right-radius: 0.4em;
 }
 
-ul.filter_list li.info .controls {
+ul.filter_list li.info .training {
   display: block;
 }
 
-ul.filter_list li .controls div {
+ul.filter_list li .training div {
 	float: left;
 	margin: 0.3em 0;
 	padding: 0 0.5em;
 	border-left: 1px solid #ccc;
 }
 
-ul.filter_list li .controls strong {
+ul.filter_list li .training strong {
 	font-size: 1.3em;
 	letter-spacing: -1px;
 	line-height: .97em;
 }
 
-ul.filter_list li .controls p {
+ul.filter_list li .training p {
 	font-size: .75em;
 	font-weight: bold;
 	text-transform: uppercase;
@@ -761,28 +761,28 @@ ul.filter_list li .controls p {
 	color: #999;
 }
 
-ul.filter_list li .controls .positive {
+ul.filter_list li .training .positive {
   border: none;
 	width: 5em;
 }
 
-ul.filter_list li .controls .negative {
+ul.filter_list li .training .negative {
 	width: 5em;
 }
 
-ul.filter_list li .controls .automatic {
+ul.filter_list li .training .automatic {
 	width: 6em;
 }
 
-ul.filter_list li .controls .positive strong {
+ul.filter_list li .training .positive strong {
 	color: #52984B;
 }
 
-ul.filter_list li .controls .negative strong {
+ul.filter_list li .training .negative strong {
 	color: #C12A2F;
 }
 
-ul.filter_list li .controls .automatic strong {
+ul.filter_list li .training .automatic strong {
 	color: #666;
 }
 

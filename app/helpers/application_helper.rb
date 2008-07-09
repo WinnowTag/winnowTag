@@ -190,7 +190,7 @@ module ApplicationHelper
     html << link_to_function("Info", "", :class => "info", :onmouseover => "$(this).up('li').addClassName('info')", :onmouseout => "$(this).up('li').removeClassName('info')")
     html  = content_tag(:div, html, :class => "actions clearfix")
 
-    html << content_tag(:div, tag_training(tag), :class => "controls clearfix")
+    html << content_tag(:div, tag_training(tag), :class => "training clearfix")
 
     # TODO: sanitize
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
