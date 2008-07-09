@@ -58,7 +58,7 @@ Classification.startItemBrowserClassification = function(classifier_url, puct_co
         itemBrowser.reload();
       }
       $$(".tag .training").each(function(training) {
-        var tag = tag.up(".tag");
+        var tag = training.up(".tag");
 
         training.update("");
         training.addClassName("loading");
