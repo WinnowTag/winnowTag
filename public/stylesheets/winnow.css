@@ -2109,6 +2109,10 @@ a.bookmarklet:hover {
   border-bottom: 1px dotted #ccc;
 }
 
+.messages ul li.sidebar_message .body {
+  word-wrap: break-word;
+}
+
 .messages ul li.sidebar_message .date {
   color: #999;
   float: right;
