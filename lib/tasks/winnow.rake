@@ -86,6 +86,11 @@ Spec::Rake::SpecTask.new('rcov_for_cc') do |t|
   t.rcov_dir = (ENV['CC_BUILD_ARTIFACTS'] || ".") + '/coverage'
 end
 
+Spec::Rake::SpecTask.new('spec:code') do |t|
+  t.spec_opts = ['--options', "spec/spec.opts"]
+  t.spec_files = FileList["spec/code/**/*_spec.rb"]
+end
+
 desc "Task for CruiseControl.rb"
 task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
