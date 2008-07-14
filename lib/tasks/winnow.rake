@@ -90,10 +90,24 @@ desc "Task for CruiseControl.rb"
 task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
   Rake::Task['db:migrate'].invoke
+  Rake::Task['spec:code'].invoke
   Rake::Task['spec:controllers'].invoke
   Rake::Task['spec:helpers'].invoke
   Rake::Task['spec:models'].invoke
   Rake::Task['spec:views'].invoke
   Rake::Task['test:stories'].invoke
   Rake::Task['rcov_for_cc'].invoke
+end
+
+task :cruise_with_selenium do
+  ENV['RAILS_ENV'] = RAILS_ENV = 'test'
+  Rake::Task['db:migrate'].invoke
+  Rake::Task['spec:code'].invoke
+  Rake::Task['spec:controllers'].invoke
+  Rake::Task['spec:helpers'].invoke
+  Rake::Task['spec:models'].invoke
+  Rake::Task['spec:views'].invoke
+  Rake::Task['test:stories'].invoke
+  Rake::Task['rcov_for_cc'].invoke
+  Rake::Task['spec:selenium'].invoke
 end
