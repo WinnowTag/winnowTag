@@ -52,7 +52,7 @@ describe AboutController do
     end
     
     it "sets the messages for the view" do
-      Message.should_receive(:find_for_user_and_global).with(@user.id, :order => "created_at DESC").and_return([@message])
+      Message.should_receive(:find_for_user_and_global).with(@user.id, :limit => 30, :order => "created_at DESC").and_return([@message])
       
       do_get
       assigns[:messages].should == [@message]
