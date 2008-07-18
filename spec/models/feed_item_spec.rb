@@ -386,8 +386,9 @@ describe FeedItem do
       @user = users(:quentin)
       @tag1 = Tag.create!(:name => 'tag1', :user => @user)
       @tag2 = Tag.create!(:name => 'tag2', :user => @user)
-      @item = FeedItem.create!(:id => 50, :feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", 
-                               :title => "Example RSS Feed", :author => "Example Author")
+      @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", :title => "Example RSS Feed", :author => "Example Author")
+      @item.id = 50
+      @item.save!
       @content = FeedItemContent.create!(:feed_item_id => @item.id, :content => "Example Content")
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 1, :strength => 0)
