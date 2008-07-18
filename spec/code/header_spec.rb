@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "headers" do
   it "all ruby files should have the kaphan foundation header" do
-    vendor = %w[lib/authenticated_system.rb lib/authenticated_test_helper.rb]
+    vendor = %w[lib/authenticated_system.rb lib/authenticated_test_helper.rb lib/mongrel_health_check_handler.rb]
     
     (Dir["{app,lib,db,profiling,spec,stories}/**/*.{rb,rake}"] - vendor).each do |filename|
       filename.should have_ruby_kaphan_header
