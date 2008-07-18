@@ -29,7 +29,7 @@ class FeedsController < ApplicationController
   
   def create
     if URI.parse(params[:feed][:url]).host == request.host
-      flash[:error] = "You cannot add Winnow generated feeds to Winnow."
+      flash[:error] = "Winnow generated feeds cannot be added to Winnow."
       render :action => 'new'
       return      
     end
