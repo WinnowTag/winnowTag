@@ -171,6 +171,8 @@ describe Feed do
   describe "find_or_create_from_atom" do
     describe "with single page feed" do      
       before(:each) do
+        FeedItemContent.delete_all
+
         @before_feed_count = Feed.count
         @before_feed_items_count = FeedItem.count
         @before_feed_item_content_count = FeedItemContent.count

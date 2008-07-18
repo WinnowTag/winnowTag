@@ -280,6 +280,7 @@ describe FeedItem do
     
     describe "with a complete entry" do
       before(:each) do
+        FeedItemContent.delete_all
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
     
@@ -333,6 +334,7 @@ describe FeedItem do
     
     describe "without a title" do
       before(:each) do
+        FeedItemContent.delete_all
         @atom.title = nil
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
@@ -344,6 +346,7 @@ describe FeedItem do
     
     describe "without an author" do
       before(:each) do
+        FeedItemContent.delete_all
         @atom.authors.clear
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
@@ -365,6 +368,7 @@ describe FeedItem do
     
     describe "without collector link" do
       before(:each) do
+        FeedItemContent.delete_all
         @atom.links.delete(@atom.self)
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
