@@ -389,7 +389,9 @@ describe FeedItem do
       @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", :title => "Example RSS Feed", :author => "Example Author")
       @item.id = 50
       @item.save!
-      @content = FeedItemContent.create!(:feed_item_id => @item.id, :content => "Example Content")
+      @content = FeedItemContent.new(:content => "Example Content")
+      @content.feed_item_id = @item.id
+      @content.save!
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 1, :strength => 0)
       @item.taggings.create!(:tag => @tag2, :user => @user, :classifier_tagging => 0, :strength => 1)
@@ -463,9 +465,12 @@ describe FeedItem do
     fixtures :feed_item_contents
 
     before(:each) do
-      @item = FeedItem.create!(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", 
-                               :title => "Example RSS Feed", :author => "Example Author")
-      @content = FeedItemContent.create!(:feed_item_id => @item.id, :content => "this is not utf-8 \227")
+      @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", :title => "Example RSS Feed", :author => "Example Author")
+      @item.id = 50
+      @item.save!
+      @content = FeedItemContent.new(:content => "this is not utf-8 \227")
+      @content.feed_item_id = @item.id
+      @content.save!
       @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org')
     end
     
