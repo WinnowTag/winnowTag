@@ -39,9 +39,10 @@ class RecreateFeedsTablesIfUsingViews < ActiveRecord::Migration
       
       # delete the winnow_feed_schema_info table
       drop_table :winnow_feed_schema_info
-     else
+    else
+      add_column :feeds, :duplicate_id, :boolean
       say "Not using views - no action required"
-     end
+    end
   end
 
   def self.down
