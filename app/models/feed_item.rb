@@ -90,8 +90,12 @@ class FeedItem < ActiveRecord::Base
       :updated => entry.updated,
       :collector_link => (entry.self and entry.self.href)
     }
-        
-    self.content = FeedItemContent.new(:content => entry.content.to_s)
+    
+    if self.content
+      self.content.update_attributes!(:content => entry.content.to_s)
+    else
+      self.content = FeedItemContent.new(:content => entry.content.to_s)
+    end
     
     self.save!
     self
