@@ -381,11 +381,14 @@ describe FeedItem do
   
   describe "to_atom" do
     fixtures :feed_item_contents
+    
     before(:each) do
       @user = users(:quentin)
       @tag1 = Tag.create!(:name => 'tag1', :user => @user)
       @tag2 = Tag.create!(:name => 'tag2', :user => @user)
-      @item = FeedItem.find(1)
+      @item = FeedItem.create!(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", 
+                               :title => "Example RSS Feed", :author => "Example Author")
+      @content = FeedItemContent.create!(:feed_item_id => @item.id, :content => "Example Content")
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 1, :strength => 0)
       @item.taggings.create!(:tag => @tag2, :user => @user, :classifier_tagging => 0, :strength => 1)
@@ -457,9 +460,11 @@ describe FeedItem do
   
   describe "to_atom with non-utf8" do
     fixtures :feed_item_contents
+
     before(:each) do
-      @item = FeedItem.find(1)
-      @item.content.content = "this is not utf-8 \227"
+      @item = FeedItem.create!(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", 
+                               :title => "Example RSS Feed", :author => "Example Author")
+      @content = FeedItemContent.create!(:feed_item_id => @item.id, :content => "this is not utf-8 \227")
       @atom = @item.to_atom(:base_uri => 'http://winnow.mindloom.org')
     end
     
