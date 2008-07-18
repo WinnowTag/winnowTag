@@ -35,7 +35,7 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "fastercsv"
   # config.gem "RedCloth", :version => "3.0.3"
-  config.gem "ratom", :version => "0.3.6", :lib => "atom"
+  config.gem "ratom", :version => "0.4.1", :lib => "atom"
 
   # Must be compiled
   config.gem "mysql"

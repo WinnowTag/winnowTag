@@ -1,28 +1,30 @@
 --- !ruby/object:Gem::Specification 
 name: ratom
 version: !ruby/object:Gem::Version 
-  version: 0.3.6
+  version: 0.4.1
 platform: ruby
 authors: 
 - Peerworks
+- Sean Geoghegan
 autorequire: 
 bindir: bin
 cert_chain: []
 
-date: 2008-05-15 00:00:00 -04:00
+date: 2008-07-08 00:00:00 -04:00
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
   name: libxml-ruby
+  type: :runtime
   version_requirement: 
   version_requirements: !ruby/object:Gem::Requirement 
     requirements: 
     - - "="
       - !ruby/object:Gem::Version 
-        version: 0.5.2.0
+        version: 0.6.0.0
     version: 
 description: Atom Syndication and Publication API
-email: info@peerworks.org
+email: sean@peerworks.org
 executables: []
 
 extensions: []
@@ -110,7 +112,7 @@ required_rubygems_version: !ruby/object:Gem::Requirement
 requirements: []
 
 rubyforge_project: ratom
-rubygems_version: 1.1.1
+rubygems_version: 1.2.0
 signing_key: 
 specification_version: 2
 summary: Atom Syndication and Publication API

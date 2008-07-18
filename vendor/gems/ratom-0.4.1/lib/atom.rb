@@ -2,10 +2,13 @@
 #
 # For licensing information see LICENSE.txt.
 #
+# Please visit http://www.peerworks.org/contact for further information.
+#
 
 require 'forwardable'
 require 'delegate'
 require 'rubygems'
+gem 'libxml-ruby', '= 0.6.0.0'
 require 'xml/libxml'
 require 'atom/xml/parser.rb'
 
@@ -223,7 +226,7 @@ module Atom # :nodoc:
         #
         begin
           node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
-          node << Iconv.iconv('utf-8', 'utf-8', self.to_s, namespace_map = nil)
+          node << Iconv.iconv('utf-8', 'utf-8', self.to_s)
           node['type'] = 'html'
           node['xml:lang'] = self.xml_lang        
           node
@@ -421,6 +424,8 @@ module Atom # :nodoc:
     #
     # +paginate+::  If true and the feed supports pagination this will fetch each page of the feed.
     # +since+::     If a Time object is provided each_entry will iterate over all entries that were updated since that time.
+    # +user+::      User name for HTTP Basic Authentication.
+    # +pass+::      Password for HTTP Basic Authentication.
     #
     def each_entry(options = {}, &block)
       if options[:paginate]
@@ -439,7 +444,7 @@ module Atom # :nodoc:
           if since_reached || feed.next_page.nil?
             break
           else feed.next_page
-            feed = feed.next_page.fetch 
+            feed = feed.next_page.fetch(options)
           end
         end
       else
@@ -692,13 +697,11 @@ module Atom # :nodoc:
     #
     # TODO: Handle redirects.
     #
-    def fetch
-      content = Net::HTTP.get_response(URI.parse(self.href)).body
-      
+    def fetch(options = {})
       begin
-        Atom::Feed.load_feed(content)
+        Atom::Feed.load_feed(URI.parse(self.href), options)
       rescue ArgumentError, ParseError => ae
-        content
+        Net::HTTP.get_response(URI.parse(self.href)).body
       end
     end
     
