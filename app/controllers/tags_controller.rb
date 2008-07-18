@@ -275,6 +275,10 @@ class TagsController < ApplicationController
     render :nothing => true
   end
   
+  def information
+    @tag = Tag.find(params[:id])
+  end
+  
 private
   def find_tag
     if params[:user] && params[:tag_name]

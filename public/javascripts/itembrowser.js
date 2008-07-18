@@ -408,10 +408,12 @@ var ItemBrowser = Class.create({
   },
 
   selectItem: function(item) {
+    item = $(item);
+    
     this.deselectItem(this.selectedItem);
-    this.selectedItem = $(item);
+    this.selectedItem = item;
     this.selectedItem.addClassName('selected');
-    this.scrollToItem(item);
+    item._item.scrollTo();
   },
   
   deselectItem: function(item) {
@@ -466,7 +468,7 @@ var ItemBrowser = Class.create({
               }.bind(this));
             }.bind(this));
             
-            this.scrollToItem(item);
+            item._item.scrollTo();
           }.bind(this)
         });
       }
@@ -475,7 +477,7 @@ var ItemBrowser = Class.create({
       tag.addClassName('selected');
       information.addClassName('selected');
 
-      this.scrollToItem(item);
+      item._item.scrollTo();
     }
   },
   
@@ -499,13 +501,13 @@ var ItemBrowser = Class.create({
             clues.removeClassName("loading");
             clues.update(tag.cluesHTML)
           
-            this.scrollToItem(item);
+            item._item.scrollTo();
           }.bind(this)
         });
       }
       
       clues.show();
-      this.scrollToItem(item);
+      item._item.scrollTo();
     }
   },
   
@@ -518,14 +520,16 @@ var ItemBrowser = Class.create({
     }
     item.addClassName("open");
     item._item.markRead();
-    this.scrollToItem(item);
-    this.loadItemDescription(item);
+    item._item.scrollTo();
+    item._item.loadBody();
   },
   
   closeItem: function(item) {
+    item = $(item);
+    
     if(item) {
-      $(item).removeClassName("open");
-      this.closeItemModerationPanel(item);
+      item.removeClassName("open");
+      item._item.hideAddTagForm();
     }
   },
   
@@ -548,61 +552,51 @@ var ItemBrowser = Class.create({
     }
   },
   
-  openItemModerationPanel: function(item) {
-    if(this.selectedItem != $(item)) {
-      this.closeItem(this.selectedItem);
-      this.selectItem(item);
-    }
-
-    $$('.new_tag_form').invoke("hide");
-
-    $(item).down(".new_tag_form").show();
-    this.scrollToItem(item);
-    this.loadItemModerationPanel(item);
-    
-    this.initializeItemModerationPanel(item);
-  },
-  
   // TODO: need to update this local list when tag controls are clicked so they are always in sync
-  initializeItemModerationPanel: function(item) {
-    var panel = $(item).down(".new_tag_form");
+  initializeItemModerationPanel: function(item, attach_events) {
+    item = $(item);
+    
+    var panel = item.down(".add_tag_form");
     var field = panel.down("input[type=text]");
     var list = panel.down(".auto_complete");
     var add = panel.down("input[type=submit]");
     var cancel = panel.down("a");
 
     if(field && list && add && cancel) {
-      if(!this.auto_completers[$(item).getAttribute("id")]) {
-        this.auto_completers[$(item).getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
-          partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
+      if(!this.auto_completers[item.getAttribute("id")]) {
+        this.auto_completers[item.getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
+          minChars: 0, partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
           afterUpdateElement: function() { 
-            this.closeItemModerationPanel(item);
+            item._item.hideAddTagForm();
             // TODO: Move this call into item browser...
-            window.add_tagging($(item).getAttribute("id"), field.value, 'positive');
+            window.add_tagging(item.getAttribute("id"), field.value, 'positive');
             field.blur();
             field.value = "";
           }.bind(this)
         });
       }
-      var used_tags = $$("#tag_controls_" + $(item).getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
-      this.auto_completers[$(item).getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
+      var used_tags = $$("#tag_controls_" + item.getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
+      this.auto_completers[item.getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
         return used_tags.include(tag);
       });
-      this.auto_completers[$(item).getAttribute("id")].activate();
+      this.auto_completers[item.getAttribute("id")].activate();
 
-      field.observe("blur", function() {
-        setTimeout(this.closeItemModerationPanel.bind(this, item), 200);
-      }.bind(this));
-      field.observe("keydown", function(event) {
-        if(event.keyCode == Event.KEY_ESC) { this.closeItemModerationPanel(item); }
-      }.bind(this));
-      field.focus();
+      if(attach_events) {
+        field.observe("blur", function() {
+          setTimeout(item._item.hideAddTagForm.bind(item._item), 200);
+        }.bind(this));
+        field.observe("keydown", function(event) {
+          if(event.keyCode == Event.KEY_ESC) { item._item.hideAddTagForm(); }
+        }.bind(this));
       
-      add.observe("click", function() {
-        this.auto_completers[$(item).getAttribute("id")].selectEntry();
-      }.bind(this));
+        add.observe("click", function() {
+          this.auto_completers[item.getAttribute("id")].selectEntry();
+        }.bind(this));
 
-      cancel.observe("click", this.closeItemModerationPanel.bind(this, item));
+        cancel.observe("click", item._item.hideAddTagForm.bind(item._item));
+      }
+      
+      field.focus();
       
       (function() {
         new Effect.ScrollToInDiv(this.container, list, {duration: 0.3, bottom_margin: 5});
@@ -621,22 +615,8 @@ var ItemBrowser = Class.create({
     this.options.tags = this.options.tags.without(tag);
   },
 
-  closeItemModerationPanel: function(item) {
-    var input = $('new_tag_field_' + $(item).getAttribute('id'));
-    if(input) { input.blur(); }
-    $(item).down(".new_tag_form").hide();
-  },
-  
-  toggleOpenCloseModerationPanel: function(item) {
-    if($(item).down(".new_tag_form").visible()) {
-      this.closeItemModerationPanel(item);
-    } else {
-      this.openItemModerationPanel(item);
-    }
-  },
-  
   toggleOpenCloseSelectedItemModerationPanel: function() {
-    this.toggleOpenCloseModerationPanel(this.selectedItem);
+    this.selectedItem._item.toggleAddTagForm();
   },
   
   toggleReadUnreadSelectedItem: function() {
@@ -649,46 +629,7 @@ var ItemBrowser = Class.create({
     $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
     new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
   },
-  
-  scrollToItem: function(item) {
-    new Effect.ScrollToInDiv(this.container, $(item).getAttribute('id'), {duration: 0.3});
-  },
-  
-  loadItemDescription: function(item) {
-    var body = $(item).down('.body');
-    var url = body.getAttribute('url');
-    this.loadData(item, body, url, "Unable to connect to the server to get the item body.", this.closeItem.bind(this));
-  },
-   
-  loadItemModerationPanel: function(item) { 
-    var moderation_panel = $(item).down(".new_tag_form");
-    var url = moderation_panel.getAttribute('url') + "?" + $H(this.filters).toQueryString(); 
-    this.loadData(item, moderation_panel, url, "Unable to connect to the server to get the moderation panel.", this.closeItemModerationPanel.bind(this));
-  },
 
-  loadData: function(item, target, url, error_message, error_callback) {
-    if(target && target.empty()) {
-      target.addClassName("loading");
-      new Ajax.Request(url,{
-        method: 'get',
-          onComplete: function() {
-            target.removeClassName("loading");
-            if(this.selectedItem == $(item)) {
-              this.scrollToItem(item);
-            }
-          }.bind(this),
-          onException: function(transport, exception) {
-            error_callback(item);
-            new ErrorMessage(error_message);
-          },
-          onFailure: function(transport, exception) {
-            error_callback(item);
-            new ErrorMessage(error_message);
-          }
-      });  
-    }
-  },
-  
   selectNextItem: function() {
     var next_item;
     if(this.selectedItem) {

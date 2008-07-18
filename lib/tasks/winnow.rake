@@ -86,14 +86,33 @@ Spec::Rake::SpecTask.new('rcov_for_cc') do |t|
   t.rcov_dir = (ENV['CC_BUILD_ARTIFACTS'] || ".") + '/coverage'
 end
 
+Spec::Rake::SpecTask.new('spec:code') do |t|
+  t.spec_opts = ['--options', "spec/spec.opts"]
+  t.spec_files = FileList["spec/code/**/*_spec.rb"]
+end
+
 desc "Task for CruiseControl.rb"
 task :cruise do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
   Rake::Task['db:migrate'].invoke
+  Rake::Task['spec:code'].invoke
   Rake::Task['spec:controllers'].invoke
   Rake::Task['spec:helpers'].invoke
   Rake::Task['spec:models'].invoke
   Rake::Task['spec:views'].invoke
   Rake::Task['test:stories'].invoke
   Rake::Task['rcov_for_cc'].invoke
+end
+
+task :cruise_with_selenium do
+  ENV['RAILS_ENV'] = RAILS_ENV = 'test'
+  Rake::Task['db:migrate'].invoke
+  Rake::Task['spec:code'].invoke
+  Rake::Task['spec:controllers'].invoke
+  Rake::Task['spec:helpers'].invoke
+  Rake::Task['spec:models'].invoke
+  Rake::Task['spec:views'].invoke
+  Rake::Task['test:stories'].invoke
+  Rake::Task['rcov_for_cc'].invoke
+  Rake::Task['spec:selenium'].invoke
 end

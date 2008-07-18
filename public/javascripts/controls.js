@@ -58,7 +58,8 @@ Autocompleter.Base = Class.create({
     this.options.paramName    = this.options.paramName || this.element.name;
     this.options.tokens       = this.options.tokens || [];
     this.options.frequency    = this.options.frequency || 0.4;
-    this.options.minChars     = this.options.minChars || 1;
+    // NOTE: Peerworks change
+    this.options.minChars     = this.options.minChars == null ? 1 : this.options.minChars;
     this.options.onShow       = this.options.onShow || 
       function(element, update){ 
         if(!update.style.position || update.style.position=='absolute') {

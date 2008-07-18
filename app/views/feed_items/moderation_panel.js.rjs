@@ -1,2 +1,0 @@
-page[dom_id(@feed_item)].down(".new_tag_form").update render_to_string(:partial => 'moderation_panel', :locals => { :feed_item => @feed_item })
-page << "itemBrowser.initializeItemModerationPanel('#{dom_id(@feed_item)}')"

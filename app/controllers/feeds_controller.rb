@@ -28,6 +28,11 @@ class FeedsController < ApplicationController
   end
   
   def create
+    if URI.parse(params[:feed][:url]).host == request.host
+      flash[:error] = "You cannot add Winnow generated feeds to Winnow."
+      render :action => 'new'
+      return      
+    end
     @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
     if @feed.errors.empty?
       FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil      

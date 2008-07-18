@@ -31,12 +31,11 @@ describe FeedItemsController do
     # assert @response.body =~ regex, "#{regex} does match #{@response.body}"
   end
     
-  it "/description" do
+  it "body" do
     login_as(:quentin)
-    get :description, :id => 1, :format => "js"
-    assert_response :success
-    # TODO: Move the view test
-    # assert_rjs :replace_html, 'body_feed_item_1'
+    get :body, :id => 1, :format => "js"
+    response.should be_success
+    response.should render_template("body")
   end
   
   describe "/clues" do
