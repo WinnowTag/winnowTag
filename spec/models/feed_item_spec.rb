@@ -386,7 +386,7 @@ describe FeedItem do
       @user = users(:quentin)
       @tag1 = Tag.create!(:name => 'tag1', :user => @user)
       @tag2 = Tag.create!(:name => 'tag2', :user => @user)
-      @item = FeedItem.create!(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", 
+      @item = FeedItem.create!(:id => 50, :feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", 
                                :title => "Example RSS Feed", :author => "Example Author")
       @content = FeedItemContent.create!(:feed_item_id => @item.id, :content => "Example Content")
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
@@ -418,7 +418,7 @@ describe FeedItem do
     
     it "should include a link to the feed" do
       @atom.links.detect {|l| l.rel == 'http://peerworks.org/feed'}.should_not be_nil
-      @atom.links.detect {|l| l.rel == 'http://peerworks.org/feed'}.href.should == "urn:peerworks.org:feed##{@item.feed_id}"
+      @atom.links.detect {|l| l.rel == 'http://peerworks.org/feed'}.href.should == "urn:peerworks.org:feed##{@item.id}"
     end
     
     it "should include the content" do
