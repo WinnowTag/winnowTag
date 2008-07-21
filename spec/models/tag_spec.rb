@@ -314,7 +314,7 @@ describe Tag do
       @tag.taggings.create!(:feed_item => FeedItem.find(3), :user => @user, :strength => 0)
       @tag.taggings.create!(:feed_item => FeedItem.find(4), :user => @user, :strength => 0.95, :classifier_tagging => true)
       @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
-    end    
+    end     
     
     it_should_behave_like 'to_atom'
     
