@@ -14,8 +14,8 @@ module Selenium
       end
       
       def selenium_server_command
-        if configuration.display
-          env = "DISPLAY=#{configuration.display}"
+        if configuration.selenium_server_display
+          env = "DISPLAY=#{configuration.selenium_server_display}"
         else
           env = ""
         end
