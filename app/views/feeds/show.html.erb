@@ -4,10 +4,11 @@
 	<tr>
 		<th><%= _(:feeds_title) %></th>
 		<td>
-		  <%= link_to(_(:feeds_feed_home), @feed.alternate, :class => "home_icon replace", :style => 'float: right') if @feed.alternate %>
-		  <%= link_to(_(:feeds_feed), @feed.via, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px') %>
+		  <%= link_to _(:show), feed_items_path(:anchor => "feed_ids=#{@feed.id}"), :class => 'show_icon replace', :title => _(:feeds_show_link_title, @feed.title), :style => "float: right;" %>
+		  <%= link_to(_(:feeds_feed_home), @feed.alternate, :class => "home_icon replace", :style => "float: right; margin-left: 10px;") if @feed.alternate %>
+		  <%= link_to(_(:feeds_feed), @feed.via, :class => "feed_icon replace", :style => 'float: right; margin-left: 10px;') %>
 		  <%= @feed.title %>
-		</td>		
+		</td>
 	</tr>
 	<tr>
 	    <th><%= _(:created) %></th>
