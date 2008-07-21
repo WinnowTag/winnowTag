@@ -13,14 +13,14 @@ class AboutController < ApplicationController
     else
       @revision = `git rev-parse --short HEAD`.chomp
     end
-        
+
     begin
       @classifier_info = Remote::Classifier.get_info
     rescue
       @classifier_info = nil
     end
   end
-  
+
   def info
     @info = Setting.find_or_initialize_by_name("Info")
     @messages = Message.find_for_user_and_global(current_user.id, :order => "created_at DESC", :limit => 30)
