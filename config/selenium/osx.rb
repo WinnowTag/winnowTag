@@ -7,7 +7,7 @@ Selenium::configure do |config|
   # config.selenium_server_host = '172.16.83.129' # IP Address of the machine in the remote machine
   # config.test_server_host = '192.168.50.116'    # IP Address of the machine running the winnow instance (most likely, this one)
   # config.close_browser_at_exit = false
-  # config.stop_selenium_server = false
+  config.stop_selenium_server = false
   # config.stop_test_server = false
-  config.display = ':0'
+  config.selenium_server_display = ':0'
 end

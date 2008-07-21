@@ -2,23 +2,26 @@ module Selenium
   class SubProcess
     attr_accessor :pid
     
-    def initialize command = nil
-      @command = command
+    def initialize command = nil, environment = {}
+      @command, @environment = command, environment
     end
     
     def start
-      @pid = fork do
-        # Since we can't use shell redirects without screwing up the pid, we'll reopen stdin and stdout instead to get the same effect.
-        [STDOUT,STDERR].each {|f| f.reopen '/dev/null', 'w' }
-        exec @command
-      end
+      env = @environment.map { |k,v| "#{k}=#{v}" }.join(" ")
+      system "#{env} #{@command} 1> /dev/null 2> /dev/null &"
+      find
       sleep 5
     end
 
     def stop
       Process.kill 15, @pid
     end
-        
+    
+    def find
+      result = `ps -e -o pid,command`.split(/\s*\n\s*/).grep(/#{Regexp.escape(@command)}/).first
+      @pid = result.to_i if result
+    end
+
     def self.start(*args)
       process = new(*args)
       process.start
@@ -26,10 +29,8 @@ module Selenium
     end
     
     def self.find(command)
-      result = `ps -e -o pid,command`.split(/\s*\n\s*/).grep(/#{Regexp.escape(command)}/).first
-      if result
-        process = new
-        process.pid = result.to_i
+      process = new(command)
+      if process.find
         process
       end
     end

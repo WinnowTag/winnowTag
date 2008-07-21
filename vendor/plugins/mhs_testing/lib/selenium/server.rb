@@ -14,14 +14,8 @@ module Selenium
       end
       
       def selenium_server_command
-        if configuration.selenium_server_display
-          env = "DISPLAY=#{configuration.selenium_server_display}"
-        else
-          env = ""
-        end
-        
         server_path = File.expand_path(File.join(File.dirname(__FILE__), "selenium-server.jar"))
-        "#{env} java -jar #{server_path} -port #{configuration.selenium_server_port}"
+        "java -jar #{server_path} -port #{configuration.selenium_server_port}"
       end
       
       def configuration
@@ -34,7 +28,9 @@ module Selenium
         end
       
         unless selenium_server
-          @selenium_server = SubProcess.start(selenium_server_command)
+          environment = {}
+          environment['DISPLAY'] = configuration.selenium_server_display if configuration.selenium_server_display
+          @selenium_server = SubProcess.start(selenium_server_command, environment)
         end
       end
     
