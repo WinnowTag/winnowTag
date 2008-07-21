@@ -9,4 +9,5 @@ Selenium::configure do |config|
   # config.close_browser_at_exit = false
   # config.stop_selenium_server = false
   # config.stop_test_server = false
+  config.display = ':0'
 end

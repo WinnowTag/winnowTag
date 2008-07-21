@@ -105,7 +105,6 @@ task :cruise do
 end
 
 task :cruise_with_selenium do
-  ENV['DISPLAY'] = ':0'
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
   Rake::Task['assets:clean'].invoke
   Rake::Task['db:migrate'].invoke
