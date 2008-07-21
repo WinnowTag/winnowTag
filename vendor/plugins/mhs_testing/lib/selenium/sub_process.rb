@@ -11,8 +11,8 @@ module Selenium
         # Since we can't use shell redirects without screwing up the pid, we'll reopen stdin and stdout instead to get the same effect.
         [STDOUT,STDERR].each {|f| f.reopen '/dev/null', 'w' }
         exec @command
-        sleep 5
       end
+      sleep 5
     end
 
     def stop
