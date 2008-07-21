@@ -380,9 +380,9 @@ describe FeedItem do
   end
   
   describe "to_atom" do
-    fixtures :feed_item_contents
-    
     before(:each) do
+      FeedItemContent.delete_all
+      
       @user = users(:quentin)
       @tag1 = Tag.create!(:name => 'tag1', :user => @user)
       @tag2 = Tag.create!(:name => 'tag2', :user => @user)
