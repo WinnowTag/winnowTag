@@ -119,6 +119,14 @@ require 'cgi'
 # pattern.
 # 
 # 
+# For commands that return multiple values (such as verifySelectOptions),
+# the string being matched is a comma-separated list of the return values,
+# where both commas and backslashes in the values are backslash-escaped.
+# When providing a pattern, the optional matching syntax (i.e. glob,
+# regexp, etc.) is specified once, as usual, at the beginning of the
+# pattern.
+# 
+# 
 module Selenium
 
     class SeleniumDriver
@@ -140,10 +148,21 @@ module Selenium
             result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
             @session_id = result
         end
-        
+
+        def session?
+          @session_id != nil
+        end
+
+        def session_reset
+          @session_id = nil
+        end
+
         def stop()
+          if session?
             do_command("testComplete", [])
-            @session_id = nil
+          end
+        ensure
+          session_reset
         end
 
         def do_command(verb, args)
@@ -154,7 +173,7 @@ module Selenium
                     arg_num = (i+1).to_s
                     command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
                 end
-                if @session_id != nil
+                if session?
                     command_string = command_string + "&sessionId=" + @session_id.to_s
                 end
                 #print "Requesting --->" + command_string + "\n"
@@ -411,7 +430,7 @@ module Selenium
         end
 
 
-        # Simulates a user pressing the mouse button (without releasing it yet) on
+        # Simulates a user pressing the left mouse button (without releasing it yet) on
         # the specified element.
         #
         # 'locator' is an element locator
@@ -420,13 +439,32 @@ module Selenium
         end
 
 
-        # Simulates a user pressing the mouse button (without releasing it yet) at
+        # Simulates a user pressing the right mouse button (without releasing it yet) on
+        # the specified element.
+        #
+        # 'locator' is an element locator
+        def mouse_down_right(locator)
+            do_command("mouseDownRight", [locator,])
+        end
+
+
+        # Simulates a user pressing the left mouse button (without releasing it yet) at
         # the specified location.
         #
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def mouse_down_at(locator,coordString)
             do_command("mouseDownAt", [locator,coordString,])
+        end
+
+
+        # Simulates a user pressing the right mouse button (without releasing it yet) at
+        # the specified location.
+        #
+        # 'locator' is an element locator
+        # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+        def mouse_down_right_at(locator,coordString)
+            do_command("mouseDownRightAt", [locator,coordString,])
         end
 
 
@@ -439,6 +477,15 @@ module Selenium
         end
 
 
+        # Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+        # holding the button down) on the specified element.
+        #
+        # 'locator' is an element locator
+        def mouse_up_right(locator)
+            do_command("mouseUpRight", [locator,])
+        end
+
+
         # Simulates the event that occurs when the user releases the mouse button (i.e., stops
         # holding the button down) at the specified location.
         #
@@ -446,6 +493,16 @@ module Selenium
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def mouse_up_at(locator,coordString)
             do_command("mouseUpAt", [locator,coordString,])
+        end
+
+
+        # Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+        # holding the button down) at the specified location.
+        #
+        # 'locator' is an element locator
+        # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
+        def mouse_up_right_at(locator,coordString)
+            do_command("mouseUpRightAt", [locator,coordString,])
         end
 
 
@@ -515,7 +572,7 @@ module Selenium
         # See also setSpeed.
         #
         def get_speed()
-            do_command("getSpeed", [])
+            return get_string("getSpeed", [])
         end
 
 
@@ -650,24 +707,41 @@ module Selenium
         end
 
 
-        # Selects a popup window; once a popup window has been selected, all
+        # Selects a popup window using a window locator; once a popup window has been selected, all
         # commands go to that window. To select the main window again, use null
         # as the target.
         # 
-        # Note that there is a big difference between a window's internal JavaScript "name" property
-        # and the "title" of a given window's document (which is normally what you actually see, as an end user,
-        # in the title bar of the window).  The "name" is normally invisible to the end-user; it's the second 
+        # 
+        # 
+        # Window locators provide different ways of specifying the window object:
+        # by title, by internal JavaScript "name," or by JavaScript variable.
+        # 
+        # *    <b>title</b>=<em>My Special Window</em>:
+        # Finds the window using the text that appears in the title bar.  Be careful;
+        # two windows can share the same title.  If that happens, this locator will
+        # just pick one.
+        # 
+        # *    <b>name</b>=<em>myWindow</em>:
+        # Finds the window using its internal JavaScript "name" property.  This is the second 
         # parameter "windowName" passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
-        # (which selenium intercepts).
-        # Selenium has several strategies for finding the window object referred to by the "windowID" parameter.
+        # (which Selenium intercepts).
+        # 
+        # *    <b>var</b>=<em>variableName</em>:
+        # Some pop-up windows are unnamed (anonymous), but are associated with a JavaScript variable name in the current
+        # application window, e.g. "window.foo = window.open(url);".  In those cases, you can open the window using
+        # "var=foo".
+        # 
+        # 
+        # 
+        # If no window locator prefix is provided, we'll try to guess what you mean like this:
         # 1.) if windowID is null, (or the string "null") then it is assumed the user is referring to the original window instantiated by the browser).
         # 2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
         # that this variable contains the return value from a call to the JavaScript window.open() method.
         # 3.) Otherwise, selenium looks in a hash it maintains that maps string names to window "names".
         # 4.) If <em>that</em> fails, we'll try looping over all of the known windows to try to find the appropriate "title".
         # Since "title" is not necessarily unique, this may have unexpected behavior.
-        # If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
-        # which identify the names of windows created via window.open (and therefore intercepted by selenium).  You will see messages
+        # If you're having trouble figuring out the name of a window that you want to manipulate, look at the Selenium log messages
+        # which identify the names of windows created via window.open (and therefore intercepted by Selenium).  You will see messages
         # like the following for each window as it is opened:
         # <tt>debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"</tt>
         # In some cases, Selenium will be unable to intercept a call to window.open (if the call occurs during or before the "onLoad" event, for example).
@@ -731,13 +805,14 @@ module Selenium
 
         # Waits for a popup window to appear and load up.
         #
-        # 'windowID' is the JavaScript window ID of the window that will appear
+        # 'windowID' is the JavaScript window "name" of the window that will appear (not the text of the title bar)
         # 'timeout' is a timeout in milliseconds, after which the action will return with an error
         def wait_for_pop_up(windowID,timeout)
             do_command("waitForPopUp", [windowID,timeout,])
         end
 
 
+        # 
         # By default, Selenium's overridden window.confirm() function will
         # return true, as if the user had manually clicked OK; after running
         # this command, the next call to confirm() will return false, as if
@@ -745,12 +820,20 @@ module Selenium
         # default behavior for future confirmations, automatically returning 
         # true (OK) unless/until you explicitly call this command for each
         # confirmation.
+        # 
+        # 
+        # Take note - every time a confirmation comes up, you must
+        # consume it with a corresponding getConfirmation, or else
+        # the next selenium operation will fail.
+        # 
+        # 
         #
         def choose_cancel_on_next_confirmation()
             do_command("chooseCancelOnNextConfirmation", [])
         end
 
 
+        # 
         # Undo the effect of calling chooseCancelOnNextConfirmation.  Note
         # that Selenium's overridden window.confirm() function will normally automatically
         # return true, as if the user had manually clicked OK, so you shouldn't
@@ -759,6 +842,13 @@ module Selenium
         # default behavior for future confirmations, automatically returning 
         # true (OK) unless/until you explicitly call chooseCancelOnNextConfirmation for each
         # confirmation.
+        # 
+        # 
+        # Take note - every time a confirmation comes up, you must
+        # consume it with a corresponding getConfirmation, or else
+        # the next selenium operation will fail.
+        # 
+        # 
         #
         def choose_ok_on_next_confirmation()
             do_command("chooseOkOnNextConfirmation", [])
@@ -835,11 +925,11 @@ module Selenium
         # Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.
         # 
         # Getting an alert has the same effect as manually clicking OK. If an
-        # alert is generated but you do not get/verify it, the next Selenium action
+        # alert is generated but you do not consume it with getAlert, the next Selenium action
         # will fail.
-        # NOTE: under Selenium, JavaScript alerts will NOT pop up a visible alert
+        # Under Selenium, JavaScript alerts will NOT pop up a visible alert
         # dialog.
-        # NOTE: Selenium does NOT support JavaScript alerts that are generated in a
+        # Selenium does NOT support JavaScript alerts that are generated in a
         # page's onload() event handler. In this case a visible dialog WILL be
         # generated and Selenium will hang until someone manually clicks OK.
         # 
@@ -855,8 +945,11 @@ module Selenium
         # 
         # By default, the confirm function will return true, having the same effect
         # as manually clicking OK. This can be changed by prior execution of the
-        # chooseCancelOnNextConfirmation command. If an confirmation is generated
-        # but you do not get/verify it, the next Selenium action will fail.
+        # chooseCancelOnNextConfirmation command. 
+        # 
+        # 
+        # If an confirmation is generated but you do not consume it with getConfirmation,
+        # the next Selenium action will fail.
         # 
         # 
         # NOTE: under Selenium, JavaScript confirmations will NOT pop up a visible
@@ -1057,7 +1150,9 @@ module Selenium
         end
 
 
-        # Gets the value of an element attribute.
+        # Gets the value of an element attribute. The value of the attribute may
+        # differ across browsers (this is the case for the "style" attribute, for
+        # example).
         #
         # 'attributeLocator' is an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
         def get_attribute(attributeLocator)
@@ -1350,6 +1445,22 @@ module Selenium
         end
 
 
+        # Specifies whether Selenium will ignore xpath attributes that have no
+        # value, i.e. are the empty string, when using the non-native xpath
+        # evaluation engine. You'd want to do this for performance reasons in IE.
+        # However, this could break certain xpaths, for example an xpath that looks
+        # for an attribute whose value is NOT the empty string.
+        # 
+        # The hope is that such xpaths are relatively rare, but the user should
+        # have the option of using them. Note that this only influences xpath
+        # evaluation when using the ajaxslt engine (i.e. not "javascript-xpath").
+        #
+        # 'ignore' is boolean, true means we'll ignore attributes without value                        at the expense of xpath "correctness"; false means                        we'll sacrifice speed for correctness.
+        def ignore_attributes_without_value(ignore)
+            do_command("ignoreAttributesWithoutValue", [ignore,])
+        end
+
+
         # Runs the specified JavaScript snippet repeatedly until it evaluates to "true".
         # The snippet may have multiple lines, but only the result of the last line
         # will be considered.
@@ -1514,6 +1625,21 @@ module Selenium
         # 'functionDefinition' is a string defining the body of a function in JavaScript.   For example: <tt>return inDocument.getElementById(locator);</tt>
         def add_location_strategy(strategyName,functionDefinition)
             do_command("addLocationStrategy", [strategyName,functionDefinition,])
+        end
+
+
+        # Saves the entire contents of the current window canvas to a PNG file.
+        # Currently this only works in Mozilla and when running in chrome mode.
+        # Contrast this with the captureScreenshot command, which captures the
+        # contents of the OS viewport (i.e. whatever is currently being displayed
+        # on the monitor), and is implemented in the RC only. Implementation
+        # mostly borrowed from the Screengrab! Firefox extension. Please see
+        # http://www.screengrab.org for details.
+        #
+        # 'filename' is the path to the file to persist the screenshot as. No                  filename extension will be appended by default.                  Directories will not be created if they do not exist,                    and an exception will be thrown, possibly by native                  code.
+        # 'kwargs' is a kwargs string that modifies the way the screenshot                  is captured. Example: "background=#CCFFDD" .                  Currently valid options:                  *    background::    the background CSS for the HTML document. This                     may be useful to set for capturing screenshots of                     less-than-ideal layouts, for example where absolute                     positioning causes the calculation of the canvas                     dimension to fail and a black background is exposed                     (possibly obscuring black text).
+        def capture_entire_page_screenshot(filename,kwargs)
+            do_command("captureEntirePageScreenshot", [filename,kwargs,])
         end
 
 
