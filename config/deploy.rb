@@ -24,6 +24,7 @@ set :use_sudo, false
 
 default_run_options[:pty] = true
 set :scm, 'git'
+set :scm_verbose, true
 set :repository, 'git@github.com:seangeo/winnow.git'
 set :user, 'mindloom'
 set :deploy_via, :remote_cache
