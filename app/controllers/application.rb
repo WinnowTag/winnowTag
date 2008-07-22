@@ -25,6 +25,6 @@ protected
   end
   
   def local_request?
-    ["216.176.191.98", "216.176.189.36", "127.0.0.1"].include?(request.remote_ip)
+    ["208.85.146.73", "208.85.146.70", "127.0.0.1"].include?(request.remote_ip)
   end
 end
