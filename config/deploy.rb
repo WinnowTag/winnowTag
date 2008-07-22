@@ -25,25 +25,23 @@ set :use_sudo, false
 default_run_options[:pty] = true
 set :scm, 'git'
 set :repository, 'git@github.com:seangeo/winnow.git'
-set :user, 'winnow'
+set :user, 'mindloom'
 set :deploy_via, :remote_cache
+set :deploy_to, "/home/mindloom/winnow.deploy"
+set :group, "mongrels"
 
 if ENV['STAGE'] == 'beta'
-  set :domain, "winnow.mindloom.org"
-  set :deploy_to, "/home/winnow/winnow.deploy"
-  set :branch, "origin/beta"
-  set :group, "mongrels"
+  set :domain, "ds468-1.blueboxgrid.com"
+  set :branch, "beta"
 elsif ENV['STAGE'] == 'trunk'
-  set :domain, 'trunk.mindloom.org'
-  set :deploy_to, "/home/winnow/www/trunk.deploy"
-  set :branch, "origin/master"
-  set :group, "trunk-mongrels"
+  set :domain, 'ds400-1.blueboxgrid.com'
+  set :branch, "master"
 else
   raise "Set STAGE to beta or trunk"
 end
 
 if ENV['branch']
-  set :branch, "origin/#{ENV['branch']}"
+  set :branch, ENV['branch']
 end
 
 role :web, domain
@@ -65,7 +63,7 @@ role :db,  domain, :primary => true
 # SSH OPTIONS
 # =============================================================================
 # ssh_options[:keys] = %w(/path/to/my/key /path/to/another/key)
-ssh_options[:port] = 65000
+# ssh_options[:port] = 65000
 
 # =============================================================================
 # TASKS
