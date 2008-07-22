@@ -32,10 +32,10 @@ set :group, "mongrels"
 
 if ENV['STAGE'] == 'beta'
   set :domain, "ds468-1.blueboxgrid.com"
-  set :branch, "beta"
+  set :branch, "beta-bbg"
 elsif ENV['STAGE'] == 'trunk'
   set :domain, 'ds400-1.blueboxgrid.com'
-  set :branch, "master"
+  set :branch, "bbg"
 else
   raise "Set STAGE to beta or trunk"
 end
