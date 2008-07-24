@@ -23,6 +23,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
   
   if (!tag_control) {
+    parameters.attach_tagging_information_event = true;
     add_tag_control(taggable_id, tag_name);
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
@@ -66,8 +67,7 @@ function remove_tagging(taggable_id, tag_name) {
 }
 
 function sendTagRequest(url, parameters) {
-  new Ajax.Request(url, {parameters: $H(parameters).toQueryString(),
-    method: 'post',
+  new Ajax.Request(url, { parameters: $H(parameters).toQueryString(), method: 'post',
     onFailure: function(transport) {
       new ErrorMessage("Error contacting server.  You're changes have not been saved.");
     }
@@ -78,7 +78,7 @@ function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
   // TODO: needs to know the tag id to load the information panel
-  var tag_control = '<li class="stop positive tag_control" onclick="itemBrowser.selectTaggingInformation(this);" style="display: none;">' + 
+  var tag_control = '<li class="stop positive tag_control" style="display: none;">' + 
     // TODO: sanitize
     '<span class="name">' + tag + '</span>' + 
   '</li> ';
