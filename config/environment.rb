@@ -30,7 +30,7 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "fastercsv"
-  config.gem "RedCloth", :version => "4.0.0"
+  config.gem "RedCloth", :version => "4.0.1"
   config.gem "ratom", :version => "0.4.2", :lib => "atom"
 
   # Must be compiled
