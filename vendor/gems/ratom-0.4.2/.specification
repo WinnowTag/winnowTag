@@ -10,7 +10,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2008-07-22 00:00:00 -04:00
+date: 2008-07-23 00:00:00 +09:30
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 

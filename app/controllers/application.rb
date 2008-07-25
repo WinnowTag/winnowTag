@@ -26,7 +26,7 @@ protected
   end
   
   def local_request?
-    ["216.176.191.98", "216.176.189.36", "127.0.0.1", "75.101.137.236"].include?(request.remote_ip)
+    ["208.85.146.72", "208.85.146.73", "127.0.0.1"].include?(request.remote_ip)
   end
 
   def set_time_zone
