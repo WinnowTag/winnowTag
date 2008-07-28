@@ -18,7 +18,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
     "tagging[tag]": tag_name,
     "tagging[strength]": tagging_type == "positive" ? 1 : 0
-  }
+  };
   
   var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
   
@@ -49,7 +49,7 @@ function remove_tagging(taggable_id, tag_name) {
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
     "tagging[tag]": tag_name,
-  }
+  };
   
   if (tag_control) {
     tag_control.removeClassName('positive');
