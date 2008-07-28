@@ -77,7 +77,7 @@ div#content > div.info {
   float: right;
   margin: 3px 0;
   padding: 0.5em 0 0.5em 0.5em;
-  background-color: #E1ECFE;
+  background-color: #EAF0F5;
   -moz-border-radius-topleft: 0.5em;
   -moz-border-radius-bottomleft: 0.5em;
   -webkit-border-top-left-radius: 0.5em;
@@ -275,8 +275,7 @@ a.close img {
 */
 .navigation {
   padding: 10px 10px 0 10px;
-/*  background-color: #E4F2FF;*/
-  border-bottom: 8px solid #f3f3f3;
+  border-bottom: 8px solid #EAF0F5;
 }
 .navigation .main {
   float: left;
@@ -299,12 +298,12 @@ a.close img {
   background: #f3f3f3;
   font-weight: bold;
   text-decoration: none;
-  color: #2C50E8;
+  color: #2c50e8;
 }
 
 .navigation .main li a.selected {
-  background-color: #2c50e8;
-  color: #fff;
+  background-color: #EAF0F5;
+  color: #2c50e8;
 }
 
 .navigation .main li a:hover {
@@ -343,7 +342,6 @@ a.close img {
 ul.help li {
   margin-bottom: 5px;
 }
-
 
 /*
 ** =feedback
@@ -917,7 +915,7 @@ ul.filter_list li .training .automatic strong {
   padding: 5px 5px 2px 16px;
   border-bottom: 1px solid #999;
   height: 2em;
-  background-color: #f3f3f3;
+  background-color: #EAF0F5;
 }
 
 #header_controls .control_bar {
