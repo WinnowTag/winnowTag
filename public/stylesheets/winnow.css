@@ -77,7 +77,7 @@ div#content > div.info {
   float: right;
   margin: 3px 0;
   padding: 0.5em 0 0.5em 0.5em;
-  background-color: #EAF0F5;
+  background-color: #E1ECFE;
   -moz-border-radius-topleft: 0.5em;
   -moz-border-radius-bottomleft: 0.5em;
   -webkit-border-top-left-radius: 0.5em;
@@ -275,7 +275,7 @@ a.close img {
 */
 .navigation {
   padding: 10px 10px 0 10px;
-  border-bottom: 8px solid #EAF0F5;
+  border-bottom: 8px solid #E1ECFE;
 }
 .navigation .main {
   float: left;
@@ -302,8 +302,8 @@ a.close img {
 }
 
 .navigation .main li a.selected {
-  background-color: #EAF0F5;
-  color: #2c50e8;
+  background-color: #E1ECFE;
+  color: #000;
 }
 
 .navigation .main li a:hover {
@@ -386,7 +386,7 @@ ul.help li {
   width: 25%;
   height: auto;
   padding: 0.5em;
-  background-color: #f3f3f3;
+  background-color: #E1ECFE;
   overflow-y: auto;
   overflow-x: hidden;
   margin: 3px 0;
@@ -438,24 +438,16 @@ ul.help li {
 */
 .section {
   margin-bottom: 0.75em;
-	background-color: #ffc;
+	background-color: #fdfdfd;
 	-moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
 }
 
-#feeds_section, #show_sort_section, #clear_section, #classification_section, #feed_link_section {
-  background-color: #fdfdfd;
-}
-
 .section .header {
   padding: 0.3em 0.5em;
-  background-color: #FFF094;  
+  background-color: #e6e6e6;  
   -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
-}
-
-#feeds_section .header {
-  background-color: #e6e6e6;
 }
 
 .section > .header .toggle_button {
