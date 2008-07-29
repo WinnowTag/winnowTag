@@ -87,9 +87,9 @@ div#content > div.info {
 /*
 ** =links
 */
-a { color: #2c50e8; text-decoration: none; }
+a { color: #1010C8; text-decoration: none; }
 a:hover {text-decoration: underline;}
-a:visited { color: #2c50e8; }
+a:visited { color: #1010C8; }
 a.disabled {color: #888; cursor: default;}
 a:hover.disabled {color: #888; background-color: transparent; text-decoration: none;}
 a img, img.blank {border: 0; vertical-align: baseline; margin-left: 3px;}
@@ -298,12 +298,10 @@ a.close img {
   background: #f3f3f3;
   font-weight: bold;
   text-decoration: none;
-  color: #2c50e8;
 }
 
 .navigation .main li a.selected {
   background-color: #E1ECFE;
-  color: #000;
 }
 
 .navigation .main li a:hover {
@@ -889,7 +887,7 @@ ul.filter_list li .training .automatic strong {
 .progress_bar_container .progress_bar {
   height: 2em;
   width: 0;
-  background-color: #2c50e8;
+  background-color: #1010C8;
 }
 
 .complete {
@@ -909,7 +907,7 @@ ul.filter_list li .training .automatic strong {
   padding: 5px 5px 2px 16px;
   border-bottom: 1px solid #999;
   height: 2em;
-  background-color: #EAF0F5;
+  background-color: #E1ECFE;
 }
 
 #header_controls .control_bar {
@@ -1260,14 +1258,6 @@ a.bookmarklet:hover {
 
 .feed_item.read .closed > .status {
   background-position: 0 -670px;
-}
-
-.feed_item .closed h4 {
-  font-weight: bold;
-}
-
-.feed_item.read .closed h4 {
-  font-weight: normal;
 }
 
 .feed_item .closed .date {
