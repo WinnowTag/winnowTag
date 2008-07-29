@@ -1270,6 +1270,7 @@ a.bookmarklet:hover {
 
 .feed_item .closed .date {
   float: right;
+  margin: 2px 0 0 0;
   width: 6em;
   text-align: right;
   color: #666;
@@ -1277,7 +1278,7 @@ a.bookmarklet:hover {
 
 .feed_item .closed .add_tag {
   float: right;
-  margin: 0 2px 0 1em;
+  margin: 2px 2px 0 1em;
 }
 
 .feed_item .body {
