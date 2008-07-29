@@ -9,6 +9,7 @@
 class FeedsController < ApplicationController
   include ActionView::Helpers::TextHelper
   verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
+  before_filter :reject_winnow_feeds, :only => :create
   
   def index
     respond_to do |format|
@@ -27,12 +28,7 @@ class FeedsController < ApplicationController
     @feed = Remote::Feed.new(params[:feed] || {:url => nil})
   end
   
-  def create
-    if URI.parse(params[:feed][:url]).host == request.host
-      flash[:error] = "Winnow generated feeds cannot be added to Winnow."
-      render :action => 'new'
-      return      
-    end
+  def create   
     @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
     if @feed.errors.empty?
       FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil      
@@ -142,6 +138,17 @@ class FeedsController < ApplicationController
       end
     else
       render :nothing => true
+    end
+  end
+  
+  private
+  def reject_winnow_feeds
+    begin
+      if URI.parse(params[:feed][:url]).host == request.host
+        flash[:error] = "Winnow generated feeds cannot be added to Winnow."
+        render :action => 'new'
+      end
+    rescue
     end
   end
 end

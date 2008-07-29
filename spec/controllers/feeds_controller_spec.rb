@@ -156,7 +156,22 @@ describe FeedsController do
       post 'create', :feed => {:url => 'http://example.com'}
       response.should redirect_to(feed_path(feed))
     end
+    
+    it "should reject a feed from winnow" do
+      post 'create', :feed => {:url => 'http://test.host'}
+      flash[:error].should == "Winnow generated feeds cannot be added to Winnow."
+    end
       
+    it "should not raise an error when the feed URL is invalid" do
+      feed = mock_model(Remote::Feed)
+      feed.errors.should_receive(:empty?).and_return(false)
+      feed.errors.should_receive(:on).with(:url).and_return("Error")
+      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://feed_does_not_exist_test.com/blog', @user.login).and_return(feed)
+      
+      post 'create', :feed => {:url => 'http://feed_does_not_exist_test.com/blog'}
+      response.should be_success
+    end
+    
     it "should render import form" do
       get :import
       response.should be_success
