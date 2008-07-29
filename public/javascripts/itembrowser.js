@@ -637,7 +637,7 @@ var ItemBrowser = Class.create({
     } else {
       next_item = this.container.descendants().first();
     }
-    if(next_item && next_item.hasClassName("item")) {
+    if(next_item && next_item.hasClassName("feed_item")) {
       this.selectItem(next_item);
     }
   },
@@ -647,7 +647,7 @@ var ItemBrowser = Class.create({
     if(this.selectedItem) {
       previous_item = $(this.selectedItem).previousSiblings().first();  
     }
-    if(previous_item && previous_item.hasClassName("item")) {
+    if(previous_item && previous_item.hasClassName("feed_item")) {
       this.selectItem(previous_item);
     }
   },
@@ -659,7 +659,7 @@ var ItemBrowser = Class.create({
     } else {
       next_item = this.container.descendants().first();
     }
-    if(next_item && next_item.hasClassName("item")) {
+    if(next_item && next_item.hasClassName("feed_item")) {
       this.toggleOpenCloseItem(next_item);
     }
   },
@@ -669,7 +669,7 @@ var ItemBrowser = Class.create({
     if(this.selectedItem) {
       previous_item = $(this.selectedItem).previousSiblings().first();  
     }
-    if(previous_item && previous_item.hasClassName("item")) {
+    if(previous_item && previous_item.hasClassName("feed_item")) {
       this.toggleOpenCloseItem(previous_item);
     }
   },

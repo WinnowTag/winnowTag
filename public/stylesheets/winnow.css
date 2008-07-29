@@ -954,131 +954,6 @@ div.sorting_and_filtering_controls {
 }
 
 /*
-** =item, =feed_item
-*/
-.feed_item {
-  font-family: Arial;
-  border-bottom: 1px solid #f1f1f1;
-  background-color: #fff;
-}
-
-.feed_item.selected {
-  border: 2px solid #8181dc;
-}
-
-.feed_item .closed {
-  position: relative;
-  border: 1px solid #fff;
-  border-width: 2px 2px 1px 2px;
-  -moz-user-select: none;
-  line-height: 1.8;
-  cursor: pointer;
-}
-
-.feed_item.selected .closed {
-  border-width: 0;
-}
-
-.feed_item.read .closed {
-  border-color: #e8eef7;
-  background-color: #e8eef7;
-}
-
-.feed_item.open.selected .closed {
-  border-width: 0 0 1px 0;
-}
-
-.feed_item .closed > .status {
-  position: absolute;
-  left: 1px;
-  height: 1.6em;
-  width: 16px;
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -638px;
-}
-.feed_item.read .closed > .status {
-  background-position: 0 -670px;
-}
-
-.feed_item .closed .feed_title {
-  float: left;
-  margin: 0 1% 0 20px;
-  width: 17%;
-  height: 1.7em;
-  overflow: hidden;
-}
-
-.feed_item .closed .title {
-  margin: 0 5em 0 0;
-  display: block;
-  height: 1.7em;
-  overflow: hidden;
-  font-weight: bold;
-}
-
-.feed_item.read .closed .title {
-  font-weight: normal;
-}
-
-.feed_item .closed .date {
-  float: right;
-  margin-right: 2px;
-  height: 1.7em;
-  color: #666;
-}
-
-.feed_item .closed .add_tag {
-  float: right;
-  margin: 0 2px 0 1em;
-}
-
-.feed_item .closed .tag_list {
-  min-height: 1.8em;
-  margin: 0 2px 0 19%;
-}
-
-.feed_item .body {
-  display: none;
-  padding: 5px 5px 5px 25px;
-}
-
-.feed_item.open .body {
-  display: block;
-}
-
-.feed_item.selected .body {
-  padding: 5px 3px 4px 23px;
-}
-
-.feed_item .body h3 {
-  padding: 0;
-  margin: 0;
-  font-size: 1.5em;
-}
-
-.feed_item .body .metadata {
-  padding: 0;
-  margin: 0 0 1em 0;
-  color: #999;
-}
-
-.feed_item .add_tag_form {
-  position: absolute;
-  right: 2px;
-  top: 3px;
-  z-index: 1000;
-  border: 2px solid #c3d9ff;
-  background-color: #e1ecfe;
-  padding: 5px;
-}
-
-.notitle {
-  font-style: italic;
-  font-weight: normal;
-  color: #666;
-}
-
-/*
 ** =footer 
 */
 #footer {
@@ -1097,247 +972,6 @@ div.sorting_and_filtering_controls {
 
 #footer .count {
   float: right;
-}
-
-/*
-** =tag_list
-*/
-ul.tag_list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: .98em;
-}
-
-ul.tag_list li {
-  display: inline;
-  color: #666;
-  padding: 0;
-  margin: 0 0 0 4px;
-  line-height: 1.8;
-  white-space: nowrap;
-}
-
-ul.tag_list li .name {
-  padding: 3px 6px 3px 15px;
-  background-position: left center;
-  background-repeat: no-repeat;
-}
-
-ul.tag_list li.classifier .name {
-  background-image: url(../images/bullet_black.png);
-}
-
-ul.tag_list li.positive .name {
-  background-image: url(../images/bullet_green.png);
-  color: #52984B;
-}
-
-ul.tag_list li.negative .name {
-  background-image: url(../images/bullet_red.png);
-  color: #C12A2F;
-}
-
-ul.tag_list li.public .name {
-  background-image: url(../images/public.png);
-  background-position: 5px center;
-  padding-left: 20px;
-}
-
-ul.tag_list li.public.selected .name {
-  background-position: 4px center;
-  padding-left: 19px;
-}
-
-ul.tag_list li.selected .name {
-  z-index: 1000;
-  border: 1px solid #ffdb00;
-  background-color: #ffff89;
-  background-position: -1px center;
-  padding: 2px 5px 2px 14px;
-  -moz-border-radius: 0.4em;
-  -webkit-border-radius: 0.4em;  
-}
-
-.information {
-  display: none;
-  padding: 1em;
-  border: 2px solid #ffdb00;
-  border-width: 2px 0 0 0;
-  background-color: #ffff89;
-  color: #000;
-  cursor: default;
-  line-height: 1.8;
-}
-
-.feed_item.open .information {
-  border-width: 2px 0;
-}
-
-.information.selected {
-  display: block;
-}
-
-.information .training {
-  float: left;
-  border-right: 2px solid #ffdb00;
-  padding-right: 1em;
-  margin-right: 0.2em;
-}
-
-.information .automatic {
-  float: left;
-}
-
-.information .automatic .status {
-  display: block;
-  color: #666;
-  font-size: 1.3em;
-  font-weight: bold;
-  line-height: 1;
-  margin: 0.5em 0 0.5em 0.5em;
-}
-
-.information .automatic .status .positive, .information .automatic .status .negative {
-  display: none;
-}
-
-.information.positive .automatic .status {
-  padding: 0 0 0 35px;
-  background: url(../images/positive.png) left center no-repeat;
-  color: #52984B;
-}
-
-.information.positive .automatic .status .positive {
-  display: block;
-}
-
-.information.positive .automatic .status .classifier, .information.positive .automatic .status .negative {
-  display: none;
-}
-
-.information.negative .automatic .status {
-  padding: 0 0 0 35px;
-  background: url(../images/negative.png) left center no-repeat;
-  color: #C12A2F;
-}
-
-.information.negative .automatic .status .negative {
-  display: block;
-}
-
-.information.negative .automatic .status .classifier, .information.negative .automatic .status .positive {
-  display: none;
-}
-
-.information.public .training .owner {
-  color: #666;
-  font-size: 1.3em;
-  line-height: 1.5;
-  font-weight: bold;
-}
-
-.information .training .positive, .information .training .negative, .information .training .remove {
-  cursor: pointer;
-  padding: 1px 0 1px 1.6em;
-}
-
-.information .training .positive {
-  display: block;
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 2px;
-  color: #52984B;
-}
-
-.information .training .negative {
-  display: block;
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -61px;
-  color: #C12A2F;
-}
-
-.information .training .remove {
-  display: none;
-  background: url(../images/close.png) 1px center no-repeat;
-  color: #666;
-}
-
-.information.positive .training .positive {
-  display: none;
-}
-
-.information.positive .training .negative {
-  display: block;
-}
-
-.information.positive .training .remove {
-  display: block;
-}
-
-.information.negative .training .positive {
-  display: block;
-}
-
-.information.negative .training .negative {
-  display: none;
-}
-
-.information.negative .training .remove {
-  display: block;
-}
-
-.information .automatic .status .strength {
-  float: left;
-  font-size: 2em;
-  margin-right: 0.2em;
-}
-
-.information .automatic .status a {
-  display: none;
-}
-
-.information.classifier .automatic .status a {
-  display: inline;
-}
-
-.information .automatic .status a {
-  font-size: 0.7692307em;
-}
-
-.information .clues {
-  clear: both;
-  width: 100%;
-  overflow: auto;
-  max-height: 30em;
-}
-
-.information .clues table {
-  margin: 6px 0 1px 1px;
-  border-collapse: collapse;
-  border-bottom: 1px solid #ffdb00;
-}
-
-.information .clues table th.clue, .information .clues table td.clue {
-  padding-left: 1em;
-  padding-right: 1em;
-}
-
-.information .clues table th.clue:first-child, .information .clues table td.clue:first-child {
-  border-left: 1px solid #ffdb00;
-}
-
-.information .clues table th.prob, .information .clues table td.prob {
-  padding-right: 1em;
-}
-
-.information .clues table th {
-  border-top: 1px solid #ffdb00;
-  text-decoration: underline;
-  padding: 0;
-}
-
-.information .clues table th.prob, .information .clues table td.prob {
-  border-right: 1px solid #ffdb00;
 }
 
 /*
@@ -1587,6 +1221,333 @@ a.bookmarklet:hover {
 	text-transform: uppercase;
 	margin: 0 0 0.1em 0;
 	color: #999;
+}
+
+/*
+** =feed_item
+*/
+.feed_item {
+  font-family: Arial;
+  margin: 0;
+  border-bottom: 1px solid #999;
+}
+
+.feed_item.selected {
+  border: 2px solid #8181dc;
+}
+
+.feed_item .closed {
+  cursor: pointer;
+  padding: 7px 5px 2px 5px;
+}
+
+.feed_item.read .closed {
+  background-color: #f3f3f3;
+}
+
+.feed_item.selected .closed {
+  padding: 5px 3px 1px 3px;
+}
+
+.feed_item .closed > .status {
+  float: left;
+  height: 18px;
+  width: 16px;
+  margin: -3px 5px 0 0;
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 -638px;
+}
+
+.feed_item.read .closed > .status {
+  background-position: 0 -670px;
+}
+
+.feed_item .closed h4 {
+  font-weight: bold;
+}
+
+.feed_item.read .closed h4 {
+  font-weight: normal;
+}
+
+.feed_item .closed .date {
+  float: right;
+  width: 6em;
+  text-align: right;
+  color: #666;
+}
+
+.feed_item .closed .add_tag {
+  float: right;
+  margin: 0 2px 0 1em;
+}
+
+.feed_item .body {
+  display: none;
+  padding: 5px 5px 5px 25px;
+}
+
+.feed_item.open .body {
+  display: block;
+}
+
+.feed_item.selected .body {
+  padding: 5px 3px 4px 23px;
+}
+
+.feed_item .add_tag_form {
+  position: absolute;
+  right: 2px;
+  top: 3px;
+  z-index: 1000;
+  border: 2px solid #c3d9ff;
+  background-color: #e1ecfe;
+  padding: 5px;
+}
+
+.notitle {
+  font-style: italic;
+  font-weight: normal;
+  color: #666;
+}
+
+/*
+** =tag_list
+*/
+ul.tag_list {
+  margin: 5px 0 5px 17px;
+  padding: 0;
+  list-style: none;
+}
+
+ul.tag_list li {
+  display: inline;
+  color: #666;
+  padding: 0;
+  margin: 0 0.5em 0 0;
+  white-space: nowrap;
+}
+
+ul.tag_list li .name {
+  padding: 3px 6px 3px 15px;
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+ul.tag_list li.classifier .name {
+  background-image: url(../images/bullet_black.png);
+}
+
+ul.tag_list li.positive .name {
+  background-image: url(../images/bullet_green.png);
+  color: #52984B;
+}
+
+ul.tag_list li.negative .name {
+  background-image: url(../images/bullet_red.png);
+  color: #C12A2F;
+}
+
+ul.tag_list li.public .name {
+  background-image: url(../images/public.png);
+  background-position: 5px center;
+  padding-left: 20px;
+}
+
+ul.tag_list li.public.selected .name {
+  background-position: 4px center;
+  padding-left: 19px;
+}
+
+ul.tag_list li.selected .name {
+  z-index: 1000;
+  border: 1px solid #ffdb00;
+  background-color: #ffff89;
+  background-position: -1px center;
+  padding: 2px 5px 2px 14px;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;  
+}
+
+.information {
+  display: none;
+  padding: 1em;
+  border: 2px solid #ffdb00;
+  border-width: 2px 0 0 0;
+  background-color: #ffff89;
+  color: #000;
+  cursor: default;
+  line-height: 1.8;
+}
+
+.feed_item.open .information {
+  border-width: 2px 0;
+}
+
+.information.selected {
+  display: block;
+}
+
+.information .training {
+  float: left;
+  border-right: 2px solid #ffdb00;
+  padding-right: 1em;
+  margin-right: 0.2em;
+}
+
+.information .automatic {
+  float: left;
+}
+
+.information .automatic .status {
+  display: block;
+  color: #666;
+  font-size: 1.3em;
+  font-weight: bold;
+  line-height: 1;
+  margin: 0.5em 0 0.5em 0.5em;
+}
+
+.information .automatic .status .positive, .information .automatic .status .negative {
+  display: none;
+}
+
+.information.positive .automatic .status {
+  padding: 0 0 0 35px;
+  background: url(../images/positive.png) left center no-repeat;
+  color: #52984B;
+}
+
+.information.positive .automatic .status .positive {
+  display: block;
+}
+
+.information.positive .automatic .status .classifier, .information.positive .automatic .status .negative {
+  display: none;
+}
+
+.information.negative .automatic .status {
+  padding: 0 0 0 35px;
+  background: url(../images/negative.png) left center no-repeat;
+  color: #C12A2F;
+}
+
+.information.negative .automatic .status .negative {
+  display: block;
+}
+
+.information.negative .automatic .status .classifier, .information.negative .automatic .status .positive {
+  display: none;
+}
+
+.information.public .training .owner {
+  color: #666;
+  font-size: 1.3em;
+  line-height: 1.5;
+  font-weight: bold;
+}
+
+.information .training .positive, .information .training .negative, .information .training .remove {
+  cursor: pointer;
+  padding: 1px 0 1px 1.6em;
+}
+
+.information .training .positive {
+  display: block;
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 2px;
+  color: #52984B;
+}
+
+.information .training .negative {
+  display: block;
+  background: url(../images/vertical_sprite.png) no-repeat;
+  background-position: 0 -61px;
+  color: #C12A2F;
+}
+
+.information .training .remove {
+  display: none;
+  background: url(../images/close.png) 1px center no-repeat;
+  color: #666;
+}
+
+.information.positive .training .positive {
+  display: none;
+}
+
+.information.positive .training .negative {
+  display: block;
+}
+
+.information.positive .training .remove {
+  display: block;
+}
+
+.information.negative .training .positive {
+  display: block;
+}
+
+.information.negative .training .negative {
+  display: none;
+}
+
+.information.negative .training .remove {
+  display: block;
+}
+
+.information .automatic .status .strength {
+  float: left;
+  font-size: 2em;
+  margin-right: 0.2em;
+}
+
+.information .automatic .status a {
+  display: none;
+}
+
+.information.classifier .automatic .status a {
+  display: inline;
+}
+
+.information .automatic .status a {
+  font-size: 0.7692307em;
+}
+
+.information .clues {
+  clear: both;
+  width: 100%;
+  overflow: auto;
+  max-height: 30em;
+}
+
+.information .clues table {
+  margin: 6px 0 1px 1px;
+  border-collapse: collapse;
+  border-bottom: 1px solid #ffdb00;
+}
+
+.information .clues table th.clue, .information .clues table td.clue {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.information .clues table th.clue:first-child, .information .clues table td.clue:first-child {
+  border-left: 1px solid #ffdb00;
+}
+
+.information .clues table th.prob, .information .clues table td.prob {
+  padding-right: 1em;
+}
+
+.information .clues table th {
+  border-top: 1px solid #ffdb00;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.information .clues table th.prob, .information .clues table td.prob {
+  border-right: 1px solid #ffdb00;
 }
 
 /*

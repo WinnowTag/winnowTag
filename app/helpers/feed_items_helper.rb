@@ -16,11 +16,19 @@ module FeedItemsHelper
   end
   
   def link_to_feed_item(feed_item)
-    # TODO: sanitize
     if feed_item.link 
-      link_to(feed_item.title, feed_item.link, :target => "_blank") 
+      link_to(feed_item_title(feed_item), feed_item.link, :target => "_blank") 
     else
+      feed_item_title(feed_item)
+    end
+  end
+  
+  def feed_item_title(feed_item)
+    # TODO: sanitize
+    if not feed_item.title.blank?
       feed_item.title
+    else
+      content_tag :span, _(:feed_item_no_title), :class => "notitle"
     end
   end
     
@@ -131,15 +139,6 @@ module FeedItemsHelper
       Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
 
     tags.uniq.sort_by { |tag| tag.name.downcase }
-  end
-  
-  def feed_item_title(feed_item)
-    # TODO: sanitize
-    if not feed_item.title.blank?
-      feed_item.title
-    else
-      content_tag :span, _(:feed_item_no_title), :class => "notitle"
-    end
   end
   
   def render_clues(clues)
