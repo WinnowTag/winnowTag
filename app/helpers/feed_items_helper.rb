@@ -9,15 +9,15 @@ module FeedItemsHelper
   def link_to_feed(feed, options = {})
     # TODO: sanitize
     if feed.alternate
-      link_to(feed.title, feed.alternate, :target => "_blank") 
+      link_to(feed.title, feed.alternate, options.merge(:target => "_blank"))
     else
       feed.title
     end
   end
   
-  def link_to_feed_item(feed_item)
+  def link_to_feed_item(feed_item, options = {})
     if feed_item.link 
-      link_to(feed_item_title(feed_item), feed_item.link, :target => "_blank") 
+      link_to(feed_item_title(feed_item), feed_item.link, options.merge(:target => "_blank"))
     else
       feed_item_title(feed_item)
     end

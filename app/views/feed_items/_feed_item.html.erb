@@ -3,13 +3,13 @@
     <div class="date"><%= format_date(feed_item.updated) %></div>
     <%= link_to_function _(:add_tag_link), "", :class => "add_tag stop" %>
 
-  	<%= link_to_function "", "", :class => "status" %>
-  	<h4><%= link_to_feed_item(feed_item) %></h4>
+  	<%= link_to_function "", "", :class => "status stop" %>
+  	<h4><%= link_to_feed_item(feed_item, :class => "stop") %></h4>
   	<span class="description">
   		<% if feed_item.author.blank? -%>
-        <%= _(:feed_item_feed_metadata, link_to_feed(feed_item.feed)) %>
+        <%= _(:feed_item_feed_metadata, link_to_feed(feed_item.feed, :class => "stop")) %>
   		<% else -%>
-  		  <%= _(:feed_item_metadata, link_to_feed(feed_item.feed), feed_item.author) %>
+  		  <%= _(:feed_item_metadata, link_to_feed(feed_item.feed, :class => "stop"), feed_item.author) %>
   		<% end -%>
   	</span>
 
