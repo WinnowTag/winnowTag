@@ -328,8 +328,9 @@ a.close img {
 
 .navigation .extra li {
   float: left;
-  padding: 0 10px;
+  padding: 0 5px;
   margin: 0;
+  border-right: 1px solid #ccc;
 }
 
 .navigation .extra li a.help {
@@ -361,12 +362,13 @@ ul.help li {
 
 #feedback {
   position: relative;
+  border: none;
 }
 
 #feedback form {
   position: absolute;
   top: 1.5em;
-  left: -5em;
+  right: 0.5em;
   z-index: 1000;
   padding: 1em;
   background-color: #fff;

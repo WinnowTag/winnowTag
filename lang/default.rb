@@ -306,7 +306,7 @@ Localization.define do |l|
 	
   # app/views/layouts/_navbar.html.erb
   l.store :about,                                   "About"
-  l.store :my_info,                                 "My Info"
+  l.store :profile,                                 "Profile"
   l.store :logout,                                  "Logout"
   l.store :winnow_info,                             "Winnow Info"
   l.store :items,                                   "Items"
