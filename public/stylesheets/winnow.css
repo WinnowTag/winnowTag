@@ -1260,6 +1260,10 @@ a.bookmarklet:hover {
   background-position: 0 -670px;
 }
 
+.feed_item .closed .description a {
+  color: #52718B;
+}
+
 .feed_item .closed .date {
   float: right;
   width: 6em;
