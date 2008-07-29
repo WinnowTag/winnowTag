@@ -428,7 +428,7 @@ var ItemBrowser = Class.create({
   selectTaggingInformation: function(tag, tag_id) {
     tag = $(tag);
     
-    var item = tag.up('.item');
+    var item = tag.up('.feed_item');
     var information = item.down(".information");
 
     if(tag.hasClassName("selected")) {
@@ -482,7 +482,7 @@ var ItemBrowser = Class.create({
   },
   
   toggleTagClues: function(tag, tag_id) {
-    var item = tag.up(".item");
+    var item = tag.up(".feed_item");
     var clues = item.down(".information .clues");
     
     if(clues.visible()) {
@@ -534,7 +534,7 @@ var ItemBrowser = Class.create({
   },
   
   closeAllItems: function() {
-    $$(".item.open").invoke("removeClassName", "open");
+    $$(".feed_item.open").invoke("removeClassName", "open");
   },
   
   toggleOpenCloseItem: function(item, event) {
@@ -626,7 +626,7 @@ var ItemBrowser = Class.create({
   },
   
   markAllItemsRead: function() {
-    $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
+    $$('.feed_item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
     new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
   },
 

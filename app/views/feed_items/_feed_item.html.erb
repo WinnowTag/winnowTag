@@ -1,4 +1,4 @@
-<div class="item<%= ' read' if feed_item.read_by_current_user? %>" id="<%= dom_id(feed_item) %>">
+<div id="<%= dom_id(feed_item) %>" class="feed_item<%= ' read' if feed_item.read_by_current_user? %>">
   <div class="closed">
     <%= link_to_function "", "", :class => "status stop" %>
     <%= link_to feed_item.feed_title, feed_path(feed_item.feed_id), :target => "_blank", :class => "feed_title stop" %>
