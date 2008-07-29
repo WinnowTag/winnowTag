@@ -1291,7 +1291,7 @@ a.bookmarklet:hover {
   top: 3px;
   z-index: 1000;
   border: 2px solid #c3d9ff;
-  background-color: #e1ecfe;
+  background-color: #d7e0f5;
   padding: 5px;
 }
 
@@ -1692,7 +1692,7 @@ ul.tag_list li.selected .name {
 	padding: 0.5em 0.3em 0.5em 0.5em;
 	color: #666;	
 	font-size: .95em;
-	background-color: #EAF0F5;
+	background-color: #d7e0f5;
 }
 
 .tag .extended .comment .metadata .author {
@@ -1703,17 +1703,13 @@ ul.tag_list li.selected .name {
 	margin-top: 0.5em;
 }
 
-.tag .extended .comment .metadata .actions a {
-	color: #52718B;
-}
-
 .tag .extended .comment .metadata .actions a.edit {
 	margin-right: 0.5em;
 }
 
 .tag .extended .comment .body {
 	padding: 0.5em 0 0.5em .5em;
-	border-left: 10.25em solid #EAF0F5;
+	border-left: 10.2em solid #d7e0f5;
 }
 
 .tag .extended .comment .body *:first-child {
@@ -1729,8 +1725,8 @@ ul.tag_list li.selected .name {
 }
 
 .tag .extended .comment form {
-	padding: 0.5em 0.5em 0.5em .5em;
-	border-left: 10.22em solid #EAF0F5;
+	padding: 0.5em;
+	border-left: 10.2em solid #d7e0f5;
 }
 
 .tag .extended .comment form  textarea {
@@ -1827,7 +1823,7 @@ ul.tag_list li.selected .name {
 .tag .extended .comment_form {
 	margin-right: 1.5em;
 	padding: 1em 1em 1em 0.75em;
-	background-color: #E4F2FF;
+	background-color: #d7e0f5;
 }
 
 .tag .extended .comment_form h5 {
