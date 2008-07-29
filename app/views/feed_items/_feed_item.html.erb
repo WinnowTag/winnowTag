@@ -4,7 +4,8 @@
     <%= link_to_function _(:add_tag_link), "", :class => "add_tag stop" %>
 
   	<%= link_to_function "", "", :class => "status stop" %>
-  	<h4><%= link_to_feed_item(feed_item, :class => "stop") %></h4>
+  	<h4><%= feed_item_title(feed_item) %></h4>
+    <%= link_to(image_tag("link.png"), feed_item.link, :class => "link stop") %>
   	<span class="description">
   		<% if feed_item.author.blank? -%>
         <%= _(:feed_item_feed_metadata, link_to_feed(feed_item.feed, :class => "stop")) %>

@@ -1236,7 +1236,7 @@ a.bookmarklet:hover {
 
 .feed_item .closed {
   cursor: pointer;
-  padding: 7px 5px 2px 5px;
+  padding: 5px 5px 2px 5px;
 }
 
 .feed_item.read .closed {
@@ -1244,20 +1244,24 @@ a.bookmarklet:hover {
 }
 
 .feed_item.selected .closed {
-  padding: 5px 3px 1px 3px;
+  padding: 3px 3px 1px 3px;
 }
 
 .feed_item .closed > .status {
   float: left;
-  height: 18px;
+  height: 16px;
   width: 16px;
-  margin: -3px 5px 0 0;
+  margin: 1px 5px 0 0;
   background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -638px;
+  background-position: 0 -640px;
 }
 
 .feed_item.read .closed > .status {
-  background-position: 0 -670px;
+  background-position: 0 -672px;
+}
+
+.feed_item .closed .link img {
+  vertical-align: bottom;
 }
 
 .feed_item .closed .description a {
