@@ -18,7 +18,7 @@
   <%= render :partial => 'layouts/navbar' %>
   
   <% if header_controls = yield(:header_controls) -%>
-    <div id="header_controls"><%= header_controls %></div>
+    <div id="header_controls" class="clearfix"><%= header_controls %></div>
   <% end -%>
 
   <%= show_flash %>

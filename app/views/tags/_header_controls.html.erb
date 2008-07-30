@@ -1,3 +1,7 @@
+<% form_tag public_tags_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:tags_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% end -%>
+
 <ul class="control_bar">
   <li class="order">
     <%= _(:tags_header_sort_label) %>
@@ -10,7 +14,3 @@
     <%= link_to_function _(:tags_header_last_trained), "itemBrowser.setOrder('last_trained')", :id => "order_last_trained" %>
   </li>
 </ul>
-
-<% form_tag public_tags_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:tags_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
-<% end -%>

@@ -1,3 +1,7 @@
+<% form_tag users_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:users_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% end -%>
+
 <ul class="control_bar">
   <li><%= link_to _(:users_create_user), new_user_url, :class => "add" %></li>
   <li><%= link_to _(:users_export), formatted_users_path(:csv, params.except(:controller, :action)), :class => "add" %></li>
@@ -12,7 +16,3 @@
     <%= link_to_function _(:users_header_number_of_tags), "itemBrowser.setOrder('tag_count')",        :id => "order_tag_count" %>
   </li>    
 </ul>
-
-<% form_tag users_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:users_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
-<% end -%>
