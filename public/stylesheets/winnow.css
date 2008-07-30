@@ -893,10 +893,9 @@ ul.control_bar {
 ul.control_bar li {
   display: inline;
   margin: 0 0 0 0.5em;
-  padding: 4px;
+  padding: 2px 6px;
   white-space: nowrap;
   vertical-align: middle;
-
 	background-color: #fdfdfd;
 	-moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
