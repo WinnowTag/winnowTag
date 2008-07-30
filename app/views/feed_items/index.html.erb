@@ -10,6 +10,31 @@
 	</script>
 <% end -%>
 
+<% content_for :header_controls do -%>
+  <ul class="control_bar">
+    <li class="selected_filters">
+      Selected Filters:
+      <%= link_to _(:feed_for_selected_filters), "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>,
+      <%= link_to_function _(:clear_selected_filters), "itemBrowser.setFilters({text_filter: ''})", :id => "clear_selected_filters" %>
+    </li>
+    <li class="choice_filter">
+      <%= _(:show_label) %>
+      <%= link_to_function _(:show_all_label), "itemBrowser.addFilters({mode: 'all'})", :id => "mode_all" %>, 
+      <%= link_to_function _(:show_unread_label), "itemBrowser.addFilters({mode: 'unread'})", :id => "mode_unread" %>, 
+      <%= link_to_function _(:show_moderated_label), "itemBrowser.addFilters({mode: 'moderated'})", :id => "mode_moderated" %>
+    </li>
+    <li class="order">
+      <%= _(:sort_label) %>                                                                                                              
+      <%= link_to_function _(:sort_date_label), "itemBrowser.setOrder('date')", :id => "order_date" %>, 
+      <%= link_to_function _(:sort_strength_label), "itemBrowser.setOrder('strength')", :id => "order_strength" %>
+    </li>                                                                                                                 
+  </ul>
+
+  <% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage(#{_(:search_term_too_short).to_json}); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
+    <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feed_items_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+  <% end -%>
+<% end -%>
+
 <% content_for :sidebar do -%>
   <% javascript_tag do -%>
     document.observe('dom:loaded', function() { 

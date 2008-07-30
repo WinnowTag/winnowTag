@@ -1,32 +1,3 @@
-<% form_tag feed_items_path, :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage(#{_(:search_term_too_short).to_json}); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feed_items_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
-<% end -%>
-
-<div class="section" id="selected_filters_controls_section">
-  <div class="content">
-    Selected Filters:
-    <%= link_to _(:feed_for_selected_filters), "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>
-    <%= link_to_function _(:clear_selected_filters), "itemBrowser.setFilters({text_filter: ''})", :id => "clear_selected_filters" %>
-  </div>
-</div>
-
-<div class="section" id="show_sort_section">
-  <div class="content">
-    <div class="choice_filter">
-      <%= _(:show_label) %>
-      <%= link_to_function _(:show_all_label), "itemBrowser.addFilters({mode: 'all'})", :id => "mode_all" %>, 
-      <%= link_to_function _(:show_unread_label), "itemBrowser.addFilters({mode: 'unread'})", :id => "mode_unread" %>, 
-      <%= link_to_function _(:show_moderated_label), "itemBrowser.addFilters({mode: 'moderated'})", :id => "mode_moderated" %>
-    </div>
-
-    <div class="choice_filter order">
-      <%= _(:sort_label) %>
-      <%= link_to_function _(:sort_date_label), "itemBrowser.setOrder('date')", :id => "order_date" %>, 
-      <%= link_to_function _(:sort_strength_label), "itemBrowser.setOrder('strength')", :id => "order_strength" %>
-    </div>
-  </div>
-</div>
-
 <div class="section<%= open_tags? ? " open" : "" %>" id="tags_section">
   <div class="header clearfix">
     <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('tags', $(this).up('.section').hasClassName('open'), 365);"></span>
