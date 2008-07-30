@@ -23,5 +23,7 @@ class CollectionJobResultsController < ApplicationController
     else
       user.messages.create!(:body => _(:collection_finished, feed.title))
     end
+    
+    render :nothing => true, :status => :created
   end
 end

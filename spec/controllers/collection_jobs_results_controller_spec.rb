@@ -24,9 +24,9 @@ describe CollectionJobResultsController do
     post :create, :collection_job_result => { :message => message, :failed => message ? "true" : "false", :feed_id => @feed.id.to_s }, :user_id => @user.id
   end
 
-  it "is a success" do
+  it "is created" do
     do_post
-    response.should be_success
+    response.code.should == "201"
   end
   
   it "creates a success messsage when successful" do
