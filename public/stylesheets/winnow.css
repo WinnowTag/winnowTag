@@ -860,13 +860,14 @@ ul.filter_list li .training .automatic strong {
 /*
 ** =classifier
 */
-#sidebar .classification_controls {
-  text-align: center;
+#footer .classification_controls {
+  float: right;
+  margin: 0 0 0 1em;
 }
 
 .progress_bar_container {
-  margin-top: 5px;
-  width: 100%;
+  margin: -2px 0 0 0;
+  width: 20em;
   height: 2em;
   border: 1px solid gray;
   overflow: hidden;
