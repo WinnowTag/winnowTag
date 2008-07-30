@@ -21,7 +21,7 @@ describe CollectionJobResultsController do
   end
   
   def do_post(message = nil)
-    post :create, :collection_job_result => { :message => message, :failed => message ? "true" : "false", :feed_id => @feed.id.to_s }, :user_id => @user.id
+    post :create, :collection_job_result => { :message => message, :failed => !message.nil?, :feed_id => @feed.id.to_s }, :user_id => @user.id
   end
 
   it "is created" do
