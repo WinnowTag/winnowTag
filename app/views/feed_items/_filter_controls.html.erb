@@ -1,3 +1,15 @@
+<% form_tag feed_items_path, :onsubmit => "if($F('text_filter').length < 4) { new ErrorMessage(#{_(:search_term_too_short).to_json}); } else { $('error').hide(); resizeContent(); itemBrowser.addFilters({text_filter: $F('text_filter')}); } return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feed_items_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% end -%>
+
+<div class="section" id="selected_filters_controls_section">
+  <div class="content">
+    Selected Filters:
+    <%= link_to _(:feed_for_selected_filters), "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>
+    <%= link_to_function _(:clear_selected_filters), "itemBrowser.setFilters({text_filter: ''})", :id => "clear_selected_filters" %>
+  </div>
+</div>
+
 <div class="section" id="show_sort_section">
   <div class="content">
     <div class="choice_filter">
@@ -80,16 +92,4 @@
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
   <%= sortable_element("folders", :url => sort_folders_path, :method => :put, :constraint => :vertical, :tag => :div, :handle => ".header") %>
-</div>
-
-<div class="section" id="clear_section">
-  <div class="content">
-    <%= button_to_function "", "itemBrowser.setFilters({text_filter: ''})", :id => "clear_selected_filters" %><br>
-  </div>
-</div>
-
-<div class="section" id="feed_link_section">
-  <div class="content">
-    <%= link_to _(:feed_for_selected_filters_link), "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>
-  </div>
 </div>

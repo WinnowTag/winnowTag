@@ -27,4 +27,6 @@
 		<%= image_submit_tag "next.png", :onclick => "itemBrowser.openNextItem();" %>
 		<%= image_submit_tag "mark_read.png", :onclick => "itemBrowser.markAllItemsRead();" %>
 	</span>
+	
+	<%= render :partial => "classification_controls" %>
 <% end -%>

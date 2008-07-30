@@ -479,6 +479,7 @@ ul.help li {
 }
 
 #feeds_section .header .name {
+  padding: 1px 0 1px 20px;
   background: transparent url(../images/feed.png) left center no-repeat;
 }
 
@@ -559,24 +560,19 @@ ul.help li {
   display: block;
 }
 
-#clear_section > .content {
+#selected_filters_controls_section > .content {
   display: block;
-  text-align: center;
 }
 
-#classification_section > .content {
-  display: block;
-  text-align: center;
-}
-
-#feed_link_section > .content {
-  display: block;
-  text-align: center;
-}
-
-#feed_link_section > .content a {
+#selected_filters_controls_section > .content #feed_with_selected_filters {
   background: url(../images/feed.png) left center no-repeat;
-  padding-left: 20px;
+  padding: 1px 0 1px 20px;
+}
+
+#selected_filters_controls_section > .content #clear_selected_filters {
+  background: url(../images/close.png) left center no-repeat;
+  padding: 1px 0 1px 16px;
+  margin-left: 1em;
 }
 
 /*
@@ -968,8 +964,9 @@ div.sorting_and_filtering_controls {
   height: 25px;
 }
 
-#footer .count {
+#footer #classification_section {
   float: right;
+  margin-top: 0.4em;
 }
 
 /*

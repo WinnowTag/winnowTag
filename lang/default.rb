@@ -182,7 +182,8 @@ Localization.define do |l|
   l.store :sidebar_folders_header,                "Folders"
   l.store :sidebar_add_folder_link,               "Add Folder"
   l.store :sidebar_cancel_add_folder_link,        "cancel"
-  l.store :feed_for_selected_filters_link,        "Feed with selected filters"
+  l.store :feed_for_selected_filters,             "Feed"
+  l.store :clear_selected_filters,                "Clear"
   
   # app/views/feed_items/_info.html.erb
   l.store :confirm_destroy_folder,                "Are you sure?"

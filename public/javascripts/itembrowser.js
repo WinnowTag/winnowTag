@@ -321,11 +321,9 @@ var ItemBrowser = Class.create({
     var clear_selected_filters = $("clear_selected_filters");
     if(clear_selected_filters) {
       if(this.filters.tag_ids || this.filters.feed_ids || this.filters.text_filter) {
-        clear_selected_filters.disabled = false;
-        clear_selected_filters.value = "Clear Selected Filters";
+        clear_selected_filters.show();
       } else {
-        clear_selected_filters.disabled = true;
-        clear_selected_filters.value = "No Filters Selected";
+        clear_selected_filters.hide();
       }
     }
     
