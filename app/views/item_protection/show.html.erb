@@ -1,12 +1,12 @@
+<% content_for :header_controls do -%>
+  <ul class="control_bar">
+  	<li><%= link_to _(:item_protection_rebuild), rebuild_item_protection_path, :method => :post, :class => "rebuild" %></li>
+  </div>
+<% end -%>
+
 <div class="explanation">
 	<%= simple_format _(:item_protection_explanation) %>
 </div>
-
-<% content_for :header_controls do -%>
-  <ul class="control_bar">
-  	<li><%= link_to _(:item_protection_rebuild), rebuild_item_protection_path, :method => :post %></li>
-  </div>
-<% end -%>
 
 <table class="property_table">
 	<tr>
@@ -22,5 +22,3 @@
 		<td><%= @protector.created_on %></td>
 	</tr>
 </table>
-
-

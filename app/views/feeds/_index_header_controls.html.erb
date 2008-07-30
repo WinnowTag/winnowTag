@@ -3,7 +3,7 @@
 <% end -%>
 
 <ul class="control_bar">
-  <li><%= link_to _(:feeds_header_add), new_feed_path %></li>
+  <li><%= link_to _(:feeds_header_add), new_feed_path, :class => "add" %></li>
   <li><%= link_to _(:feeds_header_import), import_feeds_path %></li>
   <li class="order">
     <%= _(:sort_label) %>                                                                                                              

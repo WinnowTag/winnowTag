@@ -4,7 +4,7 @@
 
 <ul class="control_bar">
   <li><%= link_to _(:users_create_user), new_user_url, :class => "add" %></li>
-  <li><%= link_to _(:users_export), formatted_users_path(:csv, params.except(:controller, :action)), :class => "add" %></li>
+  <li><%= link_to _(:users_export), formatted_users_path(:csv, params.except(:controller, :action)), :class => "export" %></li>
   <li class="order">
     <%= _(:sort_label) %>
     <%= link_to_function _(:users_header_login),          "itemBrowser.setOrder('login')",            :id => "order_login" %>, 
