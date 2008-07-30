@@ -212,10 +212,6 @@ a.close img {
   background: url(../images/vertical_sprite.png) no-repeat;
 }
 
-#text_filter_form {
-  width: 22em;
-}
-
 /*
 ** =login
 */
@@ -872,10 +868,14 @@ ul.filter_list li .training .automatic strong {
 ** =header
 */
 #header_controls {
-  margin-top: -8px;
-  padding: 3px 5px 2px 16px;
-  height: 2em;
+  margin: -8px 0 0 0;
+  padding: 5px;
   background-color: #d7e0f5;
+}
+
+#header_controls #text_filter_form {
+  float: left;
+  width: 22em;
 }
 
 #header_controls .control_bar {
@@ -883,17 +883,17 @@ ul.filter_list li .training .automatic strong {
   color: #666;
 }
 
-ul.control_bar {
+#header_controls ul.control_bar {
   list-style: none;
-  margin: 2px 0 0 0;
+  margin: 2px 0 3px 0;
   padding: 0;
   white-space: nowrap;
 }
 
-ul.control_bar li {
+#header_controls ul.control_bar li {
   display: inline;
   margin: 0 0 0 0.5em;
-  padding: 2px 6px;
+  padding: 4px 6px;
   white-space: nowrap;
   vertical-align: middle;
 	background-color: #fdfdfd;
@@ -901,17 +901,17 @@ ul.control_bar li {
   -webkit-border-radius: 0.5em;
 }
 
-ul.control_bar li.choice_filter .selected {
+#header_controls ul.control_bar li.choice_filter .selected {
   color: #000;
   font-weight: bold;
 }
 
-ul.control_bar li #feed_with_selected_filters {
+#header_controls ul.control_bar li #feed_with_selected_filters {
   background: url(../images/feed.png) left center no-repeat;
   padding: 1px 0 1px 20px;
 }
 
-ul.control_bar li #clear_selected_filters {
+#header_controls ul.control_bar li #clear_selected_filters {
   background: url(../images/close.png) left center no-repeat;
   padding: 1px 0 1px 16px;
 }
@@ -965,16 +965,17 @@ div.sorting_and_filtering_controls {
 */
 .applesearch input {
   width: 100%;
-  margin-bottom: 0.75em;
 }
 
 .applesearch.non_safari {
   position: relative;
-  padding: 0 19px 0 19px;
+  padding: 0 19px;
+  white-space: nowrap;
 }
 
 .applesearch.non_safari .sbox_l {
   position: absolute;
+  top: 3px;
   left: 0;
   width: 19px;
   height: 19px;
@@ -983,6 +984,7 @@ div.sorting_and_filtering_controls {
 
 .applesearch.non_safari .sbox_r {
   position: absolute;
+  top: 3px;
   right: 0;
   width: 19px;
   height: 19px;
@@ -995,6 +997,8 @@ div.sorting_and_filtering_controls {
 }
 
 .applesearch.non_safari input {
+  position: relative;
+  top: 3px;
   height: 19px;
   width: 100%;
   padding: 3px 0;
