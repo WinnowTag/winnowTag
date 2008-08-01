@@ -9,8 +9,7 @@ describe ItemCache::FeedItemsController do
   fixtures :feed_items, :feeds
   
   before(:each) do
-    login_as(1)
-    mock_user_for_controller
+    @controller.stub!(:hmac_authenticated?).and_return(true)
   end
   
   describe "POST to /feeds/1/feed_items" do
@@ -34,6 +33,14 @@ describe ItemCache::FeedItemsController do
     it "should set the location" do
       post :create, :feed_id => "1", :atom => @atom
       response.headers['Location'].should == item_cache_feed_item_url(@item)
+    end
+  end
+    
+  describe "POST to /feeds/1/feed_items without valid credentials" do
+    it "should return 403 Forbidden" do
+      @controller.should_receive(:hmac_authenticated?).and_return(false)
+      post :create, :feed_id => "1", :atom => @atom
+      response.code.should == "403"
     end
   end
   
