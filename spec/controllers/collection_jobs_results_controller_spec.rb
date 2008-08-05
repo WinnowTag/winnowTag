@@ -46,9 +46,9 @@ describe CollectionJobResultsController do
     do_post
   end
   
-  it "reponds with 403 if hmas is not authenticated" do
+  it "reponds with 401 if hmac is not authenticated" do
     @controller.should_receive(:hmac_authenticated?).and_return(false)
     do_post
-    response.code.should == "403"
+    response.code.should == "401"
   end
 end
