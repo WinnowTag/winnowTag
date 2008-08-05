@@ -61,6 +61,14 @@ module AuthenticatedSystem
       end
     end
     
+    def login_required_unless_hmac
+      unless hmac_authenticated?
+        login_required
+      else
+        true
+      end
+    end
+    
     # Redirect as appropriate when an access request fails.
     #
     # The default action is to redirect to the login screen.
@@ -77,12 +85,12 @@ module AuthenticatedSystem
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
+          headers["WWW-Authenticate"] = 'AuthHMAC'
           render :text => "Could't authenticate you", :status => '401 Unauthorized'
         end
         accepts.atom do
           headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
+          headers["WWW-Authenticate"] = 'AuthHMAC'
           render :text => "Could't authenticate you", :status => '401 Unauthorized'
         end
         accepts.js do
