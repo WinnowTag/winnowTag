@@ -24,6 +24,13 @@ def valid_user_attributes(attributes = {})
   }.merge(attributes)
 end
 
+def get_with_hmac(url, params = {}, headers = {})
+  request = Net::HTTP::Get.new(URI.parse(url).path, {'Content-Type' => "application/x-www-form-urlencoded"}.merge(headers))
+  AuthHMAC.sign!(request, 'classifier_id', 'classifier_secret')
+  sent_headers = headers.merge({'Authorization' => request['Authorization'], 'Date' => request['Date']})
+  get url, params, sent_headers
+end
+
 def post_with_hmac(url, data, headers)
   request = Net::HTTP::Post.new(URI.parse(url).path, headers)
   AuthHMAC.sign!(request, 'collector_id', 'collector_secret')
