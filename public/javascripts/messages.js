@@ -3,39 +3,59 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
-var ErrorMessage = Class.create({
-	initialize: function(message) {
-		if (ErrorMessage.timeout) {
-			clearTimeout(ErrorMessage.timeout);
-		}
-		this.element = $('error');
-		this.element.update(message);
-		this.element.show();
-		
-		resizeContent();
+var Message = {
+  queue: [],
+  running: false,
+  element: null,
 
-		ErrorMessage.timeout = setTimeout(function() {
-			new Effect.Fade(this.element, { duration: 4, afterFinish: resizeContent });
-		}.bind(this), 10000);
-	}	
-});
+  add: function(type, message) {
+    this.queue.push({type: type, message: message});
+    this.start();
+  },
+  
+  start: function() {
+    if(this.running) { return; }
+    this.running = true;
+    this.element = $("messages");
+    this.element.down(".close").observe("click", this.hide.bind(this));
+    this.showNext();
+  },
+  
+  stop: function() {
+    this.running = false;
+  },
+  
+  showNext: function() {
+    var message = this.queue.shift();
+    
+    if(message) {
+      this.show(message.type, message.message);
+    } else {
+      this.stop();
+    }
+  },
 
-var NoticeMessage = Class.create({
-	initialize: function(message) {
-		if (NoticeMessage.timeout) {
-			clearTimeout(NoticeMessage.timeout);
-		}
-		this.element = $('notice');
-		this.element.update(message);
-		this.element.show();
-		
-		resizeContent();
-
-		ErrorMessage.timeout = setTimeout(function() {
-			new Effect.Fade(this.element, { duration: 4, afterFinish: resizeContent });
-		}.bind(this), 10000);
-	}	
-});
+  show: function(type, message) {
+    this.element.addClassName(type);
+    this.element.down(".content").update(message);
+    Effect.Appear(this.element, { to: this.element.getOpacity(),
+      afterFinish: function() {
+        this.timeout = setTimeout(this.hide.bind(this), 10000);
+      }.bind(this)
+    });
+  },
+  
+  hide: function(type) {
+    if(this.timeout) { clearTimeout(this.timeout); }
+    
+    Effect.Fade(this.element, {
+      afterFinish: function() {
+        this.element.removeClassName(this.element.classNames().toArray().last());
+        this.showNext();
+      }.bind(this)
+    });
+  }
+}
 
 var ConfirmationMessage = Class.create({
   initialize: function(message, options) {
@@ -49,14 +69,12 @@ var ConfirmationMessage = Class.create({
                         ' <a href="#" id="confirm_yes" onclick="return false;">' + this.options.yes + '</a>' +
                         ' or <a href="#" id="confirm_no" onclick="return false">' + this.options.no + '</a>');
     $('confirm_no').observe('click', function() { 
-      $('confirm').hide();
-      resizeContent(); 
+      Effect.Fade('confirm');
       return false;
     });
     $('confirm_yes').observe('click', function() { 
-      $('confirm').hide(); 
-      resizeContent();
-      
+      Effect.Fade('confirm');
+
       if (this.options.onConfirmed) {
         this.options.onConfirmed();        
       }
@@ -64,8 +82,7 @@ var ConfirmationMessage = Class.create({
       return false;
     }.bindAsEventListener(this));    
     
-    $('confirm').show();
-    resizeContent();
+    Effect.Appear('confirm');
   }
 });
 
@@ -81,14 +98,12 @@ var TimeoutMessage = Class.create({
                                 "<a href=\"#\" id=\"timeout" + this.timeout_id + "\">cancel</a>" +
                                 " if you like.");
       Event.observe("timeout" + this.timeout_id, 'click', this.cancel.bindAsEventListener(this));
-      this.error_message.show();
-      resizeContent();
+      Effect.Appear(this.error_message);
     }
   },
   
   clear: function() {
-    this.error_message.hide();
-    resizeContent();
+    Effect.Fade(this.error_message);
   },
   
   cancel: function() {

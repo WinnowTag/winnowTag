@@ -149,67 +149,40 @@ textarea.content {
 }
 
 /*
-** =common
+** =messages
 */
-a.close img {
-  float: right;
-  width: 12px;
-  height: 12px;
+#messages {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 1em 1em 1em 3em;
+  opacity: 0.85;
+  filter: alpha(opacity=85);
+  background-color: #000;
+  background-position: 1em center;
+  background-repeat: no-repeat;
+  font-size: 1.5em;
+  color: #fff;
 }
 
-#notice, #warning, #error, #confirm, #message {
-  margin: 5px;
-  padding: 5px 5px 5px 26px;
+#messages.notice {
+  background-image: url(../images/notice.png);
+  color: #A0DC11;
 }
 
-#notice {
-  background: #F0FFE0 url(../images/vertical_sprite.png) no-repeat;
-  background-position: 5px -411px;
-  border: 1px solid #A0DC11;
+#messages.warning {
+  background-image: url(../images/warning.png);
+  color: #D28D37;
 }
 
-#warning, #confirm {
-  background: #FBF6D3 url(../images/vertical_sprite.png) no-repeat;
-  background-position: 5px -475px;
-  border: 1px solid #D28D37;
-}
-
-#confirm {
-  background: #FBF6D3 url(../images/help.png) no-repeat;
-  background-position: 5px 5px;
-  border: 1px solid #D28D37;
-}
-
-#error {
-  background: #FDDFD7 url(../images/vertical_sprite.png) no-repeat;
-  background-position: 5px -443px;
-  border: 1px solid #FF260B;
-}
-
-#message {
-  background: #F0FFE0 url(../images/vertical_sprite.png) no-repeat;
-  background-position: 5px -411px;
-  border: 1px solid #A0DC11;
-}
-
-.error {
-  font-weight: bold;
+#messages.error {
+  background-image: url(../images/error.png);
   color: #FF260B;
-  background-color: #FDDFD7;
-  border: 2px solid #FF260B;
-  padding: 3px;
-  text-align: center;
 }
 
-.replace {
-  float: left;
-  display: block;
-  width: 16px;
-  height: 16px;
-  text-indent: 1000em;
-  overflow: hidden;
-  margin: 0 2px 0 2px;
-  background: url(../images/vertical_sprite.png) no-repeat;
+#messages .close {
+  float: right;
 }
 
 /*
@@ -1946,6 +1919,17 @@ ul.tag_list li.selected .name {
 /*
 ** =icons
 */
+.replace {
+  float: left;
+  display: block;
+  width: 16px;
+  height: 16px;
+  text-indent: 1000em;
+  overflow: hidden;
+  margin: 0 2px 0 2px;
+  background: url(../images/vertical_sprite.png) no-repeat;
+}
+
 .blank_icon {
   background-position: 0 -720px;
 }

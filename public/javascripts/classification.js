@@ -121,19 +121,19 @@ Classification.prototype = {
           this.notify("Started");
           this.startProgressUpdater();
         } else {
-          new ErrorMessage(transport.responseText);
+          Message.add('error', transport.responseText);
           this.notify('Cancelled');  
         }
       }.bind(this),
       onException: function(request, exception) {
         this.notify('Cancelled');
         if (!exceptionToIgnore(exception)) {
-          new ErrorMessage("Unable to connect to the web server.");
+          Message.add('error', "Unable to connect to the web server.");
         }
       }.bind(this),
       onTimeout: function() {
         this.notify("Cancelled");
-        new ErrorMessage(this.timeoutMessage)
+        Message.add('error', this.timeoutMessage)
       }.bind(this),
       on412: function(response) {
         this.notify('Cancelled');
@@ -167,12 +167,12 @@ Classification.prototype = {
         this.notify('Cancelled');
       }.bind(this),
       onFailure: function(transport) {
-        new ErrorMessage(transport.responseText);
+        Message.add('error', transport.responseText);
         this.notify('Cancelled');
       },
       onException: function(request, exception) {
         if (!exceptionToIgnore(exception)) {
-          new ErrorMessage("Exception: " + exception.message);
+          Message.add('error', "Exception: " + exception.message);
         }
       }
     });    
@@ -205,19 +205,19 @@ Classification.prototype = {
           onFailure: function(transport) {
             this.notify("Cancelled");
             executer.stop();
-            new ErrorMessage(transport.responseText);
+            Message.add('error', transport.responseText);
           }.bind(this),
           onException: function(request, exception) {
             this.notify("Cancelled");
             executer.stop();
             if (!exceptionToIgnore(exception)) {
-              new ErrorMessage("Unable to connect to the web server: " + exception.message);
+              Message.add('error', "Unable to connect to the web server: " + exception.message);
             }
           }.bind(this),
           onTimeout: function() {
             executer.stop();
             this.notify("Cancelled");
-            new ErrorMessage(this.timeoutMessage);
+            Message.add('error', this.timeoutMessage);
           }.bind(this)
         });
       }

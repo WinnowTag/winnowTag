@@ -69,7 +69,7 @@ function remove_tagging(taggable_id, tag_name) {
 function sendTagRequest(url, parameters) {
   new Ajax.Request(url, { parameters: $H(parameters).toQueryString(), method: 'post',
     onFailure: function(transport) {
-      new ErrorMessage("Error contacting server.  You're changes have not been saved.");
+      Message.add('error', "Error contacting server.  You're changes have not been saved.");
     }
   });
 }
