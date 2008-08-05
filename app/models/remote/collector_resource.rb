@@ -5,6 +5,8 @@
 # Please visit http://www.peerworks.org/contact for further information.
 module Remote
   class CollectorResource < ActiveResource::Base
+    with_auth_hmac(HMAC_CREDENTIALS['winnow'])
+    
     begin
       self.site = File.read(File.join(RAILS_ROOT, 'config', 'collector.conf'))
     rescue
