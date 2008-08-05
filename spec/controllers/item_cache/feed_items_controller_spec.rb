@@ -37,10 +37,10 @@ describe ItemCache::FeedItemsController do
   end
     
   describe "POST to /feeds/1/feed_items without valid credentials" do
-    it "should return 403 Forbidden" do
+    it "should return 401 Authentication Required" do
       @controller.should_receive(:hmac_authenticated?).and_return(false)
       post :create, :feed_id => "1", :atom => @atom
-      response.code.should == "403"
+      response.code.should == "401"
     end
   end
   
