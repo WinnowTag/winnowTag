@@ -149,55 +149,6 @@ describe ApplicationHelper do
     end
   end
   
-  describe "show unread messages" do
-    describe "when no unread messages" do
-      before(:each) do
-        Message.stub!(:find_unread_for_user_and_global).and_return([])
-      end
-
-      it "returns an empty, hidden" do
-        show_unread_messages.should have_tag("#message[style=display:none]")
-      end
-    end
-    
-    describe "when there is 1 unread message" do
-      before(:each) do
-        @message = mock_model(Message, :body => "Alert! Downtime Coming!")
-        Message.stub!(:find_unread_for_user_and_global).and_return([@message])
-      end
-      
-      it "return a non-hidden element" do
-        show_unread_messages.should_not have_tag("#message[style]")
-      end
-      
-      it "returns an element with the message text" do
-        show_unread_messages.should have_tag("#message", "Alert! Downtime Coming!")
-      end
-      
-      it "contains a link to mark the message read" do
-        show_unread_messages.should have_tag("#message a[onclick*=?]", mark_read_message_path(@message))
-      end
-    end
-    
-    describe "when there is 1 unread message" do
-      before(:each) do
-        Message.stub!(:find_unread_for_user_and_global).and_return([mock_model(Message, :body => "Alert! Downtime Coming!"), mock_model(Message, :body => "Feed collection complete.")])
-      end
-      
-      it "return a non-hidden element" do
-        show_unread_messages.should_not have_tag("#message[style]")
-      end
-      
-      it "returns an element with the a message to view all unread messages text" do
-        show_unread_messages.should have_tag("#message a[href=?]", info_path)
-      end
-      
-      it "contains a link to mark all messages read" do
-        show_unread_messages.should have_tag("#message a[onclick*=?]", mark_read_messages_path)
-      end
-    end
-  end
-
   describe "open_folder?" do
     # Need to fix rspec for this
     xit "is true when cookies[folder] is set to a truthy value" do

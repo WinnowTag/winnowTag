@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class Message < ActiveRecord::Base
+  belongs_to :user
+  
   validates_presence_of :body
   
   def to_s

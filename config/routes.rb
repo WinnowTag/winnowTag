@@ -100,14 +100,7 @@ ActionController::Routing::Routes.draw do |map|
                   :sort => :put
                 }
               
-  map.resources :messages,
-                :member => {
-                  :mark_read => :put
-                },
-                :collection => { 
-                  :mark_read => :put
-                }
-  
+  map.resources :messages  
   map.resources :feedbacks
   map.resources :comments
                 

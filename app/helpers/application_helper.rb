@@ -25,21 +25,18 @@ module ApplicationHelper
     javascript = [:notice, :warning, :error].map do |name|
       "Message.add('#{name}', #{flash[name].to_json});" unless flash[name].blank?
     end.join
+    
+    javascript << Message.find_unread_for_user_and_global(current_user).map do |message|
+      Message.mark_read_for(current_user.id, message.id)
+      
+      if message.user
+        "Message.add('error', #{message.body.to_json});"
+      else
+        "Message.add('warning', #{message.body.to_json});"
+      end
+    end.join
+    
     javascript_tag(javascript)
-  end
-  
-  def show_unread_messages
-    unread_messages = Message.find_unread_for_user_and_global(current_user)
-    if unread_messages.empty?
-      content_tag :div, "", :id => "message", :class => "clearfix", :style => "display:none"
-    elsif unread_messages.size == 1
-      message = unread_messages.first
-      close = link_to_remote(image_tag('cross.png'), :url => mark_read_message_path(message), :method => :put, :html => { :class => 'close' })
-      content_tag :div, "#{close} #{message.body}", :id => "message", :class => "clearfix"
-    else
-      close = link_to_remote(image_tag('cross.png'), :url => mark_read_messages_path, :method => :put, :html => { :class => 'close' })
-      content_tag :div, "#{close} #{_(:multiple_unread_messages, info_path)}", :id => "message", :class => "clearfix"
-    end
   end
   
   def is_admin?

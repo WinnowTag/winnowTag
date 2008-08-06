@@ -53,7 +53,6 @@ Localization.define do |l|
   l.store :classifier_info_not_found,             "The classifer could not be contacted."
 
   # app/helpers/application_helper.rb
-  l.store :multiple_unread_messages,              "You have multiple messages, see the <a href='%s'>log</a>" 
   l.store :default_search_placeholder,            "Search..."
   l.store :create_feed,                           "Create Feed: '%s'"
   l.store :create_tag,                            "Create Tag: '%s'"
