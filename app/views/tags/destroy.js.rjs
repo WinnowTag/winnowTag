@@ -3,4 +3,4 @@ page << "if($('#{dom_id(@tag)}')) {"
   page[@tag].remove
 page << "}"
 
-page << "new NoticeMessage(" + "Deleted #{@tag.name}".to_json + ");"
+page << "Message.add('notice', #{"Deleted #{@tag.name}".to_json});"

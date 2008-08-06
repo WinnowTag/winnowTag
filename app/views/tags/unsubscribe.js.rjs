@@ -4,4 +4,4 @@ page << "}"
 
 page.select(".#{dom_id(@tag)}").invoke("remove")
 
-page << "new NoticeMessage(" + _(:tags_unsubscribe_text, @tag.name).to_json + ");"
+page << "Message.add('notice', #{_(:tags_unsubscribe_text, @tag.name).to_json});"

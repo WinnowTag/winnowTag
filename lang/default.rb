@@ -54,7 +54,6 @@ Localization.define do |l|
   l.store :classifier_info_not_found,             "The classifer could not be contacted."
 
   # app/helpers/application_helper.rb
-  l.store :close_flash_tooltip,                   "Close Message"
   l.store :multiple_unread_messages,              "You have multiple messages, see the <a href='%s'>log</a>" 
   l.store :default_search_placeholder,            "Search..."
   l.store :create_feed,                           "Create Feed: '%s'"
@@ -358,11 +357,7 @@ Localization.define do |l|
   %s|
   
   # app/views/taggings/destroy.js.rjs
-  l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s
-    "Do you want to completely destroy the tag %s.
-    "with %s positive examples and %s negative examples, or leave %s on the My Tags page?|
-  l.store :taggings_destroy_tag,                    "Destroy %s"
-  l.store :taggings_keep_tag,                       "Keep %s on My Tags"
+  l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s, would you like to completely delete it?|
   
   # app/views/tags/_header_controls.html.erb
   l.store :tags_header_sort_label,                  "Sort:"
@@ -404,9 +399,7 @@ Localization.define do |l|
   l.store :tags_destroy_confirm_text,               "Do you really want to delete %s?\n\nThis can't be undone."
   l.store :tags_editing_tag_name,                   "Editing %s"
   l.store :tags_merge_confirm_text,                 "This will merge %s with %s. Are you sure you want to do this?"
-  l.store :tags_sidebar_confirm_message,            "Do you want to remove the tag %s with %s positive examples and %s negative examples from the sidebar Tags folder, and keep %s on the My Tags page? Or do you want to completely destroy the tag %s?"
-  l.store :tags_destroy_tag,                        "Destroy %s"
-  l.store :tags_remove_tag,                         "Remove %s from the sidebar and keep on My Tags page"
+  l.store :tags_sidebar_confirm_message,            %|You have just removed the tag %s from your sidebar, would you like to completely delete it?|
   l.store :tags_unsubscribe_text,                   "You have been unsubscribed from the public %s. You can subscribe on the Public Tags page."
   
   # app/views/user_notifier

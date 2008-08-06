@@ -21,11 +21,11 @@ module ApplicationHelper
     "selected" if controller_name == controller and (action.nil? or action_name == action)
   end
   
-  def show_flash
-    [:notice, :warning, :error, :confirm].map do |name|
-      close = link_to_function(image_tag('cross.png'), "$('#{name}').hide()", :class => 'close', :title => _(:close_flash_tooltip))
-      content_tag :div, " #{close} #{flash[name]}", :id => name, :class => "clearfix", :style => flash[name].blank? ? "display:none" : nil
+  def show_flash_messages
+    javascript = [:notice, :warning, :error].map do |name|
+      "Message.add('#{name}', #{flash[name].to_json});" unless flash[name].blank?
     end.join
+    javascript_tag(javascript)
   end
   
   def show_unread_messages

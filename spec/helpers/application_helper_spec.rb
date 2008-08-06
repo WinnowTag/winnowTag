@@ -141,15 +141,11 @@ describe ApplicationHelper do
   end
   
   describe "show flash" do
-    [:notice, :warning, :error, :confirm].each do |name|
-      it "prints divs for flash #{name}" do
+    [:notice, :warning, :error].each do |name|
+      it "prints javascript for flash #{name}" do
         flash[name] = "Flash message for #{name}"
-        show_flash.should have_tag("div##{name}", "Flash message for #{name}")
+        show_flash_messages.should include(%|Message.add('#{name}', "Flash message for #{name}")|)
       end
-    end
-    
-    it "creates the div hidden when the flash is blank" do
-      show_flash.should have_tag("div#notice[style=display:none]")
     end
   end
   

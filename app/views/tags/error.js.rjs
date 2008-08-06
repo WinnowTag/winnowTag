@@ -2,4 +2,4 @@ page.select("##{dom_id(@tag)} .name, .#{dom_id(@tag)} .name").each do |element|
   element.update @tag.name
 end
 
-page << "new ErrorMessage(" + @tag.errors.full_messages.join('<br/>').to_json + ");"
+page << "Message.add('error', #{@tag.errors.full_messages.join('<br/>').to_json});"

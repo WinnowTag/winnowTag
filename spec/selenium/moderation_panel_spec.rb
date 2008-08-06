@@ -213,6 +213,7 @@ describe "moderation panel" do
     click "css=#feed_item_4 .information .remove"
     wait_for_ajax
     wait_for_effects
+    get_confirmation.should == "You have just removed the last example of tag #{@existing_tag.name}, would you like to completely delete it?"
     
     dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
   end
@@ -231,6 +232,7 @@ describe "moderation panel" do
     click "css=#feed_item_4 .information .remove"
     wait_for_ajax
     wait_for_effects
+    get_confirmation.should == "You have just removed the last example of tag #{@existing_tag.name}, would you like to completely delete it?"
     
     dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
   end

@@ -21,7 +21,6 @@
     <div id="header_controls" class="clearfix"><%= header_controls %></div>
   <% end -%>
 
-  <%= show_flash %>
   <%= show_unread_messages if current_user %>
   
   <% if sidebar_content = yield(:sidebar) -%>
@@ -39,5 +38,12 @@
       <div id="footer" class="clearfix"><%= footer_content %></div>
     <% end -%>
   </div>
+  
+  <div id="messages" style="display:none">
+    <a href="#" class="close">close</a>
+    <div class="content"></div>
+  </div>
+  
+  <%= show_flash_messages %>
 </body>
 </html>
