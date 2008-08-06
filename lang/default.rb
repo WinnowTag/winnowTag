@@ -24,8 +24,8 @@ Localization.define do |l|
   # app/controllers/feeds_controller.rb
   l.store :feed_not_found,                        "We couldn't find this feed in any of our databases. Maybe it has been deleted or never existed. If you think this is an error, please contact us."
   l.store :collector_down,                        "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. We are aware of this problem and will fix it soon. Please try again later."
-  l.store :feed_added,                            "Thanks for adding the feed from %s. We will fetch the items soon and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar."
-  l.store :feed_existed,                          "We already have the feed from %s, however we will update it now and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar."
+  l.store :feed_added,                            "Thanks for adding the feed from %s. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
+  l.store :feed_existed,                          "We already have the feed from %s, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
   l.store :feeds_imported,           :singular => "Imported %d feed from your OPML file",
                                      :plural   => "Imported %d feeds from your OPML file"
 
