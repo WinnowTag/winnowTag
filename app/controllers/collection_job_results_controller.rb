@@ -20,8 +20,6 @@ class CollectionJobResultsController < ApplicationController
     # TODO: sanitize
     if failed
       user.messages.create!(:body => _(:collection_failed, feed.title, message))
-    else
-      user.messages.create!(:body => _(:collection_finished, feed.title))
     end
     
     render :nothing => true, :status => :created

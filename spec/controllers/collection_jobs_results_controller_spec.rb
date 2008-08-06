@@ -29,11 +29,6 @@ describe CollectionJobResultsController do
     response.code.should == "201"
   end
   
-  it "creates a success messsage when successful" do
-    @messages.should_receive(:create!).with(:body => _(:collection_finished, "Some Blog")).and_return(@message)  
-    do_post
-  end
-  
   it "creates a failure messsage when unsuccessful" do
     @messages.should_receive(:create!).with(:body => _(:collection_failed, "Some Blog", "Couldn't contact server")).and_return(@message)  
     do_post("Couldn't contact server")

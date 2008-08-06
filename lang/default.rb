@@ -17,7 +17,6 @@ Localization.define do |l|
 
   # app/controllers/collection_job_results_controller.rb
   l.store :collection_failed,                     "Collection Job for %s failed with result: %s"
-  l.store :collection_finished,                   "We have finished fetching new items for %s"
 
   # app/controllers/feed_items_controller.rb
   l.store :could_not_load_clues,                  "Could not load the clues, please try again later."
