@@ -34,7 +34,7 @@ module ApplicationHelper
       else
         "Message.add('warning', #{message.body.to_json});"
       end
-    end.join
+    end.join if current_user
     
     javascript_tag(javascript)
   end
