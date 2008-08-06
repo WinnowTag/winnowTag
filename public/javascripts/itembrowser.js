@@ -312,6 +312,7 @@ var ItemBrowser = Class.create({
     if(text_filter) {
       if(this.filters.text_filter) {
         text_filter.value = this.filters.text_filter;
+        text_filter.fire("applesearch:setup");
       } else {
         text_filter.value = "";
         text_filter.fire("applesearch:blur");
