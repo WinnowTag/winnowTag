@@ -127,8 +127,8 @@ describe FeedsController do
     
       post 'create', :feed => {:url => 'http://example.com'}
       response.should redirect_to(feed_path(feed))
-      flash[:notice].should == "Thanks for adding the feed from http://example.com. We will fetch the items soon and we'll let " + 
-                               "you know when it is done. The feed has also been added to your feeds folder in the sidebar."
+      flash[:notice].should == "Thanks for adding the feed from http://example.com. We will fetch the items soon. " + 
+                               "The feed has also been added to your feeds folder in the sidebar."
     end
   
     it "should collect it a feed even if it already exists" do    
@@ -141,8 +141,8 @@ describe FeedsController do
   
       post 'create', :feed => {:url => 'http://example.com'}
       response.should redirect_to(feed_path(feed))
-      flash[:notice].should == "We already have the feed from http://example.com, however we will update it now and we'll let you know " + 
-                               "when it is done. The feed has also been added to your feeds folder in the sidebar."
+      flash[:notice].should == "We already have the feed from http://example.com, however we will update it now. " + 
+                               "The feed has also been added to your feeds folder in the sidebar."
     end
     
     it "should reject a feed from winnow" do
