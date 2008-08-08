@@ -24,9 +24,9 @@ steps_for(:feeds) do
     now = Time.parse("Thu, 10 Jul 2008 03:29:56 GMT")
     Time.stub!(:now).and_return(now)
     ActiveResource::HttpMock.respond_to do |http|
-      http.post  "/feeds.xml", {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml"},
+      http.post  "/feeds.xml", {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
         {:url => 'http://example.org/feed', :created_by => 'quentin'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
-      http.post  "/feeds/23/collection_jobs.xml", {"Authorization" => "AuthHMAC winnow_id:rs5dU0B3apzzOe4HnUf7L82wcsA=", "Content-Type" => "application/xml"}, 
+      http.post  "/feeds/23/collection_jobs.xml", {"Authorization" => "AuthHMAC winnow_id:rs5dU0B3apzzOe4HnUf7L82wcsA=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
                  {:callback_url => 'http://www.example.com/users/quentin/collection_job_results', :created_by => 'quentin'}.to_xml(:root => 'collection_job'), 201, 'Location' => '/feeds/23'
     end
   end
