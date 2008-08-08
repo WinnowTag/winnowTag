@@ -3,6 +3,10 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// This is needed for the sidebar drag/drop
+Position.includeScrollOffsets = true;
+
 function exceptionToIgnore(e) {
   // Ignore this Firefox error because it just occurs when a XHR request is interrupted.
   return e.name == "NS_ERROR_NOT_AVAILABLE"
@@ -16,14 +20,15 @@ function resizeContent() {
   var footer_height = $('footer') ? $('footer').getHeight() : 0;
   var container = $('container');
   var container_padding = parseInt(container.getStyle("padding-top")) + parseInt(container.getStyle("padding-bottom"));
-  var feed_item_height = body_height - top_of_content - footer_height - content_padding - container_padding;
+  var messages_height = 0; // $("messages").visible() ? $("messages").getHeight() : 0;
+  var feed_item_height = body_height - top_of_content - footer_height - content_padding - container_padding - messages_height;
   content.style.height = feed_item_height + 'px';
   
   var sidebar = $('sidebar');
   var sidebar_control = $('sidebar_control');
   if(sidebar) {
     var sidebar_padding = parseInt(sidebar.getStyle("padding-top")) + parseInt(sidebar.getStyle("padding-bottom"));
-    var sidebar_height = body_height - top_of_content - sidebar_padding + 3;
+    var sidebar_height = body_height - top_of_content - sidebar_padding - messages_height + 3;
     sidebar.style.height = sidebar_height + 'px';
     sidebar_control.style.height = (sidebar_height + sidebar_padding) + 'px';
   }

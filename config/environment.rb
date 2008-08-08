@@ -30,13 +30,14 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "fastercsv"
-  config.gem "RedCloth", :version => "4.0.1"
   config.gem "ratom", :version => "0.4.2", :lib => "atom"
 
   # Must be compiled
   config.gem "mysql"
   config.gem "hpricot"
   config.gem "bcrypt-ruby", :lib => "bcrypt"
+  config.gem "RedCloth", :version => "4.0.1"
+  # config.gem "tzinfo", :version => "0.3.9"
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
@@ -80,7 +81,7 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :text_indexing_observer
   
   config.after_initialize do 
-    ActionView::Helpers::AssetTagHelper.register_javascript_expansion :winnow => ["slider", "cookies", "applesearch", "bias_slider", "messages", "labeled_input", "scroll", "classification", "itembrowser", "item", "sidebar", "tagging"]
+    ActionView::Helpers::AssetTagHelper.register_javascript_expansion :winnow => ["slider", "cookies", "applesearch", "bias_slider", "timeout", "messages", "labeled_input", "scroll", "classification", "itembrowser", "item", "sidebar", "tagging"]
     ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :winnow => ["winnow", "tables", "slider", "scaffold"]
   end
 end

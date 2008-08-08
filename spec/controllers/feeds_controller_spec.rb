@@ -125,16 +125,10 @@ describe FeedsController do
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
     
-      message_body = "Thanks for adding the feed from http://example.com. " +
-                     "We will fetch the items soon and we'll let you know when it is done. " +
-                     "The feed has also been added to your feeds folder in the sidebar."
-      message = mock_model(Message, :body => message_body)
-      messages = mock("messages")
-      messages.should_receive(:create!).with(:body => message_body).and_return(message)
-      @user.should_receive(:messages).and_return(messages)
-    
       post 'create', :feed => {:url => 'http://example.com'}
       response.should redirect_to(feed_path(feed))
+      flash[:notice].should == "Thanks for adding the feed from http://example.com. We will fetch the items soon. " + 
+                               "The feed has also been added to your feeds folder in the sidebar."
     end
   
     it "should collect it a feed even if it already exists" do    
@@ -145,18 +139,27 @@ describe FeedsController do
     
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
   
-      message_body = "We already have the feed from http://example.com, however we will update it " +
-                     "now and we'll let you know when it is done. " +
-                     "The feed has also been added to your feeds folder in the sidebar."
-      message = mock_model(Message, :body => message_body)
-      messages = mock("messages")
-      messages.should_receive(:create!).with(:body => message_body).and_return(message)
-      @user.should_receive(:messages).and_return(messages)
-  
       post 'create', :feed => {:url => 'http://example.com'}
       response.should redirect_to(feed_path(feed))
+      flash[:notice].should == "We already have the feed from http://example.com, however we will update it now. " + 
+                               "The feed has also been added to your feeds folder in the sidebar."
+    end
+    
+    it "should reject a feed from winnow" do
+      post 'create', :feed => {:url => 'http://test.host'}
+      flash[:error].should == "Winnow generated feeds cannot be added to Winnow."
     end
       
+    it "should not raise an error when the feed URL is invalid" do
+      feed = mock_model(Remote::Feed)
+      feed.errors.should_receive(:empty?).and_return(false)
+      feed.errors.should_receive(:on).with(:url).and_return("Error")
+      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://feed_does_not_exist_test.com/blog', @user.login).and_return(feed)
+      
+      post 'create', :feed => {:url => 'http://feed_does_not_exist_test.com/blog'}
+      response.should be_success
+    end
+    
     it "should render import form" do
       get :import
       response.should be_success
@@ -172,17 +175,12 @@ describe FeedsController do
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed1.id, @user.id)
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(mock_feed2.id, @user.id)
     
-      message_body = "Imported 2 feeds from your OPML file"
-      message = mock_model(Message, :body => message_body)
-      messages = mock("messages")
-      messages.should_receive(:create!).with(:body => message_body).and_return(message)
-      @user.should_receive(:messages).and_return(messages)
-  
       Remote::Feed.should_receive(:import_opml).
                    with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml"))).
                    and_return([mock_feed1, mock_feed2])
       post :import, :opml => fixture_file_upload("example.opml")
       response.should redirect_to(feeds_path)
+      flash[:notice].should == "Imported 2 feeds from your OPML file"
     end 
   
     it "should create a feed subscription for the subscribe action" do

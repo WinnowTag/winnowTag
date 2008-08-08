@@ -10,7 +10,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   if(match) { tag_name = match[1]; }
 
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
-    return element.down(".name").innerHTML == tag_name;
+    return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
   var tag_information = $(taggable_id).down(".information");
   var url = '/taggings/create';
@@ -18,7 +18,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
     "tagging[tag]": tag_name,
     "tagging[strength]": tagging_type == "positive" ? 1 : 0
-  }
+  };
   
   var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
   
@@ -42,14 +42,14 @@ function remove_tagging(taggable_id, tag_name) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
-    return element.down(".name").innerHTML == tag_name;
+    return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
   var tag_information = $(taggable_id).down(".information");
   var url = '/taggings/destroy';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
     "tagging[tag]": tag_name,
-  }
+  };
   
   if (tag_control) {
     tag_control.removeClassName('positive');
@@ -69,7 +69,7 @@ function remove_tagging(taggable_id, tag_name) {
 function sendTagRequest(url, parameters) {
   new Ajax.Request(url, { parameters: $H(parameters).toQueryString(), method: 'post',
     onFailure: function(transport) {
-      new ErrorMessage("Error contacting server.  You're changes have not been saved.");
+      Message.add('error', "Error contacting server.  You're changes have not been saved.");
     }
   });
 }
@@ -85,7 +85,7 @@ function add_tag_control(taggable_id, tag) {
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
 
   tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
-    return element.down(".name").innerHTML == tag;
+    return element.down(".name").innerHTML.unescapeHTML() == tag;
   });
   Effect.Appear(tag_control);
 }
@@ -93,7 +93,7 @@ function add_tag_control(taggable_id, tag) {
 function remove_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;  
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
-    return element.down(".name").innerHTML == tag;
+    return element.down(".name").innerHTML.unescapeHTML() == tag;
   });
   Effect.Fade(tag_control, { afterFinish: function() { tag_control.remove(); } });
 }

@@ -1,6 +1,6 @@
 if params[:attach_tagging_information_event] =~ /true/
   page << "var tag_control = $$('#' + #{dom_id(@tagging.feed_item).to_json} + ' .tag_control').detect(function(element) {
-             return element.down('.name').innerHTML == #{@tagging.tag.name.to_json};
+             return element.down('.name').innerHTML.unescapeHTML() == #{@tagging.tag.name.to_json};
            });
            tag_control.observe('click', function() {
              itemBrowser.selectTaggingInformation(tag_control, #{@tagging.tag.id});

@@ -17,7 +17,7 @@ In order to be able to classify items in Winnow, the classifier must be running.
 classifier-tools/bin/tokenizer -p 8009
 classifier/src/classifier --port 8008 -t 0.9 --log-file classifier.log --tokenizer-url http://localhost:8009/tokenize  --tag-index http://localhost:3000/tags.atom --db <item_cache_dir>
 
-h2. Sumary
+h2. Summary
 
 echo "http://localhost:4000" > winnow/config/collector.conf; cd collector; script/server -p 4000
 cd winnow; script/server

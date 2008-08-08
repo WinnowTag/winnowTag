@@ -312,6 +312,7 @@ var ItemBrowser = Class.create({
     if(text_filter) {
       if(this.filters.text_filter) {
         text_filter.value = this.filters.text_filter;
+        text_filter.fire("applesearch:setup");
       } else {
         text_filter.value = "";
         text_filter.fire("applesearch:blur");
@@ -321,11 +322,9 @@ var ItemBrowser = Class.create({
     var clear_selected_filters = $("clear_selected_filters");
     if(clear_selected_filters) {
       if(this.filters.tag_ids || this.filters.feed_ids || this.filters.text_filter) {
-        clear_selected_filters.disabled = false;
-        clear_selected_filters.value = "Clear Selected Filters";
+        clear_selected_filters.show();
       } else {
-        clear_selected_filters.disabled = true;
-        clear_selected_filters.value = "No Filters Selected";
+        clear_selected_filters.hide();
       }
     }
     
@@ -428,7 +427,7 @@ var ItemBrowser = Class.create({
   selectTaggingInformation: function(tag, tag_id) {
     tag = $(tag);
     
-    var item = tag.up('.item');
+    var item = tag.up('.feed_item');
     var information = item.down(".information");
 
     if(tag.hasClassName("selected")) {
@@ -482,7 +481,7 @@ var ItemBrowser = Class.create({
   },
   
   toggleTagClues: function(tag, tag_id) {
-    var item = tag.up(".item");
+    var item = tag.up(".feed_item");
     var clues = item.down(".information .clues");
     
     if(clues.visible()) {
@@ -534,7 +533,7 @@ var ItemBrowser = Class.create({
   },
   
   closeAllItems: function() {
-    $$(".item.open").invoke("removeClassName", "open");
+    $$(".feed_item.open").invoke("removeClassName", "open");
   },
   
   toggleOpenCloseItem: function(item, event) {
@@ -626,7 +625,7 @@ var ItemBrowser = Class.create({
   },
   
   markAllItemsRead: function() {
-    $$('.item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
+    $$('.feed_item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
     new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
   },
 
@@ -637,7 +636,7 @@ var ItemBrowser = Class.create({
     } else {
       next_item = this.container.descendants().first();
     }
-    if(next_item && next_item.hasClassName("item")) {
+    if(next_item && next_item.hasClassName("feed_item")) {
       this.selectItem(next_item);
     }
   },
@@ -647,7 +646,7 @@ var ItemBrowser = Class.create({
     if(this.selectedItem) {
       previous_item = $(this.selectedItem).previousSiblings().first();  
     }
-    if(previous_item && previous_item.hasClassName("item")) {
+    if(previous_item && previous_item.hasClassName("feed_item")) {
       this.selectItem(previous_item);
     }
   },
@@ -659,7 +658,7 @@ var ItemBrowser = Class.create({
     } else {
       next_item = this.container.descendants().first();
     }
-    if(next_item && next_item.hasClassName("item")) {
+    if(next_item && next_item.hasClassName("feed_item")) {
       this.toggleOpenCloseItem(next_item);
     }
   },
@@ -669,7 +668,7 @@ var ItemBrowser = Class.create({
     if(this.selectedItem) {
       previous_item = $(this.selectedItem).previousSiblings().first();  
     }
-    if(previous_item && previous_item.hasClassName("item")) {
+    if(previous_item && previous_item.hasClassName("feed_item")) {
       this.toggleOpenCloseItem(previous_item);
     }
   },

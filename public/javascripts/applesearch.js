@@ -8,27 +8,31 @@ var AppleSearch = Class.create({
     this.element = element;
     this.element.addClassName("non_safari");
     this.element.applesearch = this;
-  
+
     this.text_input = element.down("input");
-    this.text_input.observe("keyup", this.displayClearButton.bind(this));
+    this.text_input.observe("keyup", this.updateClearButton.bind(this));
     this.text_input.observe("focus", this.removePlaceholder.bind(this));
     this.text_input.observe("blur", function() {
-      this.displayClearButton();
+      this.updateClearButton();
       this.insertPlaceholder();
     }.bind(this));
     this.text_input.observe("applesearch:blur", function() {
-      this.displayClearButton();
+      this.updateClearButton();
       this.insertPlaceholder();
+    }.bind(this));
+    this.text_input.observe("applesearch:setup", function() {
+      this.updateClearButton();
+      this.removePlaceholder();
     }.bind(this));
 
     this.clear_button = element.down('.srch_clear');
     this.clear_button.observe("click", this.clear.bind(this));
-  
-    this.displayClearButton();
+    
+    this.updateClearButton();
     this.insertPlaceholder();
   },
 
-  displayClearButton: function() {
+  updateClearButton: function() {
     if(this.text_input.value.length > 0) {
       this.clear_button.addClassName("clear_button");
     } else {
@@ -38,14 +42,13 @@ var AppleSearch = Class.create({
   
   clear: function () {
     this.text_input.value = "";
-    this.displayClearButton();
+    this.updateClearButton();
     this.text_input.focus();
   },
 
   insertPlaceholder: function() {
     if(this.text_input.value == "") {
       this.text_input.addClassName("placeholder");
-      // TODO: Why doesn't this work?
       this.text_input.value = this.text_input.getAttribute("placeholder");
     }
   },

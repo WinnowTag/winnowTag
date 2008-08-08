@@ -114,6 +114,8 @@ describe "filter controls" do
     it "filters by all tags in the folder, even when a tag was just removed" do
       get_location.should =~ /\#order=date&direction=desc$/
       click "css=#tag_#{@tag.id} .filter .remove"
+      wait_for_ajax
+      get_confirmation.should == "You have just removed the tag #{@tag.name} from your sidebar, would you like to completely delete it?"
       click "css=#tag_filters_control"      
       get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@sql.id}$/
     end

@@ -943,7 +943,7 @@ Object.extend(Ajax.InPlaceEditor, {
     },
     onFailure: function(transport, ipe) {
       // NOTE: peerworks change
-      new ErrorMessage('Error communication with the server: ' + transport.responseText.stripTags());
+      Message.add('error', 'Error communication with the server: ' + transport.responseText.stripTags());
     },
     onFormCustomization: null, // Takes the IPE and its generated form, after editor, before controls.
     onLeaveEditMode: null,

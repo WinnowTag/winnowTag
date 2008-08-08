@@ -1,3 +1,7 @@
+<% form_tag feedbacks_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feedback_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% end -%>
+
 <ul class="control_bar">
   <li class="order">
     <%= _(:feedback_sort_label) %>
@@ -5,7 +9,3 @@
     <%= link_to_function _(:feedback_sort_date_label), "itemBrowser.setOrder('created_at')", :id => "order_created_at" %>
   </li>    
 </ul>
-
-<% form_tag feedbacks_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feedback_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
-<% end -%>

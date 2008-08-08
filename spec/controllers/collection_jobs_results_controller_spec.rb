@@ -21,17 +21,12 @@ describe CollectionJobResultsController do
   end
   
   def do_post(message = nil)
-    post :create, :collection_job_result => { :message => message, :failed => message ? "true" : "false", :feed_id => @feed.id.to_s }, :user_id => @user.id
+    post :create, :collection_job_result => { :message => message, :failed => !message.nil?, :feed_id => @feed.id.to_s }, :user_id => @user.id
   end
 
-  it "is a success" do
+  it "is created" do
     do_post
-    response.should be_success
-  end
-  
-  it "creates a success messsage when successful" do
-    @messages.should_receive(:create!).with(:body => _(:collection_finished, "Some Blog")).and_return(@message)  
-    do_post
+    response.code.should == "201"
   end
   
   it "creates a failure messsage when unsuccessful" do

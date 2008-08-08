@@ -63,6 +63,8 @@ class FeedItemsController < ApplicationController
     
     if @clues == :redirect && tries < 7
       redirect_to params.update(:tries => tries + 1)
+    else
+      render :layout => false
     end
   end
   

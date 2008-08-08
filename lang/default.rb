@@ -17,7 +17,6 @@ Localization.define do |l|
 
   # app/controllers/collection_job_results_controller.rb
   l.store :collection_failed,                     "Collection Job for %s failed with result: %s"
-  l.store :collection_finished,                   "We have finished fetching new items for %s"
 
   # app/controllers/feed_items_controller.rb
   l.store :could_not_load_clues,                  "Could not load the clues, please try again later."
@@ -25,8 +24,8 @@ Localization.define do |l|
   # app/controllers/feeds_controller.rb
   l.store :feed_not_found,                        "We couldn't find this feed in any of our databases. Maybe it has been deleted or never existed. If you think this is an error, please contact us."
   l.store :collector_down,                        "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. We are aware of this problem and will fix it soon. Please try again later."
-  l.store :feed_added,                            "Thanks for adding the feed from %s. We will fetch the items soon and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar."
-  l.store :feed_existed,                          "We already have the feed from %s, however we will update it now and we'll let you know when it is done. The feed has also been added to your feeds folder in the sidebar."
+  l.store :feed_added,                            "Thanks for adding the feed from %s. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
+  l.store :feed_existed,                          "We already have the feed from %s, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
   l.store :feeds_imported,           :singular => "Imported %d feed from your OPML file",
                                      :plural   => "Imported %d feeds from your OPML file"
 
@@ -54,8 +53,6 @@ Localization.define do |l|
   l.store :classifier_info_not_found,             "The classifer could not be contacted."
 
   # app/helpers/application_helper.rb
-  l.store :close_flash_tooltip,                   "Close Message"
-  l.store :multiple_unread_messages,              "You have multiple messages, see the <a href='%s'>log</a>" 
   l.store :default_search_placeholder,            "Search..."
   l.store :create_feed,                           "Create Feed: '%s'"
   l.store :create_tag,                            "Create Tag: '%s'"
@@ -182,7 +179,8 @@ Localization.define do |l|
   l.store :sidebar_folders_header,                "Folders"
   l.store :sidebar_add_folder_link,               "Add Folder"
   l.store :sidebar_cancel_add_folder_link,        "cancel"
-  l.store :feed_for_selected_filters_link,        "Feed with selected filters"
+  l.store :feed_for_selected_filters,             "Feed"
+  l.store :clear_selected_filters,                "Clear"
   
   # app/views/feed_items/_info.html.erb
   l.store :confirm_destroy_folder,                "Are you sure?"
@@ -306,7 +304,7 @@ Localization.define do |l|
 	
   # app/views/layouts/_navbar.html.erb
   l.store :about,                                   "About"
-  l.store :my_info,                                 "My Info"
+  l.store :profile,                                 "Profile"
   l.store :logout,                                  "Logout"
   l.store :winnow_info,                             "Winnow Info"
   l.store :items,                                   "Items"
@@ -357,11 +355,7 @@ Localization.define do |l|
   %s|
   
   # app/views/taggings/destroy.js.rjs
-  l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s
-    "Do you want to completely destroy the tag %s.
-    "with %s positive examples and %s negative examples, or leave %s on the My Tags page?|
-  l.store :taggings_destroy_tag,                    "Destroy %s"
-  l.store :taggings_keep_tag,                       "Keep %s on My Tags"
+  l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s, would you like to completely delete it?|
   
   # app/views/tags/_header_controls.html.erb
   l.store :tags_header_sort_label,                  "Sort:"
@@ -403,9 +397,7 @@ Localization.define do |l|
   l.store :tags_destroy_confirm_text,               "Do you really want to delete %s?\n\nThis can't be undone."
   l.store :tags_editing_tag_name,                   "Editing %s"
   l.store :tags_merge_confirm_text,                 "This will merge %s with %s. Are you sure you want to do this?"
-  l.store :tags_sidebar_confirm_message,            "Do you want to remove the tag %s with %s positive examples and %s negative examples from the sidebar Tags folder, and keep %s on the My Tags page? Or do you want to completely destroy the tag %s?"
-  l.store :tags_destroy_tag,                        "Destroy %s"
-  l.store :tags_remove_tag,                         "Remove %s from the sidebar and keep on My Tags page"
+  l.store :tags_sidebar_confirm_message,            %|You have just removed the tag %s from your sidebar, would you like to completely delete it?|
   l.store :tags_unsubscribe_text,                   "You have been unsubscribed from the public %s. You can subscribe on the Public Tags page."
   
   # app/views/user_notifier

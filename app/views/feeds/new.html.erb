@@ -16,6 +16,6 @@
 <h3><%= _(:bookmarklet) %></h3>
 <p>
     <%= _(:feeds_new_bookmarklet_description1) %>
-    <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :title => _(:feeds_add_to_winnow), :onclick => "new ErrorMessage(#{_(:feeds_bookmarklet_js_error_message).to_json}); return false;", :class => "bookmarklet" %>
+    <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :title => _(:feeds_add_to_winnow), :onclick => "Message.add('error', #{_(:feeds_bookmarklet_js_error_message).to_json}); return false;", :class => "bookmarklet" %>
     <%= _(:feeds_new_bookmarklet_description2) %>
 </p>

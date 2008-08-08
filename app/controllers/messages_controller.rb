@@ -42,13 +42,4 @@ class MessagesController < ApplicationController
     @message = Message.destroy(params[:id])
     redirect_to messages_path
   end
-  
-  def mark_read
-    if params[:id]
-      Message.mark_read_for(current_user.id, params[:id])
-    else
-      Message.mark_read_for(current_user.id)
-    end
-    respond_to :js
-  end
 end

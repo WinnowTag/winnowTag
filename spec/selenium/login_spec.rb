@@ -16,6 +16,6 @@ describe "Login" do
   it "unsuccessful_login" do
     login "quentin", "wrong"
     assert_match login_url, get_location
-    assert_equal "Invalid credentials. Please try again.", get_text("warning")
+    assert_equal "Invalid credentials. Please try again.", get_text("css=.warning .content")
   end
 end
