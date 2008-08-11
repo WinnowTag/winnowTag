@@ -39,66 +39,6 @@ describe FeedsController do
       Feed.stub!(:search).and_return(@feeds)
     end
   
-    describe "#show" do
-      it "should assign feed on show" do
-        feed = mock_model(Feed, valid_feed_attributes)
-        Feed.should_receive(:find).with("12").and_return(feed)
-        get 'show', :id => "12"
-        assigns[:feed].should == feed
-        response.should be_success
-      end
-  
-      it "should try the collector if it can't find the feed locally" do
-        Feed.should_receive(:find).with("12").and_raise(ActiveRecord::RecordNotFound)
-        feed = mock('feed_1')
-        Remote::Feed.should_receive(:find).with("12").and_return(feed)    
-        get 'show', :id => "12"
-        assigns[:feed].should == feed
-        response.should be_success
-      end
-  
-      it "should redirect if collector raises a redirection" do
-        Feed.should_receive(:find).with("1").and_raise(ActiveRecord::RecordNotFound)
-        collector_response = mock('response', :null_object => true)
-        collector_response.stub!(:[]).with('Location').and_return('http://collector/feeds/1234')
-        redirection = ActiveResource::Redirection.new(collector_response)
-        Remote::Feed.should_receive(:find).with("1").and_raise(redirection)
-    
-        get 'show', :id => 1
-        response.should redirect_to(feed_url(:id => '1234'))
-      end
-    
-      it "should redirect if we have a local duplicate" do
-        dup_feed = mock_model(Feed, valid_feed_attributes(:duplicate_id => 1))
-        Feed.should_receive(:find).with(dup_feed.id.to_s).and_return(dup_feed)
-  
-        get 'show', :id => dup_feed.id
-        response.should redirect_to(feed_url(:id => '1'))
-      end
-    
-      it "should render 404 if we can't find the feed locally and it can't be found in the collector" do
-        Feed.should_receive(:find).with("12").and_raise(ActiveRecord::RecordNotFound)
-        Remote::Feed.should_receive(:find).with("12").and_raise(ActiveResource::ResourceNotFound.new(mock('response', :null_object => true)))
-      
-        get 'show', :id => 12
-        flash[:error].should == "We couldn't find this feed in any of our databases. Maybe it has been deleted or " +
-                                "never existed. If you think this is an error, please contact us."
-        response.code.should == "404"
-        response.should render_template('feeds/error')
-      end
-    
-      it "should render 503 with nice message if we can't find it and the collector is down" do
-        Feed.should_receive(:find).with("12").and_raise(ActiveRecord::RecordNotFound)
-        Remote::Feed.should_receive(:find).with("12").and_raise(Errno::ECONNREFUSED)
-      
-        get 'show', :id => 12
-        flash[:error].should == "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. " +
-                                "We are aware of this problem and will fix it soon. Please try again later."
-        response.code.should == "503"
-        response.should render_template('feeds/error')
-      end
-    end
-  
     it "should provide blank url on new" do
       get 'new'
       assigns[:feed].url.should be_nil
@@ -126,7 +66,7 @@ describe FeedsController do
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
     
       post 'create', :feed => {:url => 'http://example.com'}
-      response.should redirect_to(feed_path(feed))
+      response.should redirect_to(feeds_path)
       flash[:notice].should == "Thanks for adding the feed from http://example.com. We will fetch the items soon. " + 
                                "The feed has also been added to your feeds folder in the sidebar."
     end
@@ -140,7 +80,7 @@ describe FeedsController do
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
   
       post 'create', :feed => {:url => 'http://example.com'}
-      response.should redirect_to(feed_path(feed))
+      response.should redirect_to(feeds_path)
       flash[:notice].should == "We already have the feed from http://example.com, however we will update it now. " + 
                                "The feed has also been added to your feeds folder in the sidebar."
     end
@@ -202,7 +142,7 @@ describe FeedsController do
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id).and_raise(ActiveRecord::StatementInvalid)
     
       post 'create', :feed => {:url => 'http://example.com'}
-      response.should redirect_to(feed_path(feed))
+      response.should redirect_to(feeds_path)
     end
   
     it "should ignore double subscriptions" do

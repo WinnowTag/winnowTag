@@ -8,7 +8,6 @@
 # feed creation requests on to the collector using Remote::Feed.
 class FeedsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :reject_winnow_feeds, :only => :create
   
   def index
@@ -43,7 +42,7 @@ class FeedsController < ApplicationController
       end
       
       respond_to do |format|
-        format.html { redirect_to feed_url(@feed) }
+        format.html { redirect_to feeds_path }
         format.js
       end
     else
@@ -63,36 +62,6 @@ class FeedsController < ApplicationController
       redirect_to feeds_url
     end
   end
-  
-  # First we try and find the feed in the local item cache.
-  # If that fails we try and fetch it from the collector.
-  #
-  # If both of those fail, report a nice error message.
-  def show
-    begin
-      @feed = Feed.find(params[:id])
-      
-      if @feed.duplicate_id
-        redirect_to :id => @feed.duplicate_id
-      end
-    rescue ActiveRecord::RecordNotFound
-      begin
-        @feed = Remote::Feed.find(params[:id])
-      rescue Errno::ECONNREFUSED
-        flash[:error] = _(:collector_down)
-        render :action => 'error', :status => '503'
-      rescue ActiveResource::ResourceNotFound
-        flash[:error] = _(:feed_not_found)
-        render :action => 'error', :status => '404'
-      rescue ActiveResource::Redirection => redirect
-        if id = redirect.response['Location'][/\/([^\/]*?)(\.\w+)?$/, 1]
-          redirect_to :id => id
-        else
-          raise ActiveRecord::RecordNotFound
-        end
-      end        
-    end
-  end  
 
   def auto_complete_for_feed_title
     @q = params[:feed][:title]
