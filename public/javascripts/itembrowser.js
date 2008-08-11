@@ -604,7 +604,7 @@ var ItemBrowser = Class.create({
       if(attach_events) {
         var selected_tag = null;
         
-        var updateTags = function(field, value) {
+        var updateTags = function(field, value, event) {
           selected_tag = null;
           
           possible_tags_panel.select("a").each(function(tag) {
@@ -618,6 +618,16 @@ var ItemBrowser = Class.create({
             } else if(!selected_tag) {
               selected_tag = tag.innerHTML;
               tag.addClassName("selected");
+
+              // field.value = tag.innerHTML;
+              // if(field.createTextRange) {
+              //   var textSelection = field.createTextRange();
+              //   textSelection.moveStart("character", 0);
+              //   textSelection.moveEnd("character", value.length - field.value.length);
+              //   textSelection.select();
+              // } else if (field.setSelectionRange) {
+              //   field.setSelectionRange(value.length, field.value.length);
+              // }
             }
           });
         };

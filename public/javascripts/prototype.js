@@ -3681,10 +3681,10 @@ Abstract.EventObserver = Class.create({
       this.registerCallback(this.element);
   },
 
-  onElementEvent: function() {
+  onElementEvent: function(event) {
     var value = this.getValue();
     if (this.lastValue != value) {
-      this.callback(this.element, value);
+      this.callback(this.element, value, event);
       this.lastValue = value;
     }
   },
