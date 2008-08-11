@@ -629,6 +629,10 @@ var ItemBrowser = Class.create({
           field.value = "";
           updateTags(null, "");
         }.bind(this));
+        
+        field.observe("keydown", function(event) {
+          if(event.keyCode == Event.KEY_ESC) { item._item.hideAddTagForm(); }
+        }.bind(this));
       }
       
       field.focus();
