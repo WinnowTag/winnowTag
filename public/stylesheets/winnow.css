@@ -1321,6 +1321,10 @@ a.bookmarklet:hover {
   white-space: nowrap;
 }
 
+.feed_item .moderation_panel .possible_tags a.add.selected {
+  font-weight: bold;
+}
+
 .feed_item .moderation_panel form {
   float: right;
 }

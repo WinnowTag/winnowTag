@@ -589,7 +589,8 @@ var ItemBrowser = Class.create({
     var possible_tags_panel = panel.down(".possible_tags");
     
     if(form && possible_tags_panel) {
-      var used_tags = $$("#tag_controls_" + item.getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
+      
+      var used_tags = $("tag_controls_" + item.getAttribute("id")).select("li.positive span.name, li.negative span.name").collect(function(span) { return span.innerHTML; });
       var possible_tags = this.options.tags.reject(function(tag) {
         return used_tags.include(tag);
       });
@@ -599,13 +600,35 @@ var ItemBrowser = Class.create({
         var onclick = "add_tagging('" + item.getAttribute("id") + "', '" + tag + "', 'positive');";
         html += '<a class="add" href="#" onclick="'+ onclick + 'this.fade();return false;">' + tag + "</a> ";
       });
-
       possible_tags_panel.update(html);
       
-      if(attach_events) {      
+      if(attach_events) {
+        var selected_tag = null;
+        
+        var updateTags = function(field, value) {
+          selected_tag = null;
+          
+          possible_tags_panel.select("a").each(function(tag) {
+            tag.removeClassName("selected");
+            tag.removeClassName("disabled");
+            
+            if(value.blank()) {
+              // Don't do anything
+            } else if(!tag.innerHTML.startsWith(value)) {
+              tag.addClassName("disabled")
+            } else if(!selected_tag) {
+              selected_tag = tag.innerHTML;
+              tag.addClassName("selected");
+            }
+          });
+        };
+        
+        new Form.Element.EventObserver(field, updateTags, 'keyup');
+
         form.observe("submit", function() {
-          window.add_tagging(item.getAttribute("id"), field.value, "positive");
+          window.add_tagging(item.getAttribute("id"), selected_tag || field.value, "positive");
           field.value = "";
+          updateTags(null, "");
         }.bind(this));
       }
       
