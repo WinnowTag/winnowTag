@@ -6,9 +6,6 @@
 function add_tagging(taggable_id, tag_name, tagging_type) {
   if( tag_name.match(/^\s*$/) ) { return; }
 
-  var match = tag_name.match(/^Create Tag: '(.+)'$/);
-  if(match) { tag_name = match[1]; }
-
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
