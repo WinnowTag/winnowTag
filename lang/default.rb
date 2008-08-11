@@ -181,8 +181,7 @@ Localization.define do |l|
   l.store :confirm_destroy_folder,                "Are you sure?"
   
   # app/views/feed_items/_moderation_panel.html.erb
-  l.store :add_tag_button,                        "Add Tag"
-  l.store :cancel_add_tag_link,                   "cancel"
+  l.store :create_tag_button,                     "Create Tag"
 
 
   # app/views/feed_items/_text_filter_controls.html.erb

@@ -10,8 +10,7 @@ var Item = Class.create({
     this.closed        = this.element.down(".closed");
     this.status        = this.element.down(".status");
     this.add_tag       = this.element.down(".add_tag");
-    this.add_tag_form  = this.element.down(".add_tag_form");
-    this.add_tag_field = this.add_tag_form.down("input[type=text]");
+    this.moderation_panel  = this.element.down(".moderation_panel");
     this.body          = this.element.down(".body");
     
     this.setupEventListeners();
@@ -69,7 +68,7 @@ var Item = Class.create({
   },
   
   toggleAddTagForm: function() {
-    if(this.add_tag_form.visible()) {
+    if(this.moderation_panel.hasClassName("selected")) {
       this.hideAddTagForm();
     } else {
       this.showAddTagForm();
@@ -82,9 +81,8 @@ var Item = Class.create({
       itemBrowser.selectItem(this.element);
     }
 
-    // $$('.add_tag_form').invoke("hide");
-
-    this.add_tag_form.show();
+    this.moderation_panel.addClassName("selected");
+    this.add_tag.addClassName("selected");
     this.loadAddTagForm();
     this.scrollTo();
 
@@ -92,13 +90,12 @@ var Item = Class.create({
   },
   
   hideAddTagForm: function() {
-    if(this.add_tag_field) { this.add_tag_field.blur(); }
-    this.add_tag_form.hide()
+    this.moderation_panel.removeClassName("selected");
+    this.add_tag.removeClassName("selected");    
   },
 
   loadAddTagForm: function() {
-    this.load(this.add_tag_form, function() {
-      this.add_tag_field = this.add_tag_form.down("input[type=text]");
+    this.load(this.moderation_panel, function() {
       itemBrowser.initializeItemModerationPanel(this.element, true);
     }.bind(this));
   },

@@ -15,7 +15,6 @@ var ItemBrowser = Class.create({
     
     this.name = name;
     this.update_queue = [];
-    this.auto_completers = {};
     this.loading = false;
     this.full = false;
     
@@ -428,7 +427,9 @@ var ItemBrowser = Class.create({
       $(item).select(".tag_control").invoke("removeClassName", 'selected');
       $(item).select(".information").invoke("removeClassName", 'selected');
       $(item).select(".description a").invoke("removeClassName", 'selected');
-      $(item).select(".feed_information").invoke("removeClassName", 'selected');      
+      $(item).select(".feed_information").invoke("removeClassName", 'selected');
+      $(item).select(".add_tag").invoke("removeClassName", 'selected');  
+      $(item).select(".moderation_panel").invoke("removeClassName", 'selected');      
     }
   },
   
@@ -581,50 +582,36 @@ var ItemBrowser = Class.create({
   initializeItemModerationPanel: function(item, attach_events) {
     item = $(item);
     
-    var panel = item.down(".add_tag_form");
+    var panel = item.down(".moderation_panel");
+    var form = panel.down("form");
     var field = panel.down("input[type=text]");
-    var list = panel.down(".auto_complete");
-    var add = panel.down("input[type=submit]");
-    var cancel = panel.down("a");
-
-    if(field && list && add && cancel) {
-      if(!this.auto_completers[item.getAttribute("id")]) {
-        this.auto_completers[item.getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
-          minChars: 0, partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
-          afterUpdateElement: function() { 
-            item._item.hideAddTagForm();
-            // TODO: Move this call into item browser...
-            window.add_tagging(item.getAttribute("id"), field.value, 'positive');
-            field.blur();
-            field.value = "";
-          }.bind(this)
-        });
-      }
+    var possible_tags_panel = panel.down(".possible_tags");
+    
+    if(form && possible_tags_panel) {
       var used_tags = $$("#tag_controls_" + item.getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
-      this.auto_completers[item.getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
+      var possible_tags = this.options.tags.reject(function(tag) {
         return used_tags.include(tag);
       });
-      this.auto_completers[item.getAttribute("id")].activate();
 
-      if(attach_events) {
-        field.observe("blur", function() {
-          setTimeout(item._item.hideAddTagForm.bind(item._item), 200);
-        }.bind(this));
-        field.observe("keydown", function(event) {
-          if(event.keyCode == Event.KEY_ESC) { item._item.hideAddTagForm(); }
-        }.bind(this));
+      var html = "";
+      possible_tags.each(function(tag) {
+        var onclick = "add_tagging('" + item.getAttribute("id") + "', '" + tag + "', 'positive');";
+        html += '<a class="add" href="#" onclick="'+ onclick + 'this.fade();return false;">' + tag + "</a> ";
+      });
+
+      possible_tags_panel.update(html);
       
-        add.observe("click", function() {
-          this.auto_completers[item.getAttribute("id")].selectEntry();
+      if(attach_events) {      
+        form.observe("submit", function() {
+          window.add_tagging(item.getAttribute("id"), field.value, "positive");
+          field.value = "";
         }.bind(this));
-
-        cancel.observe("click", item._item.hideAddTagForm.bind(item._item));
       }
       
       field.focus();
       
       (function() {
-        new Effect.ScrollToInDiv(this.container, list, {duration: 0.3, bottom_margin: 5});
+        new Effect.ScrollToInDiv(this.container, panel, {duration: 0.3, bottom_margin: 5});
       }).bind(this).delay(0.3);
     }
   },

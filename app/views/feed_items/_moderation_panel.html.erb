@@ -1,0 +1,5 @@
+<% form_tag "", :onsubmit => "return false;" do -%>
+  <%= text_field_tag 'tag', nil %>
+  <%= submit_tag _(:create_tag_button) %>
+<% end -%>
+<div class="possible_tags"></div>

@@ -95,7 +95,7 @@ class FeedItemsController < ApplicationController
     @feed_item = FeedItem.find(params[:id])
   end
   
-  def add_tag_form 
+  def moderation_panel 
     @feed_item = FeedItem.find(params[:id]) 
   end
   

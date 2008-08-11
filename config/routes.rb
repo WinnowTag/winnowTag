@@ -29,7 +29,7 @@ ActionController::Routing::Routes.draw do |map|
                 :member => {
                   :information => :get,
                   :clues => :get,
-                  :add_tag_form => :get,
+                  :moderation_panel => :get,
                   :body => :get,
                   :mark_read => :put,
                   :mark_unread => :put

@@ -1266,6 +1266,16 @@ a.bookmarklet:hover {
   margin: 2px 2px 0 1em;
 }
 
+.feed_item .closed .add_tag.selected {
+  z-index: 1000;
+  border: 1px solid #ffdb00;
+  background-color: #ffff89;
+  padding: 2px 5px;
+  margin: -1px -4px;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;  
+}
+
 .feed_item .body {
   display: none;
   padding: 5px 5px 5px 25px;
@@ -1279,14 +1289,42 @@ a.bookmarklet:hover {
   padding: 5px 3px 4px 23px;
 }
 
-.feed_item .add_tag_form {
-  position: absolute;
-  right: 2px;
-  top: 3px;
-  z-index: 1000;
-  background-color: #d7e0f5;
-  padding: 5px;
+.feed_item .moderation_panel {
+  display: none;
+  padding: 0.5em 0.75em;
+  border: 2px solid #ffdb00;
+  border-width: 2px 0 0 0;
+  background-color: #ffff89;
+  color: #000;
+  cursor: default;
+  line-height: 1.8;
 }
+
+.feed_item.open .moderation_panel {
+  border-width: 2px 0;
+}
+
+.feed_item .moderation_panel.selected {
+  display: block;
+}
+
+.feed_item .moderation_panel .possible_tags {
+  margin-right: 20em;
+}
+
+.feed_item .moderation_panel .possible_tags a.add {
+  margin-right: 0.5em;
+  padding-left: 18px;
+  font-size: 1.1em;
+  background-image: url(../images/plus.png);
+  background-position: left center;
+  background-repeat: no-repeat;  
+}
+
+.feed_item .moderation_panel form {
+  float: right;
+}
+
 
 .feed_item .feed_information {
   display: none;
