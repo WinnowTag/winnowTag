@@ -421,6 +421,8 @@ var ItemBrowser = Class.create({
       $(item).removeClassName('selected');
       $(item).select(".tag_control").invoke("removeClassName", 'selected');
       $(item).select(".information").invoke("removeClassName", 'selected');
+      $(item).select(".description a").invoke("removeClassName", 'selected');
+      $(item).select(".feed_information").invoke("removeClassName", 'selected');      
     }
   },
   
@@ -474,6 +476,24 @@ var ItemBrowser = Class.create({
     
       itemBrowser.selectItem(item);
       tag.addClassName('selected');
+      information.addClassName('selected');
+
+      item._item.scrollTo();
+    }
+  },
+  
+  selectFeedInformation: function(feed) {
+    feed = $(feed);
+    
+    var item = feed.up('.feed_item');
+    var information = item.down(".feed_information");
+
+    if(feed.hasClassName("selected")) {
+      feed.removeClassName("selected");
+      information.removeClassName("selected");
+    } else {
+      itemBrowser.selectItem(item);
+      feed.addClassName('selected');
       information.addClassName('selected');
 
       item._item.scrollTo();
