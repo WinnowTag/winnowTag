@@ -1,0 +1,4 @@
+require 'config/requirements'
+require 'config/echoe' # setup Hoe + all gem configuration
+
+Dir['tasks/**/*.rake'].each { |rake| load rake }
