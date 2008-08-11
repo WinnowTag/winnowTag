@@ -1,6 +1,8 @@
 <div id="<%= dom_id(feed) %>" class="feed clearfix <%= feed_classes(feed) %>">
 
   <div class="summary clearfix">        
+    <h4 class="clearfix"><%= feed_link(feed) %></h4>  
+  
     <div class="info">
       <div class="filter">
         <p>Filter</p>
@@ -19,7 +21,5 @@
          <strong><%= format_date(feed.updated_on) %></strong>
       </div>
     </div>    
-
-    <h4 class="clearfix"><%= feed_link(feed) %></h4>
   </div> <!-- /.summary -->
 </div>

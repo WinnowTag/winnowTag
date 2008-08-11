@@ -1293,7 +1293,9 @@ a.bookmarklet:hover {
 }
 
 .feed_item .feed_information h4 {
+  float: left;
   font-size: 110%;
+  margin: 0;
 }
 
 .feed_item .feed_information a {
@@ -1302,6 +1304,10 @@ a.bookmarklet:hover {
 
 .feed_item .feed_information.selected {
   display: block;
+}
+
+.feed_item .closed .description a.name {
+  white-space: nowrap;    
 }
 
 .feed_item .description a.selected {
