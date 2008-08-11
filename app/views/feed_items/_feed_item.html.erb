@@ -5,19 +5,21 @@
 
   	<%= link_to_function "", "", :class => "status stop" %>
   	<h4><%= feed_item_title(feed_item) %></h4>
+  	
     <%= link_to(image_tag("link.png"), feed_item.link, :class => "link stop") %>
   	<span class="description">
-  		<% if feed_item.author.blank? -%>
-        <%= _(:feed_item_feed_metadata, link_to_feed(feed_item.feed, :class => "stop")) %>
-  		<% else -%>
-  		  <%= _(:feed_item_metadata, link_to_feed(feed_item.feed, :class => "stop"), feed_item.author) %>
-  		<% end -%>
+  	  <%= feed_control_for(feed_item) %>
   	</span>
-
+  	  
     <%= tag_controls(feed_item) %>
     <div class="add_tag_form stop" style="display: none;" url="<%= add_tag_form_feed_item_path(feed_item) %>"></div> 
   </div>
   
   <div class="information stop clearfix"></div>
+
+	<div class="feed_information">
+    <%= render :partial => "feed_information.html.erb", :locals => { :feed => feed_item.feed } %>
+  </div>
+  
   <div class="body clearfix" url="<%= body_feed_item_path(feed_item) %>"></div>
 </div>

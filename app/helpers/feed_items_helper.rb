@@ -67,6 +67,16 @@ module FeedItemsHelper
     content_tag(:ul, html, :class => "tag_list", :id => dom_id(feed_item, "tag_controls"))
   end
   
+  def feed_control_for(feed_item)
+    feed = feed_item.feed
+    
+    if feed_item.author.blank?
+      _(:feed_item_feed_metadata, content_tag(:a, feed.title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"))
+    else
+      _(:feed_item_metadata, content_tag(:a, feed.title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"), feed_item.author)
+    end
+  end
+  
   # Format a classifier tagging strength as a percentage.
   def format_classifier_strength(taggings)
     if classifier_tagging = taggings.detect {|tagging| tagging.classifier_tagging? }

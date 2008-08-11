@@ -5,6 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class FeedItemsController < ApplicationController
   include FeedItemsHelper
+  helper :feeds
   include ActionView::Helpers::TextHelper
   before_filter :login_required
      

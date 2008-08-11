@@ -1288,6 +1288,43 @@ a.bookmarklet:hover {
   padding: 5px;
 }
 
+.feed_item .feed_information {
+  display: none;
+}
+
+.feed_item .feed_information h4 {
+  font-size: 110%;
+}
+
+.feed_item .feed_information a {
+  color: #52718B;
+}
+
+.feed_item .feed_information.selected {
+  display: block;
+}
+
+.feed_item .description a.selected {
+  padding: 0.15em 0.5em;
+  font-weight: bold;
+  text-spacing: -1px;
+  color: #333;
+  border: 1px solid #FF8400;
+  background-color: #FFF1E4;
+  -moz-border-radius: 0.75em;
+  -webkit-border-radius: 0.75em;
+}
+
+.feed_item .feed_information .summary {
+  border: 2px solid #FFA14F;    
+  border-width: 2px 0 0 0;
+  background-color: #FFF1E4;  
+}
+
+.feed_item.open .feed_information .summary{
+  border-width: 2px 0;
+}
+
 .notitle {
   font-style: italic;
   font-weight: normal;
@@ -1354,7 +1391,7 @@ ul.tag_list li.selected .name {
 
 .information {
   display: none;
-  padding: 1em;
+  padding: 0.5em 0.75em;
   border: 2px solid #ffdb00;
   border-width: 2px 0 0 0;
   background-color: #ffff89;
@@ -1546,7 +1583,7 @@ ul.tag_list li.selected .name {
 }
 
 .feed .summary .description {
-	margin: 0.5em 0 0 60px;
+  margin: 0.5em 0 0 60px;
 }
 
 .feed .summary .description input {
