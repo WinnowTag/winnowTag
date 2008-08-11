@@ -225,6 +225,12 @@ var ItemBrowser = Class.create({
     this.addFilters(parameters);
   },
   
+  clearFilters: function(parameters) {
+    if(!clear_selected_filters.hasClassName("disabled")) {
+      this.setFilters({text_filter: ""});
+    }
+  },
+  
   addFilters: function(parameters) {
     this.expandFolderParameters(parameters);
 
@@ -322,9 +328,9 @@ var ItemBrowser = Class.create({
     var clear_selected_filters = $("clear_selected_filters");
     if(clear_selected_filters) {
       if(this.filters.tag_ids || this.filters.feed_ids || this.filters.text_filter) {
-        clear_selected_filters.show();
+        clear_selected_filters.removeClassName("disabled");
       } else {
-        clear_selected_filters.hide();
+        clear_selected_filters.addClassName("disabled");
       }
     }
     

@@ -91,7 +91,7 @@ a { color: #1010C8; text-decoration: none; }
 a:hover {text-decoration: underline;}
 a:visited { color: #1010C8; }
 a.disabled {color: #888; cursor: default;}
-a:hover.disabled {color: #888; background-color: transparent; text-decoration: none;}
+a:hover.disabled {text-decoration: none;}
 a img, img.blank {border: 0; vertical-align: baseline; margin-left: 3px;}
 
 /*

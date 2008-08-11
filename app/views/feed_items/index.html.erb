@@ -18,8 +18,8 @@
   <ul class="control_bar">
     <li class="selected_filters">
       Selected Filters:
-      <%= link_to _(:feed_for_selected_filters), "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>,
-      <%= link_to_function _(:clear_selected_filters), "itemBrowser.setFilters({text_filter: ''})", :id => "clear_selected_filters" %>
+      <%= link_to_function _(:clear_selected_filters), "itemBrowser.clearFilters()", :id => "clear_selected_filters" %>
+      <%= link_to _(:feed_for_selected_filters), "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>
     </li>
     <li class="choice_filter">
       <%= _(:show_label) %>
