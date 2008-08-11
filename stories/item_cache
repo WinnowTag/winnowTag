@@ -52,7 +52,8 @@ Story: Item Cache Access
     
     When I destroy the item
     
-    Then there is -1 new items in the system
+		Then the system should return a 200
+    And there is -1 new items in the system
     
   Scenario: Updating a feed item with the wrong id
   
@@ -78,10 +79,10 @@ Story: Item Cache Access
   
     Given a feed in the system
     When I submit invalid atom for an item
-    Then the system should return a 400 error
+    Then the system should return a 400
   
   Scenario: Sending invalid atom as a feed
 
     When I submit invalid atom for a feed
-    Then the system should return a 400 error
+    Then the system should return a 400
   

@@ -5,6 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 module Remote
   class ClassifierJob < ClassifierResource
+    with_auth_hmac(HMAC_CREDENTIALS['winnow'])
     self.element_name = "job"
     class Status
       WAITING = "Waiting"

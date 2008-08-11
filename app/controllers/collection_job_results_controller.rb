@@ -5,7 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class CollectionJobResultsController < ApplicationController
   skip_before_filter :login_required
-  before_filter :login_required_unless_local
+  with_auth_hmac HMAC_CREDENTIALS['collector']
   
   def create
     user = User.find_by_login(params[:user_id]) || User.find(params[:user_id])

@@ -8,8 +8,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe ItemCache::FeedsController do
   fixtures :feeds
   before(:each) do
-    login_as(1)
-    mock_user_for_controller
+    @controller.stub!(:hmac_authenticated?).and_return(true)
   end
   
   describe "POST Atom::Entry to /item_cache/feeds" do
@@ -33,6 +32,14 @@ describe ItemCache::FeedsController do
     it "should have 201 as the status code" do
       post 'create', :atom => @atom
       response.code.should == "201"
+    end
+  end
+  
+  describe "POST Atom::Entry to /item_cache/feeds without valid credentials" do
+    it "should return 401 Autentication Required" do
+      @controller.should_receive(:hmac_authenticated?).and_return(false)
+      post :create, :atom => @atom
+      response.code.should == "401"
     end
   end
   
