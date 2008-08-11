@@ -1318,7 +1318,8 @@ a.bookmarklet:hover {
   font-size: 1.1em;
   background-image: url(../images/plus.png);
   background-position: left center;
-  background-repeat: no-repeat;  
+  background-repeat: no-repeat;
+  white-space: nowrap;
 }
 
 .feed_item .moderation_panel form {
