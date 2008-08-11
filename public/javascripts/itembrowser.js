@@ -613,7 +613,7 @@ var ItemBrowser = Class.create({
             
             if(value.blank()) {
               // Don't do anything
-            } else if(!tag.innerHTML.startsWith(value)) {
+            } else if(!tag.innerHTML.toLowerCase().startsWith(value.toLowerCase())) {
               tag.addClassName("disabled")
             } else if(!selected_tag) {
               selected_tag = tag.innerHTML;
