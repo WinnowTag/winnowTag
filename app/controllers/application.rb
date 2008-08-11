@@ -24,10 +24,6 @@ protected
   def check_atom
     render(:text => params[:atom_error].message, :status => 400) if params[:atom_error]
   end
-  
-  def local_request?
-    ["208.85.146.72", "208.85.146.73", "127.0.0.1"].include?(request.remote_ip)
-  end
 
   def set_time_zone
     if current_user && !current_user.time_zone.blank?

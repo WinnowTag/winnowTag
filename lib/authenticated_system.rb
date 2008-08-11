@@ -53,14 +53,6 @@ module AuthenticatedSystem
       logged_in? && authorized? ? true : access_denied
     end
     
-    def login_required_unless_local
-      unless local_request?
-        login_required
-      else
-        true
-      end
-    end
-    
     def login_required_unless_hmac
       unless hmac_authenticated?
         login_required
