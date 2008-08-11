@@ -15,24 +15,28 @@
     <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feed_items_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
   <% end -%>
 
-  <ul class="control_bar">
-    <li class="selected_filters">
-      Selected Filters:
-      <%= link_to_function _(:clear_selected_filters), "itemBrowser.clearFilters()", :id => "clear_selected_filters" %>
-      <%= link_to _(:feed_for_selected_filters), "", :base_url => formatted_feed_items_path(:atom), :class => "feed_icon", :id => "feed_with_selected_filters" %>
-    </li>
-    <li class="choice_filter">
-      <%= _(:show_label) %>
-      <%= link_to_function _(:show_all_label), "itemBrowser.addFilters({mode: 'all'})", :id => "mode_all" %>, 
-      <%= link_to_function _(:show_unread_label), "itemBrowser.addFilters({mode: 'unread'})", :id => "mode_unread" %>, 
-      <%= link_to_function _(:show_moderated_label), "itemBrowser.addFilters({mode: 'moderated'})", :id => "mode_moderated" %>
-    </li>
-    <li class="order">
-      <%= _(:sort_label) %>                                                                                                              
-      <%= link_to_function _(:sort_date_label), "itemBrowser.setOrder('date')", :id => "order_date" %>, 
-      <%= link_to_function _(:sort_strength_label), "itemBrowser.setOrder('strength')", :id => "order_strength" %>
-    </li>                                                                                                                 
-  </ul>
+  <div class="control_bar">
+    <div class="toolbar">
+      <label>Selected Filters:</label>
+      <div class="group">
+        <%= rounded_button_function _(:clear_selected_filters), "itemBrowser.clearFilters()", :icon => "clear", :id => "clear_selected_filters" %>
+        <%= rounded_button_link _(:feed_for_selected_filters), "", :icon => "feed", :base_url => formatted_feed_items_path(:atom), :id => "feed_with_selected_filters" %>
+      </div>
+      
+      <label><%= _(:show_label) %></label>
+      <div class="group">
+        <%= rounded_button_function _(:show_all_label), "itemBrowser.addFilters({mode: 'all'})", :id => "mode_all" %>
+        <%= rounded_button_function _(:show_unread_label), "itemBrowser.addFilters({mode: 'unread'})", :icon => "unread", :id => "mode_unread" %>
+        <%= rounded_button_function _(:show_moderated_label), "itemBrowser.addFilters({mode: 'moderated'})", :id => "mode_moderated" %>
+      </div>
+
+      <label><%= _(:sort_label) %></label>
+      <div class="group">
+        <%= rounded_button_function _(:sort_date_label), "itemBrowser.setOrder('date')", :id => "order_date" %>
+        <%= rounded_button_function _(:sort_strength_label), "itemBrowser.setOrder('strength')", :id => "order_strength" %>
+      </div>
+    </div>
+  </div>
 <% end -%>
 
 <% content_for :sidebar do -%>

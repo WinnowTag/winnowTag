@@ -853,40 +853,8 @@ ul.filter_list li .training .automatic strong {
 
 #header_controls .control_bar {
   float: right;
-  color: #666;
-}
-
-#header_controls ul.control_bar {
-  list-style: none;
-  margin: 2px 0 3px 0;
-  padding: 0;
-  white-space: nowrap;
-}
-
-#header_controls ul.control_bar li {
-  display: inline;
-  margin: 0 0 0 0.5em;
-  padding: 4px 6px;
-  white-space: nowrap;
-  vertical-align: middle;
-	background-color: #fdfdfd;
-	-moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-}
-
-#header_controls ul.control_bar li.choice_filter .selected {
-  color: #000;
-  font-weight: bold;
-}
-
-#header_controls ul.control_bar li #feed_with_selected_filters {
-  background: url(../images/feed.png) left center no-repeat;
-  padding: 1px 0 1px 20px;
-}
-
-#header_controls ul.control_bar li #clear_selected_filters {
-  background: url(../images/close.png) left center no-repeat;
-  padding: 1px 0 1px 16px;
+  width: 60em;
+  border: 1px solid red;
 }
 
 #header_controls ul.control_bar li .add {

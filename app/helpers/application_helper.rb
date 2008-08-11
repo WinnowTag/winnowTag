@@ -260,4 +260,22 @@ module ApplicationHelper
       "Subscribed"
     end
   end
+
+  def rounded_button_function(name, function, html_options = {}, &block)
+    (html_options[:class] ||= "") << " button"
+    if icon = html_options.delete(:icon)
+      link_to_function(content_tag(:span, name, :class => "icon #{icon}"), function, html_options, &block)
+    else
+      link_to_function(name, function, html_options.merge(:class => "button"), &block)
+    end
+  end
+
+  def rounded_button_link(name, options = {}, html_options = {})
+    (html_options[:class] ||= "") << " button"
+    if icon = html_options.delete(:icon)
+      link_to(content_tag(:span, name, :class => "icon #{icon}"), options, html_options)
+    else
+      link_to(name, options, html_options.merge(:class => "button"))
+    end
+  end
 end
