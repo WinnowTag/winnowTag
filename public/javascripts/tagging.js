@@ -22,7 +22,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   if (!tag_control) {
     parameters.attach_tagging_information_event = true;
     add_tag_control(taggable_id, tag_name);
-    remove_add_tag_control();
+    remove_add_tag_control(taggable_id, tag_name);
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
     tag_control.addClassName(tagging_type);
