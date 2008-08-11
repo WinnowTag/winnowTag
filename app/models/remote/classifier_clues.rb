@@ -14,9 +14,20 @@ module Remote
       #   clues << { 'prob' => rand.round(6), 'clue' => "t:#{MD5.hexdigest(rand.to_s)[0..rand(16)]}" }
       # end
       # return clues
-
-      url = build_clue_url(item_id, tag_url)      
-      response = Net::HTTP.get_response(url)
+      access_id = HMAC_CREDENTIALS['winnow'].keys.first
+      secret_key = HMAC_CREDENTIALS['winnow'].values.first
+      
+      url = build_clue_url(item_id, tag_url)
+      request = Net::HTTP::Get.new(url.request_uri)
+      
+      if access_id && secret_key
+        AuthHMAC.sign!(request, access_id, secret_key)
+      end
+      
+      response = nil
+      Net::HTTP.start(url.host, url.port) do |http|
+        response = http.request(request)
+      end
       ActiveRecord::Base.logger.debug "fetching clues from #{build_clue_url(item_id, tag_url)}"
 
       if response.code == "200"

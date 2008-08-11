@@ -51,7 +51,12 @@ describe FeedItemsController do
       url = Remote::ClassifierResource.site.to_s + "/clues?" +
               "tag=#{URI.escape('http://test.host/quentin/tags/tag/training.atom')}" +
               "&item=#{URI.escape('urn:peerworks.org:entry#1234')}"
-      Net::HTTP.should_receive(:get_response).with(URI.parse(url)).and_return(@http_response)
+      http = mock('http')
+      http.should_receive(:request) do |request|
+        request['Authorization'].should_not be_nil
+        @http_response
+      end
+      Net::HTTP.should_receive(:start).with('classifier.host', 80).and_yield(http)
     end
     
     it "should render the clues" do
