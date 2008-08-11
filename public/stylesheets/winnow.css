@@ -2029,10 +2029,6 @@ ul.tag_list li.selected .name {
   background: url(../images/cross.png) 0 center no-repeat  !important;
 }
 
-.show_icon {
-  background: url(../images/show.gif) 0 center no-repeat !important;
-}
-
 .pencil_icon {
   background: url(../images/pencil.png) 0 center no-repeat  !important;
   background-position: 0 0;

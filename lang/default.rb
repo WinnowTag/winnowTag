@@ -22,16 +22,10 @@ Localization.define do |l|
   l.store :could_not_load_clues,                  "Could not load the clues, please try again later."
   
   # app/controllers/feeds_controller.rb
-  l.store :feed_not_found,                        "We couldn't find this feed in any of our databases. Maybe it has been deleted or never existed. If you think this is an error, please contact us."
-  l.store :collector_down,                        "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. We are aware of this problem and will fix it soon. Please try again later."
   l.store :feed_added,                            "Thanks for adding the feed from %s. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
   l.store :feed_existed,                          "We already have the feed from %s, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
   l.store :feeds_imported,           :singular => "Imported %d feed from your OPML file",
                                      :plural   => "Imported %d feeds from your OPML file"
-
-  # app/controllers/item_protection_controller.rb
-  l.store :item_protection_status,                "Unable to fetch protection status from the collector"
-  l.store :item_protection_rebuild_failure,       "Could not rebuild item protection: %s"
 
   # app/controllers/messages_controller.rb
   l.store :message_created,                       "Message was successfully created"
@@ -212,10 +206,8 @@ Localization.define do |l|
 
   # app/views/feeds/_feed.html.erb
   l.store :last_updated,                            "Last Updated"
-  l.store :number_of_items,                         "# of Items"
   l.store :globally_exclude,                        "Globally Exclude"
   l.store :show,                                    "Show"
-  l.store :feeds_show_link_title,                   "Show Only Items From %s"
   
   # app/views/feeds/_header_controls.html.erb
   l.store :feeds_header_add,                        "Add"
@@ -250,13 +242,6 @@ Localization.define do |l|
   l.store :feeds_new_bookmarklet_description1,      "Drag this button"
   l.store :feeds_new_bookmarklet_description2,      "to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
   l.store :feeds_bookmarklet_js_error_message,      "Drag this button to your bookmark or right click and select Bookmark this Link..."
-
-  # app/views/feeds/show.html.erb
-  l.store :feeds_title,                             "Title"
-  l.store :feeds_feed_home,                         "Feed Home"
-  l.store :feeds_feed,                              "Feed"
-  l.store :last_collected,                          "Last Collected"
-  l.store :globally_excluded,                       "Globally Excluded"              
   
   # app/views/invites/_form.html.erb
   l.store :invites_activate,                        "Activate?"
