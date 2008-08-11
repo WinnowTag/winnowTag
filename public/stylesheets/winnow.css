@@ -1314,8 +1314,7 @@ a.bookmarklet:hover {
 
 .feed_item .moderation_panel .possible_tags a.add {
   margin-right: 0.5em;
-  padding-left: 18px;
-  font-size: 1.1em;
+  padding-left: 16px;
   background-image: url(../images/plus.png);
   background-position: left center;
   background-repeat: no-repeat;
