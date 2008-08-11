@@ -107,6 +107,7 @@ task :copy_config do
   run "ln -s #{shared_path}/database.yml #{release_path}/config/database.yml"
   run "ln -s #{shared_path}/collector.conf #{release_path}/config/collector.conf"
   run "ln -s #{shared_path}/classifier-client.conf #{release_path}/config/classifier-client.conf"
+  run "ln -s #{shared_path}/hmac_credentials.yml #{release_path}/config/hmac_credentials.yml"
 end
 
 
