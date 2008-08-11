@@ -225,6 +225,7 @@ var ItemBrowser = Class.create({
   },
   
   clearFilters: function(parameters) {
+    var clear_selected_filters = $("clear_selected_filters");  
     if(!clear_selected_filters.hasClassName("disabled")) {
       this.setFilters({text_filter: ""});
     }

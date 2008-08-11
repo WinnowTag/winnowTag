@@ -1308,6 +1308,10 @@ a.bookmarklet:hover {
   display: block;
 }
 
+.feed_item .moderation_panel .possible_tags {
+  float: left;
+}
+
 .feed_item .moderation_panel .possible_tags a.add {
   margin-right: 0.5em;
   padding-left: 18px;
