@@ -618,15 +618,22 @@ var ItemBrowser = Class.create({
             } else if(!selected_tag) {
               selected_tag = tag.innerHTML;
               tag.addClassName("selected");
-
-              // field.value = tag.innerHTML;
-              // if(field.createTextRange) {
-              //   var textSelection = field.createTextRange();
-              //   textSelection.moveStart("character", 0);
-              //   textSelection.moveEnd("character", value.length - field.value.length);
-              //   textSelection.select();
-              // } else if (field.setSelectionRange) {
-              //   field.setSelectionRange(value.length, field.value.length);
+              
+              // http://www.webreference.com/programming/javascript/ncz/3.html
+              // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
+              //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
+              //   console.log("nope");
+              //   // Don't do anything
+              // } else {
+              //   field.value = tag.innerHTML;
+              //   if(field.createTextRange) {
+              //     var textSelection = field.createTextRange();
+              //     textSelection.moveStart("character", 0);
+              //     textSelection.moveEnd("character", value.length - field.value.length);
+              //     textSelection.select();
+              //   } else if (field.setSelectionRange) {
+              //     field.setSelectionRange(value.length, field.value.length);
+              //   }
               // }
             }
           });
