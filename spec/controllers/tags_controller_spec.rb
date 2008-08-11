@@ -54,10 +54,10 @@ shared_examples_for 'tag access controls' do
     response.code.should == "200"
   end
   
-  it "should allow local requests to access private tags regardless of login" do
+  it "should allow hmac authenticated requests to access private tags regardless of login" do
     @tag.stub!(:public?).and_return(false)
     login_as(nil)
-    @controller.stub!(:local_request?).and_return(true)
+    @controller.stub!(:hmac_authenticated?).and_return(true)
     get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
     response.code.should == "200"
   end
@@ -179,9 +179,9 @@ describe TagsController do
       response.code.should == "200"
     end
     
-    it "should not require a login for local requests" do
+    it "should not require a login for hmac_authenticated requests" do
       login_as(nil)
-      @controller.stub!(:local_request?).and_return(true)
+      @controller.stub!(:hmac_authenticated?).and_return(true)
       get :index, :format => 'atom'
       response.should be_success
     end    
@@ -281,22 +281,26 @@ describe TagsController do
     end
     
     it "should return 400 without :atom" do
+      @controller.stub!(:hmac_authenticated?).and_return(true)
       put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name
       response.code.should == "400"
     end
     
     it "should return 405 when not :put or :post" do
+      @controller.stub!(:hmac_authenticated?).and_return(true)
       get :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
       response.code.should == "405"
     end
     
-    it "should call @tag.create_taggings_from_atom with POST and return 201" do      
+    it "should call @tag.create_taggings_from_atom with POST and return 201" do
+      @controller.stub!(:hmac_authenticated?).and_return(true)
       @tag.should_receive(:create_taggings_from_atom).with(@atom)
       post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
       response.code.should == "204"
     end
     
     it "should call @tag.replace_taggings_from_atom with PUT and return 204" do
+      @controller.stub!(:hmac_authenticated?).and_return(true)
       @tag.should_receive(:replace_taggings_from_atom).with(@atom)
       put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
       response.code.should =="204"
@@ -324,23 +328,7 @@ describe TagsController do
       login_as(nil)
       post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
       response.code.should == "401"
-    end
-    
-    it "should allow POST when not logged in if the request is local" do
-      login_as(nil)
-      @controller.stub!(:local_request?).and_return(true)
-      @tag.should_receive(:create_taggings_from_atom).with(@atom)
-      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
-      response.code.should == "204"
-    end
-    
-    it "should allow PUT when not logged in if the request is local" do
-      login_as(nil)
-      @controller.stub!(:local_request?).and_return(true)
-      @tag.should_receive(:replace_taggings_from_atom).with(@atom)
-      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
-      response.code.should == "204"
-    end
+    end    
   end
   
   describe "PUT /tags/id" do

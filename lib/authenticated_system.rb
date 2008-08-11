@@ -53,8 +53,8 @@ module AuthenticatedSystem
       logged_in? && authorized? ? true : access_denied
     end
     
-    def login_required_unless_local
-      unless local_request?
+    def login_required_unless_hmac
+      unless hmac_authenticated?
         login_required
       else
         true
@@ -77,12 +77,12 @@ module AuthenticatedSystem
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
+          headers["WWW-Authenticate"] = 'AuthHMAC'
           render :text => "Could't authenticate you", :status => '401 Unauthorized'
         end
         accepts.atom do
           headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = %(Basic realm="Web Password")
+          headers["WWW-Authenticate"] = 'AuthHMAC'
           render :text => "Could't authenticate you", :status => '401 Unauthorized'
         end
         accepts.js do

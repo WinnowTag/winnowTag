@@ -4,10 +4,7 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module ItemCache
-  class FeedItemsController < ApplicationController
-    skip_before_filter :login_required
-    before_filter :login_required_unless_local, :check_atom
-    
+  class FeedItemsController < ItemCacheController
     def create
       respond_to do |wants|
         wants.atom do
