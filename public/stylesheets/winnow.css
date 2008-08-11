@@ -854,7 +854,6 @@ ul.filter_list li .training .automatic strong {
 #header_controls .control_bar {
   float: right;
   width: 60em;
-  border: 1px solid red;
 }
 
 #header_controls ul.control_bar li .add {
