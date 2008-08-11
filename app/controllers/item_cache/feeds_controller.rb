@@ -4,9 +4,10 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module ItemCache
-  class FeedsController < ApplicationController
+  class FeedsController < ItemCacheController
     skip_before_filter :login_required
-    before_filter :login_required_unless_local, :check_atom
+    with_auth_hmac HMAC_CREDENTIALS['collector']
+    before_filter :check_atom
     
     def create
       respond_to do |wants|

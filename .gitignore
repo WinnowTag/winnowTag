@@ -14,3 +14,5 @@ nbproject
 *.sql.gz
 perf.log
 corpus
+credentials.js
+hmac_credentials.yml

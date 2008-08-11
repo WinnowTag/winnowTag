@@ -16,7 +16,7 @@ steps_for(:tags) do
   end
   
   When("I access /tags.atom") do
-    get "/tags.atom"
+    get_with_hmac "/tags.atom"
   end
   
   Then("the response is $code") do |code|
