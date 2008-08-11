@@ -44,25 +44,25 @@ steps_for(:item_cache) do
   end
   
   When("I add the feed") do
-    post item_cache_feeds_url, @feed_entry, 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
+    post_with_hmac item_cache_feeds_url, @feed_entry, 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
     @feed_id = response.headers['Location'].split('/').last
   end
   
   When("I add the item to the feed") do
-    post item_cache_feed_feed_items_url(Feed.find(@feed_id)), @item_entry, 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
+    post_with_hmac item_cache_feed_feed_items_url(Feed.find(@feed_id)), @item_entry, 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
     @item_id = response.headers['Location'].split('/').last
   end
   
   When("I update the item") do
-    put item_cache_feed_item_url(@item), @item_entry, 'Accept' => 'application/atom+xml', 'Content-Type' => 'application/atom+xml;type=entry'
+    put_with_hmac item_cache_feed_item_url(@item), @item_entry, 'Accept' => 'application/atom+xml', 'Content-Type' => 'application/atom+xml;type=entry'
   end
   
   When("I destroy the feed") do
-    delete item_cache_feed_url(Feed.find(@feed_id)), 'Accept' => 'application/atom+xml'
+    delete_with_hmac item_cache_feed_url(Feed.find(@feed_id)), {}, 'Accept' => 'application/atom+xml'
   end
   
   When("I destroy the item") do
-    delete item_cache_feed_item_url(FeedItem.find(@item_id)), 'Accept' => 'application/atom+xml'
+    delete_with_hmac item_cache_feed_item_url(FeedItem.find(@item_id)), {}, 'Accept' => 'application/atom+xml'
   end
   
   When("I submit invalid atom for an? $thing") do |thing|
@@ -70,7 +70,7 @@ steps_for(:item_cache) do
       when 'feed' then item_cache_feeds_url
       when 'item' then item_cache_feed_feed_items_url(Feed.find(@feed_id))
     end
-    post url, "<?xml version='1.0' ?>\n<entry>bad&nbsp;entry</entry>\n", 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
+    post_with_hmac url, "<?xml version='1.0' ?>\n<entry>bad&nbsp;entry</entry>\n", 'Content-Type' => 'application/atom+xml;type=entry', 'Accept' => 'application/atom+xml'
   end
   
   Then("there is $n new feeds? in the system") do |n|
@@ -93,9 +93,9 @@ steps_for(:item_cache) do
     @item.attributes.inspect.should == FeedItem.find(@item.id).attributes.inspect
   end
 
-  Then("the system should return a 400 error") do
+  Then("the system should return a $code") do |code|
     response.should_not be_nil
-    response.code.should == "400"
+    response.code.should == code
   end
 end
 

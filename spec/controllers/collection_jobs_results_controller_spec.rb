@@ -17,7 +17,7 @@ describe CollectionJobResultsController do
     @feed = mock_model(Feed, :title => "Some Blog", :duplicate => nil)
     Feed.stub!(:find_by_id).with(@feed.id.to_s).and_return(@feed)
     
-    @controller.stub!(:local_request?).and_return(true)
+    @controller.stub!(:hmac_authenticated?).and_return(true)
   end
   
   def do_post(message = nil)
@@ -39,5 +39,11 @@ describe CollectionJobResultsController do
 
     @user.should_receive(:update_feed_state).with(@feed)
     do_post
+  end
+  
+  it "reponds with 401 if hmac is not authenticated" do
+    @controller.should_receive(:hmac_authenticated?).and_return(false)
+    do_post
+    response.code.should == "401"
   end
 end
