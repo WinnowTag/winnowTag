@@ -37,7 +37,7 @@ Rails::Initializer.run do |config|
   config.gem "hpricot"
   config.gem "bcrypt-ruby", :lib => "bcrypt"
   config.gem "RedCloth", :version => "4.0.1"
-  config.gem "auth-hmac"
+  config.gem "auth-hmac", :version => "1.0.0"
   
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
