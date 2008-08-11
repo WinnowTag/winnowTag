@@ -5,13 +5,14 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Item = Class.create({
   initialize: function(element) {
-    this.element       = element;
-    this.id            = this.element.getAttribute('id').match(/\d+/).first();
-    this.closed        = this.element.down(".closed");
-    this.status        = this.element.down(".status");
-    this.add_tag       = this.element.down(".add_tag");
-    this.moderation_panel  = this.element.down(".moderation_panel");
-    this.body          = this.element.down(".body");
+    this.element          = element;
+    this.id               = this.element.getAttribute('id').match(/\d+/).first();
+    this.closed           = this.element.down(".closed");
+    this.status           = this.element.down(".status");
+    this.add_tag          = this.element.down(".add_tag");
+    this.moderation_panel = this.element.down(".moderation_panel");
+    this.body             = this.element.down(".body");
+    this.add_tag_field    = this.moderation_panel.down("input[type=text]");
     
     this.setupEventListeners();
     
@@ -91,11 +92,13 @@ var Item = Class.create({
   
   hideAddTagForm: function() {
     this.moderation_panel.removeClassName("selected");
-    this.add_tag.removeClassName("selected");    
+    this.add_tag.removeClassName("selected");
+    this.add_tag_field.blur();
   },
 
   loadAddTagForm: function() {
     this.load(this.moderation_panel, function() {
+      this.add_tag_field = this.moderation_panel.down("input[type=text]");
       itemBrowser.initializeItemModerationPanel(this.element, true);
     }.bind(this));
   },
