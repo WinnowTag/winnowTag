@@ -21,7 +21,7 @@ function resizeContent() {
   var container = $('container');
   var container_padding = parseInt(container.getStyle("padding-top")) + parseInt(container.getStyle("padding-bottom"));
   var messages_height = 0; // $("messages").visible() ? $("messages").getHeight() : 0;
-  var feed_item_height = body_height - top_of_content - footer_height - content_padding - container_padding - messages_height;
+  var feed_item_height = body_height - top_of_content - footer_height - content_padding - container_padding - messages_height + 2;
   content.style.height = feed_item_height + 'px';
   
   var sidebar = $('sidebar');
