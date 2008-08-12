@@ -20,8 +20,8 @@
 /* End hide from IE-mac */
 
 /*
-** =layout
-*/
+ * =layout
+ */
 html {
   height: 100%;
   overflow-y: hidden;
@@ -85,8 +85,8 @@ div#content > div.info {
 }
 
 /*
-** =links
-*/
+ * =links
+ */
 a { color: #1010C8; text-decoration: none; }
 a:hover {text-decoration: underline;}
 a:visited { color: #1010C8; }
@@ -95,8 +95,8 @@ a:hover.disabled {text-decoration: none;}
 a img, img.blank {border: 0; vertical-align: baseline; margin-left: 3px;}
 
 /*
-** =defaults
-*/
+ * =defaults
+ */
 .cursor {
   cursor: pointer;
 }
@@ -149,8 +149,8 @@ textarea.content {
 }
 
 /*
-** =messages
-*/
+ * =messages
+ */
 #messages {
   position: absolute;
   bottom: 0;
@@ -187,8 +187,8 @@ textarea.content {
 }
 
 /*
-** =login
-*/
+ * =login
+ */
 #forms {
   border: none;
   width: 20em;
@@ -241,8 +241,8 @@ textarea.content {
 }
 
 /*
-** =navigation
-*/
+ * =navigation
+ */
 .navigation {
   padding: 10px 10px 0 10px;
   border-bottom: 8px solid #d7e0f5;
@@ -314,8 +314,8 @@ ul.help li {
 }
 
 /*
-** =feedback
-*/
+ * =feedback
+ */
 .feedback {
 	position: relative;
   border: 1px solid #666;
@@ -350,8 +350,8 @@ ul.help li {
 }
 
 /*
-** =sidebar
-*/
+ * =sidebar
+ */
 #sidebar {
   float: left;
   width: 25%;
@@ -395,8 +395,8 @@ ul.help li {
 }
 
 /*
-** =section
-*/
+ * =section
+ */
 .section {
   margin-bottom: 0.75em;
 	background-color: #fdfdfd;
@@ -518,8 +518,8 @@ ul.help li {
 }
 
 /*
-** =filters
-*/
+ * =filters
+ */
 ul.filter_list {
   list-style: none;
   margin: 0;
@@ -708,8 +708,8 @@ ul.filter_list li .training .automatic strong {
 }
 
 /*
-** =folder
-*/
+ * =folder
+ */
 .folder.hover {
   background-color: #FFF094;
 }
@@ -796,8 +796,8 @@ ul.filter_list li .training .automatic strong {
 }
 
 /*
-** =classifier
-*/
+ * =classifier
+ */
 #footer .classification_controls {
   float: right;
   margin: 0 0 0 1em;
@@ -836,8 +836,8 @@ ul.filter_list li .training .automatic strong {
 }
 
 /*
-** =header
-*/
+ * =header
+ */
 #header_controls {
   margin: -8px 0 0 0;
   padding: 5px;
@@ -850,8 +850,8 @@ ul.filter_list li .training .automatic strong {
 }
 
 /*
-** =footer 
-*/
+ * =footer 
+ */
 #footer {
   height: 25px;
   padding: 0.5em 0.5em 0 0;
@@ -863,8 +863,8 @@ ul.filter_list li .training .automatic strong {
 }
 
 /*
-** =applesearch
-*/
+ * =applesearch
+ */
 .applesearch input {
   width: 100%;
 }
@@ -921,8 +921,8 @@ ul.filter_list li .training .automatic strong {
 }
 
 /*
-** =feeds
-*/
+ * =feeds
+ */
 a.bookmarklet {
   background-color:#EBEBEB;
   color:#565656;
@@ -955,8 +955,8 @@ a.bookmarklet:hover {
 }
 
 /*
-** =user
-*/
+ * =user
+ */
 .user {
 	position: relative;
   border: 1px solid #666;
@@ -1045,8 +1045,8 @@ a.bookmarklet:hover {
 }
 
 /*
-** =message
-*/
+ * =message
+ */
 .message .controls {
   clear: both;
   float: right;
@@ -1081,8 +1081,8 @@ a.bookmarklet:hover {
 }
 
 /*
-** =record
-*/
+ * =record
+ */
 .record {
 	position: relative;
   margin: 0 0 .5em 0;
@@ -1151,8 +1151,8 @@ a.bookmarklet:hover {
 }
 
 /*
-** =feed_item
-*/
+ * =feed_item
+ */
 .feed_item {
   font-family: Arial;
   margin: 0;
@@ -1325,8 +1325,8 @@ a.bookmarklet:hover {
 }
 
 /*
-** =tag_list
-*/
+ * =tag_list
+ */
 ul.tag_list {
   margin: 5px 0 5px 17px;
   padding: 0;
@@ -1567,8 +1567,8 @@ ul.tag_list li.selected .name {
 }
 
 /*
-** =feed
-*/
+ * =feed
+ */
 .feed.globally_excluded .summary {
 	border-color: #E7ACAD;
   background-color: #F6E0E0;
@@ -1603,8 +1603,8 @@ ul.tag_list li.selected .name {
 }
 
 /*
-** =tag
-*/
+ * =tag
+ */
 .tag .summary {
 	cursor: pointer;
 	background-image: url(../images/tag.png);
@@ -1672,7 +1672,6 @@ ul.tag_list li.selected .name {
 }
 
 .tag .summary .info .comments strong {
-/*	color: #52718B;*/
 	color: #105CB6;
 }
 
@@ -1877,8 +1876,8 @@ ul.tag_list li.selected .name {
 }
 
 /*
-** =invite
-*/
+ * =invite
+ */
 .invite {
 	position: relative;
   border: 1px solid #666;
@@ -1963,7 +1962,9 @@ ul.tag_list li.selected .name {
   padding: 0;
 }
 
-/* =messages */
+/* 
+ * =messages
+ */
 .message {
 	position: relative;
   border: 1px solid #666;
@@ -2008,14 +2009,13 @@ ul.tag_list li.selected .name {
 }
 
 /*
-** =auto_complete 
-*/
+ * =auto_complete 
+ */
 .auto_complete {
   background: #fff;
   z-index: 100;
   font-weight: normal;
   font-style: normal;
-/*  display: none;*/
 }
 
 .auto_complete ul {
