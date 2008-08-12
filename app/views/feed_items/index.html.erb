@@ -51,12 +51,15 @@
   <% end -%>
 <% end -%>
 
-<% content_for :footer do -%>
-	<span id="previous-next-buttons">
-		<%= image_submit_tag "previous.png", :onclick => "itemBrowser.openPreviousItem();" %>
-		<%= image_submit_tag "next.png", :onclick => "itemBrowser.openNextItem();" %>
-		<%= image_submit_tag "mark_read.png", :onclick => "itemBrowser.markAllItemsRead();" %>
-	</span>
+<% content_for :footer do -%>	
+  <div class="toolbar">
+    <div class="group">
+      <%= rounded_button_function _(:previous_item), "itemBrowser.openPreviousItem()", :icon => "previous" %>  
+      <%= rounded_button_function _(:next_item), "itemBrowser.openNextItem()", :icon => "next" %>
+    </div>
+  
+    <%= rounded_button_function _(:mark_all_read), "itemBrowser.markAllItemsRead()", :icon => "read" %>
+  </div>
 	
 	<%= render :partial => "classification_controls" %>
 <% end -%>

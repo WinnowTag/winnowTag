@@ -905,15 +905,6 @@ div.sorting_and_filtering_controls {
   padding: 0.5em 0.5em 0 0;
 }
 
-#footer #previous-next-buttons {
-  float: left;
-}
-
-#footer #previous-next-buttons input {
-  margin: 0;
-  height: 25px;
-}
-
 #footer #classification_section {
   float: right;
   margin-top: 0.4em;

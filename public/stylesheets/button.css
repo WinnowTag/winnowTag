@@ -61,6 +61,21 @@
   background-image: url(../images/unread.png);
 }
 
+.button .icon.read {
+  padding-left: 20px;
+  background-image: url(../images/read.png);
+}
+
+.button .icon.previous {
+  padding-left: 20px;
+  background-image: url(../images/bullet_arrow_up.png);
+}
+
+.button .icon.next {
+  padding-left: 20px;
+  background-image: url(../images/bullet_arrow_down.png);
+}
+
 .button.asc .icon {
   padding-left: 16px;  
   background-image: url(../images/bullet_arrow_up.png);  

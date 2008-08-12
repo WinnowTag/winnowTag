@@ -191,6 +191,9 @@ Localization.define do |l|
   # app/views/feed_items/index.html.erb
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
   l.store :selected_filters,                      "Selected Filters"
+  l.store :previous_item,                         "Previous Item"
+  l.store :next_item,                             "Next Item"
+  l.store :mark_all_read,                         "Mark All Read"    
   
   # app/views/feedbacks/_feedback.html.erb
   l.store :feedback_metadata,                     "%s on %s"
