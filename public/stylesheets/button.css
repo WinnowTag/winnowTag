@@ -1,5 +1,11 @@
-/* =button
+/* Copyright (c) 2008 The Kaphan Foundation
+ *
+ * Possession of a copy of this file grants no permission or license
+ * to use, modify, or create derivate works.
+ * Please visit http://www.peerworks.org/contact for further information.
  */
+
+/* =button */
 .button {
   outline: none;
   display: block;
@@ -37,7 +43,6 @@
   color: #333;
   background-image: url(../images/button_bg_active.png);
   background-position: left top;
-  
 }
 
 .button .icon {
@@ -132,8 +137,7 @@
   background-position: -3px center;
 }
 
-/* =toolbar
- */
+/* =toolbar */
 .toolbar.right {
   float: right;
 }
