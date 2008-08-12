@@ -23,7 +23,7 @@ describe FeedsHelper do
     
     it "contains a filler element when it does not have an alternate url" do
       @feed.stub!(:alternate)
-      feed_link(@feed).should !~ /#{Regexp.escape(content_tag('span', '', :class => 'blank_icon replace'))}/
+      feed_link(@feed).should !~ /#{Regexp.escape(content_tag('span', '', :class => 'blank'))}/
     end
     
     it "contains a link to filter by this feed" do

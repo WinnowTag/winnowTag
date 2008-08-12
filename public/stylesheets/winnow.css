@@ -957,6 +957,25 @@ a.bookmarklet:hover {
   text-decoration: none;
 }
 
+.feed .summary h4 .blank, .feed .summary h4 .home, .feed .summary h4 .feed {
+  float: left;
+  width: 16px;
+  height: 16px;
+  margin-right: 0.25em;
+  background-position: left center;
+  background-repeat: no-repeat;  
+  text-indent: -1000em;
+  overflow: hidden;
+}
+
+.feed .summary h4 .home {
+  background-image: url(../images/home.png);
+}
+
+.feed .summary h4 .feed {
+  background-image: url(../images/feed.png);  
+}
+
 /*
 ** =user
 */
@@ -1960,33 +1979,6 @@ ul.tag_list li.selected .name {
   float: left;
   margin: 0 0 0 1em;
   padding: 0;
-}
-
-/*
-** =icons
-*/
-.replace {
-  float: left;
-  display: block;
-  width: 16px;
-  height: 16px;
-  text-indent: 1000em;
-  overflow: hidden;
-  margin: 0 2px 0 2px;
-  background: url(../images/vertical_sprite.png) no-repeat;
-}
-
-.blank_icon {
-  background-position: 0 -720px;
-}
-
-.feed_icon {
-  background-position: 0 -608px;
-}
-
-.home_icon {
-  background-position: 0 -700px;
-  margin-right: 5px;
 }
 
 /* =messages */
