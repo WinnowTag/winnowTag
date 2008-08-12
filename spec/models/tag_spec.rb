@@ -647,11 +647,6 @@ describe Tag do
       assert_equal('tag1', tag.to_s)
     end
   
-    # it "tag_to_param_returns_name" do
-    #   tag = Tag(users(:quentin), 'tag1')
-    #   assert_equal('tag1', tag.to_param)
-    # end
-  
     it "sorting" do
       tag1 = Tag(users(:quentin), 'aaa')
       tag2 = Tag(users(:quentin), 'bbb')
