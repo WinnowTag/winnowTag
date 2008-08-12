@@ -158,11 +158,11 @@ Localization.define do |l|
   l.store :open_original_feed_item,               "Go to original item"
   
   # app/views/feed_items/_filter_controls.html.erb
-  l.store :show_label,                            "Show:"
+  l.store :show_label,                            "Show"
   l.store :show_all_label,                        "All"
   l.store :show_unread_label,                     "Unread"
   l.store :show_moderated_label,                  "Moderated"
-  l.store :sort_label,                            "Sort:"
+  l.store :sort_label,                            "Sort"
   l.store :sort_date_label,                       "Date"
   l.store :sort_strength_label,                   "Strength"
   l.store :sidebar_tags_header,                   "Tags"
@@ -190,6 +190,7 @@ Localization.define do |l|
 
   # app/views/feed_items/index.html.erb
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+  l.store :selected_filters,                      "Selected Filters"
   
   # app/views/feedbacks/_feedback.html.erb
   l.store :feedback_metadata,                     "%s on %s"

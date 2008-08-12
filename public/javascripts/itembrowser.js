@@ -374,6 +374,7 @@ var ItemBrowser = Class.create({
 		  if(order_control) {
 		    order_control.removeClassName("asc");
 		    order_control.removeClassName("desc");
+		    order_control.removeClassName("selected");
 		  }
 		});
 
@@ -381,11 +382,13 @@ var ItemBrowser = Class.create({
 		  var order_control = $("order_" + this.filters.order);
 		  if(order_control) {
 		    order_control.addClassName(this.filters.direction);
+		    order_control.addClassName("selected");
 		  }
 		} else if(this.defaultOrder()) {
 		  var order_control = $("order_" + this.defaultOrder());
 		  if(order_control) {
 		    order_control.addClassName(this.defaultDirection());
+		    order_control.addClassName("selected");
 		  }
 		}
   },

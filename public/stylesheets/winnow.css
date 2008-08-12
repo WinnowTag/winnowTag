@@ -853,7 +853,6 @@ ul.filter_list li .training .automatic strong {
 
 #header_controls .control_bar {
   float: right;
-  width: 60em;
 }
 
 #header_controls ul.control_bar li .add {
@@ -2046,20 +2045,6 @@ ul.tag_list li.selected .name {
 .pencil_icon {
   background: url(../images/pencil.png) 0 center no-repeat  !important;
   background-position: 0 0;
-}
-
-.asc { 
-  background-image: url(../images/bullet_arrow_up.png);
-  background-repeat: no-repeat;
-  background-position: top right;
-  padding: 0 1.5em 0 0;
-}
-
-.desc {
-  background-image: url(../images/bullet_arrow_down.png);
-  background-repeat: no-repeat;
-  background-position: top right;
-  padding: 0 1.5em 0 0;  
 }
 
 /* =messages */

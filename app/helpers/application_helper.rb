@@ -266,7 +266,7 @@ module ApplicationHelper
     if icon = html_options.delete(:icon)
       link_to_function(content_tag(:span, name, :class => "icon #{icon}"), function, html_options, &block)
     else
-      link_to_function(name, function, html_options.merge(:class => "button"), &block)
+      link_to_function(name, function, html_options, &block)
     end
   end
 
@@ -275,7 +275,7 @@ module ApplicationHelper
     if icon = html_options.delete(:icon)
       link_to(content_tag(:span, name, :class => "icon #{icon}"), options, html_options)
     else
-      link_to(name, options, html_options.merge(:class => "button"))
+      link_to(name, options, html_options)
     end
   end
 end
