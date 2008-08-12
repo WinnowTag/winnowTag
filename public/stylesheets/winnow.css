@@ -92,7 +92,7 @@ a:hover {text-decoration: underline;}
 a:visited { color: #1010C8; }
 a.disabled {color: #888; cursor: default;}
 a:hover.disabled {text-decoration: none;}
-a img, img.blank {border: 0; vertical-align: baseline; margin-left: 3px;}
+a img {border: 0; vertical-align: baseline; margin-left: 3px;}
 
 /*
  * =defaults
@@ -111,13 +111,6 @@ input.example {
 
 form {
   margin: 0px;
-}
-
-input.readonly {
-  border-top:  1px solid #000;
-  border-left:  1px;
-  border-right:  0px;
-  border-bottom:  0px;
 }
 
 fieldset {
