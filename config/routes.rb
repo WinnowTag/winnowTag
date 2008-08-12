@@ -86,11 +86,7 @@ ActionController::Routing::Routes.draw do |map|
                }
               
   map.resources :collection_job_results, :path_prefix => '/users/:user_id'
-  map.resource :item_protection, :controller => "item_protection",
-                :member => {
-                  :rebuild => :post
-                }
-
+  
   map.resources :folders, 
                 :member => {
                   :add_item => :put,

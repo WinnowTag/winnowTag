@@ -115,11 +115,6 @@
   background-image: url(../images/import.png);
 }
 
-.button .icon.rebuild {
-  padding-left: 20px;
-  background-image: url(../images/rebuild.png);
-}
-
 .button .icon.export {
   padding-left: 20px;
   background-image: url(../images/export.png);
