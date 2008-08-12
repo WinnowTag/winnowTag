@@ -1984,62 +1984,9 @@ ul.tag_list li.selected .name {
   background-position: 0 -608px;
 }
 
-.new_icon {
-  background-position: 0 -128px;
-}
-
-.save_icon {
-  background-position: 0 -160px;
-}
-
-.save_disabled_icon {
-  background-position: 0 -192px;
-}
-
-.duplicate_icon {
-  background-position: 0 -224px;
-}
-
-.duplicate_disabled_icon {
-  background-position: 0 -256px;
-}
-
-.edit_icon {
-  background-position: 0 -288px;
-}
-
-.edit_disabled_icon {
-  background-position: 0 -320px;
-}
-
-.destroy_icon {
-  background-position: 0 -352px;
-}
-
-.destroy_disabled_icon {
-  background-position: 0 -384px;
-}
-
-.activate_icon {
-  background-position: 0 -416px;
-}
-
-.comment_icon {
-  background-position: 0 -576px;
-}
-
 .home_icon {
   background-position: 0 -700px;
   margin-right: 5px;
-}
-
-.cross_icon {
-  background: url(../images/cross.png) 0 center no-repeat  !important;
-}
-
-.pencil_icon {
-  background: url(../images/pencil.png) 0 center no-repeat  !important;
-  background-position: 0 0;
 }
 
 /* =messages */

@@ -30,11 +30,11 @@ describe "/messages/_message.html.erb" do
   
   it "displays the edit link" do
     render_it
-    response.should have_tag(".controls a[class=edit_icon][href=?]", edit_message_path(@message))
+    response.should have_tag(".controls a[class=edit][href=?]", edit_message_path(@message))
   end
   
   it "displays the destroy link" do
     render_it
-    response.should have_tag(".controls a[class=destroy_icon][href=?]", message_path(@message))
+    response.should have_tag(".controls a[class=destroy][href=?]", message_path(@message))
   end
 end
