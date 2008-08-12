@@ -1202,13 +1202,14 @@ a.bookmarklet:hover {
   float: left;
   height: 16px;
   width: 16px;
-  margin: 1px 5px 0 0;
-  background: url(../images/vertical_sprite.png) no-repeat;
-  background-position: 0 -640px;
+  margin-right: 0.25em;
+  background-image: url(../images/unread.png);
+  background-position: left center;
+  background-repeat: no-repeat;
 }
 
 .feed_item.read .closed > .status {
-  background-position: 0 -672px;
+  background-image: url(../images/read.png);  
 }
 
 .feed_item .closed .link img {
