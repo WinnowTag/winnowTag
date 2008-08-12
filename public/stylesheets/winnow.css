@@ -850,28 +850,6 @@ ul.filter_list li .training .automatic strong {
 }
 
 /*
-** =item_protection
-*/
-.explanation {
-  float: right;
-  width: 300px;
-  margin-right: 50px;
-  padding: 20px;
-  border: 2px solid #9aafe5;
-}
-
-p.tag_publications_heading {
-  text-decoration: underline;
-}
-
-div.sorting_and_filtering_controls {
-  margin:  10px 0px 10px 0px;
-  padding:  5px;
-  text-align: right;
-  background-color: #E5E5E5;
-}
-
-/*
 ** =footer 
 */
 #footer {
