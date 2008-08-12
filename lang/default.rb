@@ -330,7 +330,7 @@ Localization.define do |l|
   %s|
   
   # app/views/taggings/destroy.js.rjs
-  l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s, would you like to completely delete it?|
+  l.store :taggings_destroy_message,                %|You have removed the last example of tag %s, do you want to remove it from your tags page?|
   
   # app/views/tags/_header_controls.html.erb
   l.store :tags_header_name,                        "Name"
@@ -371,7 +371,7 @@ Localization.define do |l|
   l.store :tags_destroy_confirm_text,               "Do you really want to delete %s?\n\nThis can't be undone."
   l.store :tags_editing_tag_name,                   "Editing %s"
   l.store :tags_merge_confirm_text,                 "This will merge %s with %s. Are you sure you want to do this?"
-  l.store :tags_sidebar_confirm_message,            %|You have just removed the tag %s from your sidebar, would you like to completely delete it?|
+  l.store :tags_sidebar_confirm_message,            %|You have removed the tag %s from your sidebar, do you want to remove it from your tags page?|
   l.store :tags_unsubscribe_text,                   "You have been unsubscribed from the public %s. You can subscribe on the Public Tags page."
   
   # app/views/user_notifier
