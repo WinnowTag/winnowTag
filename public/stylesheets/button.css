@@ -48,7 +48,11 @@
 
 .button .icon.clear {
   padding-left: 20px;
-  background-image: url(../images/close.png);
+  background-image: url(../images/clear.png);
+}
+
+.button.disabled .icon.clear {
+  background-image: url(../images/clear_disabled.png);
 }
 
 .button .icon.feed {
@@ -81,6 +85,31 @@
   background-image: url(../images/add.png);
 }
 
+.button .icon.add_user {
+  padding-left: 20px;
+  background-image: url(../images/add_user.png);
+}
+
+.button .icon.add_invite {
+  padding-left: 20px;
+  background-image: url(../images/add_invite.png);
+}
+
+.button .icon.add_message {
+  padding-left: 20px;
+  background-image: url(../images/add_message.png);
+}
+
+.button .icon.all {
+  padding-left: 20px;
+  background-image: url(../images/all.png);
+}
+
+.button .icon.moderated {
+  padding-left: 20px;
+  background-image: url(../images/moderated.png);
+}
+
 .button .icon.import {
   padding-left: 20px;
   background-image: url(../images/import.png);
@@ -93,7 +122,7 @@
 
 .button .icon.export {
   padding-left: 20px;
-  background-image: url(../images/disk.png);
+  background-image: url(../images/export.png);
 }
 
 .button.asc .icon {

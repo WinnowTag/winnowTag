@@ -1,8 +1,8 @@
 <div id="user_<%= user.id %>" class="user clearfix">
   <% unless user == current_user -%>
   <ul class="controls">
-    <li><%= link_to _(:login_label), login_as_user_url(user), :class => :home_icon, :method => :post, :confirm => _(:users_login_confirm, user.display_name) %></li>
-    <li><%= link_to _(:destroy), user_url(user), :class => :destroy_icon, :method => :delete, :confirm => _(:users_destroy_confirm, user.display_name) %></li>
+    <li><%= link_to _(:login_label), login_as_user_url(user), :class => :login, :method => :post, :confirm => _(:users_login_confirm, user.display_name) %></li>
+    <li><%= link_to _(:destroy), user_url(user), :class => :destroy, :method => :delete, :confirm => _(:users_destroy_confirm, user.display_name) %></li>
   </ul>
   <% end -%>
 

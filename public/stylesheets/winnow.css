@@ -279,12 +279,13 @@ textarea.content {
 }
 
 .navigation .main li a.help {
+  margin-left: .25em;
+  padding-left: 20px;  
   border: none;
   background-color: #fff;
   background-image: url(../images/help.png);
   background-repeat: no-repeat;
-  background-position: 5px 5px;
-  padding-left: 23px;
+  background-position: center left;  
 }
 
 .navigation .extra {
@@ -616,33 +617,27 @@ ul.filter_list li.edit .actions {
   display: none;
 }
 
-ul.filter_list li .actions .edit {
+ul.filter_list li .actions a {
   float: left;
   width: 16px;
-  height: 14px;
+  height: 16px;
   margin-right: 2px;
-  background: url(../images/pencil.png) left center no-repeat;
+  background-position: left center;
+  background-repeat: no-repeat;
   text-indent: -9000px;
-  overflow: hidden;
+  overflow: hidden;  
+}
+
+ul.filter_list li .actions .edit {
+  background-image: url(../images/edit.png);
 }
 
 ul.filter_list li .actions .remove {
-  float: left;
-  width: 14px;
-  height: 14px;
-  margin-right: 1px;
-  background: url(../images/close.png) left center no-repeat;
-  text-indent: -9000px;
-  overflow: hidden;
+  background-image: url(../images/destroy.png);
 }
 
 ul.filter_list li .actions .info {
-  float: left;
-  width: 16px;
-  height: 14px;
-  background: url(../images/information.png) left center no-repeat;
-  text-indent: -9000px;
-  overflow: hidden;
+  background-image: url(../images/info.png);
 }
 
 ul.filter_list li .training {
@@ -729,19 +724,17 @@ ul.filter_list li .training .automatic strong {
   float: left;
   width: 16px;
   height: 16px;  
-  background: transparent url(../images/plus.gif) left center no-repeat;
+  background: transparent url(../images/folder.png) left center no-repeat;
   cursor: pointer;
 }
 
 .folder.open .header .toggle_button {
-  background: transparent url(../images/minus.gif) left center no-repeat;
+  margin-left: 1px;
+  background: transparent url(../images/folder_open.png) left center no-repeat;
 }
 
 .folder .header .name {
-  height: 1.5em;
-  margin-left: 16px;
-  padding-left: 20px;
-  background: transparent url(../images/folder.png) left center no-repeat;
+  margin-left: 20px;
 }
 
 .folder.selected .header .name {
@@ -774,23 +767,28 @@ ul.filter_list li .training .automatic strong {
   display: none;
 }
 
-.folder .header .actions .edit {
+.folder .header .actions a {
   float: left;
-  padding: 0 0 0 18px;
-  background: url(../images/pencil.png) left center no-repeat;
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  background-position: left center;
+  background-repeat: no-repeat;
   text-indent: -9000px;
+  overflow: hidden;
 }
 
-.folder .header .actions .remove {
-  float: left;
-  padding: 0 0 0 18px;
-  background: url(../images/close.png) left center no-repeat;
-  text-indent: -9000px;
+.folder .header .actions .edit {
+  background-image: url(../images/edit.png);
+}                                    
+                                     
+.folder .header .actions .remove {   
+  background-image: url(../images/destroy.png);
 }
 
 .folder .content {
   display: none;
-  padding: 0 0 0 3em;
+  padding: 0 0 0 20px;
 }
 
 .folder.open .content {
@@ -989,9 +987,17 @@ a.bookmarklet:hover {
 }
 
 .user .controls li a {
-  padding: 0 0 0 20px;
-  background-image: url(../images/vertical_sprite.png);
+  padding-left: 20px;
   background-repeat: no-repeat;
+  background-position: left center;
+}
+
+.user .controls li a.login {
+  background-image: url(../images/login.png);
+}
+
+.user .controls li a.destroy {
+  background-image: url(../images/destroy.png);
 }
 
 .user .controls li input {
@@ -1059,9 +1065,17 @@ a.bookmarklet:hover {
 }
 
 .message .controls li a {
-  padding: 0 0 0 20px;
-  background-image: url(../images/vertical_sprite.png);
+  padding-left: 20px;
   background-repeat: no-repeat;
+  background-position: left center;
+}
+
+.message .controls li a.edit {
+  background-image: url(../images/edit.png);
+}
+
+.message .controls li a.destroy {
+  background-image: url(../images/destroy.png);
 }
 
 .message .date {
@@ -1811,24 +1825,26 @@ ul.tag_list li.selected .name {
 	margin: 0.3em 0;
 }
 
-.tag ul.controls .view_icon {
-	padding: 1px 0 1px 20px;
-  background: url(../images/show.png) left center no-repeat;
+.tag ul.controls a {
+	padding-left: 20px;	  
+	background-position: left center;
+	background-repeat: no-repeat;
 }
 
-.tag ul.controls .duplicate_icon {
-	padding: 1px 0 1px 20px;
-  background: url(../images/copy.png) left center no-repeat;
-}
+.tag ul.controls .show {
+  background-image: url(../images/show.png);
+}                                    
+                                     
+.tag ul.controls .copy {             
+  background-image: url(../images/copy.png);
+}                                    
+                                     
+.tag ul.controls .feed {        
+	background-image: url(../images/feed.png);
+}                                    
 
-.tag ul.controls .feed_icon {
-	padding: 1px 0 1px 20px;	
-	background: url(../images/feed.png) left center no-repeat;
-}
-
-.tag ul.controls .destroy_icon {
-	padding: 1px 0 1px 20px;	
-	background: url(../images/destroy.png) left center no-repeat;
+.tag ul.controls .destroy {
+	background-image: url(../images/destroy.png);
 }
 
 .tag .extended .comment_form {
@@ -1886,9 +1902,21 @@ ul.tag_list li.selected .name {
 }
 
 .invite .controls li a {
-  padding: 0 0 0 20px;
-  background-image: url(../images/vertical_sprite.png);
-  background-repeat: no-repeat;
+  padding-left: 20px;
+  background-position: left center;
+  background-repeat: no-repeat;  
+}
+
+.invite .controls li a.activate {
+  background-image: url(../images/activate.png);
+}
+
+.invite .controls li a.edit {
+  background-image: url(../images/edit.png);  
+}
+
+.invite .controls li a.destroy {
+  background-image: url(../images/destroy.png);  
 }
 
 .invite .controls li input {

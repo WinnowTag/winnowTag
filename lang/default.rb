@@ -138,8 +138,6 @@ Localization.define do |l|
   l.store :manage_users_description,              "View and manage users of winnow."
   l.store :manage_invites_link,                   "Invites"
   l.store :manage_invites_description,            "View and manage invites."
-  l.store :manage_item_protection_link,           "Item Protection Management"
-  l.store :manage_item_protection_description,    "View and manage the Item Protection."
   l.store :manage_messages_link,                  "Messages"
   l.store :manage_messages_description,           "View and manage messages."
   l.store :manage_info_link,                      "Winnow Info"
@@ -278,17 +276,6 @@ Localization.define do |l|
   
   # app/views/invites/new.html.erb
   l.store :invites_create_invite,                   "Create Invite"
-    
-  # app/views/item_protection/show.html.erb
-  l.store :item_protection_explanation,             %|Item Protection involves Winnow marking a feed item as protected from the archival process. This happens when a user tags an item so that manually tagged items are never archived.
-	
-	Here you can view status of item protection and rebuild the list of protected items.  Protector name is the name by which Winnow identifies itself to the collector, typically the instance URL.
-	
-	All item protection information is stored in the collector application.|
-	l.store :item_protection_rebuild,                 "Rebuild"
-	l.store :item_protection_protector_name,          "Protector Name"
-	l.store :item_protection_number_of_items,         "Number of Items"
-	l.store :item_protection_created_on,              "Created On"
 	
   # app/views/layouts/_navbar.html.erb
   l.store :about,                                   "About"
@@ -304,7 +291,7 @@ Localization.define do |l|
   l.store :leave_feedback,                          "Leave Feedback"
 
   # app/views/messages/_header_controls.html.erb  
-  l.store :messages_create_message,                 "Create message"
+  l.store :messages_create_message,                 "Create Message"
 
   # app/views/messages/_sidebar.html.erb
   l.store :messages_messages,                       "Messages"

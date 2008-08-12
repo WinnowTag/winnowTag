@@ -24,9 +24,9 @@
     
     <div class="group">
       <label><%= _(:show_label) %></label>        
-      <%= rounded_button_function _(:show_all_label), "itemBrowser.addFilters({mode: 'all'})", :id => "mode_all", :class => "first" %>
+      <%= rounded_button_function _(:show_all_label), "itemBrowser.addFilters({mode: 'all'})", :icon => "all", :id => "mode_all", :class => "first" %>
       <%= rounded_button_function _(:show_unread_label), "itemBrowser.addFilters({mode: 'unread'})", :icon => "unread", :id => "mode_unread" %>
-      <%= rounded_button_function _(:show_moderated_label), "itemBrowser.addFilters({mode: 'moderated'})", :id => "mode_moderated" %>
+      <%= rounded_button_function _(:show_moderated_label), "itemBrowser.addFilters({mode: 'moderated'})", :icon => "moderated", :id => "mode_moderated" %>
     </div>
 
 

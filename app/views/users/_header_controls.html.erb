@@ -4,7 +4,7 @@
 
 <div class="toolbar right">
   
-  <%= rounded_button_link _(:users_create_user), new_user_url, :icon => "add" %>
+  <%= rounded_button_link _(:users_create_user), new_user_url, :icon => "add_user" %>
   <%= rounded_button_link _(:users_export), formatted_users_path(:csv, params.except(:controller, :action)), :icon => "export" %>
   
   <div class="group">

@@ -11,10 +11,10 @@
           <li class="state">
             <%= render :partial => "state.html.erb", :locals => { :tag => subscribed_tag } %>
           </li>
-          <li><%= link_to_remote _(:copy), :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, subscribed_tag.name), :class => "duplicate_icon" } %></li>
-          <li><%= link_to _(:view_all_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'view_icon' %></li>
-          <li><%= link_to _(:view_tagged_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :class => "view_icon" %></li>
-          <li><%= link_to _(:tags_feed_link), url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed_icon" %></li>
+          <li><%= link_to_remote _(:copy), :url => tags_path(:copy => subscribed_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{subscribed_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, subscribed_tag.name), :class => "copy" } %></li>
+          <li><%= link_to _(:view_all_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}"), :class => 'show' %></li>
+          <li><%= link_to _(:view_tagged_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=moderated"), :class => "show" %></li>
+          <li><%= link_to _(:tags_feed_link), url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed" %></li>
         </ul>
       </div> <!-- /.actions -->
     </div>
