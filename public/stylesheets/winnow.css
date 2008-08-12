@@ -1291,20 +1291,19 @@ a.bookmarklet:hover {
 }
 
 .feed_item .description a.selected {
-  padding: 0.15em 0.5em;
+  padding: 2px 5px;
   font-weight: bold;
-  text-spacing: -1px;
   color: #333;
-  border: 1px solid #FF8400;
-  background-color: #FFF1E4;
-  -moz-border-radius: 0.75em;
-  -webkit-border-radius: 0.75em;
+  border: 1px solid #ffdb00;
+  background-color: #ffff89;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;  
 }
 
 .feed_item .feed_information .summary {
-  border: 2px solid #FFA14F;    
+  border: 2px solid #ffdb00;    
   border-width: 2px 0 0 0;
-  background-color: #FFF1E4;  
+  background-color: #ffff89;  
 }
 
 .feed_item.open .feed_information .summary{
