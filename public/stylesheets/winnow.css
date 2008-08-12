@@ -360,6 +360,16 @@ ul.help li {
   -webkit-border-bottom-right-radius: 0.5em;
 }
 
+#sidebar h4 {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: .8em;
+  color: #999;
+}
+
 #sidebar_control {
   float: left;
   cursor: pointer;
@@ -375,16 +385,6 @@ ul.help li {
 
 #sidebar_control.open {
   background-image: url(../images/left_aarow.png);
-}
-
-#sidebar h4 {
-  padding: 0;
-  margin: 0;
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: .8em;
-  color: #999;
 }
 
 /*
