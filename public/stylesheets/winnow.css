@@ -1246,7 +1246,7 @@ a.bookmarklet:hover {
 }
 
 .feed_item .closed .link img {
-  vertical-align: bottom;
+  margin-top: 7px;
 }
 
 .feed_item .closed .description a {
