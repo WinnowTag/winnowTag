@@ -156,11 +156,11 @@ textarea.content {
   bottom: 0;
   right: 0;
   left: 0;
-  padding: 1em 1em 1em 3em;
+  padding: 1.5em 1em 1.5em 4.5em;
   opacity: 0.85;
   filter: alpha(opacity=85);
   background-color: #000;
-  background-position: 1em center;
+  background-position: 0.5em center;
   background-repeat: no-repeat;
   font-size: 1.25em;
   color: #fff;
@@ -168,17 +168,17 @@ textarea.content {
 
 #messages.notice {
   background-image: url(../images/notice.png);
-  color: #A0DC11;
+  color: #537713;
 }
 
 #messages.warning {
   background-image: url(../images/warning.png);
-  color: #D28D37;
+  color: #FF941A;  
 }
 
 #messages.error {
   background-image: url(../images/error.png);
-  color: #FF260B;
+  color: #C43212;  
 }
 
 #messages .close {
@@ -1792,7 +1792,7 @@ ul.tag_list li.selected .name {
   display: inline;
   padding-right: 0.5em;
   font-weight: bold;
-  color: #FF260B;
+  color: #C43212;
 }
 
 .tag .extended h5 {
@@ -1895,7 +1895,7 @@ ul.tag_list li.selected .name {
   display: inline;
   padding-right: 0.5em;
   font-weight: bold;
-  color: #FF260B;
+  color: #C43212;
 }
 
 /*
