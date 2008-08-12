@@ -64,14 +64,16 @@ describe "moderation panel" do
     get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
   end
 
-  it "selects the first choice in the auto complete list" do
+  # TODO 686 - auto complete does not recognize typing
+  xit "selects the first choice in the auto complete list" do
     click "css=#feed_item_4 .add_tag" 
     wait_for_ajax 
   
     see_element "#feed_item_4 .moderation_panel .auto_complete li:first-child.selected"
   end
   
-  it "uses the selected entry when clicking 'Add Tag'" do
+  # TODO 686 - auto complete does not recognize typing
+  xit "uses the selected entry when clicking 'Add Tag'" do
     click "css=#feed_item_4 .add_tag"
     wait_for_ajax 
          
@@ -213,7 +215,7 @@ describe "moderation panel" do
     click "css=#feed_item_4 .information .remove"
     wait_for_ajax
     wait_for_effects
-    get_confirmation.should == "You have just removed the last example of tag #{@existing_tag.name}, would you like to completely delete it?"
+    get_confirmation.should include(@existing_tag.name)
     
     dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
   end
@@ -232,7 +234,7 @@ describe "moderation panel" do
     click "css=#feed_item_4 .information .remove"
     wait_for_ajax
     wait_for_effects
-    get_confirmation.should == "You have just removed the last example of tag #{@existing_tag.name}, would you like to completely delete it?"
+    get_confirmation.should include(@existing_tag.name)
     
     dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
   end

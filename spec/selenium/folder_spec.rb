@@ -95,7 +95,7 @@ describe "folders" do
     click "css=#tag_#{@private_tag.id} .filter .remove"
     dont_see_element "#tag_#{@private_tag.id}"
     wait_for_ajax
-    get_confirmation.should == "You have just removed the tag #{@private_tag.name} from your sidebar, would you like to completely delete it?"
+    get_confirmation.should include(@private_tag.name)
   end
 
   # TODO 686 - auto complete is not triggered
