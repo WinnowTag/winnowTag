@@ -76,6 +76,26 @@
   background-image: url(../images/bullet_arrow_down.png);
 }
 
+.button .icon.add {
+  padding-left: 20px;
+  background-image: url(../images/add.png);
+}
+
+.button .icon.import {
+  padding-left: 20px;
+  background-image: url(../images/import.png);
+}
+
+.button .icon.rebuild {
+  padding-left: 20px;
+  background-image: url(../images/rebuild.png);
+}
+
+.button .icon.export {
+  padding-left: 20px;
+  background-image: url(../images/disk.png);
+}
+
 .button.asc .icon {
   padding-left: 16px;  
   background-image: url(../images/bullet_arrow_up.png);  

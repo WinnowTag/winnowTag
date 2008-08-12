@@ -1,6 +1,8 @@
 <% content_for :header_controls do -%>
-  <ul class="control_bar">
-    <li><%= link_to _(:feeds_header_add), new_feed_path, :class => "add" %></li>
-    <li><%= link_to _(:feeds_header_import), import_feeds_path, :class => "import" %></li>
-  </ul>
+<div class="toolbar right">
+  <div class="group">
+    <%= rounded_button_link _(:feeds_header_add), new_feed_path, :icon => "add" %>
+    <%= rounded_button_link _(:feeds_header_import), import_feeds_path, :icon => "import" %>
+  </div>
+</div>
 <% end -%>

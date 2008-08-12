@@ -2,15 +2,16 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:tags_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>
 
-<ul class="control_bar">
-  <li class="order">
-    <%= _(:tags_header_sort_label) %>
-    <%= link_to_function _(:tags_header_name), "itemBrowser.setOrder('name')", :id => "order_name" %>,
-    <%= link_to_function _(:tags_header_state), "itemBrowser.setOrder('state')", :id => "order_state" %>,
-    <%= link_to_function _(:tags_header_comments), "itemBrowser.setOrder('comments_number')", :id => "order_comments_number" %>,
-    <%= link_to_function _(:tags_header_positive), "itemBrowser.setOrder('positive_count')", :id => "order_positive_count" %>,
-    <%= link_to_function _(:tags_header_negative), "itemBrowser.setOrder('negative_count')", :id => "order_negative_count" %>,  
-    <%= link_to_function _(:tags_header_automatic), "itemBrowser.setOrder('classifier_count')", :id => "order_classifier_count" %>,
-    <%= link_to_function _(:tags_header_last_trained), "itemBrowser.setOrder('last_trained')", :id => "order_last_trained" %>
-  </li>
-</ul>
+<div class="toolbar right">
+  <div class="group">
+    <label><%= _(:sort_label) %></label>
+
+    <%= rounded_button_function _(:tags_header_name), "itemBrowser.setOrder('name')", :icon => "", :id => "order_name", :class => "first" %>
+    <%= rounded_button_function _(:tags_header_state), "itemBrowser.setOrder('state')", :icon => "", :id => "order_state" %>
+    <%= rounded_button_function _(:tags_header_comments), "itemBrowser.setOrder('comments_number')", :icon => "", :id => "order_comments_number" %>
+    <%= rounded_button_function _(:tags_header_positive), "itemBrowser.setOrder('positive_count')", :icon => "", :id => "order_positive_count" %>
+    <%= rounded_button_function _(:tags_header_negative), "itemBrowser.setOrder('negative_count')", :icon => "", :id => "order_negative_count" %>  
+    <%= rounded_button_function _(:tags_header_automatic), "itemBrowser.setOrder('classifier_count')", :icon => "", :id => "order_classifier_count" %>
+    <%= rounded_button_function _(:tags_header_last_trained), "itemBrowser.setOrder('last_trained')", :icon => "", :id => "order_last_trained" %>  
+  </div>
+</div>

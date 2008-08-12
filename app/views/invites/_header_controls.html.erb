@@ -2,12 +2,14 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Invites...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>
 
-<ul class="control_bar">
-  <li><%= link_to 'Create Invite', new_invite_path, :class => "add" %></li>
-  <li class="order">
-    <%= _(:sort_label) %>
-    <%= link_to_function _(:created), "itemBrowser.setOrder('created')", :id => "order_created" %>, 
-    <%= link_to_function _(:email),   "itemBrowser.setOrder('email')",   :id => "order_email" %>, 
-    <%= link_to_function _(:status),  "itemBrowser.setOrder('status')",  :id => "order_status" %>
-  </li>
-</ul>
+<div class="toolbar right">
+  <%= rounded_button_link 'Create Invite', new_invite_path, :icon => "add" %>
+  
+  <div class="group">
+    <label><%= _(:sort_label) %></label>
+    <%= rounded_button_function _(:created), "itemBrowser.setOrder('created')", :icon => "", :id => "order_created", :class => "first" %>
+    <%= rounded_button_function _(:email),   "itemBrowser.setOrder('email')",   :icon => "", :id => "order_email" %> 
+    <%= rounded_button_function _(:status),  "itemBrowser.setOrder('status')",  :icon => "", :id => "order_status" %>
+  </div>
+</div>
+  

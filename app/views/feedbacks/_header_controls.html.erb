@@ -2,10 +2,11 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feedback_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>
 
-<ul class="control_bar">
-  <li class="order">
-    <%= _(:feedback_sort_label) %>
-    <%= link_to_function _(:feedback_sort_user_label), "itemBrowser.setOrder('user')", :id => "order_user" %>, 
-    <%= link_to_function _(:feedback_sort_date_label), "itemBrowser.setOrder('created_at')", :id => "order_created_at" %>
-  </li>    
-</ul>
+<div class="toolbar right">
+  <div class="group">
+    <label><%= _(:sort_label) %></label>
+    <%= rounded_button_function _(:feedback_sort_user_label), "itemBrowser.setOrder('user')", :icon => "", :id => "order_user", :class => "first" %>
+    <%= rounded_button_function _(:feedback_sort_date_label), "itemBrowser.setOrder('created_at')", :icon => "", :id => "order_created_at" %>
+  </div>
+</div>
+  

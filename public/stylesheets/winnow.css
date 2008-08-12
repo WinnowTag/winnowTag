@@ -851,30 +851,6 @@ ul.filter_list li .training .automatic strong {
   width: 25%;
 }
 
-#header_controls .control_bar {
-  float: right;
-}
-
-#header_controls ul.control_bar li .add {
-  background: url(../images/add.png) left center no-repeat;
-  padding: 1px 0 1px 20px;
-}
-
-#header_controls ul.control_bar li .import {
-  background: url(../images/import.png) left center no-repeat;
-  padding: 1px 0 1px 20px;
-}
-
-#header_controls ul.control_bar li .export {
-  background: url(../images/disk.png) left center no-repeat;
-  padding: 1px 0 1px 20px;
-}
-
-#header_controls ul.control_bar li .rebuild {
-  background: url(../images/rebuild.png) left center no-repeat;
-  padding: 1px 0 1px 20px;
-}
-
 /*
 ** =item_protection
 */

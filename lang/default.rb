@@ -203,7 +203,6 @@ Localization.define do |l|
   l.store :feedback_cancel_link,                    "cancel"
   
   # app/views/feedbacks/_header_controls.html.erb
-  l.store :feedback_sort_label,                     "Sort:"
   l.store :feedback_sort_user_label,                "User"
   l.store :feedback_sort_date_label,                "Date"
   l.store :feedback_search_placeholder,             "Search Feedback..."
@@ -347,7 +346,6 @@ Localization.define do |l|
   l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s, would you like to completely delete it?|
   
   # app/views/tags/_header_controls.html.erb
-  l.store :tags_header_sort_label,                  "Sort:"
   l.store :tags_header_name,                        "Name"
   l.store :tags_header_last_trained,                "Last Trained"
   l.store :tags_header_comments,                    "Comments"

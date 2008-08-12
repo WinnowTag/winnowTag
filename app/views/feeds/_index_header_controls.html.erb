@@ -2,15 +2,19 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feeds_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
 <% end -%>
 
-<ul class="control_bar">
-  <li><%= link_to _(:feeds_header_add), new_feed_path, :class => "add" %></li>
-  <li><%= link_to _(:feeds_header_import), import_feeds_path, :class => "import" %></li>
-  <li class="order">
-    <%= _(:sort_label) %>                                                                                                              
-    <%= link_to_function _(:feeds_header_title),            "itemBrowser.setOrder('title')",            :id => "order_title" %>, 
-    <%= link_to_function _(:feeds_header_globally_exclude), "itemBrowser.setOrder('globally_exclude')", :id => "order_globally_exclude" %>, 
-    <%= link_to_function _(:feeds_header_items),            "itemBrowser.setOrder('feed_items_count')", :id => "order_feed_items_count" %>, 
-    <%= link_to_function _(:feeds_header_created),          "itemBrowser.setOrder('created_on')",       :id => "order_created_on" %>,
-    <%= link_to_function _(:feeds_header_last_updated),     "itemBrowser.setOrder('updated_on')",       :id => "order_updated_on" %>
-  </li>                                                                                                                 
-</ul>
+<div class="toolbar right">
+  <div class="group">
+    <%= rounded_button_link _(:feeds_header_add), new_feed_path, :icon => "add" %>
+    <%= rounded_button_link _(:feeds_header_import), import_feeds_path, :icon => "import" %>
+  </div>
+  
+  <div class="group">
+    <label><%= _(:sort_label) %></label>
+
+    <%= rounded_button_function _(:feeds_header_title),            "itemBrowser.setOrder('title')",            :icon => "", :id => "order_title",             :class => "first" %>
+    <%= rounded_button_function _(:feeds_header_globally_exclude), "itemBrowser.setOrder('globally_exclude')", :icon => "", :id => "order_globally_exclude" %>
+    <%= rounded_button_function _(:feeds_header_items),            "itemBrowser.setOrder('feed_items_count')", :icon => "", :id => "order_feed_items_count" %>
+    <%= rounded_button_function _(:feeds_header_created),          "itemBrowser.setOrder('created_on')",       :icon => "", :id => "order_created_on" %>
+    <%= rounded_button_function _(:feeds_header_last_updated),     "itemBrowser.setOrder('updated_on')",       :icon => "", :id => "order_updated_on" %>
+  </div>
+</div>
