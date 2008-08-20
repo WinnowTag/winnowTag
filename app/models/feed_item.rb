@@ -184,20 +184,27 @@ class FeedItem < ActiveRecord::Base
     base_uri = filters.delete(:base_uri)
     self_link = filters.delete(:self_link)
     alt_link = filters.delete(:alt_link)
-    tags = filters[:tag_ids].to_s.split(",").map {|t| Tag.find(t) }
     items = self.find_with_filters(filters)
+
+    tags = filters[:tag_ids].to_s.split(",").map {|id| Tag.find(id) }.map { |t| "'#{t.name}'" }
+    feeds = filters[:feed_ids].to_s.split(",").map {|id| Feed.find(id) }.map { |f| "'#{f.title}'" }
+    text_filter = filters[:text_filter]
+    mode = filters[:mode]
+
+    # TODO: localization
+    title = "Winnow feed for #{mode} items"
+    title << " from #{feeds.to_sentence}" unless feeds.blank?
+    title << " tagged by #{tags.to_sentence}" unless tags.blank?
+    title << " including text '#{text_filter}'" unless text_filter.blank?
     
     feed = Atom::Feed.new do |feed|
-      # TODO: localization
-      feed.title = "Feed for #{tags.to_sentence}"
+      feed.title = title
       feed.id = self_link
       feed.updated = items.first.updated if items.first
       feed.links << Atom::Link.new(:rel => 'self', :href => self_link)
       feed.links << Atom::Link.new(:rel => 'alternate', :href => alt_link);
       items.each do |feed_item|            
-        feed.entries << feed_item.to_atom(:base_uri => base_uri,
-                                          :include_tags => filters[:user].tags + 
-                                                           filters[:user].subscribed_tags)
+        feed.entries << feed_item.to_atom(:base_uri => base_uri, :include_tags => filters[:user].tags + filters[:user].subscribed_tags)
       end
     end
   end  
