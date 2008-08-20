@@ -360,16 +360,6 @@ ul.help li {
   -webkit-border-bottom-right-radius: 0.5em;
 }
 
-#sidebar h4 {
-  padding: 0;
-  margin: 0;
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: .8em;
-  color: #999;
-}
-
 #sidebar_control {
   float: left;
   cursor: pointer;
@@ -671,6 +661,7 @@ ul.filter_list li .training p {
 	font-size: .75em;
 	font-weight: bold;
 	text-transform: uppercase;
+  letter-spacing: -1px; 
 	margin: 0 0 0.1em 0;
 	color: #999;
 }
@@ -1104,7 +1095,6 @@ a.bookmarklet:hover {
 	margin-left: 1.5em;
 	color: #626051;
 	line-height: .7;
-	letter-spacing: -1px;	
 }
 
 .record .summary .info div {
@@ -1115,7 +1105,6 @@ a.bookmarklet:hover {
 
 .record .summary .info strong {
 	font-size: 1.3em;
-	letter-spacing: -1px;
 	line-height: .97em;
 }
 
@@ -1139,6 +1128,7 @@ a.bookmarklet:hover {
 	font-size: .75em;
 	font-weight: bold;
 	text-transform: uppercase;
+  letter-spacing: -1px; 
 	margin: 0 0 0.1em 0;
 	color: #999;
 }
@@ -1630,9 +1620,7 @@ ul.tag_list li.selected .name {
 
 .tag .summary .state {
 	font-size: 1.5em;
-	letter-spacing: -1px;
 	line-height: .97em;
-	text-transform: uppercase;
 }
 
 .tag.subscribed .summary .state {
