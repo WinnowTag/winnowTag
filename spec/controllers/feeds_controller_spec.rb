@@ -39,11 +39,6 @@ describe FeedsController do
       Feed.stub!(:search).and_return(@feeds)
     end
   
-    it "should provide blank url on new" do
-      get 'new'
-      assigns[:feed].url.should be_nil
-    end
-  
     it "should re-render form on resource error" do
       feed = mock_model(Remote::Feed)
       feed.errors.should_receive(:empty?).and_return(false)
@@ -52,7 +47,7 @@ describe FeedsController do
     
       post 'create', :feed => {:url => 'http://example.com'}
       response.should be_success
-      response.should render_template(:new)
+      response.should render_template("index")
       assigns[:feed].should == feed
       flash[:error].should == "Error"
     end
@@ -100,12 +95,6 @@ describe FeedsController do
       response.should be_success
     end
     
-    it "should render import form" do
-      get :import
-      response.should be_success
-      response.should render_template("feeds/import")
-    end
-  
     it "should import feeds from opml" do
       mock_feed1 = mock_model(Remote::Feed)
       mock_feed2 = mock_model(Remote::Feed)
