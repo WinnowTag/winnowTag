@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/tags/index.html.erb' do
   before(:each) do
-    template.stub_render(:partial => "index_header_controls")
+    template.stub_render(:partial => "header_controls")
   end
   
   def render_it

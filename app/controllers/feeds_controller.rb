@@ -12,7 +12,9 @@ class FeedsController < ApplicationController
   
   def index
     respond_to do |format|
-      format.html
+      format.html do
+        @feed = Remote::Feed.new(params[:feed] || {})
+      end
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @feeds = Feed.search(:text_filter => params[:text_filter], :excluder => current_user,
@@ -21,10 +23,6 @@ class FeedsController < ApplicationController
         @full = @feeds.size < limit
       end
     end
-  end
-  
-  def new
-    @feed = Remote::Feed.new(params[:feed] || {:url => nil})
   end
   
   def create   
@@ -47,20 +45,18 @@ class FeedsController < ApplicationController
       end
     else
       flash[:error] = @feed.errors.on(:url)
-      render :action => 'new'        
+      render :action => 'index'        
     end
   end
   
   def import
-    if params[:opml]
-      @feeds = Remote::Feed.import_opml(params[:opml].read)
-      @feeds.each do |feed|
-        FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
-        feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
-      end
-      flash[:notice] = _(:feeds_imported, @feeds.size)
-      redirect_to feeds_url
+    @feeds = Remote::Feed.import_opml(params[:opml].read)
+    @feeds.each do |feed|
+      FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
+      feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
     end
+    flash[:notice] = _(:feeds_imported, @feeds.size)
+    redirect_to feeds_url
   end
 
   def auto_complete_for_feed_title
@@ -109,14 +105,12 @@ class FeedsController < ApplicationController
     end
   end
   
-  private
+private
   def reject_winnow_feeds
-    begin
-      if URI.parse(params[:feed][:url]).host == request.host
-        flash[:error] = "Winnow generated feeds cannot be added to Winnow."
-        render :action => 'new'
-      end
-    rescue
+    if URI.parse(params[:feed][:url]).host == request.host
+      flash[:error] = "Winnow generated feeds cannot be added to Winnow."
+      render :action => 'new'
     end
+  rescue
   end
 end

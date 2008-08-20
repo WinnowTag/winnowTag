@@ -17,6 +17,6 @@ module FeedsHelper
   end
   
   def bookmarklet_js
-    %|javascript:window.location='#{new_feed_url}?feed[url]='+window.location;|
+    "javascript:window.location='#{feeds_url}?feed[url]='+window.location;"
   end
 end

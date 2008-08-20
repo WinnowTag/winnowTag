@@ -120,6 +120,11 @@ fieldset {
   border-top: 1px solid #999;
 }
 
+fieldset.full {
+  width: auto;
+  margin: 0;
+}
+
 fieldset legend {
   font-weight: bold;
 }

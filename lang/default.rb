@@ -211,10 +211,7 @@ Localization.define do |l|
   l.store :show,                                    "Show"
   
   # app/views/feeds/_header_controls.html.erb
-  l.store :feeds_header_add,                        "Add"
-  l.store :feeds_header_import,                     "Import"
-  
-  # app/views/feeds/_index_header_controls.html.erb
+  l.store :feeds_header_add_import,                 "Add / Import"
   l.store :feeds_header_title,                      "Title"
   l.store :feeds_header_globally_exclude,           "Globally Exclude"
   l.store :feeds_header_items,                      "Items"
@@ -226,23 +223,15 @@ Localization.define do |l|
   l.store :feeds_back_to_feeds,                     "Back to Feeds"
 
   # app/views/feeds/import.html.erb
-  l.store :feeds_upload_opml_file,                  "Upload an OPML file"
+  l.store :feeds_add_import,                        "Add / Import Feeds"
+  l.store :feeds_new_description,                   "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
+  l.store :add_feed_button,                         "Add Feed"
   l.store :feeds_import_description,                "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
-  l.store :feeds_opml_file,                         "OPML File"
-  l.store :import,                                  "Import"
-  l.store :cancel,                                  "cancel"
-  
-  # app/views/feeds/new.html.erb
-  l.store :feeds_enter_new_feed_url,                "Enter a new Feed URL"
-  l.store :feeds_new_description1,                  "Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains."
-  l.store :feeds_new_description2,                  "Only items with enough text for the classifier to use will be collected from the feed."
-  l.store :feeds_new_url_label,                     "URL:"
-  l.store :create_feed_button,                      "Create Feed"
-  l.store :bookmarklet,                             "Bookmarklet"
+  l.store :upload,                                  "Upload"
   l.store :feeds_add_to_winnow,                     "Add to Winnow"
-  l.store :feeds_new_bookmarklet_description1,      "Drag this button"
-  l.store :feeds_new_bookmarklet_description2,      "to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
-  l.store :feeds_bookmarklet_js_error_message,      "Drag this button to your bookmark or right click and select Bookmark this Link..."
+  l.store :feeds_new_bookmarklet_description,       "Drag this button to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
+  l.store :feeds_bookmarklet_js_error_message,      "Drag this button to your bookmark or right click and select 'Bookmark This Link'"
+  l.store :cancel,                                  "cancel"
   
   # app/views/invites/_form.html.erb
   l.store :invites_activate,                        "Activate?"
