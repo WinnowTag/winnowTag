@@ -77,12 +77,12 @@ module AuthenticatedSystem
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = 'AuthHMAC'
+          headers["WWW-Authenticate"] = %(Basic realm="Winnow", AuthHMAC realm="Winnow")
           render :text => "Could't authenticate you", :status => '401 Unauthorized'
         end
         accepts.atom do
           headers["Status"]           = "Unauthorized"
-          headers["WWW-Authenticate"] = 'AuthHMAC'
+          headers["WWW-Authenticate"] = %(Basic realm="Winnow", AuthHMAC realm="Winnow")
           render :text => "Could't authenticate you", :status => '401 Unauthorized'
         end
         accepts.js do
