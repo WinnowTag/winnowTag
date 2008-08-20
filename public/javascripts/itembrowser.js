@@ -430,7 +430,7 @@ var ItemBrowser = Class.create({
       $(item).removeClassName('selected');
       $(item).select(".tag_control").invoke("removeClassName", 'selected');
       $(item).select(".information").invoke("removeClassName", 'selected');
-      $(item).select(".description a").invoke("removeClassName", 'selected');
+      $(item).select(".feed_title a").invoke("removeClassName", 'selected');
       $(item).select(".feed_information").invoke("removeClassName", 'selected');
       $(item).select(".add_tag").invoke("removeClassName", 'selected');  
       $(item).select(".moderation_panel").invoke("removeClassName", 'selected');      

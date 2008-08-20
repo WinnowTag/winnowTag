@@ -1153,7 +1153,7 @@ a.bookmarklet:hover {
 
 .feed_item .closed {
   cursor: pointer;
-  padding: 5px 5px 2px 5px;
+  padding: 7px 5px 2px 5px;
 }
 
 .feed_item.read .closed {
@@ -1161,14 +1161,14 @@ a.bookmarklet:hover {
 }
 
 .feed_item.selected .closed {
-  padding: 3px 3px 1px 3px;
+  padding: 5px 3px 1px 3px;
 }
 
 .feed_item .closed > .status {
   float: left;
   height: 16px;
   width: 16px;
-  margin-right: 0.25em;
+  margin: -2px 0.25em 0 0;
   background-image: url(../images/unread.png);
   background-position: left center;
   background-repeat: no-repeat;
@@ -1178,17 +1178,12 @@ a.bookmarklet:hover {
   background-image: url(../images/read.png);  
 }
 
-.feed_item .closed .link img {
-  margin-top: 7px;
-}
-
-.feed_item .closed .description a {
+.feed_item .closed .feed_title a {
   color: #52718B;
 }
 
 .feed_item .closed .date {
   float: right;
-  margin: 2px 0 0 0;
   width: 6em;
   text-align: right;
   color: #666;
@@ -1196,7 +1191,7 @@ a.bookmarklet:hover {
 
 .feed_item .closed .add_tag {
   float: right;
-  margin: 2px 2px 0 1em;
+  margin: 0 2px 0 1em;
 }
 
 .feed_item .closed .add_tag.selected {
@@ -1281,12 +1276,12 @@ a.bookmarklet:hover {
   display: block;
 }
 
-.feed_item .closed .description a.name {
+.feed_item .closed .feed_title a {
   padding: 3px 4px;
   white-space: nowrap;
 }
 
-.feed_item .description a.name.selected {
+.feed_item .feed_title a.selected {
   padding: 2px 3px;
   color: #333;
   border: 1px solid #ffdb00;

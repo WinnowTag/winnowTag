@@ -4,13 +4,12 @@
     <%= link_to_function _(:add_tag_link), "", :class => "add_tag stop" %>
 
   	<%= link_to_function "", "", :class => "status stop" %>
-  	<h4><%= feed_item_title(feed_item) %></h4>
-  	
-    <%= link_to(image_tag("external.gif"), feed_item.link, :target => "_blank", :title => _(:open_original_feed_item), :class => "link stop") %>
-  	<span class="description">
-  	  <%= feed_control_for(feed_item) %>
-  	</span>
-  	  
+
+    <h4><%= feed_item_title(feed_item) %></h4>
+    <%= link_to(image_tag("external.gif"), feed_item.link, :target => "_blank", :title => _(:open_original_feed_item), :class => "stop") %>
+
+    <span class="feed_title"><%= feed_control_for(feed_item) %></span>
+    
     <%= tag_controls(feed_item) %>
   </div>
   
