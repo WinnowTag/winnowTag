@@ -13,7 +13,7 @@
           </li>
           <li><%= link_to_remote _(:copy), :url => tags_path(:copy => public_tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", "#{public_tag.name} - copy")|, :html => { :title => _(:tags_copy_link_title, public_tag.name), :class => "copy" } %></li>
           <li><%= link_to _(:view_all_items, public_tag.name), feed_items_path(:anchor => "tag_ids=#{public_tag.id}"), :class => 'show' %></li>
-          <li><%= link_to _(:view_tagged_items, public_tag.name), feed_items_path(:anchor => "tag_ids=#{public_tag.id}&mode=moderated"), :class => "show" %></li>
+          <li><%= link_to _(:view_tagged_items, public_tag.name), feed_items_path(:anchor => "tag_ids=#{public_tag.id}&mode=trained"), :class => "show" %></li>
           <li><%= link_to _(:tags_feed_link), url_for(:user => public_tag.user, :tag_name => public_tag.name, :action=> 'show', :format => :atom), :class => "feed" %></li>
         </ul>
       </div> <!-- /.actions -->

@@ -255,7 +255,7 @@ var ItemBrowser = Class.create({
   
   styleFilters: function() {
     if($("mode_all")) {
-  	  var modes = ["all", "unread", "moderated"];
+  	  var modes = ["all", "unread", "trained"];
   		if(this.filters.mode) {
   			modes.without(this.filters.mode).each(function(mode) {
   			  $("mode_" + mode).removeClassName("selected")

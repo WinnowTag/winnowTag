@@ -332,7 +332,7 @@ class FeedItem < ActiveRecord::Base
     
     tags = if filters[:tag_ids]
       Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]])
-    elsif filters[:mode] =~ /moderated/i # limit the search to tagged items
+    elsif filters[:mode] =~ /trained/i # limit the search to tagged items
       filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
     else
       tags = []
@@ -341,11 +341,11 @@ class FeedItem < ActiveRecord::Base
 
     conditions = ["(#{conditions.compact.join(" OR ")})"] unless conditions.compact.blank? 
     
-    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+    unless filters[:mode] =~ /trained/i # don't filter excluded items when showing trained items
       conditions << build_tag_exclusion_filter(filters[:user].excluded_tags)
     end
     
-    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+    unless filters[:mode] =~ /trained/i # don't filter excluded items when showing trained items
       add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, conditions)
     end
     
@@ -377,7 +377,7 @@ class FeedItem < ActiveRecord::Base
 
   def self.build_tag_inclusion_filter(tags, mode)
     unless tags.empty?
-      manual_taggings_sql = mode =~ /moderated/i ? " AND classifier_tagging = 0" : nil
+      manual_taggings_sql = mode =~ /trained/i ? " AND classifier_tagging = 0" : nil
       "EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id#{manual_taggings_sql})"
     end
   end

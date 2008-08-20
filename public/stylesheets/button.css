@@ -110,9 +110,9 @@
   background-image: url(../images/all.png);
 }
 
-.button .icon.moderated {
+.button .icon.trained {
   padding-left: 20px;
-  background-image: url(../images/moderated.png);
+  background-image: url(../images/trained.png);
 }
 
 .button .icon.import {

@@ -159,7 +159,7 @@ Localization.define do |l|
   l.store :show_label,                            "Show"
   l.store :show_all_label,                        "All"
   l.store :show_unread_label,                     "Unread"
-  l.store :show_moderated_label,                  "Moderated"
+  l.store :show_trained_label,                    "Trained"
   l.store :sort_label,                            "Sort"
   l.store :sort_date_label,                       "Date"
   l.store :sort_strength_label,                   "Strength"
@@ -386,7 +386,7 @@ Please click on the following link to confirm your registration:
   l.store :users_header_email,                      "Email"
   l.store :users_header_last_logged_in,             "Last Logged In"
   l.store :users_header_last_accessed,              "Last Accessed"
-  l.store :users_header_last_moderated,             "Last Moderated"
+  l.store :users_header_last_trained,               "Last Trained"
   l.store :users_header_number_of_tags,             "Number of Tags"
   l.store :users_search_placeholder,                "Search Users..."
   
@@ -398,7 +398,7 @@ Are you sure you want to continue?|
   l.store :users_display_name,                      "Display Name"
   l.store :users_last_logged_in,                    "Last Logged In"
   l.store :users_last_accessed,                     "Last Accessed"
-  l.store :users_last_moderated,                    "Last Moderated"
+  l.store :users_last_trained,                      "Last Trained"
   l.store :users_number_of_tags,                    "Number of Tags"
   l.store :users_save_changes,                      'Save changes'
   

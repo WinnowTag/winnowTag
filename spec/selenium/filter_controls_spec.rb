@@ -49,15 +49,15 @@ describe "filter controls" do
     
     it "keeps mode and tag/feed filters intact" do
       open login_path
-      open feed_items_path(:anchor => "mode=moderated&tag_ids=1&feed_ids=1")
+      open feed_items_path(:anchor => "mode=trained&tag_ids=1&feed_ids=1")
       wait_for_ajax
 
-      get_location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=moderated$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=trained$/
 
       type "text_filter", "ruby"
       hit_enter "text_filter"
 
-      get_location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=moderated&text_filter=ruby$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=trained&text_filter=ruby$/
     end
   end
   
@@ -81,14 +81,14 @@ describe "filter controls" do
     
     it "resets feed/tag filters only" do
       open login_path
-      open feed_items_path(:anchor => "mode=moderated&text_filter=ruby&feed_ids=1&tag_ids=999")
+      open feed_items_path(:anchor => "mode=trained&text_filter=ruby&feed_ids=1&tag_ids=999")
       wait_for_ajax
 
-      get_location.should =~ /\#order=date&direction=desc&tag_ids=999&feed_ids=1&mode=moderated&text_filter=ruby$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=999&feed_ids=1&mode=trained&text_filter=ruby$/
 
       click "css=#name_tag_#{@tag.id}"
       
-      get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}&mode=moderated&text_filter=ruby$/
+      get_location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}&mode=trained&text_filter=ruby$/
     end
     
     it "turns off a tag filter" do
