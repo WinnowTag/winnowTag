@@ -1574,7 +1574,11 @@ ul.tag_list li.selected .name {
 }
 
 .feed .summary .info .filter {
-	width: 13em;
+	width: 15em;
+}
+
+.feed .summary .info .filter input {
+  vertical-align: middle;
 }
 
 .feed.globally_excluded .summary .info .filter strong {
