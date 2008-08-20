@@ -1573,6 +1573,7 @@ ul.tag_list li.selected .name {
 }
 
 .feed .summary .info .filter input {
+  margin-top: -1px;
   vertical-align: middle;
 }
 
