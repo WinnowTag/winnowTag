@@ -593,18 +593,6 @@ var ItemBrowser = Class.create({
     var possible_tags_panel = panel.down(".possible_tags");
     
     if(form && possible_tags_panel) {
-      var used_tags = $("tag_controls_" + item.getAttribute("id")).select("li.positive span.name, li.negative span.name").collect(function(span) { return span.innerHTML; });
-      var possible_tags = this.options.tags.reject(function(tag) {
-        return used_tags.include(tag);
-      });
-
-      var html = "";
-      possible_tags.each(function(tag) {
-        var onclick = "add_tagging('" + item.getAttribute("id") + "', '" + tag + "', 'positive');";
-        html += '<a class="add" href="#" onclick="'+ onclick + 'return false;">' + tag + "</a> ";
-      });
-      possible_tags_panel.update(html);
-      
       if(attach_events) {
         var selected_tag = null;
         

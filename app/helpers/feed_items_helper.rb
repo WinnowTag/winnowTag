@@ -118,17 +118,13 @@ module FeedItemsHelper
 	  taggings = Array(taggings)
 	  classes  = Array(classes)
 
-    if tagging = taggings.first
-      if tagging.classifier_tagging?
-        classes << "classifier"
-      elsif tagging.positive?
-        classes << "positive"
-      elsif tagging.negative?
-        classes << "negative"
-      end
+    if taggings.detect { |t| t.positive? && !t.classifier_tagging? }
+      classes << "positive"
     end
-    
-    if taggings.size > 1 && taggings.last(taggings.size - 1).detect(&:classifier_tagging?)
+    if taggings.detect { |t| t.negative? && !t.classifier_tagging? }
+      classes << "negative"
+    end
+    if taggings.detect { |t| t.classifier_tagging? }
       classes << "classifier"
     end
     
