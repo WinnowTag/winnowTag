@@ -184,16 +184,17 @@ class FeedItem < ActiveRecord::Base
     base_uri = filters.delete(:base_uri)
     self_link = filters.delete(:self_link)
     alt_link = filters.delete(:alt_link)
-    @tags = filters[:tag_ids].to_s.split(",").map {|t| Tag.find(t) }
+    tags = filters[:tag_ids].to_s.split(",").map {|t| Tag.find(t) }
+    items = self.find_with_filters(filters)
     
     feed = Atom::Feed.new do |feed|
       # TODO: localization
-      feed.title = "Feed for #{@tags.to_sentence}"
+      feed.title = "Feed for #{tags.to_sentence}"
       feed.id = self_link
-      feed.updated = Time.now
+      feed.updated = items.first.updated if items.first
       feed.links << Atom::Link.new(:rel => 'self', :href => self_link)
       feed.links << Atom::Link.new(:rel => 'alternate', :href => alt_link);
-      self.find_with_filters(filters).each do |feed_item|            
+      items.each do |feed_item|            
         feed.entries << feed_item.to_atom(:base_uri => base_uri,
                                           :include_tags => filters[:user].tags + 
                                                            filters[:user].subscribed_tags)
