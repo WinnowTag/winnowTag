@@ -9,6 +9,7 @@ var Item = Class.create({
     this.id               = this.element.getAttribute('id').match(/\d+/).first();
     this.closed           = this.element.down(".closed");
     this.status           = this.element.down(".status");
+    this.tag_list         = this.element.down(".tag_list");
     this.add_tag          = this.element.down(".add_tag");
     this.moderation_panel = this.element.down(".moderation_panel");
     this.feed_information = this.element.down(".feed_information");
@@ -87,15 +88,16 @@ var Item = Class.create({
       itemBrowser.selectItem(this.element);
     }
 
+    this.tag_list.hide();
+
     this.moderation_panel.addClassName("selected");
     this.add_tag.addClassName("selected");
     this.loadAddTagForm();
-    this.scrollTo();
-
-    itemBrowser.initializeItemModerationPanel(this.element, false);
   },
   
   hideAddTagForm: function() {
+    this.tag_list.show();
+
     this.moderation_panel.removeClassName("selected");
     this.add_tag.removeClassName("selected");
     this.add_tag_field.blur();
@@ -104,12 +106,12 @@ var Item = Class.create({
   loadAddTagForm: function() {
     this.load(this.moderation_panel, function() {
       this.add_tag_field = this.moderation_panel.down("input[type=text]");
-      itemBrowser.initializeItemModerationPanel(this.element, true);
-    }.bind(this));
+      itemBrowser.initializeItemModerationPanel(this.element);
+    }.bind(this), true);
   },
   
-  load: function(target, onComplete) {
-    if(!target.empty()) { return; }
+  load: function(target, onComplete, forceLoad) {
+    if(!forceLoad && !target.empty()) { return; }
     
     target.addClassName("loading");
     new Ajax.Updater(target, target.getAttribute("url"), { method: 'get',

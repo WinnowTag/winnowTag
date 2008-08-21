@@ -22,7 +22,6 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   if (!tag_control) {
     parameters.attach_tagging_information_event = true;
     add_tag_control(taggable_id, tag_name);
-    remove_add_tag_control(taggable_id, tag_name);
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
     tag_control.addClassName(tagging_type);
@@ -31,7 +30,6 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   } else if (tag_control.hasClassName('classifier')) {
     tag_control.addClassName(tagging_type); 
     tag_information.addClassName(tagging_type);
-    remove_add_tag_control(taggable_id, tag_name);
   }
   
   sendTagRequest(url, parameters);
@@ -77,24 +75,11 @@ function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
   // TODO: needs to know the tag id to load the information panel
-  var tag_control = '<li class="stop positive tag_control" style="display: none;">' + 
+  var tag_control = '<li class="stop positive tag_control">' + 
     // TODO: sanitize
     '<span class="name">' + tag + '</span>' + 
   '</li> ';
   insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
-
-  tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
-    return element.down(".name").innerHTML.unescapeHTML() == tag;
-  });
-  Effect.Appear(tag_control);
-}
-
-function remove_add_tag_control(taggable_id, tag) {
-  $(taggable_id).select(".moderation_panel .possible_tags .add").each(function(element) {
-    if(element.innerHTML == tag) {
-      element.fade();
-    }
-  });
 }
 
 function remove_tag_control(taggable_id, tag) {
@@ -102,5 +87,5 @@ function remove_tag_control(taggable_id, tag) {
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML.unescapeHTML() == tag;
   });
-  Effect.Fade(tag_control, { afterFinish: function() { tag_control.remove(); } });
+  tag_control.remove();
 }

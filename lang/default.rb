@@ -152,7 +152,7 @@ Localization.define do |l|
   l.store :feed_item_metadata,                    "from %s by %s"
   
   # app/views/feed_items/_feed_item.html.erb
-  l.store :add_tag_link,                          "Add Tag"
+  l.store :train,                                 "Train"
   l.store :open_original_feed_item,               "Go to original item"
   
   # app/views/feed_items/_filter_controls.html.erb

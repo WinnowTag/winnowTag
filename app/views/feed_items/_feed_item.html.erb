@@ -1,7 +1,7 @@
 <div id="<%= dom_id(feed_item) %>" class="record feed_item<%= ' read' if feed_item.read_by_current_user? %>">
   <div class="closed clearfix">
     <div class="date"><%= format_date(feed_item.updated) %></div>
-    <%= link_to_function _(:add_tag_link), "", :class => "add_tag stop" %>
+    <%= link_to_function _(:train), "", :class => "add_tag stop" %>
 
   	<%= link_to_function "", "", :class => "status stop" %>
 

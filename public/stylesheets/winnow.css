@@ -1203,7 +1203,7 @@ a.bookmarklet:hover {
   border: 1px solid #8181DC;
   background-color: #E6EFF7;
   padding: 2px 5px;
-  margin: -1px -4px;
+  margin: -3px -4px 0 0;
   -moz-border-radius: 0.4em;
   -webkit-border-radius: 0.4em;
 }
@@ -1312,6 +1312,7 @@ a.bookmarklet:hover {
   background-image: url(../images/positive.png);
   background-position: left center;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .training_controls .tag .negative {
@@ -1323,6 +1324,7 @@ a.bookmarklet:hover {
   background-image: url(../images/negative.png);
   background-position: left center;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .training_controls .tag .remove {
@@ -1334,6 +1336,7 @@ a.bookmarklet:hover {
   background-image: url(../images/clear_disabled.png);
   background-position: left center;
   background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .training_controls .tag.classifier .positive, .training_controls .tag.classifier .negative {
