@@ -264,6 +264,8 @@ class User < ActiveRecord::Base
     user = new(attributes)
     user.save!
     user.activate
+    # Mark all existing message as read
+    Message.mark_read_for(user.id)
     
     if prototype = User.find_by_prototype(true)
       prototype.folders.each do |folder| 
