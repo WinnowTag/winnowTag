@@ -1226,13 +1226,12 @@ a.bookmarklet:hover {
   padding: 0.5em 0.75em;
   border: 2px solid #8181DC;
   border-width: 2px 0 0 0;
-  background-image: url(../images/blue_bg.gif);
-  background-position: left top;
-  background-repeat: repeat-x;
-  
-  background-color: #E6EFF7;
-  color: #000;
-  cursor: default;
+/*  background-image: url(../images/blue_bg.gif);*/
+/*  background-position: left top;*/
+/*  background-repeat: repeat-x;*/
+/*  background-color: #E6EFF7;*/
+
+  background-color: #D7E0F5;
 }
 
 .feed_item.open .moderation_panel {
@@ -1243,21 +1242,8 @@ a.bookmarklet:hover {
   display: block;
 }
 
-.feed_item .moderation_panel .possible_tags {
+.feed_item .moderation_panel .training_controls {
   float: left;
-}
-
-.feed_item .moderation_panel .possible_tags a.add {
-  margin-right: 0.5em;
-  padding-left: 12px;
-  background-image: url(../images/plus.png);
-  background-position: left center;
-  background-repeat: no-repeat;
-  white-space: nowrap;
-}
-
-.feed_item .moderation_panel .possible_tags a.add.selected {
-  font-weight: bold;
 }
 
 .feed_item .moderation_panel form {
@@ -1277,7 +1263,6 @@ a.bookmarklet:hover {
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
   
-/*  color: #fff;*/
 	background-color: #eee;
 	padding-right: 0.75em;
 	padding-left: 0.5em;
@@ -1303,6 +1288,16 @@ a.bookmarklet:hover {
 	padding-right: 0.75em;
 	padding-left: 0.5em;
 }
+
+.training_controls .tag.selected {
+/*  color: #fff;
+  background-color: #000;
+*/}
+
+.training_controls .tag.disabled {
+/*  color: #000;
+  background-color: #fff;
+*/}
 
 .training_controls .tag .positive {
   float: left;

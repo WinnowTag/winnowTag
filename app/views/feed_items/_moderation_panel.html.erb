@@ -1,4 +1,4 @@
-<div class="possible_tags training_controls">
+<div class="training_controls">
   <% (current_user.sidebar_tags - current_user.excluded_tags).each do |tag| -%>
     <% taggings = @feed_item.taggings.select { |t| t.user == current_user && t.tag == tag } %>
     <div class="tag <%= classes_for_taggings(taggings).join(' ') %>">

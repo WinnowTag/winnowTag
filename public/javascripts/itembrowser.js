@@ -590,9 +590,9 @@ var ItemBrowser = Class.create({
     var panel = item.down(".moderation_panel");
     var form = panel.down("form");
     var field = panel.down("input[type=text]");
-    var possible_tags_panel = panel.down(".possible_tags");
+    var training_controls_panel = panel.down(".training_controls");
           
-    possible_tags_panel.select(".tag").each(function(tag) {
+    training_controls_panel.select(".tag").each(function(tag) {
       var taggable_id = item.getAttribute("id");
       var tag_name = tag.down(".tag_name").innerHTML;
       tag.down(".positive").observe("click", function() {
@@ -617,16 +617,18 @@ var ItemBrowser = Class.create({
     var updateTags = function(field, value, event) {
       selected_tag = null;
       
-      possible_tags_panel.select("a").each(function(tag) {
+      training_controls_panel.select(".tag").each(function(tag) {
         tag.removeClassName("selected");
         tag.removeClassName("disabled");
         
+        var tag_name = tag.down(".tag_name").innerHTML;
+        
         if(value.blank()) {
           // Don't do anything
-        } else if(!tag.innerHTML.toLowerCase().startsWith(value.toLowerCase())) {
+        } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
           tag.addClassName("disabled")
         } else if(!selected_tag) {
-          selected_tag = tag.innerHTML;
+          selected_tag = tag_name;
           tag.addClassName("selected");
           
           // http://www.webreference.com/programming/javascript/ncz/3.html
@@ -635,7 +637,7 @@ var ItemBrowser = Class.create({
           //   console.log("nope");
           //   // Don't do anything
           // } else {
-          //   field.value = tag.innerHTML;
+          //   field.value = tag_name;
           //   if(field.createTextRange) {
           //     var textSelection = field.createTextRange();
           //     textSelection.moveStart("character", 0);
