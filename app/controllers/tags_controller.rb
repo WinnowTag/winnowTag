@@ -16,11 +16,12 @@
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::SanitizeHelper
-  with_auth_hmac(HMAC_CREDENTIALS['classifier'], :only => [:classifier_taggings])
   helper :bias_slider, :comments
-  
-  skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
+
+  with_auth_hmac(HMAC_CREDENTIALS['classifier'], :only => [:classifier_taggings])
   before_filter :login_required_unless_hmac, :only => [:index]
+  skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
+
   before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :update_state, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
   before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
   
