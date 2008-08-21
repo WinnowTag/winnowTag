@@ -14,7 +14,7 @@ var Item = Class.create({
     this.moderation_panel = this.element.down(".moderation_panel");
     this.feed_information = this.element.down(".feed_information");
     this.body             = this.element.down(".body");
-    this.add_tag_field    = this.moderation_panel.down("input[type=text]");
+    // this.add_tag_field    = this.moderation_panel.down("input[type=text]");
     
     this.setupEventListeners();
     
@@ -100,7 +100,9 @@ var Item = Class.create({
 
     this.moderation_panel.removeClassName("selected");
     this.add_tag.removeClassName("selected");
-    this.add_tag_field.blur();
+    if(this.add_tag_field) {
+      this.add_tag_field.blur();
+    }
   },
 
   loadAddTagForm: function() {
@@ -113,6 +115,7 @@ var Item = Class.create({
   load: function(target, onComplete, forceLoad) {
     if(!forceLoad && !target.empty()) { return; }
     
+    target.update("");
     target.addClassName("loading");
     new Ajax.Updater(target, target.getAttribute("url"), { method: 'get',
       onComplete: function() {

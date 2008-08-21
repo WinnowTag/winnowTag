@@ -9,7 +9,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
-  var tag_information = $(taggable_id).down(".information");
+  // var tag_information = $(taggable_id).down(".information");
   var url = '/taggings/create';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -20,16 +20,16 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
   
   if (!tag_control) {
-    parameters.attach_tagging_information_event = true;
+    // parameters.attach_tagging_information_event = true;
     add_tag_control(taggable_id, tag_name);
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
     tag_control.addClassName(tagging_type);
-    tag_information.removeClassName(other_tagging_type);
-    tag_information.addClassName(tagging_type);
+    // tag_information.removeClassName(other_tagging_type);
+    // tag_information.addClassName(tagging_type);
   } else if (tag_control.hasClassName('classifier')) {
     tag_control.addClassName(tagging_type); 
-    tag_information.addClassName(tagging_type);
+    // tag_information.addClassName(tagging_type);
   }
   
   sendTagRequest(url, parameters);
@@ -41,7 +41,7 @@ function remove_tagging(taggable_id, tag_name) {
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
-  var tag_information = $(taggable_id).down(".information");
+  // var tag_information = $(taggable_id).down(".information");
   var url = '/taggings/destroy';
   var parameters = {
     "tagging[feed_item_id]": taggable_id.match(/(\d+)$/)[1],
@@ -51,11 +51,11 @@ function remove_tagging(taggable_id, tag_name) {
   if (tag_control) {
     tag_control.removeClassName('positive');
     tag_control.removeClassName('negative');
-    tag_information.removeClassName('positive');
-    tag_information.removeClassName('negative');
+    // tag_information.removeClassName('positive');
+    // tag_information.removeClassName('negative');
     if(!tag_control.match('.classifier')) {
       tag_control.removeClassName('selected');
-      tag_information.removeClassName('selected');
+      // tag_information.removeClassName('selected');
       remove_tag_control(taggable_id, tag_name); 
     }
   }
@@ -75,7 +75,7 @@ function add_tag_control(taggable_id, tag) {
   if (tag == null || tag == '') return false;
   var tag_controls = $('tag_controls_' + taggable_id);
   // TODO: needs to know the tag id to load the information panel
-  var tag_control = '<li class="stop positive tag_control">' + 
+  var tag_control = '<li class="positive tag_control">' + 
     // TODO: sanitize
     '<span class="name">' + tag + '</span>' + 
   '</li> ';

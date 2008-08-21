@@ -1453,7 +1453,7 @@ ul.tag_list li.public .name {
   padding-left: 20px;
 }
 
-ul.tag_list li.public.selected .name {
+/*ul.tag_list li.public.selected .name {
   background-position: 4px center;
   padding-left: 19px;
 }
@@ -1466,9 +1466,9 @@ ul.tag_list li.selected .name {
   padding: 2px 5px 2px 14px;
   -moz-border-radius: 0.4em;
   -webkit-border-radius: 0.4em;  
-}
+}*/
 
-.information {
+/*.information {
   display: none;
   padding: 0.5em 0.75em;
   border: 2px solid #ffdb00;
@@ -1650,7 +1650,7 @@ ul.tag_list li.selected .name {
 
 .information .clues table th.prob, .information .clues table td.prob {
   border-right: 1px solid #ffdb00;
-}
+}*/
 
 /*
  * =feed
