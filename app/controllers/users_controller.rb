@@ -27,12 +27,12 @@ class UsersController < ApplicationController
   end
   
   def create
-    @user = User.new(params[:user])
-    @user.save!
-    @user.activate
-    redirect_to :action => 'index'
-  rescue
-    render :action => 'new'
+    @user = User.create_from_prototype(params[:user])
+    unless @user.new_record?
+      redirect_to users_path
+    else
+      render :action => 'new'
+    end
   end
   
   def show
