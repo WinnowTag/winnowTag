@@ -1222,6 +1222,7 @@ a.bookmarklet:hover {
 }
 
 .feed_item .moderation_panel {
+  position: relative;
   display: none;
   padding: 0.5em 0.75em;
   border: 2px solid #8181DC;
@@ -1242,6 +1243,12 @@ a.bookmarklet:hover {
   display: block;
 }
 
+.feed_item .moderation_panel .close {
+  position: absolute;
+  top: 0.5em;
+  right: 0.75em;
+}
+
 .feed_item .moderation_panel .training_controls {
   float: left;
 }
@@ -1251,42 +1258,33 @@ a.bookmarklet:hover {
 }
 
 .training_controls {
-
+  margin-right: 3em;
 }
 
 .training_controls .tag {
   float: left;
   margin: 0 0.25em 0.25em 0;
-	padding: 0.25em 0 0.25em 0;
+	padding: 0.25em 0.5em;
 	color: #666;
 	font-weight: bold;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
-  
 	background-color: #eee;
-	padding-right: 0.75em;
-	padding-left: 0.5em;
 }
 
 .training_controls .tag.classifier {
 	color: #fff;
 	background-color: #666;
-	padding-right: 0.75em;
-	padding-left: 0.5em;
 }
 
 .training_controls .tag.positive {
-	color: #fff;
-	background-color: #6D8B49;
-	padding-right: 0.75em;
-	padding-left: 0.5em;
+	color: #000;
+	background-color: #94B962;
 }
 
 .training_controls .tag.negative {
 	color: #fff;
-	background-color: #C43212;
-	padding-right: 0.75em;
-	padding-left: 0.5em;
+	background-color: #F43A2A;
 }
 
 .training_controls .tag.selected {
@@ -1311,7 +1309,6 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag .negative {
-  display: none;
   float: left;
   height: 16px;
   width: 16px;
@@ -1323,39 +1320,50 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag .remove {
-  display: none;
   float: left;
   height: 16px;
   width: 16px;
-  margin-right: 0.25em;
-  background-image: url(../images/clear_disabled.png);
+  margin-left: 0.25em;
+  background-image: url(../images/remove_disabled.png);
   background-position: left center;
   background-repeat: no-repeat;
   cursor: pointer;
 }
 
-.training_controls .tag.classifier .positive, .training_controls .tag.classifier .negative {
-  display: block;
+.training_controls .tag.classifier .positive {
+  background-image: url(../images/positive.png);
+}
+
+.training_controls .tag.classifier .negative {
+  background-image: url(../images/negative.png);
 }
 
 .training_controls .tag.classifier .remove {
-  display: none;
-}
-
-.training_controls .tag.positive .negative, .training_controls .tag.positive .remove {
-  display: block;
+  background-image: url(../images/remove_disabled.png);
 }
 
 .training_controls .tag.positive .positive {
-  display: none;
+  background-image: url(../images/positive_disabled.png);
 }
 
-.training_controls .tag.negative .positive, .training_controls .tag.negative .remove {
-  display: block;
+.training_controls .tag.positive .negative {
+  background-image: url(../images/negative.png);
+}
+
+.training_controls .tag.positive .remove {
+  background-image: url(../images/remove.png);
+}
+
+.training_controls .tag.negative .positive {
+  background-image: url(../images/positive.png);
 }
 
 .training_controls .tag.negative .negative {
-  display: none;
+  background-image: url(../images/negative_disabled.png);
+}
+
+.training_controls .tag.negative .remove {
+  background-image: url(../images/remove.png);
 }
 
 .training_controls .tag .tag_name {
