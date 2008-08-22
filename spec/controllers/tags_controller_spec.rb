@@ -308,7 +308,7 @@ describe TagsController do
     
     it "should not allow POST from other user" do
       @tag.stub!(:user_id).and_return(@user.id + 1)
-      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom', :atom => @atom
       response.code.should == "401"
     end
     
