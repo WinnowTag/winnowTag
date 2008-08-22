@@ -30,6 +30,7 @@ ActionController::Routing::Routes.draw do |map|
                   :information => :get,
                   :clues => :get,
                   :moderation_panel => :get,
+                  :feed_information => :get,
                   :body => :get,
                   :mark_read => :put,
                   :mark_unread => :put

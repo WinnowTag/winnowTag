@@ -99,6 +99,10 @@ class FeedItemsController < ApplicationController
     @feed_item = FeedItem.find(params[:id]) 
   end
   
+  def feed_information 
+    @feed_item = FeedItem.find(params[:id]) 
+  end
+  
   def information
     @feed_item = FeedItem.find(params[:id]) 
     @tag = Tag.find(params[:tag_id]) 

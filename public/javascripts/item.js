@@ -11,6 +11,7 @@ var Item = Class.create({
     this.status           = this.element.down(".status");
     this.add_tag          = this.element.down(".add_tag");
     this.moderation_panel = this.element.down(".moderation_panel");
+    this.feed_information = this.element.down(".feed_information");
     this.body             = this.element.down(".body");
     this.add_tag_field    = this.moderation_panel.down("input[type=text]");
     
@@ -66,6 +67,10 @@ var Item = Class.create({
   
   loadBody: function() {
     this.load(this.body);
+  },
+  
+  loadFeedInformation: function() {
+    this.load(this.feed_information);
   },
   
   toggleAddTagForm: function() {

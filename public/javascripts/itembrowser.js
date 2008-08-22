@@ -508,6 +508,7 @@ var ItemBrowser = Class.create({
       information.addClassName('selected');
 
       item._item.scrollTo();
+      item._item.loadFeedInformation();
     }
   },
   

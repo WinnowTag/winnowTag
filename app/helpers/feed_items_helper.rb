@@ -68,12 +68,10 @@ module FeedItemsHelper
   end
   
   def feed_control_for(feed_item)
-    feed = feed_item.feed
-    
     if feed_item.author.blank?
-      _(:feed_item_feed_metadata, content_tag(:a, feed.title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"))
+      _(:feed_item_feed_metadata, content_tag(:a, feed_item.feed_title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"))
     else
-      _(:feed_item_metadata, content_tag(:a, feed.title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"), feed_item.author)
+      _(:feed_item_metadata, content_tag(:a, feed_item.feed_title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"), feed_item.author)
     end
   end
   
