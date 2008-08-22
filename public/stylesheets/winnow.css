@@ -1264,26 +1264,35 @@ a.bookmarklet:hover {
 .training_controls .tag {
   float: left;
   margin: 0 0.25em 0.25em 0;
-	padding: 0.25em 0.5em;
-	color: #666;
-	font-weight: bold;
-  -moz-border-radius: 0.75em;
-  -webkit-border-radius: 0.75em;
-	background-color: #eee;
 }
 
-.training_controls .tag.classifier {
+.training_controls .tag span {
+  float: left;
+	color: #666;
+	font-weight: bold;
+  -moz-border-radius-topleft: 0.75em;
+  -moz-border-radius-bottomleft: 0.75em;
+  -webkit-border-top-left-radius: 0.75em;
+  -webkit-border-bottom-left-radius: 0.75em;
+}
+
+.training_controls .tag span, .training_controls .tag .remove {
+  color: #666;
+  background-color: #efefef;
+}
+
+.training_controls .tag.classifier span, .training_controls .tag.classifier .remove {
 	color: #fff;
 	background-color: #666;
 }
 
-.training_controls .tag.positive {
+.training_controls .tag.positive span, .training_controls .tag.positive .remove {
 	color: #000;
 	background-color: #94B962;
 }
 
-.training_controls .tag.negative {
-	color: #fff;
+.training_controls .tag.negative span, .training_controls .tag.negative .remove {
+	color: #000;
 	background-color: #F43A2A;
 }
 
@@ -1301,7 +1310,8 @@ a.bookmarklet:hover {
   float: left;
   height: 16px;
   width: 16px;
-  margin-right: 0.25em;
+  margin: 0 0.25em 0 0.5em;
+  padding: 0.2em 0;
   background-image: url(../images/positive.png);
   background-position: left center;
   background-repeat: no-repeat;
@@ -1309,6 +1319,7 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag .negative {
+  padding: 0.2em 0;
   float: left;
   height: 16px;
   width: 16px;
@@ -1321,12 +1332,18 @@ a.bookmarklet:hover {
 
 .training_controls .tag .remove {
   float: left;
-  height: 16px;
-  width: 16px;
-  margin-left: 0.25em;
-  background-image: url(../images/remove_disabled.png);
-  background-position: left center;
-  background-repeat: no-repeat;
+  padding: 3px 0.55em 3px 0.4em;
+  font-weight: bold;
+  border-left: 1px solid #ccc;
+  -moz-border-radius-topright: 0.75em;
+  -moz-border-radius-bottomright: 0.75em;
+  -webkit-border-top-right-radius: 0.75em;
+  -webkit-border-bottom-right-radius: 0.75em;
+  color: #ccc;
+}
+
+.training_controls .tag.positive .remove:hover, .training_controls .tag.negative .remove:hover {
+  background-color: #fff;
   cursor: pointer;
 }
 
@@ -1339,7 +1356,8 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag.classifier .remove {
-  background-image: url(../images/remove_disabled.png);
+  border-color: #444;
+  color: #444;
 }
 
 .training_controls .tag.positive .positive {
@@ -1351,7 +1369,8 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag.positive .remove {
-  background-image: url(../images/remove.png);
+  border-color: #000;
+  color: #000;
 }
 
 .training_controls .tag.negative .positive {
@@ -1363,11 +1382,14 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag.negative .remove {
-  background-image: url(../images/remove.png);
+  border-color: #000;
+  color: #000;
 }
 
 .training_controls .tag .tag_name {
   float: left;
+  padding: 0.2em 0;
+  margin-right: 0.5em;
 }
 
 .feed_item .feed_information {
