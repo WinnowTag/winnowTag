@@ -38,7 +38,7 @@ Rails::Initializer.run do |config|
   config.gem "bcrypt-ruby", :lib => "bcrypt"
   config.gem "RedCloth", :version => "4.0.1"
   config.gem "tzinfo", :version => "0.3.9"
-  config.gem "auth-hmac", :version => "1.0.0"
+  config.gem "auth-hmac", :version => "1.0.1"
   
   if `uname -n` =~ /ds468-1.blueboxgrid.com/
     config.gem :fiveruns_manage

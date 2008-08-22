@@ -1,10 +1,10 @@
 History.txt
 License.txt
-Manifest
+Manifest.txt
 PostInstall.txt
-README.rdoc
+README.txt
 Rakefile
-config/echoe.rb
+config/hoe.rb
 config/requirements.rb
 lib/auth-hmac.rb
 lib/auth-hmac/version.rb

@@ -54,7 +54,7 @@ module AuthenticatedSystem
     end
     
     def login_required_unless_hmac
-      unless hmac_authenticated?
+      unless logged_in? || hmac_authenticated?
         login_required
       else
         true
