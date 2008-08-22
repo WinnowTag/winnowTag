@@ -77,6 +77,8 @@ module FeedItemsHelper
   
   # Format a classifier tagging strength as a percentage.
   def format_classifier_strength(taggings)
+    taggings = Array(taggings)
+    
     if classifier_tagging = taggings.detect {|tagging| tagging.classifier_tagging? }
       "%.2f%" % (classifier_tagging.strength * 100)
     end
