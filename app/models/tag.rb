@@ -40,7 +40,7 @@ class Tag < ActiveRecord::Base
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
-  
+
   # Returns a suitable label for the classification UI display.
   def classification_label
     truncate(self.name, 15)

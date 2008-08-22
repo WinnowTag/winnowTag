@@ -168,7 +168,7 @@ module ApplicationHelper
   end
   
   def tag_filter_control(tag, options = {})
-    if options[:remove] == :subscription && current_user == tag.user
+    if options[:remove] == :subscription && current_user.id == tag.user_id
       options = options.except(:remove)
       options[:remove] = :sidebar
     end
@@ -182,7 +182,7 @@ module ApplicationHelper
     end
 
     html  = ""
-    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") << " " if options[:editable] && current_user == tag.user
+    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") << " " if options[:editable] && current_user.id == tag.user_id
     html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html << link_to_function("Info", "", :class => "info", :onmouseover => "$(this).up('li').addClassName('info')", :onmouseout => "$(this).up('li').removeClassName('info')")
     html  = content_tag(:div, html, :class => "actions clearfix")

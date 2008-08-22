@@ -143,14 +143,7 @@ module FeedItemsHelper
     feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
     feeds.sort_by { |feed| feed.title.downcase }
   end
-  
-  def tags_for_sidebar
-    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + 
-      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
 
-    tags.uniq.sort_by { |tag| tag.name.downcase }
-  end
-  
   def render_clues(clues)
     sorted_grouped_clues = clues.sort_by { |clue| clue['prob'] }.reverse.in_groups_of((clues.size.to_f / 3).ceil)
     content_tag('table') do
