@@ -1287,12 +1287,13 @@ a.bookmarklet:hover {
 
 .training_controls .tag.positive span, .training_controls .tag.positive .remove {
 	color: #000;
-	background-color: #94B962;
+	background-color: #B4D08D;
 }
 
 .training_controls .tag.negative span, .training_controls .tag.negative .remove {
 	color: #000;
-	background-color: #F43A2A;
+	background-color: #EF6465;
+	
 }
 
 .training_controls .tag.selected {
@@ -1331,12 +1332,13 @@ a.bookmarklet:hover {
 
 .training_controls .tag .remove {
   float: left;
-  padding: 3px 0.55em 3px 0.4em;
+  padding: 4px 0.55em 4px 0.4em;
   border-left: 1px solid #ccc;
   -moz-border-radius-topright: 0.75em;
   -moz-border-radius-bottomright: 0.75em;
   -webkit-border-top-right-radius: 0.75em;
   -webkit-border-bottom-right-radius: 0.75em;
+  font-size: 11px;
   color: #ccc;
 }
 
