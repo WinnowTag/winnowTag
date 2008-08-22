@@ -1264,12 +1264,11 @@ a.bookmarklet:hover {
 .training_controls .tag {
   float: left;
   margin: 0 0.25em 0.25em 0;
+	font-weight: bold;
 }
 
 .training_controls .tag span {
   float: left;
-	color: #666;
-	font-weight: bold;
   -moz-border-radius-topleft: 0.75em;
   -moz-border-radius-bottomleft: 0.75em;
   -webkit-border-top-left-radius: 0.75em;
@@ -1277,7 +1276,7 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag span, .training_controls .tag .remove {
-  color: #666;
+  color: #000;
   background-color: #efefef;
 }
 
@@ -1333,7 +1332,6 @@ a.bookmarklet:hover {
 .training_controls .tag .remove {
   float: left;
   padding: 3px 0.55em 3px 0.4em;
-  font-weight: bold;
   border-left: 1px solid #ccc;
   -moz-border-radius-topright: 0.75em;
   -moz-border-radius-bottomright: 0.75em;
