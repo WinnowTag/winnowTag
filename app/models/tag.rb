@@ -61,18 +61,6 @@ class Tag < ActiveRecord::Base
   #   self.name
   # end
   
-  def positive_count
-    read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
-  end
-  
-  def negative_count
-    read_attribute(:negative_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 0")
-  end
-  
-  def feed_items_count
-    read_attribute(:feed_items_count) || taggings.count(:select => "DISTINCT(feed_item_id)")
-  end
-  
   def classifier_count
     feed_items_count.to_i - positive_count.to_i - negative_count.to_i
   end
