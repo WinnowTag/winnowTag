@@ -1333,14 +1333,13 @@ a.bookmarklet:hover {
 .training_controls .tag .remove {
   float: left;
   height: 16px;
-  width: 16px;  
-  padding: 0.2em 0 0.2em 0.4em;
+  width: 14px;  
+  padding: 0.35em 0 0.05em 0.4em;
   border-left: 1px solid #ccc;
   -moz-border-radius-topright: 0.75em;
   -moz-border-radius-bottomright: 0.75em;
   -webkit-border-top-right-radius: 0.75em;
   -webkit-border-bottom-right-radius: 0.75em;
-/*  font-size: 11px;*/
   color: #ccc;
 }
 
