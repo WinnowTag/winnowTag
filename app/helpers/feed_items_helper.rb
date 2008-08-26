@@ -88,9 +88,14 @@ module FeedItemsHelper
   def tag_control_for(feed_item, tag, classes, strength)
     classes << "tag_control" << dom_id(tag) << "stop"
     # TODO: sanitize
-    title = "by #{tag.user.display_name}"
-    title << ", #{strength}" if strength
-    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), :title => title)
+    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
+  end
+  
+  def tag_control_tooltip(tag, strength)
+    title = []
+    title << "by #{tag.user.display_name}" if tag.user_id != current_user.id
+    title << "#{strength}" if strength
+    title.join(", ") unless title.blank?
   end
   
   # def tag_info_for(feed_item, tag, classifier_strength = nil)
