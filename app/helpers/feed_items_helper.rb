@@ -98,30 +98,6 @@ module FeedItemsHelper
     title.join(", ") unless title.blank?
   end
   
-  # def tag_info_for(feed_item, tag, classifier_strength = nil)
-  #   if tag.user == current_user
-  #     training  = link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive")
-  #     training << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative")
-  #     training << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove")
-  #   else
-  #     # TODO: sanitize
-  #     training = content_tag(:div, "#{tag.user.firstname}<br/>#{tag.user.lastname}", :class => "owner")
-  #   end
-  #   
-  #   clues_link = link_to_function "(clues)", "", :class => "clues_link"
-  # 
-  #   automatic  = content_tag(:span, "Negative<br/>Training #{clues_link}", :class => "negative")
-  #   automatic << content_tag(:span, "Positive<br/>Training #{clues_link}", :class => "positive")
-  #   automatic << content_tag(:span, content_tag(:span, classifier_strength, :class => "strength") + "Automatic<br/>Tag #{clues_link}", :class => "classifier")
-  #   automatic  = content_tag(:span, automatic, :class => "status clearfix")    
-  #   
-  #   information  = content_tag(:div, training, :class => "training")
-  #   information << content_tag(:div, automatic, :class => "automatic")
-  #   information << content_tag(:div, "", :class => "clues", :style => "display: none")
-  #   
-  #   information
-  # end
-  
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
 	  classes  = Array(classes)

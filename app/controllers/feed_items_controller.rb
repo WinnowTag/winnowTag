@@ -102,7 +102,7 @@ class FeedItemsController < ApplicationController
   def feed_information 
     @feed_item = FeedItem.find(params[:id]) 
   end
-    
+
   def sidebar
     render :layout => false
   end

@@ -434,62 +434,6 @@ var ItemBrowser = Class.create({
     }
   },
   
-  // selectTaggingInformation: function(tag, tag_id) {
-  //   tag = $(tag);
-  //   
-  //   var item = tag.up('.feed_item');
-  //   var information = item.down(".information");
-  // 
-  //   if(tag.hasClassName("selected")) {
-  //     tag.removeClassName("selected");
-  //     information.removeClassName("selected");
-  //   } else {
-  //     ["public", "classifier", "positive", "negative"].each(function(clazz) {
-  //       if(tag.hasClassName(clazz)) {
-  //         information.addClassName(clazz);
-  //       } else {
-  //         information.removeClassName(clazz);
-  //       }
-  //     });
-  //   
-  //     if(tag.informationHTML) {
-  //       information.update(tag.informationHTML);
-  // 
-  //       information.select(".clues_link").each(function(element) {
-  //         element.observe("click", function() {
-  //           this.toggleTagClues(tag, tag_id);
-  //         }.bind(this));
-  //       }.bind(this));
-  //     } else {
-  //       information.update("");
-  //       information.addClassName("loading");
-  //       
-  //       new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/information', { 
-  //         method: 'get', parameters: { tag_id: tag_id }, onComplete: function(transport) {
-  //           tag.informationHTML = transport.responseText;
-  // 
-  //           information.removeClassName("loading");
-  //           information.update(tag.informationHTML)
-  //           
-  //           information.select(".clues_link").each(function(element) {
-  //             element.observe("click", function() {
-  //               this.toggleTagClues(tag, tag_id);
-  //             }.bind(this));
-  //           }.bind(this));
-  //           
-  //           item._item.scrollTo();
-  //         }.bind(this)
-  //       });
-  //     }
-  //   
-  //     itemBrowser.selectItem(item);
-  //     tag.addClassName('selected');
-  //     information.addClassName('selected');
-  // 
-  //     item._item.scrollTo();
-  //   }
-  // },
-  
   selectFeedInformation: function(feed) {
     feed = $(feed);
     
@@ -506,36 +450,6 @@ var ItemBrowser = Class.create({
 
       item._item.scrollTo();
       item._item.loadFeedInformation();
-    }
-  },
-  
-  toggleTagClues: function(tag, tag_id) {
-    var item = tag.up(".feed_item");
-    var clues = item.down(".information .clues");
-    
-    if(clues.visible()) {
-      clues.hide();
-    } else {
-      if(tag.cluesHTML && tag.cluesHTML.match(/<table>/)) {
-        clues.update(tag.cluesHTML);
-      } else {
-        clues.update("");
-        clues.addClassName('loading');
-
-        new Ajax.Request('/feed_items/' + item.getAttribute('id').match(/\d+/).first() + '/clues', { 
-          method: 'get', parameters: { tag: tag_id }, onComplete: function(transport) {
-            tag.cluesHTML = transport.responseText;
-          
-            clues.removeClassName("loading");
-            clues.update(tag.cluesHTML)
-          
-            item._item.scrollTo();
-          }.bind(this)
-        });
-      }
-      
-      clues.show();
-      item._item.scrollTo();
     }
   },
   
