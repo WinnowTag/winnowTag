@@ -1293,18 +1293,7 @@ a.bookmarklet:hover {
 .training_controls .tag.negative span, .training_controls .tag.negative .remove {
 	color: #000;
 	background-color: #EF6465;
-	
 }
-
-.training_controls .tag.selected {
-/*  color: #fff;
-  background-color: #000;
-*/}
-
-.training_controls .tag.disabled {
-/*  color: #000;
-  background-color: #fff;
-*/}
 
 .training_controls .tag .positive {
   float: left;
@@ -1394,6 +1383,30 @@ a.bookmarklet:hover {
   float: left;
   margin-right: 0.5em;
   font-size: 1.25em;
+}
+
+.training_controls .tag.selected span, .training_controls .tag.selected .remove {
+  background-color: #000;
+  border-color: #fff;
+  color: #fff;
+}
+
+.training_controls .tag.disabled span, .training_controls .tag.disabled .remove {
+  background-color: #fff;
+  color: #ccc;
+}
+
+.training_controls .tag.disabled .positive {
+  background-image: url(../images/positive_disabled.png);
+}
+
+.training_controls .tag.disabled .negative {
+  background-image: url(../images/negative_disabled.png);
+}
+
+.training_controls .tag.disabled .remove {
+  color: #ccc;
+  border-color: #ccc;
 }
 
 .feed_item .feed_information {
