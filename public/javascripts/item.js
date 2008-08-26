@@ -10,7 +10,7 @@ var Item = Class.create({
     this.closed           = this.element.down(".closed");
     this.status           = this.element.down(".status");
     this.tag_list         = this.element.down(".tag_list");
-    this.add_tag          = this.element.down(".add_tag");
+    this.train            = this.element.down(".train");
     this.moderation_panel = this.element.down(".moderation_panel");
     this.feed_information = this.element.down(".feed_information");
     this.body             = this.element.down(".body");
@@ -35,7 +35,11 @@ var Item = Class.create({
       this.status.title = 'Click to mark as ' + (this.element.match(".read") ? 'unread' : 'read');
     }.bind(this));
 
-    this.add_tag.observe("click", function() {
+    this.train.observe("click", function() {
+      this.toggleAddTagForm();
+    }.bind(this));
+    
+    this.tag_list.select("li").invoke("observe", "click", function() {
       this.toggleAddTagForm();
     }.bind(this));
   },
@@ -90,7 +94,7 @@ var Item = Class.create({
 
     this.tag_list.hide();
 
-    this.add_tag.addClassName("selected");
+    this.train.addClassName("selected");
     this.moderation_panel.addClassName("selected");
     this.loadAddTagForm();
   },
@@ -98,7 +102,7 @@ var Item = Class.create({
   hideAddTagForm: function() {
     this.tag_list.show();
 
-    this.add_tag.removeClassName("selected");
+    this.train.removeClassName("selected");
     this.moderation_panel.removeClassName("selected");
     if(this.add_tag_field) {
       this.add_tag_field.blur();

@@ -1193,12 +1193,12 @@ a.bookmarklet:hover {
   color: #666;
 }
 
-.feed_item .closed .add_tag {
+.feed_item .closed .train {
   float: right;
   margin: 0 2px 0 1em;
 }
 
-.feed_item .closed .add_tag.selected {
+.feed_item .closed .train.selected {
   z-index: 1000;
   border: 1px solid #8181DC;
   background-color: #D7E0F5;

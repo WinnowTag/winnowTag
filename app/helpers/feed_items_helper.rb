@@ -86,7 +86,7 @@ module FeedItemsHelper
   
   # Note: Update tagging.js when this changes
   def tag_control_for(feed_item, tag, classes, strength)
-    classes << "tag_control" << dom_id(tag)
+    classes << "tag_control" << dom_id(tag) << "stop"
     # TODO: sanitize
     title = "by #{tag.user.display_name}"
     title << ", #{strength}" if strength
