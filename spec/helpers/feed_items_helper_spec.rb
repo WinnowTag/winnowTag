@@ -44,12 +44,12 @@ describe FeedItemsHelper do
   
   describe "classes_for_taggings" do
     it "provides the class classifier when only a classifier tagging exists" do
-      taggings = mock_model(Tagging, :classifier_tagging? => true)
+      taggings = mock_model(Tagging, :positive? => true, :classifier_tagging? => true, :negative? => false)
       classes_for_taggings(taggings).should == ["classifier"]
     end
     
     it "provides the class positive when a positive user tagging exists" do
-      taggings = mock_model(Tagging, :classifier_tagging? => false, :positive? => true)
+      taggings = mock_model(Tagging, :classifier_tagging? => false, :positive? => true, :negative? => false)
       classes_for_taggings(taggings).should == ["positive"]
     end
 
@@ -59,14 +59,14 @@ describe FeedItemsHelper do
     end
     
     it "provides the class classifier when a user tagging and a classifier tagging exist" do
-      taggings = [ mock_model(Tagging, :classifier_tagging? => false, :positive? => true),
-                   mock_model(Tagging, :classifier_tagging? => true) ]
+      taggings = [ mock_model(Tagging, :classifier_tagging? => false, :positive? => true, :negative? => false),
+                   mock_model(Tagging, :classifier_tagging? => true, :positive? => true, :negative? => false) ]
       classes_for_taggings(taggings).should == ["positive", "classifier"]      
     end
     
     it "keeps classes given" do
-      taggings = [ mock_model(Tagging, :classifier_tagging? => false, :positive? => true),
-                   mock_model(Tagging, :classifier_tagging? => true) ]
+      taggings = [ mock_model(Tagging, :classifier_tagging? => false, :positive? => true, :negative? => false),
+                   mock_model(Tagging, :classifier_tagging? => true, :positive? => true, :negative? => false) ]
       classes_for_taggings(taggings, ["public"]).should == ["public", "positive", "classifier"]      
     end
   end
@@ -75,9 +75,9 @@ describe FeedItemsHelper do
     it "creates a list item with the proper controls inside it" do
       feed_item = mock_model(FeedItem)
       
-      tag = mock_model(Tag, :name => "tag1", :user => @current_user)
+      tag = mock_model(Tag, :name => "tag1", :user => current_user, :user_id => current_user.id)
       classes = ["positive", "classifier"]
-      tag_control_for(feed_item, tag, classes).should have_tag("li.positive.classifier") do
+      tag_control_for(feed_item, tag, classes, nil).should have_tag("li.positive.classifier") do
         with_tag ".name", "tag1"
       end
     end
@@ -86,9 +86,9 @@ describe FeedItemsHelper do
   describe "tag controls" do
     it "created list items for each tag" do
       taggings = [
-        [ mock_model(Tag, :name => "tag1", :user => current_user), [] ],
-        [ mock_model(Tag, :name => "tag2", :user => current_user), [] ],
-        [ mock_model(Tag, :name => "tag3", :user => current_user), [] ]
+        [ mock_model(Tag, :name => "tag1", :user => current_user, :user_id => current_user.id), [] ],
+        [ mock_model(Tag, :name => "tag2", :user => current_user, :user_id => current_user.id), [] ],
+        [ mock_model(Tag, :name => "tag3", :user => current_user, :user_id => current_user.id), [] ]
       ]
       feed_item = mock_model(FeedItem, :taggings_to_display => taggings)
     
