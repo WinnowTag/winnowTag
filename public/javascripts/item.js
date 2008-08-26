@@ -90,16 +90,16 @@ var Item = Class.create({
 
     this.tag_list.hide();
 
-    this.moderation_panel.addClassName("selected");
     this.add_tag.addClassName("selected");
+    this.moderation_panel.addClassName("selected");
     this.loadAddTagForm();
   },
   
   hideAddTagForm: function() {
     this.tag_list.show();
 
-    this.moderation_panel.removeClassName("selected");
     this.add_tag.removeClassName("selected");
+    this.moderation_panel.removeClassName("selected");
     if(this.add_tag_field) {
       this.add_tag_field.blur();
     }

@@ -593,16 +593,19 @@ var ItemBrowser = Class.create({
       var taggable_id = item.getAttribute("id");
       var tag_name = tag.down(".tag_name").innerHTML;
       tag.down(".positive").observe("click", function() {
+        if(tag.hasClassName("positive")) { return; }
         window.add_tagging(taggable_id, tag_name, "positive");
         tag.removeClassName("negative");
         tag.addClassName("positive");
       });
       tag.down(".negative").observe("click", function() {
+        if(tag.hasClassName("negative")) { return; }
         window.add_tagging(taggable_id, tag_name, "negative");
         tag.removeClassName("positive");
         tag.addClassName("negative");
       });
       tag.down(".remove").observe("click", function() {
+        if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
         window.remove_tagging(taggable_id, tag_name);
         tag.removeClassName("negative");
         tag.removeClassName("positive");
