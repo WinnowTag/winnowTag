@@ -3,7 +3,7 @@
 <div class="training_controls">
   <% (current_user.sidebar_tags - current_user.excluded_tags).each do |tag| -%>
     <% taggings = @feed_item.taggings.select { |t| t.user == current_user && t.tag == tag } %>
-    <div class="tag <%= classes_for_taggings(taggings).join(' ') %>" title=<%= tag_control_tooltip(tag, format_classifier_strength(taggings)) %>>
+    <div class="tag <%= dom_id(tag) %> <%= classes_for_taggings(taggings).join(' ') %>" title=<%= tag_control_tooltip(tag, format_classifier_strength(taggings)) %>>
       <span class="clearfix">
         <div class="positive"></div>
         <div class="negative"></div>

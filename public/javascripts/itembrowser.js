@@ -535,7 +535,7 @@ var ItemBrowser = Class.create({
         tag.removeClassName("selected");
         tag.removeClassName("disabled");
         
-        var tag_name = tag.down(".tag_name").innerHTMLunescapeHTML();
+        var tag_name = tag.down(".tag_name").innerHTML.unescapeHTML();
         
         if(value.blank()) {
           // Don't do anything
