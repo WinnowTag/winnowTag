@@ -591,7 +591,7 @@ var ItemBrowser = Class.create({
           
     training_controls_panel.select(".tag").each(function(tag) {
       var taggable_id = item.getAttribute("id");
-      var tag_name = tag.down(".tag_name").innerHTML;
+      var tag_name = tag.down(".tag_name").innerHTML.unescapeHTML();
       tag.down(".positive").observe("click", function() {
         if(tag.hasClassName("positive")) { return; }
         window.add_tagging(taggable_id, tag_name, "positive");
@@ -621,7 +621,7 @@ var ItemBrowser = Class.create({
         tag.removeClassName("selected");
         tag.removeClassName("disabled");
         
-        var tag_name = tag.down(".tag_name").innerHTML;
+        var tag_name = tag.down(".tag_name").innerHTMLunescapeHTML();
         
         if(value.blank()) {
           // Don't do anything
