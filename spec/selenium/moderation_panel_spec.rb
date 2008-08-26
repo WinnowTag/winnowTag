@@ -207,10 +207,10 @@ describe "moderation panel" do
     click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    dont_see_element "#feed_item_4 .moderation_panel .tag .tag_name:contains(new tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag .name:contains(new tag)"
     type "css=#feed_item_4 .moderation_panel input[type=text]", "new tag"
     hit_enter "css=#feed_item_4 .moderation_panel input[type=text]"
-    see_element "#feed_item_4 .moderation_panel .tag .tag_name:contains(new tag)"
+    see_element "#feed_item_4 .moderation_panel .tag .name:contains(new tag)"
   end
 
   # TODO: selenium does not fire the necessary keyboard events
@@ -218,19 +218,19 @@ describe "moderation panel" do
     click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(positive tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(negative tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(positive and classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(negative and classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(unused tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(unused tag)"
     type "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disbaled .tag_name:contains(positive tag)"
-         see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(negative tag)"
-         see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(positive and classifier tag)"
-         see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(negative and classifier tag)"
-         see_element "#feed_item_4 .moderation_panel .tag.disabled .tag_name:contains(unused tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disbaled .name:contains(positive tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(unused tag)"
   end
   
   # TODO: selenium does not fire the necessary keyboard events
@@ -238,19 +238,19 @@ describe "moderation panel" do
     click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(positive tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(negative tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(positive and classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(negative and classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(unused tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(unused tag)"
     type "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(positive tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(negative tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(classifier tag)"
-         see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(positive and classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(negative and classifier tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .tag_name:contains(unused tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(classifier tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(unused tag)"
   end
   
   # TODO: selenium does not fire the necessary keyboard events

@@ -10,7 +10,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
     return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
   var training_control = $$('#' + taggable_id + ' .moderation_panel .tag').detect(function(element) {
-    return element.down(".tag_name").innerHTML.unescapeHTML() == tag_name;
+    return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
   var url = '/taggings/create';
   var parameters = {
@@ -45,7 +45,7 @@ function remove_tagging(taggable_id, tag_name) {
     return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
   var training_control = $$('#' + taggable_id + ' .moderation_panel .tag').detect(function(element) {
-    return element.down(".tag_name").innerHTML.unescapeHTML() == tag_name;
+    return element.down(".name").innerHTML.unescapeHTML() == tag_name;
   });
   var url = '/taggings/destroy';
   var parameters = {

@@ -34,12 +34,13 @@ class Folder < ActiveRecord::Base
   end
 
   def tags_with_counts
-    Tag.find tag_ids, 
+    Tag.find :all, 
       :select => ['tags.*',
                   '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
                   '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
                   '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count'
                  ].join(","),
+      :conditions => { :id => tag_ids },
       :order => :name
   end
   

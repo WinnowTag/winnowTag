@@ -1379,7 +1379,7 @@ a.bookmarklet:hover {
   color: #000;
 }
 
-.training_controls .tag .tag_name {
+.training_controls .tag .name {
   float: left;
   margin-right: 0.5em;
   font-size: 1.25em;
