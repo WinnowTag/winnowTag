@@ -10,17 +10,13 @@ describe '/feeds/_header_controls.html.erb' do
     render :partial => '/feeds/header_controls.html.erb'
   end
   
-  it "should have an 'Add Feed' link on index" do
-    see_element 'a[href="/feeds/new"]'
-  end
-
   it "displays the search field" do
     render_it
-    response.should have_tag("input#text_filter[type=text]")
+    response.should have_tag("input#text_filter")
   end
 
   it "displays an add/import feed lnk" do
     render_it
-    response.should have_tag("a.add")
+    response.should have_tag("a .add")
   end
 end

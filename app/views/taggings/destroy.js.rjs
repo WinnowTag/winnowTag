@@ -1,5 +1,4 @@
 if @tag.taggings.empty?
-  # TODO: replace #{0} for real numbers
   page << <<-EOJS
     new ConfirmationMessage(#{_(:taggings_destroy_message, @tag.name).to_json}, function() {
       #{remote_function(:url => tag_path(@tag), :method => :delete)}
