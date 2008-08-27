@@ -104,6 +104,6 @@ function add_training_control(taggable_id, tag) {
   var training_control = $$('#' + taggable_id + ' .moderation_panel .tag').detect(function(element) {
     return element.down(".name").innerHTML.unescapeHTML() == tag;
   });
-  itemBrowser.initializeTrainingControl($(taggable_id), training_control);
+  $(taggable_id)._item.initializeTrainingControl(training_control);
   training_control.appear();
 }

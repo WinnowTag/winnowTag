@@ -437,7 +437,7 @@ var ItemBrowser = Class.create({
       $(item).removeClassName('selected');
       $(item).down(".feed_title a").removeClassName('selected');
       $(item).down(".feed_information").removeClassName('selected');
-      $(item)._item.hideAddTagForm();
+      $(item)._item.hideTrainingControls();
     }
   },
   
@@ -478,7 +478,7 @@ var ItemBrowser = Class.create({
     
     if(item) {
       item.removeClassName("open");
-      // item._item.hideAddTagForm();
+      item._item.hideTrainingControls();
     }
   },
   
@@ -500,100 +500,6 @@ var ItemBrowser = Class.create({
       this.toggleOpenCloseItem(this.selectedItem);
     }
   },
-
-  initializeTrainingControl: function(item, tag) {
-    var taggable_id = item.getAttribute("id");
-    var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-    tag.down(".positive").observe("click", function() {
-      if(tag.hasClassName("positive")) { return; }
-      window.add_tagging(taggable_id, tag_name, "positive");
-      tag.removeClassName("negative");
-      tag.addClassName("positive");
-    });
-    tag.down(".negative").observe("click", function() {
-      if(tag.hasClassName("negative")) { return; }
-      window.add_tagging(taggable_id, tag_name, "negative");
-      tag.removeClassName("positive");
-      tag.addClassName("negative");
-    });
-    tag.down(".remove").observe("click", function() {
-      if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
-      window.remove_tagging(taggable_id, tag_name);
-      tag.removeClassName("negative");
-      tag.removeClassName("positive");
-    });
-  },
-  
-  // TODO: need to update this local list when tag controls are clicked so they are always in sync
-  initializeItemModerationPanel: function(item) {
-    item = $(item);
-    
-    var panel = item.down(".moderation_panel");
-    var form = panel.down("form");
-    var field = panel.down("input[type=text]");
-    var training_controls_panel = panel.down(".training_controls");
-          
-    training_controls_panel.select(".tag").each(function(tag) {
-      this.initializeTrainingControl(item, tag);
-    }.bind(this));
-
-    var selected_tag = null;
-    
-    var updateTags = function(field, value, event) {
-      selected_tag = null;
-      
-      training_controls_panel.select(".tag").each(function(tag) {
-        tag.removeClassName("selected");
-        tag.removeClassName("disabled");
-        
-        var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-        
-        if(value.blank()) {
-          // Don't do anything
-        } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
-          tag.addClassName("disabled")
-        } else if(!selected_tag) {
-          selected_tag = tag_name;
-          tag.addClassName("selected");
-          
-          // http://www.webreference.com/programming/javascript/ncz/3.html
-          // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
-          //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
-          //   console.log("nope");
-          //   // Don't do anything
-          // } else {
-          //   field.value = tag_name;
-          //   if(field.createTextRange) {
-          //     var textSelection = field.createTextRange();
-          //     textSelection.moveStart("character", 0);
-          //     textSelection.moveEnd("character", value.length - field.value.length);
-          //     textSelection.select();
-          //   } else if (field.setSelectionRange) {
-          //     field.setSelectionRange(value.length, field.value.length);
-          //   }
-          // }
-        }
-      });
-    };
-    
-    new Form.Element.EventObserver(field, updateTags, 'keyup');
-
-    form.observe("submit", function() {
-      window.add_tagging(item.getAttribute("id"), selected_tag || field.value, "positive");
-      field.value = "";
-      updateTags(null, "");
-    }.bind(this));
-    
-    field.observe("keydown", function(event) {
-      if(event.keyCode == Event.KEY_ESC) { item._item.hideAddTagForm(); }
-    }.bind(this));
-    
-    field.focus();
-    
-    (function() {
-      new Effect.ScrollToInDiv(this.container, panel, {duration: 0.3, bottom_margin: 5});
-    }).bind(this).delay(0.3);
-  },
   
   addTag: function(tag) {
     if(!this.options.tags.include(tag)) {
@@ -607,7 +513,7 @@ var ItemBrowser = Class.create({
   },
 
   toggleOpenCloseSelectedItemModerationPanel: function() {
-    this.selectedItem._item.toggleAddTagForm();
+    this.selectedItem._item.toggleTrainingControls();
   },
   
   toggleReadUnreadSelectedItem: function() {

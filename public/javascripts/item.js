@@ -36,11 +36,11 @@ var Item = Class.create({
     }.bind(this));
 
     this.train.observe("click", function() {
-      this.toggleAddTagForm();
+      this.toggleTrainingControls();
     }.bind(this));
     
     this.tag_list.select("li").invoke("observe", "click", function() {
-      this.toggleAddTagForm();
+      this.toggleTrainingControls();
     }.bind(this));
   },
   
@@ -78,15 +78,15 @@ var Item = Class.create({
     this.load(this.feed_information);
   },
   
-  toggleAddTagForm: function() {
+  toggleTrainingControls: function() {
     if(this.moderation_panel.hasClassName("selected")) {
-      this.hideAddTagForm();
+      this.hideTrainingControls();
     } else {
-      this.showAddTagForm();
+      this.showTrainingControls();
     }
   },
   
-  showAddTagForm: function() {
+  showTrainingControls: function() {
     if(!this.isSelected()) {
       itemBrowser.closeItem(itemBrowser.selectedItem);
       itemBrowser.selectItem(this.element);
@@ -96,10 +96,10 @@ var Item = Class.create({
 
     this.train.addClassName("selected");
     this.moderation_panel.addClassName("selected");
-    this.loadAddTagForm();
+    this.loadTrainingControls();
   },
   
-  hideAddTagForm: function() {
+  hideTrainingControls: function() {
     this.tag_list.show();
 
     this.train.removeClassName("selected");
@@ -109,11 +109,100 @@ var Item = Class.create({
     }
   },
 
-  loadAddTagForm: function() {
-    this.load(this.moderation_panel, function() {
-      this.add_tag_field = this.moderation_panel.down("input[type=text]");
-      itemBrowser.initializeItemModerationPanel(this.element);
-    }.bind(this), true);
+  loadTrainingControls: function() {
+    this.load(this.moderation_panel, this.initializeTrainingControls.bind(this), true);
+  },
+  
+  initializeTrainingControls: function() {
+    this.add_tag_field = this.moderation_panel.down("input[type=text]");
+
+    var panel = this.element.down(".moderation_panel");
+    var form = panel.down("form");
+    var training_controls_panel = panel.down(".training_controls");
+          
+    training_controls_panel.select(".tag").each(function(tag) {
+      this.initializeTrainingControl(tag);
+    }.bind(this));
+
+    var selected_tag = null;
+    
+    var updateTags = function(field, value, event) {
+      selected_tag = null;
+      
+      training_controls_panel.select(".tag").each(function(tag) {
+        tag.removeClassName("selected");
+        tag.removeClassName("disabled");
+        
+        var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+        
+        if(value.blank()) {
+          // Don't do anything
+        } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
+          tag.addClassName("disabled")
+        } else if(!selected_tag) {
+          selected_tag = tag_name;
+          tag.addClassName("selected");
+          
+          // http://www.webreference.com/programming/javascript/ncz/3.html
+          // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
+          //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
+          //   console.log("nope");
+          //   // Don't do anything
+          // } else {
+          //   field.value = tag_name;
+          //   if(field.createTextRange) {
+          //     var textSelection = field.createTextRange();
+          //     textSelection.moveStart("character", 0);
+          //     textSelection.moveEnd("character", value.length - field.value.length);
+          //     textSelection.select();
+          //   } else if (field.setSelectionRange) {
+          //     field.setSelectionRange(value.length, field.value.length);
+          //   }
+          // }
+        }
+      });
+    };
+    
+    new Form.Element.EventObserver(this.add_tag_field, updateTags, 'keyup');
+
+    form.observe("submit", function() {
+      window.add_tagging(this.element.getAttribute("id"), selected_tag || this.add_tag_field.value, "positive");
+      this.add_tag_field.value = "";
+      updateTags(null, "");
+    }.bind(this));
+    
+    this.add_tag_field.observe("keydown", function(event) {
+      if(event.keyCode == Event.KEY_ESC) { this.hideTrainingControls(); }
+    }.bind(this));
+    
+    this.add_tag_field.focus();
+    
+    (function() {
+      this.scrollTo();
+    }).bind(this).delay(0.3);
+  },
+  
+  initializeTrainingControl: function(tag) {
+    var taggable_id = this.element.getAttribute("id");
+    var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+    tag.down(".positive").observe("click", function() {
+      if(tag.hasClassName("positive")) { return; }
+      window.add_tagging(taggable_id, tag_name, "positive");
+      tag.removeClassName("negative");
+      tag.addClassName("positive");
+    });
+    tag.down(".negative").observe("click", function() {
+      if(tag.hasClassName("negative")) { return; }
+      window.add_tagging(taggable_id, tag_name, "negative");
+      tag.removeClassName("positive");
+      tag.addClassName("negative");
+    });
+    tag.down(".remove").observe("click", function() {
+      if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
+      window.remove_tagging(taggable_id, tag_name);
+      tag.removeClassName("negative");
+      tag.removeClassName("positive");
+    });
   },
   
   load: function(target, onComplete, forceLoad) {
