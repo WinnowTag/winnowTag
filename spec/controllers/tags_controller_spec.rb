@@ -144,14 +144,12 @@ describe TagsController do
     end
     
     it "should be successful" do
-      accept('application/atom+xml')
-      get :index
+      get :index, :format => "atom"
       response.should be_success
     end
         
     it "should have application/atom+xml as the content type" do
-      accept('application/atom+xml')
-      get :index
+      get :index, :format => "atom"
       response.content_type.should == "application/atom+xml"
     end
     

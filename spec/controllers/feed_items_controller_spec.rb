@@ -58,8 +58,7 @@ describe FeedItemsController do
     end
     
     it "should render the clues" do
-      accept('text/javascript')
-      get :clues, :id => 1234, :tag => @tag.id
+      get :clues, :format => "js", :id => 1234, :tag => @tag.id
       response.should be_success
       response.should render_template("clues")
     end

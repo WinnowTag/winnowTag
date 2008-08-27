@@ -9,22 +9,6 @@ module AuthenticatedTestHelper #:nodoc:
     @request.env['Content-Type'] = type
   end
 
-  def accept(accept)
-    @request.env["HTTP_ACCEPT"] = accept
-  end
-
-  def authorize_as(user)
-    if user
-      @request.env["HTTP_AUTHORIZATION"] = "Basic #{Base64.encode64("#{users(user).login}:test")}"
-      accept       'application/xml'
-      content_type 'application/xml'
-    else
-      @request.env["HTTP_AUTHORIZATION"] = nil
-      accept       nil
-      content_type nil
-    end
-  end
-
   # http://project.ioni.st/post/217#post-217
   #
   #  def test_new_publication
@@ -50,10 +34,6 @@ module AuthenticatedTestHelper #:nodoc:
   #
   def assert_requires_login(login = nil)
     yield HttpLoginProxy.new(self, login)
-  end
-
-  def assert_http_authentication_required(login = nil)
-    yield XmlLoginProxy.new(self, login)
   end
 
   def reset!(*instance_vars)
@@ -98,17 +78,5 @@ class HttpLoginProxy < BaseLoginProxy
     
     def check
       @controller.assert_redirected_to :controller => 'account', :action => 'login'
-    end
-end
-
-class XmlLoginProxy < BaseLoginProxy
-  protected
-    def authenticate
-      @controller.accept 'application/xml'
-      @controller.authorize_as @login if @login
-    end
-    
-    def check
-      @controller.assert_response 401
     end
 end
