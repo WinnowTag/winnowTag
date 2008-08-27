@@ -16,6 +16,7 @@ var Item = Class.create({
     this.body              = this.element.down(".body");
     // this.training_controls = this.moderation_panel.down(".training_controls");
     // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
+    // this.add_tag_selected  = null;
     
     this.setupEventListeners();
     
@@ -122,52 +123,13 @@ var Item = Class.create({
     this.training_controls.select(".tag").each(function(tag) {
       this.initializeTrainingControl(tag);
     }.bind(this));
-
-    var selected_tag = null;
     
-    var updateTags = function(field, value, event) {
-      selected_tag = null;
-      
-      this.training_controls.select(".tag").each(function(tag) {
-        tag.removeClassName("selected");
-        tag.removeClassName("disabled");
-        
-        var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-        
-        if(value.blank()) {
-          // Don't do anything
-        } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
-          tag.addClassName("disabled")
-        } else if(!selected_tag) {
-          selected_tag = tag_name;
-          tag.addClassName("selected");
-          
-          // http://www.webreference.com/programming/javascript/ncz/3.html
-          // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
-          //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
-          //   console.log("nope");
-          //   // Don't do anything
-          // } else {
-          //   field.value = tag_name;
-          //   if(field.createTextRange) {
-          //     var textSelection = field.createTextRange();
-          //     textSelection.moveStart("character", 0);
-          //     textSelection.moveEnd("character", value.length - field.value.length);
-          //     textSelection.select();
-          //   } else if (field.setSelectionRange) {
-          //     field.setSelectionRange(value.length, field.value.length);
-          //   }
-          // }
-        }
-      }.bind(this));
-    };
-    
-    new Form.Element.EventObserver(this.add_tag_field, updateTags, 'keyup');
+    new Form.Element.EventObserver(this.add_tag_field, this.addTagFieldChanged.bind(this), 'keyup');
 
     this.add_tag_form.observe("submit", function() {
-      this.addTagging(selected_tag || this.add_tag_field.value, "positive");
+      this.addTagging(this.add_tag_selected || this.add_tag_field.value, "positive");
       this.add_tag_field.value = "";
-      updateTags(this.add_tag_field, "");
+      this.addTagFieldChanged(this.add_tag_field, "");
     }.bind(this));
     
     this.add_tag_field.observe("keydown", function(event) {
@@ -179,6 +141,42 @@ var Item = Class.create({
     (function() {
       this.scrollTo();
     }).bind(this).delay(0.3);
+  },
+  
+  addTagFieldChanged: function(field, value, event) {
+    this.add_tag_selected = null;
+    this.training_controls.select(".tag").each(function(tag) {
+      tag.removeClassName("selected");
+      tag.removeClassName("disabled");
+      
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+      
+      if(value.blank()) {
+        // Don't do anything
+      } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
+        tag.addClassName("disabled")
+      } else if(!this.add_tag_selected) {
+        this.add_tag_selected = tag_name;
+        tag.addClassName("selected");
+        
+        // http://www.webreference.com/programming/javascript/ncz/3.html
+        // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
+        //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
+        //   console.log("nope");
+        //   // Don't do anything
+        // } else {
+        //   field.value = tag_name;
+        //   if(field.createTextRange) {
+        //     var textSelection = field.createTextRange();
+        //     textSelection.moveStart("character", 0);
+        //     textSelection.moveEnd("character", value.length - field.value.length);
+        //     textSelection.select();
+        //   } else if (field.setSelectionRange) {
+        //     field.setSelectionRange(value.length, field.value.length);
+        //   }
+        // }
+      }
+    }.bind(this));
   },
   
   initializeTrainingControl: function(tag) {
