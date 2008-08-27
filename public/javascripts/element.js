@@ -1,3 +1,8 @@
+// Copyright (c) 2008 The Kaphan Foundation
+//
+// Possession of a copy of this file grants no permission or license
+// to use, modify, or create derivate works.
+// Please visit http://www.peerworks.org/contact for further information.
 Element.addMethods({
   insertInOrder: function(container, sibling_selector, sibling_value_selector, element_html, element_value) {
     var needToInsert = true;
