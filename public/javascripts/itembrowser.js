@@ -435,28 +435,9 @@ var ItemBrowser = Class.create({
     this.selectedItem = null;
     if(item) {
       $(item).removeClassName('selected');
-      $(item).down(".feed_title a").removeClassName('selected');
+      $(item).down(".feed_title").removeClassName('selected');
       $(item).down(".feed_information").removeClassName('selected');
       $(item)._item.hideTrainingControls();
-    }
-  },
-  
-  selectFeedInformation: function(feed) {
-    feed = $(feed);
-    
-    var item = feed.up('.feed_item');
-    var information = item.down(".feed_information");
-
-    if(feed.hasClassName("selected")) {
-      feed.removeClassName("selected");
-      information.removeClassName("selected");
-    } else {
-      itemBrowser.selectItem(item);
-      feed.addClassName('selected');
-      information.addClassName('selected');
-
-      item._item.scrollTo();
-      item._item.loadFeedInformation();
     }
   },
   

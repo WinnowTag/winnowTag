@@ -1182,8 +1182,19 @@ a.bookmarklet:hover {
   color: #666;
 }
 
-.feed_item .closed .feed_title a {
+.feed_item .closed .feed_title {
+  padding: 3px 4px;
+  white-space: nowrap;
   color: #52718B;
+}
+
+.feed_item .feed_title.selected {
+  padding: 2px 3px;
+  color: #333;
+  border: 1px solid #ffdb00;
+  background-color: #ffff89;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;  
 }
 
 .feed_item .closed .date {
@@ -1425,20 +1436,6 @@ a.bookmarklet:hover {
 
 .feed_item .feed_information.selected {
   display: block;
-}
-
-.feed_item .closed .feed_title a {
-  padding: 3px 4px;
-  white-space: nowrap;
-}
-
-.feed_item .feed_title a.selected {
-  padding: 2px 3px;
-  color: #333;
-  border: 1px solid #ffdb00;
-  background-color: #ffff89;
-  -moz-border-radius: 0.4em;
-  -webkit-border-radius: 0.4em;  
 }
 
 .feed_item .feed_information .summary {

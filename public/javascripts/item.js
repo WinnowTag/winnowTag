@@ -9,8 +9,9 @@ var Item = Class.create({
     this.id                = this.element.getAttribute('id').match(/\d+/).first();
     this.closed            = this.element.down(".closed");
     this.status            = this.element.down(".status");
-    this.tag_list          = this.element.down(".tag_list");
+    this.feed_title        = this.element.down(".feed_title");
     this.train             = this.element.down(".train");
+    this.tag_list          = this.element.down(".tag_list");
     this.moderation_panel  = this.element.down(".moderation_panel");
     this.feed_information  = this.element.down(".feed_information");
     this.body              = this.element.down(".body");
@@ -28,22 +29,16 @@ var Item = Class.create({
       itemBrowser.toggleOpenCloseItem(this.element, event);
     }.bind(this));
 
-    this.status.observe("click", function() {
-      this.toggleReadUnread();
-    }.bind(this));
+    this.status.observe("click", this.toggleReadUnread.bind(this));
 
     this.status.observe("mouseover", function() {
       // # TODO: localization
       this.status.title = 'Click to mark as ' + (this.element.match(".read") ? 'unread' : 'read');
     }.bind(this));
 
-    this.train.observe("click", function() {
-      this.toggleTrainingControls();
-    }.bind(this));
-    
-    this.tag_list.select("li").invoke("observe", "click", function() {
-      this.toggleTrainingControls();
-    }.bind(this));
+    this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
+    this.train.observe("click", this.toggleTrainingControls.bind(this));
+    this.tag_list.select("li").invoke("observe", "click", this.toggleTrainingControls.bind(this));
   },
   
   isRead: function() {
@@ -74,6 +69,20 @@ var Item = Class.create({
   
   loadBody: function() {
     this.load(this.body);
+  },
+
+  toggleFeedInformation: function() {
+    if(this.feed_title.hasClassName("selected")) {
+      this.feed_title.removeClassName("selected");
+      this.feed_information.removeClassName("selected");
+    } else {
+      itemBrowser.selectItem(this.element);
+      this.feed_title.addClassName('selected');
+      this.feed_information.addClassName('selected');
+
+      this.scrollTo();
+      this.loadFeedInformation();
+    }
   },
   
   loadFeedInformation: function() {
