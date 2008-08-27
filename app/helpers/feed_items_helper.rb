@@ -84,7 +84,7 @@ module FeedItemsHelper
     end
   end
   
-  # Note: Update tagging.js when this changes
+  # Note: Update item.js when this changes
   def tag_control_for(feed_item, tag, classes, strength)
     classes << "tag_control" << dom_id(tag) << "stop"
     # TODO: sanitize

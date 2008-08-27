@@ -86,7 +86,7 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :text_indexing_observer
   
   config.after_initialize do 
-    ActionView::Helpers::AssetTagHelper.register_javascript_expansion :winnow => ["slider", "cookies", "applesearch", "bias_slider", "timeout", "messages", "labeled_input", "scroll", "classification", "itembrowser", "item", "sidebar", "tagging"]
+    ActionView::Helpers::AssetTagHelper.register_javascript_expansion :winnow => ["slider", "cookies", "applesearch", "bias_slider", "timeout", "messages", "labeled_input", "scroll", "classification", "itembrowser", "item", "sidebar"]
     ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :winnow => ["winnow", "tables", "slider", "scaffold", "button"]
   end
 end

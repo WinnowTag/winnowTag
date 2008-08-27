@@ -5,16 +5,17 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Item = Class.create({
   initialize: function(element) {
-    this.element          = element;
-    this.id               = this.element.getAttribute('id').match(/\d+/).first();
-    this.closed           = this.element.down(".closed");
-    this.status           = this.element.down(".status");
-    this.tag_list         = this.element.down(".tag_list");
-    this.train            = this.element.down(".train");
-    this.moderation_panel = this.element.down(".moderation_panel");
-    this.feed_information = this.element.down(".feed_information");
-    this.body             = this.element.down(".body");
-    // this.add_tag_field    = this.moderation_panel.down("input[type=text]");
+    this.element           = element;
+    this.id                = this.element.getAttribute('id').match(/\d+/).first();
+    this.closed            = this.element.down(".closed");
+    this.status            = this.element.down(".status");
+    this.tag_list          = this.element.down(".tag_list");
+    this.train             = this.element.down(".train");
+    this.moderation_panel  = this.element.down(".moderation_panel");
+    this.feed_information  = this.element.down(".feed_information");
+    this.body              = this.element.down(".body");
+    // this.training_controls = this.moderation_panel.down(".training_controls");
+    // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
     
     this.setupEventListeners();
     
@@ -114,13 +115,11 @@ var Item = Class.create({
   },
   
   initializeTrainingControls: function() {
-    this.add_tag_field = this.moderation_panel.down("input[type=text]");
+    this.training_controls = this.moderation_panel.down(".training_controls");
+    this.add_tag_form      = this.moderation_panel.down("form");
+    this.add_tag_field     = this.add_tag_form.down("input[type=text]");
 
-    var panel = this.element.down(".moderation_panel");
-    var form = panel.down("form");
-    var training_controls_panel = panel.down(".training_controls");
-          
-    training_controls_panel.select(".tag").each(function(tag) {
+    this.training_controls.select(".tag").each(function(tag) {
       this.initializeTrainingControl(tag);
     }.bind(this));
 
@@ -129,7 +128,7 @@ var Item = Class.create({
     var updateTags = function(field, value, event) {
       selected_tag = null;
       
-      training_controls_panel.select(".tag").each(function(tag) {
+      this.training_controls.select(".tag").each(function(tag) {
         tag.removeClassName("selected");
         tag.removeClassName("disabled");
         
@@ -160,15 +159,15 @@ var Item = Class.create({
           //   }
           // }
         }
-      });
+      }.bind(this));
     };
     
     new Form.Element.EventObserver(this.add_tag_field, updateTags, 'keyup');
 
-    form.observe("submit", function() {
-      window.add_tagging(this.element.getAttribute("id"), selected_tag || this.add_tag_field.value, "positive");
+    this.add_tag_form.observe("submit", function() {
+      this.addTagging(selected_tag || this.add_tag_field.value, "positive");
       this.add_tag_field.value = "";
-      updateTags(null, "");
+      updateTags(this.add_tag_field, "");
     }.bind(this));
     
     this.add_tag_field.observe("keydown", function(event) {
@@ -183,26 +182,111 @@ var Item = Class.create({
   },
   
   initializeTrainingControl: function(tag) {
-    var taggable_id = this.element.getAttribute("id");
     var tag_name = tag.down(".name").innerHTML.unescapeHTML();
     tag.down(".positive").observe("click", function() {
       if(tag.hasClassName("positive")) { return; }
-      window.add_tagging(taggable_id, tag_name, "positive");
+      this.addTagging(tag_name, "positive");
       tag.removeClassName("negative");
       tag.addClassName("positive");
-    });
+    }.bind(this));
     tag.down(".negative").observe("click", function() {
       if(tag.hasClassName("negative")) { return; }
-      window.add_tagging(taggable_id, tag_name, "negative");
+      this.addTagging(tag_name, "negative");
       tag.removeClassName("positive");
       tag.addClassName("negative");
-    });
+    }.bind(this));
     tag.down(".remove").observe("click", function() {
       if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
-      window.remove_tagging(taggable_id, tag_name);
+      this.removeTagging(tag_name);
       tag.removeClassName("negative");
       tag.removeClassName("positive");
+    }.bind(this));
+  },
+  
+  addTagging: function(tag_name, tagging_type) {
+    if(tag_name.match(/^\s*$/)) { return; }
+
+    var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
+
+    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+    if(tag_control) {
+      tag_control.removeClassName(other_tagging_type);
+      tag_control.addClassName(tagging_type);
+    } else {
+      this.addTagControl(tag_name, tagging_type);
+    }
+    
+    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+    if(training_control) {
+      training_control.removeClassName(other_tagging_type);
+      training_control.addClassName(tagging_type);
+    } else {
+      this.addTrainingControl(tag_name);
+    }
+      
+    new Ajax.Request('/taggings/create', { method: 'post', parameters: {
+      "tagging[feed_item_id]": this.id,
+      "tagging[tag]": tag_name,
+      "tagging[strength]": tagging_type == "positive" ? 1 : 0
+    }});
+  },
+  
+  removeTagging: function(tag_name) {
+    if(tag_name.match(/^\s*$/)) { return; }
+
+    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+    if (tag_control) {
+      tag_control.removeClassName('positive');
+      tag_control.removeClassName('negative');
+      if(!tag_control.match('.classifier')) {
+        tag_control.remove()
+      }
+    }
+
+    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+    if(training_control) {
+      training_control.removeClassName('positive');
+      training_control.removeClassName('negative');
+    }
+
+    new Ajax.Request('/taggings/destroy', { method: 'post', parameters: {
+      "tagging[feed_item_id]": this.id,
+      "tagging[tag]": tag_name
+    }});
+  },
+  
+  findTagElement: function(container, elementSelector, tag_name) {
+    var tag = container.select(elementSelector).detect(function(element) {
+      return element.down(".name").innerHTML.unescapeHTML() == tag_name;
     });
+    return tag;
+  },
+
+  addTagControl: function(tag_name, tagging_type) {
+    // TODO: needs to know the tag id to be able to update/remove
+    var tag_control = '<li class="tag_control stop ' + tagging_type + '">' + 
+      // TODO: sanitize
+      '<span class="name">' + tag_name + '</span>' + 
+    '</li> ';
+    insert_in_order(this.tag_list, "li", ".name", tag_control, tag_name);
+  },
+
+  addTrainingControl: function(tag_name) {
+    // TODO: needs to know the tag id to be able to update/remove
+    var training_control = '<div class="tag positive" style="display:none">' + 
+      '<span class="clearfix">' + 
+        '<div class="positive"></div>' + 
+        '<div class="negative"></div>' + 
+        // TODO: sanitize
+        '<div class="name">' + tag_name + '</div>' + 
+      '</span>' + 
+      '<div class="remove">X</div>' + 
+    '</div> ';
+    insert_in_order(this.training_controls, "div", ".name", training_control, tag_name);
+  
+    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+    this.initializeTrainingControl(training_control);
+    training_control.appear();
   },
   
   load: function(target, onComplete, forceLoad) {
