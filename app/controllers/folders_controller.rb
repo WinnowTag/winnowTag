@@ -26,11 +26,11 @@ class FoldersController < ApplicationController
     @folder = current_user.folders.find(params[:id])
     case params[:item_id]
       when /^feed_(\d+)$/
-        @folder.add_feed!($1)
         @feed = Feed.find($1)
+        @folder.feeds << @feed
       when /^tag_(\d+)$/
-        @folder.add_tag!($1)
         @tag = Tag.find($1)
+        @folder.tags << @tag
     end
     respond_to :js
   end
@@ -39,9 +39,9 @@ class FoldersController < ApplicationController
     @folder = current_user.folders.find(params[:id])
     case params[:item_id]
       when /^feed_(\d+)$/
-        @folder.remove_feed!($1)
+        @folder.feed_ids -= [$1.to_i]
       when /^tag_(\d+)$/
-        @folder.remove_tag!($1)
+        @folder.tag_ids -= [$1.to_i]
     end
     render :nothing => true
   end
