@@ -129,7 +129,6 @@ class TagsController < ApplicationController
       if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
         render :action => "merge.js.rjs"
       else
-        @old_tag_name = @tag.name
         if @tag.update_attributes(:name => @name)
           render :action => "rename.js.rjs"
         else

@@ -1,7 +1,2 @@
-page << "if(itemBrowser) { itemBrowser.removeTag(#{@tag.name.to_json}); }"
-
-page.select(".#{dom_id(@tag)}").each do |element|
-  element.remove
-end
-
+page.select(".#{dom_id(@tag)}").invoke("remove")
 page << "Message.add('notice', #{"Deleted #{@tag.name}".to_json});"

@@ -228,6 +228,7 @@ Classification.prototype = {
       }
     }.bind(this), 2);
   },
+
   notify: function(event) {
     if (this.options['on' + event]) {
       this.options['on' + event](this);

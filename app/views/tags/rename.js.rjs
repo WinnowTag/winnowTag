@@ -2,6 +2,3 @@ page.select(".#{dom_id(@tag)}").each do |element|
   element.down(".name").update @tag.name
   page << "value.up().insertInOrder(value.tagName, '.name', value, #{@tag.name.to_json});"
 end
-
-page << "if(itemBrowser) { itemBrowser.removeTag(#{@old_tag_name.to_json}); }"
-page << "if(itemBrowser) { itemBrowser.addTag(#{@tag.name.to_json}); }"

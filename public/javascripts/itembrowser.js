@@ -8,7 +8,6 @@ var ItemBrowser = Class.create({
     this.options = {
       controller: name,
       url: name,
-      tags: [],
       orders: {}
     };
     Object.extend(this.options, options || {});
@@ -482,17 +481,6 @@ var ItemBrowser = Class.create({
     }
   },
   
-  addTag: function(tag) {
-    if(!this.options.tags.include(tag)) {
-      this.options.tags.push(tag);
-      this.options.tags = this.options.tags.sortBy(function(item) { return item.toLowerCase(); });
-    }
-  },
-  
-  removeTag: function(tag) {
-    this.options.tags = this.options.tags.without(tag);
-  },
-
   toggleOpenCloseSelectedItemModerationPanel: function() {
     this.selectedItem._item.toggleTrainingControls();
   },

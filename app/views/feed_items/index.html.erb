@@ -5,7 +5,7 @@
 			itemBrowser = new ItemBrowser('feed_items', 'content', { orders: {
 			  desc:      ["date", "strength"],
 			  "default": "date"
-			}, tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %> });
+			}});
 
       new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
         itemBrowser.styleFilters();

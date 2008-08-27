@@ -189,20 +189,22 @@ var Item = Class.create({
   },
   
   initializeTrainingControl: function(tag) {
-    var tag_name = tag.down(".name").innerHTML.unescapeHTML();
     tag.down(".positive").observe("click", function() {
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
       if(tag.hasClassName("positive")) { return; }
       this.addTagging(tag_name, "positive");
       tag.removeClassName("negative");
       tag.addClassName("positive");
     }.bind(this));
     tag.down(".negative").observe("click", function() {
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
       if(tag.hasClassName("negative")) { return; }
       this.addTagging(tag_name, "negative");
       tag.removeClassName("positive");
       tag.addClassName("negative");
     }.bind(this));
     tag.down(".remove").observe("click", function() {
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
       if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
       this.removeTagging(tag_name);
       tag.removeClassName("negative");
@@ -231,11 +233,47 @@ var Item = Class.create({
       this.addTrainingControl(tag_name);
     }
       
-    new Ajax.Request('/taggings/create', { method: 'post', parameters: {
-      "tagging[feed_item_id]": this.id,
-      "tagging[tag]": tag_name,
-      "tagging[strength]": tagging_type == "positive" ? 1 : 0
-    }});
+    new Ajax.Request('/taggings/create', { method: 'post', requestHeaders: { Accept: 'application/json' },
+      parameters: {
+        "tagging[feed_item_id]": this.id,
+        "tagging[tag]": tag_name,
+        "tagging[strength]": tagging_type == "positive" ? 1 : 0
+      },
+      onSuccess: function(response) {
+        var data = response.responseJSON;
+        
+        // Add the tag's id as a class to newly created controls so they get properly updated if 
+        // the user renames or deletes them before reloading the page
+        var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+        tag_control.addClassName(data.id);
+        var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+        training_control.addClassName(data.id);
+        
+        // TODO: Move this to itembrowser.js
+        // Add/Update the filter for this tag
+        if(!$(data.id)) {
+          $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name)
+        
+          new Draggable(data.id, { scroll: "sidebar", ghosting: true, revert: true, constraint: "vertical", 
+            reverteffect: function(element, top_offset, left_offset) {
+              new Effect.Move(element, {x: -left_offset, y: -top_offset, duration: 0});
+            }
+          });
+          
+          itemBrowser.styleFilters();
+        } else {
+          $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+        }
+        
+        // TODO: Moved this to classifier.js
+        // Update the classification button's status
+        var classification_button = $('classification_button');
+        if (classification_button) {
+          classification_button.disabled = false;
+          $("progress_title").update(data.classifierProgress);
+        }
+      }.bind(this)
+    });
   },
   
   removeTagging: function(tag_name) {
@@ -256,10 +294,32 @@ var Item = Class.create({
       training_control.removeClassName('negative');
     }
 
-    new Ajax.Request('/taggings/destroy', { method: 'post', parameters: {
-      "tagging[feed_item_id]": this.id,
-      "tagging[tag]": tag_name
-    }});
+    new Ajax.Request('/taggings/destroy', { method: 'post', requestHeaders: { Accept: 'application/json' },
+      parameters: {
+        "tagging[feed_item_id]": this.id,
+        "tagging[tag]": tag_name
+      },
+      onSuccess: function(response) {
+        var data = response.responseJSON;
+
+        if(data.prompt_to_delete_tag) {
+          new ConfirmationMessage(data.prompt_to_delete_tag_message, function() {
+            new Ajax.Request(data.prompt_to_delete_tag_url, {method: 'delete'});
+          });
+        }
+
+        // Update the filter for this tag
+        $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+        
+        // TODO: Moved this to classifier.js
+        // Update the classification button's status
+        var classification_button = $('classification_button');
+        if (classification_button) {
+          classification_button.disabled = false;
+          $("progress_title").update(data.classifierProgress);
+        }
+      }
+    });
   },
   
   findTagElement: function(container, elementSelector, tag_name) {
