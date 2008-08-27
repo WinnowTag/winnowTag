@@ -64,7 +64,7 @@ module FeedItemsHelper
       end
     end.compact.join(" ")
     
-    content_tag(:ul, html, :class => "tag_list", :id => dom_id(feed_item, "tag_controls"))
+    content_tag(:ul, html, :class => "tag_list")
   end
   
   def feed_control_for(feed_item)

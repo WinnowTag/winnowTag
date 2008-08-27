@@ -32,7 +32,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
     training_control.removeClassName(other_tagging_type);
     training_control.addClassName(tagging_type);
   } else {
-    // TODO: Add training control      
+    add_training_control(taggable_id, tag_name);
   }
   
   sendTagRequest(url, parameters);
@@ -78,18 +78,31 @@ function sendTagRequest(url, parameters) {
 }
 
 function add_tag_control(taggable_id, tag) {
-  if (tag == null || tag == '') return false;
-  var tag_controls = $('tag_controls_' + taggable_id);
-  // TODO: needs to know the tag id to load the information panel
-  var tag_control = '<li class="positive tag_control">' + 
+  var tag_controls = $(taggable_id).down(".tag_list");
+  // TODO: needs to know the tag id to be able to update/remove
+  var tag_control = '<li class="positive tag_control stop">' + 
     // TODO: sanitize
     '<span class="name">' + tag + '</span>' + 
   '</li> ';
-  insert_in_order(tag_controls, "li", "span.name", tag_control, tag);
+  insert_in_order(tag_controls, "li", ".name", tag_control, tag);
 }
 
-// function find_tag(container, tagClass, nameClass) {
-//   var tag_control = $$(container + ' .' + tagClass).detect(function(element) {
-//     return element.down(nameClass).innerHTML.unescapeHTML() == tag_name;
-//   }); 
-// }
+function add_training_control(taggable_id, tag) {
+  var training_controls = $(taggable_id).down('.training_controls');
+  // TODO: needs to know the tag id to be able to update/remove
+  var training_control = '<div class="tag positive" style="display:none">' + 
+    '<span class="clearfix">' + 
+      '<div class="positive"></div>' + 
+      '<div class="negative"></div>' + 
+      // TODO: sanitize
+      '<div class="name">' + tag + '</div>' + 
+    '</span>' + 
+    '<div class="remove">X</div>' + 
+  '</div> ';
+  insert_in_order(training_controls, "div", ".name", training_control, tag);
+  
+  var training_control = $$('#' + taggable_id + ' .moderation_panel .tag').detect(function(element) {
+    return element.down(".name").innerHTML.unescapeHTML() == tag;
+  });
+  training_control.appear();
+}

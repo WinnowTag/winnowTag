@@ -92,7 +92,7 @@ describe FeedItemsHelper do
       ]
       feed_item = mock_model(FeedItem, :taggings_to_display => taggings)
     
-      tag_controls(feed_item).should have_tag("ul.tag_list##{dom_id(feed_item, 'tag_controls')}") do
+      tag_controls(feed_item).should have_tag("ul.tag_list") do
         with_tag("li", 3)
       end
     end
