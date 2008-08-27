@@ -275,7 +275,7 @@ var Item = Class.create({
       // TODO: sanitize
       '<span class="name">' + tag_name + '</span>' + 
     '</li> ';
-    insert_in_order(this.tag_list, "li", ".name", tag_control, tag_name);
+    this.tag_list.insertInOrder("li", ".name", tag_control, tag_name);
   },
 
   addTrainingControl: function(tag_name) {
@@ -289,7 +289,7 @@ var Item = Class.create({
       '</span>' + 
       '<div class="remove">X</div>' + 
     '</div> ';
-    insert_in_order(this.training_controls, "div", ".name", training_control, tag_name);
+    this.training_controls.insertInOrder("div", ".name", training_control, tag_name);
   
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
     this.initializeTrainingControl(training_control);
