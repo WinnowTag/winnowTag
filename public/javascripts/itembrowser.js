@@ -493,6 +493,29 @@ var ItemBrowser = Class.create({
       this.toggleOpenCloseItem(this.selectedItem);
     }
   },
+
+  initializeTrainingControl: function(item, tag) {
+    var taggable_id = item.getAttribute("id");
+    var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+    tag.down(".positive").observe("click", function() {
+      if(tag.hasClassName("positive")) { return; }
+      window.add_tagging(taggable_id, tag_name, "positive");
+      tag.removeClassName("negative");
+      tag.addClassName("positive");
+    });
+    tag.down(".negative").observe("click", function() {
+      if(tag.hasClassName("negative")) { return; }
+      window.add_tagging(taggable_id, tag_name, "negative");
+      tag.removeClassName("positive");
+      tag.addClassName("negative");
+    });
+    tag.down(".remove").observe("click", function() {
+      if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
+      window.remove_tagging(taggable_id, tag_name);
+      tag.removeClassName("negative");
+      tag.removeClassName("positive");
+    });
+  },
   
   // TODO: need to update this local list when tag controls are clicked so they are always in sync
   initializeItemModerationPanel: function(item) {
@@ -504,27 +527,8 @@ var ItemBrowser = Class.create({
     var training_controls_panel = panel.down(".training_controls");
           
     training_controls_panel.select(".tag").each(function(tag) {
-      var taggable_id = item.getAttribute("id");
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      tag.down(".positive").observe("click", function() {
-        if(tag.hasClassName("positive")) { return; }
-        window.add_tagging(taggable_id, tag_name, "positive");
-        tag.removeClassName("negative");
-        tag.addClassName("positive");
-      });
-      tag.down(".negative").observe("click", function() {
-        if(tag.hasClassName("negative")) { return; }
-        window.add_tagging(taggable_id, tag_name, "negative");
-        tag.removeClassName("positive");
-        tag.addClassName("negative");
-      });
-      tag.down(".remove").observe("click", function() {
-        if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
-        window.remove_tagging(taggable_id, tag_name);
-        tag.removeClassName("negative");
-        tag.removeClassName("positive");
-      });
-    });
+      this.initializeTrainingControl(item, tag);
+    }.bind(this));
 
     var selected_tag = null;
     
