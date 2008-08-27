@@ -6,6 +6,10 @@
 			  desc:      ["date", "strength"],
 			  "default": "date"
 			}, tags: <%= (current_user.sidebar_tags - current_user.excluded_tags).map(&:name).to_json %> });
+
+      new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
+        itemBrowser.styleFilters();
+      });
 		});
 	</script>
 <% end -%>
@@ -38,16 +42,7 @@
   </div>
 <% end -%>
 
-<% content_for :sidebar do -%>
-  <% javascript_tag do -%>
-    document.observe('dom:loaded', function() { 
-      new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
-        AppleSearch.setup();
-        itemBrowser.styleFilters();
-      });
-    });
-  <% end -%>
-<% end -%>
+<% content_for :sidebar, "" %>
 
 <% content_for :footer do -%>	
   <div class="toolbar">
