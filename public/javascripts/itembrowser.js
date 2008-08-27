@@ -110,9 +110,16 @@ var ItemBrowser = Class.create({
     this.showLoadingIndicator();
     
     new Ajax.Request(this.buildUpdateURL(options || {}), { 
-      evalScripts: true, 
-      method: 'get',
-      onComplete: function() {
+      method: 'get', requestHeaders: { Accept: 'application/json' },
+      onComplete: function(response) {
+        var data = response.responseJSON;
+        if(data.full) {
+          this.setFull(true);
+        }
+        data.items.each(function(item) {
+          this.insertItem(item.id, item.content);
+        }.bind(this));
+        
         this.updateEmptyMessage();
         this.hideLoadingIndicator();
         this.loading = false;

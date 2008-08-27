@@ -1,6 +1,0 @@
-if @full
-  page.call 'itemBrowser.setFull', true
-end
-@feedbacks.each do |feedback|
-  page.call 'itemBrowser.insertItem', dom_id(feedback), render_to_string(:partial => 'feedback.html.erb', :object => feedback)
-end

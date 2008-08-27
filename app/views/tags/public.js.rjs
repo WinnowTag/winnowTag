@@ -1,6 +1,0 @@
-if @full
-  page.call 'itemBrowser.setFull', true
-end
-@tags.each do |tag|
-  page.call 'itemBrowser.insertItem', dom_id(tag), render_to_string(:partial => 'public_tag.html.erb', :object => tag)
-end

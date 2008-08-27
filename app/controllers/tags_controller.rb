@@ -43,7 +43,7 @@ class TagsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         @tags = Tag.search(:user => current_user, :text_filter => params[:text_filter], :own => true,
                            :order => params[:order], :direction => params[:direction])
         @full = true
@@ -60,7 +60,7 @@ class TagsController < ApplicationController
   def public
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @tags = Tag.search(:user => current_user, :text_filter => params[:text_filter], :conditions => ["tags.public = ?", true], 
                            :order => params[:order], :direction => params[:direction], 

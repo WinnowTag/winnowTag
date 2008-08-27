@@ -1,6 +1,0 @@
-if @full
-  page.call 'itemBrowser.setFull', true
-end
-@invites.each do |invite|
-  page.call 'itemBrowser.insertItem', dom_id(invite), render_to_string(:partial => 'invite.html.erb', :object => invite)
-end

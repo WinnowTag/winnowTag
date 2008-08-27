@@ -27,7 +27,7 @@ class FeedItemsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
 
         filters = { :order => params[:order], :direction => params[:direction],
