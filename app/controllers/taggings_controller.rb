@@ -29,6 +29,7 @@ class TaggingsController < ApplicationController
     params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
     @tagging = current_user.taggings.create!(params[:tagging])
     @feed_item = @tagging.feed_item
+    params[:tagging][:tag].update_attribute(:show_in_sidebar, true) unless params[:tagging][:tag].show_in_sidebar?
     respond_to :js
   end
   
