@@ -5,7 +5,7 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Item = Class.create({
   initialize: function(element) {
-    this.element           = element;
+    this.element           = $(element);
     this.id                = this.element.getAttribute('id').match(/\d+/).first();
     this.closed            = this.element.down(".closed");
     this.status            = this.element.down(".status");
@@ -26,7 +26,7 @@ var Item = Class.create({
   
   setupEventListeners: function() {
     this.closed.observe("click", function(event) {
-      itemBrowser.toggleOpenCloseItem(this.element, event);
+      this.toggleBody(event);
     }.bind(this));
 
     this.status.observe("click", this.toggleReadUnread.bind(this));
@@ -63,6 +63,10 @@ var Item = Class.create({
     return this.element.hasClassName("selected");
   },
   
+  isOpen: function() {
+    return this.element.hasClassName("open");
+  },
+  
   scrollTo: function() {
     new Effect.ScrollToInDiv(this.element.up(), this.element, { duration: 0.3 });
   },
@@ -71,18 +75,65 @@ var Item = Class.create({
     this.load(this.body);
   },
 
+  toggleBody: function(event) {
+    if(event && (Event.element(event).match(".stop") || Event.element(event).up('.stop'))) { return false; }
+    
+    if(this.isOpen()) {
+      this.hideBody();
+    } else {
+      this.showBody();
+    }
+  },
+  
+  showBody: function() {
+    itemBrowser.closeAllItems();
+    if(!this.isSelected()) {
+      this.select();
+    }
+    this.element.addClassName("open");
+    this.markRead();
+    this.scrollTo();
+    this.loadBody();
+  },
+  
+  hideBody: function() {
+    this.element.removeClassName("open");
+    this.hideFeedInformation();
+    this.hideTrainingControls();
+  },
+  
+  select: function() {
+    itemBrowser.deselectAllItems();
+    this.element.addClassName('selected');
+    this.scrollTo();
+  },
+
+  deselect: function() {
+    this.element.removeClassName('selected');
+    this.hideFeedInformation();
+    this.hideTrainingControls();
+  },
+  
   toggleFeedInformation: function() {
     if(this.feed_title.hasClassName("selected")) {
-      this.feed_title.removeClassName("selected");
-      this.feed_information.removeClassName("selected");
+      this.hideFeedInformation();
     } else {
-      itemBrowser.selectItem(this.element);
-      this.feed_title.addClassName('selected');
-      this.feed_information.addClassName('selected');
-
-      this.scrollTo();
-      this.loadFeedInformation();
+      this.showFeedInformation();
     }
+  },
+  
+  showFeedInformation: function() {
+    this.select();
+    this.feed_title.addClassName('selected');
+    this.feed_information.addClassName('selected');
+
+    this.scrollTo();
+    this.loadFeedInformation();
+  },
+
+  hideFeedInformation: function() {
+    this.feed_title.removeClassName("selected");
+    this.feed_information.removeClassName("selected");
   },
   
   loadFeedInformation: function() {
@@ -98,7 +149,7 @@ var Item = Class.create({
   },
   
   showTrainingControls: function() {
-    itemBrowser.selectItem(this.element);
+    this.select();
 
     this.tag_list.hide();
 

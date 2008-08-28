@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('feed_items', 'content', { orders: {
+			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { orders: {
 			  desc:      ["date", "strength"],
 			  "default": "date"
 			}});
