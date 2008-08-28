@@ -22,7 +22,7 @@ Element.addMethods({
     }
   },
   
-  load: function(element, forceLoad) {
+  load: function(element, onComplete, forceLoad) {
     if(!forceLoad && !element.empty()) { return; }
     
     element.update("");
@@ -30,6 +30,7 @@ Element.addMethods({
     new Ajax.Updater(element, element.getAttribute("url"), { method: 'get',
       onComplete: function() {
         element.removeClassName("loading");
+        if(onComplete) { onComplete(); }
       }
     });
   }

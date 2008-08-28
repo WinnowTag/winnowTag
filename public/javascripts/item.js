@@ -354,16 +354,9 @@ var Item = Class.create({
   },
   
   load: function(target, onComplete, forceLoad) {
-    if(!forceLoad && !target.empty()) { return; }
-    
-    target.update("");
-    target.addClassName("loading");
-    new Ajax.Updater(target, target.getAttribute("url"), { method: 'get',
-      onComplete: function() {
-        target.removeClassName("loading");
-        if(onComplete)        { onComplete();    }
-        if(this.isSelected()) { this.scrollTo(); }
-      }.bind(this)
-    });
+    target.load(function() {
+      if(onComplete)        { onComplete();    }
+      if(this.isSelected()) { this.scrollTo(); }
+    }.bind(this), forceLoad);
   }
 });
