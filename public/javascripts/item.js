@@ -327,22 +327,18 @@ var Item = Class.create({
   },
 
   addTagControl: function(tag_name, tagging_type) {
-    // TODO: needs to know the tag id to be able to update/remove
     var tag_control = '<li class="tag_control stop ' + tagging_type + '">' + 
-      // TODO: sanitize
-      '<span class="name">' + tag_name + '</span>' + 
+      '<span class="name">' + tag_name.escapeHTML() + '</span>' + 
     '</li> ';
     this.tag_list.insertInOrder("li", ".name", tag_control, tag_name);
   },
 
   addTrainingControl: function(tag_name) {
-    // TODO: needs to know the tag id to be able to update/remove
     var training_control = '<div class="tag positive" style="display:none">' + 
       '<span class="clearfix">' + 
         '<div class="positive"></div>' + 
         '<div class="negative"></div>' + 
-        // TODO: sanitize
-        '<div class="name">' + tag_name + '</div>' + 
+        '<div class="name">' + tag_name.escapeHTML() + '</div>' + 
       '</span>' + 
       '<div class="remove">X</div>' + 
     '</div> ';
