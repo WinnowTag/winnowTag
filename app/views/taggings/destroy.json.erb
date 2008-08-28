@@ -1,0 +1,8 @@
+<%= {
+  :id => dom_id(@tag),
+  :prompt_to_delete_tag => @tag.taggings.empty?,
+  :prompt_to_delete_tag_message => _(:taggings_destroy_message, @tag.name),
+  :prompt_to_delete_tag_url => tag_path(@tag),
+  :trainingHtml => tag_training(@tag),
+  :classifierProgress => _(:classifier_progress)
+}.to_json %>

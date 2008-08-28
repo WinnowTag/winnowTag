@@ -6,6 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "moderation panel" do
+  include ActionView::Helpers::RecordIdentificationHelper
+
   fixtures :users, :feed_items, :feeds, :feed_item_contents
   
   before(:each) do
@@ -13,253 +15,255 @@ describe "moderation panel" do
     Tag.delete_all
     ReadItem.delete_all
     
-    @existing_tag = Tag.create! :user_id => 1, :name => "existing tag"
+    @positive_tag = Tag.create! :user_id => 1, :name => "positive tag"
+    @negative_tag = Tag.create! :user_id => 1, :name => "negative tag"
+    @classifier_tag = Tag.create! :user_id => 1, :name => "classifier tag"
+    @positive_and_classifier_tag = Tag.create! :user_id => 1, :name => "positive and classifier tag"
+    @negative_and_classifier_tag = Tag.create! :user_id => 1, :name => "negative and classifier tag"
+    @unused_tag = Tag.create! :user_id => 1, :name => "unused tag"
+    Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @positive_tag.id,                :strength => 1,    :classifier_tagging => false
+    Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @negative_tag.id,                :strength => 0,    :classifier_tagging => false
+    Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @classifier_tag.id,              :strength => 0.99, :classifier_tagging => true
+    Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @positive_and_classifier_tag.id, :strength => 1,    :classifier_tagging => false
+    Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @positive_and_classifier_tag.id, :strength => 0.99, :classifier_tagging => true
+    Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @negative_and_classifier_tag.id, :strength => 0,    :classifier_tagging => false
+    Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @negative_and_classifier_tag.id, :strength => 0.99, :classifier_tagging => true
     
     login
     open feed_items_path
     wait_for_ajax
   end
   
-  it "can be shown by clicking the add tag link" do
+  it "can be shown by clicking the train link" do
     assert_not_visible "css=#feed_item_4 .moderation_panel"
-    click "css=#feed_item_4 .add_tag"
-    wait_for_ajax 
+    click "css=#feed_item_4 .train"
     assert_visible "css=#feed_item_4 .moderation_panel"
   end
   
-  # TODO 686 - selenium does not seem to have a way to query for the focused item
-  xit "should focus the new tag field" do
-    click "css=#feed_item_4 .add_tag"
-    wait_for_ajax 
-    see_element "#new_tag_field_feed_item_4:focus"
+  it "can be hidden by clicking the train link" do
+    click "css=#feed_item_4 .train"
+
+    assert_visible "css=#feed_item_4 .moderation_panel"
+    click "css=#feed_item_4 .train"
+    assert_not_visible "css=#feed_item_4 .moderation_panel"
   end
   
-  # TODO 686 - auto complete does not recognize typing
-  xit "can add a positive tagging from a new tag through the 'create a new tag' input" do
-    click "css=#feed_item_4 .add_tag"
-    wait_for_ajax
-     
-    dont_see_element "li[id='tag_control_for_new tag_on_feed_item_4']"
-   
-    type "new_tag_field_feed_item_4", "new tag"
-    click "css=#feed_item_4 .new_tag_form input[type=submit]"
-    wait_for_effects
-    
-    see_element "li.positive[id='tag_control_for_new tag_on_feed_item_4']"
-    get_text("tag_control_for_new tag_on_feed_item_4").should =~ /new tag/
-  end
-  
-  # TODO 686 - auto complete does not recognize typing
-  xit "can add a positive tagging from an existing tag through the 'create new tag' input" do 
-    click "css=#feed_item_4 .add_tag" 
-    wait_for_ajax 
-
-    dont_see_element "li[id='tag_control_for_existing tag_on_feed_item_4']"
-
-    type "new_tag_field_feed_item_4", "existing tag"
-    click "css=#feed_item_4 .new_tag_form input[type=submit]"
-    wait_for_effects
-
-    see_element "li.positive[id='tag_control_for_existing tag_on_feed_item_4']"
-    get_text("tag_control_for_existing tag_on_feed_item_4").should =~ /existing tag/
+  it "does not open body when clicking the train link" do
+    assert_not_visible "css=#feed_item_4 .body"
+    click "css=#feed_item_4 .train"
+    assert_not_visible "css=#feed_item_4 .body"
   end
 
-  # TODO 686 - auto complete does not recognize typing
-  xit "selects the first choice in the auto complete list" do
-    click "css=#feed_item_4 .add_tag" 
-    wait_for_ajax 
-  
-    see_element "#feed_item_4 .moderation_panel .auto_complete li:first-child.selected"
-  end
-  
-  # TODO 686 - auto complete does not recognize typing
-  xit "uses the selected entry when clicking 'Add Tag'" do
-    click "css=#feed_item_4 .add_tag"
-    wait_for_ajax 
-         
-    tag_name = get_text("css=#feed_item_4 .moderation_panel .auto_complete .selected")
-    dont_see_element "#feed_item_4 .tag_control:contains(#{tag_name})"
-
-    click "css=#feed_item_4 .moderation_panel input[type=submit]"
-    wait_for_effects
-  
-    see_element "#feed_item_4 .tag_control:contains(#{tag_name})"
+  it "can be shown by clicking a tag in the tag list" do
+    assert_not_visible "css=#feed_item_4 .moderation_panel"
+    click "css=#feed_item_4 .tag_list .tag_control"
+    assert_visible "css=#feed_item_4 .moderation_panel"
   end
 
-  # TODO 686 - auto complete does not recognize hitting enter
-  xit "uses the selected entry when hitting enter 'Add Tag'"
-  
-  it "can change a positive tagging to a negative tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
-
-    open feed_items_path
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
-    
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    wait_for_ajax
-    
-    click "css=#feed_item_4 .information .negative"
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
+  it "does not open body when clicking a tag in the tag list" do
+    assert_not_visible "css=#feed_item_4 .body"
+    click "css=#feed_item_4 .tag_list .tag_control"
+    assert_not_visible "css=#feed_item_4 .body"
   end
   
-  it "can change a negative tagging to a positive tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
+  it "can be hidden by clicking the close link" do
+    click "css=#feed_item_4 .train"
+    wait_for_ajax
 
-    open feed_items_path
+    assert_visible "css=#feed_item_4 .moderation_panel"
+    click "css=#feed_item_4 .moderation_panel .close"
+    assert_not_visible "css=#feed_item_4 .moderation_panel"
+  end
+  
+  it "can change an unattached tagging to a positive tagging" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
-    
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.positive"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)} .positive"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.positive"
+  end
+  
+  it "can change an unattached tagging to a negative tagging" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    click "css=#feed_item_4 .information .positive"
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.negative"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)} .negative"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.negative"
   end
   
   it "can change a classifier tagging to a positive tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
-
-    open feed_items_path
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
-    
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    wait_for_ajax
-    
-    click "css=#feed_item_4 .information .positive"
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .tag_control.classifier.positive:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)} .positive"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
   end
   
   it "can change a classifier tagging to a negative tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
-
-    open feed_items_path
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
-    
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.negative"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)} .negative"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.negative"
+  end
+  
+  it "can change a positive tagging to a negative tagging" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    click "css=#feed_item_4 .information .negative"
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .tag_control.classifier.negative:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.negative"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)} .negative"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.negative"
   end
   
   it "can change a positive tagging to a classifier tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
-
-    open feed_items_path
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    see_element "#feed_item_4 .tag_control.classifier.positive:contains(existing tag)"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)}.classifier.positive"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)} .remove"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)}.classifier.positive"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)}.classifier"
+  end
+  
+  it "can change a positive tagging to an unattached tagging" do
+    click "css=#feed_item_4 .train"
+    wait_for_ajax
+    choose_cancel_on_next_confirmation
     
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.positive"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)} .remove"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.positive"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}"
+    
+    get_confirmation.should include(@positive_tag.name)
+  end
+  
+  it "can change a negative tagging to a positive tagging" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    click "css=#feed_item_4 .information .remove"
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.positive"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)} .positive"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.positive"
   end
   
   it "can change a negative tagging to a classifier tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
-
-    open feed_items_path
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    see_element "#feed_item_4 .tag_control.classifier.negative:contains(existing tag)"
-    
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    wait_for_ajax
-    
-    click "css=#feed_item_4 .information .remove"
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .tag_control.classifier:contains(existing tag)"
-    dont_see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)}.classifier.negative"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)} .remove"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)}.classifier.negative"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)}.classifier"
   end
   
-  it "can change a positive tagging to a nothing tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
+  it "can change a negative tagging to an unattached tagging" do
+    click "css=#feed_item_4 .train"
+    wait_for_ajax
+    
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.negative"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)} .remove"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.negative"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}"
 
-    open feed_items_path
+    get_confirmation.should include(@negative_tag.name)
+  end
+
+  it "can change an unattached tagging to a positive tagging through the text field" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    see_element "#feed_item_4 .tag_control.positive:contains(existing tag)"
-    
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    wait_for_ajax
-    
-    click "css=#feed_item_4 .information .remove"
-    wait_for_ajax
-    wait_for_effects
-    get_confirmation.should include(@existing_tag.name)
-    
-    dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.positive"
+    type "css=#feed_item_4 .moderation_panel input[type=text]", @unused_tag.name
+    hit_enter "css=#feed_item_4 .moderation_panel input[type=text]"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.positive"
   end
   
-  it "can change a negative tagging to a nothing tagging" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 0, :user_id => 1, :classifier_tagging => false
-
-    open feed_items_path
+  it "can change a classifer tagging to a positive tagging through the text field" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    see_element "#feed_item_4 .tag_control.negative:contains(existing tag)"
-
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    wait_for_ajax
-    
-    click "css=#feed_item_4 .information .remove"
-    wait_for_ajax
-    wait_for_effects
-    get_confirmation.should include(@existing_tag.name)
-    
-    dont_see_element "#feed_item_4 .tag_control:contains(existing tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
+    type "css=#feed_item_4 .moderation_panel input[type=text]", @classifier_tag.name
+    hit_enter "css=#feed_item_4 .moderation_panel input[type=text]"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
   end
   
-  it "open tag info does not open/close item" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => false
-
-    open feed_items_path
+  it "can change a negative tagging to a positive tagging through the text field" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    assert_not_visible "css=#feed_item_4 .body"
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    assert_not_visible "css=#feed_item_4 .body"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.positive"
+    type "css=#feed_item_4 .moderation_panel input[type=text]", @negative_tag.name
+    hit_enter "css=#feed_item_4 .moderation_panel input[type=text]"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.positive"
   end
   
-  it "shows/hides tagging controls when clicking the tag" do
-    Tagging.create! :feed_item_id => 4, :tag_id => @existing_tag.id, :strength => 1, :user_id => 1, :classifier_tagging => true
-  
-    open feed_items_path
+  it "can create a new tag and add a positive tagging through the text field" do
+    click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    assert_not_visible "css=#feed_item_4 .information"
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    assert_visible "css=#feed_item_4 .information"
-    click "css=#feed_item_4 .tag_control:contains(existing tag)"
-    assert_not_visible "css=#feed_item_4 .information"
+    dont_see_element "#feed_item_4 .moderation_panel .tag .name:contains(new tag)"
+    type "css=#feed_item_4 .moderation_panel input[type=text]", "new tag"
+    hit_enter "css=#feed_item_4 .moderation_panel input[type=text]"
+    see_element "#feed_item_4 .moderation_panel .tag .name:contains(new tag)"
+  end
+
+  # TODO: selenium does not fire the necessary keyboard events
+  xit "disables unmatched tags when typing" do
+    click "css=#feed_item_4 .train"
+    wait_for_ajax
+    
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(unused tag)"
+    type "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disbaled .name:contains(positive tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(unused tag)"
+  end
+  
+  # TODO: selenium does not fire the necessary keyboard events
+  xit "selects the first matched tag when typing" do
+    click "css=#feed_item_4 .train"
+    wait_for_ajax
+    
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(unused tag)"
+    type "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(classifier tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(unused tag)"
+  end
+  
+  # TODO: selenium does not fire the necessary keyboard events
+  xit "uses the selected tag when submitting the form" do
+    click "css=#feed_item_4 .train"
+    wait_for_ajax
+    
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.selected"
+    type "css=#feed_item_4 .moderation_panel input[type=text]", "clas"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.selected"
+    hit_enter "css=#feed_item_4 .moderation_panel input[type=text]"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"    
   end
 end

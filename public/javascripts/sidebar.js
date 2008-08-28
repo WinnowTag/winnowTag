@@ -45,7 +45,7 @@ var Sidebar = Class.create({
       this.disableResize();
     }
 
-    resizeContentWidth();
+    Content.instance.resizeWidth();
   },
   
   enableResize: function() {
@@ -73,7 +73,7 @@ var Sidebar = Class.create({
     this.sidebar.style.width = sidebar_width + 'px';
 
     Cookie.set("sidebar_width", sidebar_width, 365);
-    resizeContentWidth();
+    Content.instance.resizeWidth();
   },
   
   load: function(url, parameters, onComplete) {

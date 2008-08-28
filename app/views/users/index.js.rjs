@@ -1,6 +1,0 @@
-if @full
-  page.call 'itemBrowser.setFull', true
-end
-@users.each do |user|
-  page.call 'itemBrowser.insertItem', dom_id(user), render_to_string(:partial => 'user.html.erb', :object => user)
-end

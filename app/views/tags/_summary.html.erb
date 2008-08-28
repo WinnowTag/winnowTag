@@ -1,12 +1,12 @@
-<div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => disabled) %>">
+<div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => disabled) %> this.up('.tag').down('.extended .comments').load();">
   <div class="info">      
     <div class="details">
-      <p><!-- <span>Author</span> --> <%= tag.user.display_name %></p>
+      <p><%= tag.user_display_name %></p>
       <strong class="state"><%= tag_state(tag) %></strong>
     </div>
     <div class="comments">
       <p><%= _(:comments) %></p>  
-      <strong><%= tag.comments.count %></strong>
+      <strong><%= tag.comments_count %></strong>
     </div>
     <div class="positive">
       <p><%= _(:positive) %></p>
@@ -46,4 +46,4 @@
       <%= tag.comment %>
     </div>
   <% end %>
-</div> <!-- /.summary -->
+</div>

@@ -28,19 +28,19 @@ describe Folder do
   end
   
   describe "removing ad item from all of a users folders" do
+    fixtures :tags, :feeds
+    
     it "can remove a tag from all of a users folders" do
       user   = User.create! valid_user_attributes
-      first  = user.folders.create! :name => "First",  :tag_ids => [1,2,3]
-      second = user.folders.create! :name => "Second", :tag_ids => [2,1,3]
-      third  = user.folders.create! :name => "Third",  :tag_ids => [1,3,2]
-      fourth = user.folders.create! :name => "Forth",  :tag_ids => [1,3]
+      first  = user.folders.create! :name => "First",  :tag_ids => [1,2]
+      second = user.folders.create! :name => "Second", :tag_ids => [2,1]
+      third = user.folders.create! :name => "Forth",  :tag_ids => [1]
 
       Folder.remove_tag(user, 2)
   
-      first.reload.tag_ids.should == [1,3]
-      second.reload.tag_ids.should == [1,3]
-      third.reload.tag_ids.should == [1,3]
-      fourth.reload.tag_ids.should == [1,3]
+      first.reload.tag_ids.should == [1]
+      second.reload.tag_ids.should == [1]
+      third.reload.tag_ids.should == [1]
     end
 
     it "can remove a feed from all of a users folders" do
@@ -58,33 +58,4 @@ describe Folder do
       fourth.reload.feed_ids.should == [1,3]
     end
   end
-  
-  describe "removing an item from a folder" do
-    it "can remove a tag from a folder" do
-      folder = Folder.create! :user_id => 1, :name => "thingy", :tag_ids => [1,2,3]
-      folder.remove_tag!(2)
-      folder.tag_ids.should == [1,3]
-    end
-    
-    it "can remove a feed from a folder" do
-      folder = Folder.create! :user_id => 1, :name => "thingy", :feed_ids => [1,2,3]
-      folder.remove_feed!(2)
-      folder.feed_ids.should == [1,3]
-    end
-  end
-  
-  describe "adding an item to a folder" do
-    it "can add a tag to a folder" do
-      folder = Folder.create! :user_id => 1, :name => "thingy", :tag_ids => [1,2]
-      folder.add_tag!(3)
-      folder.tag_ids.should == [1,2,3]
-    end
-    
-    it "can add a feed to a folder" do
-      folder = Folder.create! :user_id => 1, :name => "thingy", :feed_ids => [1,2]
-      folder.add_feed!(3)
-      folder.feed_ids.should == [1,2,3]
-    end
-  end
-  
 end

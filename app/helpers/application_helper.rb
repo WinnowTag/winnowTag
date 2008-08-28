@@ -36,7 +36,7 @@ module ApplicationHelper
       end
     end.join if current_user
     
-    javascript_tag(javascript)
+    javascript_tag(javascript) unless javascript.blank?
   end
   
   def is_admin?
@@ -119,12 +119,9 @@ module ApplicationHelper
       globally_exclude_feed_path(:id => tag_or_feed.id)
     end
     
-    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed), :id => "#{dom_id(tag_or_feed, 'globally_exclude')}",
-      :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
-  end
-  
-  def tag_subscription_checkbox_disabled?(tag)
-    (current_user == tag.user || current_user.globally_excluded?(tag))
+    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", 
+      tag_or_feed.respond_to?(:state) ? tag_or_feed.globally_excluded_by_current_user? : current_user.globally_excluded?(tag_or_feed),
+      :id => "#{dom_id(tag_or_feed, 'globally_exclude')}", :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
   end
   
   def feed_filter_controls(feeds, options = {})
@@ -240,9 +237,9 @@ module ApplicationHelper
   end
   
   def tag_classes(tag)
-    if current_user.globally_excluded?(tag)
+    if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
       "globally_excluded"
-    elsif current_user.subscribed?(tag)
+    elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
       "subscribed"
     end.to_s + " " + dom_id(tag)
   end
@@ -254,9 +251,9 @@ module ApplicationHelper
   end
 
   def tag_state(tag)
-    if current_user.globally_excluded?(tag)
+    if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
       "Excluded"
-    elsif current_user.subscribed?(tag)
+    elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
       "Subscribed"
     end
   end

@@ -1,23 +1,14 @@
 <div id="<%= dom_id(feed_item) %>" class="record feed_item<%= ' read' if feed_item.read_by_current_user? %>">
   <div class="closed clearfix">
     <div class="date"><%= format_date(feed_item.updated) %></div>
-    <%= link_to_function _(:add_tag_link), "", :class => "add_tag stop" %>
-
+    <%= link_to_function _(:train), "", :class => "train stop" %>
   	<%= link_to_function "", "", :class => "status stop" %>
-
     <h4><%= feed_item_title(feed_item) %></h4>
     <%= link_to(image_tag("external.gif"), feed_item.link, :target => "_blank", :title => _(:open_original_feed_item), :class => "stop") %>
-
-    <span class="feed_title"><%= feed_control_for(feed_item) %></span>
-    
+    <%= feed_control_for(feed_item) %>
     <%= tag_controls(feed_item) %>
   </div>
-  
-  <div class="moderation_panel clearfix" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div> 
-      
-  <div class="information stop clearfix"></div>
-
+  <div class="moderation_panel clearfix" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div>
 	<div class="feed_information" url="<%= feed_information_feed_item_path(feed_item) %>"></div>
-  
   <div class="body clearfix" url="<%= body_feed_item_path(feed_item) %>"></div>
 </div>

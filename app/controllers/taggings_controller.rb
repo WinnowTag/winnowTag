@@ -28,8 +28,8 @@ class TaggingsController < ApplicationController
   def create
     params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
     @tagging = current_user.taggings.create!(params[:tagging])
-    @feed_item = @tagging.feed_item
-    respond_to :js
+    params[:tagging][:tag].update_attribute(:show_in_sidebar, true) unless params[:tagging][:tag].show_in_sidebar?
+    respond_to :json
   end
   
   # Destroys taggings
@@ -45,6 +45,6 @@ class TaggingsController < ApplicationController
     current_user.taggings.find_by_feed_item(@feed_item, :all, 
       :conditions => { :classifier_tagging => false, :tag_id => @tag }).each(&:destroy)            
 
-    respond_to :js
+    respond_to :json
   end
 end

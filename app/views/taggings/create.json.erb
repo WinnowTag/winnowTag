@@ -1,0 +1,6 @@
+<%= {
+  :id => dom_id(@tagging.tag),
+  :filterHtml => tag_filter_control(@tagging.tag, :editable => true, :remove => :subscription),
+  :trainingHtml => tag_training(@tagging.tag),
+  :classifierProgress => _(:classifier_progress)
+}.to_json %>

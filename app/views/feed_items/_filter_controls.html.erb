@@ -12,7 +12,7 @@
   <div class="add_form">
     <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
           :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
-          :after_update_element => "function(e, v) { update_tag_filters(e,v); $('tags_section').removeClassName('add'); $('tags_section').addClassName('open'); }", :on_hide => "clear_auto_complete") %>
+          :after_update_element => "function(e, v) { itemBrowser.update_tag_filters(e,v); $('tags_section').removeClassName('add'); $('tags_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
   </div>
   
   <div class="content">
@@ -34,7 +34,7 @@
   <div class="add_form">
     <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
           :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
-          :after_update_element => "function(e, v) { update_feed_filters(e,v); $('feeds_section').removeClassName('add'); $('feeds_section').addClassName('open'); }", :on_hide => "clear_auto_complete") %>
+          :after_update_element => "function(e, v) { itemBrowser.update_feed_filters(e,v); $('feeds_section').removeClassName('add'); $('feeds_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
   </div>
 
   <div class="content">

@@ -43,7 +43,7 @@ class TagsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         @tags = Tag.search(:user => current_user, :text_filter => params[:text_filter], :own => true,
                            :order => params[:order], :direction => params[:direction])
         @full = true
@@ -60,7 +60,7 @@ class TagsController < ApplicationController
   def public
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @tags = Tag.search(:user => current_user, :text_filter => params[:text_filter], :conditions => ["tags.public = ?", true], 
                            :order => params[:order], :direction => params[:direction], 
@@ -129,7 +129,6 @@ class TagsController < ApplicationController
       if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
         render :action => "merge.js.rjs"
       else
-        @old_tag_name = @tag.name
         if @tag.update_attributes(:name => @name)
           render :action => "rename.js.rjs"
         else
@@ -291,6 +290,10 @@ class TagsController < ApplicationController
   end
   
   def information
+    @tag = Tag.find(params[:id])
+  end
+
+  def comments
     @tag = Tag.find(params[:id])
   end
   

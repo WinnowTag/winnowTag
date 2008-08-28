@@ -56,79 +56,59 @@ module FeedItemsHelper
   def tag_controls(feed_item)
     html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user
-        tag_control_for(feed_item, tag, classes_for_taggings(taggings, :stop))
+        tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
       else
         if tagging = Array(taggings).first
-          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:stop, :public]))
+          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:public]), format_classifier_strength(tagging))
         end
       end
     end.compact.join(" ")
     
-    content_tag(:ul, html, :class => "tag_list", :id => dom_id(feed_item, "tag_controls"))
+    content_tag(:ul, html, :class => "tag_list")
   end
   
   def feed_control_for(feed_item)
     if feed_item.author.blank?
-      _(:feed_item_feed_metadata, content_tag(:a, feed_item.feed_title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"))
+      _(:feed_item_feed_metadata, content_tag(:a, feed_item.feed_title, :class => "feed_title stop"))
     else
-      _(:feed_item_metadata, content_tag(:a, feed_item.feed_title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"), feed_item.author)
+      _(:feed_item_metadata, content_tag(:a, feed_item.feed_title, :class => "feed_title stop"), feed_item.author)
     end
   end
   
   # Format a classifier tagging strength as a percentage.
   def format_classifier_strength(taggings)
+    taggings = Array(taggings)
+    
     if classifier_tagging = taggings.detect {|tagging| tagging.classifier_tagging? }
       "%.2f%" % (classifier_tagging.strength * 100)
     end
   end
   
-  # Note: Update tagging.js when this changes
-  def tag_control_for(feed_item, tag, classes)
-    classes << "tag_control" << dom_id(tag)
+  # Note: Update item.js when this changes
+  def tag_control_for(feed_item, tag, classes, strength)
+    classes << "tag_control" << dom_id(tag) << "stop"
     # TODO: sanitize
-    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), 
-                     :onclick => "itemBrowser.selectTaggingInformation(this, #{tag.id})")
+    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
   end
   
-  def tag_info_for(feed_item, tag, classifier_strength = nil)
-    if tag.user == current_user
-      training  = link_to_function(_(:positive_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'positive')", :class => "positive")
-      training << link_to_function(_(:negative_training_control), "add_tagging('#{dom_id(feed_item)}', #{tag.name.to_json}, 'negative')", :class => "negative")
-      training << link_to_function(_(:remove_training_control),   "remove_tagging('#{dom_id(feed_item)}', #{tag.name.to_json})",          :class => "remove")
-    else
-      # TODO: sanitize
-      training = content_tag(:div, "#{tag.user.firstname}<br/>#{tag.user.lastname}", :class => "owner")
-    end
-    
-    clues_link = link_to_function "(clues)", "", :class => "clues_link"
-
-    automatic  = content_tag(:span, "Negative<br/>Training #{clues_link}", :class => "negative")
-    automatic << content_tag(:span, "Positive<br/>Training #{clues_link}", :class => "positive")
-    automatic << content_tag(:span, content_tag(:span, classifier_strength, :class => "strength") + "Automatic<br/>Tag #{clues_link}", :class => "classifier")
-    automatic  = content_tag(:span, automatic, :class => "status clearfix")    
-    
-    information  = content_tag(:div, training, :class => "training")
-    information << content_tag(:div, automatic, :class => "automatic")
-    information << content_tag(:div, "", :class => "clues", :style => "display: none")
-    
-    information
+  def tag_control_tooltip(tag, strength)
+    title = []
+    title << "by #{tag.user.display_name}" if tag.user_id != current_user.id
+    title << "#{strength}" if strength
+    title.join(", ") unless title.blank?
   end
   
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
 	  classes  = Array(classes)
 
-    if tagging = taggings.first
-      if tagging.classifier_tagging?
-        classes << "classifier"
-      elsif tagging.positive?
-        classes << "positive"
-      elsif tagging.negative?
-        classes << "negative"
-      end
+    if taggings.detect { |t| t.positive? && !t.classifier_tagging? }
+      classes << "positive"
     end
-    
-    if taggings.size > 1 && taggings.last(taggings.size - 1).detect(&:classifier_tagging?)
+    if taggings.detect { |t| t.negative? && !t.classifier_tagging? }
+      classes << "negative"
+    end
+    if taggings.detect { |t| t.classifier_tagging? }
       classes << "classifier"
     end
     

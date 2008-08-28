@@ -34,21 +34,21 @@ describe FeedbacksController do
   
       it "should find all feedbacks" do
         Feedback.should_receive(:search).with({:text_filter => nil, :order => nil, :direction => nil, :limit => 40, :offset => nil}).and_return([@feedback])
-        do_get(:format => "js")
+        do_get(:format => "json")
       end
   
       it "should assign the found feedbacks for the view" do
-        do_get(:format => "js")
+        do_get(:format => "json")
         assigns[:feedbacks].should == [@feedback]
       end
       
       it "should assign the full to true when not enough items were found" do
-        do_get(:format => "js", :limit => 5)
+        do_get(:format => "json", :limit => 5)
         assigns[:full].should be_true
       end
       
       it "should assign the full to false when enough items were found" do
-        do_get(:format => "js", :limit => 1)
+        do_get(:format => "json", :limit => 1)
         assigns[:full].should be_false
       end
     end

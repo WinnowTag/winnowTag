@@ -27,7 +27,6 @@ ActionController::Routing::Routes.draw do |map|
                 }
   map.resources :feed_items,
                 :member => {
-                  :information => :get,
                   :clues => :get,
                   :moderation_panel => :get,
                   :feed_information => :get,
@@ -68,7 +67,8 @@ ActionController::Routing::Routes.draw do |map|
                   :training => :get,
                   :information => :get,
                   :classifier_taggings => :any,
-                  :merge => :put
+                  :merge => :put,
+                  :comments => :get
                 }
   
   map.public_tag "tags/public/:user_id/:id", :controller => "tags", :action => "show"
