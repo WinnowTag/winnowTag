@@ -1,4 +1,4 @@
-<% if tag.user == current_user -%>
+<% if tag.user_id == current_user.id -%>
   <%= globally_exclude_check_box(tag) %> <label for="<%= dom_id(tag, 'globally_exclude') %>"><%= _(:tags_globally_exclude) %></label>
 <% else -%>
   <span><%= radio_button_tag dom_id(tag, "state"), "globally_exclude", current_user.globally_excluded?(tag), :id => "#{dom_id(tag, 'globally_exclude')}", :onclick => remote_function(:url => update_state_tag_path(tag), :method => 'put', :with => "{ state: 'globally_exclude' }") %> <label for="<%= dom_id(tag, 'globally_exclude') %>"><%= "Exclude" %></label></span>

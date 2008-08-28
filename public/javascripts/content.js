@@ -68,7 +68,7 @@ var Content = Class.create({
       sidebar_margin = parseInt(this.sidebar.getStyle("margin-left")) + parseInt(this.sidebar.getStyle("margin-right"));
     }
     
-    var sidebar_control_width = 0, widebar_control_margin = 0;
+    var sidebar_control_width = 0, sidebar_control_margin = 0;
     if(this.sidebar_control) {
       sidebar_control_width = this.sidebar_control.getWidth();
       sidebar_control_margin = parseInt(this.sidebar_control.getStyle("margin-left")) + parseInt(this.sidebar_control.getStyle("margin-right"));

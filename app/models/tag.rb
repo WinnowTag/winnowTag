@@ -254,7 +254,8 @@ class Tag < ActiveRecord::Base
   
   def self.search(options = {})
     select = ['tags.*', 
-              '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_number',
+              'CONCAT(users.firstname, " ", users.lastname) AS user_display_name',
+              '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
               '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count',
@@ -292,7 +293,7 @@ class Tag < ActiveRecord::Base
     order = case options[:order]
     when "name", "public", "id"
       "tags.#{options[:order]}"
-    when "state", "comments_number", "positive_count", "negative_count", "last_trained"
+    when "state", "comments_count", "positive_count", "negative_count", "last_trained"
       options[:order]
     when "classifier_count"
       "(feed_items_count - positive_count - negative_count)"

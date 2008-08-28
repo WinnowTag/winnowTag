@@ -2,8 +2,7 @@
   <%= render :partial => "summary.html.erb", :locals => { :tag => tag, :editable => true, :disabled => false } %>
   
   <div class="extended" style="display:none">  
-    <%= render :partial => "comments.html.erb", :locals => { :tag => tag } %>
-      
+    <div class="comments clearfix" url="<%= comments_tag_path(tag) %>"></div>
     <div class="sidebar">      
       <div class="block actions clearfix">
         <ul class="controls">
@@ -19,7 +18,7 @@
           <li><%= link_to _(:view_all_items, tag.name), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show' %></li>
           <li><%= link_to _(:view_tagged_items, tag.name), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained"), :class => "show" %></li>
         </ul>
-      </div> <!-- /.actions -->
+      </div>
     </div>
-  </div> <!-- /.extended -->
+  </div>
 </div>

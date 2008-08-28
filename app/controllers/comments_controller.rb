@@ -5,7 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class CommentsController < ApplicationController
   before_filter :find_comment, :only => [:edit, :update, :destroy]
-  
+
   def create
     @comment = current_user.comments.new(params[:comment])
     if @comment.save

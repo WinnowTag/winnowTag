@@ -292,6 +292,10 @@ class TagsController < ApplicationController
   def information
     @tag = Tag.find(params[:id])
   end
+
+  def comments
+    @tag = Tag.find(params[:id])
+  end
   
 private
   def find_tag

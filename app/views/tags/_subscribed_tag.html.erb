@@ -2,8 +2,7 @@
   <%= render :partial => "summary.html.erb", :locals => { :tag => subscribed_tag, :disabled => true } %>
   
   <div class="extended" style="display:none">  
-    <%= render :partial => "comments.html.erb", :locals => { :tag => subscribed_tag } %>
-      
+    <div class="comments clearfix" url="<%= comments_tag_path(subscribed_tag) %>"></div>
     <div class="sidebar">      
       <div class="block actions clearfix">
         <ul class="controls">
@@ -16,7 +15,7 @@
           <li><%= link_to _(:view_tagged_items, subscribed_tag.name), feed_items_path(:anchor => "tag_ids=#{subscribed_tag.id}&mode=trained"), :class => "show" %></li>
           <li><%= link_to _(:tags_feed_link), url_for(:user => subscribed_tag.user, :tag_name => subscribed_tag.name, :action=> 'show', :format => :atom), :class => "feed" %></li>
         </ul>
-      </div> <!-- /.actions -->
+      </div>
     </div>
-  </div> <!-- /.extended -->
+  </div>
 </div>

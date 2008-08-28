@@ -20,5 +20,17 @@ Element.addMethods({
     if(needToInsert) {
       container.insert({bottom: element_html});
     }
+  },
+  
+  load: function(element, forceLoad) {
+    if(!forceLoad && !element.empty()) { return; }
+    
+    element.update("");
+    element.addClassName("loading");
+    new Ajax.Updater(element, element.getAttribute("url"), { method: 'get',
+      onComplete: function() {
+        element.removeClassName("loading");
+      }
+    });
   }
 });
