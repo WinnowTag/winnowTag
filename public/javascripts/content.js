@@ -53,19 +53,18 @@ var Content = Class.create({
     var top_of_content = this.content.offsetTop;
     var content_padding = parseInt(this.content.getStyle("padding-top")) + parseInt(this.content.getStyle("padding-bottom"));
     var footer_height = this.footer ? this.footer.getHeight() : 0;
-    var container_padding = parseInt(this.container.getStyle("padding-top")) + parseInt(this.container.getStyle("padding-bottom"));
-    var messages_height = 0; // this.messages.visible() ? this.messages.getHeight() : 0;
+    var container_padding = parseInt(this.container.getStyle("padding-bottom"));
+    var container_margin = parseInt(this.container.getStyle("margin-bottom"));
     
-    return body_height - top_of_content - footer_height - content_padding - container_padding - messages_height + 2;
+    return body_height - top_of_content - container_padding - footer_height - container_margin - 1;
   },
   
   contentWidth: function() {
     var body_width = this.body.getWidth();
 
-    var sidebar_width = 0, sidebar_margin = 0;
+    var sidebar_width = 0;
     if(this.sidebar && this.sidebar.visible()) {
       sidebar_width = this.sidebar.getWidth();
-      sidebar_margin = parseInt(this.sidebar.getStyle("margin-left")) + parseInt(this.sidebar.getStyle("margin-right"));
     }
     
     var sidebar_control_width = 0, sidebar_control_margin = 0;
@@ -73,25 +72,27 @@ var Content = Class.create({
       sidebar_control_width = this.sidebar_control.getWidth();
       sidebar_control_margin = parseInt(this.sidebar_control.getStyle("margin-left")) + parseInt(this.sidebar_control.getStyle("margin-right"));
     }
+    
+    var container_padding = parseInt(this.container.getStyle("padding-left"));
 
-    return body_width - sidebar_width - sidebar_margin - sidebar_control_width - sidebar_control_margin - 7;
+    return body_width - sidebar_width - sidebar_control_width - sidebar_control_margin - container_padding;
   },
   
   sidebarHeight: function() {
     var body_height = this.body.getHeight();
-    var top_of_content = this.content.offsetTop;
+    var top_of_sidebar = this.sidebar.offsetTop;
     var sidebar_padding = parseInt(this.sidebar.getStyle("padding-top")) + parseInt(this.sidebar.getStyle("padding-bottom"));
-    var messages_height = 0; // this.messages.visible() ? this.messages.getHeight() : 0;
+    var sidebar_margin = parseInt(this.sidebar.getStyle("margin-bottom"));
 
-    return body_height - top_of_content - sidebar_padding - messages_height + 3;
+    return body_height - top_of_sidebar - sidebar_padding - sidebar_margin;
   },
   
   sidebarControlHeight: function() {
     var body_height = this.body.getHeight();
-    var top_of_content = this.content.offsetTop;
-    var messages_height = 0; // this.messages.visible() ? this.messages.getHeight() : 0;
+    var top_of_sidebar_control = this.sidebar_control.offsetTop;
+    var sidebar_control_margin = parseInt(this.sidebar.getStyle("margin-bottom"));
 
-    return body_height - top_of_content - messages_height + 3;
+    return body_height - top_of_sidebar_control - sidebar_control_margin;
   }
 });
 

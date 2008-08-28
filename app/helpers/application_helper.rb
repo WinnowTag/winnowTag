@@ -36,7 +36,7 @@ module ApplicationHelper
       end
     end.join if current_user
     
-    javascript_tag(javascript)
+    javascript_tag(javascript) unless javascript.blank?
   end
   
   def is_admin?

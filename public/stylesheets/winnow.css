@@ -371,7 +371,7 @@ ul.help li {
   width: 7px;
   height: auto;
   background: #fff url(../images/right_aarow.png) 1px  center no-repeat;
-  margin: 2px 1px 2px 2px;
+  margin: 3px 2px;
 }
 
 #sidebar_control:hover {
