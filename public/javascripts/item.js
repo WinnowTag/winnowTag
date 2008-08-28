@@ -98,10 +98,7 @@ var Item = Class.create({
   },
   
   showTrainingControls: function() {
-    if(!this.isSelected()) {
-      itemBrowser.closeItem(itemBrowser.selectedItem);
-      itemBrowser.selectItem(this.element);
-    }
+    itemBrowser.selectItem(this.element);
 
     this.tag_list.hide();
 
