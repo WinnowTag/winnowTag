@@ -251,6 +251,14 @@ class Tag < ActiveRecord::Base
       end
     end
   end
+
+  def subscribed_by_current_user?
+    state.to_s == "0"
+  end
+  
+  def globally_excluded_by_current_user?
+    state.to_s == "1"
+  end
   
   def self.search(options = {})
     select = ['tags.*', 
