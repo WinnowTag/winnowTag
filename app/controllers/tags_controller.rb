@@ -16,12 +16,28 @@
 class TagsController < ApplicationController
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::SanitizeHelper
-  with_auth_hmac(HMAC_CREDENTIALS['classifier'], :only => [:classifier_taggings])
   helper :bias_slider, :comments
+
+  # Setup the HMAC authentication with credentials for the classifier role but don't assign to any actions
+  with_auth_hmac(HMAC_CREDENTIALS['classifier'], :only => [])
   
+  # First thing we need to do is skip standard authentication for actions that the classifier uses
   skip_before_filter :login_required, :only => [:show, :index, :training, :classifier_taggings]
-  before_filter :login_required_unless_hmac, :only => [:index]
-  before_filter :find_tag, :except => [:index, :create, :auto_complete_for_tag_name, :public, :update_state, :subscribe, :unsubscribe, :globally_exclude, :auto_complete_for_sidebar]
+  
+  # Require HMAC login for the action the classifier uses for updating a tag, this ensures only the classifier can do this
+  before_filter :hmac_login_required, :only => [:classifier_taggings]
+
+  # Now we need to find the tag reference by the URL.
+  #
+  # This must be done before the login_or_hmac_required_unless_tag_is_public 
+  # filter since we need the tag to check that is a public tag.
+  #
+  before_filter :find_tag, :only => [:show, :training, :classifier_taggings, :update, :destroy, :merge, :publicize]
+  
+  # Require normal or HMAC authentication for remaining actions unless the tag is public, in which case allow all access
+  before_filter :login_or_hmac_required_unless_tag_is_public, :only => [:show, :index, :training]
+
+  # For operations done by users, make sure it is the own of the tag doing it
   before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
   
   def index
@@ -163,13 +179,13 @@ class TagsController < ApplicationController
   
   def classifier_taggings    
     if !(request.post? || request.put?)
-      render :status => "405", :nothing => true
+      render :status => :method_not_allowed, :text => "Only PUT or POST are allowed"
     elsif params[:atom].nil?
-      render :status => "400", :nothing => true    
+      render :status => :bad_request, :text => "Missing Atom Document"
     elsif request.post? || request.put?
       request.post? ? @tag.create_taggings_from_atom(params[:atom]) : 
                       @tag.replace_taggings_from_atom(params[:atom])
-      render :status => "204", :nothing => true
+      render :status => :no_content, :nothing => true
     end
   end
   
@@ -284,41 +300,26 @@ private
       @user = User.find_by_login(params[:user])
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
         # TODO: sanitize
-        render :status => 404, :text => _(:tag_not_found, @user.login, params[:tag_name])
+        render :status => :not_found, :text => _(:tag_not_found, @user.login, params[:tag_name])
       end
     elsif params[:id] && !current_user.nil?
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         # TODO: sanitize
-        render :status => 404, :text => _(:tag_id_not_found, params[:id])
+        render :status => :not_found, :text => _(:tag_id_not_found, params[:id])
       end
     else
         # TODO: sanitize
-      render :status => 404, :text => _(:tag_id_not_found, params[:id])
+      render :status => :not_found, :text => _(:tag_id_not_found, params[:id])
     end
-    
-    if @tag && !@tag.public? && !hmac_authenticated? && (current_user.nil? || @tag.user_id != current_user.id)
-      access_denied
-    end
+  end
+  
+  def login_or_hmac_required_unless_tag_is_public
+    access_denied unless logged_in? || hmac_authenticated? || @tag.public?
   end
   
   def ensure_user_is_tag_owner
     access_denied if current_user.nil? || current_user.id != @tag.user_id
-  end
-  
-  def ensure_user_is_tag_owner_unless_local
-    ensure_user_is_tag_owner unless local_request?
-  end
-  
-  def conditional_render(last_modified)   
-    since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
-
-    if since && last_modified && since >= last_modified
-      head :not_modified
-    else
-      response.headers['Last-Modified'] = last_modified.httpdate if last_modified
-      yield(since)
-    end
   end
 end

@@ -5,6 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class FeedItemsController < ApplicationController
   include FeedItemsHelper
+  helper :feeds
   include ActionView::Helpers::TextHelper
   before_filter :login_required
      
@@ -94,7 +95,11 @@ class FeedItemsController < ApplicationController
     @feed_item = FeedItem.find(params[:id])
   end
   
-  def add_tag_form 
+  def moderation_panel 
+    @feed_item = FeedItem.find(params[:id]) 
+  end
+  
+  def feed_information 
     @feed_item = FeedItem.find(params[:id]) 
   end
   

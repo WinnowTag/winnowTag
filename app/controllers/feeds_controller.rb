@@ -8,12 +8,13 @@
 # feed creation requests on to the collector using Remote::Feed.
 class FeedsController < ApplicationController
   include ActionView::Helpers::TextHelper
-  verify :only => :show, :params => :id, :redirect_to => {:action => 'index'}
   before_filter :reject_winnow_feeds, :only => :create
   
   def index
     respond_to do |format|
-      format.html
+      format.html do
+        @feed = Remote::Feed.new(params[:feed] || {})
+      end
       format.js do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @feeds = Feed.search(:text_filter => params[:text_filter], :excluder => current_user,
@@ -22,10 +23,6 @@ class FeedsController < ApplicationController
         @full = @feeds.size < limit
       end
     end
-  end
-  
-  def new
-    @feed = Remote::Feed.new(params[:feed] || {:url => nil})
   end
   
   def create   
@@ -43,56 +40,24 @@ class FeedsController < ApplicationController
       end
       
       respond_to do |format|
-        format.html { redirect_to feed_url(@feed) }
+        format.html { redirect_to feeds_path }
         format.js
       end
     else
       flash[:error] = @feed.errors.on(:url)
-      render :action => 'new'        
+      render :action => 'index'        
     end
   end
   
   def import
-    if params[:opml]
-      @feeds = Remote::Feed.import_opml(params[:opml].read)
-      @feeds.each do |feed|
-        FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
-        feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
-      end
-      flash[:notice] = _(:feeds_imported, @feeds.size)
-      redirect_to feeds_url
+    @feeds = Remote::Feed.import_opml(params[:opml].read)
+    @feeds.each do |feed|
+      FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
+      feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
     end
+    flash[:notice] = _(:feeds_imported, @feeds.size)
+    redirect_to feeds_url
   end
-  
-  # First we try and find the feed in the local item cache.
-  # If that fails we try and fetch it from the collector.
-  #
-  # If both of those fail, report a nice error message.
-  def show
-    begin
-      @feed = Feed.find(params[:id])
-      
-      if @feed.duplicate_id
-        redirect_to :id => @feed.duplicate_id
-      end
-    rescue ActiveRecord::RecordNotFound
-      begin
-        @feed = Remote::Feed.find(params[:id])
-      rescue Errno::ECONNREFUSED
-        flash[:error] = _(:collector_down)
-        render :action => 'error', :status => '503'
-      rescue ActiveResource::ResourceNotFound
-        flash[:error] = _(:feed_not_found)
-        render :action => 'error', :status => '404'
-      rescue ActiveResource::Redirection => redirect
-        if id = redirect.response['Location'][/\/([^\/]*?)(\.\w+)?$/, 1]
-          redirect_to :id => id
-        else
-          raise ActiveRecord::RecordNotFound
-        end
-      end        
-    end
-  end  
 
   def auto_complete_for_feed_title
     @q = params[:feed][:title]
@@ -140,14 +105,12 @@ class FeedsController < ApplicationController
     end
   end
   
-  private
+private
   def reject_winnow_feeds
-    begin
-      if URI.parse(params[:feed][:url]).host == request.host
-        flash[:error] = "Winnow generated feeds cannot be added to Winnow."
-        render :action => 'new'
-      end
-    rescue
+    if URI.parse(params[:feed][:url]).host == request.host
+      flash[:error] = "Winnow generated feeds cannot be added to Winnow."
+      render :action => 'new'
     end
+  rescue
   end
 end

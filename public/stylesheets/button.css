@@ -1,0 +1,193 @@
+/* Copyright (c) 2008 The Kaphan Foundation
+ *
+ * Possession of a copy of this file grants no permission or license
+ * to use, modify, or create derivate works.
+ * Please visit http://www.peerworks.org/contact for further information.
+ */
+
+/* =button */
+.button {
+  outline: none;
+  display: block;
+  padding: 0.25em 0.75em;
+  background-color: #fff;
+  background-image: url(../images/button_bg.png);
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  border: 2px solid #bbb;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  color: #666;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.button:active {
+  background-image: url(../images/button_bg_active.png);
+  background-position: left top;
+}
+
+.button:visited {
+  color: #666;
+}
+
+.button:hover {
+  text-decoration: underline;
+}
+
+.button.disabled {
+  color: #ccc;
+}
+
+.button.selected {
+  color: #333;
+  background-image: url(../images/button_bg_active.png);
+  background-position: left top;
+}
+
+.button .icon {
+  display: block;
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+.button .icon.clear {
+  padding-left: 20px;
+  background-image: url(../images/clear.png);
+}
+
+.button.disabled .icon.clear {
+  background-image: url(../images/clear_disabled.png);
+}
+
+.button .icon.feed {
+  padding-left: 20px;
+  background-image: url(../images/feed.png);
+}
+
+.button .icon.unread {
+  padding-left: 20px;
+  background-image: url(../images/unread.png);
+}
+
+.button .icon.read {
+  padding-left: 20px;
+  background-image: url(../images/read.png);
+}
+
+.button .icon.previous {
+  padding-left: 20px;
+  background-image: url(../images/bullet_arrow_up.png);
+}
+
+.button .icon.next {
+  padding-left: 20px;
+  background-image: url(../images/bullet_arrow_down.png);
+}
+
+.button .icon.add {
+  padding-left: 20px;
+  background-image: url(../images/add.png);
+}
+
+.button .icon.add_user {
+  padding-left: 20px;
+  background-image: url(../images/add_user.png);
+}
+
+.button .icon.add_invite {
+  padding-left: 20px;
+  background-image: url(../images/add_invite.png);
+}
+
+.button .icon.add_message {
+  padding-left: 20px;
+  background-image: url(../images/add_message.png);
+}
+
+.button .icon.all {
+  padding-left: 20px;
+  background-image: url(../images/all.png);
+}
+
+.button .icon.trained {
+  padding-left: 20px;
+  background-image: url(../images/trained.png);
+}
+
+.button .icon.import {
+  padding-left: 20px;
+  background-image: url(../images/import.png);
+}
+
+.button .icon.export {
+  padding-left: 20px;
+  background-image: url(../images/export.png);
+}
+
+.button.asc .icon {
+  padding-left: 16px;  
+  background-image: url(../images/bullet_arrow_up.png);  
+  background-position: -3px center;  
+}
+
+.button.desc .icon {
+  padding-left: 16px;  
+  background-image: url(../images/bullet_arrow_down.png);
+  background-position: -3px center;
+}
+
+/* =toolbar */
+.toolbar.right {
+  float: right;
+}
+ 
+.toolbar .button {
+  float: left;
+  margin-right: 0.5em;
+}
+
+.toolbar .group {
+  float: left;
+  margin-right: 0.5em;
+}
+
+.toolbar .button:last-child, .toolbar .group:last-child, .toolbar .button.last, .toolbar .group.last {
+  margin-right: 0;
+}
+
+.toolbar .group label {
+  float: left;
+  margin-left: 1em;
+  margin-right: 0.25em;
+  padding: 0.45em 0;
+}
+
+.toolbar .group .button {
+  margin-right: 0;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-width: 2px 1px 2px 0;
+}
+
+.toolbar .group .button:first-child, .toolbar .group .button.first {
+  border-left-width: 2px;
+  -moz-border-radius-topleft: 1em;
+  -moz-border-radius-bottomleft: 1em;
+  -webkit-border-top-left-radius: 1em;
+  -webkit-border-bottom-left-radius: 1em;
+}
+
+.toolbar .group .button:last-child, .toolbar .group .button.last {
+  border-right-width: 2px;
+  -moz-border-radius-topright: 1em;
+  -moz-border-radius-bottomright: 1em;
+  -webkit-border-top-right-radius: 1em;
+  -webkit-border-bottom-right-radius: 1em;
+}
+
+.toolbar .right {
+  float: right;
+  margin-left: 0.5em;
+  margin-right: 0;
+}

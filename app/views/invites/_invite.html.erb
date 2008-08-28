@@ -1,10 +1,10 @@
 <div id="invite_<%= invite.id %>" class="invite clearfix">
 	<ul class="controls">
     <% unless invite.code? -%>
-    <li><%= link_to _(:activate), activate_invite_path(invite), :class => :active_icon, :method => :put %></li>
-    <li><%= link_to _(:edit), edit_invite_path(invite), :class => :edit_icon %></li>
+    <li><%= link_to _(:activate), activate_invite_path(invite), :class => :activate, :method => :put %></li>
+    <li><%= link_to _(:edit), edit_invite_path(invite), :class => :edit %></li>
     <% end -%>
-    <li><%= link_to _(:destroy), invite, :class => :destroy_icon, :method => :delete, :confirm => _(:are_you_sure) %></li>
+    <li><%= link_to _(:destroy), invite, :class => :destroy, :method => :delete, :confirm => _(:are_you_sure) %></li>
 	</ul>
 	
 	<dl class="created clearfix">

@@ -25,7 +25,7 @@ describe User do
       @user.should have_many(:messages)
     end
     
-    it "has many messages" do
+    it "has many feedbacks" do
       @user.should have_many(:feedbacks)
     end
     
@@ -50,6 +50,14 @@ describe User do
       prototype = User.create! valid_user_attributes(:prototype => true)
       user = User.create_from_prototype(valid_user_attributes)
       user.should be_active
+    end
+    
+    it "creating from a prototype marks all system messages as read" do
+      prototype = User.create! valid_user_attributes(:prototype => true)
+      Message.delete_all
+      message = Message.create! :body => "some test message"
+      user = User.create_from_prototype(valid_user_attributes)
+      Message.find_unread_for_user_and_global(user).should be_empty
     end
     
     it "creating from a prototype returns a new user record if the record was invalid" do

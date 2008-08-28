@@ -184,19 +184,27 @@ class FeedItem < ActiveRecord::Base
     base_uri = filters.delete(:base_uri)
     self_link = filters.delete(:self_link)
     alt_link = filters.delete(:alt_link)
-    @tags = filters[:tag_ids].to_s.split(",").map {|t| Tag.find(t) }
+    items = self.find_with_filters(filters)
+
+    tags = filters[:tag_ids].to_s.split(",").map {|id| Tag.find(id) }.map { |t| "'#{t.name}'" }
+    feeds = filters[:feed_ids].to_s.split(",").map {|id| Feed.find(id) }.map { |f| "'#{f.title}'" }
+    text_filter = filters[:text_filter]
+    mode = filters[:mode]
+
+    # TODO: localization
+    title = "Winnow feed for #{mode} items"
+    title << " from #{feeds.to_sentence}" unless feeds.blank?
+    title << " tagged by #{tags.to_sentence}" unless tags.blank?
+    title << " including text '#{text_filter}'" unless text_filter.blank?
     
     feed = Atom::Feed.new do |feed|
-      # TODO: localization
-      feed.title = "Feed for #{@tags.to_sentence}"
+      feed.title = title
       feed.id = self_link
-      feed.updated = Time.now
+      feed.updated = items.first.updated if items.first
       feed.links << Atom::Link.new(:rel => 'self', :href => self_link)
       feed.links << Atom::Link.new(:rel => 'alternate', :href => alt_link);
-      self.find_with_filters(filters).each do |feed_item|            
-        feed.entries << feed_item.to_atom(:base_uri => base_uri,
-                                          :include_tags => filters[:user].tags + 
-                                                           filters[:user].subscribed_tags)
+      items.each do |feed_item|            
+        feed.entries << feed_item.to_atom(:base_uri => base_uri, :include_tags => filters[:user].tags + filters[:user].subscribed_tags)
       end
     end
   end  
@@ -324,7 +332,7 @@ class FeedItem < ActiveRecord::Base
     
     tags = if filters[:tag_ids]
       Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]])
-    elsif filters[:mode] =~ /moderated/i # limit the search to tagged items
+    elsif filters[:mode] =~ /trained/i # limit the search to tagged items
       filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
     else
       tags = []
@@ -333,11 +341,11 @@ class FeedItem < ActiveRecord::Base
 
     conditions = ["(#{conditions.compact.join(" OR ")})"] unless conditions.compact.blank? 
     
-    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+    unless filters[:mode] =~ /trained/i # don't filter excluded items when showing trained items
       conditions << build_tag_exclusion_filter(filters[:user].excluded_tags)
     end
     
-    unless filters[:mode] =~ /moderated/i # don't filter excluded items when showing moderated items
+    unless filters[:mode] =~ /trained/i # don't filter excluded items when showing trained items
       add_globally_exclude_feed_filter_conditions!(filters[:user].excluded_feeds, conditions)
     end
     
@@ -369,7 +377,7 @@ class FeedItem < ActiveRecord::Base
 
   def self.build_tag_inclusion_filter(tags, mode)
     unless tags.empty?
-      manual_taggings_sql = mode =~ /moderated/i ? " AND classifier_tagging = 0" : nil
+      manual_taggings_sql = mode =~ /trained/i ? " AND classifier_tagging = 0" : nil
       "EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id#{manual_taggings_sql})"
     end
   end

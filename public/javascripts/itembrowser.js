@@ -15,7 +15,6 @@ var ItemBrowser = Class.create({
     
     this.name = name;
     this.update_queue = [];
-    this.auto_completers = {};
     this.loading = false;
     this.full = false;
     
@@ -225,6 +224,13 @@ var ItemBrowser = Class.create({
     this.addFilters(parameters);
   },
   
+  clearFilters: function(parameters) {
+    var clear_selected_filters = $("clear_selected_filters");  
+    if(!clear_selected_filters.hasClassName("disabled")) {
+      this.setFilters({text_filter: ""});
+    }
+  },
+  
   addFilters: function(parameters) {
     this.expandFolderParameters(parameters);
 
@@ -249,7 +255,7 @@ var ItemBrowser = Class.create({
   
   styleFilters: function() {
     if($("mode_all")) {
-  	  var modes = ["all", "unread", "moderated"];
+  	  var modes = ["all", "unread", "trained"];
   		if(this.filters.mode) {
   			modes.without(this.filters.mode).each(function(mode) {
   			  $("mode_" + mode).removeClassName("selected")
@@ -322,9 +328,9 @@ var ItemBrowser = Class.create({
     var clear_selected_filters = $("clear_selected_filters");
     if(clear_selected_filters) {
       if(this.filters.tag_ids || this.filters.feed_ids || this.filters.text_filter) {
-        clear_selected_filters.show();
+        clear_selected_filters.removeClassName("disabled");
       } else {
-        clear_selected_filters.hide();
+        clear_selected_filters.addClassName("disabled");
       }
     }
     
@@ -368,6 +374,7 @@ var ItemBrowser = Class.create({
 		  if(order_control) {
 		    order_control.removeClassName("asc");
 		    order_control.removeClassName("desc");
+		    order_control.removeClassName("selected");
 		  }
 		});
 
@@ -375,11 +382,13 @@ var ItemBrowser = Class.create({
 		  var order_control = $("order_" + this.filters.order);
 		  if(order_control) {
 		    order_control.addClassName(this.filters.direction);
+		    order_control.addClassName("selected");
 		  }
 		} else if(this.defaultOrder()) {
 		  var order_control = $("order_" + this.defaultOrder());
 		  if(order_control) {
 		    order_control.addClassName(this.defaultDirection());
+		    order_control.addClassName("selected");
 		  }
 		}
   },
@@ -421,6 +430,10 @@ var ItemBrowser = Class.create({
       $(item).removeClassName('selected');
       $(item).select(".tag_control").invoke("removeClassName", 'selected');
       $(item).select(".information").invoke("removeClassName", 'selected');
+      $(item).select(".feed_title a").invoke("removeClassName", 'selected');
+      $(item).select(".feed_information").invoke("removeClassName", 'selected');
+      $(item).select(".add_tag").invoke("removeClassName", 'selected');  
+      $(item).select(".moderation_panel").invoke("removeClassName", 'selected');      
     }
   },
   
@@ -477,6 +490,25 @@ var ItemBrowser = Class.create({
       information.addClassName('selected');
 
       item._item.scrollTo();
+    }
+  },
+  
+  selectFeedInformation: function(feed) {
+    feed = $(feed);
+    
+    var item = feed.up('.feed_item');
+    var information = item.down(".feed_information");
+
+    if(feed.hasClassName("selected")) {
+      feed.removeClassName("selected");
+      information.removeClassName("selected");
+    } else {
+      itemBrowser.selectItem(item);
+      feed.addClassName('selected');
+      information.addClassName('selected');
+
+      item._item.scrollTo();
+      item._item.loadFeedInformation();
     }
   },
   
@@ -555,50 +587,79 @@ var ItemBrowser = Class.create({
   initializeItemModerationPanel: function(item, attach_events) {
     item = $(item);
     
-    var panel = item.down(".add_tag_form");
+    var panel = item.down(".moderation_panel");
+    var form = panel.down("form");
     var field = panel.down("input[type=text]");
-    var list = panel.down(".auto_complete");
-    var add = panel.down("input[type=submit]");
-    var cancel = panel.down("a");
-
-    if(field && list && add && cancel) {
-      if(!this.auto_completers[item.getAttribute("id")]) {
-        this.auto_completers[item.getAttribute("id")] = new Autocompleter.Local(field, list, [], { 
-          minChars: 0, partialChars: 1, fullSearch: true, choices: this.options.tags.size(), persistent: ["Create Tag: '#{entry}'"], 
-          afterUpdateElement: function() { 
-            item._item.hideAddTagForm();
-            // TODO: Move this call into item browser...
-            window.add_tagging(item.getAttribute("id"), field.value, 'positive');
-            field.blur();
-            field.value = "";
-          }.bind(this)
-        });
-      }
-      var used_tags = $$("#tag_controls_" + item.getAttribute("id") + " li span.name").collect(function(span) { return span.innerHTML; });
-      this.auto_completers[item.getAttribute("id")].options.array = this.options.tags.reject(function(tag) {
+    var possible_tags_panel = panel.down(".possible_tags");
+    
+    if(form && possible_tags_panel) {
+      var used_tags = $("tag_controls_" + item.getAttribute("id")).select("li.positive span.name, li.negative span.name").collect(function(span) { return span.innerHTML; });
+      var possible_tags = this.options.tags.reject(function(tag) {
         return used_tags.include(tag);
       });
-      this.auto_completers[item.getAttribute("id")].activate();
 
+      var html = "";
+      possible_tags.each(function(tag) {
+        var onclick = "add_tagging('" + item.getAttribute("id") + "', '" + tag + "', 'positive');";
+        html += '<a class="add" href="#" onclick="'+ onclick + 'return false;">' + tag + "</a> ";
+      });
+      possible_tags_panel.update(html);
+      
       if(attach_events) {
-        field.observe("blur", function() {
-          setTimeout(item._item.hideAddTagForm.bind(item._item), 200);
+        var selected_tag = null;
+        
+        var updateTags = function(field, value, event) {
+          selected_tag = null;
+          
+          possible_tags_panel.select("a").each(function(tag) {
+            tag.removeClassName("selected");
+            tag.removeClassName("disabled");
+            
+            if(value.blank()) {
+              // Don't do anything
+            } else if(!tag.innerHTML.toLowerCase().startsWith(value.toLowerCase())) {
+              tag.addClassName("disabled")
+            } else if(!selected_tag) {
+              selected_tag = tag.innerHTML;
+              tag.addClassName("selected");
+              
+              // http://www.webreference.com/programming/javascript/ncz/3.html
+              // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
+              //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
+              //   console.log("nope");
+              //   // Don't do anything
+              // } else {
+              //   field.value = tag.innerHTML;
+              //   if(field.createTextRange) {
+              //     var textSelection = field.createTextRange();
+              //     textSelection.moveStart("character", 0);
+              //     textSelection.moveEnd("character", value.length - field.value.length);
+              //     textSelection.select();
+              //   } else if (field.setSelectionRange) {
+              //     field.setSelectionRange(value.length, field.value.length);
+              //   }
+              // }
+            }
+          });
+        };
+        
+        new Form.Element.EventObserver(field, updateTags, 'keyup');
+
+        form.observe("submit", function() {
+          window.add_tagging(item.getAttribute("id"), selected_tag || field.value, "positive");
+          field.value = "";
+          updateTags(null, "");
         }.bind(this));
+        
         field.observe("keydown", function(event) {
           if(event.keyCode == Event.KEY_ESC) { item._item.hideAddTagForm(); }
         }.bind(this));
-      
-        add.observe("click", function() {
-          this.auto_completers[item.getAttribute("id")].selectEntry();
-        }.bind(this));
-
-        cancel.observe("click", item._item.hideAddTagForm.bind(item._item));
       }
       
       field.focus();
       
       (function() {
-        new Effect.ScrollToInDiv(this.container, list, {duration: 0.3, bottom_margin: 5});
+        new Effect.ScrollToInDiv(this.container, panel, {duration: 0.3, bottom_margin: 5});
       }).bind(this).delay(0.3);
     }
   },

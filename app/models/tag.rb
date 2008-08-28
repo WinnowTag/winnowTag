@@ -40,7 +40,7 @@ class Tag < ActiveRecord::Base
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
-  
+
   # Returns a suitable label for the classification UI display.
   def classification_label
     truncate(self.name, 15)
@@ -61,16 +61,8 @@ class Tag < ActiveRecord::Base
   #   self.name
   # end
   
-  def positive_count
-    read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
-  end
-  
-  def negative_count
-    read_attribute(:negative_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 0")
-  end
-  
   def classifier_count
-    read_attribute(:classifier_count) || taggings.count(:conditions => "classifier_tagging = 1 AND NOT EXISTS (SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)")
+    feed_items_count.to_i - positive_count.to_i - negative_count.to_i
   end
   
   def inspect
@@ -251,11 +243,9 @@ class Tag < ActiveRecord::Base
   def self.search(options = {})
     select = ['tags.*', 
               '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_number',
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND classifier_tagging = 1 AND NOT EXISTS' <<
-                '(SELECT 1 FROM taggings manual_taggings WHERE manual_taggings.tag_id = taggings.tag_id AND ' <<
-                  'manual_taggings.feed_item_id = taggings.feed_item_id AND manual_taggings.classifier_tagging = 0)) AS classifier_count',
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
+              '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count',
               '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0) AS last_trained',
               "CASE " <<
                 "WHEN EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) THEN 0 " <<
@@ -290,8 +280,10 @@ class Tag < ActiveRecord::Base
     order = case options[:order]
     when "name", "public", "id"
       "tags.#{options[:order]}"
-    when "state", "comments_number", "positive_count", "negative_count", "classifier_count", "last_trained"
+    when "state", "comments_number", "positive_count", "negative_count", "last_trained"
       options[:order]
+    when "classifier_count"
+      "(feed_items_count - positive_count - negative_count)"
     when "login"
       "users.#{options[:order]}"
     else

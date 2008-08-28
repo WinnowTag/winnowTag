@@ -79,27 +79,27 @@ describe "keyboard shortcuts" do
     feed_item_2, feed_item_1 = FeedItem.find(3, 4) 
  
     dont_see_element "#feed_item_#{feed_item_1.id}.selected" 
-    assert_not_visible "css=#feed_item_#{feed_item_1.id} .add_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item_1.id} .moderation_panel"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected" 
-    assert_not_visible "css=#feed_item_#{feed_item_2.id} .add_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item_2.id} .moderation_panel"
  
     key_press "css=body", "n" 
     see_element "#feed_item_#{feed_item_1.id}.selected" 
-    assert_not_visible "css=#feed_item_#{feed_item_1.id} .add_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item_1.id} .moderation_panel"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected" 
-    assert_not_visible "css=#feed_item_#{feed_item_2.id} .add_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item_2.id} .moderation_panel"
  
     key_press "css=body", "t" 
     see_element "#feed_item_#{feed_item_1.id}.selected" 
-    assert_visible "css=#feed_item_#{feed_item_1.id} .add_tag_form"
+    assert_visible "css=#feed_item_#{feed_item_1.id} .moderation_panel"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected" 
-    assert_not_visible "css=#feed_item_#{feed_item_2.id} .add_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item_2.id} .moderation_panel"
  
     key_press "css=body", "t" 
     see_element "#feed_item_#{feed_item_1.id}.selected" 
-    assert_not_visible "css=#feed_item_#{feed_item_1.id} .add_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item_1.id} .moderation_panel"
     dont_see_element "#feed_item_#{feed_item_2.id}.selected"
-    assert_not_visible "css=#feed_item_#{feed_item_2.id} .add_tag_form"
+    assert_not_visible "css=#feed_item_#{feed_item_2.id} .moderation_panel"
   end
   
   it "open_close_item" do

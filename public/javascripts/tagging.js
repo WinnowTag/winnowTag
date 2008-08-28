@@ -4,10 +4,7 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 function add_tagging(taggable_id, tag_name, tagging_type) {
-  if( tag_name.match(/^\s*$/) ) { return; }
-
-  var match = tag_name.match(/^Create Tag: '(.+)'$/);
-  if(match) { tag_name = match[1]; }
+  if(tag_name.match(/^\s*$/)) { return; }
 
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML.unescapeHTML() == tag_name;
@@ -25,6 +22,7 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
   if (!tag_control) {
     parameters.attach_tagging_information_event = true;
     add_tag_control(taggable_id, tag_name);
+    remove_add_tag_control(taggable_id, tag_name);
   } else if (tag_control.hasClassName(other_tagging_type)) {
     tag_control.removeClassName(other_tagging_type);
     tag_control.addClassName(tagging_type);
@@ -32,14 +30,15 @@ function add_tagging(taggable_id, tag_name, tagging_type) {
     tag_information.addClassName(tagging_type);
   } else if (tag_control.hasClassName('classifier')) {
     tag_control.addClassName(tagging_type); 
-    tag_information.addClassName(tagging_type); 
+    tag_information.addClassName(tagging_type);
+    remove_add_tag_control(taggable_id, tag_name);
   }
   
   sendTagRequest(url, parameters);
 }
 
 function remove_tagging(taggable_id, tag_name) {
-  if( tag_name.match(/^\s*$/) ) { return; }
+  if(tag_name.match(/^\s*$/)) { return; }
 
   var tag_control = $$('#' + taggable_id + ' .tag_control').detect(function(element) {
     return element.down(".name").innerHTML.unescapeHTML() == tag_name;
@@ -88,6 +87,14 @@ function add_tag_control(taggable_id, tag) {
     return element.down(".name").innerHTML.unescapeHTML() == tag;
   });
   Effect.Appear(tag_control);
+}
+
+function remove_add_tag_control(taggable_id, tag) {
+  $(taggable_id).select(".moderation_panel .possible_tags .add").each(function(element) {
+    if(element.innerHTML == tag) {
+      element.fade();
+    }
+  });
 }
 
 function remove_tag_control(taggable_id, tag) {

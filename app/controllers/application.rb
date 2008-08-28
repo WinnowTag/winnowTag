@@ -39,4 +39,15 @@ protected
       current_user.update_attribute(:last_accessed_at, Time.now)
     end
   end
+    
+  def conditional_render(last_modified)   
+    since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
+
+    if since && last_modified && since >= last_modified
+      head :not_modified
+    else
+      response.headers['Last-Modified'] = last_modified.httpdate if last_modified
+      yield(since)
+    end
+  end
 end

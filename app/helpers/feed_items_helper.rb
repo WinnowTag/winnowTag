@@ -67,6 +67,14 @@ module FeedItemsHelper
     content_tag(:ul, html, :class => "tag_list", :id => dom_id(feed_item, "tag_controls"))
   end
   
+  def feed_control_for(feed_item)
+    if feed_item.author.blank?
+      _(:feed_item_feed_metadata, content_tag(:a, feed_item.feed_title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"))
+    else
+      _(:feed_item_metadata, content_tag(:a, feed_item.feed_title, :class => "name stop", :onclick => "itemBrowser.selectFeedInformation(this)"), feed_item.author)
+    end
+  end
+  
   # Format a classifier tagging strength as a percentage.
   def format_classifier_strength(taggings)
     if classifier_tagging = taggings.detect {|tagging| tagging.classifier_tagging? }
@@ -133,14 +141,7 @@ module FeedItemsHelper
     feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
     feeds.sort_by { |feed| feed.title.downcase }
   end
-  
-  def tags_for_sidebar
-    tags = current_user.sidebar_tags + current_user.subscribed_tags - current_user.excluded_tags + 
-      Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", params[:tag_ids].to_s.split(","), true, current_user])
 
-    tags.uniq.sort_by { |tag| tag.name.downcase }
-  end
-  
   def render_clues(clues)
     sorted_grouped_clues = clues.sort_by { |clue| clue['prob'] }.reverse.in_groups_of((clues.size.to_f / 3).ceil)
     content_tag('table') do

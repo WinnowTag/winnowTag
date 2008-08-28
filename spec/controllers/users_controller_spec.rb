@@ -31,25 +31,47 @@ describe UsersController do
     # assert_select "form[action=#{users_path}]"
   end
   
-  it "create" do
-    login_as(:admin)
-    assert_no_difference("User.count") do
-      post :create
-      assert_not_nil assigns(:user)
-      assert_response :success
-      assert_template 'new'
+  describe '#create' do
+    def do_post
+      post :create, :user => @user_params
     end
-  end
-  
-  it "create" do
-    assert_difference("User.count", 1) do
+    
+    before(:each) do
       login_as(:admin)
-      post :create, :user => { :login => 'quire', :email => 'quire@example.com', 
-                               :firstname => 'Qu', :lastname => 'Ire',
-                               :password => 'quire', :password_confirmation => 'quire' }
-      assert_redirected_to users_path
-      assert user = User.find_by_login('quire')
-      assert_not_nil user.activated_at
+      
+      @user_params = "user params"
+      @user = mock_model(User)
+
+      User.stub!(:create_from_prototype).and_return(@user)
+    end
+    
+    it "should create a new user from the prototype" do
+      User.should_receive(:create_from_prototype).with(@user_params).and_return(@user)
+      do_post
+    end
+    
+    describe "success" do
+      it "redirect to the index action" do
+        @user.stub!(:new_record?).and_return(false)
+        do_post
+        response.should redirect_to(users_path)
+      end
+    end
+    
+    describe "fail" do
+      before(:each) do
+        @user.stub!(:new_record?).and_return(true)
+      end
+
+      it "assigns the user for the view" do
+        do_post
+        assigns(:user).should == @user
+      end
+      
+      it "render the new template" do
+        do_post
+        response.should render_template("new")
+      end
     end
   end
   

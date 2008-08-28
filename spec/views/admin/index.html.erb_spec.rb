@@ -24,11 +24,6 @@ describe '/admin/index' do
     response.should have_tag("a[href=?]", invites_path)
   end
   
-  it "renders link to item protection management page" do
-    render_it
-    response.should have_tag("a[href=?]", item_protection_path)
-  end
-  
   it "renders link to messages page" do
     render_it
     response.should have_tag("a[href=?]", messages_path)

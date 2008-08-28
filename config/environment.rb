@@ -37,8 +37,12 @@ Rails::Initializer.run do |config|
   config.gem "hpricot"
   config.gem "bcrypt-ruby", :lib => "bcrypt"
   config.gem "RedCloth", :version => "4.0.1"
-  # config.gem "tzinfo", :version => "0.3.9"
-  config.gem "auth-hmac", :version => "1.0.0"
+  config.gem "tzinfo", :version => "0.3.9"
+  config.gem "auth-hmac", :version => "1.0.1"
+  
+  if `uname -n` =~ /ds468-1.blueboxgrid.com/
+    config.gem :fiveruns_manage
+  end
   
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
@@ -83,6 +87,6 @@ Rails::Initializer.run do |config|
   
   config.after_initialize do 
     ActionView::Helpers::AssetTagHelper.register_javascript_expansion :winnow => ["slider", "cookies", "applesearch", "bias_slider", "timeout", "messages", "labeled_input", "scroll", "classification", "itembrowser", "item", "sidebar", "tagging"]
-    ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :winnow => ["winnow", "tables", "slider", "scaffold"]
+    ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :winnow => ["winnow", "tables", "slider", "scaffold", "button"]
   end
 end

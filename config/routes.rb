@@ -29,7 +29,8 @@ ActionController::Routing::Routes.draw do |map|
                 :member => {
                   :information => :get,
                   :clues => :get,
-                  :add_tag_form => :get,
+                  :moderation_panel => :get,
+                  :feed_information => :get,
                   :body => :get,
                   :mark_read => :put,
                   :mark_unread => :put
@@ -86,11 +87,7 @@ ActionController::Routing::Routes.draw do |map|
                }
               
   map.resources :collection_job_results, :path_prefix => '/users/:user_id'
-  map.resource :item_protection, :controller => "item_protection",
-                :member => {
-                  :rebuild => :post
-                }
-
+  
   map.resources :folders, 
                 :member => {
                   :add_item => :put,

@@ -1,0 +1,5 @@
+<div class="possible_tags"></div>
+<% form_tag "", :onsubmit => "return false;" do -%>
+  <%= text_field_tag 'tag', nil %>
+  <%= submit_tag _(:add_tag_button) %> or <%= link_to_function "cancel", "this.up('.feed_item')._item.toggleAddTagForm();"  %>
+<% end -%>

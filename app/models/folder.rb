@@ -33,6 +33,16 @@ class Folder < ActiveRecord::Base
     Tag.find_all_by_id(tag_ids, :order => :name)
   end
 
+  def tags_with_counts
+    Tag.find tag_ids, 
+      :select => ['tags.*',
+                  '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
+                  '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
+                  '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count'
+                 ].join(","),
+      :order => :name
+  end
+  
   def add_tag!(tag_id)
     self.tag_ids = self.tag_ids + [tag_id.to_i]
     self.save!
@@ -42,7 +52,6 @@ class Folder < ActiveRecord::Base
     self.feed_ids = self.feed_ids + [feed_id.to_i]
     self.save!
   end
-
   
   def remove_tag!(tag_id)
     self.tag_ids = self.tag_ids - [tag_id.to_i]

@@ -4,20 +4,20 @@
     <%= link_to_function _(:add_tag_link), "", :class => "add_tag stop" %>
 
   	<%= link_to_function "", "", :class => "status stop" %>
-  	<h4><%= feed_item_title(feed_item) %></h4>
-    <%= link_to(image_tag("link.png"), feed_item.link, :class => "link stop") %>
-  	<span class="description">
-  		<% if feed_item.author.blank? -%>
-        <%= _(:feed_item_feed_metadata, link_to_feed(feed_item.feed, :class => "stop")) %>
-  		<% else -%>
-  		  <%= _(:feed_item_metadata, link_to_feed(feed_item.feed, :class => "stop"), feed_item.author) %>
-  		<% end -%>
-  	</span>
 
+    <h4><%= feed_item_title(feed_item) %></h4>
+    <%= link_to(image_tag("external.gif"), feed_item.link, :target => "_blank", :title => _(:open_original_feed_item), :class => "stop") %>
+
+    <span class="feed_title"><%= feed_control_for(feed_item) %></span>
+    
     <%= tag_controls(feed_item) %>
-    <div class="add_tag_form stop" style="display: none;" url="<%= add_tag_form_feed_item_path(feed_item) %>"></div> 
   </div>
   
+  <div class="moderation_panel clearfix" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div> 
+      
   <div class="information stop clearfix"></div>
+
+	<div class="feed_information" url="<%= feed_information_feed_item_path(feed_item) %>"></div>
+  
   <div class="body clearfix" url="<%= body_feed_item_path(feed_item) %>"></div>
 </div>

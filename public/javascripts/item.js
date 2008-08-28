@@ -5,14 +5,15 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Item = Class.create({
   initialize: function(element) {
-    this.element       = element;
-    this.id            = this.element.getAttribute('id').match(/\d+/).first();
-    this.closed        = this.element.down(".closed");
-    this.status        = this.element.down(".status");
-    this.add_tag       = this.element.down(".add_tag");
-    this.add_tag_form  = this.element.down(".add_tag_form");
-    this.add_tag_field = this.add_tag_form.down("input[type=text]");
-    this.body          = this.element.down(".body");
+    this.element          = element;
+    this.id               = this.element.getAttribute('id').match(/\d+/).first();
+    this.closed           = this.element.down(".closed");
+    this.status           = this.element.down(".status");
+    this.add_tag          = this.element.down(".add_tag");
+    this.moderation_panel = this.element.down(".moderation_panel");
+    this.feed_information = this.element.down(".feed_information");
+    this.body             = this.element.down(".body");
+    this.add_tag_field    = this.moderation_panel.down("input[type=text]");
     
     this.setupEventListeners();
     
@@ -68,8 +69,12 @@ var Item = Class.create({
     this.load(this.body);
   },
   
+  loadFeedInformation: function() {
+    this.load(this.feed_information);
+  },
+  
   toggleAddTagForm: function() {
-    if(this.add_tag_form.visible()) {
+    if(this.moderation_panel.hasClassName("selected")) {
       this.hideAddTagForm();
     } else {
       this.showAddTagForm();
@@ -82,9 +87,8 @@ var Item = Class.create({
       itemBrowser.selectItem(this.element);
     }
 
-    // $$('.add_tag_form').invoke("hide");
-
-    this.add_tag_form.show();
+    this.moderation_panel.addClassName("selected");
+    this.add_tag.addClassName("selected");
     this.loadAddTagForm();
     this.scrollTo();
 
@@ -92,13 +96,14 @@ var Item = Class.create({
   },
   
   hideAddTagForm: function() {
-    if(this.add_tag_field) { this.add_tag_field.blur(); }
-    this.add_tag_form.hide()
+    this.moderation_panel.removeClassName("selected");
+    this.add_tag.removeClassName("selected");
+    this.add_tag_field.blur();
   },
 
   loadAddTagForm: function() {
-    this.load(this.add_tag_form, function() {
-      this.add_tag_field = this.add_tag_form.down("input[type=text]");
+    this.load(this.moderation_panel, function() {
+      this.add_tag_field = this.moderation_panel.down("input[type=text]");
       itemBrowser.initializeItemModerationPanel(this.element, true);
     }.bind(this));
   },

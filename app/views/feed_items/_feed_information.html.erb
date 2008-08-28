@@ -1,0 +1,23 @@
+<div id="<%= dom_id(feed) %>" class="feed clearfix <%= feed_classes(feed) %>">
+  <div class="summary clearfix">        
+    <h4 class="clearfix"><%= feed_link(feed) %></h4>  
+    <div class="info">
+      <div class="filter">
+        <p>Filter</p>
+        <strong><%= _(:globally_exclude) %> <%= globally_exclude_check_box(feed) %></strong>
+      </div>
+      <div class="count">
+        <p>Items</p>
+        <strong><%= feed.feed_items_count %></strong>
+      </div>
+      <div class="date">
+         <p><%= _(:created) %></p> 
+         <strong><%= format_date(feed.created_on) %></strong>
+      </div>
+      <div class="date">
+         <p><%= _(:last_updated) %></p> 
+         <strong><%= format_date(feed.updated_on) %></strong>
+      </div>
+    </div>    
+  </div>
+</div>

@@ -22,16 +22,10 @@ Localization.define do |l|
   l.store :could_not_load_clues,                  "Could not load the clues, please try again later."
   
   # app/controllers/feeds_controller.rb
-  l.store :feed_not_found,                        "We couldn't find this feed in any of our databases. Maybe it has been deleted or never existed. If you think this is an error, please contact us."
-  l.store :collector_down,                        "Sorry, we couldn't find the feed and the main feed database couldn't be contacted. We are aware of this problem and will fix it soon. Please try again later."
   l.store :feed_added,                            "Thanks for adding the feed from %s. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
   l.store :feed_existed,                          "We already have the feed from %s, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
   l.store :feeds_imported,           :singular => "Imported %d feed from your OPML file",
                                      :plural   => "Imported %d feeds from your OPML file"
-
-  # app/controllers/item_protection_controller.rb
-  l.store :item_protection_status,                "Unable to fetch protection status from the collector"
-  l.store :item_protection_rebuild_failure,       "Could not rebuild item protection: %s"
 
   # app/controllers/messages_controller.rb
   l.store :message_created,                       "Message was successfully created"
@@ -144,8 +138,6 @@ Localization.define do |l|
   l.store :manage_users_description,              "View and manage users of winnow."
   l.store :manage_invites_link,                   "Invites"
   l.store :manage_invites_description,            "View and manage invites."
-  l.store :manage_item_protection_link,           "Item Protection Management"
-  l.store :manage_item_protection_description,    "View and manage the Item Protection."
   l.store :manage_messages_link,                  "Messages"
   l.store :manage_messages_description,           "View and manage messages."
   l.store :manage_info_link,                      "Winnow Info"
@@ -161,13 +153,14 @@ Localization.define do |l|
   
   # app/views/feed_items/_feed_item.html.erb
   l.store :add_tag_link,                          "Add Tag"
+  l.store :open_original_feed_item,               "Go to original item"
   
   # app/views/feed_items/_filter_controls.html.erb
-  l.store :show_label,                            "Show:"
+  l.store :show_label,                            "Show"
   l.store :show_all_label,                        "All"
   l.store :show_unread_label,                     "Unread"
-  l.store :show_moderated_label,                  "Moderated"
-  l.store :sort_label,                            "Sort:"
+  l.store :show_trained_label,                    "Trained"
+  l.store :sort_label,                            "Sort"
   l.store :sort_date_label,                       "Date"
   l.store :sort_strength_label,                   "Strength"
   l.store :sidebar_tags_header,                   "Tags"
@@ -186,8 +179,7 @@ Localization.define do |l|
   l.store :confirm_destroy_folder,                "Are you sure?"
   
   # app/views/feed_items/_moderation_panel.html.erb
-  l.store :add_tag_button,                        "Add Tag"
-  l.store :cancel_add_tag_link,                   "cancel"
+  l.store :add_tag_button,                     "Add Tag"
 
 
   # app/views/feed_items/_text_filter_controls.html.erb
@@ -196,6 +188,10 @@ Localization.define do |l|
 
   # app/views/feed_items/index.html.erb
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+  l.store :selected_filters,                      "Selected Filters"
+  l.store :previous_item,                         "Previous Item"
+  l.store :next_item,                             "Next Item"
+  l.store :mark_all_read,                         "Mark All Read"    
   
   # app/views/feedbacks/_feedback.html.erb
   l.store :feedback_metadata,                     "%s on %s"
@@ -205,23 +201,17 @@ Localization.define do |l|
   l.store :feedback_cancel_link,                    "cancel"
   
   # app/views/feedbacks/_header_controls.html.erb
-  l.store :feedback_sort_label,                     "Sort:"
   l.store :feedback_sort_user_label,                "User"
   l.store :feedback_sort_date_label,                "Date"
   l.store :feedback_search_placeholder,             "Search Feedback..."
 
   # app/views/feeds/_feed.html.erb
   l.store :last_updated,                            "Last Updated"
-  l.store :number_of_items,                         "# of Items"
   l.store :globally_exclude,                        "Globally Exclude"
   l.store :show,                                    "Show"
-  l.store :feeds_show_link_title,                   "Show Only Items From %s"
   
   # app/views/feeds/_header_controls.html.erb
-  l.store :feeds_header_add,                        "Add"
-  l.store :feeds_header_import,                     "Import"
-  
-  # app/views/feeds/_index_header_controls.html.erb
+  l.store :feeds_header_add_import,                 "Add / Import"
   l.store :feeds_header_title,                      "Title"
   l.store :feeds_header_globally_exclude,           "Globally Exclude"
   l.store :feeds_header_items,                      "Items"
@@ -233,30 +223,15 @@ Localization.define do |l|
   l.store :feeds_back_to_feeds,                     "Back to Feeds"
 
   # app/views/feeds/import.html.erb
-  l.store :feeds_upload_opml_file,                  "Upload an OPML file"
+  l.store :feeds_add_import,                        "Add / Import Feeds"
+  l.store :feeds_new_description,                   "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
+  l.store :add_feed_button,                         "Add Feed"
   l.store :feeds_import_description,                "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
-  l.store :feeds_opml_file,                         "OPML File"
-  l.store :import,                                  "Import"
-  l.store :cancel,                                  "cancel"
-  
-  # app/views/feeds/new.html.erb
-  l.store :feeds_enter_new_feed_url,                "Enter a new Feed URL"
-  l.store :feeds_new_description1,                  "Enter the URL of a feed. Or enter the URL of a web page, and Winnow will use the feed URL that page contains."
-  l.store :feeds_new_description2,                  "Only items with enough text for the classifier to use will be collected from the feed."
-  l.store :feeds_new_url_label,                     "URL:"
-  l.store :create_feed_button,                      "Create Feed"
-  l.store :bookmarklet,                             "Bookmarklet"
+  l.store :upload,                                  "Upload"
   l.store :feeds_add_to_winnow,                     "Add to Winnow"
-  l.store :feeds_new_bookmarklet_description1,      "Drag this button"
-  l.store :feeds_new_bookmarklet_description2,      "to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
-  l.store :feeds_bookmarklet_js_error_message,      "Drag this button to your bookmark or right click and select Bookmark this Link..."
-
-  # app/views/feeds/show.html.erb
-  l.store :feeds_title,                             "Title"
-  l.store :feeds_feed_home,                         "Feed Home"
-  l.store :feeds_feed,                              "Feed"
-  l.store :last_collected,                          "Last Collected"
-  l.store :globally_excluded,                       "Globally Excluded"              
+  l.store :feeds_new_bookmarklet_description,       "Drag this button to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
+  l.store :feeds_bookmarklet_js_error_message,      "Drag this button to your bookmark or right click and select 'Bookmark This Link'"
+  l.store :cancel,                                  "cancel"
   
   # app/views/invites/_form.html.erb
   l.store :invites_activate,                        "Activate?"
@@ -290,17 +265,6 @@ Localization.define do |l|
   
   # app/views/invites/new.html.erb
   l.store :invites_create_invite,                   "Create Invite"
-    
-  # app/views/item_protection/show.html.erb
-  l.store :item_protection_explanation,             %|Item Protection involves Winnow marking a feed item as protected from the archival process. This happens when a user tags an item so that manually tagged items are never archived.
-	
-	Here you can view status of item protection and rebuild the list of protected items.  Protector name is the name by which Winnow identifies itself to the collector, typically the instance URL.
-	
-	All item protection information is stored in the collector application.|
-	l.store :item_protection_rebuild,                 "Rebuild"
-	l.store :item_protection_protector_name,          "Protector Name"
-	l.store :item_protection_number_of_items,         "Number of Items"
-	l.store :item_protection_created_on,              "Created On"
 	
   # app/views/layouts/_navbar.html.erb
   l.store :about,                                   "About"
@@ -316,7 +280,7 @@ Localization.define do |l|
   l.store :leave_feedback,                          "Leave Feedback"
 
   # app/views/messages/_header_controls.html.erb  
-  l.store :messages_create_message,                 "Create message"
+  l.store :messages_create_message,                 "Create Message"
 
   # app/views/messages/_sidebar.html.erb
   l.store :messages_messages,                       "Messages"
@@ -355,10 +319,9 @@ Localization.define do |l|
   %s|
   
   # app/views/taggings/destroy.js.rjs
-  l.store :taggings_destroy_message,                %|You have just removed the last example of tag %s, would you like to completely delete it?|
+  l.store :taggings_destroy_message,                %|You have removed the last example of tag %s, do you want to remove it from your tags page?|
   
   # app/views/tags/_header_controls.html.erb
-  l.store :tags_header_sort_label,                  "Sort:"
   l.store :tags_header_name,                        "Name"
   l.store :tags_header_last_trained,                "Last Trained"
   l.store :tags_header_comments,                    "Comments"
@@ -397,7 +360,7 @@ Localization.define do |l|
   l.store :tags_destroy_confirm_text,               "Do you really want to delete %s?\n\nThis can't be undone."
   l.store :tags_editing_tag_name,                   "Editing %s"
   l.store :tags_merge_confirm_text,                 "This will merge %s with %s. Are you sure you want to do this?"
-  l.store :tags_sidebar_confirm_message,            %|You have just removed the tag %s from your sidebar, would you like to completely delete it?|
+  l.store :tags_sidebar_confirm_message,            %|You have removed the tag %s from your sidebar, do you want to remove it from your tags page?|
   l.store :tags_unsubscribe_text,                   "You have been unsubscribed from the public %s. You can subscribe on the Public Tags page."
   
   # app/views/user_notifier
@@ -423,7 +386,7 @@ Please click on the following link to confirm your registration:
   l.store :users_header_email,                      "Email"
   l.store :users_header_last_logged_in,             "Last Logged In"
   l.store :users_header_last_accessed,              "Last Accessed"
-  l.store :users_header_last_moderated,             "Last Moderated"
+  l.store :users_header_last_trained,               "Last Trained"
   l.store :users_header_number_of_tags,             "Number of Tags"
   l.store :users_search_placeholder,                "Search Users..."
   
@@ -435,7 +398,7 @@ Are you sure you want to continue?|
   l.store :users_display_name,                      "Display Name"
   l.store :users_last_logged_in,                    "Last Logged In"
   l.store :users_last_accessed,                     "Last Accessed"
-  l.store :users_last_moderated,                    "Last Moderated"
+  l.store :users_last_trained,                      "Last Trained"
   l.store :users_number_of_tags,                    "Number of Tags"
   l.store :users_save_changes,                      'Save changes'
   

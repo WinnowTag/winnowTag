@@ -3669,9 +3669,10 @@ Form.Observer = Class.create(Abstract.TimedObserver, {
 /*--------------------------------------------------------------------------*/
 
 Abstract.EventObserver = Class.create({
-  initialize: function(element, callback) {
+  initialize: function(element, callback, event) {
     this.element  = $(element);
     this.callback = callback;
+    this.event    = event;
 
     this.lastValue = this.getValue();
     if (this.element.tagName.toLowerCase() == 'form')
@@ -3680,10 +3681,10 @@ Abstract.EventObserver = Class.create({
       this.registerCallback(this.element);
   },
 
-  onElementEvent: function() {
+  onElementEvent: function(event) {
     var value = this.getValue();
     if (this.lastValue != value) {
-      this.callback(this.element, value);
+      this.callback(this.element, value, event);
       this.lastValue = value;
     }
   },
@@ -3693,7 +3694,9 @@ Abstract.EventObserver = Class.create({
   },
 
   registerCallback: function(element) {
-    if (element.type) {
+    if(this.event) {
+      Event.observe(element, this.event, this.onElementEvent.bind(this));
+    } else if (element.type) {
       switch (element.type.toLowerCase()) {
         case 'checkbox':
         case 'radio':

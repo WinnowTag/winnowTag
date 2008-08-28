@@ -575,7 +575,7 @@ describe FeedItem do
       Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag, :strength => 0)
     
       expected = FeedItem.find(2, 4)
-      assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :mode => "moderated", :order => 'id'))
+      assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :mode => "trained", :order => 'id'))
     end
   
     it "find_with_tag_filter_should_only_return_items_with_that_tag" do
