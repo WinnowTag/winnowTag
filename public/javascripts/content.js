@@ -26,8 +26,8 @@ var Content = Class.create({
   },
   
   resize: function() {
-    this.resizeHeight();
     this.resizeWidth();
+    this.resizeHeight();
     this.resizeSidebar();
   },
   
@@ -53,10 +53,8 @@ var Content = Class.create({
     var top_of_content = this.content.offsetTop;
     var content_padding = parseInt(this.content.getStyle("padding-top")) + parseInt(this.content.getStyle("padding-bottom"));
     var footer_height = this.footer ? this.footer.getHeight() : 0;
-    var container_padding = parseInt(this.container.getStyle("padding-bottom"));
-    var container_margin = parseInt(this.container.getStyle("margin-bottom"));
-    
-    return body_height - top_of_content - container_padding - footer_height - container_margin - 1;
+
+    return body_height - top_of_content - content_padding - footer_height;
   },
   
   contentWidth: function() {
@@ -81,18 +79,15 @@ var Content = Class.create({
   sidebarHeight: function() {
     var body_height = this.body.getHeight();
     var top_of_sidebar = this.sidebar.offsetTop;
-    var sidebar_padding = parseInt(this.sidebar.getStyle("padding-top")) + parseInt(this.sidebar.getStyle("padding-bottom"));
-    var sidebar_margin = parseInt(this.sidebar.getStyle("margin-bottom"));
-
-    return body_height - top_of_sidebar - sidebar_padding - sidebar_margin;
+    
+    return body_height - top_of_sidebar;
   },
   
   sidebarControlHeight: function() {
     var body_height = this.body.getHeight();
     var top_of_sidebar_control = this.sidebar_control.offsetTop;
-    var sidebar_control_margin = parseInt(this.sidebar.getStyle("margin-bottom"));
 
-    return body_height - top_of_sidebar_control - sidebar_control_margin;
+    return body_height - top_of_sidebar_control;
   }
 });
 
