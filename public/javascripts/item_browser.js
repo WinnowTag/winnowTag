@@ -207,8 +207,27 @@ var ItemBrowser = Class.create({
       }
     }
   },
+
+  bindTextFilterEvents: function() {
+    $("text_filter_form").observe("submit", function() {
+      this.addFilters({text_filter: $F('text_filter')});
+    }.bind(this));
+  },
   
+  bindTextFilterClearEvents: function() {
+    var clear_button = $("text_filter").next(".srch_clear");
+    if(clear_button) {
+      clear_button.observe("click", function() {
+        // TODO: don't do this if the button was not active
+        this.addFilters({text_filter: null});
+      }.bind(this));
+    }
+  },
+
   initializeFilters: function() {
+    this.bindTextFilterEvents();
+    this.bindTextFilterClearEvents();
+
     this.filters = { order: this.defaultOrder(), direction: this.defaultDirection() };
     
     if(location.hash.gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {

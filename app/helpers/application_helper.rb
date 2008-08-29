@@ -106,7 +106,7 @@ module ApplicationHelper
     content_tag :div, 
       content_tag(:span, nil, :class => "sbox_l") +      
       tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name) +
-      content_tag(:span, nil, :class => "sbox_r srch_clear", :onclick => options[:clear][:onclick]),
+      content_tag(:span, nil, :class => "sbox_r srch_clear"),
       :class => "applesearch clearfix"
   end
 
