@@ -27,7 +27,7 @@ class FeedItemsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
 
         filters = { :order => params[:order], :direction => params[:direction],
@@ -102,13 +102,7 @@ class FeedItemsController < ApplicationController
   def feed_information 
     @feed_item = FeedItem.find(params[:id]) 
   end
-  
-  def information
-    @feed_item = FeedItem.find(params[:id]) 
-    @tag = Tag.find(params[:tag_id]) 
-    @taggings = @feed_item.taggings.select { |tagging| tagging.tag == @tag }
-  end
-  
+
   def sidebar
     render :layout => false
   end

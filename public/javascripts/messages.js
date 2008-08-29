@@ -41,7 +41,7 @@ var Message = {
     if(onShow) { onShow(); }
     Effect.Appear(this.element, { to: this.element.getOpacity(),
       afterFinish: function() {
-        // window.resizeContent();
+        // Content.instance.resize();
         if(autohide === undefined || autohide === true) {
           this.timeout = setTimeout(this.hide.bind(this), 10000);
         }
@@ -54,7 +54,7 @@ var Message = {
     
     Effect.Fade(this.element, {
       afterFinish: function() {
-        // window.resizeContent();
+        // Content.instance.resize();
         this.element.removeClassName(this.element.classNames().toArray().last());
         this.showNext();
       }.bind(this)

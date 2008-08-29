@@ -3,6 +3,12 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+function exceptionToIgnore(e) {
+  // Ignore this Firefox error because it just occurs when a XHR request is interrupted.
+  return e.name == "NS_ERROR_NOT_AVAILABLE"
+}
+
 var Classification = Class.create();
 
 Classification.instance = null;
@@ -222,6 +228,7 @@ Classification.prototype = {
       }
     }.bind(this), 2);
   },
+
   notify: function(event) {
     if (this.options['on' + event]) {
       this.options['on' + event](this);

@@ -5,15 +5,19 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Item = Class.create({
   initialize: function(element) {
-    this.element          = element;
-    this.id               = this.element.getAttribute('id').match(/\d+/).first();
-    this.closed           = this.element.down(".closed");
-    this.status           = this.element.down(".status");
-    this.add_tag          = this.element.down(".add_tag");
-    this.moderation_panel = this.element.down(".moderation_panel");
-    this.feed_information = this.element.down(".feed_information");
-    this.body             = this.element.down(".body");
-    this.add_tag_field    = this.moderation_panel.down("input[type=text]");
+    this.element           = $(element);
+    this.id                = this.element.getAttribute('id').match(/\d+/).first();
+    this.closed            = this.element.down(".closed");
+    this.status            = this.element.down(".status");
+    this.feed_title        = this.element.down(".feed_title");
+    this.train             = this.element.down(".train");
+    this.tag_list          = this.element.down(".tag_list");
+    this.moderation_panel  = this.element.down(".moderation_panel");
+    this.feed_information  = this.element.down(".feed_information");
+    this.body              = this.element.down(".body");
+    // this.training_controls = this.moderation_panel.down(".training_controls");
+    // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
+    // this.add_tag_selected  = null;
     
     this.setupEventListeners();
     
@@ -22,21 +26,19 @@ var Item = Class.create({
   
   setupEventListeners: function() {
     this.closed.observe("click", function(event) {
-      itemBrowser.toggleOpenCloseItem(this.element, event);
+      this.toggleBody(event);
     }.bind(this));
 
-    this.status.observe("click", function() {
-      this.toggleReadUnread();
-    }.bind(this));
+    this.status.observe("click", this.toggleReadUnread.bind(this));
 
     this.status.observe("mouseover", function() {
       // # TODO: localization
       this.status.title = 'Click to mark as ' + (this.element.match(".read") ? 'unread' : 'read');
     }.bind(this));
 
-    this.add_tag.observe("click", function() {
-      this.toggleAddTagForm();
-    }.bind(this));
+    this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
+    this.train.observe("click", this.toggleTrainingControls.bind(this));
+    this.tag_list.select("li").invoke("observe", "click", this.toggleTrainingControls.bind(this));
   },
   
   isRead: function() {
@@ -61,6 +63,10 @@ var Item = Class.create({
     return this.element.hasClassName("selected");
   },
   
+  isOpen: function() {
+    return this.element.hasClassName("open");
+  },
+  
   scrollTo: function() {
     new Effect.ScrollToInDiv(this.element.up(), this.element, { duration: 0.3 });
   },
@@ -68,56 +74,336 @@ var Item = Class.create({
   loadBody: function() {
     this.load(this.body);
   },
+
+  toggleBody: function(event) {
+    if(event && (Event.element(event).match(".stop") || Event.element(event).up('.stop'))) { return false; }
+    
+    if(this.isOpen()) {
+      this.hideBody();
+    } else {
+      this.showBody();
+    }
+  },
+  
+  showBody: function() {
+    itemBrowser.closeAllItems();
+    if(!this.isSelected()) {
+      this.select();
+    }
+    this.element.addClassName("open");
+    this.markRead();
+    this.scrollTo();
+    this.loadBody();
+  },
+  
+  hideBody: function() {
+    this.element.removeClassName("open");
+    this.hideFeedInformation();
+    this.hideTrainingControls();
+  },
+  
+  select: function() {
+    itemBrowser.deselectAllItems();
+    this.element.addClassName('selected');
+    this.scrollTo();
+  },
+
+  deselect: function() {
+    this.element.removeClassName('selected');
+    this.hideFeedInformation();
+    this.hideTrainingControls();
+  },
+  
+  toggleFeedInformation: function() {
+    if(this.feed_title.hasClassName("selected")) {
+      this.hideFeedInformation();
+    } else {
+      this.showFeedInformation();
+    }
+  },
+  
+  showFeedInformation: function() {
+    this.select();
+    this.feed_title.addClassName('selected');
+    this.feed_information.addClassName('selected');
+
+    this.scrollTo();
+    this.loadFeedInformation();
+  },
+
+  hideFeedInformation: function() {
+    this.feed_title.removeClassName("selected");
+    this.feed_information.removeClassName("selected");
+  },
   
   loadFeedInformation: function() {
     this.load(this.feed_information);
   },
   
-  toggleAddTagForm: function() {
+  toggleTrainingControls: function() {
     if(this.moderation_panel.hasClassName("selected")) {
-      this.hideAddTagForm();
+      this.hideTrainingControls();
     } else {
-      this.showAddTagForm();
+      this.showTrainingControls();
     }
   },
   
-  showAddTagForm: function() {
-    if(!this.isSelected()) {
-      itemBrowser.closeItem(itemBrowser.selectedItem);
-      itemBrowser.selectItem(this.element);
-    }
+  showTrainingControls: function() {
+    this.select();
 
+    this.tag_list.hide();
+
+    this.train.addClassName("selected");
     this.moderation_panel.addClassName("selected");
-    this.add_tag.addClassName("selected");
-    this.loadAddTagForm();
-    this.scrollTo();
-
-    itemBrowser.initializeItemModerationPanel(this.element, false);
+    this.loadTrainingControls();
   },
   
-  hideAddTagForm: function() {
+  hideTrainingControls: function() {
+    this.tag_list.show();
+
+    this.train.removeClassName("selected");
     this.moderation_panel.removeClassName("selected");
-    this.add_tag.removeClassName("selected");
-    this.add_tag_field.blur();
+    if(this.add_tag_field) {
+      this.add_tag_field.blur();
+    }
   },
 
-  loadAddTagForm: function() {
-    this.load(this.moderation_panel, function() {
-      this.add_tag_field = this.moderation_panel.down("input[type=text]");
-      itemBrowser.initializeItemModerationPanel(this.element, true);
+  loadTrainingControls: function() {
+    this.load(this.moderation_panel, this.initializeTrainingControls.bind(this), true);
+  },
+  
+  initializeTrainingControls: function() {
+    this.training_controls = this.moderation_panel.down(".training_controls");
+    this.add_tag_form      = this.moderation_panel.down("form");
+    this.add_tag_field     = this.add_tag_form.down("input[type=text]");
+
+    this.training_controls.select(".tag").each(function(tag) {
+      this.initializeTrainingControl(tag);
+    }.bind(this));
+    
+    new Form.Element.EventObserver(this.add_tag_field, this.addTagFieldChanged.bind(this), 'keyup');
+
+    this.add_tag_form.observe("submit", function() {
+      this.addTagging(this.add_tag_selected || this.add_tag_field.value, "positive");
+      this.add_tag_field.value = "";
+      this.addTagFieldChanged(this.add_tag_field, "");
+    }.bind(this));
+    
+    this.add_tag_field.observe("keydown", function(event) {
+      if(event.keyCode == Event.KEY_ESC) { this.hideTrainingControls(); }
+    }.bind(this));
+    
+    this.add_tag_field.focus();
+    
+    (function() {
+      this.scrollTo();
+    }).bind(this).delay(0.3);
+  },
+  
+  addTagFieldChanged: function(field, value, event) {
+    this.add_tag_selected = null;
+    this.training_controls.select(".tag").each(function(tag) {
+      tag.removeClassName("selected");
+      tag.removeClassName("disabled");
+      
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+      
+      if(value.blank()) {
+        // Don't do anything
+      } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
+        tag.addClassName("disabled")
+      } else if(!this.add_tag_selected) {
+        this.add_tag_selected = tag_name;
+        tag.addClassName("selected");
+        
+        // http://www.webreference.com/programming/javascript/ncz/3.html
+        // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
+        //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
+        //   console.log("nope");
+        //   // Don't do anything
+        // } else {
+        //   field.value = tag_name;
+        //   if(field.createTextRange) {
+        //     var textSelection = field.createTextRange();
+        //     textSelection.moveStart("character", 0);
+        //     textSelection.moveEnd("character", value.length - field.value.length);
+        //     textSelection.select();
+        //   } else if (field.setSelectionRange) {
+        //     field.setSelectionRange(value.length, field.value.length);
+        //   }
+        // }
+      }
     }.bind(this));
   },
   
-  load: function(target, onComplete) {
-    if(!target.empty()) { return; }
+  initializeTrainingControl: function(tag) {
+    tag.down(".positive").observe("click", function() {
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+      if(tag.hasClassName("positive")) { return; }
+      this.addTagging(tag_name, "positive");
+      tag.removeClassName("negative");
+      tag.addClassName("positive");
+    }.bind(this));
+    tag.down(".negative").observe("click", function() {
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+      if(tag.hasClassName("negative")) { return; }
+      this.addTagging(tag_name, "negative");
+      tag.removeClassName("positive");
+      tag.addClassName("negative");
+    }.bind(this));
+    tag.down(".remove").observe("click", function() {
+      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+      if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
+      this.removeTagging(tag_name);
+      tag.removeClassName("negative");
+      tag.removeClassName("positive");
+    }.bind(this));
+  },
+  
+  addTagging: function(tag_name, tagging_type) {
+    if(tag_name.match(/^\s*$/)) { return; }
+
+    var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
+
+    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+    if(tag_control) {
+      tag_control.removeClassName(other_tagging_type);
+      tag_control.addClassName(tagging_type);
+    } else {
+      this.addTagControl(tag_name, tagging_type);
+    }
     
-    target.addClassName("loading");
-    new Ajax.Updater(target, target.getAttribute("url"), { method: 'get',
-      onComplete: function() {
-        target.removeClassName("loading");
-        if(onComplete)        { onComplete();    }
-        if(this.isSelected()) { this.scrollTo(); }
+    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+    if(training_control) {
+      training_control.removeClassName(other_tagging_type);
+      training_control.addClassName(tagging_type);
+    } else {
+      this.addTrainingControl(tag_name);
+    }
+      
+    new Ajax.Request('/taggings/create', { method: 'post', requestHeaders: { Accept: 'application/json' },
+      parameters: {
+        "tagging[feed_item_id]": this.id,
+        "tagging[tag]": tag_name,
+        "tagging[strength]": tagging_type == "positive" ? 1 : 0
+      },
+      onSuccess: function(response) {
+        var data = response.responseJSON;
+        
+        // Add the tag's id as a class to newly created controls so they get properly updated if 
+        // the user renames or deletes them before reloading the page
+        var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+        tag_control.addClassName(data.id);
+        var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+        training_control.addClassName(data.id);
+        
+        // TODO: Move this to itembrowser.js
+        // Add/Update the filter for this tag
+        if(!$(data.id)) {
+          $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name)
+        
+          new Draggable(data.id, { scroll: "sidebar", ghosting: true, revert: true, constraint: "vertical", 
+            reverteffect: function(element, top_offset, left_offset) {
+              new Effect.Move(element, {x: -left_offset, y: -top_offset, duration: 0});
+            }
+          });
+          
+          itemBrowser.styleFilters();
+        } else {
+          $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+        }
+        
+        // TODO: Moved this to classifier.js
+        // Update the classification button's status
+        var classification_button = $('classification_button');
+        if (classification_button) {
+          classification_button.disabled = false;
+          $("progress_title").update(data.classifierProgress);
+        }
       }.bind(this)
     });
+  },
+  
+  removeTagging: function(tag_name) {
+    if(tag_name.match(/^\s*$/)) { return; }
+
+    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+    if (tag_control) {
+      tag_control.removeClassName('positive');
+      tag_control.removeClassName('negative');
+      if(!tag_control.match('.classifier')) {
+        tag_control.remove()
+      }
+    }
+
+    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+    if(training_control) {
+      training_control.removeClassName('positive');
+      training_control.removeClassName('negative');
+    }
+
+    new Ajax.Request('/taggings/destroy', { method: 'post', requestHeaders: { Accept: 'application/json' },
+      parameters: {
+        "tagging[feed_item_id]": this.id,
+        "tagging[tag]": tag_name
+      },
+      onSuccess: function(response) {
+        var data = response.responseJSON;
+
+        if(data.prompt_to_delete_tag) {
+          new ConfirmationMessage(data.prompt_to_delete_tag_message, function() {
+            new Ajax.Request(data.prompt_to_delete_tag_url, {method: 'delete'});
+          });
+        }
+
+        // Update the filter for this tag
+        $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+        
+        // TODO: Moved this to classifier.js
+        // Update the classification button's status
+        var classification_button = $('classification_button');
+        if (classification_button) {
+          classification_button.disabled = false;
+          $("progress_title").update(data.classifierProgress);
+        }
+      }
+    });
+  },
+  
+  findTagElement: function(container, elementSelector, tag_name) {
+    var tag = container.select(elementSelector).detect(function(element) {
+      return element.down(".name").innerHTML.unescapeHTML() == tag_name;
+    });
+    return tag;
+  },
+
+  addTagControl: function(tag_name, tagging_type) {
+    var tag_control = '<li class="tag_control stop ' + tagging_type + '">' + 
+      '<span class="name">' + tag_name.escapeHTML() + '</span>' + 
+    '</li> ';
+    this.tag_list.insertInOrder("li", ".name", tag_control, tag_name);
+  },
+
+  addTrainingControl: function(tag_name) {
+    var training_control = '<div class="tag positive" style="display:none">' + 
+      '<span class="clearfix">' + 
+        '<div class="positive"></div>' + 
+        '<div class="negative"></div>' + 
+        '<div class="name">' + tag_name.escapeHTML() + '</div>' + 
+      '</span>' + 
+      '<div class="remove">X</div>' + 
+    '</div> ';
+    this.training_controls.insertInOrder("div", ".name", training_control, tag_name);
+  
+    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+    this.initializeTrainingControl(training_control);
+    training_control.appear();
+  },
+  
+  load: function(target, onComplete, forceLoad) {
+    target.load(function() {
+      if(onComplete)        { onComplete();    }
+      if(this.isSelected()) { this.scrollTo(); }
+    }.bind(this), forceLoad);
   }
 });

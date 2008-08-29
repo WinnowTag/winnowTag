@@ -68,19 +68,19 @@ describe User do
     
     it "creating from a prototype copies over custom folders" do
       prototype = User.create! valid_user_attributes(:prototype => true)
-      prototype.folders.create!(:name => "Big", :tag_ids => "1,2,3", :feed_ids => "4,5,6")
-      prototype.folders.create!(:name => "Small", :tag_ids => "9", :feed_ids => "10")
+      prototype.folders.create!(:name => "Big", :tag_ids => [1,2], :feed_ids => [1,2,3])
+      prototype.folders.create!(:name => "Small", :tag_ids => [1], :feed_ids => [3])
       
       user = User.create_from_prototype(valid_user_attributes)
       user.should have(2).folders
       
       user.folders.first.name.should == "Big"
-      user.folders.first.tag_ids.should == [1,2,3]
-      user.folders.first.feed_ids.should == [4,5,6]
+      user.folders.first.tag_ids.sort.should == [1,2]
+      user.folders.first.feed_ids.sort.should == [1,2,3]
 
       user.folders.last.name.should == "Small"
-      user.folders.last.tag_ids.should == [9]
-      user.folders.last.feed_ids.should == [10]
+      user.folders.last.tag_ids.should == [1]
+      user.folders.last.feed_ids.should == [3]
     end
     
     it "creating from a prototype copies over feed subscriptions" do

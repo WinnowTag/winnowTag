@@ -1,6 +1,6 @@
 if @tag
-  page.call :insert_in_order, "#{dom_id(@folder)}_tag_items", 'li', '.name', tag_filter_control(@tag, :remove => @folder), @tag.name
+  page["#{dom_id(@folder)}_tag_items"].insertInOrder 'li', '.name', tag_filter_control(@tag, :remove => @folder), @tag.name
 elsif @feed
-  page.call :insert_in_order, "#{dom_id(@folder)}_feed_items", 'li', '.name', feed_filter_control(@feed, :remove => @folder), @feed.title
+  page["#{dom_id(@folder)}_feed_items"].insertInOrder 'li', '.name', feed_filter_control(@feed, :remove => @folder), @feed.title
 end
 page << "itemBrowser.styleFilters();"

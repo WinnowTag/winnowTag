@@ -9,7 +9,7 @@ class InvitesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @invites = Invite.search(:text_filter => params[:text_filter], :order => params[:order], :direction => params[:direction],
                                  :limit => limit, :offset => params[:offset])

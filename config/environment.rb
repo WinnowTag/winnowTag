@@ -40,7 +40,7 @@ Rails::Initializer.run do |config|
   config.gem "tzinfo", :version => "0.3.9"
   config.gem "auth-hmac", :version => "1.0.1"
   
-  if `uname -n` =~ /ds468-1.blueboxgrid.com/
+  if RAILS_ENV == 'production'
     config.gem :fiveruns_manage
   end
   
@@ -84,9 +84,4 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   config.active_record.observers = :text_indexing_observer
-  
-  config.after_initialize do 
-    ActionView::Helpers::AssetTagHelper.register_javascript_expansion :winnow => ["slider", "cookies", "applesearch", "bias_slider", "timeout", "messages", "labeled_input", "scroll", "classification", "itembrowser", "item", "sidebar", "tagging"]
-    ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :winnow => ["winnow", "tables", "slider", "scaffold", "button"]
-  end
 end

@@ -43,14 +43,12 @@ describe TaggingsController do
   it "create_with_other_user_fails" do
     login_as(:aaron)
     tag = Tag(users(:aaron), 'peerworks')
-    accept('text/javascript')
-    post :create, {:tagging => {:feed_item_id => 1, :tag => 'peerworks'}}
-                
+    post :create, :format => "json", :tagging => {:feed_item_id => 1, :tag => 'peerworks'}
+    
     assert_nil Tagging.find(:first, :conditions => ["user_id = 1 and feed_item_id = 1 and tag_id = ?", tag.id])
   end
   
   it "create_tagging_with_strength_zero" do
-    accept('text/javascript')
     login_as(:quentin)
     tag = Tag(users(:quentin), 'peerworks')
     
@@ -59,12 +57,23 @@ describe TaggingsController do
                                           "tag_id = ?", tag.id])
                                           
     assert_difference(users(:quentin).taggings, :count) do                                                    
-      post :create, {:tagging => {:strength => '0', :feed_item_id => 1, :tag => 'peerworks'}}
+      post :create, :format => "json", :tagging => {:strength => '0', :feed_item_id => 1, :tag => 'peerworks'}
     end
     
     assert_not_nil Tagging.find(:first, :conditions => 
                                           ["user_id = 1 and feed_item_id = 1 and strength = 0 and " + 
                                             "tag_id = ?", tag.id])
+  end
+  
+  it "create updates the tag to show in sidebar" do
+    login_as(:quentin)
+    tag = Tag(users(:quentin), 'peerworks')
+    tag.update_attribute :show_in_sidebar, false
+
+    post :create, :format => "json", :tagging => {:strength => '1', :feed_item_id => '1', :tag => 'peerworks'}
+
+    tag.reload
+    tag.show_in_sidebar?.should be_true
   end
       
   it "destroy_tagging_specified_by_taggable_and_tag_name_with_ajax" do
@@ -73,9 +82,8 @@ describe TaggingsController do
     taggable = FeedItem.find(1)
     tagging = Tagging.create(:feed_item => taggable, :user => tagger, :tag => tag)
 
-    accept('text/javascript')
     login_as(:quentin)
-    post :destroy, :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
+    post :destroy, :format => "json", :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
     assert_template 'destroy'
     assert_raise (ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
   end
@@ -93,17 +101,8 @@ describe TaggingsController do
 
     assert_equal 2, Tagging.count
     
-    accept('text/javascript')
-    post :destroy, :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
+    post :destroy, :format => "json", :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
 
     assert_equal 1, Tagging.count
-  end
-  
-private
-  def assert_all_actions_require_login
-    assert_requires_login do |c|
-      c.get :create
-      c.get :destroy
-    end
   end
 end

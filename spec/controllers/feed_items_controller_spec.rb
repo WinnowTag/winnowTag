@@ -21,11 +21,9 @@ describe FeedItemsController do
   
   it "index_with_ajax" do
     login_as(:quentin)
-    get :index, :offset => '1', :limit => '1', :show_untagged => true, :format => "js"
+    get :index, :offset => '1', :limit => '1', :show_untagged => true, :format => "json"
     assert_response :success
-    assert_equal 'text/javascript; charset=utf-8', @response.headers['type']
     assert_not_nil assigns(:feed_items)
-    assert_nil assigns(:feeds)
     # TODO: Move this test to a view test
     # regex = /itemBrowser\.insertItem\("#{dom_id(assigns(:feed_items).first)}", 1/
     # assert @response.body =~ regex, "#{regex} does match #{@response.body}"
@@ -60,8 +58,7 @@ describe FeedItemsController do
     end
     
     it "should render the clues" do
-      accept('text/javascript')
-      get :clues, :id => 1234, :tag => @tag.id
+      get :clues, :format => "js", :id => 1234, :tag => @tag.id
       response.should be_success
       response.should render_template("clues")
     end
