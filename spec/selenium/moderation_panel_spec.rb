@@ -165,6 +165,7 @@ describe "moderation panel" do
   it "can change a negative tagging to an unattached tagging" do
     click "css=#feed_item_4 .train"
     wait_for_ajax
+    choose_cancel_on_next_confirmation
     
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.negative"
     click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)} .remove"
