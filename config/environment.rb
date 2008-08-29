@@ -40,7 +40,7 @@ Rails::Initializer.run do |config|
   config.gem "tzinfo", :version => "0.3.9"
   config.gem "auth-hmac", :version => "1.0.1"
   
-  if `uname -n` =~ /ds468-1.blueboxgrid.com/
+  if RAILS_ENV == 'production'
     config.gem :fiveruns_manage
   end
   
