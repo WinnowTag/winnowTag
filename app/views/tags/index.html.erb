@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('tags', 'content', { orders: {
+			itemBrowser = new TagsItemBrowser('tags', 'content', { orders: {
 			  asc:       ["name", "state", "comments_count", "positive_count", "negative_count", "classifier_count"],
 			  desc:      ["last_trained"],
 			  "default": "name"

@@ -328,5 +328,16 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     if(feed_with_selected_filters) {
       feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + $H(this.filters).toQueryString();
     }
+  },
+
+  bindTextFilterEvents: function() {
+    $("text_filter_form").observe("submit", function() {
+      var value = $F('text_filter');
+      if(value.length < 4) {
+        Message.add('error', "Search requires a word with at least 4 characters");
+      } else {
+        this.addFilters({text_filter: value});
+      }
+    }.bind(this));
   }
 });
