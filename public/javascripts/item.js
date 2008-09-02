@@ -174,8 +174,11 @@ var Item = Class.create({
   
   initializeTrainingControls: function() {
     this.training_controls = this.moderation_panel.down(".training_controls");
+    this.close             = this.moderation_panel.down(".close");
     this.add_tag_form      = this.moderation_panel.down("form");
     this.add_tag_field     = this.add_tag_form.down("input[type=text]");
+
+    this.close.observe("click", this.toggleTrainingControls.bind(this));
 
     this.training_controls.select(".tag").each(function(tag) {
       this.initializeTrainingControl(tag);
