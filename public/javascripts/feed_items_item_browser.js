@@ -348,8 +348,29 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
   },
   
+  bindNextPreviousEvents: function() {
+    var previous_control = $("footer").down("a .previous");
+    if(previous_control) {
+      previous_control.up("a").observe("click", this.openPreviousItem.bind(this));
+    }
+
+    var next_control = $("footer").down("a .next");
+    if(next_control) {
+      next_control.up("a").observe("click", this.openNextItem.bind(this));
+    }
+  },
+  
+  bindMarkAllReadEvents: function() {
+    var mark_all_read_control = $("footer").down("a .read");
+    if(mark_all_read_control) {
+      mark_all_read_control.up("a").observe("click", this.markAllItemsRead.bind(this));
+    }
+  },
+  
   initializeFilters: function($super) {
     $super();
     this.bindClearFilterEvents();
+    this.bindNextPreviousEvents();
+    this.bindMarkAllReadEvents();
   }
 });

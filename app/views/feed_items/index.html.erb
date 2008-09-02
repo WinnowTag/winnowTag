@@ -47,11 +47,11 @@
 <% content_for :footer do -%>	
   <div class="toolbar">
     <div class="group">
-      <%= rounded_button_function _(:previous_item), "itemBrowser.openPreviousItem()", :icon => "previous" %>  
-      <%= rounded_button_function _(:next_item), "itemBrowser.openNextItem()", :icon => "next" %>
+      <%= rounded_button_function _(:previous_item), "", :icon => "previous" %>  
+      <%= rounded_button_function _(:next_item),     "", :icon => "next" %>
     </div>
   
-    <%= rounded_button_function _(:mark_all_read), "itemBrowser.markAllItemsRead()", :icon => "read" %>
+    <%= rounded_button_function _(:mark_all_read),   "", :icon => "read" %>
   </div>
 	
 	<%= render :partial => "classification_controls" %>
