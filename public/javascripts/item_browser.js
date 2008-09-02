@@ -207,6 +207,15 @@ var ItemBrowser = Class.create({
       }
     }
   },
+  
+  bindOrderFilterEvents: function() {
+    this.orders().each(function(order) {
+      var order_control = $("order_" + order);
+      if(order_control) {
+        order_control.observe("click", this.setOrder.bind(this, order));
+      }
+    }.bind(this));
+  },
 
   bindTextFilterEvents: function() {
     $("text_filter_form").observe("submit", function() {
@@ -225,6 +234,7 @@ var ItemBrowser = Class.create({
   },
 
   initializeFilters: function() {
+    this.bindOrderFilterEvents();
     this.bindTextFilterEvents();
     this.bindTextFilterClearEvents();
 
