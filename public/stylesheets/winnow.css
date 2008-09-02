@@ -80,7 +80,7 @@ a:hover {text-decoration: underline;}
 a:visited { color: #1010C8; }
 a.disabled {color: #888; cursor: default;}
 a:hover.disabled {text-decoration: none;}
-a img {border: 0; vertical-align: baseline; margin-left: 3px;}
+a img {border: 0; vertical-align: baseline;}
 
 /*
  * =defaults
@@ -1157,19 +1157,25 @@ a.bookmarklet:hover {
   color: #666;
 }
 
-.feed_item .closed .feed_title {
-  padding: 3px 4px;
-  white-space: nowrap;
+.feed_item .closed a {
   color: #52718B;
 }
 
-.feed_item .feed_title.selected {
-  padding: 2px 3px;
+.feed_item .closed a.selected {
   color: #333;
   border: 1px solid #8181DC;
   background-color: #D7E0F5;
   -moz-border-radius: 0.4em;
   -webkit-border-radius: 0.4em;
+}
+
+.feed_item .closed .feed_title {
+  padding: 3px 4px;
+  white-space: nowrap;
+}
+
+.feed_item .feed_title.selected {
+  padding: 2px 3px;
 }
 
 .feed_item .closed .date {
@@ -1181,16 +1187,12 @@ a.bookmarklet:hover {
 
 .feed_item .closed .train {
   float: right;
-  margin: 0 2px 0 1em;
+  margin: 0 0 0 1em;
 }
 
 .feed_item .closed .train.selected {
-  border: 1px solid #8181DC;
-  background-color: #D7E0F5;
   padding: 2px 3px;
-  margin: -3px -2px 0 0;
-  -moz-border-radius: 0.4em;
-  -webkit-border-radius: 0.4em;
+  margin: -3px -2px 2px 0;
 }
 
 .feed_item .body {
