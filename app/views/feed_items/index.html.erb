@@ -22,7 +22,7 @@
   <div class="toolbar right">
     <div class="group">
       <label><%= _(:selected_filters) %></label>
-      <%= rounded_button_function _(:clear_selected_filters), "itemBrowser.clearFilters()", :icon => "clear", :id => "clear_selected_filters", :class => "first" %>
+      <%= rounded_button_function _(:clear_selected_filters), "", :icon => "clear", :id => "clear_selected_filters", :class => "first" %>
       <%= rounded_button_link _(:feed_for_selected_filters), "", :icon => "feed", :base_url => formatted_feed_items_path(:atom), :id => "feed_with_selected_filters" %>
     </div>
     

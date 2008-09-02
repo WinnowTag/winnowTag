@@ -339,5 +339,17 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         this.addFilters({text_filter: value});
       }
     }.bind(this));
+  },
+  
+  bindClearFilterEvents: function() {
+    var clear_selected_filters = $("clear_selected_filters");
+    if(clear_selected_filters) {
+      clear_selected_filters.observe("click", this.clearFilters.bind(this));
+    }
+  },
+  
+  initializeFilters: function($super) {
+    $super();
+    this.bindClearFilterEvents();
   }
 });
