@@ -1,9 +1,9 @@
 <div id="<%= dom_id(feed) %>" class="feed record clearfix <%= feed_classes(feed) %>">
   <div class="summary clearfix">        
     <div class="info">
-      <div class="filter">
-        <p>Filter</p>
-        <strong><%= _(:globally_exclude) %> <%= globally_exclude_check_box(feed) %></strong>
+      <div class="details">
+        <p>&nbsp;</p>
+        <strong><%= globally_exclude_check_box(feed) %> <%= _(:globally_exclude) %></strong>
       </div>
       <div class="count">
         <p>Items</p>

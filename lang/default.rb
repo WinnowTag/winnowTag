@@ -341,7 +341,7 @@ Localization.define do |l|
   l.store :copy,                                    "Copy"
   l.store :tags_copy_link_title,                    "Copy %s"
   l.store :no_comments_for_this_tag,                "There are no comments for this tag."
-  l.store :add_a_comment,                           "Add a comment:"
+  l.store :add_a_comment,                           "Add a comment"
 
   # app/views/tags/_summary.html.erb
   l.store :positive,                                "Positive"

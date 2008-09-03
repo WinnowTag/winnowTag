@@ -4,11 +4,13 @@
  * to use, modify, or create derivate works.
  * Please visit http://www.peerworks.org/contact for further information.
  */
+div.slider {
+  padding: 4px 0;
+}
+
 div.slider_track {
 	z-index: 11;
 	width: 100px;
-	margin-left: auto;
-	margin-right: auto;
 	height: 5px;
 	background-color: #aaa;
 	cursor: pointer;

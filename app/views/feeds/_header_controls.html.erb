@@ -36,9 +36,8 @@
     <% end -%>
     
     <p><%= _(:feeds_new_bookmarklet_description) %></p>
-    <p>
-      <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => _(:feeds_add_to_winnow), 
+    
+    <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => _(:feeds_add_to_winnow), 
                   :onclick => "Message.add('error', #{_(:feeds_bookmarklet_js_error_message).to_json}); return false;" %>
-    </p>
   </fieldset>
 </div>

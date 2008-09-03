@@ -4,20 +4,6 @@
  * to use, modify, or create derivate works.
  * Please visit http://www.peerworks.org/contact for further information.
  */
-.clearfix:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-
-.clearfix {display: inline-block;}
-
-/* Hides from IE-mac \*/
-* html .clearfix {height: 1%;}
-.clearfix {display: block;}
-/* End hide from IE-mac */
 
 /*
  * =layout
@@ -28,16 +14,13 @@ html {
 }
 
 body {
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  margin: 0;
-  padding: 0;
+  font-family: Arial, Helvetica, Verdana, sans-serif;
   height: 100%;
 }
 
-textarea {
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 12px;
+input, select, textarea {
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+  font-size: 100%;
 }
 
 div#content > div.info {
@@ -47,7 +30,7 @@ div#content > div.info {
 #content {
   overflow: auto;
   overflow-x: hidden;
-  padding: 10px;
+  padding: 0.5em;
   position: relative;
 }
 
@@ -75,9 +58,9 @@ div#content > div.info {
 /*
  * =links
  */
-a { color: #1010C8; text-decoration: none; }
+a { color: #009; text-decoration: none; }
 a:hover {text-decoration: underline;}
-a:visited { color: #1010C8; }
+a:visited { color: #009; }
 a.disabled {color: #888; cursor: default;}
 a:hover.disabled {text-decoration: none;}
 a img {border: 0; vertical-align: baseline;}
@@ -85,6 +68,10 @@ a img {border: 0; vertical-align: baseline;}
 /*
  * =defaults
  */
+h1, h2, h3, h4 {
+  font-weight: bold;
+} 
+ 
 .cursor {
   cursor: pointer;
 }
@@ -97,36 +84,19 @@ input.example {
   color: #999;
 }
 
-form {
-  margin: 0px;
-}
-
 fieldset {
-  margin-top: 10px;
-  width:  700px;
-  border: none;
-  border-top: 1px solid #999;
+  border-width: 1px 0 0 0;
 }
 
 fieldset.full {
-  width: auto;
-  margin: 0;
+  margin-bottom: 0;
 }
 
-fieldset legend {
-  font-weight: bold;
-}
-
-fieldset p {
-  clear:  both;
-}
-
-fieldset label {
+.profile_form label {
   float: left;
+  width: 10em;  
+  margin-right: 1em;  
   text-align:  right;
-  margin-right: 10px;
-  width: 100px;
-  text-transform: capitalize;
 }
 
 textarea.content {
@@ -179,7 +149,6 @@ textarea.content {
   border: none;
   width: 20em;
   float: right;
-  margin-right: 50px;
 }
 
 #forms label {
@@ -230,9 +199,10 @@ textarea.content {
  * =navigation
  */
 .navigation {
-  padding: 10px 10px 0 10px;
-  border-bottom: 8px solid #d7e0f5;
+  padding: 1em 1em 0 1em;
+  border-bottom: .75em solid #d7e0f5;
 }
+
 .navigation .main {
   float: left;
   padding: 0;
@@ -243,12 +213,12 @@ textarea.content {
 .navigation .main li {
   float: left;
   padding: 0;
-  margin: 0 5px 0 0;
+  margin: 0 0.5em 0 0;
 }
 
 .navigation .main li a {
   display: block;
-  padding: 5px;
+  padding: 0.5em;
   border: 1px solid #ccc;
   border-width: 1px 1px 0 1px;
   background: #f3f3f3;
@@ -266,7 +236,7 @@ textarea.content {
 
 .navigation .main li a.help {
   margin-left: .25em;
-  padding-left: 20px;
+  padding-left: 1.75em;
   border: none;
   background-color: #fff;
   background-image: url(../images/help.png);
@@ -283,20 +253,13 @@ textarea.content {
 
 .navigation .extra li {
   float: left;
-  padding: 0 5px;
+  padding: 0 .5em;
   margin: 0;
   border-right: 1px solid #ccc;
 }
 
-.navigation .extra li a.help {
-  background-image: url(../images/help.png);
-  background-repeat: no-repeat;
-  padding-left: 18px;
-  font-weight: bold;
-}
-
-ul.help li {
-  margin-bottom: 5px;
+.navigation .extra li:last-child {
+  padding-right: 0;
 }
 
 /*
@@ -304,8 +267,8 @@ ul.help li {
  */
 .feedback {
   position: relative;
-  border: 1px solid #666;
-  background: #eee;
+  border: 1px solid #e5e5e5;
+  background: #f3f3f3;
   padding: .5em;
   margin: 0 0 .5em 0;
 }
@@ -323,7 +286,7 @@ ul.help li {
 #feedback form {
   position: absolute;
   top: 1.5em;
-  right: 0.5em;
+  right: 0;
   z-index: 1000;
   padding: 1em;
   background-color: #fff;
@@ -370,7 +333,7 @@ ul.help li {
 }
 
 .section > .header {
-  padding: 0.3em 0.5em;
+  padding: 0.25em;
   background-color: #d7e0f5;
   -moz-border-radius: 0.5em;
   -webkit-border-radius: 0.5em;
@@ -378,9 +341,9 @@ ul.help li {
 
 .section > .header .toggle_button {
   float: left;
-  width: 16px;
-  height: 16px;
-  background: transparent url(../images/plus.gif) left center no-repeat;
+  width: 1.5em;
+  height: 1.5em;
+  background: transparent url(../images/plus.gif) center center no-repeat;
   cursor: pointer;
 }
 
@@ -392,12 +355,12 @@ ul.help li {
 }
 
 .section.open > .header .toggle_button {
-  background: transparent url(../images/minus.gif) left center no-repeat;
+  background: transparent url(../images/minus.gif) center center no-repeat;
 }
 
 .section > .header .name {
   float: left;
-  padding-left: 20px;
+  padding-left: 1.75em;
 }
 
 #tags_section .header .name {
@@ -405,7 +368,6 @@ ul.help li {
 }
 
 #feeds_section .header .name {
-  padding: 1px 0 1px 20px;
   background: transparent url(../images/feed.png) left center no-repeat;
 }
 
@@ -427,7 +389,7 @@ ul.help li {
 
 .section .header .actions .add_link {
   display: block;
-  padding: 1px 0 1px 19px;
+  padding-left: 1.75em;
   width: 5.4em;
 }
 
@@ -496,9 +458,11 @@ ul.filter_list {
 
 ul.filter_list li {
   position: relative;
-  padding: 1px 0 1px 21px;
+  padding-left: 1.75em;
   background-repeat: no-repeat;
   height: 1.5em;
+  border: 1px solid transparent;
+  border-width: 1px 1px 0 1px;  
 }
 
 #tags_section ul.filter_list li, #feeds_section ul.filter_list li {
@@ -532,23 +496,16 @@ ul.filter_list li.selected .name {
 
 ul.filter_list li .inplaceeditor-form .editor_field {
   width: 100%;
-  margin: -3px 0 0 -3px;
+  margin: -3px 0 0 -4px;
 }
 
 ul.filter_list li.info {
-  padding: 0 0 1px 20px;
-  background-position: 2px 2px;
   background-color: #fff;
-  border: 1px solid #aaa;
-  border-width: 1px 1px 0 1px;
+  border-color: #aaa;
   -moz-border-radius-topleft: 0.4em;
   -moz-border-radius-topright: 0.4em;
   -webkit-border-top-left-radius: 0.4em;
   -webkit-border-top-right-radius: 0.4em;
-}
-
-ul.filter_list li.public.info {
-  background-position: 3px 3px;
 }
 
 ul.filter_list li .auto_complete_name {
@@ -558,14 +515,12 @@ ul.filter_list li .auto_complete_name {
 ul.filter_list li .actions {
   display: none;
   position: absolute;
-  height: 1.5em;
   right: 0;
   padding: 2px 1px 0 0;
   background-color: #f9f9f9;
 }
 
 ul.filter_list li.info .actions {
-  padding: 2px 0px 0 0;
   background-color: transparent;
 }
 
@@ -623,24 +578,22 @@ ul.filter_list li.info .training {
 
 ul.filter_list li .training div {
   float: left;
-  margin: 0.3em 0;
+  margin: .25em 0;
   padding: 0 0.5em;
   border-left: 1px solid #ccc;
 }
 
-ul.filter_list li .training strong {
-  font-size: 1.3em;
-  letter-spacing: -1px;
-  line-height: .97em;
-}
-
 ul.filter_list li .training p {
-  font-size: .75em;
+  font-size: 0.75em;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: -1px;
   margin: 0 0 0.1em 0;
   color: #999;
+}
+
+ul.filter_list li .training strong {
+  font-size: 1.1em;
+  line-height: 1;
 }
 
 ul.filter_list li .training .positive {
@@ -703,7 +656,7 @@ ul.filter_list li .training .automatic strong {
 }
 
 .folder .header .name {
-  margin-left: 20px;
+  margin-left: 1.75em;  
 }
 
 .folder.selected .header .name {
@@ -716,13 +669,12 @@ ul.filter_list li .training .automatic strong {
 
 .folder .header .inplaceeditor-form .editor_field {
   width: 100%;
-  margin: -3px 0 0 -3px;
+  margin: -3px 0 0 -4px;
 }
 
 .folder .header .actions {
   display: none;
   position: absolute;
-  height: 1.5em;
   top: 0;
   right: 0;
   padding: 2px 2px 0 0;
@@ -757,7 +709,7 @@ ul.filter_list li .training .automatic strong {
 
 .folder .content {
   display: none;
-  padding: 0 0 0 16px;
+  padding-left: 1.75em;;
 }
 
 .folder.open .content {
@@ -768,7 +720,7 @@ ul.filter_list li .training .automatic strong {
  * =header
  */
 #header_controls {
-  margin: -8px 0 0 0;
+  margin: -0.75em 0 0 0;
   padding: 5px;
   background-color: #d7e0f5;
 }
@@ -890,9 +842,8 @@ ul.filter_list li .training .automatic strong {
 a.bookmarklet {
   background-color:#EBEBEB;
   color:#565656;
-  font-size:8pt;
-  font-weight:700;
-  padding:4px 8px;
+  font-weight: bold;
+  padding: 0.5em 1em;
 }
 
 a.bookmarklet:hover {
@@ -923,8 +874,8 @@ a.bookmarklet:hover {
  */
 .user {
   position: relative;
-  border: 1px solid #666;
-  background: #eee;
+  border: 1px solid #e5e5e5;
+  background: #f3f3f3;
   padding: .5em;
   margin: 0 0 .5em 0;
 }
@@ -948,7 +899,7 @@ a.bookmarklet:hover {
 }
 
 .user .controls li a {
-  padding-left: 20px;
+  padding-left: 1.75em;
   background-repeat: no-repeat;
   background-position: left center;
 }
@@ -961,14 +912,8 @@ a.bookmarklet:hover {
   background-image: url(../images/destroy.png);
 }
 
-.user .controls li input {
-  margin: 0;
-  padding: 0;
-}
-
 .user h4 {
-  font-size: 140%;
-  margin: 0 0 0.5em 0;
+  margin-bottom: 0;
 }
 
 .user dl {
@@ -1011,6 +956,13 @@ a.bookmarklet:hover {
 /*
  * =message
  */
+.message {
+  border: 1px solid #e5e5e5;
+  background: #f3f3f3;
+  padding: .5em;
+  margin-bottom: .5em;
+}
+
 .message .controls {
   clear: both;
   float: right;
@@ -1025,8 +977,12 @@ a.bookmarklet:hover {
   margin: 0 0 0 1.5em;
 }
 
+.message *:last-child {
+  margin-bottom: 0;
+}
+
 .message .controls li a {
-  padding-left: 20px;
+  padding-left: 1.75em;
   background-repeat: no-repeat;
   background-position: left center;
 }
@@ -1041,7 +997,7 @@ a.bookmarklet:hover {
 
 .message .date {
   display: block;
-  color: #999;
+  font-weight: bold;
 }
 
 /*
@@ -1053,9 +1009,9 @@ a.bookmarklet:hover {
 }
 
 .record .summary {
-  padding: .5em;
-  border-top: 1px solid #ddd;
-  background-color: #efefef;
+  padding: 0.5em;
+  border: 1px solid #e5e5e5;
+  background: #f3f3f3;
 }
 
 .record .summary:hover {
@@ -1063,6 +1019,7 @@ a.bookmarklet:hover {
 }
 
 .record h4 {
+  font-size: 1em;  
   display: inline;
 }
 
@@ -1074,52 +1031,40 @@ a.bookmarklet:hover {
   float: right;
   margin-left: 1.5em;
   color: #626051;
-  line-height: .7;
 }
 
 .record .summary .info div {
   float: left;
-  padding: 0.5em;
+  padding: 0.25em 0.5em;
   border-left: 1px solid #ccc;
 }
 
 .record .summary .info strong {
-  font-size: 1.3em;
-  line-height: .97em;
+  font-size: 1.1em;
+  line-height: 1;
 }
 
 .record .summary .info .details {
   border: none;
   text-align: right;
-  margin-right: 0.5em;
-  width: 10em;
-}
-
-.record .summary .info .details p {
-  color: #555;
-}
-
-.record .summary .info .details p span {
-  font-weight: normal;
-  color: #999;
+  margin-right: 0.25em;
+  width: 12em;
 }
 
 .record .summary .info p {
   font-size: .75em;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: -1px;
   margin: 0 0 0.1em 0;
-  color: #999;
+  color: #888;
 }
 
 /*
  * =feed_item
  */
 .feed_item {
-  font-family: Arial;
   margin: 0;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #ccc;
 }
 
 .feed_item.selected {
@@ -1128,7 +1073,7 @@ a.bookmarklet:hover {
 
 .feed_item .closed {
   cursor: pointer;
-  padding: 7px 5px 2px 5px;
+  padding: 5px;
 }
 
 .feed_item.read .closed {
@@ -1136,21 +1081,25 @@ a.bookmarklet:hover {
 }
 
 .feed_item.selected .closed {
-  padding: 5px 3px 1px 3px;
+  padding: 3px 3px 4px;
 }
 
 .feed_item .closed > .status {
   float: left;
-  height: 16px;
-  width: 16px;
-  margin: -2px 0.25em 0 0;
+  height: 1.5em;
+  width: 1.5em;
+  margin-right: 0.25em;
   background-image: url(../images/unread.png);
-  background-position: left center;
+  background-position: center center;
   background-repeat: no-repeat;
 }
 
 .feed_item.read .closed > .status {
   background-image: url(../images/read.png);
+}
+
+.feed_item .closed h4 {
+  font-size: 1em;
 }
 
 .feed_item.read .closed h4 {
@@ -1191,8 +1140,8 @@ a.bookmarklet:hover {
 }
 
 .feed_item .closed .train.selected {
-  padding: 2px 3px;
-  margin: -3px -2px 2px 0;
+  padding: 0 3px;
+  margin: -1px -4px -1px 0;
 }
 
 .feed_item .body {
@@ -1279,7 +1228,7 @@ a.bookmarklet:hover {
 
 .training_controls .tag .positive {
   float: left;
-  height: 16px;
+  height: 1.5em;
   width: 16px;
   margin: 0 0.25em 0 0.5em;
   padding: 0.2em 0;
@@ -1290,11 +1239,11 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag .negative {
-  padding: 0.2em 0;
   float: left;
-  height: 16px;
+  height: 1.5em;
   width: 16px;
   margin-right: 0.25em;
+  padding: 0.2em 0;  
   background-image: url(../images/negative.png);
   background-position: left center;
   background-repeat: no-repeat;
@@ -1303,9 +1252,9 @@ a.bookmarklet:hover {
 
 .training_controls .tag .remove {
   float: left;
-  height: 16px;
+  height: 1.5em;
   width: 14px;
-  padding: 0.35em 0 0.05em 0.4em;
+  padding: 0.25em 0 0.15em 0.4em;
   border-left: 1px solid #ccc;
   -moz-border-radius-topright: 0.75em;
   -moz-border-radius-bottomright: 0.75em;
@@ -1393,12 +1342,12 @@ a.bookmarklet:hover {
 
 .feed_item .feed_information {
   display: none;
+  border: 2px solid #8181DC;
+  border-width: 2px 0 0 0;
 }
 
-.feed_item .feed_information h4 {
-  float: left;
-  font-size: 110%;
-  margin: 0;
+.feed_item.open .feed_information {
+  border-width: 2px 0;
 }
 
 .feed_item .feed_information a {
@@ -1410,13 +1359,7 @@ a.bookmarklet:hover {
 }
 
 .feed_item .feed_information .summary {
-  border: 2px solid #8181DC;
-  border-width: 2px 0 0 0;
-  background-color: #D7E0F5;
-}
-
-.feed_item.open .feed_information .summary {
-  border-width: 2px 0;
+  background-color: #D7E0F5;  
 }
 
 .notitle {
@@ -1429,7 +1372,7 @@ a.bookmarklet:hover {
  * =tag_list
  */
 ul.tag_list {
-  margin: 5px 0 5px 17px;
+  margin: 0 0 0 1.75em;
   padding: 0;
   list-style: none;
 }
@@ -1438,13 +1381,13 @@ ul.tag_list li {
   display: inline;
   color: #666;
   padding: 0;
-  margin: 0 0.5em 0 0;
+  margin: 0 1em 0 0;
   white-space: nowrap;
 }
 
 ul.tag_list li .name {
-  padding: 3px 6px 3px 15px;
-  background-position: 5px center;
+  padding-left: 0.75em;
+  background-position: left center;
   background-repeat: no-repeat;
 }
 
@@ -1464,8 +1407,7 @@ ul.tag_list li.negative .name {
 
 ul.tag_list li.public .name {
   background-image: url(../images/public.png);
-  background-position: 5px center;
-  padding-left: 20px;
+  padding-left: 1.25em;
 }
 
 /*
@@ -1480,24 +1422,12 @@ ul.tag_list li.public .name {
   background-color: #F6d0d0;
 }
 
-.feed .summary .description {
-  margin: 0.5em 0 0 60px;
-}
-
-.feed .summary .description input {
-  margin: 0;
-}
-
-.feed .summary .info .filter {
-  width: 15em;
-}
-
-.feed .summary .info .filter input {
-  margin-top: -1px;
+.feed .summary .info .details input {
+  margin-top: 0;
   vertical-align: middle;
 }
 
-.feed.globally_excluded .summary .info .filter strong {
+.feed.globally_excluded .summary .info .details strong {
   color: #C43212;
 }
 
@@ -1506,7 +1436,7 @@ ul.tag_list li.public .name {
 }
 
 .feed .summary .info .date {
-  width: 9.5em;
+  width: 7em;
 }
 
 /*
@@ -1543,11 +1473,6 @@ ul.tag_list li.public .name {
   background-color: #F6d0d0;
 }
 
-.tag .summary .state {
-  font-size: 1.5em;
-  line-height: .97em;
-}
-
 .tag.subscribed .summary .state {
   color: #537713;
 }
@@ -1573,7 +1498,7 @@ ul.tag_list li.public .name {
 }
 
 .tag .summary .info .date {
-  width: 8em;
+  width: 7em;
 }
 
 .tag .summary .info .comments strong {
@@ -1599,7 +1524,7 @@ ul.tag_list li.public .name {
 .tag .extended .comments {
   float: left;
   width: 70%;
-  padding: 1em 0 0;
+  padding-top: 0.5em;
 }
 
 .tag .extended .comments .empty {
@@ -1621,7 +1546,6 @@ ul.tag_list li.public .name {
   width: 10em;
   padding: 0.5em 0.3em 0.5em 0.5em;
   color: #666;
-  font-size: .95em;
   background-color: #d7e0f5;
 }
 
@@ -1639,7 +1563,7 @@ ul.tag_list li.public .name {
 
 .tag .extended .comment .body {
   padding: 0.5em 0 0.5em .5em;
-  border-left: 10.2em solid #d7e0f5;
+  border-left: 10.9em solid #d7e0f5;
 }
 
 .tag .extended .comment .body *:first-child {
@@ -1656,14 +1580,14 @@ ul.tag_list li.public .name {
 
 .tag .extended .comment form {
   padding: 0.5em;
-  border-left: 10.2em solid #d7e0f5;
+  border-left: 10.9em solid #d7e0f5;
 }
 
 .tag .extended .comment form  textarea {
   width: 100%;
   border: 1px solid #C0C7CD;
   height: 80px;
-  margin: -1px 0 0.5em -1px;
+  margin: 1px 0 0.5em -2px;
 }
 
 .tag .extended .comment form .input {
@@ -1677,22 +1601,15 @@ ul.tag_list li.public .name {
   color: #C43212;
 }
 
-.tag .extended h5 {
-  margin: 0 0 0.5em;
-  text-align: left;
-  font-size: 1em;
-  color: #626051;
-}
-
 .tag .extended .sidebar {
   float: right;
   width: 30%;
-  padding: 1em 0;
+  padding-top: 0.5em;
 }
 
 .tag .extended .sidebar .block {
   margin-bottom: 1.5em;
-  padding: 1em;
+  padding: 1em 1em 0.4em;
 }
 
 .tag .extended .sidebar .actions {
@@ -1700,8 +1617,8 @@ ul.tag_list li.public .name {
 }
 
 .tag .extended .sidebar .actions input {
-  margin: 0;
-  vertical-align: bottom;
+  margin: -1px 0 0 0;
+  vertical-align: middle;
 }
 
 .tag .extended .sidebar .actions .state span {
@@ -1718,20 +1635,17 @@ ul.tag_list li.public .name {
   list-style: none;
 }
 
-.tag ul.controls li {
-  padding: 0.5em 0;
-}
-
 .tag ul.controls li.disabled {
   color: #aaa;
 }
 
-.tag ul.controls li .slider_track {
-  margin: 0.3em 0;
+.tag ul.controls li {
+  margin-bottom: 0.5em;
 }
 
 .tag ul.controls a {
-  padding-left: 20px;
+  display: block;
+  padding-left: 1.75em;
   background-position: left center;
   background-repeat: no-repeat;
 }
@@ -1754,12 +1668,13 @@ ul.tag_list li.public .name {
 
 .tag .extended .comment_form {
   margin-right: 1.5em;
-  padding: 1em 1em 1em 0.75em;
+  padding: 0.75em 1em 0.75em 0.75em;
   background-color: #d7e0f5;
 }
 
 .tag .extended .comment_form h5 {
   color: #52718B;
+  margin-bottom: 0.75em;
 }
 
 .tag .extended .comment_form textarea {
@@ -1785,16 +1700,16 @@ ul.tag_list li.public .name {
  */
 .invite {
   position: relative;
-  border: 1px solid #666;
-  background: #eee;
-  padding: .5em;
+  border: 1px solid #e5e5e5;
+  background: #f3f3f3;
+  padding: .5em 0.5em 0;
   margin: 0 0 .5em 0;
 }
 
 .invite .controls {
   position: absolute;
-  top: 1em;
-  right: 1em;
+  top: 0.5em;
+  right: 0.5em;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1840,7 +1755,7 @@ ul.tag_list li.public .name {
 }
 
 .invite dl.created dd {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
 }
 
 .invite dl.question {
@@ -1870,17 +1785,13 @@ ul.tag_list li.public .name {
 /*
  * =messages
  */
-.message {
-  position: relative;
-  border: 1px solid #666;
-  background: #eee;
-  padding: .5em;
-  margin: 0 0 .5em 0;
-}
-
 .messages {
   float: left;
   width: 33%;
+}
+
+.messages h2 {
+  margin: 0;
 }
 
 .messages .empty {
@@ -1906,6 +1817,10 @@ ul.tag_list li.public .name {
 
 .messages ul li.sidebar_message .body {
   word-wrap: break-word;
+}
+
+.messages ul li.sidebar_message .body p:last-child {
+  margin: 0;
 }
 
 .messages ul li.sidebar_message .date {
