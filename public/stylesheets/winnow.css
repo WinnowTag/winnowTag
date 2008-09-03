@@ -610,7 +610,7 @@ ul.filter_list li .training .automatic {
 }
 
 ul.filter_list li .training .positive strong {
-  color: #537713;
+  color: #537713;  
 }
 
 ul.filter_list li .training .negative strong {
@@ -1146,7 +1146,7 @@ a.bookmarklet:hover {
 
 .feed_item .body {
   display: none;
-  padding: 5px 5px 5px 25px;
+  padding: 8px 8px 8px 25px;
 }
 
 .feed_item.open .body {
@@ -1154,7 +1154,7 @@ a.bookmarklet:hover {
 }
 
 .feed_item.selected .body {
-  padding: 5px 3px 4px 23px;
+  padding: 8px 6px 7px 23px;
 }
 
 .feed_item .moderation_panel {
@@ -1379,7 +1379,7 @@ ul.tag_list {
 
 ul.tag_list li {
   display: inline;
-  color: #666;
+  color: #444;
   padding: 0;
   margin: 0 1em 0 0;
   white-space: nowrap;
@@ -1397,7 +1397,8 @@ ul.tag_list li.classifier .name {
 
 ul.tag_list li.positive .name {
   background-image: url(../images/bullet_green.png);
-  color: #537713;
+/*  color: #537713;*/
+  color: #6A952C;  
 }
 
 ul.tag_list li.negative .name {
