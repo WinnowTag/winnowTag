@@ -1089,13 +1089,13 @@ a.bookmarklet:hover {
   height: 1.5em;
   width: 1.5em;
   margin-right: 0.25em;
-  background-image: url(../images/unread.png);
+  background-image: url(../images/unread.gif);
   background-position: center center;
   background-repeat: no-repeat;
 }
 
 .feed_item.read .closed > .status {
-  background-image: url(../images/read.png);
+  background-image: url(../images/read.gif);
 }
 
 .feed_item .closed h4 {
