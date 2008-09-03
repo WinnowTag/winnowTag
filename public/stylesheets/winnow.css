@@ -411,6 +411,7 @@ textarea.content {
 
 .section .header .actions .cancel_link {
   display: none;
+  margin-right: 0.5em;
 }
 
 .section.add .header .actions .cancel_link {
@@ -419,7 +420,7 @@ textarea.content {
 
 .section .add_form {
   display: none;
-  padding: 0.5em;
+  padding: 0.5em 0.75em 0.5em 0.25em;
 }
 
 .section.add .add_form {
@@ -432,7 +433,7 @@ textarea.content {
 }
 
 .section > .content {
-  padding: 0.5em;
+  padding: 0.25em;
   display: none;
   background-color: #f9f9f9;
   border: 1px solid #f0f0f0;
@@ -458,11 +459,9 @@ ul.filter_list {
 
 ul.filter_list li {
   position: relative;
-  padding-left: 1.75em;
+  padding: 1px 2px 1px 1.75em;
   background-repeat: no-repeat;
-  height: 1.5em;
   border: 1px solid transparent;
-  border-width: 1px 1px 0 1px;  
 }
 
 #tags_section ul.filter_list li, #feeds_section ul.filter_list li {
@@ -471,23 +470,23 @@ ul.filter_list li {
 
 ul.filter_list.tags li {
   background-image: url(../images/tag.png);
-  background-position: 3px 3px;
+  background-position: 2px center;
 }
 
 ul.filter_list.tags li.public {
   background-image: url(../images/public.png);
-  background-position: 4px 4px;
+  background-position: 2px center;
 }
 
 ul.filter_list.feeds li {
   background-image: url(../images/feed.png);
-  background-position: 2px 2px;
+  background-position: 2px center;
 }
 
 ul.filter_list li .name {
   float: left;
-  height: 1.5em;
   overflow: hidden;
+  height: 1.5em;
 }
 
 ul.filter_list li.selected .name {
@@ -496,7 +495,8 @@ ul.filter_list li.selected .name {
 
 ul.filter_list li .inplaceeditor-form .editor_field {
   width: 100%;
-  margin: -3px 0 0 -4px;
+  padding: 0;
+  margin: -3px 0 -1px -4px;
 }
 
 ul.filter_list li.info {
@@ -515,13 +515,13 @@ ul.filter_list li .auto_complete_name {
 ul.filter_list li .actions {
   display: none;
   position: absolute;
+  top: 2px;
   right: 0;
-  padding: 2px 1px 0 0;
   background-color: #f9f9f9;
 }
 
 ul.filter_list li.info .actions {
-  background-color: transparent;
+  background-color: #fff;
 }
 
 ul.filter_list li:hover .actions {
@@ -1406,8 +1406,7 @@ ul.tag_list li.negative .name {
 }
 
 ul.tag_list li.public .name {
-  background-image: url(../images/public.png);
-  padding-left: 1.25em;
+  background-image: url(../images/bullet_blue.png);
 }
 
 /*

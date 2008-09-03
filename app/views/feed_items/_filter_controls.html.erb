@@ -9,13 +9,13 @@
     </div>
   </div>
 
-  <div class="add_form">
-    <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
-          :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
-          :after_update_element => "function(e, v) { itemBrowser.update_tag_filters(e,v); $('tags_section').removeClassName('add'); $('tags_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
-  </div>
-  
   <div class="content">
+    <div class="add_form">
+      <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
+            :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
+            :after_update_element => "function(e, v) { itemBrowser.update_tag_filters(e,v); $('tags_section').removeClassName('add'); $('tags_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
+    </div>
+  
     <%= tag_filter_controls(current_user.tags_for_sidebar(params[:tag_ids]), :editable => true, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
   </div>
 </div>
@@ -31,13 +31,13 @@
     </div>
   </div>
 
-  <div class="add_form">
-    <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
-          :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
-          :after_update_element => "function(e, v) { itemBrowser.update_feed_filters(e,v); $('feeds_section').removeClassName('add'); $('feeds_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
-  </div>
-
   <div class="content">
+    <div class="add_form">
+      <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
+            :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
+            :after_update_element => "function(e, v) { itemBrowser.update_feed_filters(e,v); $('feeds_section').removeClassName('add'); $('feeds_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
+    </div>
+
     <%= feed_filter_controls(feeds_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list feeds" }) %>
   </div>
 </div>
@@ -53,13 +53,13 @@
     </div>
   </div>
 
-  <div id="add_folder" class="add_form">
-    <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('folders_section').removeClassName('add'); $('folder_name').value = ''" do |form| -%>
-      <%= form.text_field :name, :class => "filter_search" %>
-    <% end -%>
-  </div>
-
   <div class="content" id="folders">
+    <div id="add_folder" class="add_form">
+      <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('folders_section').removeClassName('add'); $('folder_name').value = ''" do |form| -%>
+        <%= form.text_field :name, :class => "filter_search" %>
+      <% end -%>
+    </div>
+
     <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
   </div>
   <%= sortable_element("folders", :url => sort_folders_path, :method => :put, :constraint => :vertical, :tag => :div, :handle => ".header") %>
