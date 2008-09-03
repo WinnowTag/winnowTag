@@ -1072,7 +1072,6 @@ a.bookmarklet:hover {
 }
 
 .feed_item .closed {
-  cursor: pointer;
   padding: 5px;
 }
 
@@ -1098,11 +1097,12 @@ a.bookmarklet:hover {
   background-image: url(../images/read.gif);
 }
 
-.feed_item .closed h4 {
-  font-size: 1em;
+.feed_item .closed .title {
+  font-weight: bold;
+  color: #000;
 }
 
-.feed_item.read .closed h4 {
+.feed_item.read .closed .title {
   color: #666;
 }
 
@@ -1121,6 +1121,7 @@ a.bookmarklet:hover {
 .feed_item .closed .feed_title {
   padding: 3px 4px;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .feed_item .feed_title.selected {
