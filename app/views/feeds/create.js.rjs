@@ -1,3 +1,3 @@
 page['feed_filters'].insertInOrder 'li', '.name', feed_filter_control(@feed, :remove => :subscription), @feed.title
-page.draggable(dom_id(@feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :constraint => "'vertical'", 
+page.draggable(dom_id(@feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, 
   :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }")

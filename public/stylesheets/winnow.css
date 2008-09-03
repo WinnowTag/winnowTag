@@ -525,166 +525,53 @@ ul.filter_list {
 
 ul.filter_list li {
   position: relative;
-  padding: 1px 2px 1px 1.75em;
-  background-repeat: no-repeat;
+  float: left;
+  margin: 0 0.25em 0.25em 0;
+  padding: 0 0.5em 0 0.5em;
   border: 1px solid transparent;
 }
 
-#tags_section ul.filter_list li, #feeds_section ul.filter_list li {
+/*#tags_section ul.filter_list li, #feeds_section ul.filter_list li {
   cursor: move;
-}
+}*/
 
-ul.filter_list.tags li {
-  background-image: url(../images/tag.png);
-  background-position: 2px center;
-}
-
-ul.filter_list.tags li.public {
-  background-image: url(../images/public.png);
-  background-position: 2px center;
-}
-
-ul.filter_list.feeds li {
-  background-image: url(../images/feed.png);
-  background-position: 2px center;
-}
-
-ul.filter_list li .name {
+ul.filter_list li .remove {
   float: left;
-  overflow: hidden;
+  width: 1.5em;
   height: 1.5em;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
+ul.filter_list.tags li .remove {
+  background-image: url(../images/tag.png);
+}
+
+ul.filter_list.tags li.public .remove {
+  background-image: url(../images/public.png);
+}
+
+ul.filter_list.feeds li .remove {
+  background-image: url(../images/feed.png);
+}
+
+ul.filter_list li .remove:hover, ul.filter_list li.public .remove:hover {
+  background-image: url(../images/destroy.png);
+  cursor: pointer;
+}
+
+ul.filter_list li.selected {
+  background-color: #52718B;
+  -moz-border-radius: 0.75em;
+  -webkit-border-radius: 0.75em;
 }
 
 ul.filter_list li.selected .name {
-  font-weight: bold;
-}
-
-ul.filter_list li .inplaceeditor-form .editor_field {
-  width: 100%;
-  padding: 0;
-  margin: -3px 0 -1px -4px;
-}
-
-ul.filter_list li.info {
-  background-color: #fff;
-  border-color: #aaa;
-  -moz-border-radius-topleft: 0.4em;
-  -moz-border-radius-topright: 0.4em;
-  -webkit-border-top-left-radius: 0.4em;
-  -webkit-border-top-right-radius: 0.4em;
+  color: #fff;
 }
 
 ul.filter_list li .auto_complete_name {
   display: none;
-}
-
-ul.filter_list li .actions {
-  display: none;
-  position: absolute;
-  top: 2px;
-  right: 0;
-  background-color: #f9f9f9;
-}
-
-ul.filter_list li.info .actions {
-  background-color: #fff;
-}
-
-ul.filter_list li:hover .actions {
-  display: block;
-}
-
-ul.filter_list li.edit .actions {
-  display: none;
-}
-
-ul.filter_list li .actions a {
-  float: left;
-  width: 16px;
-  height: 16px;
-  margin-right: 2px;
-  background-position: left center;
-  background-repeat: no-repeat;
-  text-indent: -9000px;
-  overflow: hidden;
-}
-
-ul.filter_list li .actions .edit {
-  background-image: url(../images/edit.png);
-}
-
-ul.filter_list li .actions .remove {
-  background-image: url(../images/destroy.png);
-}
-
-ul.filter_list li .actions .info {
-  background-image: url(../images/info.png);
-}
-
-ul.filter_list li .training {
-  display: none;
-  padding: 3px 0;
-  position: absolute;
-  top: 1.5em;
-  left: -1px;
-  width: 100%;
-  z-index: 900;
-  background-color: #fff;
-  border: 1px solid #aaa;
-  border-width: 0 1px 1px 1px;
-  -moz-border-radius-bottomleft: 0.4em;
-  -moz-border-radius-bottomright: 0.4em;
-  -webkit-border-bottom-left-radius: 0.4em;
-  -webkit-border-bottom-right-radius: 0.4em;
-}
-
-ul.filter_list li.info .training {
-  display: block;
-}
-
-ul.filter_list li .training div {
-  float: left;
-  margin: .25em 0;
-  padding: 0 0.5em;
-  border-left: 1px solid #ccc;
-}
-
-ul.filter_list li .training p {
-  font-size: 0.75em;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin: 0 0 0.1em 0;
-  color: #999;
-}
-
-ul.filter_list li .training strong {
-  font-size: 1.1em;
-  line-height: 1;
-}
-
-ul.filter_list li .training .positive {
-  border: none;
-  width: 5em;
-}
-
-ul.filter_list li .training .negative {
-  width: 5em;
-}
-
-ul.filter_list li .training .automatic {
-  width: 6em;
-}
-
-ul.filter_list li .training .positive strong {
-  color: #537713;  
-}
-
-ul.filter_list li .training .negative strong {
-  color: #C43212;
-}
-
-ul.filter_list li .training .automatic strong {
-  color: #666;
 }
 
 /*

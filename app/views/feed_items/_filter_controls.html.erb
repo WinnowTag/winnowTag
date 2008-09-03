@@ -16,7 +16,7 @@
             :after_update_element => "function(e, v) { itemBrowser.update_tag_filters(e,v); $('tags_section').removeClassName('add'); $('tags_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
     </div>
   
-    <%= tag_filter_controls(current_user.tags_for_sidebar(params[:tag_ids]), :editable => true, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list tags" }) %>
+    <%= tag_filter_controls(current_user.tags_for_sidebar(params[:tag_ids]), :editable => true, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list clearfix tags" }) %>
   </div>
 </div>
   
@@ -38,7 +38,7 @@
             :after_update_element => "function(e, v) { itemBrowser.update_feed_filters(e,v); $('feeds_section').removeClassName('add'); $('feeds_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
     </div>
 
-    <%= feed_filter_controls(feeds_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list feeds" }) %>
+    <%= feed_filter_controls(feeds_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list clearfix feeds" }) %>
   </div>
 </div>
     

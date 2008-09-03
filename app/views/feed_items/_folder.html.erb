@@ -16,8 +16,8 @@
     </div>
   </div>
   <div class="content">
-    <%= tag_filter_controls(folder.tags.with_counts, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_tag_items", :class => "filter_list tags" }) %>
-    <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list feeds" }) %>
+    <%= tag_filter_controls(folder.tags.with_counts, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_tag_items", :class => "filter_list clearfix tags" }) %>
+    <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list clearfix feeds" }) %>
   </div>
 </div>
 <%= drop_receiving_element(dom_id(folder), :hoverclass => "hover", :accept => ["feed", "tag"],

@@ -140,9 +140,8 @@ module ApplicationHelper
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
     end
 
-    html  = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html  = content_tag(:div, html, :class => "actions clearfix")
-    
+    html = link_to_function("", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+
     # TODO: sanitize
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name")
     
@@ -153,7 +152,7 @@ module ApplicationHelper
     class_names = [dom_id(feed), "clearfix", "feed"]
     class_names << "draggable" if options[:draggable]
     html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-    html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
+    html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }") if options[:draggable]
     html
   end
   
@@ -178,22 +177,10 @@ module ApplicationHelper
       when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
     end
 
-    html  = ""
-    html << link_to_function("Rename", "", :id => dom_id(tag, "edit"), :class => "edit") << " " if options[:editable] && current_user.id == tag.user_id
-    html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html << link_to_function("Info", "", :class => "info", :onmouseover => "$(this).up('li').addClassName('info')", :onmouseout => "$(this).up('li').removeClassName('info')")
-    html  = content_tag(:div, html, :class => "actions clearfix")
-
-    html << content_tag(:div, tag_training(tag), :class => "training clearfix")
+    html = link_to_function("", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
 
     # TODO: sanitize
     html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
-    html << in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
-              :external_control => dom_id(tag, "edit"), :external_control_only => true, :click_to_edit_text => "", 
-              :on_enter_hover => "", :on_leave_hover => "", :on_complete => "",
-              :on_enter_edit_mode => "function() { $('#{dom_id(tag)}').addClassName('edit'); }", 
-              :on_leave_edit_mode => "function() { $('#{dom_id(tag)}').removeClassName('edit'); }",
-              :save_control => false, :cancel_control => false, :html_response => false) if options[:editable] && tag.user_id == current_user.id
     
     html =  content_tag(:div, html, :class => "filter clearfix")
     # TODO: sanitize
@@ -207,7 +194,7 @@ module ApplicationHelper
       when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
     end
     html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url)
-    html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }", :constraint => "'vertical'") if options[:draggable]
+    html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }") if options[:draggable]
     html
   end
   
