@@ -163,7 +163,7 @@ textarea.content {
 #account_controller .container .welcome {
   padding: 1.5em 1.5em 0.1em;
   color: #333;
-  background-color: #DFF1FF;
+  background-color: #d7e0f5;
 }
 
 #account_controller .container h2 {
@@ -178,7 +178,7 @@ textarea.content {
   font-size: 1.5em;
   font-weight: bold;
   letter-spacing: -1px;
-  background-color: #DFF1FF;  
+  background-color: #d7e0f5;  
 }
 
 #account_controller .container .form .title span {
