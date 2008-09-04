@@ -1,0 +1,31 @@
+<div id="login_form" class="form clearfix">
+  <% form_tag login_path do -%> 
+    <div class="title">
+      <span class="login"><%= _(:login_header) %></span>
+      <span class="invitation"><%= link_to_function _(:invite_header), "$('login_form').hide(); $('invite_form').show();" %></span>
+    </div>
+    
+    <div class="content">
+      <div class="clearfix">
+      	<div class="login">
+      	  <label for="login"><%= _(:login_label) %></label>
+      	  <%= text_field_tag :login %>
+      	</div>
+
+      	<div class="password">
+      	  <label for="password"><%= _(:password_label) %></label>
+      	  <%= password_field_tag :password %>
+      	</div>
+      </div>
+  
+    	<div class="remember">
+    	  <%= check_box_tag :remember_me %> <label for="remember_me" class="inline"><%= _(:remember_me_label) %></label>
+    	</div>
+
+    	<div class="submit">
+    	  <%= submit_tag _(:login_submit_button) %>
+    	  <%= link_to_function _(:forgot_password_link), "$('login_form').hide(); $('reminder_form').show();", :class => "forgot_password_link" %>
+    	</div>
+  	</div>
+  <% end -%>
+</div>

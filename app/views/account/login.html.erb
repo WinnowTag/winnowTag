@@ -1,100 +1,16 @@
-<div id="forms">
-  <% form_tag login_path, :id => 'login_form' do -%>
-    <h1><%= _(:login_header) %></h1>
+<div class="container">
+  <div class="welcome">
+    <h2><%= _(:welcome_header) %></h2>
+
+    <%= _(:welcome_text) %>    
+  </div>
   
-  	<p>
-  	  <label for="login"><%= _(:login_label) %></label>
-  	  <%= text_field_tag :login %>
-  	</p>
-
-  	<p>
-  	  <label for="password"><%= _(:password_label) %></label>
-  	  <%= password_field_tag :password %>
-  	</p>
-
-  	<p>
-  	  <%= check_box_tag :remember_me %>
-  	  <label for="remember_me" class="inline"><%= _(:remember_me_label) %></label>
-  	</p>
-
-  	<p>
-  	  <%= link_to_function _(:forgot_password_link), "$('login_form').hide(); $('reminder_form').show();", :class => "forgot_password_link" %>
-  	  <%= submit_tag _(:login_submit_button) %>
-  	</p>
-  <% end -%>
-  
-  <% form_remote_tag :url => reminder_path, :html => { :id => 'reminder_form', :style => "display: none" } do -%>
-    <h1><%= _(:reminder_header) %></h1>
-  
-  	<p>
-  	  <label for="login"><%= _(:login_label) %></label>
-  	  <%= text_field_tag :login %>
-  	</p>
-
-  	<p>
-  	  <%= link_to_function _(:login_link), "$('login_form').show(); $('reminder_form').hide();", :class => "forgot_password_link" %>
-  	  <%= submit_tag _(:reminder_submit_button) %>
-  	</p>
-  <% end -%>
-
-<% if @invite and @invite.code? -%>
-  <% form_for :user, :url => signup_path, :id => "signup_form" do |f| -%>
-    <h1>Signup</h1>
+  <% if @invite and @invite.code? -%>
+    <%= render :partial => "signup", :object => @invite %>
     
-    <%= error_messages_for :user %>
-    <%= hidden_field_tag :invite, @invite.code %>
-
-    <p>
-      <label for="login"><%= _(:login_label) %></label>
-      <%= f.text_field :login %>
-    </p>
-
-    <p>
-      <label for="password"><%= _(:password_label) %></label>
-      <%= f.password_field :password %>
-    </p>
-
-    <p>
-      <label for="password_confirmation"><%= _(:password_confirmation_label) %></label>
-      <%= f.password_field :password_confirmation %>
-    </p>
-
-    <p>
-      <label for="email"><%= _(:email_label) %></label>
-      <%= f.text_field :email, :value => @invite.email %>
-    </p>
-
-    <p><%= submit_tag _(:signup_submit_button) %></p>
+  <% else -%>
+    <%= render :partial => "login" %>
+    <%= render :partial => "reminder" %>
+    <%= render :partial => "invite" %>
   <% end -%>
-<% else -%>
-  <% form_for :invite, :url => signup_invite_path, :id => "invite_form" do |f| -%>
-    <h1><%= _(:invite_header) %></h1>
-
-    <%= error_messages_for :invite %>
-
-    <p>
-      <%= f.label :email, _(:email_label) %>
-      <%= f.text_field :email %>
-    </p>
-
-    <h4><%= _(:questions_header) %></h4>
-    <span class="description"><%= _(:questions_description) %></span>
-    
-    <p>
-      <%= f.label :hear, _(:hear_question) %>
-      <%= f.text_area :hear, :size => "28x2" %>
-    </p>
-    
-    <p>
-      <%= f.label :use, _(:use_question) %>
-      <%= f.text_area :use, :size => "28x2" %>
-    </p>
-
-    <p><%= submit_tag _(:invite_submit_button) %></p>
-  <% end -%>
-<% end -%>
 </div>
-
-<h3><%= _(:welcome_header) %></h3>
-
-<%= _(:welcome_text) %>

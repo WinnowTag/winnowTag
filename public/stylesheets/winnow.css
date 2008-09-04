@@ -144,57 +144,136 @@ textarea.content {
 
 /*
  * =login
- */
-#forms {
-  border: none;
-  width: 20em;
-  float: right;
-}
+ */ 
+#account_controller {
+  background-color: #f5f5f5;
+} 
 
-#forms label {
-  display: block;
-}
-
-#forms label.inline {
-  display: inline;
-}
-
-#forms input[type=text], #forms input[type=password] {
-  width: 100%;
-}
-
-#forms input[type=checkbox] {
-  width: 1em;
-  height: 1em;
-}
-
-#forms h1 {
-  font-size: 1.5em;
-  text-align: center;
-  border-bottom: 1px solid #999;
-}
-
-#forms h4 {
-  font-size: 1em;
+#account_controller a {
+  color: #52718B;
   font-weight: bold;
-  text-align: center;
-  border-bottom: 1px solid #999;
-  margin-bottom: 0;
 }
 
-#forms .description {
-  font-size: .9em;
-  font-weight: normal;
-  color: #666;
-  text-align: center;
-  display: block;
+#account_controller .container {
+  width: 45.5em;
+  margin: 3em auto;
+  background-color: #fff;
 }
 
-.forgot_password_link {
-  margin: .2em 0 0 0;
+#account_controller .container .welcome {
+  padding: 1.5em 1.5em 0.1em;
+  color: #333;
+  background-color: #DFF1FF;
+}
+
+#account_controller .container h2 {
+  margin-bottom: 0.75em;
+  color: #069;  
+  font-size: 2em;
+  font-weight: bold;
+}
+
+#account_controller .container .form .title {
+  padding: 0.5em 0 0.25em 1em;
+  font-size: 1.5em;
+  font-weight: bold;
+  letter-spacing: -1px;
+  background-color: #DFF1FF;  
+}
+
+#account_controller .container .form .title span {
+  background-color: #fff;
+  padding: 0.33em 0.5em 0.5em;
+/*  margin: 0*/ 0 0;  
+}
+
+#account_controller .container #login_form .title .invitation {
+  background-color: transparent;    
+}
+
+#account_controller .container #invite_form .title .login,
+#account_controller .container #signup_form .title .login {
+  background-color: transparent;  
+  background-color: transparent;  
+}
+
+#account_controller .container .form .content {
+  clear: both;
+  padding: 1.5em;
+}
+
+#account_controller .container .form .content h4 {
+  border-bottom: 1px solid #ccc;
+  padding: 0.25em 0;
+/*  margin-bottom: 1em;*/
+}
+
+#account_controller .container .form .content .description {
   float: right;
+  font-size: .9em;
+  color: #666;
+  margin: 0.5em 0 0;
 }
 
+#account_controller .container .form .content .forgot_password_link {
+  margin-left: 1.5em;                 
+}                                     
+                                      
+#account_controller .container .form .content .login, 
+#account_controller .container .form .content .password,
+#account_controller .container .form .content .password_confirmation, 
+#account_controller .container #signup_form .content .email {
+  float: left;                        
+  margin-bottom: 1.5em;               
+}
+
+#account_controller .container .content .email {
+  margin-bottom: 1.5em;
+}
+                                      
+#account_controller .container .form  .content .login,
+#account_controller .container .form  .content .email {
+  margin-right: 1.5em;                
+}                                     
+                                      
+#account_controller .container .form .content .remember {
+  float: left;                        
+}                                     
+                                      
+#account_controller .container .form .content .submit {
+  margin-left: 22em;                  
+}                                     
+                                      
+#account_controller .container .form .content label {
+  display: block;                 
+}                                     
+                                      
+#account_controller .container .form .content label.inline {
+  display: inline;
+}                                     
+                                      
+#account_controller .container .form .content input[type=text], 
+#account_controller .container .form .content input[type=password] {
+  width: 20em;                        
+}                                     
+                                      
+#account_controller .container .form .content input[type=checkbox] {
+  line-height: 1.5;
+  vertical-align: middle;
+}
+
+#account_controller .container .form .content #invite_hear,
+#account_controller .container .form .content #invite_use {
+  width: 100%;
+  height: 7em;
+  margin-bottom: 1.5em;    
+}  
+
+#invite_form .submit {
+  float: right;
+  margin: 0 0 1.5em 0;
+}
+ 
 /*
  * =navigation
  */
@@ -1893,4 +1972,20 @@ ul.tag_list li.public .name {
   background-repeat: no-repeat;
   min-height: 32px;
   min-width: 32px;
+}
+
+/* =errors
+ */
+#signup_form .content #errorExplanation {
+  width: 40em;
+  margin-bottom: 1.5em;
+}
+
+#signup_form #errorExplanation h2 {
+  font-size: 1.4em;
+  color: #fff;
+}
+
+.errorExplanation ul {
+  margin-bottom: 0;
 }
