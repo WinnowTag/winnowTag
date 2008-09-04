@@ -67,12 +67,12 @@
 
 .button .icon.unread {
   padding-left: 20px;
-  background-image: url(../images/unread.gif);
+  background-image: url(../images/unread_large.png);
 }
 
 .button .icon.read {
   padding-left: 20px;
-  background-image: url(../images/unread.gif);
+  background-image: url(../images/unread_large.png);
 }
 
 .button .icon.previous {
