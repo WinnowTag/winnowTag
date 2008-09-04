@@ -39,11 +39,7 @@ Rails::Initializer.run do |config|
   config.gem "RedCloth", :version => "4.0.1"
   config.gem "tzinfo", :version => "0.3.9"
   config.gem "auth-hmac", :version => "1.0.1"
-  
-  if `uname -n` =~ /ds468-1.blueboxgrid.com/
-    config.gem :fiveruns_manage
-  end
-  
+    
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
