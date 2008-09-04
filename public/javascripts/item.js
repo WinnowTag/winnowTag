@@ -313,7 +313,7 @@ var Item = Class.create({
           
           itemBrowser.styleFilters();
         } else {
-          $$("." + data.id).each(function(element) {
+          $$(".filter_list ." + data.id).each(function(element) {
             element.title = data.tooltip;
           });
         }
@@ -362,7 +362,7 @@ var Item = Class.create({
         }
 
         // Update the filter for this tag
-        $$("." + data.id).each(function(element) {
+        $$(".filter_list ." + data.id).each(function(element) {
           element.title = data.tooltip;
         });
         
