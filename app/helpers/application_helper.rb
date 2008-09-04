@@ -184,12 +184,7 @@ module ApplicationHelper
     html  = content_tag(:div, html, :class => "actions")
 
     # TODO: sanitize
-    title = if tag.user_id == current_user.id 
-      _(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
-    else
-      _(:public_tag_tooltip, tag.user.display_name, tag.positive_count, tag.negative_count, tag.classifier_count)
-    end
-    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => title)
+    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"))
     
     html =  content_tag(:div, html, :class => "filter clearfix")
     # TODO: sanitize
@@ -202,24 +197,17 @@ module ApplicationHelper
       when :subscription then subscribe_tag_path(tag, :subscribe => true)
       when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
     end
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url)
+    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url, :title => tag_tooltip(tag))
     html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }") if options[:draggable]
     html
   end
   
-  def tag_training(tag)
-    %|<div class="positive">
-       <p>#{_(:positive)}</p>
-       <strong>#{tag.positive_count}</strong>
-     </div>
-     <div class="negative">
-       <p>#{_(:negative)}</p>
-       <strong>#{tag.negative_count}</strong>
-     </div>
-     <div class="automatic">
-       <p>#{_(:automatic_label)}</p>
-       <strong>#{tag.classifier_count}</strong>
-     </div>|
+  def tag_tooltip(tag)
+    if tag.user_id == current_user.id 
+      _(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
+    else
+      _(:public_tag_tooltip, tag.user.display_name, tag.positive_count, tag.negative_count, tag.classifier_count)
+    end
   end
   
   def help_path

@@ -313,7 +313,9 @@ var Item = Class.create({
           
           itemBrowser.styleFilters();
         } else {
-          $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+          $$("." + data.id).each(function(element) {
+            element.title = data.tooltip;
+          });
         }
         
         // TODO: Moved this to classifier.js
@@ -360,7 +362,9 @@ var Item = Class.create({
         }
 
         // Update the filter for this tag
-        $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+        $$("." + data.id).each(function(element) {
+          element.title = data.tooltip;
+        });
         
         // TODO: Moved this to classifier.js
         // Update the classification button's status
