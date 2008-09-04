@@ -319,9 +319,9 @@ describe ApplicationHelper do
     
     it "creates a filter control for a public tag" do
       user = mock_model(User, :display_name => "Mark")
-      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 1, :negative_count => 2, :classifier_count => 3)
       tag_filter_control(tag, :remove => :subscription).should have_tag("li.public") do
-        with_tag "a.name[title=?]", "from Mark"
+        with_tag "a.name[title=?]", "From Mark, Positive: 1, Negative: 2, Automatic: 3"
       end
     end
     
@@ -334,13 +334,11 @@ describe ApplicationHelper do
     it "creates a filter control with an edit control for private tags if editable" do
       tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :editable => true, :remove => :subscription).should have_tag(".edit")
-      tag_filter_control(tag, :editable => true, :remove => :subscription).should have_tag("script", /.*InPlaceEditor.*/)
     end
 
     it "creates a filter control without an edit control for private tags if not editable" do
       tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :editable => false, :remove => :subscription).should_not have_tag(".edit")
-      tag_filter_control(tag, :editable => false, :remove => :subscription).should_not have_tag("script", /.*InPlaceEditor.*/)
     end
   end
 end

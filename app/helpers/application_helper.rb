@@ -141,6 +141,7 @@ module ApplicationHelper
     end
 
     html = link_to_function("", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html = content_tag(:div, html, :class => "actions")
 
     # TODO: sanitize
     html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name")
@@ -177,10 +178,18 @@ module ApplicationHelper
       when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
     end
 
-    html = link_to_function("", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html  = ""
+    html << link_to_function("", "var new_tag_name = prompt('Tag Name:', #{tag.name.to_json}); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
+    html << link_to_function("", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html  = content_tag(:div, html, :class => "actions")
 
     # TODO: sanitize
-    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => tag.user_id == current_user.id ? nil :  _(:public_tag_tooltip, tag.user.display_name))
+    title = if tag.user_id == current_user.id 
+      _(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
+    else
+      _(:public_tag_tooltip, tag.user.display_name, tag.positive_count, tag.negative_count, tag.classifier_count)
+    end
+    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"), :title => title)
     
     html =  content_tag(:div, html, :class => "filter clearfix")
     # TODO: sanitize
