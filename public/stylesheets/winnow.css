@@ -516,6 +516,7 @@ ul.filter_list {
   list-style: none;
   margin: 0;
   padding: 0;
+  float: left;
 }
 
 ul.filter_list li {
@@ -599,23 +600,24 @@ ul.filter_list li .auto_complete_name {
   position: relative;
   background-color: inherit;
   cursor: move;
+  padding-left: 0.5em;
 }
 
 .folder .header .toggle_button {
   float: left;
-  width: 16px;
-  height: 16px;
-  background: transparent url(../images/folder.png) left center no-repeat;
+  width: 1.5em;
+  height: 1.5em;
+  background: transparent url(../images/folder.png) center center no-repeat;
   cursor: pointer;
 }
 
 .folder.open .header .toggle_button {
   margin-left: 1px;
-  background: transparent url(../images/folder_open.png) left center no-repeat;
+  background: transparent url(../images/folder_open.png) center center no-repeat;
 }
 
 .folder .header .name {
-  margin-left: 1.75em;  
+  margin-left: 2em;  
 }
 
 .folder.selected .header .name {

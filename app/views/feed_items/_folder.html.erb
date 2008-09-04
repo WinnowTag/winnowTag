@@ -15,7 +15,7 @@
       <%= link_to_remote "Remove", :url => folder_path(folder), :method => :delete, :confirm => _(:confirm_destroy_folder), :html => { :class => "remove" } %>
     </div>
   </div>
-  <div class="content">
+  <div class="content clearfix">
     <%= tag_filter_controls(folder.tags.with_counts, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_tag_items", :class => "filter_list clearfix tags" }) %>
     <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list clearfix feeds" }) %>
   </div>

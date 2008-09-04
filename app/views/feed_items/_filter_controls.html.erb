@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <div class="content">
+  <div class="content clearfix">
     <div class="add_form">
       <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
             :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <div class="content">
+  <div class="content clearfix">
     <div class="add_form">
       <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
             :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
