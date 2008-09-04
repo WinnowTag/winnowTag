@@ -386,6 +386,7 @@ textarea.content {
   height: auto;
   overflow-y: auto;
   overflow-x: hidden;
+  background-color: #f9f9f9;
 }
 
 #sidebar_control {
@@ -424,13 +425,6 @@ textarea.content {
   height: 1.5em;
   background: transparent url(../images/plus.gif) center center no-repeat;
   cursor: pointer;
-}
-
-.section.open > .header {
-  -moz-border-radius-bottomleft: 0;
-  -moz-border-radius-bottomright: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
 }
 
 .section.open > .header .toggle_button {
@@ -514,13 +508,6 @@ textarea.content {
 .section > .content {
   padding: 0.25em;
   display: none;
-  background-color: #f9f9f9;
-  border: 1px solid #f0f0f0;
-  border-width: 0 1px 1px 1px;
-  -moz-border-radius-bottomleft: 0.5em;
-  -moz-border-radius-bottomright: 0.5em;
-  -webkit-border-bottom-left-radius: 0.5em;
-  -webkit-border-bottom-right-radius: 0.5em;
 }
 
 .section.open > .content {
