@@ -75,7 +75,8 @@ var Content = Class.create({
 
     var extra = 0;
     if(Prototype.Browser.Gecko) {
-       extra = 0.25;
+      // sometimes firefox is just a little off, this keeps the content visible
+      extra = 0.25;
     }
 
     return body_width - sidebar_width - sidebar_control_width - sidebar_control_margin - container_padding - extra;

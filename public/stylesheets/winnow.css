@@ -552,6 +552,8 @@ ul.filter_list li .edit, ul.filter_list li .remove {
   height: 1.5em;
   background-repeat: no-repeat;
   background-position: left center;
+  text-indent: -9000px;
+  overflow: hidden;
 }
 
 ul.filter_list li .edit {
@@ -593,6 +595,13 @@ ul.filter_list li .auto_complete_name {
 
 .folder.hover {
   background-color: #FFF094;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+}
+
+.folder.hover .header {
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
 }
 
 .folder .header {
@@ -600,6 +609,7 @@ ul.filter_list li .auto_complete_name {
   background-color: inherit;
   cursor: move;
   padding-left: 0.5em;
+  margin-bottom: 0.25em;
 }
 
 .folder .header .toggle_button {
@@ -616,7 +626,8 @@ ul.filter_list li .auto_complete_name {
 }
 
 .folder .header .name {
-  margin-left: 2em;  
+  display: block;
+  margin-left: 1.75em;
 }
 
 .folder.selected .header .name {
@@ -627,34 +638,18 @@ ul.filter_list li .auto_complete_name {
   font-style: italic;
 }
 
-.folder .header .inplaceeditor-form .editor_field {
-  width: 100%;
-  margin: -3px 0 0 -4px;
-}
-
 .folder .header .actions {
   display: none;
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 2px 2px 0 0;
-}
-
-.folder .header:hover .actions {
-  display: block;
-}
-
-.folder.edit .header .actions {
-  display: none;
+  float: right;
+  margin-left: 0.25em;
 }
 
 .folder .header .actions a {
   float: left;
-  width: 16px;
-  height: 16px;
-  margin-right: 2px;
-  background-position: left center;
+  width: 1.5em;
+  height: 1.5em;
   background-repeat: no-repeat;
+  background-position: left center;
   text-indent: -9000px;
   overflow: hidden;
 }
@@ -673,6 +668,10 @@ ul.filter_list li .auto_complete_name {
 }
 
 .folder.open .content {
+  display: block;
+}
+
+.section.edit .folder .header .actions {
   display: block;
 }
 

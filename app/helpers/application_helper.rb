@@ -140,7 +140,7 @@ module ApplicationHelper
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
     end
 
-    html = link_to_function("", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:div, html, :class => "actions")
 
     # TODO: sanitize
@@ -179,8 +179,8 @@ module ApplicationHelper
     end
 
     html  = ""
-    html << link_to_function("", "var new_tag_name = prompt('Tag Name:', #{tag.name.to_json}); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
-    html << link_to_function("", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html << link_to_function("Rename", "var new_tag_name = prompt('Tag Name:', this.up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
+    html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html  = content_tag(:div, html, :class => "actions")
 
     # TODO: sanitize
