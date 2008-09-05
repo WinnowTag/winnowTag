@@ -565,11 +565,11 @@ ul.filter_list li .remove {
 }
 
 ul.filter_list li.selected {
-  background-color: #D7E0F5;
+/*  background-color: #D7E0F5;*/
 /*  background-color: #EAF0F5;*/
 /*  border: 1px solid #C0C7CD;*/
-/*  background-color: #FFFFCC;*/
-/*  border: 1px solid #FFF094;*/
+  background-color: #FFFFCC;
+  border: 1px solid #FFF094;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
 }
