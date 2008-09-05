@@ -320,9 +320,14 @@ describe ApplicationHelper do
     it "creates a filter control for a public tag" do
       user = mock_model(User, :display_name => "Mark")
       tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 1, :negative_count => 2, :classifier_count => 3)
-      tag_filter_control(tag, :remove => :subscription).should have_tag("li.public") do
-        with_tag "a.name[title=?]", "From Mark, Positive: 1, Negative: 2, Automatic: 3"
-      end
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li.public")
+    end
+    
+    it "creates a filter control with a tooltip showing the trining and author information" do
+      user = mock_model(User, :display_name => "Mark")
+      tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 1, :negative_count => 2, :classifier_count => 3)
+      
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li[title=?]", "From Mark, Positive: 1, Negative: 2, Automatic: 3")
     end
     
     it "creates a filter control without an edit control for public tags" do
