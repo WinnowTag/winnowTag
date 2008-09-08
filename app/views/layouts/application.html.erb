@@ -11,7 +11,7 @@
   </script>
   <%= yield(:head) %>
 </head>
-<body id="<%= controller.controller_name %>_controller">
+<body id="<%= yield(:body) %>">
   <%= render :partial => 'layouts/navbar' %>
   
   <% if header_controls = yield(:header_controls) -%>

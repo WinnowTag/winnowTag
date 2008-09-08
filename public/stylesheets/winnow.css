@@ -47,11 +47,11 @@ div#content > div.info {
   padding: 1em 1em 1em 2.5em;
 }
 
-#feed_items_controller #content {
+body#feed_items #content {
   padding: 0;
 }
 
-#feed_items_controller #container {
+body#feed_items #container {
   float: right;
 }
 
@@ -145,35 +145,35 @@ textarea.content {
 /*
  * =login
  */ 
-#account_controller {
+body#login {
   background-color: #f5f5f5;
 } 
 
-#account_controller a {
+body#login a {
   color: #52718B;
   font-weight: bold;
 }
 
-#account_controller .container {
+body#login .container {
   width: 45.5em;
   margin: 3em auto;
   background-color: #fff;
 }
 
-#account_controller .container .welcome {
+body#login .container .welcome {
   padding: 1.5em 1.5em 0.1em;
   color: #333;
   background-color: #d7e0f5;
 }
 
-#account_controller .container h2 {
+body#login .container h2 {
   margin-bottom: 0.75em;
   color: #069;  
   font-size: 2em;
   font-weight: bold;
 }
 
-#account_controller .container .form .title {
+body#login .container .form .title {
   padding: 0.5em 0 0.25em 1em;
   font-size: 1.5em;
   font-weight: bold;
@@ -181,89 +181,89 @@ textarea.content {
   background-color: #d7e0f5;  
 }
 
-#account_controller .container .form .title span {
+body#login .container .form .title span {
   background-color: #fff;
   padding: 0.33em 0.5em 0.5em;
 /*  margin: 0*/ 0 0;  
 }
 
-#account_controller .container #login_form .title .invitation {
+body#login .container #login_form .title .invitation {
   background-color: transparent;    
 }
 
-#account_controller .container #invite_form .title .login,
-#account_controller .container #signup_form .title .login {
+body#login .container #invite_form .title .login,
+body#login .container #signup_form .title .login {
   background-color: transparent;  
   background-color: transparent;  
 }
 
-#account_controller .container .form .content {
+body#login .container .form .content {
   clear: both;
   padding: 1.5em;
 }
 
-#account_controller .container .form .content h4 {
+body#login .container .form .content h4 {
   border-bottom: 1px solid #ccc;
   padding: 0.25em 0;
 /*  margin-bottom: 1em;*/
 }
 
-#account_controller .container .form .content .description {
+body#login .container .form .content .description {
   float: right;
   font-size: .9em;
   color: #666;
   margin: 0.5em 0 0;
 }
 
-#account_controller .container .form .content .forgot_password_link {
+body#login .container .form .content .forgot_password_link {
   margin-left: 1.5em;                 
 }                                     
                                       
-#account_controller .container .form .content .login, 
-#account_controller .container .form .content .password,
-#account_controller .container .form .content .password_confirmation, 
-#account_controller .container #signup_form .content .email {
+body#login .container .form .content .login, 
+body#login .container .form .content .password,
+body#login .container .form .content .password_confirmation, 
+body#login .container #signup_form .content .email {
   float: left;                        
   margin-bottom: 1.5em;               
 }
 
-#account_controller .container .content .email {
+body#login .container .content .email {
   margin-bottom: 1.5em;
 }
                                       
-#account_controller .container .form  .content .login,
-#account_controller .container .form  .content .email {
+body#login .container .form  .content .login,
+body#login .container .form  .content .email {
   margin-right: 1.5em;                
 }                                     
                                       
-#account_controller .container .form .content .remember {
+body#login .container .form .content .remember {
   float: left;                        
 }                                     
                                       
-#account_controller .container .form .content .submit {
+body#login .container .form .content .submit {
   margin-left: 22em;                  
 }                                     
                                       
-#account_controller .container .form .content label {
+body#login .container .form .content label {
   display: block;                 
 }                                     
                                       
-#account_controller .container .form .content label.inline {
+body#login .container .form .content label.inline {
   display: inline;
 }                                     
                                       
-#account_controller .container .form .content input[type=text], 
-#account_controller .container .form .content input[type=password] {
+body#login .container .form .content input[type=text], 
+body#login .container .form .content input[type=password] {
   width: 20em;                        
 }                                     
                                       
-#account_controller .container .form .content input[type=checkbox] {
+body#login .container .form .content input[type=checkbox] {
   line-height: 1.5;
   vertical-align: middle;
 }
 
-#account_controller .container .form .content #invite_hear,
-#account_controller .container .form .content #invite_use {
+body#login .container .form .content #invite_hear,
+body#login .container .form .content #invite_use {
   width: 100%;
   height: 7em;
   margin-bottom: 1.5em;    
@@ -791,7 +791,7 @@ ul.filter_list li .auto_complete_name {
   font-weight: normal !important;
 }
 
-#feed_items_controller .applesearch.non_safari input {
+body#feed_items .applesearch.non_safari input {
   font-weight: bold;
 }
 
