@@ -1225,7 +1225,6 @@ a.bookmarklet:hover {
 }
 
 .feed_item .moderation_panel {
-  position: relative;
   display: none;
   padding: 0.5em 0.75em;
   border: 2px solid #8181DC;
@@ -1242,13 +1241,8 @@ a.bookmarklet:hover {
 }
 
 .feed_item .moderation_panel .close {
-  position: absolute;
-  top: 0.5em;
-  right: 0.75em;
-}
-
-.feed_item .moderation_panel .training_controls {
-  float: left;
+  float: right;
+  margin-left: 1em;
 }
 
 .feed_item .moderation_panel form {
