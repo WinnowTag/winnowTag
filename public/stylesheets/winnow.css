@@ -912,6 +912,13 @@ a.bookmarklet:hover {
   padding: 0;
 }
 
+/* 
+ * =profile
+ */
+.profile label {
+  display: block;
+}
+
 /*
  * =message
  */
