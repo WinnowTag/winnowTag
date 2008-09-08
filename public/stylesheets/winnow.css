@@ -1589,7 +1589,7 @@ ul.tag_list li.public .name {
 }
 
 .tag .extended .comments .empty {
-  margin-bottom: 1.5em;
+  margin-bottom: 0.5em;
   padding: .5em 0;
   text-align: center;
   font-style: italic;
