@@ -31,23 +31,23 @@ set :deploy_via, :remote_cache
 set :deploy_to, "/home/mindloom/winnow.deploy"
 set :group, "mongrels"
 
-if ENV['STAGE'] == 'beta'
+task :beta do
   set :domain, "ds468-1.blueboxgrid.com"
   set :branch, "beta"
-elsif ENV['STAGE'] == 'trunk'
+
+  role :web, domain
+  role :app, domain
+  role :db,  domain, :primary => true
+end
+
+task :trunk do
   set :domain, 'ds400-1.blueboxgrid.com'
   set :branch, "master"
-else
-  raise "Set STAGE to beta or trunk"
-end
 
-if ENV['branch']
-  set :branch, ENV['branch']
+  role :web, domain
+  role :app, domain
+  role :db,  domain, :primary => true
 end
-
-role :web, domain
-role :app, domain
-role :db,  domain, :primary => true
 
 # =============================================================================
 # OPTIONAL VARIABLES
