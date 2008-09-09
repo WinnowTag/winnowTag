@@ -6,7 +6,10 @@
     <div class="sidebar">      
       <div class="block actions clearfix">
         <ul class="controls">
-          <li class="first"><%= bias_slider_html(tag) %></li>
+          <li class="first slider_control clearfix">
+            <h4>Apply <span><%= tag.name %></span> to:</h4>
+            <span class="fewer">Fewer Items</span> <%= bias_slider_html(tag) %> <span class="more">More Items</span>
+          </li>
           <li class="state">
             <%= render :partial => "state.html.erb", :locals => { :tag => tag } %>
           </li>
