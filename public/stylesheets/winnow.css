@@ -519,14 +519,14 @@ ul.filter_list {
   list-style: none;
   margin: 0;
   padding: 0;
-  float: left;
+/*  float: left;*/
 }
 
 ul.filter_list li {
   position: relative;
-  float: left;
+/*  float: left;*/
   margin: 0 0 0.25em 0;
-  margin-right: 0.25em;
+/*  margin-right: 0.25em;*/
   padding: 0 0.5em 0 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
@@ -1167,11 +1167,13 @@ a.bookmarklet:hover {
 .training_controls .tag {
   float: left;
   margin: 0 0.25em 0.25em 0;
-  font-weight: bold;
 }
 
 .training_controls .tag span {
   float: left;
+  border-width: 1px 0 1px 1px;
+  border-style: solid;
+  border-color: #ccc;
   -moz-border-radius-topleft: 0.75em;
   -moz-border-radius-bottomleft: 0.75em;
   -webkit-border-top-left-radius: 0.75em;
@@ -1200,8 +1202,8 @@ a.bookmarklet:hover {
 
 .training_controls .tag .positive {
   float: left;
-  height: 1.5em;
-  width: 16px;
+  height: 1em;
+  width: 14px;
   margin: 0 0.25em 0 0.5em;
   padding: 0.2em 0;
   background-image: url(../images/positive.png);
@@ -1212,8 +1214,8 @@ a.bookmarklet:hover {
 
 .training_controls .tag .negative {
   float: left;
-  height: 1.5em;
-  width: 16px;
+  height: 1em;
+  width: 14px;
   margin-right: 0.25em;
   padding: 0.2em 0;  
   background-image: url(../images/negative.png);
@@ -1224,16 +1226,19 @@ a.bookmarklet:hover {
 
 .training_controls .tag .remove {
   float: left;
-  height: 1.5em;
+  height: 1em;
   width: 14px;
-  padding: 0.25em 0 0.15em 0.4em;
-  border-left: 1px solid #ccc;
+  padding: 0.05em 0 0.45em 0.4em;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ccc;
   -moz-border-radius-topright: 0.75em;
   -moz-border-radius-bottomright: 0.75em;
   -webkit-border-top-right-radius: 0.75em;
   -webkit-border-bottom-right-radius: 0.75em;
   color: #ccc;
   cursor: default;
+  font-weight: bold;
 }
 
 .training_controls .tag.positive .remove:hover, .training_controls .tag.negative .remove:hover {
@@ -1254,6 +1259,10 @@ a.bookmarklet:hover {
   color: #444;
 }
 
+.training_controls .tag.classifier span {
+  border-color: #444;
+}
+
 .training_controls .tag.positive .positive {
   background-image: url(../images/positive_disabled.png);
   cursor: default;
@@ -1264,8 +1273,12 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag.positive .remove {
-  border-color: #000;
+  border-color: #9BA988;
   color: #000;
+}
+
+.training_controls .tag.positive span {
+  border-color: #9BA988;
 }
 
 .training_controls .tag.negative .positive {
@@ -1278,25 +1291,34 @@ a.bookmarklet:hover {
 }
 
 .training_controls .tag.negative .remove {
-  border-color: #000;
+  border-color: #C48181;
   color: #000;
+}
+
+.training_controls .tag.negative span {
+  border-color: #C48181;
 }
 
 .training_controls .tag .name {
   float: left;
   margin-right: 0.5em;
-  font-size: 1.25em;
+  font-weight: bold;
 }
 
 .training_controls .tag.selected span, .training_controls .tag.selected .remove {
   background-color: #000;
-  border-color: #fff;
+  border-color: #000;
   color: #fff;
+}
+
+.training_controls .tag.selected .remove {
+  border-left-color: #fff;
 }
 
 .training_controls .tag.disabled span, .training_controls .tag.disabled .remove {
   background-color: #fff;
   color: #ccc;
+  border-color: #ccc;
 }
 
 .training_controls .tag.disabled .positive {
