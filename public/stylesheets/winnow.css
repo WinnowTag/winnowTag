@@ -388,6 +388,10 @@ body#login .container .form .content #invite_use {
   overflow-x: hidden;
 }
 
+#sidebar a {
+  color: #52718B;
+}
+
 #sidebar_control {
   float: left;
   cursor: pointer;
@@ -523,24 +527,24 @@ ul.filter_list li {
   float: left;
   margin: 0 0 0.25em 0;
   margin-right: 0.25em;
-  padding: 0 0.5em 0 1.25em;
+  padding: 0 0.5em 0 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
-  background-position: 0.5em 0.5em;
-  min-width: 8.5em;
+  background-position: 0.5em 0.3em;
+/*  min-width: 8.5em;*/
+  font-weight: bold;
 }
 
 ul.filter_list.tags li {
-  background-image: url(../images/bullet_black.png);
+  background-image: url(../images/tag_small.png);
 }
 
 ul.filter_list.tags li.public {
-  background-image: url(../images/bullet_blue.png);
+  background-image: url(../images/public_small.png);
 }
 
 ul.filter_list.feeds li {
-  background-image: url(../images/bullet_orange.png);
-/*  min-width: 92%;*/
+  background-image: url(../images/feed_small.png);
 }
 
 ul.filter_list li .actions {
