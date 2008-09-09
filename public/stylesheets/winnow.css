@@ -521,23 +521,25 @@ ul.filter_list {
 ul.filter_list li {
   position: relative;
   float: left;
-  margin: 0 0.25em 0.25em 0;
-  padding: 0 0.5em 0 2em;
+  margin: 0 0 0.25em 0;
+  margin-right: 0.5em;
+  padding: 0 0 0 1.25em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
-  background-position: 0.5em 0.1em;
+  background-position: 0.5em 0.5em;
+  min-width: 9em;
 }
 
 ul.filter_list.tags li {
-  background-image: url(../images/tag.png);
+  background-image: url(../images/bullet_black.png);
 }
 
 ul.filter_list.tags li.public {
-  background-image: url(../images/public.png);
+  background-image: url(../images/bullet_blue.png);
 }
 
 ul.filter_list.feeds li {
-  background-image: url(../images/feed.png);
+  background-image: url(../images/bullet_orange.png);
 }
 
 ul.filter_list li .actions {
@@ -572,6 +574,10 @@ ul.filter_list li.selected {
   border: 1px solid #FFF094;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
+}
+
+ul.filter_list li .name {
+/*  white-space: nowrap;*/
 }
 
 ul.filter_list li .auto_complete_name {
