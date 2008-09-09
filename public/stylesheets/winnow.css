@@ -1630,7 +1630,6 @@ ul.tag_list li.public .name {
   display: block;
   margin-bottom: 0.5em;
   font-weight: normal;
-/*  text-decoration: underline;*/
 }
 
 .tag ul.controls .slider_control h4 span {
@@ -1639,7 +1638,7 @@ ul.tag_list li.public .name {
 
 .tag ul.controls .slider_control .slider {
   float: left;
-  margin-top: 0.25em;
+  margin-top: 0.15em;
 }
 
 .tag ul.controls .slider_control .fewer, .tag ul.controls .slider_control .more {
@@ -1649,11 +1648,12 @@ ul.tag_list li.public .name {
   color: #666;
   font-size: 0.75em;
   width: 4em;
+  line-height: 1.25em;
   text-align: center;
 }
 
 .tag ul.controls .slider_control .fewer {
-  margin: 0 0.5em 0 2em;       
+  margin: 0 0.5em 0 0;       
 }                                
                                  
 .tag ul.controls .slider_control .more {
