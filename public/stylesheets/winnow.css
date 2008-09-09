@@ -531,8 +531,8 @@ ul.filter_list li {
   border: 1px solid transparent;
   background-repeat: no-repeat;
   background-position: 0.5em 0.3em;
-/*  min-width: 8.5em;*/
   font-weight: bold;
+/*  min-width: 8em;*/
 }
 
 ul.filter_list.tags li {
