@@ -705,12 +705,14 @@ ul.filter_list li .auto_complete_name {
   float: right;
 }
 
-#footer #classification_section.classification_controls {
+#footer #classification_section .classification_controls {
   float: right;
+  margin-top: 0.25em;
+  margin-left: 0.5em;
 }
 
 #footer #classification_section .progress_bar_container {
-  margin: -2px 0 0 0;
+  margin: 1px 0 0 0;
   width: 20em;
   height: 2em;
   border: 1px solid gray;
