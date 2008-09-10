@@ -1,10 +1,12 @@
 <div class="messages">
-  <h2><%= _(:messages_messages) %></h2>
-  <% if messages.blank? -%>
-    <span class="empty"><%= _(:messages_empty) %></span>
-  <% else -%>
-    <ul>
-      <%= render :partial => "messages/sidebar_message", :collection => messages %>
-    </ul>
-  <% end -%>
+  <h3><%= _(:messages_messages) %></h3>
+  <div class="content">
+    <% if messages.blank? -%>
+      <span class="empty"><%= _(:messages_empty) %></span>
+    <% else -%>
+      <ul>
+        <%= render :partial => "messages/sidebar_message", :collection => messages %>
+      </ul>
+    <% end -%>
+  </div>
 </div>
