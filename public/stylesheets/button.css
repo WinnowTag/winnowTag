@@ -125,6 +125,16 @@
   background-image: url(../images/export.png);
 }
 
+.button .icon.start {
+  padding-left: 20px;
+  background-image: url(../images/start.png);
+}
+
+.button .icon.stop {
+  padding-left: 20px;
+  background-image: url(../images/stop.png);
+}
+
 .button.asc .icon {
   padding-left: 16px;  
   background-image: url(../images/bullet_arrow_up.png);  
