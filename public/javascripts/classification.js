@@ -52,14 +52,14 @@ Classification.startItemBrowserClassification = function(classifier_url, puct_co
     },
     onReactivated: function(c) {
       c.classifier_items_loaded = 0;
-      $('classification_button').disabled = false;
+      $('classification_button').removeClassName("disabled");
       $('progress_title').update("Classify changed tags");          
     },
     onFinished: function(c) {
       $('classification_progress').hide();
       c.options.onCancelled(c);
       $('progress_title').update("Classification Complete");
-      $('classification_button').disabled = true;
+      $('classification_button').addClassName("disabled");
       if (confirm("Classification has completed.\nDo you want to reload the items?")) {
         itemBrowser.reload();
       }

@@ -130,6 +130,10 @@
   background-image: url(../images/start.png);
 }
 
+.button.disabled .icon.start {
+  background-image: url(../images/start_disabled.png);
+}
+
 .button .icon.stop {
   padding-left: 20px;
   background-image: url(../images/stop.png);
