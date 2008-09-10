@@ -1144,172 +1144,86 @@ a.bookmarklet:hover {
 
 .training_controls .tag {
   float: left;
-  margin: 0 0.25em 0.25em 0;
-}
-
-.training_controls .tag span {
-  float: left;
-  border-width: 1px 0 1px 1px;
-  border-style: solid;
-  border-color: #ccc;
-  -moz-border-radius-topleft: 0.75em;
-  -moz-border-radius-bottomleft: 0.75em;
-  -webkit-border-top-left-radius: 0.75em;
-  -webkit-border-bottom-left-radius: 0.75em;
-}
-
-.training_controls .tag span, .training_controls .tag .remove {
-  color: #000;
-  background-color: #efefef;
-}
-
-.training_controls .tag.classifier span, .training_controls .tag.classifier .remove {
-  color: #fff;
-  background-color: #666;
-}
-
-.training_controls .tag.positive span, .training_controls .tag.positive .remove {
-  color: #000;
-  background-color: #B4D08D;
-}
-
-.training_controls .tag.negative span, .training_controls .tag.negative .remove {
-  color: #000;
-  background-color: #EF6465;
-}
-
-.training_controls .tag .positive {
-  float: left;
-  height: 1em;
-  width: 16px;
-  margin: 0 0.25em 0 0.5em;
-  padding: 0.3em 0;
-  background-image: url(../images/positive.png);
-  background-position: left center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-.training_controls .tag .negative {
-  float: left;
-  height: 1em;
-  width: 16px;
-  margin-right: 0.25em;
-  padding: 0.3em 0;  
-  background-image: url(../images/negative.png);
-  background-position: left center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-.training_controls .tag .remove {
-  float: left;
-  height: 1em;
-  width: 14px;
-  padding: 0.05em 0 0.5em 0.4em;
+  margin: 0 0.5em 0.25em 0;
+  padding: 0 0.5em;
   border-width: 1px;
   border-style: solid;
-  border-color: #ccc;
-  -moz-border-radius-topright: 0.75em;
-  -moz-border-radius-bottomright: 0.75em;
-  -webkit-border-top-right-radius: 0.75em;
-  -webkit-border-bottom-right-radius: 0.75em;
-  color: #ccc;
-  cursor: default;
-  font-weight: bold;
-}
-
-.training_controls .tag.positive .remove:hover, .training_controls .tag.negative .remove:hover {
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.training_controls .tag.classifier .positive {
-  background-image: url(../images/positive.png);
-}
-
-.training_controls .tag.classifier .negative {
-  background-image: url(../images/negative.png);
-}
-
-.training_controls .tag.classifier .remove {
-  border-color: #444;
-  color: #444;
-}
-
-.training_controls .tag.classifier span {
-  border-color: #444;
-}
-
-.training_controls .tag.positive .positive {
-  background-image: url(../images/positive_disabled.png);
-  cursor: default;
-}
-
-.training_controls .tag.positive .negative {
-  background-image: url(../images/negative.png);
-}
-
-.training_controls .tag.positive .remove {
-  border-color: #9BA988;
-  color: #000;
-}
-
-.training_controls .tag.positive span {
-  border-color: #9BA988;
-}
-
-.training_controls .tag.negative .positive {
-  background-image: url(../images/positive.png);
-}
-
-.training_controls .tag.negative .negative {
-  background-image: url(../images/negative_disabled.png);
-  cursor: default;
-}
-
-.training_controls .tag.negative .remove {
-  border-color: #C48181;
-  color: #000;
-}
-
-.training_controls .tag.negative span {
-  border-color: #C48181;
+  border-color: transparent;
+  -moz-border-radius: 0.75em;
+  -webkit-border-radius: 0.75em;
 }
 
 .training_controls .tag .name {
-  float: left;
-  margin-right: 0.5em;
-/*  font-weight: bold;*/
+  color: #52718B;
 }
 
-.training_controls .tag.selected span, .training_controls .tag.selected .remove {
-  background-color: #000;
-  border-color: #000;
+/*.training_controls .tag:hover .name {
+  color: #B4D08D; 
+}*/
+
+.training_controls .tag.classifier {
+  background-color: #efefef;
+  border-color: #ccc;
+}
+
+.training_controls .tag.classifier .name {
+  color: #000;
+}
+
+/*.training_controls .tag.classifier:hover .name {
+  color: #B4D08D; 
+}*/
+
+/*.training_controls .tag.classifier.positive:hover .name {
+  color: #C48181;
+}*/
+
+/*.training_controls .tag.classifier.negative:hover .name {
+  color: #52718B;
+}*/
+
+.training_controls .tag.positive {
+  background-color: #B4D08D;
+  border-color: #9BA988;
+}
+
+.training_controls .tag.positive .name {
+  color: #000;
+}
+
+/*.training_controls .tag.positive:hover .name {
+  color: #52718B;
+}*/
+
+.training_controls .tag.negative {
+  background-color: #EF6465;
+  border-color: #C48181;
+}
+
+.training_controls .tag.negative .name {
+  color: #000;
+}
+
+/*.training_controls .tag.negative:hover .name {
+  color: #52718B;
+}*/
+
+.training_controls .tag.selected {
+  background-color: #52718B;
+  border-color: transparent;
+}
+
+.training_controls .tag.selected .name {
   color: #fff;
 }
 
-.training_controls .tag.selected .remove {
-  border-left-color: #fff;
+.training_controls .tag.disabled {
+  background-color: transparent;
+  border-color: transparent;
 }
 
-.training_controls .tag.disabled span, .training_controls .tag.disabled .remove {
-  background-color: #fff;
+.training_controls .tag.disabled .name {
   color: #ccc;
-  border-color: #ccc;
-}
-
-.training_controls .tag.disabled .positive {
-  background-image: url(../images/positive_disabled.png);
-}
-
-.training_controls .tag.disabled .negative {
-  background-image: url(../images/negative_disabled.png);
-}
-
-.training_controls .tag.disabled .remove {
-  color: #ccc;
-  border-color: #ccc;
 }
 
 .feed_item .feed_information {

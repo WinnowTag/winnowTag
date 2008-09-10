@@ -240,26 +240,29 @@ var Item = Class.create({
   },
   
   initializeTrainingControl: function(tag) {
-    tag.down(".positive").observe("click", function() {
+    tag.down(".name").observe("click", function() {
       var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      if(tag.hasClassName("positive")) { return; }
-      this.addTagging(tag_name, "positive");
-      tag.removeClassName("negative");
-      tag.addClassName("positive");
-    }.bind(this));
-    tag.down(".negative").observe("click", function() {
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      if(tag.hasClassName("negative")) { return; }
-      this.addTagging(tag_name, "negative");
-      tag.removeClassName("positive");
-      tag.addClassName("negative");
-    }.bind(this));
-    tag.down(".remove").observe("click", function() {
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
-      this.removeTagging(tag_name);
-      tag.removeClassName("negative");
-      tag.removeClassName("positive");
+      
+      if(tag.hasClassName("classifier")) {
+        if(tag.hasClassName("positive")) {
+          this.addTagging(tag_name, "negative");
+          tag.removeClassName("positive");
+          tag.addClassName("negative");
+        } else if(tag.hasClassName("negative")) {
+          this.removeTagging(tag_name);
+          tag.removeClassName("negative");
+        } else {
+          this.addTagging(tag_name, "positive");
+          tag.addClassName("positive");
+        }
+      } else if(tag.hasClassName("positive") || tag.hasClassName("negative")) {
+        this.removeTagging(tag_name);
+        tag.removeClassName("negative");
+        tag.removeClassName("positive");
+      } else {
+        this.addTagging(tag_name, "positive");
+        tag.addClassName("positive");
+      }
     }.bind(this));
   },
   
@@ -393,12 +396,7 @@ var Item = Class.create({
 
   addTrainingControl: function(tag_name) {
     var training_control = '<div class="tag positive" style="display:none">' + 
-      '<span class="clearfix">' + 
-        '<div class="positive"></div>' + 
-        '<div class="negative"></div>' + 
-        '<div class="name">' + tag_name.escapeHTML() + '</div>' + 
-      '</span>' + 
-      '<div class="remove">X</div>' + 
+      '<a href="#" onclick="return false;" class="name">' + tag_name.escapeHTML() + '</a>' + 
     '</div> ';
     this.training_controls.insertInOrder("div", ".name", training_control, tag_name);
   
