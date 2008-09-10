@@ -146,7 +146,6 @@ body#login {
 } 
 
 body#login a {
-  color: #52718B;
   font-weight: bold;
 }
 
@@ -384,10 +383,6 @@ body#login .container .form .content #invite_use {
   overflow-x: hidden;
 }
 
-#sidebar a {
-  color: #52718B;
-}
-
 #sidebar_control {
   float: left;
   cursor: pointer;
@@ -460,12 +455,9 @@ body#login .container .form .content #invite_use {
   margin-right: 0.5em;
 }
 
-.section .header .actions .add_link, .section .header .actions .edit_link, .section .header .actions .cancel_link {
-  color: #52718B;
-}
 
 .section .header .actions .add_link {
-  border-right: 1px solid #52718B;
+  border-right: 1px solid #069;
   padding-right: 0.25em;
 }
 
@@ -1073,10 +1065,6 @@ a.bookmarklet:hover {
   color: #666;
 }
 
-.feed_item .closed a {
-  color: #52718B;
-}
-
 .feed_item .closed a.selected {
   color: #333;
   border: 1px solid #8181DC;
@@ -1332,10 +1320,6 @@ a.bookmarklet:hover {
 
 .feed_item.open .feed_information {
   border-width: 2px 0;
-}
-
-.feed_item .feed_information a {
-  color: #52718B;
 }
 
 .feed_item .feed_information.selected {
@@ -1690,7 +1674,7 @@ ul.tag_list li.public .name {
 }
 
 .tag .extended .comment_form h5 {
-  color: #52718B;
+  color: #069;
   margin-bottom: 0.75em;
 }
 
