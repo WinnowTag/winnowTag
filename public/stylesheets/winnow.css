@@ -519,20 +519,20 @@ ul.filter_list {
   list-style: none;
   margin: 0;
   padding: 0;
-/*  float: left;*/
+  float: left;
 }
 
 ul.filter_list li {
   position: relative;
-/*  float: left;*/
+  float: left;
   margin: 0 0 0.25em 0;
-/*  margin-right: 0.25em;*/
+  margin-right: 0.25em;
   padding: 0 0.5em 0 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
   background-position: 0.5em 0.3em;
   font-weight: bold;
-/*  min-width: 8em;*/
+  min-width: 8em;
 }
 
 ul.filter_list.tags li {
@@ -572,17 +572,10 @@ ul.filter_list li .remove {
 }
 
 ul.filter_list li.selected {
-/*  background-color: #D7E0F5;*/
-/*  background-color: #EAF0F5;*/
-/*  border: 1px solid #C0C7CD;*/
   background-color: #FFFFCC;
   border: 1px solid #FFF094;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
-}
-
-ul.filter_list li .name {
-/*  white-space: nowrap;*/
 }
 
 ul.filter_list li .auto_complete_name {
