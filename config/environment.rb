@@ -35,11 +35,9 @@ Rails::Initializer.run do |config|
 
   # Must be compiled/installed on the target system
   config.gem "mysql",       :version => "2.7"
-  config.gem "hpricot",     :version => "0.6"
-  # config.gem "hpricot",     :version => "0.6.161"
+  config.gem "hpricot",     :version => "0.6.161"
   config.gem "bcrypt-ruby", :version => "2.0.3",  :lib => "bcrypt"
-  config.gem "RedCloth",    :version => "4.0.1"
-  # config.gem "RedCloth",    :version => "4.0.3"
+  config.gem "RedCloth",    :version => "4.0.3"
   config.gem "tzinfo",      :version => "0.3.9"
       
   # Only load the plugins named here, in the order given. By default, all plugins 
