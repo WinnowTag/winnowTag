@@ -699,6 +699,7 @@ ul.filter_list li .auto_complete_name {
 }
 
 #footer #classification_section .progress_bar_container {
+  float: right;
   margin: 1px 0 0 0;
   width: 20em;
   height: 2em;
@@ -711,7 +712,6 @@ ul.filter_list li .auto_complete_name {
   text-align: center;
   width: 100%;
   line-height: 2;
-  float: left;
 }
 
 #footer #classification_section .progress_bar_container .progress_bar {
