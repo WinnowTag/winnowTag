@@ -33,6 +33,7 @@ Classification.startItemBrowserClassification = function(classifier_url, puct_co
       $('progress_bar').removeClassName('complete');
       $('classification_progress').show();
       $('progress_title').update("Starting Classifier");
+      Content.instance.resizeHeight();
     },
     onStartProgressUpdater: function(c) {
       c.classifier_items_loaded = 0;
@@ -48,7 +49,8 @@ Classification.startItemBrowserClassification = function(classifier_url, puct_co
       $('cancel_classification_button').hide();
       $('classification_button').show();
       $('progress_bar').setStyle({width: '0%'});
-      $('progress_title').update("Classify changed tags");          
+      $('progress_title').update("Classify changed tags");
+      Content.instance.resizeHeight();
     },
     onReactivated: function(c) {
       c.classifier_items_loaded = 0;
