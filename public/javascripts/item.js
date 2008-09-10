@@ -242,23 +242,13 @@ var Item = Class.create({
   initializeTrainingControl: function(tag) {
     tag.down(".name").observe("click", function() {
       var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      
-      if(tag.hasClassName("classifier")) {
-        if(tag.hasClassName("positive")) {
-          this.addTagging(tag_name, "negative");
-          tag.removeClassName("positive");
-          tag.addClassName("negative");
-        } else if(tag.hasClassName("negative")) {
-          this.removeTagging(tag_name);
-          tag.removeClassName("negative");
-        } else {
-          this.addTagging(tag_name, "positive");
-          tag.addClassName("positive");
-        }
-      } else if(tag.hasClassName("positive") || tag.hasClassName("negative")) {
+      if(tag.hasClassName("positive")) {
+        this.addTagging(tag_name, "negative");
+        tag.removeClassName("positive");
+        tag.addClassName("negative");
+      } else if(tag.hasClassName("negative")) {
         this.removeTagging(tag_name);
         tag.removeClassName("negative");
-        tag.removeClassName("positive");
       } else {
         this.addTagging(tag_name, "positive");
         tag.addClassName("positive");
