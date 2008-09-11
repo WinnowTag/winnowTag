@@ -31,6 +31,9 @@ var Classification = Class.create({
     this.progress_bar = $('progress_bar');
     this.progress_title = $('progress_title');
     
+    this.classification_button.observe("click", this.start.bind(this))
+    this.cancel_classification_button.observe("click", this.cancel.bind(this))
+    
     this.options = {
       onStarted: function(c) {     
         this.classification_button.hide();
@@ -96,6 +99,8 @@ var Classification = Class.create({
    * classify some potentially undertrained tags.
    */
   start: function(puct_confirm) {
+    if(this.classification_button.hasClassName("disabled")) { return; }
+    
     parameters = null;
     if (puct_confirm) {
       parameters = {puct_confirm: 'true'};

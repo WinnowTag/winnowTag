@@ -37,6 +37,16 @@
 
 .button.disabled {
   color: #ccc;
+  cursor: default;
+}
+
+.button.disabled:active {
+  background-image: url(../images/button_bg.png);
+  background-position: left bottom;
+}
+
+.button.disabled:hover {
+  text-decoration: none;
 }
 
 .button.selected {
