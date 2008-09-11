@@ -9,97 +9,89 @@ function exceptionToIgnore(e) {
   return e.name == "NS_ERROR_NOT_AVAILABLE"
 }
 
-var Classification = Class.create();
-
-Classification.instance = null;
-
-Classification.cancel = function() {
-  if(Classification.instance) {
-    Classification.instance.cancel();
-    Classification.instance = null
-  }
-}
-
-/** Creates a Classification instance configured to be integrated
- *  with the ItemBrowser
+/* Available Callbacks (in lifecycle order)
+ *  - onStart
+ *  - onStarted
+ *  - onStartProgressUpdater
+ *  - onProgressUpdated
+ *  - onCancelled
+ *  - onFinished
+ *  - onReset
  */
-Classification.startItemBrowserClassification = function(classifier_url, puct_confirm) {  
-  Classification.instance = new Classification(classifier_url, {
-    onStarted: function(c) {        
-      $('progress_bar').style.width = "0%";
-      $('progress_title').update("Classifying changed tags");
-      $('classification_button').hide();
-      $('cancel_classification_button').show();
-      $('progress_bar').removeClassName('complete');
-      $('classification_progress').show();
-      $('progress_title').update("Starting Classifier");
-      Content.instance.resizeHeight();
-    },
-    onStartProgressUpdater: function(c) {
-      c.classifier_items_loaded = 0;
-    },
-    onShowProgressBar: function(c) {
-      
-    },
-    onReset: function() {
-      
-    },
-    onCancelled: function(c) {
-      $('classification_progress').hide();
-      $('cancel_classification_button').hide();
-      $('classification_button').show();
-      $('progress_bar').setStyle({width: '0%'});
-      $('progress_title').update("Classify changed tags");
-      Content.instance.resizeHeight();
-    },
-    onReactivated: function(c) {
-      c.classifier_items_loaded = 0;
-      $('classification_button').removeClassName("disabled");
-      $('progress_title').update("Classify changed tags");          
-    },
-    onFinished: function(c) {
-      $('classification_progress').hide();
-      c.options.onCancelled(c);
-      $('progress_title').update("Classification Complete");
-      $('classification_button').addClassName("disabled");
-      if (confirm("Classification has completed.\nDo you want to reload the items?")) {
-        itemBrowser.reload();
-      }
-      $$(".filter_list .tag").each(function(tag) {
-        new Ajax.Request("/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
-          onComplete: function(response) {
-            tag.title = response.responseHTML;
-          }
-        });
-      });
-    },
-    onProgressUpdated: function(c, progress) {
-      $('progress_bar').setStyle({width: progress.progress + '%'});      
-    }            
-  });
-  Classification.instance.start(puct_confirm);
-};
-
-/**
- *
- *  Available Callbacks (in lifecycle order)
- *
- *   - onStart
- *   - onShowProgressBar
- *   - onStarted
- *   - onStartProgressUpdater
- *   - onProgressUpdated
- *   - onCancelled
- *   - onFinished
- *   - onReset
- */
-Classification.prototype = {
-  timeoutMessage: "Timed out trying to start the classifier.  Perhaps the server or network are down. You can try again if you like.",
-  initialize: function(classifier_url, options) {
+var Classification = Class.create({
+  timeoutMessage: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like.",
+  
+  initialize: function(classifier_url, has_changed_tags, options) {
+    Classification.instance = this;
+    
     this.classifier_url = classifier_url;
-    this.options = {}
-    Object.extend(this.options, options || {});
-    classification = this;
+    this.has_changed_tags = has_changed_tags;
+    
+    this.classification_button = $('classification_button');
+    this.cancel_classification_button = $('cancel_classification_button');
+    this.classification_progress = $('classification_progress');
+    this.progress_bar = $('progress_bar');
+    this.progress_title = $('progress_title');
+    
+    this.options = {
+      onStarted: function(c) {     
+        this.classification_button.hide();
+        this.cancel_classification_button.show();
+
+        this.progress_bar.setStyle({width: '0%'});
+        this.progress_bar.removeClassName('complete');
+        this.progress_title.update("Starting Classifier");
+        this.classification_progress.show();
+
+        Content.instance.resizeHeight();
+      }.bind(this),
+      
+      onStartProgressUpdater: function() {
+        this.classifier_items_loaded = 0;
+      }.bind(this),
+      
+      onCancelled: function() {
+        this.classification_progres.hide();
+        this.progress_bar.setStyle({width: '0%'});
+        this.progress_title.update("Classify changed tags");
+        
+        this.cancel_classification_button.hide();
+        this.classification_button.show();
+
+        Content.instance.resizeHeight();
+      }.bind(this),
+      
+      onReactivated: function() {
+        this.classifier_items_loaded = 0;
+        this.classification_button.removeClassName("disabled");
+        this.progress_title.update("Classify changed tags");       
+      }.bind(this),
+      
+      onFinished: function() {
+        this.classification_progress.hide();
+        this.notify("Cancelled")
+        this.progress_title.update("Classification Complete");
+        this.classification_button.addClassName("disabled");
+        if (confirm("Classification has completed.\nDo you want to reload the items?")) {
+          itemBrowser.reload();
+        }
+        $$(".filter_list .tag").each(function(tag) {
+          new Ajax.Request("/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
+            onComplete: function(response) {
+              tag.title = response.responseHTML;
+            }
+          });
+        });
+      }.bind(this),
+      
+      onProgressUpdated: function(progress) {
+        this.progress_bar.setStyle({width: progress.progress + '%'});      
+      }.bind(this)
+    }
+    
+    if(!this.has_changed_tags) {
+      $('classification_button').addClassName("disabled");
+    }
   },
   
   /* puct_confirm == true means that that user has confirmed that they want to 
@@ -154,8 +146,8 @@ Classification.prototype = {
         
           new ConfirmationMessage("You are about to classify " + tag_names + " which " + haveOrHas + " less than 6 positive examples. " + 
                                   "This might not work as well as you would expect.\nDo you want to proceed anyway?", function() {
-            classification = Classification.startItemBrowserClassification('/classifier', true);
-          });
+            this.start(true);
+          }.bind(this));
         }
       }.bind(this)
     });
@@ -181,12 +173,6 @@ Classification.prototype = {
     });    
   },
   
-  showProgressBar: function() {
-    if (this.options.onShowProgressBar) {
-      this.options.onShowProgressBar(this);
-    }  
-  },
-    
   startProgressUpdater: function() {
     this.notify('StartProgressUpdater');
     this.progressUpdater = new PeriodicalExecuter(function(executer) {
@@ -232,4 +218,4 @@ Classification.prototype = {
       this.options['on' + event](this);
     }
   }
-};
+});

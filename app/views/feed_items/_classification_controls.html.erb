@@ -1,7 +1,7 @@
 <div id="classification_section" class="clearfix">
   <div class="classification_controls">
-  	<%= rounded_button_function _(:start_classifier_button), "Classification.startItemBrowserClassification(#{classifier_path.to_json})", :icon => "start", :id => "classification_button" %>
-  	<%= rounded_button_function _(:stop_classifier_button), "Classification.cancel()", :icon => "stop", :id => "cancel_classification_button", :style => "display:none" %>
+  	<%= rounded_button_function _(:start_classifier_button), "Classification.instance.start()",  :icon => "start", :id => "classification_button" %>
+  	<%= rounded_button_function _(:stop_classifier_button),  "Classification.instance.cancel()", :icon => "stop",  :id => "cancel_classification_button", :style => "display:none" %>
   </div>
   <div class="progress_bar_container" id="classification_progress" style="display:none">
   	<div id="progress_title"><%= _(:classifier_progress) %></div>
