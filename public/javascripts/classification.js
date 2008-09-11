@@ -49,7 +49,7 @@ var Classification = Class.create({
       }.bind(this),
       
       onCancelled: function() {
-        this.classification_progres.hide();
+        this.classification_progress.hide();
         this.progress_bar.setStyle({width: '0%'});
         this.progress_title.update("Classify changed tags");
         
