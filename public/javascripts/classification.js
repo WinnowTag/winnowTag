@@ -10,13 +10,11 @@ function exceptionToIgnore(e) {
 }
 
 /* Available Callbacks (in lifecycle order)
- *  - onStart
  *  - onStarted
  *  - onStartProgressUpdater
  *  - onProgressUpdated
  *  - onCancelled
  *  - onFinished
- *  - onReset
  */
 var Classification = Class.create({
   timeoutMessage: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like.",
@@ -98,8 +96,6 @@ var Classification = Class.create({
    * classify some potentially undertrained tags.
    */
   start: function(puct_confirm) {
-    this.notify('Start');    
-        
     parameters = null;
     if (puct_confirm) {
       parameters = {puct_confirm: 'true'};
