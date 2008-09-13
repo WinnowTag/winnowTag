@@ -33,7 +33,7 @@ set :group, "mongrels"
 
 task :beta do
   set :domain, "ds468-1.blueboxgrid.com"
-  set :branch, "beta" unless branch
+  set :branch, "beta" unless exists?(:branch)
 
   role :web, domain
   role :app, domain
@@ -42,7 +42,7 @@ end
 
 task :trunk do
   set :domain, 'ds400-1.blueboxgrid.com'
-  set :branch, "master" unless branch
+  set :branch, "master" unless exists?(:branch)
 
   role :web, domain
   role :app, domain
