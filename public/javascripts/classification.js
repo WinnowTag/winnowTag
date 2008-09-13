@@ -51,6 +51,10 @@ var Classification = Class.create({
         this.classifier_items_loaded = 0;
       }.bind(this),
       
+      onProgressUpdated: function(progress) {
+        this.progress_bar.setStyle({width: progress.progress + '%'});      
+      }.bind(this),
+      
       onCancelled: function() {
         this.classification_progress.hide();
         this.progress_bar.setStyle({width: '0%'});
@@ -62,17 +66,11 @@ var Classification = Class.create({
         Content.instance.resizeHeight();
       }.bind(this),
       
-      onReactivated: function() {
-        this.classifier_items_loaded = 0;
-        this.classification_button.removeClassName("disabled");
-        this.progress_title.update("Classify changed tags");       
-      }.bind(this),
-      
       onFinished: function() {
         this.classification_progress.hide();
         this.notify("Cancelled")
         this.progress_title.update("Classification Complete");
-        this.classification_button.addClassName("disabled");
+        this.disableClassification();
         if (confirm("Classification has completed.\nDo you want to reload the items?")) {
           itemBrowser.reload();
         }
@@ -83,16 +81,20 @@ var Classification = Class.create({
             }
           });
         });
-      }.bind(this),
-      
-      onProgressUpdated: function(progress) {
-        this.progress_bar.setStyle({width: progress.progress + '%'});      
       }.bind(this)
     }
     
     if(!this.has_changed_tags) {
-      $('classification_button').addClassName("disabled");
+      this.disableClassification();
     }
+  },
+  
+  disableClassification: function() {
+    this.classification_button.addClassName("disabled");
+  },
+  
+  enableClassification: function() {
+    this.classification_button.removeClassName("disabled");
   },
   
   /* puct_confirm == true means that that user has confirmed that they want to 

@@ -253,6 +253,7 @@ var Item = Class.create({
         this.addTagging(tag_name, "positive");
         tag.addClassName("positive");
       }
+      Classification.instance.enableClassification();
     }.bind(this));
   },
   
