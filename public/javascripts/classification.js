@@ -77,7 +77,7 @@ var Classification = Class.create({
         $$(".filter_list .tag").each(function(tag) {
           new Ajax.Request("/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
             onComplete: function(response) {
-              tag.title = response.responseHTML;
+              tag.title = response.responseText;
             }
           });
         });
