@@ -4,11 +4,6 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 
-function exceptionToIgnore(e) {
-  // Ignore this Firefox error because it just occurs when a XHR request is interrupted.
-  return e.name == "NS_ERROR_NOT_AVAILABLE"
-}
-
 /* Available Callbacks (in lifecycle order)
  *  - onStarted
  *  - onStartProgressUpdater
@@ -116,18 +111,12 @@ var Classification = Class.create({
         this.startProgressUpdater();  
       }.bind(this),
       onFailure: function(transport) {
-        if (transport.responseText == "The classifier is already running.") {
+        if (transport.responseJSON == "The classifier is already running.") {
           this.notify("Started");
           this.startProgressUpdater();
         } else {
-          Message.add('error', transport.responseText);
+          Message.add('error', transport.responseJSON);
           this.notify('Cancelled');  
-        }
-      }.bind(this),
-      onException: function(request, exception) {
-        this.notify('Cancelled');
-        if (!exceptionToIgnore(exception)) {
-          Message.add('error', "Unable to connect to the web server.");
         }
       }.bind(this),
       onTimeout: function() {
@@ -167,11 +156,6 @@ var Classification = Class.create({
       onFailure: function(transport) {
         Message.add('error', transport.responseText);
         this.notify('Cancelled');
-      },
-      onException: function(request, exception) {
-        if (!exceptionToIgnore(exception)) {
-          Message.add('error', "Exception: " + exception.message);
-        }
       }
     });    
   },
@@ -197,14 +181,7 @@ var Classification = Class.create({
           onFailure: function(transport) {
             this.notify("Cancelled");
             executer.stop();
-            Message.add('error', transport.responseText);
-          }.bind(this),
-          onException: function(request, exception) {
-            this.notify("Cancelled");
-            executer.stop();
-            if (!exceptionToIgnore(exception)) {
-              Message.add('error', "Unable to connect to the web server: " + exception.message);
-            }
+            Message.add('error', transport.responseJSON);
           }.bind(this),
           onTimeout: function() {
             executer.stop();

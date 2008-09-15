@@ -25,23 +25,23 @@ class ClassifierController < ApplicationController
   
   # puct - Stands for Potentially Undertrained Changed Tags - because who wants to write that more than once?
   def classify
-    respond_to do |wants|
+    respond_to do |format|
       begin
-        start_classification_job        
-        wants.json   { render :nothing => true }
+        start_classification_job
+        format.json { render :nothing => true }
       rescue ClassificationStartException => detail
-        wants.json   { render :json => detail.message, :status => detail.code }
+        render :json => detail.message.to_json, :status => detail.code
       rescue ActiveResource::TimeoutError => te
         logger.fatal("Classifier timed out")
         logger.fatal(te.backtrace.join("\n"))
-        wants.json   { render :json => 'Timeout contacting the classifier. Please try again later.', :status => 500 }
         ExceptionNotifier.deliver_exception_notification(te, self, request, {})
+        format.json { render :json => 'Timeout contacting the classifier. Please try again later.'.to_json, :status => 500 }
       rescue => detail       
         logger.fatal(detail) 
         logger.fatal(detail.backtrace.join("\n"))
-        wants.json   { render :json => detail.message, :status => 500 }
+        format.json { render :json => "The classifier could not be started. Please try again.".to_json, :status => 500 }
       end
-    end    
+    end
   end
   
   def status
@@ -70,7 +70,7 @@ class ClassifierController < ApplicationController
         headers['X-JSON'] = status.to_json
         
         if status[:error_message]
-          render :json => status[:error_message], :status => 500
+          render :json => status[:error_message].to_json, :status => 500
         else
           render :json => status.to_json
         end
@@ -96,7 +96,7 @@ private
       raise ClassificationStartException.new(_(:classifier_running), 500)
     elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
       # TODO: sanitize
-      raise ClassificationStartException.new(puct.map{|t| t.name}.to_json, 412)
+      raise ClassificationStartException.new(puct.map{|t| t.name}, 412)
     elsif current_user.changed_tags.empty?
       raise ClassificationStartException.new(_(:tags_not_changed), 500)
     else
