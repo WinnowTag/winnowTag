@@ -253,7 +253,6 @@ var Item = Class.create({
         this.addTagging(tag_name, "positive");
         tag.addClassName("positive");
       }
-      Classification.instance.enableClassification();
     }.bind(this));
   },
   
@@ -321,6 +320,7 @@ var Item = Class.create({
         }
       }.bind(this)
     });
+    Classification.instance.enableClassification();
   },
   
   removeTagging: function(tag_name) {
@@ -369,6 +369,7 @@ var Item = Class.create({
         }
       }
     });
+    Classification.instance.enableClassification();
   },
   
   findTagElement: function(container, elementSelector, tag_name) {
