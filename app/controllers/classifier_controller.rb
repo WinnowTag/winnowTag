@@ -30,7 +30,7 @@ class ClassifierController < ApplicationController
         start_classification_job
         format.json { render :nothing => true }
       rescue ClassificationStartException => detail
-        render :json => detail.message.to_json, :status => detail.code
+        format.json { render :json => detail.message.to_json, :status => detail.code }
       rescue ActiveResource::TimeoutError => te
         logger.fatal("Classifier timed out")
         logger.fatal(te.backtrace.join("\n"))
