@@ -1,6 +1,6 @@
 <% form_for :user, @user, :url => users_path, :method => :post do |f| %>
 	<%= error_messages_for 'user' %>
-	<fieldset>
+	<fieldset class="profile">
 		<legend><%= _(:users_create_user) %></legend>
 		<p><%= f.label(:login) %><%= f.text_field :login %></p>
 		<p><%= f.label(:firstname) %><%= f.text_field :firstname %></p>
@@ -10,8 +10,7 @@
 		<p><%= f.label(:confirmation) %><%= f.password_field :password_confirmation %></p>
 		<p><%= f.label(:prototype) %><%= f.check_box :prototype %></p>
 		<p>
-			<label>&nbsp;</label>
-			<%= submit_tag _(:users_save_changes), :name => 'save'%>
+			<%= submit_tag _(:users_save_changes), :name => 'save'%> or
 			<%= link_to _(:cancel), users_path %>
 		</p>
 	</fieldset>

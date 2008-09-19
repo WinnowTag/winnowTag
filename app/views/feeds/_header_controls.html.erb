@@ -1,5 +1,5 @@
-<% form_tag feeds_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feeds_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% form_tag feeds_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feeds_header_search_placeholder) %>
 <% end -%>
 
 <div class="toolbar right">
@@ -8,11 +8,11 @@
   <div class="group">
     <label><%= _(:sort_label) %></label>
 
-    <%= rounded_button_function _(:feeds_header_title),            "itemBrowser.setOrder('title')",            :icon => "", :id => "order_title",             :class => "first" %>
-    <%= rounded_button_function _(:feeds_header_globally_exclude), "itemBrowser.setOrder('globally_exclude')", :icon => "", :id => "order_globally_exclude" %>
-    <%= rounded_button_function _(:feeds_header_items),            "itemBrowser.setOrder('feed_items_count')", :icon => "", :id => "order_feed_items_count" %>
-    <%= rounded_button_function _(:feeds_header_created),          "itemBrowser.setOrder('created_on')",       :icon => "", :id => "order_created_on" %>
-    <%= rounded_button_function _(:feeds_header_last_updated),     "itemBrowser.setOrder('updated_on')",       :icon => "", :id => "order_updated_on" %>
+    <%= rounded_button_function _(:feeds_header_title),            "", :icon => "", :id => "order_title", :class => "first" %>
+    <%= rounded_button_function _(:feeds_header_globally_exclude), "", :icon => "", :id => "order_globally_exclude" %>
+    <%= rounded_button_function _(:feeds_header_items),            "", :icon => "", :id => "order_feed_items_count" %>
+    <%= rounded_button_function _(:feeds_header_created),          "", :icon => "", :id => "order_created_on" %>
+    <%= rounded_button_function _(:feeds_header_last_updated),     "", :icon => "", :id => "order_updated_on" %>
   </div>
 </div>
 
@@ -36,9 +36,8 @@
     <% end -%>
     
     <p><%= _(:feeds_new_bookmarklet_description) %></p>
-    <p>
-      <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => _(:feeds_add_to_winnow), 
+    
+    <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => _(:feeds_add_to_winnow), 
                   :onclick => "Message.add('error', #{_(:feeds_bookmarklet_js_error_message).to_json}); return false;" %>
-    </p>
   </fieldset>
 </div>

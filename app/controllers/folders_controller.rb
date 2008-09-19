@@ -14,7 +14,7 @@ class FoldersController < ApplicationController
   def update
     @folder = current_user.folders.find(params[:id])
     @folder.update_attributes!(params[:folder])
-    render :text => sanitize(@folder.name)
+    respond_to :js
   end
   
   def destroy

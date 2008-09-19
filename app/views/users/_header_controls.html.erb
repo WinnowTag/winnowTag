@@ -1,5 +1,5 @@
-<% form_tag users_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:users_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% form_tag users_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:users_search_placeholder) %>
 <% end -%>
 
 <div class="toolbar right">
@@ -9,12 +9,12 @@
   <div class="group">
     <label><%= _(:sort_label) %></label>
 
-    <%= rounded_button_function _(:users_header_login),          "itemBrowser.setOrder('login')",            :icon => "", :id => "order_login", :class => "first" %> 
-    <%= rounded_button_function _(:users_header_name),           "itemBrowser.setOrder('name')",             :icon => "", :id => "order_name" %> 
-    <%= rounded_button_function _(:users_header_email),          "itemBrowser.setOrder('email')",            :icon => "", :id => "order_email" %> 
-    <%= rounded_button_function _(:users_header_last_logged_in), "itemBrowser.setOrder('logged_in_at')",     :icon => "", :id => "order_logged_in_at" %>
-    <%= rounded_button_function _(:users_header_last_accessed),  "itemBrowser.setOrder('last_accessed_at')", :icon => "", :id => "order_last_accessed_at" %>
-    <%= rounded_button_function _(:users_header_last_trained),   "itemBrowser.setOrder('last_tagging_on')",  :icon => "", :id => "order_last_tagging_on" %>
-    <%= rounded_button_function _(:users_header_number_of_tags), "itemBrowser.setOrder('tag_count')",        :icon => "", :id => "order_tag_count" %>
+    <%= rounded_button_function _(:users_header_login),          "", :icon => "", :id => "order_login", :class => "first" %> 
+    <%= rounded_button_function _(:users_header_name),           "", :icon => "", :id => "order_name" %> 
+    <%= rounded_button_function _(:users_header_email),          "", :icon => "", :id => "order_email" %> 
+    <%= rounded_button_function _(:users_header_last_logged_in), "", :icon => "", :id => "order_logged_in_at" %>
+    <%= rounded_button_function _(:users_header_last_accessed),  "", :icon => "", :id => "order_last_accessed_at" %>
+    <%= rounded_button_function _(:users_header_last_trained),   "", :icon => "", :id => "order_last_tagging_on" %>
+    <%= rounded_button_function _(:users_header_number_of_tags), "", :icon => "", :id => "order_tag_count" %>
   </div>
 </div>

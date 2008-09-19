@@ -1,14 +1,14 @@
 <% content_for :head do -%>
-	<script type="text/javascript" charset="utf-8">
+  <% javascript_tag do -%>
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new ItemBrowser('tags', 'content', { orders: {
+			itemBrowser = new TagsItemBrowser('tags', 'content', { orders: {
 			  asc:       ["name", "state", "comments_count", "positive_count", "negative_count", "classifier_count"],
 			  desc:      ["last_trained"],
 			  "default": "name"
 			}});
 		});
-	</script>
+  <% end -%>
 <% end -%>
 
 <% content_for :header_controls do -%>

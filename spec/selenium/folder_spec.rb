@@ -51,7 +51,7 @@ describe "folders" do
   it "can be renamed" do
     dont_see_element "#folder_#{@existing_folder.id} input"
     click "css=#folder_#{@existing_folder.id} .edit"
-    see_element "#folder_#{@existing_folder.id} input"
+    get_prompt
   end
   
   it "can be destroyed" do
@@ -110,7 +110,7 @@ describe "folders" do
   it "can have private tags renamed" do
     dont_see_element "#tag_#{@private_tag.id} input"
     click "css=#tag_#{@private_tag.id} .edit"
-    see_element "#tag_#{@private_tag.id} input"
+    get_prompt
   end
   
   it "cannot rename public tags" do

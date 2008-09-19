@@ -1,5 +1,9 @@
+<% content_for :body, "info" %>
+
 <%= render :partial => "messages/sidebar", :locals => { :messages => @messages } %>
 
-<div class="info">
-  <%= textilize @info.value %>
+<div class="bubble_wrapper">
+  <div class="info">
+    <%= textilize @info.value %>
+  </div>
 </div>

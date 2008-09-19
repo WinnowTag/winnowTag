@@ -73,7 +73,13 @@ var Content = Class.create({
     
     var container_padding = parseInt(this.container.getStyle("padding-left"));
 
-    return body_width - sidebar_width - sidebar_control_width - sidebar_control_margin - container_padding;
+    var extra = 0;
+    if(Prototype.Browser.Gecko) {
+      // sometimes firefox is just a little off, this keeps the content visible
+      extra = 0.25;
+    }
+
+    return body_width - sidebar_width - sidebar_control_width - sidebar_control_margin - container_padding - extra;
   },
   
   sidebarHeight: function() {

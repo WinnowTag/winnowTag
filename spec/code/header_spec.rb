@@ -26,7 +26,7 @@ describe "headers" do
   end
   
   it "all stylesheets files should have the kaphan foundation header" do
-    vendor = %w[public/stylesheets/all.css]
+    vendor = %w[public/stylesheets/all.css public/stylesheets/blueprint/screen.css]
     
     (Dir["public/stylesheets/**/*.css"] - vendor).each do |filename|
       filename.should have_stylesheet_kaphan_header

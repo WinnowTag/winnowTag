@@ -1,17 +1,17 @@
-<% form_tag public_tags_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:tags_header_search_placeholder), :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% form_tag public_tags_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:tags_header_search_placeholder) %>
 <% end -%>
 
 <div class="toolbar right">
   <div class="group">
     <label><%= _(:sort_label) %></label>
 
-    <%= rounded_button_function _(:tags_header_name), "itemBrowser.setOrder('name')", :icon => "", :id => "order_name", :class => "first" %>
-    <%= rounded_button_function _(:tags_header_state), "itemBrowser.setOrder('state')", :icon => "", :id => "order_state" %>
-    <%= rounded_button_function _(:tags_header_comments), "itemBrowser.setOrder('comments_count')", :icon => "", :id => "order_comments_count" %>
-    <%= rounded_button_function _(:tags_header_positive), "itemBrowser.setOrder('positive_count')", :icon => "", :id => "order_positive_count" %>
-    <%= rounded_button_function _(:tags_header_negative), "itemBrowser.setOrder('negative_count')", :icon => "", :id => "order_negative_count" %>  
-    <%= rounded_button_function _(:tags_header_automatic), "itemBrowser.setOrder('classifier_count')", :icon => "", :id => "order_classifier_count" %>
-    <%= rounded_button_function _(:tags_header_last_trained), "itemBrowser.setOrder('last_trained')", :icon => "", :id => "order_last_trained" %>  
+    <%= rounded_button_function _(:tags_header_name),         "", :icon => "", :id => "order_name", :class => "first" %>
+    <%= rounded_button_function _(:tags_header_state),        "", :icon => "", :id => "order_state" %>
+    <%= rounded_button_function _(:tags_header_comments),     "", :icon => "", :id => "order_comments_count" %>
+    <%= rounded_button_function _(:tags_header_positive),     "", :icon => "", :id => "order_positive_count" %>
+    <%= rounded_button_function _(:tags_header_negative),     "", :icon => "", :id => "order_negative_count" %>  
+    <%= rounded_button_function _(:tags_header_automatic),    "", :icon => "", :id => "order_classifier_count" %>
+    <%= rounded_button_function _(:tags_header_last_trained), "", :icon => "", :id => "order_last_trained" %>  
   </div>
 </div>

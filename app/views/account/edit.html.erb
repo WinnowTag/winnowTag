@@ -1,7 +1,7 @@
 <%= error_messages_for :current_user %>
 
 <% form_for :current_user do |f| %>
-  <fieldset>
+  <fieldset class="profile">
   	<legend><%= _(:edit_profile_header) %></legend>
   	
   	<p>
@@ -33,7 +33,6 @@
       <%= f.time_zone_select :time_zone, TZInfo::Timezone.us_zones, :model => TZInfo::Timezone, :include_blank => true %>
   	</p>
   	<p>
-  	  <label>&nbsp;</label>
   	  <%= submit_tag _(:edit_profile_submit_button) %>
   	</p>
   </fieldset>

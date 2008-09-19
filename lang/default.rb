@@ -50,7 +50,8 @@ Localization.define do |l|
   l.store :default_search_placeholder,            "Search..."
   l.store :create_feed,                           "Create Feed: '%s'"
   l.store :create_tag,                            "Create Tag: '%s'"
-  l.store :public_tag_tooltip,                    "from %s"
+  l.store :public_tag_tooltip,                    "From %s, Positive: %s, Negative: %s, Automatic: %s"
+  l.store :tag_tooltip,                           "Positive: %s, Negative: %s, Automatic: %s"
 
   # app/helpers/bais_slider_helper.rb
   l.store :slider_handle_tooltip,                 "Drag to set the sensitvity of the classifier."
@@ -164,14 +165,11 @@ Localization.define do |l|
   l.store :sort_date_label,                       "Date"
   l.store :sort_strength_label,                   "Strength"
   l.store :sidebar_tags_header,                   "Tags"
-  l.store :sidebar_add_tag_link,                  "Add Tag"
-  l.store :sidebar_cancel_add_tag_link,           "cancel"
+  l.store :sidebar_add,                           "Add"
+  l.store :sidebar_edit,                          "Edit"
+  l.store :sidebar_done,                          "Done"
   l.store :sidebar_feeds_header,                  "Feeds"
-  l.store :sidebar_add_feed_link,                 "Add Feed"
-  l.store :sidebar_cancel_add_feed_link,          "cancel"
   l.store :sidebar_folders_header,                "Folders"
-  l.store :sidebar_add_folder_link,               "Add Folder"
-  l.store :sidebar_cancel_add_folder_link,        "cancel"
   l.store :feed_for_selected_filters,             "Feed"
   l.store :clear_selected_filters,                "Clear"
   
@@ -179,12 +177,11 @@ Localization.define do |l|
   l.store :confirm_destroy_folder,                "Are you sure?"
   
   # app/views/feed_items/_moderation_panel.html.erb
-  l.store :add_tag_button,                     "Add Tag"
+  l.store :add_tag_button,                        "Add Tag"
 
 
   # app/views/feed_items/_text_filter_controls.html.erb
-  l.store :feed_items_search_placeholder,         "Search Items..."
-  l.store :search_term_too_short,                 "Search requires a word with at least 4 characters"
+  l.store :feed_items_search_placeholder,         "Search Feed Items..."
 
   # app/views/feed_items/index.html.erb
   l.store :no_script_message,                     "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
@@ -242,6 +239,7 @@ Localization.define do |l|
   l.store :created,                                 "Created"
   l.store :email,                                   "Email"
   l.store :status,                                  "Status"
+  l.store :invites_search_placeholder,              "Search Invites..."
   
   # app/views/invites/_invite.html.erb
   l.store :activate,                                "Activate"
@@ -341,7 +339,7 @@ Localization.define do |l|
   l.store :copy,                                    "Copy"
   l.store :tags_copy_link_title,                    "Copy %s"
   l.store :no_comments_for_this_tag,                "There are no comments for this tag."
-  l.store :add_a_comment,                           "Add a comment:"
+  l.store :add_a_comment,                           "Add a comment"
 
   # app/views/tags/_summary.html.erb
   l.store :positive,                                "Positive"

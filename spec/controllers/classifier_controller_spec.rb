@@ -108,7 +108,7 @@ describe ClassifierController do
       ExceptionNotifier.should_receive(:deliver_exception_notification)
       post "classify"
       response.code.should == "500"
-      response.body.should == "Timeout contacting the classifier. Please try again later."
+      response.body.should == '"Timeout contacting the classifier. Please try again later."'
     end
   end
   

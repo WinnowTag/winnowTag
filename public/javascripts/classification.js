@@ -4,112 +4,100 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 
-function exceptionToIgnore(e) {
-  // Ignore this Firefox error because it just occurs when a XHR request is interrupted.
-  return e.name == "NS_ERROR_NOT_AVAILABLE"
-}
-
-var Classification = Class.create();
-
-Classification.instance = null;
-
-Classification.cancel = function() {
-  if(Classification.instance) {
-    Classification.instance.cancel();
-    Classification.instance = null
-  }
-}
-
-/** Creates a Classification instance configured to be integrated
- *  with the ItemBrowser
+/* Available Callbacks (in lifecycle order)
+ *  - onStarted
+ *  - onStartProgressUpdater
+ *  - onProgressUpdated
+ *  - onCancelled
+ *  - onFinished
  */
-Classification.startItemBrowserClassification = function(classifier_url, puct_confirm) {  
-  Classification.instance = new Classification(classifier_url, {
-    onStarted: function(c) {        
-      $('progress_bar').style.width = "0%";
-      $('progress_title').update("Classifying changed tags");
-      $('classification_button').hide();
-      $('cancel_classification_button').show();
-      $('progress_bar').removeClassName('complete');
-      $('classification_progress').show();
-      $('progress_title').update("Starting Classifier");
-    },
-    onStartProgressUpdater: function(c) {
-      c.classifier_items_loaded = 0;
-    },
-    onShowProgressBar: function(c) {
-      
-    },
-    onReset: function() {
-      
-    },
-    onCancelled: function(c) {
-      $('classification_progress').hide();
-      $('cancel_classification_button').hide();
-      $('classification_button').show();
-      $('progress_bar').setStyle({width: '0%'});
-      $('progress_title').update("Classify changed tags");          
-    },
-    onReactivated: function(c) {
-      c.classifier_items_loaded = 0;
-      $('classification_button').disabled = false;
-      $('progress_title').update("Classify changed tags");          
-    },
-    onFinished: function(c) {
-      $('classification_progress').hide();
-      c.options.onCancelled(c);
-      $('progress_title').update("Classification Complete");
-      $('classification_button').disabled = true;
-      if (confirm("Classification has completed.\nDo you want to reload the items?")) {
-        itemBrowser.reload();
-      }
-      $$(".tag .training").each(function(training) {
-        var tag = training.up(".tag");
-
-        training.update("");
-        training.addClassName("loading");
-        new Ajax.Updater(training, "/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
-          onComplete: function() {
-            training.removeClassName("loading");
-          }
-        });
-      });
-    },
-    onProgressUpdated: function(c, progress) {
-      $('progress_bar').setStyle({width: progress.progress + '%'});      
-    }            
-  });
-  Classification.instance.start(puct_confirm);
-};
-
-/**
- *
- *  Available Callbacks (in lifecycle order)
- *
- *   - onStart
- *   - onShowProgressBar
- *   - onStarted
- *   - onStartProgressUpdater
- *   - onProgressUpdated
- *   - onCancelled
- *   - onFinished
- *   - onReset
- */
-Classification.prototype = {
-  timeoutMessage: "Timed out trying to start the classifier.  Perhaps the server or network are down. You can try again if you like.",
-  initialize: function(classifier_url, options) {
+var Classification = Class.create({
+  timeoutMessage: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like.",
+  
+  initialize: function(classifier_url, has_changed_tags, options) {
+    Classification.instance = this;
+    
     this.classifier_url = classifier_url;
-    this.options = {}
-    Object.extend(this.options, options || {});
-    classification = this;
+    this.has_changed_tags = has_changed_tags;
+    
+    this.classification_button = $('classification_button');
+    this.cancel_classification_button = $('cancel_classification_button');
+    this.classification_progress = $('classification_progress');
+    this.progress_bar = $('progress_bar');
+    this.progress_title = $('progress_title');
+    
+    this.classification_button.observe("click", this.start.bind(this))
+    this.cancel_classification_button.observe("click", this.cancel.bind(this))
+    
+    this.options = {
+      onStarted: function(c) {     
+        this.classification_button.hide();
+        this.cancel_classification_button.show();
+
+        this.progress_bar.setStyle({width: '0%'});
+        this.progress_bar.removeClassName('complete');
+        this.progress_title.update("Starting Classifier");
+        this.classification_progress.show();
+
+        Content.instance.resizeHeight();
+      }.bind(this),
+      
+      onStartProgressUpdater: function() {
+        this.classifier_items_loaded = 0;
+      }.bind(this),
+      
+      onProgressUpdated: function(progress) {
+        this.progress_bar.setStyle({width: progress.progress + '%'});      
+      }.bind(this),
+      
+      onCancelled: function() {
+        this.classification_progress.hide();
+        this.progress_bar.setStyle({width: '0%'});
+        this.progress_title.update("Classify changed tags");
+        
+        this.cancel_classification_button.hide();
+        this.classification_button.show();
+
+        Content.instance.resizeHeight();
+      }.bind(this),
+      
+      onFinished: function() {
+        this.classification_progress.hide();
+        this.notify("Cancelled")
+        this.progress_title.update("Classification Complete");
+        this.disableClassification();
+        if (confirm("Classification has completed.\nDo you want to reload the items?")) {
+          itemBrowser.reload();
+        }
+        $$(".filter_list .tag").each(function(tag) {
+          new Ajax.Request("/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
+            onComplete: function(response) {
+              tag.title = response.responseText;
+            }
+          });
+        });
+      }.bind(this)
+    }
+    
+    if(!this.has_changed_tags) {
+      this.disableClassification();
+    }
+  },
+  
+  disableClassification: function() {
+    this.classification_button.addClassName("disabled");
+  },
+  
+  enableClassification: function() {
+    this.classification_button.removeClassName("disabled");
   },
   
   /* puct_confirm == true means that that user has confirmed that they want to 
    * classify some potentially undertrained tags.
    */
   start: function(puct_confirm) {
-    this.notify('Start');    
-        
+    if(this.classification_button.hasClassName("disabled")) { return; }
+    
     parameters = null;
     if (puct_confirm) {
       parameters = {puct_confirm: 'true'};
@@ -123,18 +111,12 @@ Classification.prototype = {
         this.startProgressUpdater();  
       }.bind(this),
       onFailure: function(transport) {
-        if (transport.responseText == "The classifier is already running.") {
+        if (transport.responseJSON == "The classifier is already running.") {
           this.notify("Started");
           this.startProgressUpdater();
         } else {
-          Message.add('error', transport.responseText);
+          Message.add('error', transport.responseJSON);
           this.notify('Cancelled');  
-        }
-      }.bind(this),
-      onException: function(request, exception) {
-        this.notify('Cancelled');
-        if (!exceptionToIgnore(exception)) {
-          Message.add('error', "Unable to connect to the web server.");
         }
       }.bind(this),
       onTimeout: function() {
@@ -156,8 +138,8 @@ Classification.prototype = {
         
           new ConfirmationMessage("You are about to classify " + tag_names + " which " + haveOrHas + " less than 6 positive examples. " + 
                                   "This might not work as well as you would expect.\nDo you want to proceed anyway?", function() {
-            classification = Classification.startItemBrowserClassification('/classifier', true);
-          });
+            this.start(true);
+          }.bind(this));
         }
       }.bind(this)
     });
@@ -174,21 +156,10 @@ Classification.prototype = {
       onFailure: function(transport) {
         Message.add('error', transport.responseText);
         this.notify('Cancelled');
-      },
-      onException: function(request, exception) {
-        if (!exceptionToIgnore(exception)) {
-          Message.add('error', "Exception: " + exception.message);
-        }
       }
     });    
   },
   
-  showProgressBar: function() {
-    if (this.options.onShowProgressBar) {
-      this.options.onShowProgressBar(this);
-    }  
-  },
-    
   startProgressUpdater: function() {
     this.notify('StartProgressUpdater');
     this.progressUpdater = new PeriodicalExecuter(function(executer) {
@@ -210,14 +181,7 @@ Classification.prototype = {
           onFailure: function(transport) {
             this.notify("Cancelled");
             executer.stop();
-            Message.add('error', transport.responseText);
-          }.bind(this),
-          onException: function(request, exception) {
-            this.notify("Cancelled");
-            executer.stop();
-            if (!exceptionToIgnore(exception)) {
-              Message.add('error', "Unable to connect to the web server: " + exception.message);
-            }
+            Message.add('error', transport.responseJSON);
           }.bind(this),
           onTimeout: function() {
             executer.stop();
@@ -234,4 +198,4 @@ Classification.prototype = {
       this.options['on' + event](this);
     }
   }
-};
+});

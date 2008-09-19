@@ -129,6 +129,27 @@ describe TagsController do
   describe 'GET /' do
     it "index" do
       get :index
+      response.should be_success
+    end
+    
+    it "should reject the unauthenticated" do
+      login_as(nil)
+      get :index, :format => 'atom'
+      response.code.should == "401"
+    end
+    
+    it "should handle hmac authentication" do
+      login_as(nil)
+      @controller.stub!(:hmac_authenticated?).and_return(true)
+      get :index, :format => 'atom'
+      response.should be_success
+    end
+    
+    it "should handle basic authentication" do
+      login_as(nil)
+      @controller.stub!(:login_required).and_return(true)
+      get :index
+      response.should be_success
     end
   end
   

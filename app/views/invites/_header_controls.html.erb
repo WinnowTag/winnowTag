@@ -1,5 +1,5 @@
-<% form_tag invites_path, :id => "text_filter_form", :onsubmit => "itemBrowser.addFilters({text_filter: $F('text_filter')}); return false;" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => "Search Invites...", :clear => { :onclick => "itemBrowser.addFilters({text_filter: null});" } %>
+<% form_tag invites_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:invites_search_placeholder) %>
 <% end -%>
 
 <div class="toolbar right">
@@ -7,9 +7,9 @@
   
   <div class="group">
     <label><%= _(:sort_label) %></label>
-    <%= rounded_button_function _(:created), "itemBrowser.setOrder('created')", :icon => "", :id => "order_created", :class => "first" %>
-    <%= rounded_button_function _(:email),   "itemBrowser.setOrder('email')",   :icon => "", :id => "order_email" %> 
-    <%= rounded_button_function _(:status),  "itemBrowser.setOrder('status')",  :icon => "", :id => "order_status" %>
+    <%= rounded_button_function _(:created), "", :icon => "", :id => "order_created", :class => "first" %>
+    <%= rounded_button_function _(:email),   "", :icon => "", :id => "order_email" %> 
+    <%= rounded_button_function _(:status),  "", :icon => "", :id => "order_status" %>
   </div>
 </div>
   

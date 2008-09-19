@@ -31,28 +31,7 @@ module FeedItemsHelper
       content_tag :span, _(:feed_item_no_title), :class => "notitle"
     end
   end
-    
-  # Creates the classification button.
-  #
-  # When pressed, the classification button creates a Classification
-  # Javascript object that handles the interaction with the server.
-  # See Classification and Classification.startItemBrowserClassification
-  # in classification.js.
-  #
-  # The way the routes are setup for the classifier controller means
-  # that we can always identify a single classifier to use by either
-  # a prefix path, as in the case of a tag publications classifier 
-  # or using '/classifier' which is the classifier belonging
-  # to the current user.
-  #
-  def classification_button
-    button_to_function _(:start_classifier_button), "Classification.startItemBrowserClassification(#{classifier_path.to_json});", :id => 'classification_button'
-  end
-  
-  def cancel_classification_button
-    button_to_function(_(:stop_classifier_button), 'Classification.cancel();', :style => "display: none", :id => 'cancel_classification_button')
-  end
-  
+
   def tag_controls(feed_item)
     html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user

@@ -328,5 +328,49 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     if(feed_with_selected_filters) {
       feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + $H(this.filters).toQueryString();
     }
+  },
+
+  bindTextFilterEvents: function() {
+    $("text_filter_form").observe("submit", function() {
+      var value = $F('text_filter');
+      if(value.length < 4) {
+        Message.add('error', "Search requires a word with at least 4 characters");
+      } else {
+        this.addFilters({text_filter: value});
+      }
+    }.bind(this));
+  },
+  
+  bindClearFilterEvents: function() {
+    var clear_selected_filters = $("clear_selected_filters");
+    if(clear_selected_filters) {
+      clear_selected_filters.observe("click", this.clearFilters.bind(this));
+    }
+  },
+  
+  bindNextPreviousEvents: function() {
+    var previous_control = $("footer").down("a .previous");
+    if(previous_control) {
+      previous_control.up("a").observe("click", this.openPreviousItem.bind(this));
+    }
+
+    var next_control = $("footer").down("a .next");
+    if(next_control) {
+      next_control.up("a").observe("click", this.openNextItem.bind(this));
+    }
+  },
+  
+  bindMarkAllReadEvents: function() {
+    var mark_all_read_control = $("footer").down("a .read");
+    if(mark_all_read_control) {
+      mark_all_read_control.up("a").observe("click", this.markAllItemsRead.bind(this));
+    }
+  },
+  
+  initializeFilters: function($super) {
+    $super();
+    this.bindClearFilterEvents();
+    this.bindNextPreviousEvents();
+    this.bindMarkAllReadEvents();
   }
 });
