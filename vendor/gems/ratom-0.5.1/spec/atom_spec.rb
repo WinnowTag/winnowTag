@@ -8,6 +8,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 require 'net/http'
 require 'time'
+require 'spec/property'
 
 shared_examples_for 'simple_single_entry.atom attributes' do
   it "should parse title" do
@@ -142,9 +143,6 @@ describe Atom do
 
       lambda { Atom::Feed.load_feed(uri, :user => 'user', :pass => 'pass') }.should_not raise_error
     end
-    
-    it "should pass basic-auth credentials on the request" do
-    end
   end
   
   describe 'Atom::Entry.load_entry' do
@@ -181,6 +179,12 @@ describe Atom do
     end
        
     it_should_behave_like "simple_single_entry.atom attributes"
+  end
+  
+  describe 'FeedWithStyleSheet' do
+    it "should load without failure" do
+      lambda { feed = Atom::Feed.load_feed(File.open('spec/fixtures/with_stylesheet.atom')) }.should_not raise_error
+    end
   end
   
   describe 'ComplexFeed' do
@@ -1044,6 +1048,43 @@ describe Atom do
       end
     end
   end
+  
+  describe 'custom_extensions' do
+    before(:all) do
+      Atom::Entry.add_extension_namespace :ns_alias, "http://custom.namespace"
+      Atom::Entry.elements "ns_alias:property", :class => Atom::Extensions::Property
+      @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_custom_extensions.atom'))
+    end
+    
+    it "should_load_custom_extensions_for_entry" do
+      @entry.ns_alias_property.should_not == []
+    end
+    
+    it "should_load_2_custom_extensions_for_entry" do
+      @entry.ns_alias_property.size.should == 2
+    end
+    
+    it "should load correct_data_for_custom_extensions_for_entry" do
+      @entry.ns_alias_property.map { |x| [x.name, x.value] }.should == [['foo', 'bar'], ['baz', 'bat']]
+    end
+  end
+  
+  describe 'single custom_extensions' do
+     before(:all) do
+       Atom::Entry.add_extension_namespace :custom, "http://custom.namespace"
+       Atom::Entry.element "custom:property", :class => Atom::Extensions::Property
+       @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_single_custom_extension.atom'))
+     end
+
+     it "should load single custom extensions for entry" do
+       @entry.custom_property.should_not be_nil
+     end
+
+     it "should load correct data for custom extensions for entry" do
+       @entry.custom_property.name.should == 'foo'
+       @entry.custom_property.value.should == 'bar'
+     end
+   end
   
   describe Atom::Link do
     before(:each) do

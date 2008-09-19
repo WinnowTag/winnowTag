@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: ratom
 version: !ruby/object:Gem::Version 
-  version: 0.4.2
+  version: 0.5.1
 platform: ruby
 authors: 
 - Peerworks
@@ -10,7 +10,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2008-07-23 00:00:00 +09:30
+date: 2008-08-10 00:00:00 -04:00
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
@@ -57,6 +57,7 @@ files:
 - lib/atom/pub.rb
 - lib/atom/version.rb
 - lib/atom/xml/parser.rb
+- lib/atom/configuration.rb
 - setup.rb
 - spec/app/member_entry.atom
 - spec/app/service.xml
@@ -84,6 +85,7 @@ files:
 - spec/fixtures/entry.atom
 - spec/fixtures/multiple_entry.atom
 - spec/fixtures/simple_single_entry.atom
+- spec/fixtures/with_stylesheet.atom
 - spec/paging/first_paged_feed.atom
 - spec/paging/last_paged_feed.atom
 - spec/paging/middle_paged_feed.atom

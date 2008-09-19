@@ -67,10 +67,9 @@ var Sidebar = Class.create({
   },
   
   resize: function() {
-    var sidebar_padding = parseInt(this.sidebar.getStyle("padding-left")) + parseInt(this.sidebar.getStyle("padding-right"));
-    var sidebar_control_margin = parseInt(this.sidebar_control.getStyle("margin-left"));
-    var sidebar_width = this.sidebar_control.cumulativeOffset().first() - sidebar_padding - sidebar_control_margin - 1;
+    var sidebar_width = this.sidebar_control.cumulativeOffset().first() - 1;
     this.sidebar.style.width = sidebar_width + 'px';
+    this.sidebar_control.style.left = 0;
 
     Cookie.set("sidebar_width", sidebar_width, 365);
     Content.instance.resizeWidth();

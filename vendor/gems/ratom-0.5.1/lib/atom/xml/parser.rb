@@ -77,7 +77,7 @@ module Atom
         loop do
           case xml.node_type
           when XML::Reader::TYPE_ELEMENT
-            if element_specs.include?(xml.local_name) && [Atom::NAMESPACE, Atom::Pub::NAMESPACE].include?(xml.namespace_uri)
+            if element_specs.include?(xml.local_name) && (self.class.known_namespaces + [Atom::NAMESPACE, Atom::Pub::NAMESPACE]).include?(xml.namespace_uri)
               element_specs[xml.local_name].parse(self, xml)
             elsif attributes.any?
               while (xml.move_to_next_attribute == 1)
@@ -98,7 +98,9 @@ module Atom
       end
     
       def next_node_is?(xml, element, ns = nil)
-        xml.next == 1 && current_node_is?(xml, element, ns)
+        # Get to the next element
+        while xml.next == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
+        current_node_is?(xml, element, ns)
       end
       
       def current_node_is?(xml, element, ns = nil)
@@ -114,6 +116,9 @@ module Atom
           def ordered_element_specs; self.class.ordered_element_specs; end
           def attributes; self.class.attributes; end
           def o.namespace(ns = @namespace); @namespace = ns; end
+          def o.add_extension_namespace(ns, url); self.extensions_namespaces[ns.to_s] = url; end
+          def o.extensions_namespaces; @extensions_namespaces ||= {} end
+          def o.known_namespaces; @known_namespaces ||= [] end
         end
         o.send(:extend, DeclarationMethods)
       end
@@ -138,6 +143,9 @@ module Atom
         namespace_map = NamespaceMap.new(self.class.namespace) if namespace_map.nil?
         node = XML::Node.new(root_name)
         node['xmlns'] = self.class.namespace unless nodeonly || !self.class.respond_to?(:namespace)
+        self.class.extensions_namespaces.each do |ns_alias,uri|
+          node["xmlns:#{ns_alias}"] = uri
+        end
 
         self.class.ordered_element_specs.each do |spec|
           if spec.single?
@@ -210,8 +218,10 @@ module Atom
           options.merge!(names.pop) if names.last.is_a?(Hash) 
         
           names.each do |name|
-            attr_accessor name          
-            self.ordered_element_specs << self.element_specs[name.to_s] = ParseSpec.new(name, options)
+            attr_accessor name.to_s.sub(/:/, '_').to_sym
+            ns, local_name = name.to_s[/(.*):(.*)/,1], $2 || name
+            self.known_namespaces << self.extensions_namespaces[ns] if ns
+            self.ordered_element_specs << self.element_specs[local_name.to_s] = ParseSpec.new(name, options)
           end
         end
             
@@ -220,8 +230,16 @@ module Atom
           options.merge!(names.pop) if names.last.is_a?(Hash)
         
           names.each do |name|
-            attr_accessor name
-            self.ordered_element_specs << self.element_specs[name.to_s.singularize] = ParseSpec.new(name, options)
+            name_sym = name.to_s.sub(/:/, '_').to_sym
+            attr_writer name_sym
+            define_method name_sym do 
+              ivar = :"@#{name_sym}"
+              self.instance_variable_set ivar, [] unless self.instance_variable_defined? ivar
+              self.instance_variable_get ivar
+            end
+            ns, local_name = name.to_s[/(.*):(.*)/,1], $2 || name
+            self.known_namespaces << self.extensions_namespaces[ns] if ns
+            self.ordered_element_specs << self.element_specs[local_name.to_s.singularize] = ParseSpec.new(name, options)
           end
         end
       
@@ -253,6 +271,13 @@ module Atom
                     request = Net::HTTP::Get.new(o.request_uri)
                     if opts[:user] && opts[:pass]
                       request.basic_auth(opts[:user], opts[:pass])
+                    elsif opts[:hmac_access_id] && opts[:hmac_secret_key]
+                      if Atom::Configuration.auth_hmac_enabled?
+                        puts "Signing with HMAC"
+                        AuthHMAC.sign!(request, opts[:hmac_access_id], opts[:hmac_secret_key])
+                      else
+                        raise ArgumentError, "AuthHMAC credentials provides by auth-hmac gem is not installed"
+                      end
                     end
                     response = http.request(request)
                   end
@@ -314,7 +339,9 @@ module Atom
           when :single
             target.send("#{@attribute}=".to_sym, build(target, xml))
           when :collection
-            target.send("#{@attribute}") << build(target, xml)
+            collection = target.send(@attribute.to_s)
+            element    = build(target, xml)
+            collection << element
           end
         end
       

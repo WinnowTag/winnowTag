@@ -19,8 +19,8 @@ require File.expand_path(File.join(File.dirname(__FILE__), "generate"))
 module CustomSeleniumHelpers
   def login(login = "quentin", password = "test")
     open login_path
-    type "login", login
-    type "password", password
+    type "css=#login_form input[name=login]", login
+    type "css=#login_form input[name=password]", password
     click_and_wait "commit"
   end
 

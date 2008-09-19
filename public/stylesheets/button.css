@@ -37,6 +37,16 @@
 
 .button.disabled {
   color: #ccc;
+  cursor: default;
+}
+
+.button.disabled:active {
+  background-image: url(../images/button_bg.png);
+  background-position: left bottom;
+}
+
+.button.disabled:hover {
+  text-decoration: none;
 }
 
 .button.selected {
@@ -67,12 +77,12 @@
 
 .button .icon.unread {
   padding-left: 20px;
-  background-image: url(../images/unread.gif);
+  background-image: url(../images/unread_large.png);
 }
 
 .button .icon.read {
   padding-left: 20px;
-  background-image: url(../images/unread.gif);
+  background-image: url(../images/unread_large.png);
 }
 
 .button .icon.previous {
@@ -123,6 +133,20 @@
 .button .icon.export {
   padding-left: 20px;
   background-image: url(../images/export.png);
+}
+
+.button .icon.start {
+  padding-left: 20px;
+  background-image: url(../images/start.png);
+}
+
+.button.disabled .icon.start {
+  background-image: url(../images/start_disabled.png);
+}
+
+.button .icon.stop {
+  padding-left: 20px;
+  background-image: url(../images/stop.png);
 }
 
 .button.asc .icon {

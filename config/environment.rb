@@ -30,16 +30,16 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "fastercsv"
-  config.gem "ratom", :version => "0.4.2", :lib => "atom"
+  config.gem "auth-hmac"
+  config.gem "ratom", :lib => "atom"
 
-  # Must be compiled
-  config.gem "mysql"
-  config.gem "hpricot"
-  config.gem "bcrypt-ruby", :lib => "bcrypt"
-  config.gem "RedCloth", :version => "4.0.1"
-  config.gem "tzinfo", :version => "0.3.9"
-  config.gem "auth-hmac", :version => "1.0.1"
-    
+  # Must be compiled/installed on the target system
+  config.gem "mysql",       :version => "2.7"
+  config.gem "hpricot",     :version => "0.6.161"
+  config.gem "bcrypt-ruby", :version => "2.0.3",  :lib => "bcrypt"
+  config.gem "RedCloth",    :version => "4.0.3"
+  config.gem "tzinfo",      :version => "0.3.9"
+      
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named

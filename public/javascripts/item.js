@@ -240,26 +240,19 @@ var Item = Class.create({
   },
   
   initializeTrainingControl: function(tag) {
-    tag.down(".positive").observe("click", function() {
+    tag.down(".name").observe("click", function() {
       var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      if(tag.hasClassName("positive")) { return; }
-      this.addTagging(tag_name, "positive");
-      tag.removeClassName("negative");
-      tag.addClassName("positive");
-    }.bind(this));
-    tag.down(".negative").observe("click", function() {
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      if(tag.hasClassName("negative")) { return; }
-      this.addTagging(tag_name, "negative");
-      tag.removeClassName("positive");
-      tag.addClassName("negative");
-    }.bind(this));
-    tag.down(".remove").observe("click", function() {
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      if(!tag.hasClassName("positive") && !tag.hasClassName("negative")) { return; }
-      this.removeTagging(tag_name);
-      tag.removeClassName("negative");
-      tag.removeClassName("positive");
+      if(tag.hasClassName("positive")) {
+        this.addTagging(tag_name, "negative");
+        tag.removeClassName("positive");
+        tag.addClassName("negative");
+      } else if(tag.hasClassName("negative")) {
+        this.removeTagging(tag_name);
+        tag.removeClassName("negative");
+      } else {
+        this.addTagging(tag_name, "positive");
+        tag.addClassName("positive");
+      }
     }.bind(this));
   },
   
@@ -313,7 +306,9 @@ var Item = Class.create({
           
           itemBrowser.styleFilters();
         } else {
-          $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+          $$(".filter_list ." + data.id).each(function(element) {
+            element.title = data.tooltip;
+          });
         }
         
         // TODO: Moved this to classifier.js
@@ -325,6 +320,7 @@ var Item = Class.create({
         }
       }.bind(this)
     });
+    Classification.instance.enableClassification();
   },
   
   removeTagging: function(tag_name) {
@@ -360,7 +356,9 @@ var Item = Class.create({
         }
 
         // Update the filter for this tag
-        $$("." + data.id + " .training").invoke("update", data.trainingHtml)
+        $$(".filter_list ." + data.id).each(function(element) {
+          element.title = data.tooltip;
+        });
         
         // TODO: Moved this to classifier.js
         // Update the classification button's status
@@ -371,6 +369,7 @@ var Item = Class.create({
         }
       }
     });
+    Classification.instance.enableClassification();
   },
   
   findTagElement: function(container, elementSelector, tag_name) {
@@ -389,12 +388,7 @@ var Item = Class.create({
 
   addTrainingControl: function(tag_name) {
     var training_control = '<div class="tag positive" style="display:none">' + 
-      '<span class="clearfix">' + 
-        '<div class="positive"></div>' + 
-        '<div class="negative"></div>' + 
-        '<div class="name">' + tag_name.escapeHTML() + '</div>' + 
-      '</span>' + 
-      '<div class="remove">X</div>' + 
+      '<a href="#" onclick="return false;" class="name">' + tag_name.escapeHTML() + '</a>' + 
     '</div> ';
     this.training_controls.insertInOrder("div", ".name", training_control, tag_name);
   

@@ -80,35 +80,17 @@ describe "moderation panel" do
     wait_for_ajax
     
     dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.positive"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)} .positive"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)} .name"
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.positive"
-  end
-  
-  it "can change an unattached tagging to a negative tagging" do
-    click "css=#feed_item_4 .train"
-    wait_for_ajax
-    
-    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.negative"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)} .negative"
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@unused_tag)}.negative"
   end
   
   it "can change a classifier tagging to a positive tagging" do
     click "css=#feed_item_4 .train"
     wait_for_ajax
     
-    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)} .positive"
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
-  end
-  
-  it "can change a classifier tagging to a negative tagging" do
-    click "css=#feed_item_4 .train"
-    wait_for_ajax
-    
-    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.negative"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)} .negative"
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.negative"
+    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.classifier.positive"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)} .name"
+    see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.classifier.positive"
   end
   
   it "can change a positive tagging to a negative tagging" do
@@ -116,40 +98,8 @@ describe "moderation panel" do
     wait_for_ajax
     
     dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.negative"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)} .negative"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)} .name"
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.negative"
-  end
-  
-  it "can change a positive tagging to a classifier tagging" do
-    click "css=#feed_item_4 .train"
-    wait_for_ajax
-    
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)}.classifier.positive"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)} .remove"
-    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)}.classifier.positive"
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_and_classifier_tag)}.classifier"
-  end
-  
-  it "can change a positive tagging to an unattached tagging" do
-    click "css=#feed_item_4 .train"
-    wait_for_ajax
-    choose_cancel_on_next_confirmation
-    
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.positive"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)} .remove"
-    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}.positive"
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@positive_tag)}"
-    
-    get_confirmation.should include(@positive_tag.name)
-  end
-  
-  it "can change a negative tagging to a positive tagging" do
-    click "css=#feed_item_4 .train"
-    wait_for_ajax
-    
-    dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.positive"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)} .positive"
-    see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.positive"
   end
   
   it "can change a negative tagging to a classifier tagging" do
@@ -157,7 +107,7 @@ describe "moderation panel" do
     wait_for_ajax
     
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)}.classifier.negative"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)} .remove"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)} .name"
     dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)}.classifier.negative"
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_and_classifier_tag)}.classifier"
   end
@@ -168,7 +118,7 @@ describe "moderation panel" do
     choose_cancel_on_next_confirmation
     
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.negative"
-    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)} .remove"
+    click "css=#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)} .name"
     dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}.negative"
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@negative_tag)}"
 

@@ -181,6 +181,56 @@ You can then call to_xml and rAtom will serialize the extension elements into xm
 Notice that the output repeats the xmlns attribute for each of the extensions, this is semantically the same the input XML, just a bit
 ugly.  It seems to be a limitation of the libxml-Ruby API. But if anyone knows a work around I'd gladly accept a patch (or even advice).
 
+==== Custom Extension Classes 
+
+As of version 0.5.0 you can also define your own classes for a extension elements.  This is done by first creating an alias
+for the namespace for the class and then using the +element+ method on the Atom::Feed or Atom::Entry class to tell rAtom
+to use your custom class when it encounters the extension element.
+
+For example, say we have the following piece Atom XML with a structured extension element:
+
+  <?xml version='1.0' encoding='UTF-8'?>
+  <entry xmlns='http://www.w3.org/2005/Atom' xmlns:custom='http://custom.namespace'>
+    <id>https://custom.namespace/id/1</id>
+    <link rel='self' type='application/atom+xml' href='https://custom.namespace/id/1'/>
+    <custom:property name='foo' value='bar'/>
+    <custom:property name='baz' value='bat'/>
+  </entry>
+	
+And we want the +custom:property+ elements to be parsed as our own custom class called Custom::Property that is
+defined like this:
+
+  class Custom::Property
+    attr_accessor :name, :value
+    def initialize(xml)
+      # Custom XML handling
+    end
+  end
+	
+We can tell rAtom about our custom namespace and custom class using the following method calls:
+
+  Atom::Feed..add_extension_namespace :custom, "http://custom.namespace"
+  Atom::Entry.elements "custom:property", :class => Custom::Property
+	
+The first method call registers an alias for the "http://custom.namespace" namespace and the second method call
+tell rAtom that when it encounters a custom:property element within a Feed it should create an instance of Custom::Property
+and pass the XML Reader to the constructor of the instance.  It is then up to the constructor to populate the objects attributes 
+from the XML. Note that the alias you create using +add_extension_namespace+ can be anything you want, it doesn't need
+to match the alias in the actual XML itself.
+
+The custom property will then be available as a method on the rAtom class.  In the above example:
+
+  @feed.custom_property.size == 2
+  @feed.custom_property.first.name == 'foo'
+  @feed.custom_property.first.value == 'bar'
+	
+There is one caveat to this.  By using this type of extension support you are permanently modifying the rAtom classes.
+So if your application process one type of atom extension and you are happy with permanently modified rAtom classes,
+the extra extensibility might work for you.  If on the other hand you process lots of different types of extension you might
+want to stick with simpler extension mechanism using the [namespace, element] method described above.
+ 
+(Thanks to nachokb for this feature!!)
+
 === Basic Authentication
 
 All methods that involve HTTP requests now support HTTP Basic Authentication.  Authentication credentials are passed
@@ -201,6 +251,10 @@ rAtom doesn't store these credentials anywhere within the object model so you wi
 method call that requires them.  This might be a bit of a pain but it does make things simpler and it means that I'm not responsible
 for protecting your credentials, although if you are using HTTP Basic Authentication there is a good chance your credentials aren't
 very well protected anyway.
+
+=== AuthHMAC authentication
+
+As of version 0.5.1 rAtom also support authentication via HMAC request signing using the AuthHMAC[http://auth-hmac.rubyforge.org] gem.  This is made available using the :hmac_access_id and :hmac_secret_key parameters which can be passed to the same methods as the HTTP Basic credentials support.
 
 == TODO
 

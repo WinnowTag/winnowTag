@@ -1,0 +1,21 @@
+<div id="reminder_form" class="form clearfix" style="display: none;">
+  <% form_remote_tag :url => reminder_path do -%>
+
+    <div class="title">
+      <span class="reminder"><%= _(:reminder_header) %></span>
+    </div>
+
+    <div class="content">
+    	<div class="login clearfix">
+    	  <label for="login"><%= _(:login_label) %></label>
+    	  <%= text_field_tag :login %>
+    	</div>
+
+    	<div class="submit">
+    	  <label>&nbsp;</label>
+    	  <%= submit_tag _(:reminder_submit_button) %>
+    	  <%= link_to_function _(:login_link), "$('login_form').show(); $('reminder_form').hide();", :class => "forgot_password_link" %>        	  
+    	</div>
+    </div>
+  <% end -%>
+</div>

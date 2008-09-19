@@ -1,5 +1,5 @@
 <% content_for :head do -%>
-  <script type="text/javascript" charset="utf-8">
+  <% javascript_tag do -%>
     var itemBrowser;
     document.observe('dom:loaded', function() {
       itemBrowser = new ItemBrowser('users', 'content', { orders: {
@@ -8,7 +8,7 @@
         "default": "login"
       }});
     });
-  </script>
+  <% end -%>
 <% end -%>
 
 <% content_for :header_controls do -%>

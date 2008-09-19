@@ -55,9 +55,9 @@ describe FoldersController do
       do_put
     end
     
-    it "renders the folder name" do
+    it "renders the js template" do
       do_put
-      response.should have_text("Tech")
+      response.should render_template("update")
     end
   end
 

@@ -5,13 +5,13 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <%= javascript_include_tag :defaults, :winnow, :cache => true %>
   <%= stylesheet_link_tag :blueprint, :winnow, :cache => true %>
-  <script type="text/javascript" charset="utf-8">
+  <% javascript_tag do -%>
     document.observe('dom:loaded', Content.setup);
     document.observe('dom:loaded', AppleSearch.setup);
-  </script>
+  <% end -%>
   <%= yield(:head) %>
 </head>
-<body id="<%= controller.controller_name %>_controller">
+<body id="<%= yield(:body) %>">
   <%= render :partial => 'layouts/navbar' %>
   
   <% if header_controls = yield(:header_controls) -%>
@@ -24,7 +24,7 @@
   <% end -%>
 
   <div id="container">
-    <div id="content">
+    <div id="content" class="clearfix">
       <noscript><%= _(:no_script_message) %></noscript>
       <%= yield %>
     </div>

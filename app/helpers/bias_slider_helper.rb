@@ -41,12 +41,12 @@ module BiasSliderHelper
     prefix = dom_id(tag, 'slider')
     content_tag 'div', 
       content_tag('div', 
-        content_tag('div', '', :id => "#{prefix}_0_9",    :class => '0_9 bias_marker',         :title => _(:first_slider_marker))  +
-        content_tag('div', '', :id => "#{prefix}_1_0",    :class => '1_0 bias_marker neutral', :title => _(:second_slider_marker)) +
-        content_tag('div', '', :id => "#{prefix}_1_1",    :class => '1_1 bias_marker',         :title => _(:third_slider_marker))  +
-        content_tag('div', '', :id => "#{prefix}_1_2",    :class => '1_2 bias_marker',         :title => _(:fourth_slider_marker)) +
-        content_tag('div', '', :id => "#{prefix}_1_3",    :class => '1_3 bias_marker',         :title => _(:fifth_slider_marker))  +
-        content_tag('div', '', :id => "#{prefix}_handle", :class => 'slider_handle',           :title => _(:slider_handle_tooltip)),
+        content_tag('div', '', :id => "#{prefix}_0_9",    :class => '0_9 bias_marker zero_point_nine', :title => _(:first_slider_marker))  +
+        content_tag('div', '', :id => "#{prefix}_1_0",    :class => '1_0 bias_marker one_point_zero',  :title => _(:second_slider_marker)) +
+        content_tag('div', '', :id => "#{prefix}_1_1",    :class => '1_1 bias_marker one_point_one',   :title => _(:third_slider_marker))  +
+        content_tag('div', '', :id => "#{prefix}_1_2",    :class => '1_2 bias_marker one_point_two',   :title => _(:fourth_slider_marker)) +
+        content_tag('div', '', :id => "#{prefix}_1_3",    :class => '1_3 bias_marker one_point_three', :title => _(:fifth_slider_marker))  +
+        content_tag('div', '', :id => "#{prefix}_handle", :class => 'slider_handle',                   :title => _(:slider_handle_tooltip)),
         :id => "#{prefix}_track", :class => 'slider_track'), 
       :class => "slider"
   end
