@@ -319,7 +319,7 @@ private
   end
   
   def login_or_hmac_required_unless_tag_is_public
-    access_denied unless logged_in? || hmac_authenticated? || @tag.public?
+    (@tag && @tag.public?) || logged_in? || hmac_authenticated? || login_required
   end
   
   def ensure_user_is_tag_owner
