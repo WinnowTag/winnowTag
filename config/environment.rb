@@ -38,7 +38,8 @@ Rails::Initializer.run do |config|
   config.gem "hpricot",     :version => "0.6.161"
   config.gem "bcrypt-ruby", :version => "2.0.3",  :lib => "bcrypt"
   config.gem "RedCloth",    :version => "4.0.3"
-  config.gem "tzinfo",      :version => "0.3.9"
+  config.gem "tzinfo",      :version => "0.3.10"
+  config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"
       
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
