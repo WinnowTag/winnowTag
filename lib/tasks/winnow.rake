@@ -108,6 +108,7 @@ task :cruise_with_selenium do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
   Rake::Task['assets:clean'].invoke
   Rake::Task['db:migrate'].invoke
+  system "touch tmp/restart.txt"
   # Rake::Task['spec:code'].invoke
   # Rake::Task['spec:controllers'].invoke
   # Rake::Task['spec:helpers'].invoke

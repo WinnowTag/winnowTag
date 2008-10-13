@@ -18,7 +18,6 @@ namespace :spec do
       
       task :stop => :environment do
         Selenium.configuration.stop_selenium_server = true
-        Selenium.configuration.stop_test_server = true
         Selenium::Server.disconnect!
       end
     end

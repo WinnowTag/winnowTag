@@ -156,7 +156,7 @@ Spec::Runner.configure do |config|
 
   # Stub out User.encrypt for faster testing
   config.before(:each) do
-    User.stub!(:encrypt).and_return('password')
+    # User.stub!(:encrypt).and_return('password')
   end
 
   def valid_feed_item_attributes(attributes = {})

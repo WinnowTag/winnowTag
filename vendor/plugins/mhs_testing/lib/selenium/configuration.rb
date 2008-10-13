@@ -9,7 +9,6 @@ module Selenium
         :stop_selenium_server    => true,
         :test_server_host        => 'localhost',
         :test_server_port        => 3001,
-        :stop_test_server        => true,
         :close_browser_at_exit   => true,
         :selenium_server_display => nil
       }

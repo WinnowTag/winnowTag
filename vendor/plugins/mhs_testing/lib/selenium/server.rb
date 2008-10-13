@@ -1,16 +1,8 @@
 module Selenium
   class Server
     class << self
-      def test_server
-        @test_server ||= SubProcess.find(test_server_command)
-      end
-      
       def selenium_server
         @selenium_server ||= SubProcess.find(selenium_server_command)
-      end
-      
-      def test_server_command
-        "mongrel_rails start -c #{RAILS_ROOT} -e test -p #{configuration.test_server_port}"
       end
       
       def selenium_server_command
@@ -23,10 +15,6 @@ module Selenium
       end
       
       def connect!(options = {})
-        unless test_server
-          @test_server = SubProcess.start(test_server_command)
-        end
-      
         unless selenium_server
           environment = {}
           environment['DISPLAY'] = configuration.selenium_server_display if configuration.selenium_server_display
@@ -35,11 +23,6 @@ module Selenium
       end
     
       def disconnect!
-        if configuration.stop_test_server? && test_server
-          @test_server.stop
-          @test_server = nil
-        end
-      
         if configuration.stop_selenium_server? && selenium_server
           @selenium_server.stop
           @selenium_server = nil
