@@ -37,8 +37,8 @@ Rails::Initializer.run do |config|
   config.gem "mysql",       :version => "2.7"
   config.gem "hpricot",     :version => "0.6.161"
   config.gem "bcrypt-ruby", :version => "2.0.3",  :lib => "bcrypt"
-  config.gem "RedCloth",    :version => "4.0.3"
-  config.gem "tzinfo",      :version => "0.3.10"
+  config.gem "RedCloth",    :version => "4.0.4"
+  config.gem "tzinfo",      :version => "0.3.11"
   config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"
       
   # Only load the plugins named here, in the order given. By default, all plugins 
