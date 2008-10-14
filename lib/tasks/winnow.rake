@@ -116,5 +116,5 @@ task :cruise_with_selenium do
   # Rake::Task['spec:views'].invoke
   # Rake::Task['test:stories'].invoke
   # Rake::Task['rcov_for_cc'].invoke
-  Rake::Task['spec:selenium'].invoke
+  Rake::Task['selenium'].invoke
 end
