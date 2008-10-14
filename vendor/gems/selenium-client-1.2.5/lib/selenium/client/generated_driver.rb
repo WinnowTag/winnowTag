@@ -19,10 +19,6 @@
 # This file has been automatically generated via XSL
 # -----------------
 
-require 'net/http'
-require 'uri'
-require 'cgi'
-
 # Defines an object that runs Selenium commands.
 # 
 # ===Element Locators
@@ -79,6 +75,13 @@ require 'cgi'
 # 
 # Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). 
 # 
+# *    <b>ui</b>=<em>uiSpecifierString</em>:
+# Locate an element by resolving the UI specifier string to another locator, and evaluating it. See the Selenium UI-Element Reference for more details.
+# *    ui=loginPages::loginButton()
+# *    ui=settingsPages::toggle(label=Hide Email)
+# *    ui=forumPages::postBody(index=2)//a[2]
+# 
+# 
 # 
 # 
 # Without an explicit locator prefix, Selenium uses the following default
@@ -128,129 +131,8 @@ require 'cgi'
 # 
 # 
 module Selenium
-
-    class SeleniumDriver
-        include Selenium
-    
-        def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
-            @server_host = server_host
-            @server_port = server_port
-            @browserStartCommand = browserStartCommand
-            @browserURL = browserURL
-            @timeout = timeout
-        end
-        
-        def to_s
-            "SeleniumDriver"
-        end
-
-        def start()
-            result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
-            @session_id = result
-        end
-
-        def session?
-          @session_id != nil
-        end
-
-        def session_reset
-          @session_id = nil
-        end
-
-        def stop()
-          if session?
-            do_command("testComplete", [])
-          end
-        ensure
-          session_reset
-        end
-
-        def do_command(verb, args)
-            timeout(@timeout) do
-                http = Net::HTTP.new(@server_host, @server_port)
-                command_string = '/selenium-server/driver/?cmd=' + CGI::escape(verb)
-                args.length.times do |i|
-                    arg_num = (i+1).to_s
-                    command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
-                end
-                if session?
-                    command_string = command_string + "&sessionId=" + @session_id.to_s
-                end
-                #print "Requesting --->" + command_string + "\n"
-                response = http.get(command_string)
-                #print "RESULT: " + response.body + "\n\n"
-                if (response.body[0..1] != "OK")
-                    raise SeleniumCommandError, response.body
-                end
-                return response.body
-            end
-        end
-        
-        def get_string(verb, args)
-            result = do_command(verb, args)
-            return result[3..result.length]
-        end
-        
-        def get_string_array(verb, args)
-            csv = get_string(verb, args)
-            token = ""
-            tokens = []
-            escape = false
-            csv.split(//).each do |letter|
-                if escape
-                    token = token + letter
-                    escape = false
-                    next
-                end
-                if (letter == '\\')
-                    escape = true
-                elsif (letter == ',')
-                    tokens.push(token)
-                    token = ""
-                else
-                    token = token + letter
-                end
-            end
-            tokens.push(token)
-            return tokens
-        end
-    
-        def get_number(verb, args)
-            # Is there something I need to do here?
-            return get_string(verb, args)
-        end
-        
-        def get_number_array(verb, args)
-            # Is there something I need to do here?
-            return get_string_array(verb, args)
-        end
-    
-        def get_boolean(verb, args)
-            boolstr = get_string(verb, args)
-            if ("true" == boolstr)
-                return true
-            end
-            if ("false" == boolstr)
-                return false
-            end
-            raise ValueError, "result is neither 'true' nor 'false': " + boolstr
-        end
-        
-        def get_boolean_array(verb, args)
-            boolarr = get_string_array(verb, args)
-            boolarr.length.times do |i|
-                if ("true" == boolstr)
-                    boolarr[i] = true
-                    next
-                end
-                if ("false" == boolstr)
-                    boolarr[i] = false
-                    next
-                end
-                raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
-            end
-            return boolarr
-        end
+  module Client
+    module GeneratedDriver
 
 
 
@@ -260,7 +142,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def click(locator)
-            do_command("click", [locator,])
+            remote_control_command("click", [locator,])
         end
 
 
@@ -270,7 +152,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def double_click(locator)
-            do_command("doubleClick", [locator,])
+            remote_control_command("doubleClick", [locator,])
         end
 
 
@@ -278,7 +160,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def context_menu(locator)
-            do_command("contextMenu", [locator,])
+            remote_control_command("contextMenu", [locator,])
         end
 
 
@@ -289,7 +171,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def click_at(locator,coordString)
-            do_command("clickAt", [locator,coordString,])
+            remote_control_command("clickAt", [locator,coordString,])
         end
 
 
@@ -300,7 +182,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def double_click_at(locator,coordString)
-            do_command("doubleClickAt", [locator,coordString,])
+            remote_control_command("doubleClickAt", [locator,coordString,])
         end
 
 
@@ -309,7 +191,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def context_menu_at(locator,coordString)
-            do_command("contextMenuAt", [locator,coordString,])
+            remote_control_command("contextMenuAt", [locator,coordString,])
         end
 
 
@@ -319,7 +201,7 @@ module Selenium
         # 'locator' is an element locator
         # 'eventName' is the event name, e.g. "focus" or "blur"
         def fire_event(locator,eventName)
-            do_command("fireEvent", [locator,eventName,])
+            remote_control_command("fireEvent", [locator,eventName,])
         end
 
 
@@ -327,7 +209,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def focus(locator)
-            do_command("focus", [locator,])
+            remote_control_command("focus", [locator,])
         end
 
 
@@ -336,63 +218,63 @@ module Selenium
         # 'locator' is an element locator
         # 'keySequence' is Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
         def key_press(locator,keySequence)
-            do_command("keyPress", [locator,keySequence,])
+            remote_control_command("keyPress", [locator,keySequence,])
         end
 
 
         # Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.
         #
         def shift_key_down()
-            do_command("shiftKeyDown", [])
+            remote_control_command("shiftKeyDown", [])
         end
 
 
         # Release the shift key.
         #
         def shift_key_up()
-            do_command("shiftKeyUp", [])
+            remote_control_command("shiftKeyUp", [])
         end
 
 
         # Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.
         #
         def meta_key_down()
-            do_command("metaKeyDown", [])
+            remote_control_command("metaKeyDown", [])
         end
 
 
         # Release the meta key.
         #
         def meta_key_up()
-            do_command("metaKeyUp", [])
+            remote_control_command("metaKeyUp", [])
         end
 
 
         # Press the alt key and hold it down until doAltUp() is called or a new page is loaded.
         #
         def alt_key_down()
-            do_command("altKeyDown", [])
+            remote_control_command("altKeyDown", [])
         end
 
 
         # Release the alt key.
         #
         def alt_key_up()
-            do_command("altKeyUp", [])
+            remote_control_command("altKeyUp", [])
         end
 
 
         # Press the control key and hold it down until doControlUp() is called or a new page is loaded.
         #
         def control_key_down()
-            do_command("controlKeyDown", [])
+            remote_control_command("controlKeyDown", [])
         end
 
 
         # Release the control key.
         #
         def control_key_up()
-            do_command("controlKeyUp", [])
+            remote_control_command("controlKeyUp", [])
         end
 
 
@@ -401,7 +283,7 @@ module Selenium
         # 'locator' is an element locator
         # 'keySequence' is Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
         def key_down(locator,keySequence)
-            do_command("keyDown", [locator,keySequence,])
+            remote_control_command("keyDown", [locator,keySequence,])
         end
 
 
@@ -410,7 +292,7 @@ module Selenium
         # 'locator' is an element locator
         # 'keySequence' is Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
         def key_up(locator,keySequence)
-            do_command("keyUp", [locator,keySequence,])
+            remote_control_command("keyUp", [locator,keySequence,])
         end
 
 
@@ -418,7 +300,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def mouse_over(locator)
-            do_command("mouseOver", [locator,])
+            remote_control_command("mouseOver", [locator,])
         end
 
 
@@ -426,7 +308,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def mouse_out(locator)
-            do_command("mouseOut", [locator,])
+            remote_control_command("mouseOut", [locator,])
         end
 
 
@@ -435,7 +317,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def mouse_down(locator)
-            do_command("mouseDown", [locator,])
+            remote_control_command("mouseDown", [locator,])
         end
 
 
@@ -444,7 +326,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def mouse_down_right(locator)
-            do_command("mouseDownRight", [locator,])
+            remote_control_command("mouseDownRight", [locator,])
         end
 
 
@@ -454,7 +336,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def mouse_down_at(locator,coordString)
-            do_command("mouseDownAt", [locator,coordString,])
+            remote_control_command("mouseDownAt", [locator,coordString,])
         end
 
 
@@ -464,7 +346,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def mouse_down_right_at(locator,coordString)
-            do_command("mouseDownRightAt", [locator,coordString,])
+            remote_control_command("mouseDownRightAt", [locator,coordString,])
         end
 
 
@@ -473,7 +355,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def mouse_up(locator)
-            do_command("mouseUp", [locator,])
+            remote_control_command("mouseUp", [locator,])
         end
 
 
@@ -482,7 +364,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def mouse_up_right(locator)
-            do_command("mouseUpRight", [locator,])
+            remote_control_command("mouseUpRight", [locator,])
         end
 
 
@@ -492,7 +374,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def mouse_up_at(locator,coordString)
-            do_command("mouseUpAt", [locator,coordString,])
+            remote_control_command("mouseUpAt", [locator,coordString,])
         end
 
 
@@ -502,7 +384,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def mouse_up_right_at(locator,coordString)
-            do_command("mouseUpRightAt", [locator,coordString,])
+            remote_control_command("mouseUpRightAt", [locator,coordString,])
         end
 
 
@@ -511,7 +393,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def mouse_move(locator)
-            do_command("mouseMove", [locator,])
+            remote_control_command("mouseMove", [locator,])
         end
 
 
@@ -521,7 +403,7 @@ module Selenium
         # 'locator' is an element locator
         # 'coordString' is specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
         def mouse_move_at(locator,coordString)
-            do_command("mouseMoveAt", [locator,coordString,])
+            remote_control_command("mouseMoveAt", [locator,coordString,])
         end
 
 
@@ -534,7 +416,7 @@ module Selenium
         # 'locator' is an element locator
         # 'value' is the value to type
         def type(locator,value)
-            do_command("type", [locator,value,])
+            remote_control_command("type", [locator,value,])
         end
 
 
@@ -553,7 +435,7 @@ module Selenium
         # 'locator' is an element locator
         # 'value' is the value to type
         def type_keys(locator,value)
-            do_command("typeKeys", [locator,value,])
+            remote_control_command("typeKeys", [locator,value,])
         end
 
 
@@ -562,7 +444,7 @@ module Selenium
         #
         # 'value' is the number of milliseconds to pause after operation
         def set_speed(value)
-            do_command("setSpeed", [value,])
+            remote_control_command("setSpeed", [value,])
         end
 
 
@@ -572,7 +454,7 @@ module Selenium
         # See also setSpeed.
         #
         def get_speed()
-            return get_string("getSpeed", [])
+            return string_command("getSpeed", [])
         end
 
 
@@ -580,7 +462,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def check(locator)
-            do_command("check", [locator,])
+            remote_control_command("check", [locator,])
         end
 
 
@@ -588,7 +470,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def uncheck(locator)
-            do_command("uncheck", [locator,])
+            remote_control_command("uncheck", [locator,])
         end
 
 
@@ -631,7 +513,7 @@ module Selenium
         # 'selectLocator' is an element locator identifying a drop-down menu
         # 'optionLocator' is an option locator (a label by default)
         def select(selectLocator,optionLocator)
-            do_command("select", [selectLocator,optionLocator,])
+            remote_control_command("select", [selectLocator,optionLocator,])
         end
 
 
@@ -642,7 +524,7 @@ module Selenium
         # 'locator' is an element locator identifying a multi-select box
         # 'optionLocator' is an option locator (a label by default)
         def add_selection(locator,optionLocator)
-            do_command("addSelection", [locator,optionLocator,])
+            remote_control_command("addSelection", [locator,optionLocator,])
         end
 
 
@@ -653,7 +535,7 @@ module Selenium
         # 'locator' is an element locator identifying a multi-select box
         # 'optionLocator' is an option locator (a label by default)
         def remove_selection(locator,optionLocator)
-            do_command("removeSelection", [locator,optionLocator,])
+            remote_control_command("removeSelection", [locator,optionLocator,])
         end
 
 
@@ -661,7 +543,7 @@ module Selenium
         #
         # 'locator' is an element locator identifying a multi-select box
         def remove_all_selections(locator)
-            do_command("removeAllSelections", [locator,])
+            remote_control_command("removeAllSelections", [locator,])
         end
 
 
@@ -670,7 +552,7 @@ module Selenium
         #
         # 'formLocator' is an element locator for the form you want to submit
         def submit(formLocator)
-            do_command("submit", [formLocator,])
+            remote_control_command("submit", [formLocator,])
         end
 
 
@@ -687,7 +569,7 @@ module Selenium
         #
         # 'url' is the URL to open; may be relative or absolute
         def open(url)
-            do_command("open", [url,])
+            remote_control_command("open", [url,])
         end
 
 
@@ -703,7 +585,7 @@ module Selenium
         # 'url' is the URL to open, which can be blank
         # 'windowID' is the JavaScript window ID of the window to select
         def open_window(url,windowID)
-            do_command("openWindow", [url,windowID,])
+            remote_control_command("openWindow", [url,windowID,])
         end
 
 
@@ -751,7 +633,7 @@ module Selenium
         #
         # 'windowID' is the JavaScript window ID of the window to select
         def select_window(windowID)
-            do_command("selectWindow", [windowID,])
+            remote_control_command("selectWindow", [windowID,])
         end
 
 
@@ -767,7 +649,7 @@ module Selenium
         #
         # 'locator' is an element locator identifying a frame or iframe
         def select_frame(locator)
-            do_command("selectFrame", [locator,])
+            remote_control_command("selectFrame", [locator,])
         end
 
 
@@ -783,7 +665,7 @@ module Selenium
         # 'currentFrameString' is starting frame
         # 'target' is new frame (which might be relative to the current one)
         def get_whether_this_frame_match_frame_expression(currentFrameString,target)
-            return get_boolean("getWhetherThisFrameMatchFrameExpression", [currentFrameString,target,])
+            return boolean_command("getWhetherThisFrameMatchFrameExpression", [currentFrameString,target,])
         end
 
 
@@ -799,7 +681,7 @@ module Selenium
         # 'currentWindowString' is starting window
         # 'target' is new window (which might be relative to the current one, e.g., "_parent")
         def get_whether_this_window_match_window_expression(currentWindowString,target)
-            return get_boolean("getWhetherThisWindowMatchWindowExpression", [currentWindowString,target,])
+            return boolean_command("getWhetherThisWindowMatchWindowExpression", [currentWindowString,target,])
         end
 
 
@@ -808,7 +690,7 @@ module Selenium
         # 'windowID' is the JavaScript window "name" of the window that will appear (not the text of the title bar)
         # 'timeout' is a timeout in milliseconds, after which the action will return with an error
         def wait_for_pop_up(windowID,timeout)
-            do_command("waitForPopUp", [windowID,timeout,])
+            remote_control_command("waitForPopUp", [windowID,timeout,])
         end
 
 
@@ -829,7 +711,7 @@ module Selenium
         # 
         #
         def choose_cancel_on_next_confirmation()
-            do_command("chooseCancelOnNextConfirmation", [])
+            remote_control_command("chooseCancelOnNextConfirmation", [])
         end
 
 
@@ -851,7 +733,7 @@ module Selenium
         # 
         #
         def choose_ok_on_next_confirmation()
-            do_command("chooseOkOnNextConfirmation", [])
+            remote_control_command("chooseOkOnNextConfirmation", [])
         end
 
 
@@ -860,21 +742,21 @@ module Selenium
         #
         # 'answer' is the answer to give in response to the prompt pop-up
         def answer_on_next_prompt(answer)
-            do_command("answerOnNextPrompt", [answer,])
+            remote_control_command("answerOnNextPrompt", [answer,])
         end
 
 
         # Simulates the user clicking the "back" button on their browser.
         #
         def go_back()
-            do_command("goBack", [])
+            remote_control_command("goBack", [])
         end
 
 
         # Simulates the user clicking the "Refresh" button on their browser.
         #
         def refresh()
-            do_command("refresh", [])
+            remote_control_command("refresh", [])
         end
 
 
@@ -882,7 +764,7 @@ module Selenium
         # window or tab.
         #
         def close()
-            do_command("close", [])
+            remote_control_command("close", [])
         end
 
 
@@ -894,7 +776,7 @@ module Selenium
         # 
         #
         def is_alert_present()
-            return get_boolean("isAlertPresent", [])
+            return boolean_command("isAlertPresent", [])
         end
 
 
@@ -906,7 +788,7 @@ module Selenium
         # 
         #
         def is_prompt_present()
-            return get_boolean("isPromptPresent", [])
+            return boolean_command("isPromptPresent", [])
         end
 
 
@@ -918,7 +800,7 @@ module Selenium
         # 
         #
         def is_confirmation_present()
-            return get_boolean("isConfirmationPresent", [])
+            return boolean_command("isConfirmationPresent", [])
         end
 
 
@@ -935,7 +817,7 @@ module Selenium
         # 
         #
         def get_alert()
-            return get_string("getAlert", [])
+            return string_command("getAlert", [])
         end
 
 
@@ -964,7 +846,7 @@ module Selenium
         # 
         #
         def get_confirmation()
-            return get_string("getConfirmation", [])
+            return string_command("getConfirmation", [])
         end
 
 
@@ -982,28 +864,28 @@ module Selenium
         # 
         #
         def get_prompt()
-            return get_string("getPrompt", [])
+            return string_command("getPrompt", [])
         end
 
 
         # Gets the absolute URL of the current page.
         #
         def get_location()
-            return get_string("getLocation", [])
+            return string_command("getLocation", [])
         end
 
 
         # Gets the title of the current page.
         #
         def get_title()
-            return get_string("getTitle", [])
+            return string_command("getTitle", [])
         end
 
 
         # Gets the entire text of the page.
         #
         def get_body_text()
-            return get_string("getBodyText", [])
+            return string_command("getBodyText", [])
         end
 
 
@@ -1013,7 +895,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def get_value(locator)
-            return get_string("getValue", [locator,])
+            return string_command("getValue", [locator,])
         end
 
 
@@ -1024,7 +906,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def get_text(locator)
-            return get_string("getText", [locator,])
+            return string_command("getText", [locator,])
         end
 
 
@@ -1032,7 +914,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def highlight(locator)
-            do_command("highlight", [locator,])
+            remote_control_command("highlight", [locator,])
         end
 
 
@@ -1049,7 +931,7 @@ module Selenium
         #
         # 'script' is the JavaScript snippet to run
         def get_eval(script)
-            return get_string("getEval", [script,])
+            return string_command("getEval", [script,])
         end
 
 
@@ -1057,7 +939,7 @@ module Selenium
         #
         # 'locator' is an element locator pointing to a checkbox or radio button
         def is_checked(locator)
-            return get_boolean("isChecked", [locator,])
+            return boolean_command("isChecked", [locator,])
         end
 
 
@@ -1066,7 +948,7 @@ module Selenium
         #
         # 'tableCellAddress' is a cell address, e.g. "foo.1.4"
         def get_table(tableCellAddress)
-            return get_string("getTable", [tableCellAddress,])
+            return string_command("getTable", [tableCellAddress,])
         end
 
 
@@ -1074,7 +956,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_labels(selectLocator)
-            return get_string_array("getSelectedLabels", [selectLocator,])
+            return string_array_command("getSelectedLabels", [selectLocator,])
         end
 
 
@@ -1082,7 +964,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_label(selectLocator)
-            return get_string("getSelectedLabel", [selectLocator,])
+            return string_command("getSelectedLabel", [selectLocator,])
         end
 
 
@@ -1090,7 +972,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_values(selectLocator)
-            return get_string_array("getSelectedValues", [selectLocator,])
+            return string_array_command("getSelectedValues", [selectLocator,])
         end
 
 
@@ -1098,7 +980,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_value(selectLocator)
-            return get_string("getSelectedValue", [selectLocator,])
+            return string_command("getSelectedValue", [selectLocator,])
         end
 
 
@@ -1106,7 +988,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_indexes(selectLocator)
-            return get_string_array("getSelectedIndexes", [selectLocator,])
+            return string_array_command("getSelectedIndexes", [selectLocator,])
         end
 
 
@@ -1114,7 +996,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_index(selectLocator)
-            return get_string("getSelectedIndex", [selectLocator,])
+            return string_command("getSelectedIndex", [selectLocator,])
         end
 
 
@@ -1122,7 +1004,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_ids(selectLocator)
-            return get_string_array("getSelectedIds", [selectLocator,])
+            return string_array_command("getSelectedIds", [selectLocator,])
         end
 
 
@@ -1130,7 +1012,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_selected_id(selectLocator)
-            return get_string("getSelectedId", [selectLocator,])
+            return string_command("getSelectedId", [selectLocator,])
         end
 
 
@@ -1138,7 +1020,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def is_something_selected(selectLocator)
-            return get_boolean("isSomethingSelected", [selectLocator,])
+            return boolean_command("isSomethingSelected", [selectLocator,])
         end
 
 
@@ -1146,7 +1028,7 @@ module Selenium
         #
         # 'selectLocator' is an element locator identifying a drop-down menu
         def get_select_options(selectLocator)
-            return get_string_array("getSelectOptions", [selectLocator,])
+            return string_array_command("getSelectOptions", [selectLocator,])
         end
 
 
@@ -1156,7 +1038,7 @@ module Selenium
         #
         # 'attributeLocator' is an element locator followed by an @ sign and then the name of the attribute, e.g. "foo@bar"
         def get_attribute(attributeLocator)
-            return get_string("getAttribute", [attributeLocator,])
+            return string_command("getAttribute", [attributeLocator,])
         end
 
 
@@ -1164,7 +1046,7 @@ module Selenium
         #
         # 'pattern' is a pattern to match with the text of the page
         def is_text_present(pattern)
-            return get_boolean("isTextPresent", [pattern,])
+            return boolean_command("isTextPresent", [pattern,])
         end
 
 
@@ -1172,7 +1054,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def is_element_present(locator)
-            return get_boolean("isElementPresent", [locator,])
+            return boolean_command("isElementPresent", [locator,])
         end
 
 
@@ -1184,7 +1066,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def is_visible(locator)
-            return get_boolean("isVisible", [locator,])
+            return boolean_command("isVisible", [locator,])
         end
 
 
@@ -1193,7 +1075,7 @@ module Selenium
         #
         # 'locator' is an element locator
         def is_editable(locator)
-            return get_boolean("isEditable", [locator,])
+            return boolean_command("isEditable", [locator,])
         end
 
 
@@ -1203,7 +1085,7 @@ module Selenium
         # 
         #
         def get_all_buttons()
-            return get_string_array("getAllButtons", [])
+            return string_array_command("getAllButtons", [])
         end
 
 
@@ -1213,7 +1095,7 @@ module Selenium
         # 
         #
         def get_all_links()
-            return get_string_array("getAllLinks", [])
+            return string_array_command("getAllLinks", [])
         end
 
 
@@ -1223,7 +1105,7 @@ module Selenium
         # 
         #
         def get_all_fields()
-            return get_string_array("getAllFields", [])
+            return string_array_command("getAllFields", [])
         end
 
 
@@ -1231,7 +1113,7 @@ module Selenium
         #
         # 'attributeName' is name of an attribute on the windows
         def get_attribute_from_all_windows(attributeName)
-            return get_string_array("getAttributeFromAllWindows", [attributeName,])
+            return string_array_command("getAttributeFromAllWindows", [attributeName,])
         end
 
 
@@ -1240,7 +1122,7 @@ module Selenium
         # 'locator' is an element locator
         # 'movementsString' is offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
         def dragdrop(locator,movementsString)
-            do_command("dragdrop", [locator,movementsString,])
+            remote_control_command("dragdrop", [locator,movementsString,])
         end
 
 
@@ -1254,14 +1136,14 @@ module Selenium
         #
         # 'pixels' is the number of pixels between "mousemove" events
         def set_mouse_speed(pixels)
-            do_command("setMouseSpeed", [pixels,])
+            remote_control_command("setMouseSpeed", [pixels,])
         end
 
 
         # Returns the number of pixels between "mousemove" events during dragAndDrop commands (default=10).
         #
         def get_mouse_speed()
-            return get_number("getMouseSpeed", [])
+            return number_command("getMouseSpeed", [])
         end
 
 
@@ -1270,7 +1152,7 @@ module Selenium
         # 'locator' is an element locator
         # 'movementsString' is offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
         def drag_and_drop(locator,movementsString)
-            do_command("dragAndDrop", [locator,movementsString,])
+            remote_control_command("dragAndDrop", [locator,movementsString,])
         end
 
 
@@ -1279,42 +1161,42 @@ module Selenium
         # 'locatorOfObjectToBeDragged' is an element to be dragged
         # 'locatorOfDragDestinationObject' is an element whose location (i.e., whose center-most pixel) will be the point where locatorOfObjectToBeDragged  is dropped
         def drag_and_drop_to_object(locatorOfObjectToBeDragged,locatorOfDragDestinationObject)
-            do_command("dragAndDropToObject", [locatorOfObjectToBeDragged,locatorOfDragDestinationObject,])
+            remote_control_command("dragAndDropToObject", [locatorOfObjectToBeDragged,locatorOfDragDestinationObject,])
         end
 
 
         # Gives focus to the currently selected window
         #
         def window_focus()
-            do_command("windowFocus", [])
+            remote_control_command("windowFocus", [])
         end
 
 
         # Resize currently selected window to take up the entire screen
         #
         def window_maximize()
-            do_command("windowMaximize", [])
+            remote_control_command("windowMaximize", [])
         end
 
 
         # Returns the IDs of all windows that the browser knows about.
         #
         def get_all_window_ids()
-            return get_string_array("getAllWindowIds", [])
+            return string_array_command("getAllWindowIds", [])
         end
 
 
         # Returns the names of all windows that the browser knows about.
         #
         def get_all_window_names()
-            return get_string_array("getAllWindowNames", [])
+            return string_array_command("getAllWindowNames", [])
         end
 
 
         # Returns the titles of all windows that the browser knows about.
         #
         def get_all_window_titles()
-            return get_string_array("getAllWindowTitles", [])
+            return string_array_command("getAllWindowTitles", [])
         end
 
 
@@ -1322,7 +1204,7 @@ module Selenium
         # closing "html" tags.
         #
         def get_html_source()
-            return get_string("getHtmlSource", [])
+            return string_command("getHtmlSource", [])
         end
 
 
@@ -1332,7 +1214,7 @@ module Selenium
         # 'locator' is an element locator pointing to an input element or textarea
         # 'position' is the numerical position of the cursor in the field; position should be 0 to move the position to the beginning of the field.  You can also set the cursor to -1 to move it to the end of the field.
         def set_cursor_position(locator,position)
-            do_command("setCursorPosition", [locator,position,])
+            remote_control_command("setCursorPosition", [locator,position,])
         end
 
 
@@ -1341,7 +1223,7 @@ module Selenium
         #
         # 'locator' is an element locator pointing to an element
         def get_element_index(locator)
-            return get_number("getElementIndex", [locator,])
+            return number_command("getElementIndex", [locator,])
         end
 
 
@@ -1351,7 +1233,7 @@ module Selenium
         # 'locator1' is an element locator pointing to the first element
         # 'locator2' is an element locator pointing to the second element
         def is_ordered(locator1,locator2)
-            return get_boolean("isOrdered", [locator1,locator2,])
+            return boolean_command("isOrdered", [locator1,locator2,])
         end
 
 
@@ -1359,7 +1241,7 @@ module Selenium
         #
         # 'locator' is an element locator pointing to an element OR an element itself
         def get_element_position_left(locator)
-            return get_number("getElementPositionLeft", [locator,])
+            return number_command("getElementPositionLeft", [locator,])
         end
 
 
@@ -1367,7 +1249,7 @@ module Selenium
         #
         # 'locator' is an element locator pointing to an element OR an element itself
         def get_element_position_top(locator)
-            return get_number("getElementPositionTop", [locator,])
+            return number_command("getElementPositionTop", [locator,])
         end
 
 
@@ -1375,7 +1257,7 @@ module Selenium
         #
         # 'locator' is an element locator pointing to an element
         def get_element_width(locator)
-            return get_number("getElementWidth", [locator,])
+            return number_command("getElementWidth", [locator,])
         end
 
 
@@ -1383,7 +1265,7 @@ module Selenium
         #
         # 'locator' is an element locator pointing to an element
         def get_element_height(locator)
-            return get_number("getElementHeight", [locator,])
+            return number_command("getElementHeight", [locator,])
         end
 
 
@@ -1396,7 +1278,7 @@ module Selenium
         #
         # 'locator' is an element locator pointing to an input element or textarea
         def get_cursor_position(locator)
-            return get_number("getCursorPosition", [locator,])
+            return number_command("getCursorPosition", [locator,])
         end
 
 
@@ -1408,7 +1290,7 @@ module Selenium
         #
         # 'expression' is the value to return
         def get_expression(expression)
-            return get_string("getExpression", [expression,])
+            return string_command("getExpression", [expression,])
         end
 
 
@@ -1417,7 +1299,7 @@ module Selenium
         #
         # 'xpath' is the xpath expression to evaluate. do NOT wrap this expression in a 'count()' function; we will do that for you.
         def get_xpath_count(xpath)
-            return get_number("getXpathCount", [xpath,])
+            return number_command("getXpathCount", [xpath,])
         end
 
 
@@ -1428,7 +1310,7 @@ module Selenium
         # 'locator' is an element locator pointing to an element
         # 'identifier' is a string to be used as the ID of the specified element
         def assign_id(locator,identifier)
-            do_command("assignId", [locator,identifier,])
+            remote_control_command("assignId", [locator,identifier,])
         end
 
 
@@ -1441,7 +1323,7 @@ module Selenium
         #
         # 'allow' is boolean, true means we'll prefer to use native XPath; false means we'll only use JS XPath
         def allow_native_xpath(allow)
-            do_command("allowNativeXpath", [allow,])
+            remote_control_command("allowNativeXpath", [allow,])
         end
 
 
@@ -1457,7 +1339,7 @@ module Selenium
         #
         # 'ignore' is boolean, true means we'll ignore attributes without value                        at the expense of xpath "correctness"; false means                        we'll sacrifice speed for correctness.
         def ignore_attributes_without_value(ignore)
-            do_command("ignoreAttributesWithoutValue", [ignore,])
+            remote_control_command("ignoreAttributesWithoutValue", [ignore,])
         end
 
 
@@ -1474,7 +1356,7 @@ module Selenium
         # 'script' is the JavaScript snippet to run
         # 'timeout' is a timeout in milliseconds, after which this command will return with an error
         def wait_for_condition(script,timeout)
-            do_command("waitForCondition", [script,timeout,])
+            remote_control_command("waitForCondition", [script,timeout,])
         end
 
 
@@ -1486,7 +1368,7 @@ module Selenium
         #
         # 'timeout' is a timeout in milliseconds, after which the action will return with an error
         def set_timeout(timeout)
-            do_command("setTimeout", [timeout,])
+            remote_control_command("setTimeout", [timeout,])
         end
 
 
@@ -1502,7 +1384,7 @@ module Selenium
         #
         # 'timeout' is a timeout in milliseconds, after which this command will return with an error
         def wait_for_page_to_load(timeout)
-            do_command("waitForPageToLoad", [timeout,])
+            remote_control_command("waitForPageToLoad", [timeout,])
         end
 
 
@@ -1517,14 +1399,14 @@ module Selenium
         # 'frameAddress' is FrameAddress from the server side
         # 'timeout' is a timeout in milliseconds, after which this command will return with an error
         def wait_for_frame_to_load(frameAddress,timeout)
-            do_command("waitForFrameToLoad", [frameAddress,timeout,])
+            remote_control_command("waitForFrameToLoad", [frameAddress,timeout,])
         end
 
 
         # Return all cookies of the current page under test.
         #
         def get_cookie()
-            return get_string("getCookie", [])
+            return string_command("getCookie", [])
         end
 
 
@@ -1532,7 +1414,7 @@ module Selenium
         #
         # 'name' is the name of the cookie
         def get_cookie_by_name(name)
-            return get_string("getCookieByName", [name,])
+            return string_command("getCookieByName", [name,])
         end
 
 
@@ -1540,7 +1422,7 @@ module Selenium
         #
         # 'name' is the name of the cookie
         def is_cookie_present(name)
-            return get_boolean("isCookiePresent", [name,])
+            return boolean_command("isCookiePresent", [name,])
         end
 
 
@@ -1550,7 +1432,7 @@ module Selenium
         # 'nameValuePair' is name and value of the cookie in a format "name=value"
         # 'optionsString' is options for the cookie. Currently supported options include 'path', 'max_age' and 'domain'.      the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.
         def create_cookie(nameValuePair,optionsString)
-            do_command("createCookie", [nameValuePair,optionsString,])
+            remote_control_command("createCookie", [nameValuePair,optionsString,])
         end
 
 
@@ -1568,7 +1450,7 @@ module Selenium
         # 'name' is the name of the cookie to be deleted
         # 'optionsString' is options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.
         def delete_cookie(name,optionsString)
-            do_command("deleteCookie", [name,optionsString,])
+            remote_control_command("deleteCookie", [name,optionsString,])
         end
 
 
@@ -1577,7 +1459,7 @@ module Selenium
         # than simply deleting the cookies using a known domain/path.
         #
         def delete_all_visible_cookies()
-            do_command("deleteAllVisibleCookies", [])
+            remote_control_command("deleteAllVisibleCookies", [])
         end
 
 
@@ -1588,7 +1470,7 @@ module Selenium
         #
         # 'logLevel' is one of the following: "debug", "info", "warn", "error" or "off"
         def set_browser_log_level(logLevel)
-            do_command("setBrowserLogLevel", [logLevel,])
+            remote_control_command("setBrowserLogLevel", [logLevel,])
         end
 
 
@@ -1602,7 +1484,7 @@ module Selenium
         #
         # 'script' is the JavaScript snippet to run
         def run_script(script)
-            do_command("runScript", [script,])
+            remote_control_command("runScript", [script,])
         end
 
 
@@ -1624,7 +1506,7 @@ module Selenium
         # 'strategyName' is the name of the strategy to define; this should use only   letters [a-zA-Z] with no spaces or other punctuation.
         # 'functionDefinition' is a string defining the body of a function in JavaScript.   For example: <tt>return inDocument.getElementById(locator);</tt>
         def add_location_strategy(strategyName,functionDefinition)
-            do_command("addLocationStrategy", [strategyName,functionDefinition,])
+            remote_control_command("addLocationStrategy", [strategyName,functionDefinition,])
         end
 
 
@@ -1639,7 +1521,19 @@ module Selenium
         # 'filename' is the path to the file to persist the screenshot as. No                  filename extension will be appended by default.                  Directories will not be created if they do not exist,                    and an exception will be thrown, possibly by native                  code.
         # 'kwargs' is a kwargs string that modifies the way the screenshot                  is captured. Example: "background=#CCFFDD" .                  Currently valid options:                  *    background::    the background CSS for the HTML document. This                     may be useful to set for capturing screenshots of                     less-than-ideal layouts, for example where absolute                     positioning causes the calculation of the canvas                     dimension to fail and a black background is exposed                     (possibly obscuring black text).
         def capture_entire_page_screenshot(filename,kwargs)
-            do_command("captureEntirePageScreenshot", [filename,kwargs,])
+            remote_control_command("captureEntirePageScreenshot", [filename,kwargs,])
+        end
+
+
+        # Executes a command rollup, which is a series of commands with a unique
+        # name, and optionally arguments that control the generation of the set of
+        # commands. If any one of the rolled-up commands fails, the rollup is
+        # considered to have failed. Rollups may also contain nested rollups.
+        #
+        # 'rollupName' is the name of the rollup command
+        # 'kwargs' is keyword arguments string that influences how the                    rollup expands into commands
+        def rollup(rollupName,kwargs)
+            remote_control_command("rollup", [rollupName,kwargs,])
         end
 
 
@@ -1648,7 +1542,7 @@ module Selenium
         #
         # 'context' is the message to be sent to the browser
         def set_context(context)
-            do_command("setContext", [context,])
+            remote_control_command("setContext", [context,])
         end
 
 
@@ -1657,7 +1551,7 @@ module Selenium
         # 'fieldLocator' is an element locator
         # 'fileLocator' is a URL pointing to the specified file. Before the file  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file    to the local machine before attaching the file in a web page form. This is common in selenium  grid configurations where the RC server driving the browser is not the same  machine that started the test.   Supported Browsers: Firefox ("*chrome") only.
         def attach_file(fieldLocator,fileLocator)
-            do_command("attachFile", [fieldLocator,fileLocator,])
+            remote_control_command("attachFile", [fieldLocator,fileLocator,])
         end
 
 
@@ -1665,7 +1559,26 @@ module Selenium
         #
         # 'filename' is the absolute path to the file to be written, e.g. "c:\blah\screenshot.png"
         def capture_screenshot(filename)
-            do_command("captureScreenshot", [filename,])
+            remote_control_command("captureScreenshot", [filename,])
+        end
+
+
+        # Capture a PNG screenshot.  It then returns the file as a base 64 encoded string.
+        #
+        def capture_screenshot_to_string()
+            return string_command("captureScreenshotToString", [])
+        end
+
+
+        # Downloads a screenshot of the browser current window canvas to a 
+        # based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,
+        # including parts rendered outside of the current view port.
+        # 
+        # Currently this only works in Mozilla and when running in chrome mode.
+        #
+        # 'kwargs' is A kwargs string that modifies the way the screenshot is captured. Example: "background=#CCFFDD". This may be useful to set for capturing screenshots of less-than-ideal layouts, for example where absolute positioning causes the calculation of the canvas dimension to fail and a black background is exposed  (possibly obscuring black text).
+        def capture_entire_page_screenshot_to_string(kwargs)
+            return string_command("captureEntirePageScreenshotToString", [kwargs,])
         end
 
 
@@ -1675,7 +1588,16 @@ module Selenium
         # shutting down the entire server.
         #
         def shut_down_selenium_server()
-            do_command("shutDownSeleniumServer", [])
+            remote_control_command("shutDownSeleniumServer", [])
+        end
+
+
+        # Retrieve the last messages logged on a specific remote control. Useful for error reports, especially
+        # when running multiple remote controls in a distributed environment. The maximum number of log messages
+        # that can be retrieve is configured on remote control startup.
+        #
+        def retrieve_last_remote_control_logs()
+            return string_command("retrieveLastRemoteControlLogs", [])
         end
 
 
@@ -1687,7 +1609,7 @@ module Selenium
         #
         # 'keycode' is an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
         def key_down_native(keycode)
-            do_command("keyDownNative", [keycode,])
+            remote_control_command("keyDownNative", [keycode,])
         end
 
 
@@ -1699,7 +1621,7 @@ module Selenium
         #
         # 'keycode' is an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
         def key_up_native(keycode)
-            do_command("keyUpNative", [keycode,])
+            remote_control_command("keyUpNative", [keycode,])
         end
 
 
@@ -1711,46 +1633,10 @@ module Selenium
         #
         # 'keycode' is an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
         def key_press_native(keycode)
-            do_command("keyPressNative", [keycode,])
+            remote_control_command("keyPressNative", [keycode,])
         end
 
 
-    end
-
-    SeleneseInterpreter = SeleniumDriver # for backward compatibility
-
-end
-
-class SeleniumCommandError < RuntimeError 
-end
-
-# Defines a mixin module that you can use to write Selenium tests
-# without typing "@selenium." in front of every command.  Every
-# call to a missing method will be automatically sent to the @selenium
-# object.
-module SeleniumHelper
-    
-    # Overrides standard "open" method with @selenium.open
-    def open(addr)
-      @selenium.open(addr)
-    end
-    
-    # Overrides standard "type" method with @selenium.type
-    def type(inputLocator, value)
-      @selenium.type(inputLocator, value)
-    end
-    
-    # Overrides standard "select" method with @selenium.select
-    def select(inputLocator, optionLocator)
-      @selenium.select(inputLocator, optionLocator)
-    end
-
-    # Passes all calls to missing methods to @selenium
-    def method_missing(method_name, *args)
-        if args.empty?
-            @selenium.send(method_name)
-        else
-            @selenium.send(method_name, *args)
-        end
-    end
-end
+    end        # GeneratedDriver
+  end          # Client 
+end            # Selenium

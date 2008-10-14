@@ -1,6 +1,7 @@
 coverage
 config/collector.conf
 config/database.yml
+config/selenium.yml
 db/development_structure.sql
 doc/TODO
 log
