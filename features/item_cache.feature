@@ -1,5 +1,5 @@
 Feature: Item Cache Access
-  As the collector
+  As a collector
   I want to update Winnow's item cache
   So that it can have some items.
   

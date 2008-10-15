@@ -1,7 +1,7 @@
 Feature: Feed Creation
   As a User
   I want to add feeds
-  So I can read things I'm interested it
+  So that I can read things I'm interested it
 
   Scenario: Creating a new feed
     Given no feeds in the system
