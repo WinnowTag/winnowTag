@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: selenium-client
 version: !ruby/object:Gem::Version 
-  version: 1.2.5
+  version: 1.2.6
 platform: ruby
 authors: 
 - OpenQA
@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2008-10-02 00:00:00 -04:00
+date: 2008-10-12 00:00:00 -04:00
 default_executable: 
 dependencies: []
 
@@ -57,7 +57,6 @@ rdoc_options:
 - README
 - --line-numbers
 require_paths: 
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 

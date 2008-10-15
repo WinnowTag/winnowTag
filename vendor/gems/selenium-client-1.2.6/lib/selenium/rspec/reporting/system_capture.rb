@@ -24,13 +24,11 @@ module Selenium
           rescue Exception => e
             STDERR.puts "WARNING: Could not capture HTML snapshot: #{e}"
           end
-          # TODO: This does not seem to be implemented by the selenium server
-          # begin
-          #   capture_page_screenshot
-          # rescue Exception => e
-          #   STDERR.puts "WARNING: Could not capture page screenshot: #{e}"
-          #   # STDERR.puts "\t" + e.backtrace.join("\n\t")
-          # end
+          begin
+            capture_page_screenshot
+          rescue Exception => e
+            STDERR.puts "WARNING: Could not capture page screenshot: #{e}"
+          end
           begin
             capture_system_screenshot
           rescue Exception => e

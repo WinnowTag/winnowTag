@@ -4,7 +4,7 @@ module Selenium
     # Client driver providing the complete API to drive a Selenium Remote Control
     class Driver
       include Selenium::Client::Base
-      
+
       def self.instance(*args)
         return @instance if @instance
 
@@ -16,5 +16,6 @@ module Selenium
         @instance
       end
     end
+  
   end
 end
