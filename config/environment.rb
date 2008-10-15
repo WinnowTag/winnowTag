@@ -31,12 +31,12 @@ Rails::Initializer.run do |config|
   config.gem "ratom",           :lib => "atom"
   config.gem "RedCloth"
   config.gem "selenium-client", :lib => "selenium/client"
+  config.gem "tzinfo"
 
   # Must be compiled/installed on the target system
   config.gem "hpricot",     :version => "0.6.161"
   config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"
   config.gem "mysql",       :version => "2.7"
-  config.gem "tzinfo",      :version => "0.3.11"
       
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
