@@ -118,8 +118,17 @@ task :send_notification do
   run %Q(cd #{current_path} && script/runner -e production 'Notifier.deliver_deployed("http://#{domain}", "#{repository}", "#{revision}", "#{ENV['USER']}", "#{mail_comment}")')
 end
 
-after :'deploy:update_code', :copy_config
+after 'deploy:update_code', :copy_config
 after :deploy, :send_notification
+
+namespace :gems do
+  task :build do  
+    rake = fetch(:rake, "rake")
+    rails_env = fetch(:rails_env, "production")
+    run "cd #{release_path}; #{rake} RAILS_ENV=#{rails_env} gems:build"
+  end
+end
+after "deploy:update_code", "gems:build"
 
 namespace :deploy do
   [:start, :stop, :restart, :status].each do |t|
