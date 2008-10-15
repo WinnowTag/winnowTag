@@ -7,6 +7,7 @@ Selenium::Rake::RemoteControlStartTask.new do |rc|
   rc.wait_until_up_and_running = true
   rc.jar_file = File.join(File.dirname(__FILE__), '..', 'selenium-server.jar')
   rc.additional_args << "-singleWindow"
+  rc.additional_args << "> /dev/null"
 end
 
 Selenium::Rake::RemoteControlStopTask.new do |rc|
