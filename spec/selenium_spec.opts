@@ -1,4 +1,4 @@
 --colour
---require vendor/gems/selenium-client-1.2.5/lib/selenium/rspec/reporting/selenium_test_report_formatter
+--require vendor/gems/selenium-client-1.2.6/lib/selenium/rspec/reporting/selenium_test_report_formatter
 --format=Selenium::RSpec::SeleniumTestReportFormatter:./tmp/acceptance_tests_report.html
 --format=progress

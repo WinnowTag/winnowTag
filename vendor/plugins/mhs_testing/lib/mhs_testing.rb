@@ -4,4 +4,4 @@ require File.join(File.dirname(__FILE__), 'matchers')
 #   config.include ValidationMatchers, AssociationMatchers
 # end
 
-# config.gem "selenium-client", :version => "1.2.5", :lib => "selenium/client"
+# config.gem "selenium-client", :version => "1.2.6", :lib => "selenium/client"
