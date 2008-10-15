@@ -8,13 +8,11 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe '/feedbacks/_feedback.html.erb' do
   before(:each) do
     @feedback = mock_model(Feedback, :user => mock_model(User, :display_name => "John Doe"), :created_at => 3.days.ago, :body => "This is a feature requests")
-    assigns[:feedback] = @feedback
-    
     template.stub!(:format_date).and_return("THE DATE")
   end
   
   def render_it
-    render :partial => '/feedbacks/feedback.html.erb'
+    render :partial => '/feedbacks/feedback.html.erb', :locals => { :feedback => @feedback }
   end
   
   it "displays the user who posted the feedback" do

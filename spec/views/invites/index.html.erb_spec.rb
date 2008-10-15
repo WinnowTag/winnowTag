@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/invites/index.html.erb' do
   before(:each) do
-    template.stub_render(:partial => "header_controls")
+    template.stub!(:render).with(:partial => "header_controls")
   end
   
   def render_it
@@ -15,7 +15,7 @@ describe '/invites/index.html.erb' do
   end
   
   it "shows the header controls" do
-    template.expect_render(:partial => "header_controls").and_return("header controls")
+    template.should_receive(:render).with(:partial => "header_controls").and_return("header controls")
     render_it
     response.capture(:header_controls).should match(/header controls/)
   end
