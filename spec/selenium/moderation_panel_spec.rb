@@ -165,54 +165,51 @@ describe "moderation panel" do
     see_element "#feed_item_4 .moderation_panel .tag .name:contains(new tag)"
   end
 
-  # TODO: selenium does not fire the necessary keyboard events
-  xit "disables unmatched tags when typing" do
+  it "disables unmatched tags when typing" do
     page.click "css=#feed_item_4 .train"
     page.wait_for :wait_for => :ajax
-    
+
     dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(^classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(unused tag)"
-    page.type "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
+    page.type_keys "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
     dont_see_element "#feed_item_4 .moderation_panel .tag.disbaled .name:contains(positive tag)"
          see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative tag)"
-         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(classifier tag)"
+         see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(^classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
          see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
          see_element "#feed_item_4 .moderation_panel .tag.disabled .name:contains(unused tag)"
   end
   
-  # TODO: selenium does not fire the necessary keyboard events
-  xit "selects the first matched tag when typing" do
+  it "selects the first matched tag when typing" do
     page.click "css=#feed_item_4 .train"
     page.wait_for :wait_for => :ajax
     
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(^classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(unused tag)"
-    page.type "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
+    page.type_keys "css=#feed_item_4 .moderation_panel input[type=text]", "pos"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative tag)"
-    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(classifier tag)"
+    dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(^classifier tag)"
          see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
     dont_see_element "#feed_item_4 .moderation_panel .tag.selected .name:contains(unused tag)"
   end
   
-  # TODO: selenium does not fire the necessary keyboard events
-  xit "uses the selected tag when submitting the form" do
+  it "uses the selected tag when submitting the form" do
     page.click "css=#feed_item_4 .train"
     page.wait_for :wait_for => :ajax
     
     dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"
     dont_see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.selected"
-    page.type "css=#feed_item_4 .moderation_panel input[type=text]", "clas"
+    page.type_keys "css=#feed_item_4 .moderation_panel input[type=text]", "clas"
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.selected"
     hit_enter "css=#feed_item_4 .moderation_panel input[type=text]"
     see_element "#feed_item_4 .moderation_panel .#{dom_id(@classifier_tag)}.positive"    

@@ -86,14 +86,13 @@ describe "FeedItemsTest" do
     dont_see_element "#feed_item_#{feed_item_1.id}"
   end
   
-  # TODO: cannot ask selenium if clicking this link opened a new window
-  xit "click_feed_title_takes_you_to_feed_page" do
+  it "click_feed_title_takes_you_to_feed_page" do
+    windows = page.get_all_window_ids
     feed_item_1 = FeedItem.find(1)
     feed1 = feed_item_1.feed
-    see_element "#feed_item_#{feed_item_1.id} .feed_title"
-    page.click "css=#feed_item_#{feed_item_1.id} .feed_title", :wait_for => :page
-    assert_match feed_url(feed1), get_location
-    see_element "#feed_1"
+    page.click "css=#feed_item_#{feed_item_1.id} .feed_title", :wait_for => :ajax
+    page.click "css=#feed_item_#{feed_item_1.id} #feed_#{feed1.id} a[href=/feed_items#feed_ids=#{feed1.id}]"
+    page.get_all_window_ids.should have(windows.size + 1).windows
   end
   
   it "displays an empty message when there are no feed items" do

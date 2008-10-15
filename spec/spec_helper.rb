@@ -41,7 +41,9 @@ module CustomSeleniumHelpers
   end
   
   def hit_enter(locator)
-    page.key_press locator, '\13'
+    page.key_down(locator, '\13')
+    page.key_press(locator, '\13')
+    page.key_up(locator, '\13')
   end
 end
 
