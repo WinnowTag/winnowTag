@@ -93,14 +93,17 @@ class FeedItemsController < ApplicationController
   
   def body
     @feed_item = FeedItem.find(params[:id])
+    render :layout => false
   end
   
   def moderation_panel 
     @feed_item = FeedItem.find(params[:id]) 
+    render :layout => false
   end
   
   def feed_information 
     @feed_item = FeedItem.find(params[:id]) 
+    render :layout => false
   end
 
   def sidebar

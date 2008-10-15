@@ -15,7 +15,9 @@ describe Remote::Feed do
   
   it "should send import_opml messages" do
     ActiveResource::HttpMock.respond_to do |http|
-      http.post '/feeds/import_opml.xml', {"Authorization" => "AuthHMAC winnow_id:qcSBTcXB/DPo4AatdqvnpRdzeA4=", "Content-Type" => "text/x-opml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, [Feed.find(1)].to_xml, 200
+      http.post "/feeds/import_opml.xml", 
+        {"Authorization" => "AuthHMAC winnow_id:qcSBTcXB/DPo4AatdqvnpRdzeA4=", "Content-Type" => "text/x-opml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
+        [Feed.find(1)].to_xml, 200
     end
     
     feeds = Remote::Feed.import_opml(File.read(File.join(RAILS_ROOT, 'spec', 'fixtures', 'example.opml')))
@@ -24,7 +26,8 @@ describe Remote::Feed do
     
   it "collect_creates_new_collection_job" do
     ActiveResource::HttpMock.respond_to do |mock|
-      mock.post   "/feeds/1/collection_jobs.xml",   {"Authorization" => "AuthHMAC winnow_id:A5tNxOwPuabChDo4oPLWvb6RyPs=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
+      mock.post "/feeds/1/collection_jobs.xml",
+        {"Authorization" => "AuthHMAC winnow_id:A5tNxOwPuabChDo4oPLWvb6RyPs=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
         nil, 201, 'Location' => '/feeds/1/collection_jobs/3'
     end
     job = Remote::Feed.new(:id => 1).collect
@@ -33,7 +36,8 @@ describe Remote::Feed do
   
   it "collect_sets_user" do
     ActiveResource::HttpMock.respond_to do |mock|
-      mock.post   "/feeds/1/collection_jobs.xml",   {"Authorization" => "AuthHMAC winnow_id:A5tNxOwPuabChDo4oPLWvb6RyPs=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
+      mock.post "/feeds/1/collection_jobs.xml",
+        {"Authorization" => "AuthHMAC winnow_id:A5tNxOwPuabChDo4oPLWvb6RyPs=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
         nil, 201, 'Location' => '/feeds/1/collection_jobs/3'
     end
     job = Remote::Feed.new(:id => 1).collect(:created_by => 'seangeo')
@@ -42,7 +46,8 @@ describe Remote::Feed do
   
   it "collect_sets_callback_url" do
     ActiveResource::HttpMock.respond_to do |mock|
-      mock.post   "/feeds/1/collection_jobs.xml",   {"Authorization" => "AuthHMAC winnow_id:A5tNxOwPuabChDo4oPLWvb6RyPs=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
+      mock.post "/feeds/1/collection_jobs.xml",
+        {"Authorization" => "AuthHMAC winnow_id:A5tNxOwPuabChDo4oPLWvb6RyPs=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
         nil, 201, 'Location' => '/feeds/1/collection_jobs/3'
     end
     job = Remote::Feed.new(:id => 1).collect(:callback_url => 'http://localhost/callback')
@@ -51,17 +56,19 @@ describe Remote::Feed do
   
   it "should map alternate to link" do
     ActiveResource::HttpMock.respond_to do |http|
-      http.get  "/feeds/23.xml", {"Authorization" => "AuthHMAC winnow_id:TmnosJ8sTFdhgpXqhANr+c3gfZQ=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
+      http.get "/feeds/23.xml", 
+        {"Authorization" => "AuthHMAC winnow_id:SyNewUAs1BjEd8+8/JmqW4heQMI=", "Accept" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
         {:url => 'http://example.com', :link => 'http://example.com/html'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
     end
-    
+
     feed = Remote::Feed.find("23")
     feed.alternate.should == 'http://example.com/html'
   end
   
   it "should map via to url" do
     ActiveResource::HttpMock.respond_to do |http|
-      http.get  "/feeds/23.xml", {"Authorization" => "AuthHMAC winnow_id:TmnosJ8sTFdhgpXqhANr+c3gfZQ=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
+      http.get "/feeds/23.xml", 
+        {"Authorization" => "AuthHMAC winnow_id:SyNewUAs1BjEd8+8/JmqW4heQMI=", "Accept" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
         {:url => 'http://example.com', :link => 'http://example.com/html'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
     end
     
@@ -71,7 +78,8 @@ describe Remote::Feed do
   
   it "find_or_create_by_url" do
     ActiveResource::HttpMock.respond_to do |http|
-      http.post  "/feeds.xml", {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
+      http.post "/feeds.xml",
+        {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
         {:url => 'http://example.com', :created_by => 'quentin'}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
     end
     
@@ -83,12 +91,14 @@ describe Remote::Feed do
   
   it "find_or_create_by_url_with_duplicate    " do
     ActiveResource::HttpMock.respond_to do |http|
-      http.post  "/feeds.xml", {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
-                 {:url => 'http://example.com', :created_by => 'quentin'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
-      http.get   "/feeds/24.xml", {"Authorization" => "AuthHMAC winnow_id:k0mqST9OWYaq5eeAjvjzmY75y1Y=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
-                 {:url => 'http://www.example.com', :id => 24, :created_by => 'quentin'}.to_xml(:root => 'feed'), 200
+      http.post "/feeds.xml", 
+        {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
+        {:url => 'http://example.com', :created_by => 'quentin'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
+      http.get "/feeds/24.xml", 
+        {"Authorization" => "AuthHMAC winnow_id:duRJowCjTYd7xrSFEkXfyS8hono=", "Accept" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
+        {:url => 'http://www.example.com', :id => 24, :created_by => 'quentin'}.to_xml(:root => 'feed'), 200
     end
-    
+
     job = Remote::Feed.find_or_create_by_url_and_created_by("http://example.com", 'quentin')
     assert_equal "http://www.example.com", job.url
     assert_equal 24, job.id
@@ -98,11 +108,14 @@ describe Remote::Feed do
   
   it "find_or_create_by_url_with_redirect_loop_raises_exception" do
     ActiveResource::HttpMock.respond_to do |http|
-      http.post  "/feeds.xml", {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
-                 {:url => 'http://example.com'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
-      http.get   "/feeds/24.xml", {"Authorization" => "AuthHMAC winnow_id:k0mqST9OWYaq5eeAjvjzmY75y1Y=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, nil, 302, 'Location' => '/feeds/24'
+      http.post "/feeds.xml", 
+        {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
+        {:url => 'http://example.com'}.to_xml(:root => 'feed'), 302, 'Location' => '/feeds/24'
+      http.get "/feeds/24.xml", 
+        {"Authorization" => "AuthHMAC winnow_id:duRJowCjTYd7xrSFEkXfyS8hono=", "Accept" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
+        nil, 302, 'Location' => '/feeds/24'
     end
-    
+
     assert_raise(ActiveResource::Redirection) { job = Remote::Feed.find_or_create_by_url_and_created_by('http://example.com', 'quentin') }    
   end
   
