@@ -30,7 +30,7 @@ describe "Tags" do
       
       see_element("#name_tag_#{@other.id}-inplaceeditor")
       page.type "css=input.editor_field", tag.name
-      hit_enter "css=input.editor_field"
+      page.key_down "css=input.editor_field", '\13' # enter
       page.wait_for :wait_for => :ajax
       page.confirmation
       page.wait_for :wait_for => :page
@@ -45,7 +45,7 @@ describe "Tags" do
     
     see_element("#name_tag_#{tag.id}-inplaceeditor")
     page.type "css=input.editor_field", new_name
-    hit_enter "css=input.editor_field"
+    page.key_down "css=input.editor_field", '\13' # enter
     page.wait_for :wait_for => :ajax
     see_element "#name_tag_#{tag.id}"
     tag.reload
