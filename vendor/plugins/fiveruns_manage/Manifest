@@ -9,6 +9,7 @@ lib/fiveruns/manage/targets/rails/action_controller/routing_error.rb
 lib/fiveruns/manage/targets/rails/action_mailer/base.rb
 lib/fiveruns/manage/targets/rails/action_view/base.rb
 lib/fiveruns/manage/targets/rails/action_view/partial_template.rb
+lib/fiveruns/manage/targets/rails/action_view/renderable_partial.rb
 lib/fiveruns/manage/targets/rails/active_record/active_record_error.rb
 lib/fiveruns/manage/targets/rails/active_record/base.rb
 lib/fiveruns/manage/targets/rails/cgi/session.rb

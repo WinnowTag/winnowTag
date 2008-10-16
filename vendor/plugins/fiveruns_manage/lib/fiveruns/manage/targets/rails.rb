@@ -5,7 +5,7 @@ module Fiveruns::Manage::Targets
     SUPPORT = {
       :obsolete => Fiveruns::Manage::Version.new(1, 2, 0),
       :min      => Fiveruns::Manage::Version.new(1, 2, 6),
-      :max      => Fiveruns::Manage::Version.new(2, 1, 0)
+      :max      => Fiveruns::Manage::Version.new(2, 2, 0)
     }
     
     def self.allowed?

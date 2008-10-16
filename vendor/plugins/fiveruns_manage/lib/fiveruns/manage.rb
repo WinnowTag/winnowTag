@@ -31,14 +31,17 @@ module Fiveruns
             begin
               real_target.alias_method_chain(name, :fiveruns_manage)
             rescue
-              Fiveruns::Manage.log :warn, "Could not instrument #{target} (#{meth})"
+              Fiveruns::Manage.log :debug, "Could not instrument #{target} (#{meth})", true
             end
           end
         end
       end
       
-      def log(level, text)
-        log_with logger, level, text
+      def log(level, text, require_debug = false)
+        if !require_debug || ENV['FIVERUNS_DEBUG']
+          text = "*Shhh* #{text}" if require_debug && ENV['FIVERUNS_DEBUG']
+          log_with logger, level, text
+        end
       end
       
       def log_with(use_logger, level, text)

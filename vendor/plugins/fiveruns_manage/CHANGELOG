@@ -1,3 +1,8 @@
+v1.0.4. Add better support for Passenger.  Previously a Rails app with no active pool instances would be considered Down
+        by the FiveRuns Manage service.  The client now recognizes the app as quiescent.
+        Certain files were not being cleaned up when the process exited, due to Passenger's reaping of the child instance.
+        Fix instrumentation breakage on Edge Rails due to API changes.
+
 v1.0.3. More work on thread synchronization, where the reporter thread grabs the data cache.
         Fix collection of root metrics with a context.
 

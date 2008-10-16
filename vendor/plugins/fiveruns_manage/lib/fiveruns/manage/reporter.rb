@@ -14,10 +14,11 @@ module Fiveruns
 
       def start
         return false if !start?
-        unless @started 
+        unless alive?
           setup_file_removal!
           Fiveruns::Manage.log :debug, "Reporting metrics in #{@config.report_interval}s intervals to #{File.basename(report_filename)}"
           @thread = Thread.new do
+            write_passenger
             write_info
             start_report
             loop do
@@ -25,7 +26,6 @@ module Fiveruns
               report
             end
           end
-          @started = true
         end
       end
       
@@ -86,15 +86,34 @@ module Fiveruns
       end
 
       def info_filename
-        @info_filename ||= File.join(@config.report_directory, 'fiveruns', "#{Process.pid}.info.yml")
+        @info_filename ||= File.join(@config.report_directory, 'fiveruns', "info.yml")
       end
       
+      def passenger_filename
+        @passenger_filename ||= File.join(@config.report_directory, 'fiveruns', "passenger.yml")
+      end
+
       def write_info
         if @config.report?
+          FileUtils.rm_f info_filename
           File.open(info_filename, 'w') do |f|        
             f.puts ::Fiveruns::Manage::Plugin::Info.new.to_yaml
           end
         end
+      end
+
+      def write_passenger
+        if @config.report? && passenger? && !File.exist?(passenger_filename)
+          File.open(passenger_filename, 'w') do |f|
+            f.puts %(This file tells the FiveRuns Client that this Rails app is being\nserved by Phusion Passenger.  Do not remove it.).to_yaml
+          end
+        elsif File.exist?(passenger_filename) && !passenger?
+          FileUtils.rm_f passenger_filename
+        end
+      end
+
+      def passenger?
+        !!(defined? Passenger::Application)
       end
 
       def start_report
