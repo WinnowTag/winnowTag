@@ -699,6 +699,7 @@ ul.filter_list li .auto_complete_name {
 }
 
 #footer #classification_section .progress_bar_container {
+  position: relative;
   float: right;
   margin: 1px 0 0 0;
   width: 20em;
@@ -708,26 +709,18 @@ ul.filter_list li .auto_complete_name {
 }
 
 #footer #classification_section .progress_bar_container #progress_title {
-  font-size: .95em;
-  text-align: center;
+  position: absolute;
   width: 100%;
   line-height: 2;
+  font-size: .95em;
+  font-weight: bold;
+  text-align: center;
 }
 
 #footer #classification_section .progress_bar_container .progress_bar {
   height: 2em;
   width: 0;
-  background-color: #1010C8;
-}
-
-.complete {
-  background-color: #00FF00;
-}
-
-.cancelled {
-  background-color: #FF0000;
-  font-weight: bold;
-  color: #eee;
+  background-color: #558BCE;
 }
 
 /*
