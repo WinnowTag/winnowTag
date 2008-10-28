@@ -75,14 +75,14 @@ module Fiveruns
 
       MAJOR = 1
       MINOR = 0
-      TINY  = 3
+      TINY  = 4
 
       # The current version as a Version instance
       CURRENT = new(MAJOR, MINOR, TINY)
       # The current version as a String
       STRING = CURRENT.to_s
       
-      DESCRIPTION = '1.0.3'
+      DESCRIPTION = '1.0.4'
       
     end
     

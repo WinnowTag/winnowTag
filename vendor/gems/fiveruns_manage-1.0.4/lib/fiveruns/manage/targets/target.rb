@@ -23,7 +23,7 @@ module Fiveruns::Manage::Targets
           begin
             constant.__send__(:include, instrumentation)
           rescue => e
-            Fiveruns::Manage.log :warn, "Could not instrument #{constant} (#{e.message}, #{e.backtrace[0,4].join(' | ')})"
+            Fiveruns::Manage.log :debug, "Could not instrument #{constant} (#{e.message}, #{e.backtrace[0,4].join(' | ')})", true
           end
         end
         log_activation
@@ -86,12 +86,17 @@ module Fiveruns::Manage::Targets
         
         require filename
         instrumentation = "#{self.class}::#{constant_name}".constantize
-        next if instrumentation.respond_to?(:relevant?) && !instrumentation.relevant?
         
         if (constant = constant_name.constantize rescue nil)
           [constant, instrumentation]
         else
-          Fiveruns::Manage.log :debug, "#{constant_name} not found; skipping instrumentation."
+          if instrumentation.respond_to?(:complain?) && instrumentation.complain?
+            Fiveruns::Manage.log :debug, "#{constant_name} not found; skipping instrumentation"
+            Fiveruns::Manage.log :debug, "#{constant_name} is marked as needed for #{Fiveruns::Manage::Version.rails}", true
+          else
+            # Output a FiveRuns-development debugging message
+            Fiveruns::Manage.log :debug, "#{constant_name} not found. #{instrumentation} not applied (not marked as needed for #{Fiveruns::Manage::Version.rails})", true
+          end
           nil
         end
       end.compact

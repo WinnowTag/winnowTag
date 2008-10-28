@@ -21,6 +21,15 @@ module Fiveruns::Manage::Targets::Rails::ActiveRecord
   
     def self.record_connection(model)
       result = yield
+      if model.respond_to?(:connection_pool)
+        record_connection_with_pooling(model)
+      else
+        record_connection_without_pooling(model)
+      end
+      result
+    end
+    
+    def self.record_connection_without_pooling(model)
       Fiveruns::Manage.metrics_in nil, nil, nil do |metrics|
         metrics[:active_conns] = model.active_connections.size
       end
@@ -29,7 +38,18 @@ module Fiveruns::Manage::Targets::Rails::ActiveRecord
       if adapter != NilClass && !Fiveruns::Manage.instrumented_adapters.include?(adapter)
         instrument_adapter(adapter)
       end
-      result
+    end
+    
+    def self.record_connection_with_pooling(model)
+      pool = model.connection_pool
+      checked_out = pool.instance_eval { @checked_out }
+      Fiveruns::Manage.metrics_in nil, nil, nil do |metrics|
+        metrics[:active_conns] = checked_out.size
+      end
+      adapter     = checked_out.first.class
+      if adapter != NilClass && !Fiveruns::Manage.instrumented_adapters.include?(adapter)
+        instrument_adapter(adapter)
+      end
     end
   
     def self.instrument_adapter(adapter)
