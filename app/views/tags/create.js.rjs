@@ -1,3 +1,2 @@
-page['tag_filters'].insertInOrder 'li', '.name', tag_filter_control(@tag, :editable => true, :remove => :subscription), @tag.name
-page.draggable(dom_id(@tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, 
-  :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }")
+page['tag_filters'].insertInOrder 'li', '.name', tag_filter_control(@tag, :draggable => true, :editable => true, :remove => :subscription), @tag.name
+page << "itemBrowser.bindTagFilterEvents($('tag_filters').down('##{dom_id(@tag)}'));"

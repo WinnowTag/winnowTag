@@ -295,15 +295,9 @@ var Item = Class.create({
         
         // TODO: Move this to itembrowser.js
         // Add/Update the filter for this tag
-        if(!$(data.id)) {
-          $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name)
-        
-          new Draggable(data.id, { scroll: "sidebar", ghosting: true, revert: true, constraint: "vertical", 
-            reverteffect: function(element, top_offset, left_offset) {
-              new Effect.Move(element, {x: -left_offset, y: -top_offset, duration: 0});
-            }
-          });
-          
+        if(!$('tag_filters').down("#" + data.id)) {
+          $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name);
+          itembrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
           itemBrowser.styleFilters();
         } else {
           $$(".filter_list ." + data.id).each(function(element) {

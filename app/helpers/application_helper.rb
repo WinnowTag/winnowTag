@@ -144,7 +144,7 @@ module ApplicationHelper
     html = content_tag(:div, html, :class => "actions")
 
     # TODO: sanitize
-    html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name")
+    html << link_to_function(feed.title, "", :class => "name")
     
     html =  content_tag(:div, html, :class => "filter")
     # TODO: sanitize
@@ -153,7 +153,6 @@ module ApplicationHelper
     class_names = [dom_id(feed), "clearfix", "feed"]
     class_names << "draggable" if options[:draggable]
     html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-    html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }") if options[:draggable]
     html
   end
   
@@ -184,8 +183,8 @@ module ApplicationHelper
     html  = content_tag(:div, html, :class => "actions")
 
     # TODO: sanitize
-    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"))
-    
+    html << link_to_function(tag.name, "", :class => "name", :id => dom_id(tag, "name"))
+
     html =  content_tag(:div, html, :class => "filter clearfix")
     # TODO: sanitize
     html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
@@ -198,7 +197,6 @@ module ApplicationHelper
       when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
     end
     html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url, :title => tag_tooltip(tag))
-    html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }") if options[:draggable]
     html
   end
   

@@ -225,7 +225,7 @@ describe ApplicationHelper do
       feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
         with_tag "div.filter" do
           with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({feed_ids: '#{feed.id}'})")}.*/
-          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)")}.*/
+          with_tag "a.name"
         end
       end
     end
@@ -249,7 +249,6 @@ describe ApplicationHelper do
     it "creates a filter control for a feed with draggable controls" do
       feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
       feed_filter_control(feed, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
-      feed_filter_control(feed, :remove => :subscription, :draggable => true).should have_tag("script", /.*Draggable.*/)
     end
   end
   
@@ -271,7 +270,7 @@ describe ApplicationHelper do
       tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}") do
         with_tag "div.filter" do
           with_tag "a.remove[onclick=?]", /.*#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
-          with_tag "a.name[onclick=?]", /#{Regexp.escape("itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)")}.*/
+          with_tag "a.name"
         end
       end
     end
@@ -314,7 +313,6 @@ describe ApplicationHelper do
       user = mock_model(User, :display_name => "Mark")
       tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
-      tag_filter_control(tag, :remove => :subscription, :draggable => true).should have_tag("script", /.*Draggable.*/)
     end
     
     it "creates a filter control for a public tag" do
