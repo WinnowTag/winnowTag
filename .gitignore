@@ -2,6 +2,7 @@ coverage
 config/collector.conf
 config/database.yml
 config/selenium.yml
+config/fiveruns_tuneup.yml
 db/development_structure.sql
 doc/TODO
 log
@@ -17,6 +18,10 @@ perf.log
 corpus
 credentials.js
 hmac_credentials.yml
+
+public/images/tuneup
+public/javascripts/tuneup
+public/stylesheets/tuneup
 
 vendor/gems/bcrypt-ruby-2.0.3/ext/Makefile
 vendor/gems/bcrypt-ruby-2.0.3/ext/bcrypt.o
