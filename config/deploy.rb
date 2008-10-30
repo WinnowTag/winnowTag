@@ -26,21 +26,24 @@ default_run_options[:pty] = true
 set :scm, 'git'
 set :scm_verbose, true
 set :repository, 'git@github.com:seangeo/winnow.git'
-set :user, 'mindloom'
 set :deploy_via, :remote_cache
-set :deploy_to, "/home/mindloom/winnow.deploy"
 set :group, "mongrels"
 
 task :beta do
-  set :domain, "ds468-1.blueboxgrid.com"
+  set :deploy_to, "/home/peerworks/winnow.deploy"
+  set :user, 'peerworks'
   set :branch, "beta" unless exists?(:branch)
 
-  role :web, domain
-  role :app, domain
-  role :db,  domain, :primary => true
+  role :web, "winnow01.mindloom.org"
+  role :web, "winnow02.mindloom.org"
+  role :app, "winnow01.mindloom.org"
+  role :app, "winnow02.mindloom.org"
+  role :db,  "db01.c43900.blueboxgrid.com", :primary => true
 end
 
 task :trunk do
+  set :deploy_to, "/home/mindloom/winnow.deploy"
+  set :user, 'mindloom'
   set :domain, 'ds400-1.blueboxgrid.com'
   set :branch, "master" unless exists?(:branch)
 
@@ -132,7 +135,7 @@ after "deploy:update_code", "gems:build"
 
 namespace :deploy do
   [:start, :stop, :restart, :status].each do |t|
-    task t do
+    task t, :roles => :app do
       sudo "god #{t.to_s} #{group}"
     end
   end
