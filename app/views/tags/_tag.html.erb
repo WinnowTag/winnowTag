@@ -22,6 +22,11 @@
           <li><%= link_to _(:view_tagged_items, tag.name), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained"), :class => "show" %></li>
         </ul>
       </div>
+      
+      <!-- TODO: When the public attribute changes, this show be shown/hidden -->
+      <% if tag.public? -%>
+        <%= render :partial => "stats.html.erb", :locals => { :tag => tag } %>
+      <% end -%>
     </div>
   </div>
 </div>

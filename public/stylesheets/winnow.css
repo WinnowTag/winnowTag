@@ -1574,6 +1574,20 @@ ul.tag_list li.public .name {
   margin-left: 0.5em;
 }
 
+.tag .extended .sidebar .block .field label {
+  float: left;
+  width: 5.5em;
+  margin-right: 1em;
+  color: #666;
+  font-size: .95em;
+  font-weight: normal;
+  text-align: right;
+}
+
+.tag .extended .sidebar .block .field span {
+  float: left;
+}
+
 .tag .extended .comment_form {
   margin-right: 1.5em;
   padding: 0.75em 1em 0.75em 0.75em;

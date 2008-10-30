@@ -19,6 +19,8 @@
           <li><%= link_to _(:tags_feed_link), url_for(:user => public_tag.user, :tag_name => public_tag.name, :action=> 'show', :format => :atom), :class => "feed" %></li>
         </ul>
       </div>
+
+      <%= render :partial => "stats.html.erb", :locals => { :tag => public_tag } %>
     </div>
   </div>
 </div>
