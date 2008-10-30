@@ -8,8 +8,8 @@ module DateHelper
     if date.nil?
       when_nil
     else
-      format = date.midnight == Time.now.utc.midnight ? "%H:%M %p" : "%e %b, %y"
-      date.strftime(format)      
+      format = date.midnight == Time.zone.now.midnight ? "%H:%M %p" : "%e %b, %y"
+      date.strftime(format)
     end
   end
 end

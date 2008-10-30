@@ -10,7 +10,7 @@ describe '/about/info' do
     assigns[:messages] = @messages = []
     assigns[:info] = stub("info", :value => "foo")
 
-    template.stub_render(:partial => "messages/sidebar", :locals => { :messages => @messages })
+    template.stub!(:render).with(:partial => "messages/sidebar", :locals => { :messages => @messages })
   end
   
   def render_it
@@ -23,7 +23,7 @@ describe '/about/info' do
   end
   
   it "render the list of messages" do
-    template.expect_render(:partial => "messages/sidebar", :locals => { :messages => @messages })
+    template.should_receive(:render).with(:partial => "messages/sidebar", :locals => { :messages => @messages })
     render_it
   end
 end

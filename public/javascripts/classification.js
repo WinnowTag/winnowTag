@@ -35,7 +35,6 @@ var Classification = Class.create({
         this.cancel_classification_button.show();
 
         this.progress_bar.setStyle({width: '0%'});
-        this.progress_bar.removeClassName('complete');
         this.progress_title.update("Starting Classifier");
         this.classification_progress.show();
 
@@ -175,7 +174,7 @@ var Classification = Class.create({
           }.bind(this),
           onSuccess: function(transport, json) {
             if (this.options.onProgressUpdated) {
-              this.options.onProgressUpdated(this, json);
+              this.options.onProgressUpdated(json);
             }
           }.bind(this),
           onFailure: function(transport) {

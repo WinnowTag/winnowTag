@@ -10,12 +10,12 @@ describe "Login" do
   
   it "successful_login" do
     login
-    assert_match feed_items_url, get_location
+    page.location.should =~ /^#{feed_items_url}#.*$/
   end
   
   it "unsuccessful_login" do
     login "quentin", "wrong"
-    assert_match login_url, get_location
-    assert_equal "Invalid credentials. Please try again.", get_text("css=.warning .content")
+    page.location.should == login_url
+    page.text_content("css=.warning .content").should == "Invalid credentials. Please try again."
   end
 end

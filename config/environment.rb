@@ -5,14 +5,10 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.2.0' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-
-# TODO: Move this out of environment.rb
-# Need to require this first so I can setup at_exit handlers to run AFTER test/unit at_exit handler which runs tests
-require File.join(RAILS_ROOT, %w[vendor plugins mhs_testing lib selenium at_exit])
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -29,16 +25,19 @@ Rails::Initializer.run do |config|
   # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "fastercsv"
   config.gem "auth-hmac"
-  config.gem "ratom", :lib => "atom"
+  config.gem "bcrypt-ruby",     :lib => "bcrypt"
+  config.gem "fastercsv"
+  config.gem "fiveruns_manage"
+  config.gem "hpricot"
+  config.gem "ratom",           :lib => "atom"
+  config.gem "RedCloth"
+  config.gem "selenium-client", :lib => "selenium/client"
+  config.gem "tzinfo"
 
   # Must be compiled/installed on the target system
+  config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"
   config.gem "mysql",       :version => "2.7"
-  config.gem "hpricot",     :version => "0.6.161"
-  config.gem "bcrypt-ruby", :version => "2.0.3",  :lib => "bcrypt"
-  config.gem "RedCloth",    :version => "4.0.3"
-  config.gem "tzinfo",      :version => "0.3.9"
       
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
@@ -54,7 +53,7 @@ Rails::Initializer.run do |config|
 
   # Make Time.zone default to the specified zone, and make Active Record store time values
   # in the database in UTC, and return them converted to the specified local zone.
-  # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
+  # Run "rake -D time" for a list of tasks for finding time zone names. Comment line to use default local time.
   config.time_zone = 'UTC'
 
   # Your secret key for verifying cookie session data integrity.
@@ -65,9 +64,7 @@ Rails::Initializer.run do |config|
     :session_key => '_winnow_session',
     :secret      => 'd768f297dcbe7a3afaebeb4d2f7022b30822109291263eec7af980b787d5a1a8ca56833de2bc75f8a26777d5d974d20aac2c6316e2f4786fdd7f17771f9ee1be'
   }
-  
-  config.action_controller.filter_parameter_logging = :password
-  
+
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with "rake db:sessions:create")

@@ -14,10 +14,9 @@ describe "FeedItemsTest" do
     ReadItem.create! :user_id => 1, :feed_item_id => 3
     ReadItem.create! :user_id => 1, :feed_item_id => 4
     
-    delete_cookie "show_sidebar", "/"
     login
-    open feed_items_path
-    wait_for_ajax
+    page.open feed_items_path
+    page.wait_for :wait_for => :ajax
   end
 
   it "mark_read_unread" do
@@ -25,11 +24,12 @@ describe "FeedItemsTest" do
         
     dont_see_element "#feed_item_#{feed_item_1.id}.read"
 
-    click "css=#feed_item_#{feed_item_1.id} .status"
+    page.click "css=#feed_item_#{feed_item_1.id} .status"
     see_element "#feed_item_#{feed_item_1.id}.read"
     
-    refresh_and_wait
-    wait_for_ajax
+    page.refresh
+    page.wait_for :wait_for => :page
+    page.wait_for :wait_for => :ajax
     dont_see_element "#feed_item_#{feed_item_1.id}"
 
     # TODO: Make this work with mode=all
@@ -46,10 +46,10 @@ describe "FeedItemsTest" do
 
     assert_not_visible "css=#feed_item_#{feed_item.id} .body"
     
-    click "css=#feed_item_#{feed_item.id} .closed"
+    page.click "css=#feed_item_#{feed_item.id} .closed"
     assert_visible "css=#feed_item_#{feed_item.id} .body"
     
-    click "css=#feed_item_#{feed_item.id} .closed"
+    page.click "css=#feed_item_#{feed_item.id} .closed"
     assert_not_visible "css=#feed_item_#{feed_item.id} .body"
   end
 
@@ -58,17 +58,17 @@ describe "FeedItemsTest" do
  
     assert_not_visible "css=#feed_item_#{feed_item.id} .moderation_panel"
  
-    click "css=#feed_item_#{feed_item.id} .train" 
+    page.click "css=#feed_item_#{feed_item.id} .train" 
     assert_visible "css=#feed_item_#{feed_item.id} .moderation_panel"
  
-    click "css=#feed_item_#{feed_item.id} .train" 
+    page.click "css=#feed_item_#{feed_item.id} .train" 
     assert_not_visible "css=#feed_item_#{feed_item.id} .moderation_panel"
   end 
   
   it "open_close_moderation_panel_does_not_open_close_item" do
     feed_item = FeedItem.find(1)
     assert_not_visible "css=#feed_item_#{feed_item.id} .body"
-    click "css=#feed_item_#{feed_item.id} .train" 
+    page.click "css=#feed_item_#{feed_item.id} .train" 
     assert_not_visible "css=#feed_item_#{feed_item.id} .body"
   end
   
@@ -77,30 +77,30 @@ describe "FeedItemsTest" do
 
     dont_see_element "#feed_item_#{feed_item_1.id}.read"
 
-    click "css=#feed_item_#{feed_item_1.id} .closed"
+    page.click "css=#feed_item_#{feed_item_1.id} .closed"
     see_element "#feed_item_#{feed_item_1.id}.read"
 
-    refresh_and_wait
-    wait_for_ajax
+    page.refresh
+    page.wait_for :wait_for => :page
+    page.wait_for :wait_for => :ajax
     dont_see_element "#feed_item_#{feed_item_1.id}"
   end
   
-  # TODO: cannot ask selenium if clicking this link opened a new window
-  xit "click_feed_title_takes_you_to_feed_page" do
+  it "click_feed_title_takes_you_to_feed_page" do
+    windows = page.get_all_window_ids
     feed_item_1 = FeedItem.find(1)
     feed1 = feed_item_1.feed
-    see_element "#feed_item_#{feed_item_1.id} .feed_title"
-    click_and_wait "css=#feed_item_#{feed_item_1.id} .feed_title"
-    assert_match feed_url(feed1), get_location
-    see_element "#feed_1"
+    page.click "css=#feed_item_#{feed_item_1.id} .feed_title", :wait_for => :ajax
+    page.click "css=#feed_item_#{feed_item_1.id} #feed_#{feed1.id} a[href=/feed_items#feed_ids=#{feed1.id}]"
+    page.get_all_window_ids.should have(windows.size + 1).windows
   end
   
   it "displays an empty message when there are no feed items" do
     Tagging.delete_all
     FeedItem.delete_all
 
-    open feed_items_path
-    wait_for_ajax
+    page.open feed_items_path
+    page.wait_for :wait_for => :ajax
   
     see_element "#content .empty"
   end

@@ -12,7 +12,7 @@ describe CollectionJobResultsController do
 
     @user = mock_model(User)
     @user.stub!(:messages).and_return(@messages)
-    User.stub!(:find).with(@user.id.to_s).and_return(@user)
+    User.stub!(:find).and_return(@user)
     
     @feed = mock_model(Feed, :title => "Some Blog", :duplicate => nil)
     Feed.stub!(:find_by_id).with(@feed.id.to_s).and_return(@feed)

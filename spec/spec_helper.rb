@@ -10,64 +10,40 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'spec'
 require 'spec/rails'
+require "selenium/rspec/spec_helper"
 
 require 'authenticated_test_helper'
 require 'active_resource/http_mock'
-require File.join(RAILS_ROOT, *%w[vendor plugins mhs_testing lib selenium example_group])
 require File.expand_path(File.join(File.dirname(__FILE__), "generate"))
 
 module CustomSeleniumHelpers
   def login(login = "quentin", password = "test")
-    open login_path
-    type "css=#login_form input[name=login]", login
-    type "css=#login_form input[name=password]", password
-    click_and_wait "commit"
-  end
-
-  def click_and_wait(locator, timeout = 30000)
-    click locator
-    wait_for_page_to_load(timeout)
-  end
-
-  def refresh_and_wait(timeout = 30000)
-    refresh
-    wait_for_page_to_load(timeout)
+    page.open login_path
+    page.type "css=#login_form input[name=login]", login
+    page.type "css=#login_form input[name=password]", password
+    page.click "commit", :wait_for => :page
   end
 
   def see_element(*args)
-    assert is_element_present("css=#{args.join}")
+    page.should be_element("css=#{args.join}")
   end
 
   def dont_see_element(*args)
-    assert !is_element_present("css=#{args.join}")
+    page.should_not be_element("css=#{args.join}")
   end
 
   def assert_visible(locator)
-    assert is_visible(locator)
+    page.is_visible(locator).should be_true
   end
-
+  
   def assert_not_visible(locator)
-    assert !is_visible(locator)
-  end
-
-  def assert_element_disabled(selector)
-    see_element("#{selector}[disabled]")
-  end
-
-  def assert_element_enabled(selector)
-    dont_see_element("#{selector}[disabled]")
+    page.is_visible(locator).should be_false
   end
   
   def hit_enter(locator)
-    key_press locator, '\13'
-  end
-  
-  def wait_for_ajax(timeout = 30000)
-    wait_for_condition "window.Ajax.activeRequestCount == 0", timeout
-  end
-  
-  def wait_for_effects(timeout = 30000)
-    wait_for_condition "window.Effect.Queue.size() == 0", timeout
+    page.key_down(locator, '\13')
+    page.key_press(locator, '\13')
+    page.key_up(locator, '\13')
   end
 end
 
@@ -155,7 +131,7 @@ Spec::Runner.configure do |config|
   config.include WinnowMatchers, :type => :code
 
   # Stub out User.encrypt for faster testing
-  config.before(:each) do
+  config.before(:each, :type => [:controllers, :helpers, :models, :views]) do
     User.stub!(:encrypt).and_return('password')
   end
 
@@ -222,10 +198,6 @@ Spec::Runner.configure do |config|
   
   def current_user
     @controller.send(:current_user)
-  end
-  
-  def print_response_body
-    puts ERB::Util.html_escape(response.body)
   end
   
   def mock_new_model(model_class, options_and_stubs = {})

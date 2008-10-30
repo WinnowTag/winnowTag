@@ -58,8 +58,7 @@ Autocompleter.Base = Class.create({
     this.options.paramName    = this.options.paramName || this.element.name;
     this.options.tokens       = this.options.tokens || [];
     this.options.frequency    = this.options.frequency || 0.4;
-    // NOTE: Peerworks change
-    this.options.minChars     = this.options.minChars == null ? 1 : this.options.minChars;
+    this.options.minChars     = this.options.minChars || 1;
     this.options.onShow       = this.options.onShow || 
       function(element, update){ 
         if(!update.style.position || update.style.position=='absolute') {
@@ -212,23 +211,13 @@ Autocompleter.Base = Class.create({
   markPrevious: function() {
     if(this.index > 0) this.index--
       else this.index = this.entryCount-1;
-    // NOTE: peerworks change
-    if(this.getEntry(this.index).up("#feed_items")) {
-      new Effect.ScrollToInDiv(itemBrowser.feed_items_scrollable, this.getEntry(this.index), {duration: 0.3, bottom_margin: 7});
-    } else {
-      this.getEntry(this.index).scrollIntoView(false);
-    }
+    this.getEntry(this.index).scrollIntoView(true);
   },
   
   markNext: function() {
     if(this.index < this.entryCount-1) this.index++
       else this.index = 0;
-    // NOTE: peerworks change
-    if(this.getEntry(this.index).up("#feed_items")) {
-      new Effect.ScrollToInDiv(itemBrowser.feed_items_scrollable, this.getEntry(this.index), {duration: 0.3, bottom_margin: 7});
-    } else {
-      this.getEntry(this.index).scrollIntoView(false);
-    }
+    this.getEntry(this.index).scrollIntoView(false);
   },
   
   getEntry: function(index) {
@@ -432,8 +421,6 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
       partialChars: 2,
       ignoreCase: true,
       fullSearch: false,
-      // NOTE: peerworks change
-      persistent: [],
       selector: function(instance) {
         var ret       = []; // Beginning matches
         var partial   = []; // Inside matches
@@ -471,18 +458,6 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
         }
         if (partial.length)
           ret = ret.concat(partial.slice(0, instance.options.choices - ret.length))
-
-        // NOTE: peerworks change
-        var bot = [];
-        if(!entry.blank()) {
-          this.persistent.each(function(choice) {
-            if(!instance.options.array.include(entry)) {
-              bot.push("<li>" + choice.interpolate({entry: entry}) + "</li>");
-            }
-          });
-        }
-        ret = [ret, bot].flatten();
-
         return "<ul>" + ret.join('') + "</ul>";
       }
     }, options || { });
@@ -942,6 +917,7 @@ Object.extend(Ajax.InPlaceEditor, {
     },
     onFailure: function(transport, ipe) {
       // NOTE: peerworks change
+      // alert('Error communication with the server: ' + transport.responseText.stripTags());
       Message.add('error', 'Error communication with the server: ' + transport.responseText.stripTags());
     },
     onFormCustomization: null, // Takes the IPE and its generated form, after editor, before controls.

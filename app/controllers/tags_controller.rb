@@ -14,8 +14,8 @@
 # single uses of the tag by the user and the +TagsController+
 # operates on the many +Taggings+ that use a given +Tag+.
 class TagsController < ApplicationController
-  include ActionView::Helpers::TextHelper
   include ActionView::Helpers::SanitizeHelper
+  extend  ActionView::Helpers::SanitizeHelper::ClassMethods
   helper :bias_slider, :comments
 
   # Setup the HMAC authentication with credentials for the classifier role but don't assign to any actions
@@ -295,6 +295,7 @@ class TagsController < ApplicationController
 
   def comments
     @tag = Tag.find(params[:id])
+    render :layout => false
   end
   
 private

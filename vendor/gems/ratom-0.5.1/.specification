@@ -25,7 +25,7 @@ dependencies:
     version: 
 - !ruby/object:Gem::Dependency 
   name: hoe
-  type: :runtime
+  type: :development
   version_requirement: 
   version_requirements: !ruby/object:Gem::Requirement 
     requirements: 
@@ -107,7 +107,6 @@ rdoc_options:
 - --main
 - README.txt
 require_paths: 
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 
@@ -124,7 +123,7 @@ required_rubygems_version: !ruby/object:Gem::Requirement
 requirements: []
 
 rubyforge_project: ratom
-rubygems_version: 1.2.0
+rubygems_version: 1.3.0
 signing_key: 
 specification_version: 2
 summary: Atom Syndication and Publication API

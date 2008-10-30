@@ -4,5 +4,4 @@ require File.join(File.dirname(__FILE__), 'matchers')
 #   config.include ValidationMatchers, AssociationMatchers
 # end
 
-require File.join(File.dirname(__FILE__), 'selenium')
-require File.join(RAILS_ROOT, 'config', 'selenium') if File.exist?(File.join(RAILS_ROOT, 'config', 'selenium.rb'))
+# config.gem "selenium-client", :version => "1.2.6", :lib => "selenium/client"
