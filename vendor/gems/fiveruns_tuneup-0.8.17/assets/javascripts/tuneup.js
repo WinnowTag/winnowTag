@@ -95,7 +95,8 @@ Event.observe(window, 'load', function() {
 	TuneUp.adjustAbsoluteElements(_document.body);
 	TuneUp.adjustFixedElements();
 
-	new Ajax.Request('/tuneup?uri=' + encodeURIComponent(_document.location.href), {
+  // NOTE: mhs change
+	new Ajax.Request('/tuneup?uri=' + encodeURIComponent(_document.location.href.gsub("#.*$", "")), {
       asynchronous : true,
       evalScripts  : true,
       onLoading    : TuneUp.Spinner.start,
