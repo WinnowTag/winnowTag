@@ -33,6 +33,7 @@
 
 .button.selected,
 .button:active {
+  color: #333;
   background-image: url(../images/button_bg_active.png);
   background-position: left top;
 }
@@ -42,7 +43,7 @@
 }
 
 .button:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .button.disabled:hover {
@@ -50,6 +51,7 @@
 }
 
 .button.disabled:active {
+  color: #ccc;
   background-image: url(../images/button_bg.png);
   background-position: left bottom;
 }

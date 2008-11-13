@@ -1949,6 +1949,10 @@ body#info .messages ul li.sidebar_message .date {
   background-image: url(../images/stop.png);
 }
 
+.button.order .icon {
+  padding-left: 0;
+}
+
 .button.asc .icon {
   padding-left: 16px;  
   background-image: url(../images/bullet_arrow_up.png);  
