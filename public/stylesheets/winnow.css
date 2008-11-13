@@ -1875,3 +1875,88 @@ body#info .messages ul li.sidebar_message .date {
   border-width: 0 1px 1px 0;
   
 }
+
+/* =buttons */
+.button .icon.clear {
+  background-image: url(../images/clear.png);
+}
+
+.button.disabled .icon.clear {
+  background-image: url(../images/clear_disabled.png);
+}
+
+.button .icon.feed {
+  background-image: url(../images/feed.png);
+}
+
+.button .icon.unread {
+  background-image: url(../images/unread_large.png);
+}
+
+.button .icon.read {
+  background-image: url(../images/unread_large.png);
+}
+
+.button .icon.previous {
+  background-image: url(../images/bullet_arrow_up.png);
+}
+
+.button .icon.next {
+  background-image: url(../images/bullet_arrow_down.png);
+}
+
+.button .icon.add {
+  background-image: url(../images/add.png);
+}
+
+.button .icon.add_user {
+  background-image: url(../images/add_user.png);
+}
+
+.button .icon.add_invite {
+  background-image: url(../images/add_invite.png);
+}
+
+.button .icon.add_message {
+  background-image: url(../images/add_message.png);
+}
+
+.button .icon.all {
+  background-image: url(../images/all.png);
+}
+
+.button .icon.trained {
+  background-image: url(../images/trained.png);
+}
+
+.button .icon.import {
+  background-image: url(../images/import.png);
+}
+
+.button .icon.export {
+  background-image: url(../images/export.png);
+}
+
+.button .icon.start {
+  background-image: url(../images/start.png);
+}
+
+.button.disabled .icon.start {
+  background-image: url(../images/start_disabled.png);
+}
+
+.button .icon.stop {
+  background-image: url(../images/stop.png);
+}
+
+.button.asc .icon {
+  padding-left: 16px;  
+  background-image: url(../images/bullet_arrow_up.png);  
+  background-position: -3px center;  
+}
+
+.button.desc .icon {
+  padding-left: 16px;  
+  background-image: url(../images/bullet_arrow_down.png);
+  background-position: -3px center;
+}

@@ -1,10 +1,3 @@
-/* Copyright (c) 2008 The Kaphan Foundation
- *
- * Possession of a copy of this file grants no permission or license
- * to use, modify, or create derivate works.
- * Please visit http://www.peerworks.org/contact for further information.
- */
-
 /* =button */
 .button {
   outline: none;
@@ -22,6 +15,23 @@
   text-decoration: none;
 }
 
+.button.small {
+  padding: 0.2em 0.75em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  font-weight: bold;
+  font-size: 0.9em;
+  margin: 0;
+  line-height: 1.5;  
+  border: 1px solid #bbb;  
+}
+
+.button.disabled {
+  color: #ccc;
+  cursor: default;  
+}
+
+.button.selected,
 .button:active {
   background-image: url(../images/button_bg_active.png);
   background-position: left top;
@@ -35,9 +45,8 @@
   text-decoration: underline;
 }
 
-.button.disabled {
-  color: #ccc;
-  cursor: default;
+.button.disabled:hover {
+  text-decoration: none;
 }
 
 .button.disabled:active {
@@ -45,120 +54,11 @@
   background-position: left bottom;
 }
 
-.button.disabled:hover {
-  text-decoration: none;
-}
-
-.button.selected {
-  color: #333;
-  background-image: url(../images/button_bg_active.png);
-  background-position: left top;
-}
-
 .button .icon {
   display: block;
+  padding-left: 20px;
   background-position: left center;
   background-repeat: no-repeat;
-}
-
-.button .icon.clear {
-  padding-left: 20px;
-  background-image: url(../images/clear.png);
-}
-
-.button.disabled .icon.clear {
-  background-image: url(../images/clear_disabled.png);
-}
-
-.button .icon.feed {
-  padding-left: 20px;
-  background-image: url(../images/feed.png);
-}
-
-.button .icon.unread {
-  padding-left: 20px;
-  background-image: url(../images/unread_large.png);
-}
-
-.button .icon.read {
-  padding-left: 20px;
-  background-image: url(../images/unread_large.png);
-}
-
-.button .icon.previous {
-  padding-left: 20px;
-  background-image: url(../images/bullet_arrow_up.png);
-}
-
-.button .icon.next {
-  padding-left: 20px;
-  background-image: url(../images/bullet_arrow_down.png);
-}
-
-.button .icon.add {
-  padding-left: 20px;
-  background-image: url(../images/add.png);
-}
-
-.button .icon.add_user {
-  padding-left: 20px;
-  background-image: url(../images/add_user.png);
-}
-
-.button .icon.add_invite {
-  padding-left: 20px;
-  background-image: url(../images/add_invite.png);
-}
-
-.button .icon.add_message {
-  padding-left: 20px;
-  background-image: url(../images/add_message.png);
-}
-
-.button .icon.all {
-  padding-left: 20px;
-  background-image: url(../images/all.png);
-}
-
-.button .icon.trained {
-  padding-left: 20px;
-  background-image: url(../images/trained.png);
-}
-
-.button .icon.import {
-  padding-left: 20px;
-  background-image: url(../images/import.png);
-}
-
-.button .icon.export {
-  padding-left: 20px;
-  background-image: url(../images/export.png);
-}
-
-.button .icon.start {
-  padding-left: 20px;
-  background-image: url(../images/start.png);
-}
-
-.button.disabled .icon.start {
-  background-image: url(../images/start_disabled.png);
-}
-
-.button .icon.stop {
-  padding-left: 20px;
-  background-image: url(../images/stop.png);
-}
-
-.button.asc .icon {
-  padding-left: 16px;  
-  background-image: url(../images/bullet_arrow_up.png);  
-  background-position: -3px center;  
-}
-
-.button.desc .icon {
-  padding-left: 16px;  
-  background-image: url(../images/bullet_arrow_down.png);
-  background-position: -3px center;
 }
 
 /* =toolbar */
