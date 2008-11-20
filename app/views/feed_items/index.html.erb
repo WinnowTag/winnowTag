@@ -4,10 +4,13 @@
 	<% javascript_tag do -%>
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
-			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { orders: {
-			  desc:      ["date", "strength"],
-			  "default": "date"
-			}});
+			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
+			  modes: ["unread", "all", "trained"],
+			  orders: {
+			    desc:      ["date", "strength"],
+			    "default": "date"
+			  }
+			});
 
       new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
         itemBrowser.styleFilters();
@@ -34,11 +37,10 @@
     
     <div class="group">
       <label><%= _(:show_label) %></label>        
-      <%= rounded_button_function _(:show_all_label), "itemBrowser.addFilters({mode: 'all'})", :icon => "all", :id => "mode_all", :class => "first" %>
-      <%= rounded_button_function _(:show_unread_label), "itemBrowser.addFilters({mode: 'unread'})", :icon => "unread", :id => "mode_unread" %>
-      <%= rounded_button_function _(:show_trained_label), "itemBrowser.addFilters({mode: 'trained'})", :icon => "trained", :id => "mode_trained" %>
+      <%= rounded_button_function _(:show_all_label),     "", :icon => "all",     :id => "mode_all", :class => "first" %>
+      <%= rounded_button_function _(:show_unread_label),  "", :icon => "unread",  :id => "mode_unread" %>
+      <%= rounded_button_function _(:show_trained_label), "", :icon => "trained", :id => "mode_trained" %>
     </div>
-
 
     <div class="group">
       <label><%= _(:sort_label) %></label>        

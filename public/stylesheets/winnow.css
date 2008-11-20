@@ -334,6 +334,7 @@ body#login .container .form .content #invite_use {
 
 .navigation .extra li:last-child {
   padding-right: 0;
+  border: 0;
 }
 
 /*
@@ -1287,12 +1288,12 @@ ul.tag_list li.public .name {
 /*
  * =feed
  */
-.feed.globally_excluded .summary {
+.feed.globally_excluded .summary, .feed.inactive .summary {
   border-color: #E7ACAD;
   background-color: #F6E0E0;
 }
 
-.feed.globally_excluded .summary:hover {
+.feed.globally_excluded .summary:hover, .feed.inactive .summary:hover {
   background-color: #F6d0d0;
 }
 
@@ -1301,7 +1302,7 @@ ul.tag_list li.public .name {
   vertical-align: middle;
 }
 
-.feed.globally_excluded .summary .info .details strong {
+.feed.globally_excluded .summary .info .details strong, .feed.inactive .summary .info .details strong {
   color: #C43212;
 }
 
@@ -1927,6 +1928,10 @@ body#info .messages ul li.sidebar_message .date {
 
 .button .icon.trained {
   background-image: url(../images/trained.png);
+}
+
+.button .icon.duplicates {
+  background-image: url(../images/duplicates.png);
 }
 
 .button .icon.import {

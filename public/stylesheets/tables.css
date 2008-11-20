@@ -100,7 +100,7 @@ table.data_table th.table_break {
 	font-size: 100%;
 }
 
-tr.inactive_feed td, table.inactive_feed {
+tr.inactive td, table.inactive {
 	background-color: pink;
 }
 

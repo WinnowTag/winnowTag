@@ -45,7 +45,7 @@ class FeedsController < ApplicationController
       end
     else
       flash[:error] = @feed.errors.on(:url)
-      render :action => 'index'        
+      render :action => 'index'
     end
   end
   

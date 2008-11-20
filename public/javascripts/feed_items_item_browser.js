@@ -257,21 +257,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   styleFilters: function($super) {
     $super();
     
-    var modes = ["all", "unread", "trained"];
-    if(this.filters.mode) {
-      modes.without(this.filters.mode).each(function(mode) {
-        $("mode_" + mode).removeClassName("selected")
-      });
-    
-      $("mode_" + this.filters.mode).addClassName("selected");
-    } else {
-      modes.without("unread").each(function(mode) {
-        $("mode_" + mode).removeClassName("selected")
-      });
-    
-      $("mode_unread").addClassName("selected");
-    }
-        
     var feed_ids = this.filters.feed_ids ? this.filters.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
       var feed_id = element.getAttribute("id").gsub("feed_", "");
