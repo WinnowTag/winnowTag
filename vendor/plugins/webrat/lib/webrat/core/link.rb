@@ -1,13 +1,15 @@
+require "webrat/core_extensions/blank"
+
 module Webrat
-  class Link
+  class Link #:nodoc:
     
     def initialize(session, element)
       @session  = session
       @element  = element
     end
     
-    def click(method = nil, options = {})
-      method ||= http_method
+    def click(options = {})
+      method = options[:method] || http_method
       return if href =~ /^#/ && method == :get
       
       options[:javascript] = true if options[:javascript].nil?
@@ -20,16 +22,35 @@ module Webrat
     end
     
     def matches_text?(link_text)
-      html = text.gsub('&nbsp;',' ')
-      matcher = /#{Regexp.escape(link_text.to_s)}/i
-      html =~ matcher || title =~ matcher
+      if link_text.is_a?(Regexp)
+        matcher = link_text
+      else
+        matcher = /#{Regexp.escape(link_text.to_s)}/i
+      end
+
+      replace_nbsp(text) =~ matcher || replace_nbsp_ref(inner_html) =~ matcher || title =~ matcher
+    end
+
+    def matches_id?(id_or_regexp)
+      if id_or_regexp.is_a?(Regexp)
+        (id =~ id_or_regexp) ? true : false
+      else
+        (id == id_or_regexp) ? true : false
+      end
+    end
+
+    def inner_html
+      @element.inner_html
     end
     
     def text
-      @element.innerHTML
+      @element.inner_text
     end
     
   protected
+    def id
+      @element['id']
+    end
   
     def data
       authenticity_token.blank? ? {} : {"authenticity_token" => authenticity_token}
@@ -46,7 +67,7 @@ module Webrat
     def absolute_href
       if href =~ /^\?/
         "#{@session.current_url}#{href}"
-      elsif href !~ %r{^https?://www.example.com(/.*)} && (href !~ /^\//)
+      elsif href !~ %r{^https?://} && (href !~ /^\//)
         "#{@session.current_url}/#{href}"
       else
         href
@@ -89,5 +110,13 @@ module Webrat
       end
     end
 
+  private
+    def replace_nbsp(str)
+      str.gsub([0xA0].pack('U'), ' ')
+    end
+
+    def replace_nbsp_ref(str)
+      str.gsub('&#xA0;',' ').gsub('&nbsp;', ' ')
+    end
   end
 end

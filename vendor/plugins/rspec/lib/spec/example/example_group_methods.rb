@@ -2,6 +2,8 @@ module Spec
   module Example
 
     module ExampleGroupMethods
+      include Spec::Example::BeforeAndAfterHooks
+
       class << self
         attr_accessor :matcher_class
 
@@ -13,12 +15,16 @@ module Spec
         end
       end
 
-      attr_reader :description_text, :description_args, :description_options, :spec_path, :registration_binding_block
+      attr_reader :description_text, :description_options, :spec_path, :example_group_backtrace
       alias :options :description_options
+      
+      def description_args
+        @description_args ||= []
+      end
 
       def inherited(klass)
         super
-        klass.register {}
+        klass.register
         Spec::Runner.register_at_exit_hook
       end
       
@@ -42,9 +48,9 @@ module Spec
           options = args.last
           options[:spec_path] = eval("caller(0)[1]", example_group_block) unless options[:spec_path]
           if options[:shared]
-            create_shared_example_group(args, example_group_block)
+            create_shared_example_group(*args, &example_group_block)
           else
-            create_nested_example_group(args, example_group_block)
+            create_nested_example_group(*args, &example_group_block)
           end
         else
           set_description(*args)
@@ -52,32 +58,25 @@ module Spec
       end
       alias :context :describe
       
-      def create_shared_example_group(args, example_group_block)
-        SharedExampleGroup.new(*args, &example_group_block)
+      def create_shared_example_group(*args, &example_group_block)
+        SharedExampleGroup.register(*args, &example_group_block)
       end
       
-      def create_nested_example_group(args, example_group_block)
+      def create_nested_example_group(*args, &example_group_block)
         self.subclass("Subclass") do
-          describe(*args)
+          set_description(*args)
           module_eval(&example_group_block)
         end
       end
       
       # Use this to pull in examples from shared example groups.
       # See Spec::Runner for information about shared example groups.
-      def it_should_behave_like(shared_example_group)
-        case shared_example_group
-        when SharedExampleGroup
-          include shared_example_group
-        else
-          example_group = SharedExampleGroup.find_shared_example_group(shared_example_group)
-          unless example_group
-            raise RuntimeError.new("Shared Example Group '#{shared_example_group}' can not be found")
-          end
-          include(example_group)
+      def it_should_behave_like(*shared_example_groups)
+        shared_example_groups.each do |group|
+          include_shared_example_group(group)
         end
       end
-
+      
       # :call-seq:
       #   predicate_matchers[matcher_name] = method_on_object
       #   predicate_matchers[matcher_name] = [method1_on_object, method2_on_object]
@@ -145,39 +144,51 @@ module Spec
 
       def description
         result = ExampleGroupMethods.description_text(*description_parts)
-        if result.nil? || result == ""
-          return to_s
-        else
-          result
-        end
+        (result.nil? || result == "") ? to_s : result
       end
-
+      
       def described_type
-        description_parts.find {|part| part.is_a?(Module)}
+        description_parts.reverse.find {|part| part.is_a?(Module)}
       end
-
+      
+      # Defines an explicit subject for an example group which can then be the
+      # implicit receiver (through delegation) of calls to +should+.
+      #
+      # == Examples
+      #
+      #   describe CheckingAccount, "with $50" do
+      #     subject { CheckingAccount.new(:amount => 50, :currency => :USD) }
+      #     it { should have_a_balance_of(50, :USD)}
+      #     it { should_not be_overdrawn}
+      #   end
+      #
+      # See +ExampleMethods#should+ for more information about this approach.
+      def subject(&block)
+        @_subject_block = block
+      end
+      
+      def subject_block
+        @_subject_block || lambda {nil}
+      end
+      
       def description_parts #:nodoc:
         parts = []
-        execute_in_class_hierarchy do |example_group|
-          parts << example_group.description_args
+        each_ancestor_example_group_class do |example_group_class|
+          parts << example_group_class.description_args
         end
         parts.flatten.compact
       end
 
       def set_description(*args)
-        args, options = args_and_options(*args)
+        args, options = Spec::Example.args_and_options(*args)
         @description_args = args
         @description_options = options
         @description_text = ExampleGroupMethods.description_text(*args)
+        @example_group_backtrace = options[:example_group_backtrace]
         @spec_path = File.expand_path(options[:spec_path]) if options[:spec_path]
-        if described_type.class == Module
-          @described_module = described_type
-        end
         self
       end
       
-      attr_reader :described_module
-
       def examples #:nodoc:
         examples = example_objects.dup
         add_method_examples(examples)
@@ -188,70 +199,6 @@ module Spec
         examples.length
       end
 
-      # Registers a block to be executed before each example.
-      # This method prepends +block+ to existing before blocks.
-      def prepend_before(*args, &block)
-        scope, options = scope_and_options(*args)
-        parts = before_parts_from_scope(scope)
-        parts.unshift(block)
-      end
-
-      # Registers a block to be executed before each example.
-      # This method appends +block+ to existing before blocks.
-      def append_before(*args, &block)
-        scope, options = scope_and_options(*args)
-        parts = before_parts_from_scope(scope)
-        parts << block
-      end
-      alias_method :before, :append_before
-
-      # Registers a block to be executed after each example.
-      # This method prepends +block+ to existing after blocks.
-      def prepend_after(*args, &block)
-        scope, options = scope_and_options(*args)
-        parts = after_parts_from_scope(scope)
-        parts.unshift(block)
-      end
-      alias_method :after, :prepend_after
-
-      # Registers a block to be executed after each example.
-      # This method appends +block+ to existing after blocks.
-      def append_after(*args, &block)
-        scope, options = scope_and_options(*args)
-        parts = after_parts_from_scope(scope)
-        parts << block
-      end
-
-      def remove_after(scope, &block)
-        after_each_parts.delete(block)
-      end
-
-      # Deprecated. Use before(:each)
-      def setup(&block)
-        before(:each, &block)
-      end
-
-      # Deprecated. Use after(:each)
-      def teardown(&block)
-        after(:each, &block)
-      end
-
-      def before_all_parts # :nodoc:
-        @before_all_parts ||= []
-      end
-
-      def after_all_parts # :nodoc:
-        @after_all_parts ||= []
-      end
-
-      def before_each_parts # :nodoc:
-        @before_each_parts ||= []
-      end
-
-      def after_each_parts # :nodoc:
-        @after_each_parts ||= []
-      end
-
       # Only used from RSpec's own examples
       def reset # :nodoc:
         @before_all_parts = nil
@@ -260,8 +207,7 @@ module Spec
         @after_each_parts = nil
       end
 
-      def register(&registration_binding_block)
-        @registration_binding_block = registration_binding_block
+      def register
         Spec::Runner.options.add_example_group self
       end
 
@@ -269,19 +215,15 @@ module Spec
         Spec::Runner.options.remove_example_group self
       end
 
-      def registration_backtrace
-        eval("caller", registration_binding_block)
-      end
-
       def run_before_each(example)
-        execute_in_class_hierarchy do |example_group|
-          example.eval_each_fail_fast(example_group.before_each_parts)
+        each_ancestor_example_group_class do |example_group_class|
+          example.eval_each_fail_fast(example_group_class.before_each_parts)
         end
       end
 
       def run_after_each(example)
-        execute_in_class_hierarchy(:superclass_first) do |example_group|
-          example.eval_each_fail_slow(example_group.after_each_parts)
+        each_ancestor_example_group_class(:superclass_first) do |example_group_class|
+          example.eval_each_fail_slow(example_group_class.after_each_parts)
         end
       end
 
@@ -297,8 +239,8 @@ module Spec
       def run_before_all
         before_all = new("before(:all)")
         begin
-          execute_in_class_hierarchy do |example_group|
-            before_all.eval_each_fail_fast(example_group.before_all_parts)
+          each_ancestor_example_group_class do |example_group_class|
+            before_all.eval_each_fail_fast(example_group_class.before_all_parts)
           end
           return [true, before_all.instance_variable_hash]
         rescue Exception => e
@@ -321,8 +263,8 @@ module Spec
       def run_after_all(success, instance_variables)
         after_all = new("after(:all)")
         after_all.set_instance_variables_from_hash(instance_variables)
-        execute_in_class_hierarchy(:superclass_first) do |example_group|
-          after_all.eval_each_fail_slow(example_group.after_all_parts)
+        each_ancestor_example_group_class(:superclass_first) do |example_group_class|
+          after_all.eval_each_fail_slow(example_group_class.after_all_parts)
         end
         return success
       rescue Exception => e
@@ -360,22 +302,21 @@ module Spec
         @example_objects ||= []
       end
 
-      def execute_in_class_hierarchy(superclass_last=false)
+      def each_ancestor_example_group_class(superclass_last=false)
         classes = []
         current_class = self
-        while is_example_group?(current_class)
+        while is_example_group_class?(current_class)
           superclass_last ? classes << current_class : classes.unshift(current_class)
           current_class = current_class.superclass
         end
-        superclass_last ? classes << ExampleMethods : classes.unshift(ExampleMethods)
-
+        
         classes.each do |example_group|
           yield example_group
         end
       end
 
-      def is_example_group?(klass)
-        Module === klass && klass.kind_of?(ExampleGroupMethods)
+      def is_example_group_class?(klass)
+        klass.kind_of?(ExampleGroupMethods) && klass.included_modules.include?(ExampleMethods)
       end
 
       def plugin_mock_framework
@@ -399,27 +340,6 @@ module Spec
         end
       end
 
-      def scope_and_options(*args)
-        args, options = args_and_options(*args)
-        scope = (args[0] || :each), options
-      end
-
-      def before_parts_from_scope(scope)
-        case scope
-        when :each; before_each_parts
-        when :all; before_all_parts
-        when :suite; Spec::Runner.options.before_suite_parts
-        end
-      end
-
-      def after_parts_from_scope(scope)
-        case scope
-        when :each; after_each_parts
-        when :all; after_all_parts
-        when :suite; Spec::Runner.options.after_suite_parts
-        end
-      end
-
       def add_method_examples(examples)
         instance_methods.sort.each do |method_name|
           if example_method?(method_name)
@@ -437,10 +357,23 @@ module Spec
       def should_method?(method_name)
         !(method_name =~ /^should(_not)?$/) &&
         method_name =~ /^should/ && (
-          instance_method(method_name).arity == 0 ||
-          instance_method(method_name).arity == -1
+          [-1,0].include?(instance_method(method_name).arity)
         )
       end
+
+      def include_shared_example_group(shared_example_group)
+        case shared_example_group
+        when SharedExampleGroup
+          include shared_example_group
+        else
+          example_group = SharedExampleGroup.find(shared_example_group)
+          unless example_group
+            raise RuntimeError.new("Shared Example Group '#{shared_example_group}' can not be found")
+          end
+          include(example_group)
+        end
+      end
+
     end
 
   end

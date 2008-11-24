@@ -6,7 +6,6 @@ module Spec
   module Runner
     module Formatter
       describe HtmlFormatter do
-        include SandboxedOptions
         ['--diff', '--dry-run'].each do |opt|
           def jruby?
             PLATFORM == 'java'
@@ -20,12 +19,10 @@ module Spec
             expected_html = File.read(expected_file)
 
             Dir.chdir(root) do
-              args = ['failing_examples/mocking_example.rb', 'failing_examples/diffing_spec.rb', 'examples/pure/stubbing_example.rb',  'examples/pure/pending_example.rb', '--format', 'html', opt]
+              args = ['examples/failing/mocking_example.rb', 'examples/failing/diffing_spec.rb', 'examples/passing/stubbing_example.rb',  'examples/passing/pending_example.rb', '--format', 'html', opt]
               err = StringIO.new
               out = StringIO.new
-              run_with(
-                OptionParser.parse(args, err, out)
-              )
+              run_with OptionParser.parse(args, err, out)
 
               seconds = /\d+\.\d+ seconds/
               html = out.string.gsub seconds, 'x seconds'
