@@ -1375,6 +1375,41 @@ ul.tag_list li.public .name {
   width: 7em;
 }
 
+/* 
+ * =collection_summary
+ */
+.collection_summary.failed .summary {
+  border-color: #E7ACAD;
+  background-color: #F6E0E0;
+}
+
+.collection_summary .summary .info .count {
+  width: 5em;
+}
+
+.collection_summary .summary .info .date {
+  width: 7em;
+}
+
+.collection_summary .summary .info .duration {
+  width: 6em;
+}
+
+body#collection_summaries .collection_summary {
+  margin-bottom: 1.5em;
+}
+
+/* 
+ * =item_cache
+ */
+.item_cache .summary .info .count {
+  width: 5em;
+}
+
+body#item_caches .item_cache {
+  margin-bottom: 1.5em;
+}
+
 /*
  * =tag
  */
@@ -2015,6 +2050,10 @@ body#info .messages ul li.sidebar_message .date {
   background-image: url(../images/stop.png);
 }
 
+.button .icon.edit {
+  background-image: url(../images/edit.png);
+}
+
 .button .icon.destroy {
   background-image: url(../images/destroy.png);
 }
@@ -2037,4 +2076,39 @@ body#info .messages ul li.sidebar_message .date {
   padding-left: 16px;  
   background-image: url(../images/bullet_arrow_down.png);
   background-position: -3px center;
+}
+
+/*
+ ** =paginate
+ */
+.pagination {
+  text-align: center;
+  padding: 3px;
+  margin: 1em 3px;
+}
+.pagination a:link,
+.pagination a:visited {
+  padding: 2px 5px 2px 5px;
+  margin: 2px;
+  border: 1px solid #0A5990;
+  text-decoration: none;
+  color: #0A5990;
+}
+.pagination a:hover, .pagination a:active {
+  border: 1px solid #000099;
+  color: #000;
+}
+.pagination span.current {
+  padding: 2px 5px 2px 5px;
+  margin: 2px;
+  border: 1px solid #0A5990;
+  font-weight: bold;
+  background-color: #0A5990;
+  color: #FFF;
+}
+.pagination span.disabled {
+  padding: 2px 5px 2px 5px;
+  margin: 2px;
+  border: 1px solid #eee;
+  color: #ddd;
 }
