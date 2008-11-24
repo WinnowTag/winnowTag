@@ -1,20 +1,26 @@
 development:
   adapter: mysql
+  encoding: utf8
   database: winnow_development
-  host: localhost
-  username: root
-  password: 
-	  
-test:
-  adapter: mysql
-  database: winnow_test
-  host: localhost
+  pool: 5
   username: root
   password:
+  host: localhost
+
+test:
+  adapter: mysql
+  encoding: utf8
+  database: winnow_test
+  pool: 5
+  username: root
+  password:
+  host: localhost
 
 benchmarking:
   adapter: mysql
+  encoding: utf8
   database: winnow_development
-  host: localhost
+  pool: 5
   username: root
   password:
+  host: localhost
