@@ -1,13 +1,13 @@
-#line 1 "ext/redcloth_scan/redcloth_inline.rl"
+#line 1 "ext/redcloth_scan/redcloth_inline.c.rl"
 /*
- * redcloth_inline.rl
+ * redcloth_inline.c.rl
  *
  * Copyright (C) 2008 Jason Garber
  */
 #include <ruby.h>
 #include "redcloth.h"
 
-#line 161 "ext/redcloth_scan/redcloth_inline.rl"
+#line 15 "ext/redcloth_scan/redcloth_inline.c.rl"
 
 
 
@@ -9690,7 +9690,7 @@ static const int redcloth_inline_error = 0;
 static const int redcloth_inline_en_code_tag = 2456;
 static const int redcloth_inline_en_main = 2147;
 
-#line 164 "ext/redcloth_scan/redcloth_inline.rl"
+#line 18 "ext/redcloth_scan/redcloth_inline.c.rl"
 
 VALUE
 red_pass(VALUE self, VALUE regs, VALUE ref, ID meth, VALUE refs)
@@ -9763,7 +9763,6 @@ VALUE
 red_blockcode(VALUE self, VALUE regs, VALUE block)
 {
   VALUE btype = rb_hash_aref(regs, ID2SYM(rb_intern("type")));
-  block = rb_funcall(block, rb_intern("strip"), 0);
   if (RSTRING_LEN(block) > 0)
   {
     rb_hash_aset(regs, ID2SYM(rb_intern("text")), block);
@@ -9796,17 +9795,17 @@ redcloth_inline(self, p, pe, refs)
   VALUE buf = Qnil;
   
   
-#line 9800 "ext/redcloth_scan/redcloth_inline.c"
+#line 9799 "ext/redcloth_scan/redcloth_inline.c"
 	{
 	cs = redcloth_inline_start;
 	ts = 0;
 	te = 0;
 	act = 0;
 	}
-#line 269 "ext/redcloth_scan/redcloth_inline.rl"
+#line 122 "ext/redcloth_scan/redcloth_inline.c.rl"
 
   
-#line 9810 "ext/redcloth_scan/redcloth_inline.c"
+#line 9809 "ext/redcloth_scan/redcloth_inline.c"
 	{
 	int _klen;
 	unsigned int _trans;
@@ -9825,14 +9824,14 @@ _resume:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 1:
-#line 7 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(text); }
+#line 7 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("text"); }
 	break;
 	case 20:
-#line 1 "ext/redcloth_scan/redcloth_inline.rl"
+#line 1 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{ts = p;}
 	break;
-#line 9836 "ext/redcloth_scan/redcloth_inline.c"
+#line 9835 "ext/redcloth_scan/redcloth_inline.c"
 		}
 	}
 
@@ -9857,7 +9856,7 @@ _resume:
 	case 0: {
 		_widec = (short)(640 + ((*p) - -128));
 		if ( 
-#line 114 "ext/redcloth_scan/redcloth_inline.rl"
+#line 11 "ext/redcloth_scan/redcloth_inline.c.rl"
 
     p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f'
    ) _widec += 256;
@@ -9866,7 +9865,7 @@ _resume:
 	case 1: {
 		_widec = (short)(128 + ((*p) - -128));
 		if ( 
-#line 117 "ext/redcloth_scan/redcloth_inline.rl"
+#line 14 "ext/redcloth_scan/redcloth_inline.c.rl"
 
     p == orig_p || *(p-1) == '\r' || *(p-1) == '\n' || *(p-1) == '\f' || *(p-1) == ' '
    ) _widec += 256;
@@ -9941,475 +9940,475 @@ _eof_trans:
 		switch ( *_acts++ )
 		{
 	case 0:
-#line 5 "ext/redcloth_scan/redcloth_inline.rl"
+#line 5 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{ reg = p; }
 	break;
 	case 1:
-#line 7 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(text); }
+#line 7 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("text"); }
 	break;
 	case 2:
-#line 8 "ext/redcloth_scan/redcloth_inline.rl"
-	{ CLEAR_REGS(); reg = NULL; }
+#line 8 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ CLEAR_REGS(); RESET_REG(); }
 	break;
 	case 3:
-#line 20 "ext/redcloth_scan/redcloth_inline.rl"
-	{ ASET(align, left) }
+#line 17 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ ASET("align", "left"); }
 	break;
 	case 4:
-#line 21 "ext/redcloth_scan/redcloth_inline.rl"
-	{ ASET(align, right) }
+#line 18 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ ASET("align", "right"); }
 	break;
 	case 5:
-#line 23 "ext/redcloth_scan/redcloth_inline.rl"
-	{ ASET(align, center) }
+#line 20 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ ASET("align", "center"); }
 	break;
 	case 6:
-#line 29 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(class) }
+#line 26 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("class"); }
 	break;
 	case 7:
-#line 29 "ext/redcloth_scan/redcloth_inline.rl"
-	{STORE(id)}
+#line 26 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{STORE("id");}
 	break;
 	case 8:
-#line 30 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(lang) }
+#line 27 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("lang"); }
 	break;
 	case 9:
-#line 31 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(style) }
+#line 28 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("style"); }
 	break;
 	case 10:
-#line 108 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(title) }
+#line 105 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("title"); }
 	break;
 	case 11:
-#line 18 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(link_text); }
+#line 14 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("link_text"); }
 	break;
 	case 12:
-#line 20 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE_URL(href); }
+#line 16 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE_URL("href"); }
 	break;
 	case 13:
-#line 22 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(href); }
+#line 18 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("href"); }
 	break;
 	case 14:
-#line 25 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(src) }
+#line 21 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("src"); }
 	break;
 	case 15:
-#line 27 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE_URL(href); }
+#line 23 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE_URL("href"); }
 	break;
 	case 16:
-#line 34 "ext/redcloth_scan/redcloth_inline.rl"
+#line 30 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{ p--; }
 	break;
 	case 17:
-#line 46 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(beginning_space); }
+#line 42 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("beginning_space"); }
 	break;
 	case 18:
-#line 77 "ext/redcloth_scan/redcloth_inline.rl"
-	{ STORE(title) }
+#line 73 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{ STORE("title"); }
 	break;
 	case 21:
-#line 1 "ext/redcloth_scan/redcloth_inline.rl"
+#line 1 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;}
 	break;
 	case 22:
-#line 98 "ext/redcloth_scan/redcloth_inline.rl"
+#line 94 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;{ CAT(block); {cs = 2147; goto _again;} }}
 	break;
 	case 23:
-#line 11 "ext/redcloth_scan/redcloth_inline.rl"
+#line 7 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;{ rb_str_cat_escaped_for_preformatted(self, block, ts, te); }}
 	break;
 	case 24:
-#line 11 "ext/redcloth_scan/redcloth_inline.rl"
+#line 7 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p;p--;{ rb_str_cat_escaped_for_preformatted(self, block, ts, te); }}
 	break;
 	case 25:
-#line 11 "ext/redcloth_scan/redcloth_inline.rl"
+#line 7 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{{p = ((te))-1;}{ rb_str_cat_escaped_for_preformatted(self, block, ts, te); }}
 	break;
 	case 26:
-#line 106 "ext/redcloth_scan/redcloth_inline.rl"
+#line 102 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 4;}
 	break;
 	case 27:
-#line 110 "ext/redcloth_scan/redcloth_inline.rl"
+#line 106 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 7;}
 	break;
 	case 28:
-#line 112 "ext/redcloth_scan/redcloth_inline.rl"
+#line 108 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 9;}
 	break;
 	case 29:
-#line 114 "ext/redcloth_scan/redcloth_inline.rl"
+#line 110 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 11;}
 	break;
 	case 30:
-#line 128 "ext/redcloth_scan/redcloth_inline.rl"
+#line 124 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 25;}
 	break;
 	case 31:
-#line 129 "ext/redcloth_scan/redcloth_inline.rl"
+#line 125 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 26;}
 	break;
 	case 32:
-#line 130 "ext/redcloth_scan/redcloth_inline.rl"
+#line 126 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 27;}
 	break;
 	case 33:
-#line 132 "ext/redcloth_scan/redcloth_inline.rl"
+#line 128 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 28;}
 	break;
 	case 34:
-#line 136 "ext/redcloth_scan/redcloth_inline.rl"
+#line 132 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 32;}
 	break;
 	case 35:
-#line 145 "ext/redcloth_scan/redcloth_inline.rl"
+#line 141 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 40;}
 	break;
 	case 36:
-#line 146 "ext/redcloth_scan/redcloth_inline.rl"
+#line 142 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 41;}
 	break;
 	case 37:
-#line 148 "ext/redcloth_scan/redcloth_inline.rl"
+#line 144 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 43;}
 	break;
 	case 38:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 46;}
 	break;
 	case 39:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 47;}
 	break;
 	case 40:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{act = 48;}
 	break;
 	case 41:
-#line 104 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, image); }}
+#line 100 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "image"); }}
 	break;
 	case 42:
-#line 107 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_LINK_ATTR(link_text); PASS(block, name, link); }}
+#line 103 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_LINK_ATTR("link_text"); PASS(block, "name", "link"); }}
 	break;
 	case 43:
-#line 109 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS_CODE(block, text, code, opts); }}
+#line 105 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS_CODE(block, "text", "code", opts); }}
 	break;
 	case 44:
-#line 110 "ext/redcloth_scan/redcloth_inline.rl"
+#line 106 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;{ CAT(block); {cs = 2456; goto _again;} }}
 	break;
 	case 45:
-#line 111 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, notextile); }}
+#line 107 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "notextile"); }}
 	break;
 	case 46:
-#line 112 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, strong); }}
+#line 108 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "strong"); }}
 	break;
 	case 47:
-#line 113 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, b); }}
+#line 109 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "b"); }}
 	break;
 	case 48:
-#line 114 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, em); }}
+#line 110 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "em"); }}
 	break;
 	case 49:
-#line 115 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, i); }}
+#line 111 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "i"); }}
 	break;
 	case 50:
-#line 116 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PASS(block, text, del); }}
+#line 112 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PASS(block, "text", "del"); }}
 	break;
 	case 51:
-#line 117 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PASS(block, text, del_phrase); }}
+#line 113 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PASS(block, "text", "del_phrase"); }}
 	break;
 	case 52:
-#line 118 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, ins); }}
+#line 114 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "ins"); }}
 	break;
 	case 53:
-#line 119 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, sup); }}
+#line 115 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "sup"); }}
 	break;
 	case 54:
-#line 120 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, sup_phrase); }}
+#line 116 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "sup_phrase"); }}
 	break;
 	case 55:
-#line 121 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, sub); }}
+#line 117 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "sub"); }}
 	break;
 	case 56:
-#line 122 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, sub_phrase); }}
+#line 118 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "sub_phrase"); }}
 	break;
 	case 57:
-#line 123 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, span); }}
+#line 119 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "span"); }}
 	break;
 	case 58:
-#line 124 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, span_phrase); }}
+#line 120 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "span_phrase"); }}
 	break;
 	case 59:
-#line 125 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PARSE_ATTR(text); PASS(block, text, cite); }}
+#line 121 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PARSE_ATTR("text"); PASS(block, "text", "cite"); }}
 	break;
 	case 60:
-#line 12 "ext/redcloth_scan/redcloth_inline.rl"
+#line 8 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;{ rb_str_append(block, rb_funcall(self, rb_intern("ignore"), 1, regs)); }}
 	break;
 	case 61:
-#line 127 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PASS(block, text, snip); }}
+#line 123 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PASS(block, "text", "snip"); }}
 	break;
 	case 62:
-#line 128 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PASS(block, text, quote1); }}
+#line 124 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PASS(block, "text", "quote1"); }}
 	break;
 	case 63:
-#line 129 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PASS(block, text, quote2); }}
+#line 125 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PASS(block, "text", "quote2"); }}
 	break;
 	case 64:
-#line 132 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, ellipsis); }}
+#line 128 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "ellipsis"); }}
 	break;
 	case 65:
-#line 133 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, emdash); }}
+#line 129 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "emdash"); }}
 	break;
 	case 66:
-#line 134 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, endash); }}
+#line 130 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "endash"); }}
 	break;
 	case 67:
-#line 135 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, arrow); }}
+#line 131 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "arrow"); }}
 	break;
 	case 68:
-#line 137 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, acronym); }}
+#line 133 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "acronym"); }}
 	break;
 	case 69:
-#line 139 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, trademark); }}
+#line 135 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "trademark"); }}
 	break;
 	case 70:
-#line 140 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, registered); }}
+#line 136 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "registered"); }}
 	break;
 	case 71:
-#line 141 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, copyright); }}
+#line 137 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "copyright"); }}
 	break;
 	case 72:
-#line 142 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ PASS(block, text, footno); }}
+#line 138 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ PASS(block, "text", "footno"); }}
 	break;
 	case 73:
-#line 143 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, entity); }}
+#line 139 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "entity"); }}
 	break;
 	case 74:
-#line 151 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p+1;{ INLINE(block, inline_redcloth_version); }}
+#line 147 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p+1;{ INLINE(block, "inline_redcloth_version"); }}
 	break;
 	case 75:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 76:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 77:
-#line 157 "ext/redcloth_scan/redcloth_inline.rl"
+#line 153 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p+1;}
 	break;
 	case 78:
-#line 104 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, image); }}
+#line 100 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "image"); }}
 	break;
 	case 79:
-#line 106 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_LINK_ATTR(link_text); PASS(block, name, link); }}
+#line 102 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_LINK_ATTR("link_text"); PASS(block, "name", "link"); }}
 	break;
 	case 80:
-#line 109 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_ATTR(text); PASS_CODE(block, text, code, opts); }}
+#line 105 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_ATTR("text"); PASS_CODE(block, "text", "code", opts); }}
 	break;
 	case 81:
-#line 110 "ext/redcloth_scan/redcloth_inline.rl"
+#line 106 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p;p--;{ CAT(block); {cs = 2456; goto _again;} }}
 	break;
 	case 82:
-#line 112 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_ATTR(text); PASS(block, text, strong); }}
+#line 108 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_ATTR("text"); PASS(block, "text", "strong"); }}
 	break;
 	case 83:
-#line 113 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_ATTR(text); PASS(block, text, b); }}
+#line 109 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_ATTR("text"); PASS(block, "text", "b"); }}
 	break;
 	case 84:
-#line 114 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_ATTR(text); PASS(block, text, em); }}
+#line 110 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_ATTR("text"); PASS(block, "text", "em"); }}
 	break;
 	case 85:
-#line 115 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_ATTR(text); PASS(block, text, i); }}
+#line 111 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_ATTR("text"); PASS(block, "text", "i"); }}
 	break;
 	case 86:
-#line 118 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_ATTR(text); PASS(block, text, ins); }}
+#line 114 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_ATTR("text"); PASS(block, "text", "ins"); }}
 	break;
 	case 87:
-#line 125 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PARSE_ATTR(text); PASS(block, text, cite); }}
+#line 121 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PARSE_ATTR("text"); PASS(block, "text", "cite"); }}
 	break;
 	case 88:
-#line 12 "ext/redcloth_scan/redcloth_inline.rl"
+#line 8 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p;p--;{ rb_str_append(block, rb_funcall(self, rb_intern("ignore"), 1, regs)); }}
 	break;
 	case 89:
-#line 127 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PASS(block, text, snip); }}
+#line 123 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PASS(block, "text", "snip"); }}
 	break;
 	case 90:
-#line 129 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PASS(block, text, quote2); }}
+#line 125 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PASS(block, "text", "quote2"); }}
 	break;
 	case 91:
-#line 130 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ PASS(block, text, multi_paragraph_quote); }}
+#line 126 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ PASS(block, "text", "multi_paragraph_quote"); }}
 	break;
 	case 92:
-#line 132 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, ellipsis); }}
+#line 128 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "ellipsis"); }}
 	break;
 	case 93:
-#line 136 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, caps); }}
+#line 132 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "caps"); }}
 	break;
 	case 94:
-#line 138 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, dim); }}
+#line 134 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "dim"); }}
 	break;
 	case 95:
-#line 145 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, inline_html); }}
+#line 141 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "inline_html"); }}
 	break;
 	case 96:
-#line 146 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, inline_html); }}
+#line 142 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "inline_html"); }}
 	break;
 	case 97:
-#line 147 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, inline_html); }}
+#line 143 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "inline_html"); }}
 	break;
 	case 98:
-#line 148 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, inline_html); }}
+#line 144 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "inline_html"); }}
 	break;
 	case 99:
-#line 149 "ext/redcloth_scan/redcloth_inline.rl"
-	{te = p;p--;{ INLINE(block, inline_html); }}
+#line 145 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{te = p;p--;{ INLINE(block, "inline_html"); }}
 	break;
 	case 100:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p;p--;{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 101:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p;p--;{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 102:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{te = p;p--;{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 103:
-#line 104 "ext/redcloth_scan/redcloth_inline.rl"
-	{{p = ((te))-1;}{ INLINE(block, image); }}
+#line 100 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{{p = ((te))-1;}{ INLINE(block, "image"); }}
 	break;
 	case 104:
-#line 106 "ext/redcloth_scan/redcloth_inline.rl"
-	{{p = ((te))-1;}{ PARSE_LINK_ATTR(link_text); PASS(block, name, link); }}
+#line 102 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{{p = ((te))-1;}{ PARSE_LINK_ATTR("link_text"); PASS(block, "name", "link"); }}
 	break;
 	case 105:
-#line 138 "ext/redcloth_scan/redcloth_inline.rl"
-	{{p = ((te))-1;}{ INLINE(block, dim); }}
+#line 134 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{{p = ((te))-1;}{ INLINE(block, "dim"); }}
 	break;
 	case 106:
-#line 146 "ext/redcloth_scan/redcloth_inline.rl"
-	{{p = ((te))-1;}{ INLINE(block, inline_html); }}
+#line 142 "ext/redcloth_scan/redcloth_inline.c.rl"
+	{{p = ((te))-1;}{ INLINE(block, "inline_html"); }}
 	break;
 	case 107:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{{p = ((te))-1;}{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 108:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{{p = ((te))-1;}{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 109:
-#line 10 "ext/redcloth_scan/redcloth_inline.rl"
+#line 6 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{{p = ((te))-1;}{ rb_str_cat_escaped(self, block, ts, te); }}
 	break;
 	case 110:
-#line 1 "ext/redcloth_scan/redcloth_inline.rl"
+#line 1 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{	switch( act ) {
 	case 4:
-	{{p = ((te))-1;} PARSE_LINK_ATTR(link_text); PASS(block, name, link); }
+	{{p = ((te))-1;} PARSE_LINK_ATTR("link_text"); PASS(block, "name", "link"); }
 	break;
 	case 7:
 	{{p = ((te))-1;} CAT(block); {cs = 2456; goto _again;} }
 	break;
 	case 9:
-	{{p = ((te))-1;} PARSE_ATTR(text); PASS(block, text, strong); }
+	{{p = ((te))-1;} PARSE_ATTR("text"); PASS(block, "text", "strong"); }
 	break;
 	case 11:
-	{{p = ((te))-1;} PARSE_ATTR(text); PASS(block, text, em); }
+	{{p = ((te))-1;} PARSE_ATTR("text"); PASS(block, "text", "em"); }
 	break;
 	case 25:
-	{{p = ((te))-1;} PASS(block, text, quote1); }
+	{{p = ((te))-1;} PASS(block, "text", "quote1"); }
 	break;
 	case 26:
-	{{p = ((te))-1;} PASS(block, text, quote2); }
+	{{p = ((te))-1;} PASS(block, "text", "quote2"); }
 	break;
 	case 27:
-	{{p = ((te))-1;} PASS(block, text, multi_paragraph_quote); }
+	{{p = ((te))-1;} PASS(block, "text", "multi_paragraph_quote"); }
 	break;
 	case 28:
-	{{p = ((te))-1;} INLINE(block, ellipsis); }
+	{{p = ((te))-1;} INLINE(block, "ellipsis"); }
 	break;
 	case 32:
-	{{p = ((te))-1;} INLINE(block, caps); }
+	{{p = ((te))-1;} INLINE(block, "caps"); }
 	break;
 	case 40:
-	{{p = ((te))-1;} INLINE(block, inline_html); }
+	{{p = ((te))-1;} INLINE(block, "inline_html"); }
 	break;
 	case 41:
-	{{p = ((te))-1;} INLINE(block, inline_html); }
+	{{p = ((te))-1;} INLINE(block, "inline_html"); }
 	break;
 	case 43:
-	{{p = ((te))-1;} INLINE(block, inline_html); }
+	{{p = ((te))-1;} INLINE(block, "inline_html"); }
 	break;
 	case 46:
 	{{p = ((te))-1;} rb_str_cat_escaped(self, block, ts, te); }
@@ -10423,7 +10422,7 @@ _eof_trans:
 	}
 	}
 	break;
-#line 10427 "ext/redcloth_scan/redcloth_inline.c"
+#line 10426 "ext/redcloth_scan/redcloth_inline.c"
 		}
 	}
 
@@ -10433,10 +10432,10 @@ _again:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 19:
-#line 1 "ext/redcloth_scan/redcloth_inline.rl"
+#line 1 "ext/redcloth_scan/redcloth_inline.c.rl"
 	{ts = 0;}
 	break;
-#line 10440 "ext/redcloth_scan/redcloth_inline.c"
+#line 10439 "ext/redcloth_scan/redcloth_inline.c"
 		}
 	}
 
@@ -10455,7 +10454,7 @@ _again:
 
 	_out: {}
 	}
-#line 271 "ext/redcloth_scan/redcloth_inline.rl"
+#line 124 "ext/redcloth_scan/redcloth_inline.c.rl"
 
   return block;
 }

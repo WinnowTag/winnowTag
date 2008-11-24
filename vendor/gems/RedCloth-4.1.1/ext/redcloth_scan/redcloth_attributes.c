@@ -1,13 +1,13 @@
-#line 1 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 1 "ext/redcloth_scan/redcloth_attributes.c.rl"
 /*
- * redcloth_attributes.rl
+ * redcloth_attributes.c.rl
  *
  * Copyright (C) 2008 Jason Garber
  */
 #include <ruby.h>
 #include "redcloth.h"
 
-#line 37 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 15 "ext/redcloth_scan/redcloth_attributes.c.rl"
 
 
 
@@ -372,7 +372,7 @@ static const int redcloth_attributes_error = 0;
 static const int redcloth_attributes_en_inline = 93;
 static const int redcloth_attributes_en_link_says = 60;
 
-#line 40 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 18 "ext/redcloth_scan/redcloth_attributes.c.rl"
 
 
 VALUE
@@ -385,7 +385,7 @@ redcloth_attribute_parser(machine, self, p, pe)
   char *ts, *te, *reg, *bck, *eof;
   VALUE regs = rb_hash_new();
   VALUE buf = Qnil;
-  
+
   
 #line 391 "ext/redcloth_scan/redcloth_attributes.c"
 	{
@@ -394,8 +394,8 @@ redcloth_attribute_parser(machine, self, p, pe)
 	te = 0;
 	act = 0;
 	}
-#line 54 "ext/redcloth_scan/redcloth_attributes.rl"
-  
+#line 32 "ext/redcloth_scan/redcloth_attributes.c.rl"
+
   cs = machine;
 
   
@@ -417,7 +417,7 @@ _resume:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 12:
-#line 1 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 1 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{ts = p;}
 	break;
 #line 424 "ext/redcloth_scan/redcloth_attributes.c"
@@ -487,63 +487,63 @@ _eof_trans:
 		switch ( *_acts++ )
 		{
 	case 0:
-#line 5 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 5 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{ reg = p; }
 	break;
 	case 1:
-#line 6 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 6 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{ bck = p; }
 	break;
 	case 2:
-#line 7 "ext/redcloth_scan/redcloth_attributes.rl"
-	{ STORE(text); }
+#line 7 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{ STORE("text"); }
 	break;
 	case 3:
-#line 8 "ext/redcloth_scan/redcloth_attributes.rl"
-	{ CLEAR_REGS(); reg = NULL; }
+#line 8 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{ CLEAR_REGS(); RESET_REG(); }
 	break;
 	case 4:
-#line 14 "ext/redcloth_scan/redcloth_attributes.rl"
-	{ STORE(class_buf) }
+#line 10 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{ STORE("class_buf"); }
 	break;
 	case 5:
-#line 14 "ext/redcloth_scan/redcloth_attributes.rl"
-	{STORE(id_buf)}
+#line 10 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{STORE("id_buf");}
 	break;
 	case 6:
-#line 15 "ext/redcloth_scan/redcloth_attributes.rl"
-	{ STORE(lang_buf) }
+#line 11 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{ STORE("lang_buf"); }
 	break;
 	case 7:
-#line 16 "ext/redcloth_scan/redcloth_attributes.rl"
-	{ STORE(style_buf) }
+#line 12 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{ STORE("style_buf"); }
 	break;
 	case 8:
-#line 27 "ext/redcloth_scan/redcloth_attributes.rl"
-	{ STORE(name) }
+#line 23 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{ STORE("name"); }
 	break;
 	case 9:
-#line 28 "ext/redcloth_scan/redcloth_attributes.rl"
-	{ STORE_B(name_without_attributes) }
+#line 24 "ext/redcloth_scan/redcloth_attributes.c.rl"
+	{ STORE_B("name_without_attributes"); }
 	break;
 	case 13:
-#line 1 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 1 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{te = p+1;}
 	break;
 	case 14:
-#line 23 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 19 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{act = 1;}
 	break;
 	case 15:
-#line 23 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 19 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{te = p;p--;{ SET_ATTRIBUTES(); }}
 	break;
 	case 16:
-#line 23 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 19 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{{p = ((te))-1;}{ SET_ATTRIBUTES(); }}
 	break;
 	case 17:
-#line 1 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 1 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{	switch( act ) {
 	case 0:
 	{{cs = 0; goto _again;}}
@@ -555,31 +555,31 @@ _eof_trans:
 	}
 	break;
 	case 18:
-#line 32 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 28 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{act = 2;}
 	break;
 	case 19:
-#line 33 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 29 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{act = 3;}
 	break;
 	case 20:
-#line 32 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 28 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{te = p;p--;{ SET_ATTRIBUTES(); }}
 	break;
 	case 21:
-#line 33 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 29 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{te = p;p--;{ SET_ATTRIBUTE("name_without_attributes", "name"); }}
 	break;
 	case 22:
-#line 32 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 28 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{{p = ((te))-1;}{ SET_ATTRIBUTES(); }}
 	break;
 	case 23:
-#line 33 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 29 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{{p = ((te))-1;}{ SET_ATTRIBUTE("name_without_attributes", "name"); }}
 	break;
 	case 24:
-#line 1 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 1 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{	switch( act ) {
 	case 2:
 	{{p = ((te))-1;} SET_ATTRIBUTES(); }
@@ -600,11 +600,11 @@ _again:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 10:
-#line 1 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 1 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{ts = 0;}
 	break;
 	case 11:
-#line 1 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 1 "ext/redcloth_scan/redcloth_attributes.c.rl"
 	{act = 0;}
 	break;
 #line 611 "ext/redcloth_scan/redcloth_attributes.c"
@@ -626,7 +626,7 @@ _again:
 
 	_out: {}
 	}
-#line 58 "ext/redcloth_scan/redcloth_attributes.rl"
+#line 36 "ext/redcloth_scan/redcloth_attributes.c.rl"
 
   return regs;
 }

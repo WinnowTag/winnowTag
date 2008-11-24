@@ -1,5 +1,5 @@
 /*
- * redcloth_attributes.rl
+ * redcloth_attributes.c.rl
  *
  * Copyright (C) 2008 Jason Garber
  */
@@ -9,30 +9,8 @@
 %%{
 
   machine redcloth_attributes;
-  include redcloth_common "redcloth_common.rl";
-  
-  C2_CLAS = ( "(" ( [^)#]+ >A %{ STORE(class_buf) } )? ("#" [^)]+ >A %{STORE(id_buf)} )? ")" ) ;
-  C2_LNGE = ( "[" [^\]]+ >A %{ STORE(lang_buf) } "]" ) ;
-  C2_STYL = ( "{" [^}]+ >A %{ STORE(style_buf) } "}" ) ;
-  C2 = ( C2_CLAS | C2_STYL | C2_LNGE )+ ;
-
-  mtext_with_attributes = ( C2 mtext >A %T ) >X ;
-
-  inline := |*
-
-    mtext_with_attributes { SET_ATTRIBUTES(); } ;
-
-  *|;
-
-  link_text_with_attributes = C2 "."* " "* ( mtext+ ) >A %{ STORE(name) } ;
-  link_text_without_attributes = ( mtext+ ) >B %{ STORE_B(name_without_attributes) } ;
-
-  link_says := |*
-
-    link_text_with_attributes { SET_ATTRIBUTES(); } ;
-    link_text_without_attributes { SET_ATTRIBUTE("name_without_attributes", "name"); } ;
-
-  *|;
+  include redcloth_common "redcloth_common.c.rl";
+  include redcloth_attributes "redcloth_attributes.rl";
 
 }%%
 
@@ -49,9 +27,9 @@ redcloth_attribute_parser(machine, self, p, pe)
   char *ts, *te, *reg, *bck, *eof;
   VALUE regs = rb_hash_new();
   VALUE buf = Qnil;
-  
+
   %% write init;
-  
+
   cs = machine;
 
   %% write exec;
