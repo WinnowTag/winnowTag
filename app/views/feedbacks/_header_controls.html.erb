@@ -2,11 +2,11 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feedback_search_placeholder) %>
 <% end -%>
 
-<div class="toolbar right">
-  <div class="group">
-    <label><%= _(:sort_label) %></label>
-    <%= rounded_button_function _(:feedback_sort_user_label), "", :icon => "", :id => "order_user", :class => "first order" %>
-    <%= rounded_button_function _(:feedback_sort_date_label), "", :icon => "", :id => "order_created_at", :class => "order" %>
-  </div>
+<div class="order clearfix">
+  <label><%= _(:sort_label) %></label>        
+  <select id="order">
+    <option value="user"><%= _(:feedback_sort_user_label) %></option>
+    <option value="created_at"><%= _(:feedback_sort_date_label) %></option>
+  </select>
+  <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
 </div>
-  

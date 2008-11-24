@@ -28,6 +28,15 @@
     <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feed_items_search_placeholder) %>
   <% end -%>
 
+  <div class="order clearfix">
+    <label><%= _(:sort_label) %></label>        
+    <select id="order">
+      <option value="date"><%= _(:sort_date_label) %></option>
+      <option value="strength"><%= _(:sort_strength_label) %></option>
+    </select>
+    <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
+  </div>
+
   <div class="toolbar right">
     <div class="group">
       <label><%= _(:selected_filters) %></label>
@@ -40,12 +49,6 @@
       <%= rounded_button_function _(:show_all_label),     "", :icon => "all",     :id => "mode_all", :class => "first" %>
       <%= rounded_button_function _(:show_unread_label),  "", :icon => "unread",  :id => "mode_unread" %>
       <%= rounded_button_function _(:show_trained_label), "", :icon => "trained", :id => "mode_trained" %>
-    </div>
-
-    <div class="group">
-      <label><%= _(:sort_label) %></label>        
-      <%= rounded_button_function _(:sort_date_label),     "", :icon => "", :id => "order_date", :class => "first order" %>
-      <%= rounded_button_function _(:sort_strength_label), "", :icon => "", :id => "order_strength", :class => "order" %>
     </div>
   </div>
 <% end -%>

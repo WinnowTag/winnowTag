@@ -2,16 +2,16 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:tags_header_search_placeholder) %>
 <% end -%>
 
-<div class="toolbar right">
-  <div class="group">
-    <label><%= _(:sort_label) %></label>
-
-    <%= rounded_button_function _(:tags_header_name),         "", :icon => "", :id => "order_name", :class => "first order" %>
-    <%= rounded_button_function _(:tags_header_state),        "", :icon => "", :id => "order_state", :class => "order" %>
-    <%= rounded_button_function _(:tags_header_comments),     "", :icon => "", :id => "order_comments_count", :class => "order" %>
-    <%= rounded_button_function _(:tags_header_positive),     "", :icon => "", :id => "order_positive_count", :class => "order" %>
-    <%= rounded_button_function _(:tags_header_negative),     "", :icon => "", :id => "order_negative_count", :class => "order" %>
-    <%= rounded_button_function _(:tags_header_automatic),    "", :icon => "", :id => "order_classifier_count", :class => "order" %>
-    <%= rounded_button_function _(:tags_header_last_trained), "", :icon => "", :id => "order_last_trained", :class => "order" %>
-  </div>
+<div class="order clearfix">
+  <label><%= _(:sort_label) %></label>        
+  <select id="order">
+    <option value="name"><%= _(:tags_header_name) %></option>
+    <option value="state"><%= _(:tags_header_state) %></option>
+    <option value="comments_count"><%= _(:tags_header_comments) %></option>
+    <option value="positive_count"><%= _(:tags_header_positive) %></option>
+    <option value="negative_count"><%= _(:tags_header_negative) %></option>
+    <option value="classifier_count"><%= _(:tags_header_automatic) %></option>
+    <option value="last_trained"><%= _(:tags_header_last_trained) %></option>
+  </select>
+  <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
 </div>

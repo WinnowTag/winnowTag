@@ -2,14 +2,12 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:invites_search_placeholder) %>
 <% end -%>
 
-<div class="toolbar right">
-  <%= rounded_button_link 'Create Invite', new_invite_path, :icon => "add_invite" %>
-  
-  <div class="group">
-    <label><%= _(:sort_label) %></label>
-    <%= rounded_button_function _(:created), "", :icon => "", :id => "order_created", :class => "first order" %>
-    <%= rounded_button_function _(:email),   "", :icon => "", :id => "order_email", :class => "order" %> 
-    <%= rounded_button_function _(:status),  "", :icon => "", :id => "order_status", :class => "order" %>
-  </div>
+<div class="order clearfix">
+  <label><%= _(:sort_label) %></label>        
+  <select id="order">
+    <option value="created"><%= _(:created) %></option>
+    <option value="email"><%= _(:email) %></option>
+    <option value="status"><%= _(:status) %></option>
+  </select>
+  <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
 </div>
-  

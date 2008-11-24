@@ -4,115 +4,76 @@
  * to use, modify, or create derivate works.
  * Please visit http://www.peerworks.org/contact for further information.
  */
-table.data_table, table.property_table {
-	width: 100%;
-	background: white;
-	border-bottom: 2px solid #ddd;
-	border-spacing: 0px;
+/* =veerle
+ */
+table.veerle {
+  border-collapse: collapse;
+  width: 100%;		  
+	margin-bottom: 1.5em;
+	text-align: left;	  
+  color: #4f6b72;  
+	border: 1px solid #C1DAD7;
 }
 
-table.property_table {
-	width: 40%;
-	border-bottom: none;
+table.veerle th {
+	padding: 0.5em 1em 0.5em 1em;
+  vertical-align: top;	
+	border-right: 1px solid #C1DAD7;
+	border-bottom: 1px solid #C1DAD7;	
+  text-transform: uppercase;
+	font-weight: bold;
+  background-image: url(../images/table_veerle_header_bg.png);
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-color: #E1EDF8;
 }
 
-th {
-	text-align: left;
-	padding: 5px;
+table.veerle th.last {
+  border-right: 0;
 }
 
-th.indented {
-	padding-left: 15px;
+table.veerle th.nobg {
+	border-top: 0;
+	border-left: 0;
+	border-right: 1px solid #C1DAD7;
+	background: none;
+} 
+ 
+table.veerle td {
+	padding: 0.5em 1em 0.5em 1em;
+  vertical-align: top;	  
+	color: #333;	
+	background-color: #fff;
 }
 
-table.data_table th, table.property_table th {
-	color: #444;
-	font-size: 90%;
-	text-transform: uppercase;
-	border-bottom: 2px solid #ddd;
+table.veerle tr.even td {
+	background-color: #E1EDF8;
 }
 
-table.data_table td.indented {
-	padding-left: 20px;
+table.veerle tr:hover {
+  background-color: #F3F5F5;
 }
 
-table.data_table td {
-	background: white;
-  padding: 5px;
-	vertical-align: top;
+table.veerle tfoot td {
+  color: #333;
+  border-top: 1px solid #C1DAD7;
+	background-color: #f7f7f7;
+	font-weight: bold;
 }
 
-table#tags.data_table td {
-  padding: 5px 5px 0 5px;
-}
-
-table#tags.data_table tr.comment td {
-  padding: 0px 5px 5px 5px;
-}
-
-table.data_table tr.comment {
+table.veerle tr td.empty {
 	font-style: italic;
-	color: #444;
-	font-size: 90%;
+	text-align: center;
 }
 
-table.data_table tr.comment img {
-  cursor: pointer;
-  vertical-align: middle;
+table.veerle tr td.group {
+	background: #666;
+	color: #fff;
 }
 
-table.property_table td {
-  padding: 5px;
-  border-bottom: 2px solid #ddd;
-  text-align: right;
+table.veerle a.destroy {
+  padding-left: 1.5em;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-image: url(../images/destroy.png);
 }
-
-th.view_state {
-	white-space: nowrap;
-}
-
-td.view_state {
-	text-align: left;
-	white-space: nowrap;
-}
-
-td.number, th.number, 
-td.date, th.date {
-	text-align: right;
-  width: 12em;
-}
-
-th.sensitivity {
-  text-align: center;
-}
-
-th.sensitivity, td.sensitivity {
-  width: 90px;
-}
-
-tbody#content {
-	padding: 0;
-}
-
-
-table.data_table th.table_break {
-	padding-top: 10px;
-	font-size: 100%;
-}
-
-tr.inactive td, table.inactive {
-	background-color: pink;
-}
-
-tr.bad_feed td, tr.existing_feed td {
-	background-color: yellow;
-}
-
-tr.even td {
-	background: #ddd;
-}
-
-.data_table td.tag img {
-  vertical-align: bottom;
-}
-table.data_table td:last-child { padding-right: 20px;} /*prevent Mozilla scrollbar from hiding cell content*/

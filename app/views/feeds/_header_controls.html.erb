@@ -2,18 +2,20 @@
   <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feeds_header_search_placeholder) %>
 <% end -%>
 
+<div class="order clearfix">
+  <label><%= _(:sort_label) %></label>        
+  <select id="order">
+    <option value="title"><%= _(:feeds_header_title) %></option>
+    <option value="globally_excluded"><%= _(:feeds_header_globally_exclude) %></option>
+    <option value="feed_items_count"><%= _(:feeds_header_items) %></option>
+    <option value="created_on"><%= _(:feeds_header_created) %></option>
+    <option value="updated_on"><%= _(:feeds_header_last_updated) %></option>
+  </select>
+  <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
+</div>
+  
 <div class="toolbar right">
   <%= rounded_button_function _(:feeds_header_add_import), "$('add_feed').toggle()", :icon => "add" %>
-  
-  <div class="group">
-    <label><%= _(:sort_label) %></label>
-
-    <%= rounded_button_function _(:feeds_header_title),            "", :icon => "", :id => "order_title", :class => "first order" %>
-    <%= rounded_button_function _(:feeds_header_globally_exclude), "", :icon => "", :id => "order_globally_exclude", :class => "order" %>
-    <%= rounded_button_function _(:feeds_header_items),            "", :icon => "", :id => "order_feed_items_count", :class => "order" %>
-    <%= rounded_button_function _(:feeds_header_created),          "", :icon => "", :id => "order_created_on", :class => "order" %>
-    <%= rounded_button_function _(:feeds_header_last_updated),     "", :icon => "", :id => "order_updated_on", :class => "order" %>
-  </div>
 </div>
 
 <div id="add_feed" style="clear:both;<%= flash[:error] || params[:feed] ? '' : 'display:none' %>">

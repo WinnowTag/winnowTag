@@ -6,7 +6,7 @@
   </ul>
   <% end -%>
 
-  <h4><%= link_to sanitize(user.login), user_url(user) %></h4>  
+  <h4><%=h user.login %></h4>
 
   <div class="clearfix">
     <dl class="account_detail">
@@ -16,16 +16,22 @@
   		<dd><%= sanitize user.email %></dd>
     </dl>
     <dl class="login_detail">
+		  <dt><%= _(:users_registered) %></dt>
+		  <dd><%= format_date(user.created_at) %></dd>
       <dt><%= _(:users_last_logged_in) %></dt>
       <dd><%= format_date(user.logged_in_at) %></dd>
       <dt><%= _(:users_last_accessed) %></dt>
-      <dd><%= format_date(user.last_accessed_at) %></dd>      
+      <dd><%= format_date(user.last_accessed_at) %></dd>
     </dl>
-    <dl class="tag_detail">      
+    <dl class="tag_detail">
       <dt><%= _(:users_last_trained) %></dt>
       <dd><%= format_date(user.last_tagging_on) %></dd>
-      <dt><%= _(:users_number_of_tags) %></dt>      
-      <dd class="last"><%= user.tags.size %></dd>
+      <dt><%= _(:users_number_of_tags) %></dt>
+      <dd><%= user.tags.size %></dd>
+		  <dt><%= _(:users_average_tags_per_item) %></dt>
+		  <dd><%= user.average_taggings_per_item %></dd>
+		  <dt><%= _(:users_percentage_tagged) %></dt>
+		  <dd class="last"><%= number_to_percentage user.tagging_percentage %></dd>
     </dl>
-  </div>    
+  </div>
 </div>

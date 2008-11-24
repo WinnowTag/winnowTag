@@ -456,7 +456,6 @@ body#login .container .form .content #invite_use {
   margin-right: 0.5em;
 }
 
-
 .section .header .actions .add_link {
   border-right: 1px solid #069;
   padding-right: 0.25em;
@@ -680,6 +679,59 @@ ul.filter_list li .auto_complete_name {
 #header_controls #text_filter_form {
   float: left;
   width: 25%;
+  padding: 0.35em 0;
+}
+
+#header_controls .order {
+  float: right;
+  margin-left: 1em;
+  padding: 0.35em 0;
+}
+
+#header_controls .order label,
+#header_controls .order a {
+  margin-top: 0.1em;
+}
+
+#header_controls .order label {
+  margin-right: 0.5em;
+}
+
+#header_controls .order select {
+  margin-right: 0.25em;
+}
+
+#header_controls .order label,
+#header_controls .order select,
+#header_controls .order a {
+  float: left;
+}
+
+#header_controls .order #direction {
+  width: 5.5em;
+  padding-left: 16px;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
+#header_controls .order #direction.asc {
+  background-image: url(../images/bullet_arrow_up.png);  
+}
+
+#header_controls .order #direction.desc {
+  background-image: url(../images/bullet_arrow_down.png);
+}
+
+#header_controls .order #direction span {
+  display: none;
+}
+
+#header_controls .order #direction.asc .asc {
+  display: inline;
+}
+
+#header_controls .order #direction.desc .desc {
+  display: inline;
 }
 
 /*
@@ -739,7 +791,7 @@ ul.filter_list li .auto_complete_name {
 
 .applesearch.non_safari .sbox_l {
   position: absolute;
-  top: 3px;
+  top: 1px;
   left: 0;
   width: 19px;
   height: 19px;
@@ -748,7 +800,7 @@ ul.filter_list li .auto_complete_name {
 
 .applesearch.non_safari .sbox_r {
   position: absolute;
-  top: 3px;
+  top: 1px;
   right: 0;
   width: 19px;
   height: 19px;
@@ -762,8 +814,8 @@ ul.filter_list li .auto_complete_name {
 
 .applesearch.non_safari input {
   position: relative;
-  top: 3px;
-  height: 19px;
+  top: 1px;
+  height: 13px;
   width: 100%;
   padding: 3px 0;
   margin-bottom: 0;
@@ -813,6 +865,15 @@ a.bookmarklet:hover {
 
 .feed .summary h4 .feed {
   background-image: url(../images/feed.png);
+}
+
+#footer #add_feed fieldset {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+body#feeds .feed {
+  margin-bottom: 1.5em;
 }
 
 /*
@@ -1952,6 +2013,14 @@ body#info .messages ul li.sidebar_message .date {
 
 .button .icon.stop {
   background-image: url(../images/stop.png);
+}
+
+.button .icon.destroy {
+  background-image: url(../images/destroy.png);
+}
+
+.button .icon.collect {
+  background-image: url(../images/collect.png);
 }
 
 .button.order .icon {

@@ -20,6 +20,9 @@ var ItemBrowser = Class.create({
     
     this.container = $(container);
     this.container.observe('scroll', this.updateItems.bind(this));
+    
+    this.order_control = $("order");
+    this.direction_control = $("direction");
 
     this.initializeFilters();
   },
@@ -171,6 +174,14 @@ var ItemBrowser = Class.create({
       this.filters.order = order;
       this.filters.direction = this.defaultDirection(order);
     }
+    
+    this.saveFilters();
+    this.styleOrders();
+    this.reload();
+  },
+
+  toggleDirection: function() {
+    this.filters.direction = (this.filters.direction == "asc" ? "desc" : "asc");
     this.saveFilters();
     this.styleOrders();
     this.reload();
@@ -215,27 +226,23 @@ var ItemBrowser = Class.create({
   },
   
   styleOrders: function() {
-    this.orders().each(function(order) {
-      var order_control = $("order_" + order);
-      if(order_control) {
-        order_control.removeClassName("asc");
-        order_control.removeClassName("desc");
-        order_control.removeClassName("selected");
-      }
-    });
+    this.direction_control.removeClassName("asc");
+    this.direction_control.removeClassName("desc");
   
     if(this.filters.order) {
-      var order_control = $("order_" + this.filters.order);
-      if(order_control) {
-        order_control.addClassName(this.filters.direction);
-        order_control.addClassName("selected");
-      }
+      this.order_control.select("option").each(function(option, index) {
+        if(option.value == this.filters.order) {
+          this.order_control.selectedIndex = index;
+        }
+      }.bind(this));
+      this.direction_control.addClassName(this.filters.direction);
     } else if(this.defaultOrder()) {
-      var order_control = $("order_" + this.defaultOrder());
-      if(order_control) {
-        order_control.addClassName(this.defaultDirection());
-        order_control.addClassName("selected");
-      }
+      this.order_control.select("option").each(function(option, index) {
+        if(option.value == this.filters.order) {
+          this.order_control.selectedIndex = index;
+        }
+      }.bind(this));
+      this.direction_control.addClassName(this.defaultDirection());
     }
   },
   
@@ -249,12 +256,11 @@ var ItemBrowser = Class.create({
   },
 
   bindOrderFilterEvents: function() {
-    this.orders().each(function(order) {
-      var order_control = $("order_" + order);
-      if(order_control) {
-        order_control.observe("click", this.setOrder.bind(this, order));
-      }
+    this.order_control.observe("change", function() {
+      this.setOrder(this.order_control.value);
     }.bind(this));
+
+    this.direction_control.observe("click", this.toggleDirection.bind(this));
   },
 
   bindTextFilterEvents: function() {

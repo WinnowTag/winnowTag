@@ -32,8 +32,9 @@ describe "headers" do
   
   it "all stylesheets files should have the kaphan foundation header" do
     vendor = %w[
-      public/stylesheets/all.css public/stylesheets/blueprint/screen.css 
-      public/stylesheets/tuneup/tuneup.css public/stylesheets/button.css
+      public/stylesheets/all.css
+      public/stylesheets/tuneup/tuneup.css
+      public/stylesheets/button.css public/stylesheets/defaults.css
     ]
     
     (Dir["public/stylesheets/**/*.css"] - vendor).each do |filename|
