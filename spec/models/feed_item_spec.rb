@@ -168,7 +168,7 @@ describe FeedItem do
     it "properly filters on globally excluded feeds" do
       user_1 = User.create! valid_user_attributes
     
-      feed_1 = Feed.create! :via => "http://feedone.com"
+      feed_1 = Feed.create! valid_feed_attributes(:via => "http://feedone.com")
     
       FeedItem.delete_all # :(
       feed_item_1 = valid_feed_item!(:feed_id => feed_1.id)

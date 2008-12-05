@@ -157,7 +157,8 @@ Spec::Runner.configure do |config|
       :title => "#{unique_id} Example",
       :feed_items_count => 0,
       :updated_on => Time.now,
-      :duplicate_id => nil
+      :duplicate_id => nil,
+      :uri => "uri:#{unique_id}"
     }.merge(attributes)
   end
   
