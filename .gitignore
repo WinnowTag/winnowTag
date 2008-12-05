@@ -44,3 +44,7 @@ vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/redcloth_inline.o
 vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/redcloth_scan.bundle
 vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/redcloth_scan.o
 vendor/gems/RedCloth-4.0.4/lib/redcloth_scan.bundle
+*.o
+*.bundle
+ext/*/Makefile
+Makefile

@@ -54,8 +54,8 @@ module Fiveruns
             File.open(report_filename, 'a') do |f|
               ::Fiveruns::Manage.sync do
                 f.write(
-                  { :time => Time.now.utc,
-                    :data => data
+                  { 'time' => Time.now.utc,
+                    'data' => data
                   }.to_yaml
                 )
               end

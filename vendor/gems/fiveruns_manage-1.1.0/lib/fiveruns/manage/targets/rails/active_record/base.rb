@@ -117,7 +117,11 @@ module Fiveruns::Manage::Targets::Rails::ActiveRecord
         result = remove_connection_without_fiveruns_manage(*args, &block)
         Fiveruns::Manage.metrics_in nil, nil, nil do |metrics|
           metrics[:removes] += 1
-          metrics[:active_conns] = self.active_connections.size
+          metrics[:active_conns] = if self.respond_to?(:connection_pool)
+            self.connection_pool.instance_eval { @checked_out }
+          else
+            self.active_connections.size
+          end
         end
         result
       end

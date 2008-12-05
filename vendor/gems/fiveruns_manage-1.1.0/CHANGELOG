@@ -1,3 +1,7 @@
+v1.1.0. Fix an edge case where the Manage client might not be able to parse the emitted YAML.  This version
+        of the plugin is incompatible with Manage clients older than version 17.
+        Rails 2.2 compatibility fix.
+
 v1.0.4. Add better support for Passenger.  Previously a Rails app with no active pool instances would be considered Down
         by the FiveRuns Manage service.  The client now recognizes the app as quiescent.
         Certain files were not being cleaned up when the process exited, due to Passenger's reaping of the child instance.
