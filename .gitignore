@@ -48,3 +48,5 @@ vendor/gems/RedCloth-4.0.4/lib/redcloth_scan.bundle
 *.bundle
 ext/*/Makefile
 Makefile
+all.js
+all.css
