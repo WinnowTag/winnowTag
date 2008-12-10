@@ -10,8 +10,8 @@ class FeedItemTextIndex < ActiveRecord::Base
   
   private
   def normalize_content
-    if self.content.nil? && self.feed_item
-      self.content = self.feed_item.title + ' ' + self.feed_item.content.content
+    if self.content.nil? && self.feed_item && self.feed_item.content
+      self.content = "#{self.feed_item.title} #{self.feed_item.content.content}"
     end
     
     if self.content

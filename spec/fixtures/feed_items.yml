@@ -25,6 +25,7 @@ first:
   created_on: <%= Time.now.yesterday.yesterday.to_formatted_s(:db)%>
   title: This is a test
   author: 'Author'
+  uri: "urn:uuid:item1"
 another:
   id: 2
   feed_id: 1
@@ -33,6 +34,7 @@ another:
   created_on: <%= Time.now.to_formatted_s(:db)%>
   title: This is another test
   author: 'Author'
+  uri: "urn:uuid:item2"
 third:
   id: 3
   feed_id: 1
@@ -41,6 +43,7 @@ third:
   created_on: <%= Time.now.to_formatted_s(:db)%>
   title: Yet another test
   author: 'Author'
+  uri: "urn:uuid:item3"
 forth:
   id: 4
   feed_id: 2
@@ -49,3 +52,4 @@ forth:
   created_on: <%= Time.now.tomorrow.to_formatted_s(:db)%>
   title: fourth
   author: 'Author'
+  uri: "urn:uuid:item4"
