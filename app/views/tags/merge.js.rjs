@@ -4,6 +4,6 @@ page << <<-EOJS
   } else {
 EOJS
   page.select("##{dom_id(@tag)} .name, .#{dom_id(@tag)} .name").each do |element|
-    element.update @tag.name
+    element.update h(@tag.name)
   end
 page << "}"

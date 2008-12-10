@@ -85,4 +85,7 @@ Rails::Initializer.run do |config|
   # Activate observers that should always be running
   # Please note that observers generated using script/generate observer need to have an _observer suffix
   config.active_record.observers = :text_indexing_observer
+  
+  config.action_view.sanitized_allowed_tags = 'table', 'thead', 'tfoot', 'tr', 'td', 'object', 'embed', 'center'
+  config.action_view.sanitized_allowed_attributes = 'style', 'align'
 end

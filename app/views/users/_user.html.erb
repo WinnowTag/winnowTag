@@ -11,9 +11,9 @@
   <div class="clearfix">
     <dl class="account_detail">
       <dt><%= _(:users_display_name) %></dt>
-  		<dd><%= sanitize user.display_name %></dd>
+  		<dd><%=h user.display_name %></dd>
       <dt><%= _(:email) %></dt>
-  		<dd><%= sanitize user.email %></dd>
+  		<dd><%=h user.email %></dd>
     </dl>
     <dl class="login_detail">
 		  <dt><%= _(:users_registered) %></dt>

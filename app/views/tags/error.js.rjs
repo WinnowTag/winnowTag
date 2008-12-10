@@ -1,5 +1,5 @@
 page.select("##{dom_id(@tag)} .name, .#{dom_id(@tag)} .name").each do |element|
-  element.update @tag.name
+  element.update h(@tag.name)
 end
 
 page << "Message.add('error', #{@tag.errors.full_messages.join('<br/>').to_json});"

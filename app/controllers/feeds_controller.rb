@@ -24,7 +24,7 @@ class FeedsController < ApplicationController
       end
     end
   end
-  
+
   def create   
     @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
     if @feed.errors.empty?

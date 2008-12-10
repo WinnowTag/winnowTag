@@ -14,36 +14,6 @@ describe ApplicationHelper do
     @current_user = mock_model(User, valid_user_attributes)
   end
 
-  describe "clean html" do
-    it "strips scripts" do
-      assert_equal("<h1>header</h1><p>content</p>", clean_html("<script>This is a script</script><h1>header</h1><p>content</p>"))
-    end
-  
-    it "strips styles" do
-      assert_equal("<h1>header</h1><p>content</p>", clean_html("<style>div {font-size:64px;}</style><h1>header</h1><p>content</p>"))
-    end
-  
-    it "strips links" do
-      assert_equal("<h1>header</h1><p>content</p>", clean_html('<link rel="foo"><h1>header</h1><p>content</p>'))
-    end
-  
-    it "strips meta" do
-      assert_equal("<h1>header</h1><p>content</p>", clean_html('<meta http-equiv="foo"><h1>header</h1><p>content</p>'))
-    end
-  
-    it "clean_html_with_blank_value" do
-      [nil, '', ' '].each do |value| 
-        assert_nil clean_html(value)
-      end
-    end
-  
-    it "clean_html_with_non_blank_value" do
-      ["string", "<div>content</div>"].each do |value| 
-        assert_not_nil clean_html(value)
-      end
-    end
-  end
-  
   describe "#globally_exclude_check_box" do
     before(:each) do
       current_user.stub!(:globally_excluded?).and_return(false)

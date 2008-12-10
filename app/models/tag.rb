@@ -263,7 +263,7 @@ class Tag < ActiveRecord::Base
   
   def self.search(options = {})
     select = ['tags.*', 
-              'CONCAT(users.firstname, " ", users.lastname) AS user_display_name',
+              'users.login AS user_login',
               '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
