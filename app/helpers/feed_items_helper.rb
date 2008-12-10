@@ -24,11 +24,10 @@ module FeedItemsHelper
   end
   
   def feed_item_title(feed_item)
-    # TODO: sanitize
-    if not feed_item.title.blank?
-      feed_item.title
-    else
+    if feed_item.title.blank?
       content_tag :span, _(:feed_item_no_title), :class => "notitle"
+    else
+      h(feed_item.title)
     end
   end
 
@@ -48,9 +47,9 @@ module FeedItemsHelper
   
   def feed_control_for(feed_item)
     if feed_item.author.blank?
-      _(:feed_item_feed_metadata, content_tag(:a, feed_item.feed_title, :class => "feed_title stop"))
+      _(:feed_item_feed_metadata, content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
     else
-      _(:feed_item_metadata, content_tag(:a, feed_item.feed_title, :class => "feed_title stop"), feed_item.author)
+      _(:feed_item_metadata, content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), h(feed_item.author))
     end
   end
   
@@ -72,7 +71,7 @@ module FeedItemsHelper
   
   def tag_control_tooltip(tag, strength)
     title = []
-    title << "by #{tag.user.display_name}" if tag.user_id != current_user.id
+    title << "by #{tag.user.login}" if tag.user_id != current_user.id
     title << "#{strength}" if strength
     title.join(", ") unless title.blank?
   end

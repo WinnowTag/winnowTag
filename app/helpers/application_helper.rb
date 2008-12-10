@@ -6,15 +6,12 @@
 module ApplicationHelper  
   include DateHelper
 
-  STRIPPED_ELEMENTS = %w(script style link meta) unless const_defined?(:STRIPPED_ELEMENTS)
+  def sth(content)
+    sanitize(textilize(Hpricot(content.to_s).to_s))
+  end
   
-  # TODO: Replace usages with sanitize
-  def clean_html(html)
-    unless html.blank? 
-      doc = Hpricot(html)
-      doc.search(STRIPPED_ELEMENTS.join(',')).each {|e| e.parent.children.delete(e) }
-      doc.to_s
-    end
+  def sh(content)
+    sanitize(Hpricot(content.to_s).to_s)
   end
   
   def tab_selected(controller, action = nil)
@@ -204,7 +201,7 @@ module ApplicationHelper
     if tag.user_id == current_user.id 
       _(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
     else
-      _(:public_tag_tooltip, tag.user.display_name, tag.positive_count, tag.negative_count, tag.classifier_count)
+      _(:public_tag_tooltip, h(tag.user.login), tag.positive_count, tag.negative_count, tag.classifier_count)
     end
   end
   

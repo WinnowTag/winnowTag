@@ -204,12 +204,8 @@ class User < ActiveRecord::Base
     BCrypt::Password.create(password)
   end
 
-  def display_name
+  def full_name
     "#{self.firstname} #{self.lastname}"
-  end
-  
-  def to_s
-    self.display_name
   end
   
   def encrypt(password)

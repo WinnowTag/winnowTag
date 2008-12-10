@@ -1,7 +1,7 @@
 <div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => disabled) %> this.up('.tag').down('.extended .comments').load();">
   <div class="info">      
     <div class="details">
-      <p><%= tag.user_display_name %></p>
+      <p><%=h tag.user_login %></p>
       <strong class="state"><%= tag_state(tag) %></strong>
     </div>
     <div class="comments">
@@ -28,22 +28,21 @@
       
   <% if local_assigns[:editable] %>
     <h4>
-      <span id="<%= dom_id(tag, 'name') %>" class="name"><%= tag.name %></span>
+      <span id="<%= dom_id(tag, 'name') %>" class="name"><%=h tag.name %></span>
       <%= in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
             :click_to_edit_text => _(:tags_click_to_edit_tag_text), :save_text => _(:tags_save_text), :html_response => false) %>
     </h4>
 
     <div class="description">
-      <% if tag.comment.blank?; tag.comment = _(:tags_blank_comment); end %>
-      <% @tag = tag -%> <%# TODO: This is a hack to get the below line to work... %> 
-      <%= in_place_editor_field :tag, :comment, {}, :param_name => 'tag[comment]', :url => tag_path(tag), :options => "{method: 'put'}",
-            :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50 %>
+      <span id="<%= dom_id(tag, 'comment') %>"><%= tag.comment.blank? ? _(:tags_blank_comment) : h(tag.comment) %></span>
+      <%= in_place_editor(dom_id(tag, "comment"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[comment]",
+            :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50) %>
     </div>
   <% else %>
-    <h4><%= tag.name %></h4>
+    <h4><%=h tag.name %></h4>
 
     <div class="description">
-      <%= tag.comment %>
+      <%=h tag.comment %>
     </div>
   <% end %>
 </div>

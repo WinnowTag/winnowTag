@@ -393,7 +393,7 @@ Please click on the following link to confirm your registration:
 Are you sure you want to continue?|
   l.store :users_destroy_confirm,                   "Really delete %s?"
   
-  l.store :users_display_name,                      "Display Name"
+  l.store :users_full_name,                         "Full Name"
   l.store :users_last_logged_in,                    "Last Logged In"
   l.store :users_last_accessed,                     "Last Accessed"
   l.store :users_last_trained,                      "Last Trained"

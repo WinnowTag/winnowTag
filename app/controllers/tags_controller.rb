@@ -139,7 +139,7 @@ class TagsController < ApplicationController
       end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
-      render :text => sanitize(@tag.comment)
+      render :text => h(@tag.comment)
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true

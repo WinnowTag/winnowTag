@@ -11,7 +11,7 @@ module FeedsHelper
                         content_tag('span', '', :class => 'blank')
 
     # TODO: sanitize
-    feed_page_link = link_to(feed.title, feed_items_path(:anchor => "feed_ids=#{feed.id}"),  :target => "_blank")
+    feed_page_link = link_to(h(feed.title), feed_items_path(:anchor => "feed_ids=#{feed.id}"),  :target => "_blank")
     
     feed_link + ' ' + feed_home_link + ' ' + feed_page_link
   end

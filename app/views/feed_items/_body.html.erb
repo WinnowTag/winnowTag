@@ -1,3 +1,3 @@
 <% cache(:action => 'index', :action_suffix => dom_id(feed_item, 'body')) do -%>
-	<%= clean_html(feed_item.content.content) %>
+	<%=sh feed_item.content.content %>
 <% end -%>

@@ -1,8 +1,8 @@
 <div id="user_<%= user.id %>" class="user clearfix">
   <% unless user == current_user -%>
   <ul class="controls">
-    <li><%= link_to _(:login_label), login_as_user_url(user), :class => :login, :method => :post, :confirm => _(:users_login_confirm, user.display_name) %></li>
-    <li><%= link_to _(:destroy), user_url(user), :class => :destroy, :method => :delete, :confirm => _(:users_destroy_confirm, user.display_name) %></li>
+    <li><%= link_to _(:login_label), login_as_user_url(user), :class => :login, :method => :post, :confirm => _(:users_login_confirm, user.login) %></li>
+    <li><%= link_to _(:destroy), user_url(user), :class => :destroy, :method => :delete, :confirm => _(:users_destroy_confirm, user.login) %></li>
   </ul>
   <% end -%>
 
@@ -10,10 +10,10 @@
 
   <div class="clearfix">
     <dl class="account_detail">
-      <dt><%= _(:users_display_name) %></dt>
-  		<dd><%= sanitize user.display_name %></dd>
+      <dt><%= _(:users_full_name) %></dt>
+  		<dd><%=h user.full_name %></dd>
       <dt><%= _(:email) %></dt>
-  		<dd><%= sanitize user.email %></dd>
+  		<dd><%=h user.email %></dd>
     </dl>
     <dl class="login_detail">
 		  <dt><%= _(:users_registered) %></dt>

@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feedbacks/_feedback.html.erb' do
   before(:each) do
-    @feedback = mock_model(Feedback, :user => mock_model(User, :display_name => "John Doe"), :created_at => 3.days.ago, :body => "This is a feature requests")
+    @feedback = mock_model(Feedback, :user => mock_model(User, :login => "johndoe"), :created_at => 3.days.ago, :body => "This is a feature requests")
     template.stub!(:format_date).and_return("THE DATE")
   end
   
@@ -17,7 +17,7 @@ describe '/feedbacks/_feedback.html.erb' do
   
   it "displays the user who posted the feedback" do
     render_it
-    response.should have_tag(".metadata", /John Doe/)
+    response.should have_tag(".metadata", /johndoe/)
   end
   
   it "displays the date the feedback was posted" do
