@@ -37,6 +37,7 @@ class Tag < ActiveRecord::Base
   has_many :feed_items, :through => :taggings
   has_many :tag_subscriptions
   has_many :comments
+  has_many :usages, :class_name => "TagUsage"
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
