@@ -17,10 +17,10 @@ describe "folders" do
     
     @current_user = User.find_by_login("quentin")
     @existing_folder = Folder.create! :user_id => @current_user.id, :name => "existing folder"
-    @example_feed = Feed.new :title => "Example Feed", :via => "http://example.com/atom"
+    @example_feed = Feed.new :title => "Example Feed", :via => "http://example.com/atom", :uri => "urn:test:example1"
     @example_feed.id = 1
     @example_feed.save!
-    @another_example_feed = Feed.new :title => "Another Example Feed", :via => "http://another.example.com/atom"
+    @another_example_feed = Feed.new :title => "Another Example Feed", :via => "http://another.example.com/atom", :uri => "urn:test:example2"
     @another_example_feed.id = 2
     @another_example_feed.save!
     FeedSubscription.create! :feed_id => @another_example_feed.id, :user_id => @current_user.id
