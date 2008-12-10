@@ -7,11 +7,11 @@ module ApplicationHelper
   include DateHelper
 
   def sth(content)
-    sanitize(textilize(Hpricot(content.to_s).to_s))
+    sanitize(textilize(Hpricot.parse(content.to_s).to_s))
   end
   
   def sh(content)
-    sanitize(Hpricot(content.to_s).to_s)
+    sanitize(Hpricot.parse(content.to_s).to_s)
   end
   
   def tab_selected(controller, action = nil)
