@@ -7,7 +7,7 @@ def Tag(user, tag)
   if tag.nil? || tag.is_a?(Tag) 
     tag
   else
-    Tag.find_or_create_by_user_id_and_name(user.id, tag)    
+    Tag.find_or_create_by_user_id_and_name(user.id, tag)
   end
 end
 

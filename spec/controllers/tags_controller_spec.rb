@@ -69,7 +69,6 @@ describe TagsController do
   before(:each) do
     Tag.delete_all
     login_as(:quentin)
-
   end
   
   describe "create" do
@@ -251,7 +250,7 @@ describe TagsController do
       response.code.should == "404"
     end
   end
-  
+
   describe "GET training" do
     before(:each) do
       @action = "training" # for 'conditional GET of tag'
@@ -598,5 +597,20 @@ describe TagsController do
       
       do_put "neither"
     end
+  end
+end
+
+describe TagsController, "GET show when not logged in" do
+  fixtures :users
+  
+  it "logs a tag usage with the client's ip address" do
+    user = users(:quentin)
+    tag = Tag(user, "ruby")
+    tag.update_attribute :public, true
+
+    TagUsage.should_receive(:create!).with(:tag_id => tag.id, :ip_address => "3.4.5.6")
+    
+    request.env['REMOTE_ADDR'] = '3.4.5.6'
+    get :show, :user => "quentin", :tag_name => "ruby", :format => "atom"
   end
 end
