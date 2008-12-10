@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   helper_method :render_to_string, :controller_name, :action_name
   
-  before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time
+  before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time, :set_json_if_json
 
   DEFAULT_LIMIT = 40 unless defined?(DEFAULT_LIMIT)
   MAX_LIMIT = 100 unless defined?(MAX_LIMIT)
@@ -54,5 +54,9 @@ protected
       response.headers['Last-Modified'] = last_modified.httpdate if last_modified
       yield(since)
     end
+  end
+  
+  def set_json_if_json
+    headers['Content-type'] = "application/json" if request.env['HTTP_ACCEPT'] =~ /application\/json/
   end
 end
