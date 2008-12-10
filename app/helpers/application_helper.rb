@@ -10,6 +10,7 @@ module ApplicationHelper
   
   # TODO: Replace usages with sanitize
   def clean_html(html)
+    require 'hpricot'
     unless html.blank? 
       doc = Hpricot(html)
       doc.search(STRIPPED_ELEMENTS.join(',')).each {|e| e.parent.children.delete(e) }
