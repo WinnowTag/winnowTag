@@ -71,7 +71,7 @@ module FeedItemsHelper
   
   def tag_control_tooltip(tag, strength)
     title = []
-    title << "by #{tag.user.display_name}" if tag.user_id != current_user.id
+    title << "by #{tag.user.login}" if tag.user_id != current_user.id
     title << "#{strength}" if strength
     title.join(", ") unless title.blank?
   end
