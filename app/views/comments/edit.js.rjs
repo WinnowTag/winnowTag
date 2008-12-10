@@ -1,2 +1,2 @@
 page[@comment].down(".body").hide
-page[@comment].insert render_to_string(:partial => "comments/form.html.erb", :locals => { :comment => @comment })
+page[@comment].insert render(:partial => "comments/form.html.erb", :locals => { :comment => @comment })

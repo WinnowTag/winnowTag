@@ -72,7 +72,8 @@ class TagsController < ApplicationController
 
   def show
     respond_to do |wants|
-      wants.atom do        
+      wants.atom do
+        TagUsage.create!(:tag_id => @tag.id, :ip_address => request.remote_ip)
         conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
           atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
           render :xml => atom.to_xml

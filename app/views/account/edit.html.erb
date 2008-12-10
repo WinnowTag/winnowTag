@@ -30,7 +30,7 @@
   	</p>
   	<p>
       <%= f.label :time_zone, _(:time_zone_label) %>
-      <%= f.time_zone_select :time_zone, TZInfo::Timezone.us_zones, :model => TZInfo::Timezone, :include_blank => true %>
+      <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :model => ActiveSupport::TimeZone, :include_blank => true %>
   	</p>
   	<p>
   	  <%= submit_tag _(:edit_profile_submit_button) %>

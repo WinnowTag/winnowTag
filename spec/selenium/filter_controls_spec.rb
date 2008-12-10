@@ -39,12 +39,12 @@ describe "filter controls" do
     
   describe "text filter" do    
     it "sets the text filter" do
-      page.location.should =~ /\#order=date&direction=desc$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
 
       page.type "text_filter", "ruby"
       hit_enter "text_filter"
 
-      page.location.should =~ /\#order=date&direction=desc&text_filter=ruby$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&text_filter=ruby$/
     end
     
     it "keeps mode and tag/feed filters intact" do
@@ -52,12 +52,12 @@ describe "filter controls" do
       page.open feed_items_path(:anchor => "mode=trained&tag_ids=1&feed_ids=1")
       page.wait_for :wait_for => :ajax
 
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=trained$/
+      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=1&feed_ids=1$/
 
       page.type "text_filter", "ruby"
       hit_enter "text_filter"
 
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=1&feed_ids=1&mode=trained&text_filter=ruby$/
+      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=1&feed_ids=1&text_filter=ruby$/
     end
   end
   
@@ -72,11 +72,11 @@ describe "filter controls" do
     end
     
     it "sets the tag filter" do
-      page.location.should =~ /\#order=date&direction=desc$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
 
       page.click "css=#name_tag_#{@tag.id}"
 
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}$/
     end
     
     it "resets feed/tag filters only" do
@@ -84,11 +84,11 @@ describe "filter controls" do
       page.open feed_items_path(:anchor => "mode=trained&text_filter=ruby&feed_ids=1&tag_ids=999")
       page.wait_for :wait_for => :ajax
 
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=999&feed_ids=1&mode=trained&text_filter=ruby$/
+      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=999&feed_ids=1&text_filter=ruby$/
 
       page.click "css=#name_tag_#{@tag.id}"
       
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}&mode=trained&text_filter=ruby$/
+      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
     end
     
     it "turns off a tag filter" do
@@ -96,28 +96,28 @@ describe "filter controls" do
       page.open feed_items_path(:anchor => "tag_ids=1,#{@tag.id}")
       page.wait_for :wait_for => :ajax
 
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=1%2C#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=1%2C#{@tag.id}$/
 
       page.click "css=#name_tag_#{@tag.id}"
       
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}$/
     end
     
     it "sets tag filter for all in folder" do
-      page.location.should =~ /\#order=date&direction=desc$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
 
       page.click "tag_filters_control"
       
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=#{@tag.id}%2C#{@sql.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
     
     it "filters by all tags in the folder, even when a tag was just removed" do
-      page.location.should =~ /\#order=date&direction=desc$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
       page.click "css=#tag_#{@tag.id} .filter .remove"
       page.wait_for :wait_for => :ajax
       page.confirmation.should include(@tag.name)
       page.click "css=#tag_filters_control"      
-      page.location.should =~ /\#order=date&direction=desc&tag_ids=#{@sql.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@sql.id}$/
     end
   end
 end

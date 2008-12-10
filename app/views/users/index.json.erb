@@ -1,6 +1,6 @@
 <%= {
   :full => @full,
   :items => @users.map do |user|
-    { :id => dom_id(user), :content => render_to_string(:partial => 'user.html.erb', :object => user) }
+    { :id => dom_id(user), :content => render(:partial => 'user.html.erb', :object => user) }
   end
 }.to_json %>

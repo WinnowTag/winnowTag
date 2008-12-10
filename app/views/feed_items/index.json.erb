@@ -1,6 +1,6 @@
 <%= {
   :full => @full,
   :items => @feed_items.map do |feed_item|
-    { :id => dom_id(feed_item), :content => render_to_string(:partial => 'feed_item.html.erb', :object => feed_item) }
+    { :id => dom_id(feed_item), :content => render(:partial => 'feed_item.html.erb', :object => feed_item) }
   end
 }.to_json %>

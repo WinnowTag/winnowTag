@@ -7,7 +7,7 @@ def Tag(user, tag)
   if tag.nil? || tag.is_a?(Tag) 
     tag
   else
-    Tag.find_or_create_by_user_id_and_name(user.id, tag)    
+    Tag.find_or_create_by_user_id_and_name(user.id, tag)
   end
 end
 
@@ -37,6 +37,7 @@ class Tag < ActiveRecord::Base
   has_many :feed_items, :through => :taggings
   has_many :tag_subscriptions
   has_many :comments
+  has_many :usages, :class_name => "TagUsage"
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name

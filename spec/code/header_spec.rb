@@ -11,9 +11,10 @@ describe "headers" do
       lib/authenticated_system.rb lib/authenticated_test_helper.rb
       lib/mongrel_health_check_handler.rb 
       lib/tasks/cucumber.rake lib/tasks/rspec.rake
+      features/steps/env.rb features/steps/common_webrat.rb
     ]
     
-    (Dir["{app,lib,db,profiling,spec,stories}/**/*.{rb,rake}"] - vendor).each do |filename|
+    (Dir["{app,lib,db,profiling,spec,features}/**/*.{rb,rake}"] - vendor).each do |filename|
       filename.should have_ruby_kaphan_header
     end
   end

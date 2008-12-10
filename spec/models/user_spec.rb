@@ -316,6 +316,16 @@ describe User do
       user = User.new valid_user_attributes(:email => nil)
       user.should have(1).error_on(:email)
     end
+    
+    it "login allows alphanumberic, -, and _" do
+      user = User.new(valid_user_attributes(:login => "John-J_Doe"))
+      user.should be_valid
+    end
+    
+    it "login does not allow characters other than alphanumberic, -, and _" do
+      user = User.new(valid_user_attributes(:login => "john@example.com"))
+      user.should have(1).error_on(:login)
+    end
 
     it "should_set_remember_token" do
       users(:quentin).remember_me

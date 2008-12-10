@@ -36,7 +36,6 @@ Rails::Initializer.run do |config|
   config.gem "ratom",           :lib => "atom"
   config.gem "RedCloth"
   config.gem "selenium-client", :lib => "selenium/client"
-  config.gem "tzinfo"
 
   # Must be compiled/installed on the target system
   config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"

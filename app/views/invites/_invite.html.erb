@@ -15,7 +15,7 @@
 	  <dt><%= _(:status) %></dt>
     <dd>
 	  <% if invite.user -%>
-	    <%= _(:invites_accepted) %> <%= link_to sanitize(invite.user.login), invite.user %>
+	    <%= _(:invites_accepted) %> <%= sanitize(invite.user.login) %>
 	  <% elsif invite.code? -%>
 	    <%= _(:invites_activated) %> <%= invite.code %>
 	  <% else -%>

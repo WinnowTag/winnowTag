@@ -184,8 +184,12 @@ Spec::Runner.configure do |config|
   
   def valid_invite_attributes(attributes = {})
     unique_id = rand(1000)
-    {
-      :email => "user_#{unique_id}@example.com"
+    { :email => "user_#{unique_id}@example.com"
+    }.merge(attributes)
+  end
+  
+  def valid_tag_usage_attributes(attributes = {})
+    { :tag_id => "1"
     }.merge(attributes)
   end
   
