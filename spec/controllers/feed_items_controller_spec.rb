@@ -12,21 +12,78 @@ describe FeedItemsController do
     assert_requires_login {|c| c.get :index, {}}
   end
 
-  it "index" do
-    login_as :quentin
-    get :index
-    assert_response :success
-    assert_template 'index'
+  describe "GET /feed_items" do
+    def get_index
+      get :index
+    end
+    
+    before(:each) do
+      login_as :quentin
+    end
+    
+    it "is successful" do
+      get_index
+      response.should be_success
+    end
+
+    it "renders the index template" do
+      get_index
+      response.should render_template("index")
+    end
   end
   
-  it "index_with_ajax" do
-    login_as(:quentin)
-    get :index, :offset => '1', :limit => '1', :show_untagged => true, :format => "json"
-    assert_response :success
-    assert_not_nil assigns(:feed_items)
-    # TODO: Move this test to a view test
-    # regex = /itemBrowser\.insertItem\("#{dom_id(assigns(:feed_items).first)}", 1/
-    # assert @response.body =~ regex, "#{regex} does match #{@response.body}"
+  describe "GET /feed_items.json" do
+    def get_index(params = {})
+      get :index, params.merge(:format => "json")
+    end
+    
+    before(:each) do
+      login_as :quentin
+    end
+    
+    it "is successful" do
+      get_index
+      response.should be_success
+    end
+
+    it "renders the index template" do
+      get_index
+      response.should render_template("index")
+    end
+    
+    it "sets feed items for the view" do
+      get_index
+      assigns[:feed_items].should_not be_nil
+    end
+
+    it "logs a tag usage linked to the current user for each requested tag" do
+      TagUsage.should_receive(:create!).with(:tag_id => "1", :user_id => current_user.id)
+      TagUsage.should_receive(:create!).with(:tag_id => "2", :user_id => current_user.id)
+    
+      get_index :tag_ids => "1,2"
+    end
+  end
+  
+  describe "GET /feed_items.atom" do
+    def get_index(params = {})
+      get :index, params.merge(:format => "atom")
+    end
+    
+    before(:each) do
+      login_as :quentin
+    end
+    
+    it "is successful" do
+      get_index
+      response.should be_success
+    end
+
+    it "logs a tag usage linked to the current user for each requested tag" do
+      TagUsage.should_receive(:create!).with(:tag_id => "1", :user_id => current_user.id)
+      TagUsage.should_receive(:create!).with(:tag_id => "2", :user_id => current_user.id)
+    
+      get_index :tag_ids => "1,2"
+    end
   end
     
   it "body" do
