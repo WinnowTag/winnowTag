@@ -1,10 +1,10 @@
 <div id="classification_section" class="clearfix">
   <div class="classification_controls">
-  	<%= rounded_button_function _(:start_classifier_button), "", :icon => "start", :id => "classification_button" %>
-  	<%= rounded_button_function _(:stop_classifier_button),  "", :icon => "stop",  :id => "cancel_classification_button", :style => "display:none" %>
+  	<%= rounded_button_function t(:start_classifier_button), "", :icon => "start", :id => "classification_button" %>
+  	<%= rounded_button_function t(:stop_classifier_button),  "", :icon => "stop",  :id => "cancel_classification_button", :style => "display:none" %>
   </div>
   <div class="progress_bar_container" id="classification_progress" style="display:none">
-  	<div id="progress_title"><%= _(:classifier_progress) %></div>
+  	<div id="progress_title"><%= t(:classifier_progress) %></div>
   	<div id="progress_bar" class="progress_bar" style="width:0%;"></div>
   </div>
 </div>

@@ -11,7 +11,7 @@ class AccountController < ApplicationController
     if request.post?
       params[:current_user].delete(:login)
       if current_user.update_attributes(params[:current_user])
-        flash[:notice] = _(:profile_update)
+        flash[:notice] = t(:profile_update)
         redirect_to :back
       end
     end
@@ -29,16 +29,16 @@ class AccountController < ApplicationController
         end
         redirect_back_or_default feed_items_path
       else
-        flash[:warning] = _(:credentials_invalid)
+        flash[:warning] = t(:credentials_invalid)
       end
     elsif params[:code]
       self.current_user = User.find(:first, :conditions => ["reminder_code = ? AND reminder_expires_at > ?", params[:code], Time.now])
       if current_user
         current_user.reminder_login!
-        flash[:warning] = _(:update_password)
+        flash[:warning] = t(:update_password)
         redirect_to edit_account_path
       else
-        flash[:error] = _(:reminder_invalid)
+        flash[:error] = t(:reminder_invalid)
         redirect_to login_path(:code => nil)
       end
     elsif params[:invite]
@@ -66,7 +66,7 @@ class AccountController < ApplicationController
     if @invite.save
       UserNotifier.deliver_invite_requested(@invite)
       Notifier.deliver_invite_requested(@invite)
-      flash[:notice] = _(:invitation_submitted)
+      flash[:notice] = t(:invitation_submitted)
       redirect_to login_path
     else
       render :action => "login"
@@ -87,9 +87,9 @@ class AccountController < ApplicationController
       if @user and @user.activate
         self.current_user = @user
         redirect_back_or_default(root_path)
-        flash[:notice] = _(:account_activated)
+        flash[:notice] = t(:account_activated)
       else
-        flash[:error] = _(:account_activation_failed)
+        flash[:error] = t(:account_activation_failed)
       end
     else
       flash.clear

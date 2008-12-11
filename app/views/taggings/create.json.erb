@@ -2,5 +2,5 @@
   :id => dom_id(@tagging.tag),
   :filterHtml => tag_filter_control(@tagging.tag, :editable => true, :remove => :subscription),
   :tooltip => tag_tooltip(@tagging.tag),
-  :classifierProgress => _(:classifier_progress)
+  :classifierProgress => t(:classifier_progress)
 }.to_json %>

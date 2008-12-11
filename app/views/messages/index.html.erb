@@ -3,7 +3,7 @@
 <% end -%>
 
 <% if @messages.empty? -%>
-  <div class="empty"><%= _(:messages_no_messages_match) %></div>
+  <div class="empty"><%= t(:messages_no_messages_match) %></div>
 <% else -%>
   <%= render :partial => @messages %>
 <% end -%>

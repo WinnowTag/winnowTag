@@ -5,7 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class Notifier < ActionMailer::Base
   def deployed(host, repository, revision, deployer, comment)
-    setup_email :subject => _(:deployed_subject, revision)
+    setup_email :subject => t(:deployed_subject, revision)
     body        :host => host, :repository => repository, :revision => revision, :deployer => deployer, :comment => comment
   end
 

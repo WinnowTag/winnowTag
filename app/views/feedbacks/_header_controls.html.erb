@@ -1,12 +1,12 @@
 <% form_tag feedbacks_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feedback_search_placeholder) %>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:feedback_search_placeholder) %>
 <% end -%>
 
 <div class="order clearfix">
-  <label><%= _(:sort_label) %></label>        
+  <label><%= t(:sort_label) %></label>        
   <select id="order">
-    <option value="user"><%= _(:feedback_sort_user_label) %></option>
-    <option value="created_at"><%= _(:feedback_sort_date_label) %></option>
+    <option value="user"><%= t(:feedback_sort_user_label) %></option>
+    <option value="created_at"><%= t(:feedback_sort_date_label) %></option>
   </select>
   <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
 </div>

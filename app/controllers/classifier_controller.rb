@@ -46,7 +46,7 @@ class ClassifierController < ApplicationController
   
   def status
     respond_to do |wants|
-      status = {:error_message => _(:classifier_not_running), :progress => 100}
+      status = {:error_message => t(:classifier_not_running), :progress => 100}
       
       session[:classification_job_id] && session[:classification_job_id].dup.each_with_index do |job_id, index|
         if job = Remote::ClassifierJob.find(job_id)

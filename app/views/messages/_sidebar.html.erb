@@ -1,8 +1,8 @@
 <div class="messages">
-  <h3><%= _(:messages_messages) %></h3>
+  <h3><%= t(:messages_messages) %></h3>
   <div class="content">
     <% if messages.blank? -%>
-      <span class="empty"><%= _(:messages_empty) %></span>
+      <span class="empty"><%= t(:messages_empty) %></span>
     <% else -%>
       <ul>
         <%= render :partial => "messages/sidebar_message", :collection => messages %>

@@ -1,7 +1,7 @@
 <div class="message clearfix">
 	<ul class="controls">
-    <li><%= link_to _(:edit), edit_message_path(message), :class => :edit %></li>
-    <li><%= link_to _(:destroy), message, :confirm => _(:are_you_sure), :method => :delete, :class => :destroy %></li>    
+    <li><%= link_to t(:edit), edit_message_path(message), :class => :edit %></li>
+    <li><%= link_to t(:destroy), message, :confirm => t(:are_you_sure), :method => :delete, :class => :destroy %></li>    
 	</ul>
 	
   <span class="date"><%= format_date message.created_at %></span>

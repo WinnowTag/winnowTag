@@ -5,12 +5,12 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class UserNotifier < ActionMailer::Base
   def reminder(user, url)
-    setup_email user.email, :subject => _(:reminder_subject)
+    setup_email user.email, :subject => t(:reminder_subject)
     body        :user => user, :url => url
   end
   
   def invite_requested(invite)
-    setup_email invite.email, :subject => _(:invite_requested_subject)
+    setup_email invite.email, :subject => t(:invite_requested_subject)
     body        :invite => invite
   end
   

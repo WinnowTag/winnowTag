@@ -12,8 +12,8 @@ class Invite < ActiveRecord::Base
   
   def initialize(*args, &block)
     super(*args, &block)
-    self.subject ||= _(:default_invite_accepted_subject)
-    self.body ||= _(:default_invite_accepted_body)
+    self.subject ||= t(:default_invite_accepted_subject)
+    self.body ||= t(:default_invite_accepted_body)
   end
   
   def activate!

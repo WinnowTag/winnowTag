@@ -99,7 +99,7 @@ module ApplicationHelper
   
   def search_field_tag(name, value = nil, options = {})
     options[:clear] ||= {}
-    options[:placeholder] ||= _(:default_search_placeholder)
+    options[:placeholder] ||= t(:default_search_placeholder)
     content_tag :div, 
       content_tag(:span, nil, :class => "sbox_l") +      
       tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name) +
@@ -123,7 +123,7 @@ module ApplicationHelper
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, _(:create_feed, h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t(:create_feed, h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -152,7 +152,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content << content_tag(:li, _(:create_tag, h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t(:create_tag, h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -193,9 +193,9 @@ module ApplicationHelper
   
   def tag_tooltip(tag)
     if tag.user_id == current_user.id 
-      _(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
+      t(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
     else
-      _(:public_tag_tooltip, h(tag.user.login), tag.positive_count, tag.negative_count, tag.classifier_count)
+      t(:public_tag_tooltip, h(tag.user.login), tag.positive_count, tag.negative_count, tag.classifier_count)
     end
   end
   

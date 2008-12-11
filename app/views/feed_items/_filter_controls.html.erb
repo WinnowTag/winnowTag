@@ -1,12 +1,12 @@
 <div class="section<%= open_tags? ? " open" : "" %>" id="tags_section">
   <div class="header clearfix">
     <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('tags', $(this).up('.section').hasClassName('open'), 365);"></span>
-    <%= link_to_function _(:sidebar_tags_header), "itemBrowser.toggleSetFilters({folder_ids: 'tags'}, event);", :id => "tag_filters_control", :class => "name" %>
+    <%= link_to_function t(:sidebar_tags_header), "itemBrowser.toggleSetFilters({folder_ids: 'tags'}, event);", :id => "tag_filters_control", :class => "name" %>
     
     <div class="actions clearfix">
-      <%= link_to_function _(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('tag_name').focus();", :class => "add_link" %>
-      <%= link_to_function _(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
-      <%= link_to_function _(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit')", :class => "cancel_link" %>
+      <%= link_to_function t(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('tag_name').focus();", :class => "add_link" %>
+      <%= link_to_function t(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
+      <%= link_to_function t(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit')", :class => "cancel_link" %>
     </div>
   </div>
 
@@ -24,12 +24,12 @@
 <div class="section<%= open_feeds? ? " open" : "" %>" id="feeds_section">
   <div class="header clearfix">
     <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('feeds', $(this).up('.section').hasClassName('open'), 365);"></span>        
-    <%= link_to_function _(:sidebar_feeds_header), "itemBrowser.toggleSetFilters({folder_ids: 'feeds'}, event);", :class => "name" %>
+    <%= link_to_function t(:sidebar_feeds_header), "itemBrowser.toggleSetFilters({folder_ids: 'feeds'}, event);", :class => "name" %>
 
     <div class="actions clearfix">
-      <%= link_to_function _(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('feed_title').focus();", :class => "add_link" %>
-      <%= link_to_function _(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
-      <%= link_to_function _(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit');", :class => "cancel_link" %>
+      <%= link_to_function t(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('feed_title').focus();", :class => "add_link" %>
+      <%= link_to_function t(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
+      <%= link_to_function t(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit');", :class => "cancel_link" %>
     </div>
   </div>
 
@@ -47,12 +47,12 @@
 <div class="section<%= open_folders? ? " open" : "" %>" id="folders_section">
   <div class="header clearfix">
     <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('folders', $(this).up('.section').hasClassName('open'), 365);"></span>        
-    <%= content_tag :span, _(:sidebar_folders_header), :class => "name" %>
+    <%= content_tag :span, t(:sidebar_folders_header), :class => "name" %>
 
     <div class="actions clearfix">
-      <%= link_to_function _(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('folder_name').focus();", :class => "add_link" %>
-      <%= link_to_function _(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
-      <%= link_to_function _(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit');", :class => "cancel_link" %>
+      <%= link_to_function t(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('folder_name').focus();", :class => "add_link" %>
+      <%= link_to_function t(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
+      <%= link_to_function t(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit');", :class => "cancel_link" %>
     </div>
   </div>
 

@@ -1,13 +1,13 @@
 <% form_tag invites_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:invites_search_placeholder) %>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:invites_search_placeholder) %>
 <% end -%>
 
 <div class="order clearfix">
-  <label><%= _(:sort_label) %></label>        
+  <label><%= t(:sort_label) %></label>        
   <select id="order">
-    <option value="created"><%= _(:created) %></option>
-    <option value="email"><%= _(:email) %></option>
-    <option value="status"><%= _(:status) %></option>
+    <option value="created"><%= t(:created) %></option>
+    <option value="email"><%= t(:email) %></option>
+    <option value="status"><%= t(:status) %></option>
   </select>
   <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
 </div>

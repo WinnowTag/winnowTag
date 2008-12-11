@@ -1,8 +1,8 @@
 <div id="user_<%= user.id %>" class="user clearfix">
   <% unless user == current_user -%>
   <ul class="controls">
-    <li><%= link_to _(:login_label), login_as_user_url(user), :class => :login, :method => :post, :confirm => _(:users_login_confirm, user.login) %></li>
-    <li><%= link_to _(:destroy), user_url(user), :class => :destroy, :method => :delete, :confirm => _(:users_destroy_confirm, user.login) %></li>
+    <li><%= link_to t(:login_label), login_as_user_url(user), :class => :login, :method => :post, :confirm => t(:users_login_confirm, user.login) %></li>
+    <li><%= link_to t(:destroy), user_url(user), :class => :destroy, :method => :delete, :confirm => t(:users_destroy_confirm, user.login) %></li>
   </ul>
   <% end -%>
 
@@ -10,27 +10,27 @@
 
   <div class="clearfix">
     <dl class="account_detail">
-      <dt><%= _(:users_full_name) %></dt>
+      <dt><%= t(:users_full_name) %></dt>
   		<dd><%=h user.full_name %></dd>
-      <dt><%= _(:email) %></dt>
+      <dt><%= t(:email) %></dt>
   		<dd><%=h user.email %></dd>
     </dl>
     <dl class="login_detail">
-		  <dt><%= _(:users_registered) %></dt>
+		  <dt><%= t(:users_registered) %></dt>
 		  <dd><%= format_date(user.created_at) %></dd>
-      <dt><%= _(:users_last_logged_in) %></dt>
+      <dt><%= t(:users_last_logged_in) %></dt>
       <dd><%= format_date(user.logged_in_at) %></dd>
-      <dt><%= _(:users_last_accessed) %></dt>
+      <dt><%= t(:users_last_accessed) %></dt>
       <dd><%= format_date(user.last_accessed_at) %></dd>
     </dl>
     <dl class="tag_detail">
-      <dt><%= _(:users_last_trained) %></dt>
+      <dt><%= t(:users_last_trained) %></dt>
       <dd><%= format_date(user.last_tagging_on) %></dd>
-      <dt><%= _(:users_number_of_tags) %></dt>
+      <dt><%= t(:users_number_of_tags) %></dt>
       <dd><%= user.tags.size %></dd>
-		  <dt><%= _(:users_average_tags_per_item) %></dt>
+		  <dt><%= t(:users_average_tags_per_item) %></dt>
 		  <dd><%= user.average_taggings_per_item %></dd>
-		  <dt><%= _(:users_percentage_tagged) %></dt>
+		  <dt><%= t(:users_percentage_tagged) %></dt>
 		  <dd class="last"><%= number_to_percentage user.tagging_percentage %></dd>
     </dl>
   </div>
