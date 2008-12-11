@@ -1212,10 +1212,6 @@ body#feeds .feed {
   color: #52718B;
 }
 
-/*.training_controls .tag:hover .name {
-  color: #B4D08D; 
-}*/
-
 .training_controls .tag.classifier {
   background-color: #efefef;
   border-color: #ccc;
@@ -1224,18 +1220,6 @@ body#feeds .feed {
 .training_controls .tag.classifier .name {
   color: #000;
 }
-
-/*.training_controls .tag.classifier:hover .name {
-  color: #B4D08D; 
-}*/
-
-/*.training_controls .tag.classifier.positive:hover .name {
-  color: #C48181;
-}*/
-
-/*.training_controls .tag.classifier.negative:hover .name {
-  color: #52718B;
-}*/
 
 .training_controls .tag.positive {
   background-color: #B4D08D;
@@ -1246,10 +1230,6 @@ body#feeds .feed {
   color: #000;
 }
 
-/*.training_controls .tag.positive:hover .name {
-  color: #52718B;
-}*/
-
 .training_controls .tag.negative {
   background-color: #EF6465;
   border-color: #C48181;
@@ -1258,10 +1238,6 @@ body#feeds .feed {
 .training_controls .tag.negative .name {
   color: #000;
 }
-
-/*.training_controls .tag.negative:hover .name {
-  color: #52718B;
-}*/
 
 .training_controls .tag.selected {
   background-color: #52718B;
@@ -1583,7 +1559,8 @@ body#item_caches .item_cache {
   padding: 1em 1em 0.4em;
 }
 
-.tag .extended .sidebar .actions {
+.tag .extended .sidebar .actions, 
+.tag .extended .sidebar .stats {
   background-color: #FFFFCC;
 }
 
@@ -1598,6 +1575,14 @@ body#item_caches .item_cache {
 
 .tag .extended .sidebar .actions .state label {
   margin-right: 1.5em;
+}
+
+.tag .extended .sidebar .stats {
+  display: none;
+}
+
+.tag.public .extended .sidebar .stats {
+  display: block;
 }
 
 .tag ul.controls {

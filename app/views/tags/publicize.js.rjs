@@ -1,0 +1,5 @@
+if @tag.public?
+  page[@tag].add_class_name "public"
+else
+  page[@tag].remove_class_name "public"
+end

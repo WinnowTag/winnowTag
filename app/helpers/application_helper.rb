@@ -210,11 +210,16 @@ module ApplicationHelper
   end
   
   def tag_classes(tag)
+    classes = [dom_id(tag)]
+    
+    classes << "public" if tag.public?
+    
     if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
-      "globally_excluded"
+      classes << "globally_excluded"
     elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
-      "subscribed"
-    end.to_s + " " + dom_id(tag)
+      classes << "subscribed"
+    end
+    classes.join(" ")
   end
 
   def feed_classes(feed)

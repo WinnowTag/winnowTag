@@ -219,7 +219,7 @@ class TagsController < ApplicationController
     unless @tag.public?
       TagSubscription.delete_all(:tag_id => @tag)
     end
-    render :nothing => true
+    respond_to :js
   end
   
   def update_state

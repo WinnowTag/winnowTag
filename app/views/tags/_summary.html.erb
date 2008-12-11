@@ -1,4 +1,4 @@
-<div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => disabled) %> this.up('.tag').down('.extended .comments').load();">
+<div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => !editable) %> this.up('.tag').down('.extended .comments').load();">
   <div class="info">      
     <div class="details">
       <p><%=h tag.user_login %></p>
@@ -39,7 +39,7 @@
             :click_to_edit_text => _(:tags_click_to_edit_comment_text), :save_text => _(:tags_save_text), :rows => 5, :cols => 50) %>
     </div>
   <% else %>
-    <h4><%=h tag.name %></h4>
+    <h4 class="name"><%=h tag.name %></h4>
 
     <div class="description">
       <%=h tag.comment %>
