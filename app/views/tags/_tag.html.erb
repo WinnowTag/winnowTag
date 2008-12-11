@@ -20,10 +20,10 @@
           <% end -%>
           <li><%= link_to_remote t(:copy), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", #{tag.name.to_json} + " - copy")|, :html => { :class => "copy" } %></li>
           <% if tag.user == current_user -%>
-            <li><%= link_to_remote t(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => t(:tags_destroy_confirm_text, tag.name), :html => { :title => t(:tags_destroy_link_title, tag.name), :class => "destroy", :id => dom_id(tag, 'destroy') } %></li>
+            <li><%= link_to_remote t(:destroy), :url => tag_path(tag), :method => 'delete', :confirm => t(:tags_destroy_confirm_text, :tag => tag.name), :html => { :title => t(:tags_destroy_link_title, :tag => tag.name), :class => "destroy", :id => dom_id(tag, 'destroy') } %></li>
           <% end -%>
-          <li><%= link_to t(:view_all_items, h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show' %></li>
-          <li><%= link_to t(:view_tagged_items, h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained"), :class => "show" %></li>
+          <li><%= link_to t(:view_all_items, :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show' %></li>
+          <li><%= link_to t(:view_tagged_items, :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained"), :class => "show" %></li>
           <li><%= link_to t(:tags_feed_link), url_for(:user => tag.user, :tag_name => tag.name, :action => 'show', :format => :atom), :class => "feed" %></li>
         </ul>
       </div>

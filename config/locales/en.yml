@@ -318,7 +318,7 @@ en:
     {{use}}
   
   # app/views/taggings/destroy.js.rjs
-  taggings_destroy_message: "You have removed the last example of tag %s, do you want to remove it from your tags page?"
+  taggings_destroy_message: "You have removed the last example of tag {{tag}}, do you want to remove it from your tags page?"
   
   # app/views/tags/_header_controls.html.erb
   tags_header_name: "Name"
@@ -335,8 +335,8 @@ en:
   tags_feed_link: "Feed"
   tags_globally_exclude: "Globally Exclude"
   tags_subscribe: "Subscribe"
-  view_all_items: "Show items tagged with %s"
-  view_tagged_items: "Show items trained with %s"
+  view_all_items: "Show items tagged with {{tag}}"
+  view_tagged_items: "Show items trained with {{tag}}"
   copy: "Copy"
   no_comments_for_this_tag: "There are no comments for this tag."
   add_a_comment: "Add a comment"
@@ -348,26 +348,26 @@ en:
 
   # app/views/tags/_subscribed_tag.html.erb
   tags_public: "Public"
-  tags_destroy_link_title: "Unsubscribe %s"
+  tags_destroy_link_title: "Unsubscribe {{tag}}"
 
   # app/views/tags/_tag.html.erb
   tags_click_to_edit_tag_text: "Click to edit tag name"
   tags_save_text: "Save"
   tags_blank_comment: "..."
   tags_click_to_edit_comment_text: "Click to edit tag comment"
-  tags_destroy_confirm_text: "Do you really want to delete %s?\n\nThis can't be undone."
-  tags_merge_confirm_text: "This will merge %s with %s. Are you sure you want to do this?"
-  tags_sidebar_confirm_message: "You have removed the tag %s from your sidebar, do you want to remove it from your tags page?"
-  tags_unsubscribe_text: "You have been unsubscribed from the public %s. You can subscribe on the Public Tags page."
+  tags_destroy_confirm_text: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
+  tags_merge_confirm_text: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
+  tags_sidebar_confirm_message: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
+  tags_unsubscribe_text: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
   
   # app/views/user_notifier
-  user_notifier_activation_text: "%s, your account has been activated.  You may now visit winnow at: %s"
+  user_notifier_activation_text: "{{user}}, your account has been activated.  You may now visit winnow at: {{url}}"
   user_notifier_invite_accepted: |-
-    %s
+    {{invite}}
 
-    Please visit %s to signup for your account.
-  user_notifier_invite_requested: "Your request for an invitation to Winnow has been submitted. You will be notified at %s when your invitation is accepted."
-  user_notifier_reminder_text: "To update your password, visit %s"
+    Please visit {{url}} to signup for your account.
+  user_notifier_invite_requested: "Your request for an invitation to Winnow has been submitted. You will be notified at {{email}} when your invitation is accepted."
+  user_notifier_reminder_text: "To update your password, visit {{url}}"
   user_notifier_signup_notification_text: |-
     Welcome to Winnow, %s.
 
