@@ -63,9 +63,6 @@ Localization.define do |l|
 
   # app/helpers/feed_items_helper.rb
   l.store :automatic_label,                       "Automatic"
-  l.store :positive_training_control,             "Make Positive"
-  l.store :negative_training_control,             "Make Negative"
-  l.store :remove_training_control,               "Remove Training"
   l.store :start_classifier_button,               "Auto-tag"
   l.store :stop_classifier_button,                "Stop"
   l.store :classifier_progress,                   "Classify changed tags"
@@ -337,7 +334,6 @@ Localization.define do |l|
   l.store :view_all_items,                          "Show items tagged with %s"
   l.store :view_tagged_items,                       "Show items trained with %s"
   l.store :copy,                                    "Copy"
-  l.store :tags_copy_link_title,                    "Copy %s"
   l.store :no_comments_for_this_tag,                "There are no comments for this tag."
   l.store :add_a_comment,                           "Add a comment"
 
@@ -356,7 +352,6 @@ Localization.define do |l|
   l.store :tags_blank_comment,                      "..."
   l.store :tags_click_to_edit_comment_text,         "Click to edit tag comment"
   l.store :tags_destroy_confirm_text,               "Do you really want to delete %s?\n\nThis can't be undone."
-  l.store :tags_editing_tag_name,                   "Editing %s"
   l.store :tags_merge_confirm_text,                 "This will merge %s with %s. Are you sure you want to do this?"
   l.store :tags_sidebar_confirm_message,            %|You have removed the tag %s from your sidebar, do you want to remove it from your tags page?|
   l.store :tags_unsubscribe_text,                   "You have been unsubscribed from the public %s. You can subscribe on the Public Tags page."
@@ -401,7 +396,6 @@ Are you sure you want to continue?|
   l.store :users_save_changes,                      'Save changes'
   
   l.store :users_registered,                        "Registered"
-  l.store :users_last_tagged,                       "Last Tagged"
   l.store :users_average_tags_per_item,             "Average Tags per Item"
   l.store :users_percentage_tagged,                 "Percentage Tagged"
   
