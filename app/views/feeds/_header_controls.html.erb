@@ -40,6 +40,6 @@
     <p><%= t(:feeds_new_bookmarklet_description) %></p>
     
     <%= link_to t(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => t(:feeds_add_to_winnow), 
-                  :onclick => "Message.add('error', #{_(:feeds_bookmarklet_js_error_message).to_json}); return false;" %>
+                  :onclick => "Message.add('error', #{t(:feeds_bookmarklet_js_error_message).to_json}); return false;" %>
   </fieldset>
 </div>

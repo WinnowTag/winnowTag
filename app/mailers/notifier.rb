@@ -1,4 +1,4 @@
-# Copyright (c) 2008 The Kaphan Foundation
+t(:# Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
@@ -10,7 +10,7 @@ class Notifier < ActionMailer::Base
   end
 
   def invite_requested(invite)
-    setup_email :subject => "#{_(:subject_prefix)} #{_(:invite_requested_subject)}"
+    setup_email :subject => "#{t(:subject_prefix)} #{t(:invite_requested_subject)}"
     body        :invite => invite
   end
     

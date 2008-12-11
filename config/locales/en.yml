@@ -369,13 +369,13 @@ en:
   user_notifier_invite_requested: "Your request for an invitation to Winnow has been submitted. You will be notified at {{email}} when your invitation is accepted."
   user_notifier_reminder_text: "To update your password, visit {{url}}"
   user_notifier_signup_notification_text: |-
-    Welcome to Winnow, %s.
+    Welcome to Winnow, {{user}}.
 
     Please click on the following link to confirm your registration:
 
-    <a href="%s">Click me!</a>
+    <a href="{{registration_url}}">Click me!</a>
 
-    %s
+    {{winnow_url}}
 
   # app/views/users/_header_controls.html.erb
   users_create_user: "Create User"
@@ -390,10 +390,10 @@ en:
   users_search_placeholder: "Search Users..."
   
   users_login_confirm: |-
-    This will log you in as %s. You will need to log out and login as yourself to use your own account again.
+    This will log you in as {{login}}. You will need to log out and login as yourself to use your own account again.
   
     Are you sure you want to continue?
-  users_destroy_confirm: "Really delete %s?"
+  users_destroy_confirm: "Really delete {{login}}?"
   
   users_full_name: "Full Name"
   users_last_logged_in: "Last Logged In"
