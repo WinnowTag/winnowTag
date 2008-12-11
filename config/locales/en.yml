@@ -74,7 +74,7 @@ en:
   
   # app/mailers/notifier.rb
   subject_prefix: "[WINNOW]"
-  deployed_subject: "[DEPLOYMENT] r%s deployed"
+  deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
   invite_requested_subject: "Invite Requested"
 
   # app/mailers/notifier.rb
@@ -85,7 +85,7 @@ en:
   default_invite_accepted_body: "You request for an invitation to Winnow has been accepted!"
   
   # app/views/about/index.html.erb
-  winnow_revision: "This is build %s of Winnow."
+  winnow_revision: "This is build {{build}} of Winnow."
   
   # app/views/account/activate.html.erb
   activation_code_label: "Activation Code"
@@ -149,8 +149,8 @@ en:
   manage_feedback_description: "View feedback left by the users of winnow."
 
   # app/views/feed_items/_description.html.erb
-  feed_item_feed_metadata: "from %s"
-  feed_item_metadata: "from %s by %s"
+  feed_item_feed_metadata: "from {{feed_title}}"
+  feed_item_metadata: "from {{feed_title}} by {{author}}"
   
   # app/views/feed_items/_feed_item.html.erb
   train: "Train"
@@ -191,7 +191,7 @@ en:
   mark_all_read: "Mark All Read"    
   
   # app/views/feedbacks/_feedback.html.erb
-  feedback_metadata: "%s on %s"
+  feedback_metadata: "{{login}} on {{created_at}}"
   
   # app/views/feedbacks/_form.html.erb
   feedback_submit_button: "Submit"
@@ -295,12 +295,13 @@ en:
   messages_new_message: "New message"
   
   # app/views/notifier/deployed.html.erb
+  # :revision => @revision, :repository => @repository, :host => @host, :deployer => @deployer, :comment => @comment) %>
   notifier_deployed_text: |-
     Hello Peerworks folk,
 
-    Revision %s of "%s" has just be deployed to %s by %s.
+    Revision {{revision}} of {{repository}} has just been deployed to {{host}} by {{deployer}}.
 
-    Comment: %s
+    Comment: {{comment}}
 
     Regards,
 
@@ -308,13 +309,13 @@ en:
 
   # app/views/notifier/invite_requested.html.erb  
   notifier_invite_requested_text: |-
-    %s has submitted an invitation request.
+    {{email}} has submitted an invitation request.
 
     How did you hear about Winnow?
-    %s
+    {{hear}}
 
     How/why do you want to use Winnow?
-    %s
+    {{use}}
   
   # app/views/taggings/destroy.js.rjs
   taggings_destroy_message: "You have removed the last example of tag %s, do you want to remove it from your tags page?"

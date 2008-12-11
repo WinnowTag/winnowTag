@@ -46,9 +46,9 @@ module FeedItemsHelper
   
   def feed_control_for(feed_item)
     if feed_item.author.blank?
-      t(:feed_item_feed_metadata, content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
+      t(:feed_item_feed_metadata, :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
     else
-      t(:feed_item_metadata, content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), h(feed_item.author))
+      t(:feed_item_metadata, :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), :author => h(feed_item.author))
     end
   end
   
