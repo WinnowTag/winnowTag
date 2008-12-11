@@ -1,5 +1,5 @@
 <ul>
   <% @tags.each do |tag| -%>
-    <li><%= highlight(h(tag.name), @q) %></li>
+    <li><%= highlight(h(tag.name), h(@q)) %></li>
   <% end -%>
 </ul>

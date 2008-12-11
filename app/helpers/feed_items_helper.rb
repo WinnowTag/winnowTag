@@ -7,11 +7,10 @@ module FeedItemsHelper
   include BiasSliderHelper
   
   def link_to_feed(feed, options = {})
-    # TODO: sanitize
     if feed.alternate
-      link_to(feed.title, feed.alternate, options.merge(:target => "_blank"))
+      link_to(h(feed.title), feed.alternate, options.merge(:target => "_blank"))
     else
-      feed.title
+      h(feed.title)
     end
   end
   
@@ -57,7 +56,7 @@ module FeedItemsHelper
   def format_classifier_strength(taggings)
     taggings = Array(taggings)
     
-    if classifier_tagging = taggings.detect {|tagging| tagging.classifier_tagging? }
+    if classifier_tagging = taggings.detect { |tagging| tagging.classifier_tagging? }
       "%.2f%" % (classifier_tagging.strength * 100)
     end
   end
@@ -65,13 +64,12 @@ module FeedItemsHelper
   # Note: Update item.js when this changes
   def tag_control_for(feed_item, tag, classes, strength)
     classes << "tag_control" << dom_id(tag) << "stop"
-    # TODO: sanitize
     content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
   end
   
   def tag_control_tooltip(tag, strength)
     title = []
-    title << "by #{tag.user.login}" if tag.user_id != current_user.id
+    title << "by #{h(tag.user.login)}" if tag.user_id != current_user.id
     title << "#{strength}" if strength
     title.join(", ") unless title.blank?
   end
@@ -126,7 +124,7 @@ module FeedItemsHelper
   
   def render_clue(clue)
     if clue
-      content_tag('td', clue['clue'], :class => 'clue') + content_tag('td', clue['prob'], :class => 'prob')
+      content_tag('td', h(clue['clue']), :class => 'clue') + content_tag('td', clue['prob'], :class => 'prob')
     else
       content_tag('td', nil, :class => 'clue') + content_tag('td', nil, :class => 'prob')
     end

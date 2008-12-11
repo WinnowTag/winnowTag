@@ -27,9 +27,9 @@ module ApplicationHelper
       Message.mark_read_for(current_user.id, message.id)
       
       if message.user
-        "Message.add('error', #{message.body.to_json});"
+        "Message.add('error', #{h(message.body).to_json});"
       else
-        "Message.add('warning', #{message.body.to_json});"
+        "Message.add('warning', #{sth(message.body).to_json});"
       end
     end.join if current_user
     
@@ -123,8 +123,7 @@ module ApplicationHelper
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    # TODO: sanitize
-    content << content_tag(:li, _(:create_feed, options[:auto_complete]), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, _(:create_feed, h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -140,12 +139,10 @@ module ApplicationHelper
     html = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:div, html, :class => "actions")
 
-    # TODO: sanitize
-    html << link_to_function(feed.title, "", :class => "name")
+    html << link_to_function(h(feed.title), "", :class => "name")
     
     html =  content_tag(:div, html, :class => "filter")
-    # TODO: sanitize
-    html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
+    html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
 
     class_names = [dom_id(feed), "clearfix", "feed"]
     class_names << "draggable" if options[:draggable]
@@ -155,8 +152,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    # TODO: sanitize
-    content << content_tag(:li, _(:create_tag, options[:auto_complete]), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, _(:create_tag, h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -179,12 +175,10 @@ module ApplicationHelper
     html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html  = content_tag(:div, html, :class => "actions")
 
-    # TODO: sanitize
-    html << link_to_function(tag.name, "", :class => "name", :id => dom_id(tag, "name"))
+    html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"))
 
     html =  content_tag(:div, html, :class => "filter clearfix")
-    # TODO: sanitize
-    html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
+    html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
     class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id

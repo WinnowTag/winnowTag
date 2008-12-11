@@ -16,7 +16,7 @@ class CollectionJobResultsController < ApplicationController
     end
     
     if params[:collection_job_result][:failed].to_s =~ /true/i
-      user.messages.create!(:body => _(:collection_failed, h(feed.title), h(params[:collection_job_result][:message])))
+      user.messages.create!(:body => _(:collection_failed, feed.title, params[:collection_job_result][:message]))
     end
     
     render :nothing => true, :status => :created
