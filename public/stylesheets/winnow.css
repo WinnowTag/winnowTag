@@ -389,7 +389,7 @@ body#login .container .form .content #invite_use {
   cursor: pointer;
   width: 11px;
   height: auto;
-  background: #d7e0f5 url(../images/right_aarow.png) 3px  center no-repeat;
+  background: #d7e0f5 url(../images/right_aarow.png) 3px center no-repeat;
 }
 
 #sidebar_control:hover {
