@@ -301,16 +301,16 @@ private
     if params[:user] && params[:tag_name]
       @user = User.find_by_login(params[:user])
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
-        render :status => :not_found, :text => t(:tag_not_found, h(@user.login), h(params[:tag_name]))
+        render :status => :not_found, :text => t(:tag_not_found, :login => h(@user.login), :tag_name => h(params[:tag_name]))
       end
     elsif params[:id] && !current_user.nil?
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render :status => :not_found, :text => t(:tag_id_not_found, h(params[:id]))
+        render :status => :not_found, :text => t(:tag_id_not_found, :tag_id => h(params[:id]))
       end
     else
-      render :status => :not_found, :text => t(:tag_id_not_found, h(params[:id]))
+      render :status => :not_found, :text => t(:tag_id_not_found, :tag_id => h(params[:id]))
     end
   end
   

@@ -43,19 +43,19 @@ en:
   tag_copied: "{{from}} successfully copied to {{to}}"
   tag_replace: "Tag {{to}} already exists. This copy will completely replace it with a copy of {{from}}."
   tag_merged: "{{from}} merged with {{to}}"
-  tag_not_found: "%s and no tag %s"
-  tag_id_not_found: "Tag with id %s not found"
+  tag_not_found: "{{login}} and no tag {{tag_name}}"
+  tag_id_not_found: "Tag with id {{tag_id}} not found"
 
   # app/helpers/about_helper.rb
-  classifier_info: "Using classifier version %s at build %s."
+  classifier_info: "Using classifier version {{version}} at build {{build}}."
   classifier_info_not_found: "The classifer could not be contacted."
 
   # app/helpers/application_helper.rb
   default_search_placeholder: "Search..."
-  create_feed: "Create Feed: '%s'"
-  create_tag: "Create Tag: '%s'"
-  public_tag_tooltip: "From %s, Positive: %s, Negative: %s, Automatic: %s"
-  tag_tooltip: "Positive: %s, Negative: %s, Automatic: %s"
+  create_feed: "Create Feed: '{{feed}}'"
+  create_tag: "Create Tag: '{{tag}}'"
+  public_tag_tooltip: "From {{login}}, Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
+  tag_tooltip: "Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
 
   # app/helpers/bais_slider_helper.rb
   slider_handle_tooltip: "Drag to set the sensitvity of the classifier."

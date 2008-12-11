@@ -123,7 +123,7 @@ module ApplicationHelper
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, t(:create_feed, h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t(:create_feed, :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -152,7 +152,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content << content_tag(:li, t(:create_tag, h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t(:create_tag, :tag => h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -193,9 +193,9 @@ module ApplicationHelper
   
   def tag_tooltip(tag)
     if tag.user_id == current_user.id 
-      t(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
+      t(:tag_tooltip, :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     else
-      t(:public_tag_tooltip, h(tag.user.login), tag.positive_count, tag.negative_count, tag.classifier_count)
+      t(:public_tag_tooltip, :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     end
   end
   
