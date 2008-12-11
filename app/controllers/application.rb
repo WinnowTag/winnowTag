@@ -25,9 +25,8 @@ class ApplicationController < ActionController::Base
   MAX_LIMIT = 100 unless defined?(MAX_LIMIT)
 
 protected
-  # TODO: sanitize
   def check_atom
-    render(:text => params[:atom_error].message, :status => 400) if params[:atom_error]
+    render(:text => h(params[:atom_error].message), :status => 400) if params[:atom_error]
   end
 
   def set_time_zone

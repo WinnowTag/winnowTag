@@ -53,10 +53,10 @@ class ClassifierController < ApplicationController
           # This combines the progress of all pending jobs 
           
           status = { :progress => ((status[:progress] * index) + job.progress).to_f / (index + 1),
-                     :status   => job.status }
+                     :status   => h(job.status) }
                    
           if job.status == Remote::ClassifierJob::Status::ERROR
-            status = {:error_message => job.error_message, :progress => 100}
+            status = {:error_message => h(job.error_message), :progress => 100}
             job.destroy
             session[:classification_job_id].delete(job_id)          
           elsif job.status == Remote::ClassifierJob::Status::COMPLETE
@@ -95,8 +95,10 @@ private
     if job_running?
       raise ClassificationStartException.new(_(:classifier_running), 500)
     elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
-      # TODO: sanitize
-      raise ClassificationStartException.new(puct.map{|t| t.name}, 412)
+      tag_names = puct.map { |tag| h(tag.name) }.to_sentence
+      message = "You are about to classify " + tag_names + " which #{puct.size > 1 ? 'have' : 'has'} less than 6 positive examples. " <<
+                "This might not work as well as you would expect.\nDo you want to proceed anyway?"
+      raise ClassificationStartException.new(message, 412)
     elsif current_user.changed_tags.empty?
       raise ClassificationStartException.new(_(:tags_not_changed), 500)
     else

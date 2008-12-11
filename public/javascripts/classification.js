@@ -125,18 +125,7 @@ var Classification = Class.create({
       on412: function(response) {
         this.notify('Cancelled');
         if (response.responseJSON) {
-          var haveOrHas = "has";
-          var tags = response.responseJSON.map(function(t) { return "'" + t + "'";}).sort();
-          var tag_names = tags.first();
-        
-          if (tags.size() > 1) {
-            var last = tags.last();
-            haveOrHas = "have";
-            tag_names = tags.slice(0, tags.size() - 1).join(", ") + ' and ' + last;
-          } 
-        
-          new ConfirmationMessage("You are about to classify " + tag_names + " which " + haveOrHas + " less than 6 positive examples. " + 
-                                  "This might not work as well as you would expect.\nDo you want to proceed anyway?", function() {
+          new ConfirmationMessage(response.responseJSON, function() {
             this.start(true);
           }.bind(this));
         }

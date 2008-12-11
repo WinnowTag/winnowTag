@@ -9,17 +9,14 @@ class CollectionJobResultsController < ApplicationController
   
   def create
     user = User.find_by_login(params[:user_id]) || User.find(params[:user_id])
-    message = params[:collection_job_result][:message]
-    failed = params[:collection_job_result][:failed].to_s =~ /true/i
     feed = Feed.find_by_id(params[:collection_job_result][:feed_id]) || Remote::Feed.find(params[:collection_job_result][:feed_id])
     
     if feed and feed.duplicate
       user.update_feed_state(feed)
     end
     
-    # TODO: sanitize
-    if failed
-      user.messages.create!(:body => _(:collection_failed, feed.title, message))
+    if params[:collection_job_result][:failed].to_s =~ /true/i
+      user.messages.create!(:body => _(:collection_failed, h(feed.title), h(params[:collection_job_result][:message])))
     end
     
     render :nothing => true, :status => :created

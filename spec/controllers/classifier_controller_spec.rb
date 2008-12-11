@@ -55,7 +55,7 @@ describe ClassifierController do
       Remote::ClassifierJob.should_not_receive(:create)
       post 'classify'
       response.code.should == "412"
-      response.body.should == "[\"#{tag.name}\"]"
+      response.body.should == "You are about to classify #{tag.name} which has less than 6 positive examples. This might not work as well as you would expect.\nDo you want to proceed anyway?".to_json
     end
     
     it "should start a job when changed tags are potentially undertrained and the user has confirmed" do

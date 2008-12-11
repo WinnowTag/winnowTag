@@ -32,11 +32,10 @@ class FeedsController < ApplicationController
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
       
-      # TODO: sanitize
       flash[:notice] = if @feed.updated_on.nil?
-         _(:feed_added, @feed.url)
+         _(:feed_added, h(@feed.url))
       else
-        _(:feed_existed, @feed.url)
+        _(:feed_existed, h(@feed.url))
       end
       
       respond_to do |format|
