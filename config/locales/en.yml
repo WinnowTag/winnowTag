@@ -25,8 +25,8 @@ en:
   could_not_load_clues: "Could not load the clues, please try again later."
   
   # app/controllers/feeds_controller.rb
-  feed_added: "Thanks for adding the feed from %s. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
-  feed_existed: "We already have the feed from %s, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
+  feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
+  feed_existed: "We already have the feed from {{url}}, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
   feeds_imported:
     one:   "Imported 1 feed from your OPML file"
     other: "Imported {{count}} feeds from your OPML file"
@@ -40,9 +40,9 @@ en:
   bad_params: "Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!"
 
   # app/controllers/tags_controller.rb
-  tag_copied: "%s successfully copied to %s"
-  tag_replace: "Tag %s already exists. This copy will completely replace it with a copy of %s."
-  tag_merged: "%s merged with %s"
+  tag_copied: "{{from}} successfully copied to {{to}}"
+  tag_replace: "Tag {{to}} already exists. This copy will completely replace it with a copy of {{from}}."
+  tag_merged: "{{from}} merged with {{to}}"
   tag_not_found: "%s and no tag %s"
   tag_id_not_found: "Tag with id %s not found"
 

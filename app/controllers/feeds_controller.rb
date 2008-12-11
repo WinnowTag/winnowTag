@@ -33,9 +33,9 @@ class FeedsController < ApplicationController
                                       :callback_url => collection_job_results_url(current_user))
       
       flash[:notice] = if @feed.updated_on.nil?
-         _(:feed_added, h(@feed.url))
+         t(:feed_added, :url => h(@feed.url))
       else
-        _(:feed_existed, h(@feed.url))
+        t(:feed_existed, :url => h(@feed.url))
       end
       
       respond_to do |format|

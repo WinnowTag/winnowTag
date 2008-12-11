@@ -90,7 +90,7 @@ class TagsController < ApplicationController
       if to
         if params[:overwrite] =~ /true/i
           from.overwrite(to)
-          flash[:notice] = _(:tag_copied, h(from.name), h(to.name))
+          flash[:notice] = t(:tag_copied, :from => h(from.name), :to => h(to.name))
           render :update do |page|
             page.redirect_to tags_path
           end
@@ -98,7 +98,7 @@ class TagsController < ApplicationController
           render :update do |page|
             # TODO: broken?
             page << <<-EOJS
-              if(confirm(#{_(:tag_replace, h(params[:name]), h(from.name)).to_json}) {
+              if(confirm(#{t(:tag_replace, :to => h(params[:name]), :from => h(from.name)).to_json}) {
                 #{remote_function(:url => hash_for_tags_path(:copy => from, :name => params[:name], :overwrite => true))};
               }
             EOJS
@@ -108,7 +108,7 @@ class TagsController < ApplicationController
         to = Tag(current_user, params[:name])
         from.copy(to)
       
-        flash[:notice] = _(:tag_copied, h(from.name), h(to.name))
+        flash[:notice] = t(:tag_copied, :from => h(from.name), :to => h(to.name))
       
         render :update do |page|
           page.redirect_to tags_path
@@ -148,7 +148,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if merge_to = current_user.tags.find_by_name(params[:tag][:name])
         @tag.merge(merge_to)
-        flash[:notice] = _(:tag_merged, h(@tag.name), h(merge_to.name))
+        flash[:notice] = t(:tag_merged, :from => h(@tag.name), :to => h(merge_to.name))
       end
       
       format.html { redirect_to tags_path }
