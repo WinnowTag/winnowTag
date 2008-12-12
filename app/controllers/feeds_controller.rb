@@ -54,7 +54,7 @@ class FeedsController < ApplicationController
       FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
       feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
     end
-    flash[:notice] = t(:feeds_imported, @feeds.size)
+    flash[:notice] = t(:feeds_imported, :count => @feeds.size)
     redirect_to feeds_url
   end
 
