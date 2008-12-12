@@ -1,0 +1,3 @@
+<% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('folders_section').removeClassName('add'); $('folder_name').value = ''" do |form| -%>
+  <%= form.text_field :name, :class => "filter_search" %>
+<% end -%>

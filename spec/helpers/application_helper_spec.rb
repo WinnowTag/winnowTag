@@ -136,36 +136,21 @@ describe ApplicationHelper do
     end
   end
   
-  describe "open_tags?" do
+  describe "section_open?" do
     # Need to fix rspec for this
-    xit "is true when cookies[:tags] is set to a truthy value" do
-      cookies[:tags] = "true"
-      open_tags?.should be_true
+    xit "is true when cookies[id] is set to a truthy value" do
+      cookies["tags"] = "true"
+      section_open?("tags").should be_true
     end
     
-    it "is false when cookies[:tags] is set to a falsy value" do
+    xit "is false when cookies[id] is set to a falsy value" do
       ["", "false"].each do |falsy_value|
-        cookies[:tags] = falsy_value
-        open_tags?.should be_false
+        cookies["tags"] = falsy_value
+        section_open?("tags").should be_false
       end
     end
   end
   
-  describe "open_feeds?" do
-    # Need to fix rspec for this
-    xit "is true when cookies[:feeds] is set to a truthy value" do
-      cookies[:feeds] = "true"
-      open_feeds?.should be_true
-    end
-    
-    it "is false when cookies[:feeds] is set to a falsy value" do
-      ["", "false"].each do |falsy_value|
-        cookies[:feeds] = falsy_value
-        open_feeds?.should be_false
-      end
-    end
-  end
-
   describe "is_admin?" do
     it "returns true when the current user has the admin role" do
       current_user.should_receive(:has_role?).with('admin').and_return(true)

@@ -85,16 +85,8 @@ module ApplicationHelper
     cookies[dom_id(folder)] =~ /true/i
   end
   
-  def open_tags?
-    cookies[:tags] =~ /true/i
-  end
-  
-  def open_feeds?
-    cookies[:feeds] =~ /true/i
-  end
-  
-  def open_folders?
-    cookies[:folders] =~ /true/i
+  def section_open?(id)
+    cookies[id] =~ /true/i
   end
   
   def search_field_tag(name, value = nil, options = {})

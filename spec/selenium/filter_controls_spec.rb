@@ -106,7 +106,7 @@ describe "filter controls" do
     it "sets tag filter for all in folder" do
       page.location.should =~ /\#order=date&direction=desc&mode=unread$/
 
-      page.click "tag_filters_control"
+      page.click "css=#tags_section .header .name"
       
       page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
@@ -116,7 +116,7 @@ describe "filter controls" do
       page.click "css=#tag_#{@tag.id} .filter .remove"
       page.wait_for :wait_for => :ajax
       page.confirmation.should include(@tag.name)
-      page.click "css=#tag_filters_control"      
+      page.click "css=#tags_section .header .name"      
       page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@sql.id}$/
     end
   end

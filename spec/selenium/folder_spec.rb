@@ -38,10 +38,10 @@ describe "folders" do
   end
   
   it "can be created" do
-    assert_not_visible "add_folder"
+    assert_not_visible "css=#folders_section .add_form"
 
     page.click "css=#folders_section .add_link"
-    assert_visible "add_folder"
+    assert_visible "css=#folders_section .add_form"
     
     page.type "folder_name", "new folder"
     hit_enter "folder_name"
