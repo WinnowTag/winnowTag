@@ -35,3 +35,7 @@ Element.addMethods({
     });
   }
 });
+
+Element.fromHTML = function(html) {
+  return new Element('div').update(html).down();
+};

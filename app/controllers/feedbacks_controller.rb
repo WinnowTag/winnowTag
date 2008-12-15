@@ -18,11 +18,11 @@ class FeedbacksController < ApplicationController
   
   def new
     @feedback = Feedback.new
-    respond_to :js
+    render :layout => false
   end
   
   def create
     current_user.feedbacks.create!(params[:feedback])
-    respond_to :js
+    render :nothing => true
   end
 end
