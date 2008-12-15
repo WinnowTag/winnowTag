@@ -13,7 +13,7 @@
     <option value="last_tagging_on"><%= t(:users_header_last_trained) %></option>
     <option value="tag_count"><%= t(:users_header_number_of_tags) %></option>
   </select>
-  <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
+  <%= direction_link %>
 </div>
 
 <div class="toolbar right">

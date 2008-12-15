@@ -8,5 +8,5 @@
     <option value="user"><%= t(:feedback_sort_user_label) %></option>
     <option value="created_at"><%= t(:feedback_sort_date_label) %></option>
   </select>
-  <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
+  <%= direction_link %>
 </div>

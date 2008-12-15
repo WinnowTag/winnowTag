@@ -36,6 +36,10 @@ module ApplicationHelper
     javascript_tag(javascript) unless javascript.blank?
   end
   
+  def direction_link
+    link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction"
+  end
+  
   def is_admin?
     if @is_admin.nil?
       @is_admin = (current_user.has_role?('admin') == true)

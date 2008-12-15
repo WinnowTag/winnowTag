@@ -11,7 +11,7 @@
     <option value="created_on"><%= t(:feeds_header_created) %></option>
     <option value="updated_on"><%= t(:feeds_header_last_updated) %></option>
   </select>
-  <%= link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction" %>
+  <%= direction_link %>
 </div>
   
 <div class="toolbar right">
