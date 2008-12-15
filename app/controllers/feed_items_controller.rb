@@ -87,7 +87,6 @@ class FeedItemsController < ApplicationController
                   :text_filter => params[:text_filter],
                   :mode => params[:mode],
                   :user => current_user }
-
       FeedItem.mark_read(filters)
     end
     render :nothing => true

@@ -119,8 +119,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   markAllItemsRead: function() {
-    $$('.feed_item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
-    new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
+    this.container.select('.feed_item').invoke('addClassName', 'read');
+    new Ajax.Request('/' + this.options.controller + '/mark_read' + '?' + $H(this.filters).toQueryString(), {method: 'put'});
   },
   
   insertItem: function($super, item_id, content) {
