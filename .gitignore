@@ -4,7 +4,6 @@ config/database.yml
 config/selenium.yml
 config/fiveruns_tuneup.yml
 db/development_structure.sql
-doc/TODO
 log
 tmp
 .DS_Store
