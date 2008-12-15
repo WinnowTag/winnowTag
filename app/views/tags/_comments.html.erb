@@ -10,6 +10,7 @@
   <% form_remote_for :comment, :url => comments_path do |form|  -%>
     <%= form.hidden_field :tag_id, :value => tag.id %>
     <%= form.text_area :body %>
+    <span class="reference"><%= t(:textile_reference) %></span>
     <div class="input">
       <div class="errors" id="<%= dom_id(tag, 'new_comment_error') %>"></div>
       <%= submit_tag 'Submit' %>

@@ -1537,6 +1537,10 @@ body#item_caches .item_cache {
   margin: 1px 0 0.5em -2px;
 }
 
+.tag .extended .comment form .reference {
+  float: left;
+}
+
 .tag .extended .comment form .input {
   float: right;
 }
@@ -1686,6 +1690,10 @@ body#item_caches .item_cache {
   border: 1px solid #C0C7CD;
   height: 80px;
   margin-bottom: 0.5em;
+}
+
+.tag .extended .comment_form .reference {
+  float: left;
 }
 
 .tag .extended .comment_form .input {
