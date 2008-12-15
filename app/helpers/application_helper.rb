@@ -7,7 +7,7 @@ module ApplicationHelper
   include DateHelper
 
   def sth(content)
-    sanitize(textilize(Hpricot.parse(content.to_s).to_s))
+    sanitize(textilize(h(content.to_s)))
   end
   
   def sh(content)
