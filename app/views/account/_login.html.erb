@@ -2,7 +2,7 @@
   <% form_tag login_path do -%> 
     <div class="title">
       <span class="login"><%= t(:login_header) %></span>
-      <span class="invitation"><%= link_to_function t(:invite_header), "$('login_form').hide(); $('invite_form').show();" %></span>
+      <span class="invitation"><%= link_to_function t(:invite_header) %></span>
     </div>
     
     <div class="content">
@@ -24,7 +24,7 @@
 
     	<div class="submit">
     	  <%= submit_tag t(:login_submit_button) %>
-    	  <%= link_to_function t(:forgot_password_link), "$('login_form').hide(); $('reminder_form').show();", :class => "forgot_password_link" %>
+    	  <%= link_to_function t(:forgot_password_link), "", :class => "forgot_password_link" %>
     	</div>
   	</div>
   <% end -%>

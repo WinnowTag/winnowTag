@@ -1,6 +1,6 @@
 var Feedback = Class.create({
-  initialize: function() {
-    this.element = $("feedback");
+  initialize: function(element) {
+    this.element = element;
     this.link = this.element.down("a");
     this.link.observe("click", function(event) {
       this.show();
@@ -44,5 +44,7 @@ var Feedback = Class.create({
 });
 
 document.observe('dom:loaded', function() {
-  new Feedback();
+  $$("#feedback").each(function(feedback) {
+    new Feedback(feedback);
+  });
 });

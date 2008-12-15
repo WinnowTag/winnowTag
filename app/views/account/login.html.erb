@@ -1,13 +1,5 @@
 <% content_for :body, "login" %>
 
-<% content_for :head do -%>
-  <% javascript_tag do -%>
-    document.observe("dom:loaded", function() {
-      $('login_form').down('input#login').focus();
-    });
-  <% end -%>
-<% end -%>
-
 <div class="container">
   <div class="welcome">
     <h2><%= t(:welcome_header) %></h2>
