@@ -6,10 +6,10 @@ Todo
 
 Refactoring
  - restrict tag names to alphanumeric-_
- - fix folders sortable + dropable
 
 Bug
  - loading next page after marking some read
+ - fix folders sortable + dropable
 
 winnow:
  * update selenium-cilent
