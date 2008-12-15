@@ -21,10 +21,13 @@ var SidebarSection = Class.create({
     
     this.cancel_link = element.down('.cancel_link');
     this.cancel_link.observe("click", this.cancel.bind(this));
+    
+    this.input = element.down('.add_form input');
   },
   
   toggleOpen: function() {
     this.element.toggleClassName('open');
+    this.cancel();
   },
   
   setOpenCookie: function() {
@@ -34,7 +37,7 @@ var SidebarSection = Class.create({
   add: function() {
     this.element.addClassName('open');
     this.element.addClassName('add');
-    this.element.down('.add_form input').focus();
+    this.input.focus();
   },
   
   edit: function() {
@@ -45,5 +48,6 @@ var SidebarSection = Class.create({
   cancel: function() {
     this.element.removeClassName('add');
     this.element.removeClassName('edit');
+    this.input.value = "";
   }
 });
