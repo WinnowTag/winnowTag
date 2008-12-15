@@ -16,6 +16,10 @@
         itemBrowser.styleFilters();
         itemBrowser.bindTagFiltersEvents();
         itemBrowser.bindFeedFiltersEvents();
+        
+        $$("#sidebar .section").each(function(element) {
+          new SidebarSection(element);
+        });
       });
       
       new Classification(<%= classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);

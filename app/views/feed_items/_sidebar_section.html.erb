@@ -1,6 +1,6 @@
 <div class="section<%= section_open?(id) ? " open" : "" %>" id="<%= id %>">
   <div class="header clearfix">
-    <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('<%= id %>', $(this).up('.section').hasClassName('open'), 365);"></span>
+    <span class="toggle_button"></span>
     <% if select -%>
       <%= link_to_function title, "itemBrowser.toggleSetFilters(#{select}, event);", :class => "name" %>
     <% else -%>
@@ -8,9 +8,9 @@
     <% end -%>
     
     <div class="actions clearfix">
-      <%= link_to_function t(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $(this).up('.section').down('.add_form input').focus();", :class => "add_link" %>
-      <%= link_to_function t(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
-      <%= link_to_function t(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit')", :class => "cancel_link" %>
+      <%= link_to_function t(:sidebar_add),  "", :class => "add_link" %>
+      <%= link_to_function t(:sidebar_edit), "", :class => "edit_link" %>
+      <%= link_to_function t(:sidebar_done), "", :class => "cancel_link" %>
     </div>
   </div>
 
