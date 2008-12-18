@@ -30,11 +30,6 @@ class User < ActiveRecord::Base
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true]
   has_many :deleted_taggings, :dependent => :delete_all
-  has_many :read_items, :dependent => :delete_all do
-    def for(feed)
-      find(:all, :joins => :feed_item, :conditions => { "feed_items.feed_id" => feed })
-    end
-  end
   has_many :tag_subscriptions, :dependent => :delete_all
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
   has_many :feed_subscriptions, :dependent => :delete_all
@@ -274,7 +269,7 @@ class User < ActiveRecord::Base
     user.save!
     user.activate
     # Mark all existing message as read
-    Message.mark_read_for(user.id)
+    Message.read_by!(user)
     
     if prototype = User.find_by_prototype(true)
       prototype.folders.each do |folder| 

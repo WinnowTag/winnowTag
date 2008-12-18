@@ -24,7 +24,7 @@ module ApplicationHelper
     end.join
     
     javascript << Message.find_unread_for_user_and_global(current_user).map do |message|
-      Message.mark_read_for(current_user.id, message.id)
+      message.read_by!(current_user)
       
       if message.user
         "Message.add('error', #{h(message.body).to_json});"

@@ -9,10 +9,10 @@ describe "FeedItemsTest" do
   fixtures :users, :feed_items, :feeds, :tags
 
   before(:each) do
-    ReadItem.delete_all
-    ReadItem.create! :user_id => 1, :feed_item_id => 2
-    ReadItem.create! :user_id => 1, :feed_item_id => 3
-    ReadItem.create! :user_id => 1, :feed_item_id => 4
+    Reading.delete_all
+    Reading.create! :user_id => 1, :readable_type => "FeedItem", :readable_id => 2
+    Reading.create! :user_id => 1, :readable_type => "FeedItem", :readable_id => 3
+    Reading.create! :user_id => 1, :readable_type => "FeedItem", :readable_id => 4
     
     login
     page.open feed_items_path

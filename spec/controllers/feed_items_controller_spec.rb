@@ -154,7 +154,7 @@ describe FeedItemsController do
   end
   
   it "mark_read" do
-    assert_difference("ReadItem.count", 1) do
+    assert_difference("Reading.count", 1) do
       login_as(:quentin)
       put :mark_read, :id => 1, :format => "js"
       assert_response :success
@@ -162,7 +162,7 @@ describe FeedItemsController do
   end
   
   it "mark_read_twice_only_creates_one_entry_and_doesnt_fail" do
-    assert_difference("ReadItem.count", 1) do
+    assert_difference("Reading.count", 1) do
       login_as(:quentin)
       put :mark_read, :id => 1, :format => "js"
       assert_response :success
@@ -172,9 +172,9 @@ describe FeedItemsController do
   end
   
   it "mark_many_read" do
-    users(:quentin).read_items.create(:feed_item_id => 1)
-    users(:quentin).read_items.create(:feed_item_id => 2)
-    assert_difference("ReadItem.count", 2) do
+    users(:quentin).readings.create!(:readable_type => "FeedItem", :readable_id => 1)
+    users(:quentin).readings.create!(:readable_type => "FeedItem", :readable_id => 2)
+    assert_difference("Reading.count", 2) do
       login_as(:quentin)
       put :mark_read, :format => "js"
       assert_response :success
@@ -182,8 +182,8 @@ describe FeedItemsController do
   end
   
   it "mark_unread" do
-    users(:quentin).read_items.create(:feed_item_id => 2)
-    assert_difference("ReadItem.count", -1) do
+    users(:quentin).readings.create!(:readable_type => "FeedItem", :readable_id => 2)
+    assert_difference("Reading.count", -1) do
       login_as(:quentin)
       put :mark_unread, :id => 2, :format => "js"
       assert_response :success

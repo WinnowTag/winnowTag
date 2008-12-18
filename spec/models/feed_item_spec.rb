@@ -105,7 +105,7 @@ describe FeedItem do
       FeedItem.delete_all
       feed_item_1 = valid_feed_item!(:updated => Date.today)
 
-      ReadItem.create! :feed_item => feed_item_1, :user => user_1
+      feed_item_1.read_by!(user_1)
       
       expected, actual = [feed_item_1], FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc", :mode => "all")
       expected.should == actual
@@ -193,7 +193,7 @@ describe FeedItem do
       feed_item_1 = valid_feed_item!
       feed_item_2 = valid_feed_item!
 
-      FeedItem.mark_read_for(user_1.id, feed_item_2.id)
+      feed_item_2.read_by!(user_1)
       
       FeedItem.find_with_filters(:user => user_1, :mode => "unread", :order => "id").should == [feed_item_1]
     end
@@ -205,7 +205,7 @@ describe FeedItem do
       feed_item_1 = valid_feed_item!(:id => 1)
       feed_item_2 = valid_feed_item!(:id => 2)
 
-      FeedItem.mark_read_for(user_1.id, feed_item_2.id)
+      feed_item_2.read_by!(user_1)
       
       FeedItem.find_with_filters(:user => user_1, :mode => "all", :order => "id").should == [feed_item_1, feed_item_2]
     end
@@ -222,7 +222,7 @@ describe FeedItem do
       tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
       tagging_2 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_2.id
 
-      FeedItem.mark_read_for(user_1.id, feed_item_1.id)
+      feed_item_1.read_by!(user_1)
       
       FeedItem.find_with_filters(:user => user_1, :mode => "unread", :tag_ids => [tag_1.id, tag_2.id].join(","), :order => "id").should == []
     end

@@ -9,7 +9,7 @@ describe "keyboard shortcuts" do
   fixtures :users, :feed_items, :feeds, :feed_item_contents
 
   before(:each) do
-    ReadItem.delete_all
+    Reading.delete_all
     login
     page.open feed_items_path
     page.wait_for :wait_for => :ajax

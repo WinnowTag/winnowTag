@@ -13,7 +13,7 @@ describe "moderation panel" do
   before(:each) do
     Tagging.delete_all
     Tag.delete_all
-    ReadItem.delete_all
+    Reading.delete_all
     
     @positive_tag = Tag.create! :user_id => 1, :name => "positive tag"
     @negative_tag = Tag.create! :user_id => 1, :name => "negative tag"

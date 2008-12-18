@@ -21,7 +21,9 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
-  attr_readonly(:uri)
+  acts_as_readable
+  
+  attr_readonly :uri
   attr_accessor :taggings_to_display
 
   validates_presence_of :link
@@ -226,7 +228,7 @@ class FeedItem < ActiveRecord::Base
     
     options_for_find = options_for_filters(filters).merge(:select => [
       'feed_items.*', 'feeds.title AS feed_title', 
-      "EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = #{user.id}) AS read_by_current_user"
+      "EXISTS (SELECT 1 FROM readings WHERE readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id AND readings.user_id = #{user.id}) AS read_by_current_user"
     ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
     
@@ -271,15 +273,11 @@ class FeedItem < ActiveRecord::Base
   def self.mark_read(filters)
     options_for_find = options_for_filters(filters)   
 
-    feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, UTC_TIMESTAMP() FROM feed_items"
+    feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, 'FeedItem', UTC_TIMESTAMP(), UTC_TIMESTAMP() FROM feed_items"
     feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
     feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
 
-    ReadItem.connection.execute "INSERT IGNORE INTO read_items (user_id, feed_item_id, created_at) #{feed_item_ids_sql}"
-  end
-  
-  def self.mark_read_for(user_id, feed_item_id)
-    ReadItem.find_or_create_by_user_id_and_feed_item_id(user_id, feed_item_id)
+    Reading.connection.execute "INSERT IGNORE INTO readings (user_id, readable_id, readable_type, created_at, updated_at) #{feed_item_ids_sql}"
   end
   
   # This builds the SQL to use for the find_with_filters and count_with_filters methods.
@@ -350,7 +348,7 @@ class FeedItem < ActiveRecord::Base
     end
     
     if filters[:mode] =~ /unread/i # only filter out read items when showing unread items
-      add_read_items_filter_conditions!(filters[:user], conditions)
+      add_readings_filter_conditions!(filters[:user], conditions)
     end
         
     options[:conditions] = conditions.compact.blank? ? nil : conditions.compact.join(" AND ")
@@ -394,7 +392,7 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  def self.add_read_items_filter_conditions!(user, conditions)
-    conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
+  def self.add_readings_filter_conditions!(user, conditions)
+    conditions << "NOT EXISTS (SELECT 1 FROM readings WHERE readings.user_id = #{user.id} AND readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id)"
   end
 end
