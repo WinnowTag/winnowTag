@@ -23,35 +23,38 @@ describe Message do
     end
   end
   
-  describe "find_global" do
+  describe "global" do
     it "returns only global messages" do
       message1 = Message.create! :body => "foo"
       message2 = Message.create! :body => "bar", :user_id => 1
-      Message.find_global.should == [message1]
+      Message.global.should == [message1]
     end
   end
 
-  describe "find_for_user_and_global" do
+  describe "for" do
     it "returns only global messages and messages belonging to the specified user" do
+      user1, user2 = mock_model(User), mock_model(User)
       message1 = Message.create! :body => "foo"
-      message2 = Message.create! :body => "bar", :user_id => 1
-      message3 = Message.create! :body => "baz", :user_id => 2
-      Message.find_for_user_and_global(1).should == [message1, message2]
+      message2 = Message.create! :body => "bar", :user_id => user1.id
+      message3 = Message.create! :body => "baz", :user_id => user2.id
+      Message.for(user1).should == [message1, message2]
     end
   end
   
-  describe "find_unread_for_user_and_global" do
+  describe "unread for" do
     it "returns only global messages and messages belonging to the specified user" do
+      user1, user2 = mock_model(User), mock_model(User)
+      
       message1 = Message.create! :body => "foo1"
       message2 = Message.create! :body => "foo2"
-      message3 = Message.create! :body => "bar1", :user_id => 1
-      message4 = Message.create! :body => "bar2", :user_id => 1
-      message5 = Message.create! :body => "baz", :user_id => 2
+      message3 = Message.create! :body => "bar1", :user_id => user1.id
+      message4 = Message.create! :body => "bar2", :user_id => user1.id
+      message5 = Message.create! :body => "baz", :user_id => user2.id
       
-      Reading.create! :readable_type => "Message", :readable_id => message1.id, :user_id => 1
-      Reading.create! :readable_type => "Message", :readable_id => message3.id, :user_id => 1
+      Reading.create! :readable_type => "Message", :readable_id => message1.id, :user_id => user1.id
+      Reading.create! :readable_type => "Message", :readable_id => message3.id, :user_id => user1.id
       
-      Message.find_unread_for_user_and_global(1).should == [message2, message4]
+      Message.unread(user1).for(user1).should == [message2, message4]
     end  
   end
 end

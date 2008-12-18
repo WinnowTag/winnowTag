@@ -270,7 +270,7 @@ class FeedItem < ActiveRecord::Base
     feed_items
   end
   
-  def self.mark_read(filters)
+  def self.read_by!(filters)
     options_for_find = options_for_filters(filters)   
 
     feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, 'FeedItem', UTC_TIMESTAMP(), UTC_TIMESTAMP() FROM feed_items"

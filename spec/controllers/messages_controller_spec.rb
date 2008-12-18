@@ -15,7 +15,7 @@ describe MessagesController do
 
     before(:each) do
       @message = mock_model(Message)
-      Message.stub!(:find_global).and_return([@message])
+      Message.stub!(:global).and_return([@message])
     end
   
     def do_get
@@ -33,7 +33,7 @@ describe MessagesController do
     end
   
     it "should find all messages" do
-      Message.should_receive(:find_global).and_return([@message])
+      Message.should_receive(:global).and_return([@message])
       do_get
     end
   

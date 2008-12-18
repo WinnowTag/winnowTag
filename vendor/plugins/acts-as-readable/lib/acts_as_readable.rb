@@ -12,6 +12,11 @@ module ActiveRecord
           
           include ActiveRecord::Acts::Readable::InstanceMethods
           extend  ActiveRecord::Acts::Readable::SingletonMethods
+          
+          named_scope :unread, lambda { |user|
+            { :joins => sanitize_sql(["LEFT JOIN readings ON readings.readable_type = ? AND readings.readable_id = #{table_name}.id AND readings.user_id = ?", name, user.id]),
+              :conditions => "readings.id IS NULL" }
+          }
         end
       end
       

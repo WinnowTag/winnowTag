@@ -5,7 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class MessagesController < ApplicationController
   def index
-    @messages = Message.find_global
+    @messages = Message.global
   end
   
   def new

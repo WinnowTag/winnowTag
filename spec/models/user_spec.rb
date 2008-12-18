@@ -57,7 +57,7 @@ describe User do
       Message.delete_all
       message = Message.create! :body => "some test message"
       user = User.create_from_prototype(valid_user_attributes)
-      Message.find_unread_for_user_and_global(user).should be_empty
+      Message.unread(user).for(user).should be_empty
     end
     
     it "creating from a prototype returns a new user record if the record was invalid" do

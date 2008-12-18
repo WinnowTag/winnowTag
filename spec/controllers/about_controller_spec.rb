@@ -37,7 +37,8 @@ describe AboutController do
       Setting.stub!(:find_or_initialize_by_name).and_return(@info)
 
       @message = mock_model(Message)
-      Message.stub!(:find_for_user_and_global).and_return([@message])
+      @for_scope = stub("for scope", :latest => [@message])
+      Message.stub!(:for).and_return(@for_scope)
     end
     
     def do_get
@@ -52,7 +53,8 @@ describe AboutController do
     end
     
     it "sets the messages for the view" do
-      Message.should_receive(:find_for_user_and_global).with(@user.id, :limit => 30, :order => "created_at DESC").and_return([@message])
+      Message.should_receive(:for).with(@user).and_return(@for_scope)
+      @for_scope.should_receive(:latest).with(30).and_return([@message])
       
       do_get
       assigns[:messages].should == [@message]

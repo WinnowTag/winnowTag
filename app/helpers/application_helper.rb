@@ -23,7 +23,7 @@ module ApplicationHelper
       "Message.add('#{name}', #{flash[name].to_json});" unless flash[name].blank?
     end.join
     
-    javascript << Message.find_unread_for_user_and_global(current_user).map do |message|
+    javascript << Message.unread(current_user).for(current_user).map do |message|
       message.read_by!(current_user)
       
       if message.user
