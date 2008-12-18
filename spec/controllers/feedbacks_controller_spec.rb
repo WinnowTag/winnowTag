@@ -108,10 +108,5 @@ describe FeedbacksController do
       @feedbacks.should_receive(:create!).with({}).and_return(@feedback)
       do_post
     end
-
-    it "should render the create template" do
-      do_post
-      response.should render_template('create')
-    end
   end
 end
