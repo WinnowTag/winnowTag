@@ -45,7 +45,7 @@ describe '/layouts/_navbar.html.erb' do
   describe "extra navigation" do
     it "contains a link to leave feedback" do
       render_it
-      response.should have_tag(".extra a[onclick*=?]", new_feedback_path)
+      response.should have_tag(".extra #feedback a[href=?]", new_feedback_path)
     end
 
     it "contains a link to the about page" do
