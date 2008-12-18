@@ -133,18 +133,6 @@ describe Tag do
       tags.should == [tag_3]
     end
   
-    it "does not clobber conditions when filtering by search term" do
-      user_1 = User.create! valid_user_attributes
-      user_2 = User.create! valid_user_attributes(:login => "everman")
-    
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :public => true, :name => "The best tag ever in the world", :comment => "")
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :public => true, :name => "Another Tag", :comment => "The second best tag ever")
-      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
-    
-      tags = Tag.search(:user => user_1, :text_filter => "ever", :conditions => { :public => true }, :order => "id")
-      tags.should == [tag_1, tag_2]
-    end
-  
     it "should update it's timestamp when a new tag is created" do
       user = users(:quentin)
       feed_item = FeedItem.find(:first)

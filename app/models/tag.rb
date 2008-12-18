@@ -274,58 +274,54 @@ class Tag < ActiveRecord::Base
                 "WHEN EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) THEN 1 " <<
                 "ELSE 2 END AS state"]
     
-    joins = ["LEFT JOIN users ON tags.user_id = users.id"]
-
-    conditions, values = [], []
-    if options[:conditions]
-      conditions << sanitize_sql(options[:conditions])
-    end
-
-    if options[:own]
-      joins << "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
-      joins << "LEFT JOIN tag_exclusions ON tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}"
-      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL OR tag_exclusions.id IS NOT NULL)"
-      values << options[:user].id
-    end
-        
-    if !options[:text_filter].blank?
-      ored_conditions = []
-      ored_conditions << "LOWER(tags.name) LIKE LOWER(?)"
-      ored_conditions << "LOWER(tags.comment) LIKE LOWER(?)"
-      ored_conditions << "LOWER(users.login) LIKE LOWER(?)"
-      conditions << "(#{ored_conditions.join(" OR ")})"
-      
-      value = "%#{options[:text_filter]}%"
-      values << value << value << value
-    end
+    scope = by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope = scope.for(options[:user]) if options[:own]
     
-    order = case options[:order]
-    when "name", "public", "id"
-      "tags.#{options[:order]}"
-    when "state", "comments_count", "positive_count", "negative_count", "last_trained"
-      options[:order]
-    when "classifier_count"
-      "(feed_items_count - positive_count - negative_count)"
-    when "login"
-      "users.#{options[:order]}"
-    else
-      "tags.name"
-    end
-    
-    case options[:direction]
-    when "asc", "desc"
-      order = "#{order} #{options[:direction].upcase}"
-    end
-
-    options_for_find = { :joins => joins.join(" "), :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
-    
-    results = find(:all, options_for_find.merge(:select => select.join(","),
-                   :order => order, :group => "tags.id", :limit => options[:limit], :offset => options[:offset]))
-    
-    if options[:count]
-      [results, count(options_for_find)]
-    else
-      results
-    end
+    scope.all(
+      :select => select.join(","), :joins => :user,
+      :group => "tags.id", :limit => options[:limit], :offset => options[:offset]
+    )
   end
+  
+  named_scope :public, :conditions => { :public => true }
+  
+  named_scope :matching, lambda { |q|
+    { :joins => :user, :conditions => ["(tags.name LIKE :q OR tags.comment LIKE :q OR users.login LIKE :q)", { :q => "%#{q}%" }] }
+  }
+  
+  named_scope :for, lambda { |user|
+    joins = [
+      "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = :user_id",
+      "LEFT JOIN tag_exclusions ON tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = :user_id"
+    ]
+      
+    { :joins => sanitize_sql([joins.join(" "), { :user_id => user.id }]), 
+      :conditions => ["(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL OR tag_exclusions.id IS NOT NULL)", user.id]
+    }
+  }
+  
+  named_scope :by, lambda { |order, direction|
+    orders = {
+      "id"               => "tags.id",
+      "name"             => "tags.name",
+      "public"           => "tags.public",
+      "login"            => "users.login",
+      "state"            => "state",
+      "comments_count"   => "comments_count",
+      "positive_count"   => "positive_count",
+      "negative_count"   => "negative_count",
+      "last_trained"     => "last_trained",
+      "classifier_count" => "(feed_items_count - positive_count - negative_count)"
+    }
+    orders.default = "tags.name"
+    
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+    
+    { :joins => :user, :order => [orders[order], directions[direction]].join(" ") }
+  }
 end
