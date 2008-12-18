@@ -70,7 +70,7 @@ class FeedsController < ApplicationController
       values << feed_ids
     end
     
-    @feeds = Feed.find_without_duplicates(:all, :conditions => [conditions.join(" AND "), *values], :limit => 30)
+    @feeds = Feed.non_duplicates.all(:conditions => [conditions.join(" AND "), *values], :limit => 30)
     render :layout => false
   end
   

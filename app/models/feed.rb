@@ -18,12 +18,6 @@ class Feed < ActiveRecord::Base
   alias_attribute :name, :title
   before_save :update_sort_title
 
-  def self.find_without_duplicates(*parameters)
-    with_scope(:find => {:conditions => 'duplicate_id is null'}) do
-      find(*parameters)
-    end
-  end
-  
   def self.find_or_create_from_atom(atom_feed)
     feed = find_or_create_from_atom_entry(atom_feed)
     
@@ -49,42 +43,41 @@ class Feed < ActiveRecord::Base
     feed
   end
   
-  def self.search options = {}
-    conditions, values = ['duplicate_id is ?'], [nil]
+  named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
+  
+  named_scope :matching, lambda { |q|
+    { :conditions => ["(feeds.title LIKE :q OR feeds.alternate LIKE :q)", { :q => "%#{q}%" }] }
+  }
+  
+  named_scope :by, lambda { |order, direction|
+    orders = {
+      "title" => "feeds.title",
+      "created_on" => "feeds.created_on",
+      "updated_on" => "feeds.updated_on",
+      "feed_items_count" => "feeds.feed_items_count",
+      "globally_exclude" => "globally_exclude"
+    }
+    orders.default = "feeds.title"
     
-    unless options[:text_filter].blank?
-      conditions << '(feeds.title LIKE ? OR feeds.alternate LIKE ?)'
-      values << "%#{options[:text_filter]}%" << "%#{options[:text_filter]}%"
-    end
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+    
+    { :order => [orders[order], directions[direction]].join(" ") }
+  }
+  
+  def self.search(options = {})
+    scope = non_duplicates.by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
   
     select = ["feeds.*"]
     if options[:excluder]
       select << "NOT EXISTS(SELECT 1 FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) AS globally_exclude"
     end
 
-    order = case options[:order]
-    when "title", "created_on", "updated_on", "feed_items_count"
-      "feeds.#{options[:order]}"
-    when "globally_exclude"
-      options[:order]
-    else
-      "feeds.title"
-    end
-    
-    case options[:direction]
-    when "asc", "desc"
-      order = "#{order} #{options[:direction].upcase}"
-    end
-    
-    options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
-    
-    results = find(:all, options_for_find.merge(:select => select.join(","), :order => order, :limit => options[:limit], :offset => options[:offset]))
-    
-    if options[:count]
-      [results, count(options_for_find)]
-    else
-      results
-    end
+    scope.all(:select => select.join(", "), :limit => options[:limit], :offset => options[:offset])
   end
   
   def self.find_by_url_or_link(url)
