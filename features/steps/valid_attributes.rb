@@ -14,3 +14,15 @@ def valid_user_attributes(attributes = {})
     :activated_at => Time.now
   }.merge(attributes)
 end
+
+def valid_feed_attributes(attributes = {})
+  unique_id = rand(100000)
+  { :via => "http://#{unique_id}.example.com/index.xml",
+    :alternate => "http://#{unique_id}.example.com",
+    :title => "#{unique_id} Example",
+    :feed_items_count => 0,
+    :updated_on => Time.now,
+    :duplicate_id => nil,
+    :uri => "uri:#{unique_id}"
+  }.merge(attributes)
+end

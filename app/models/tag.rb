@@ -154,7 +154,6 @@ class Tag < ActiveRecord::Base
   def taggings_from_atom(atom)
     atom.entries.each do |entry|
       begin
-        item_id = URI.parse(entry.id).fragment.to_i
         strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
           category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
         else 
@@ -164,7 +163,8 @@ class Tag < ActiveRecord::Base
         if strength >= 0.9
           connection.execute "INSERT IGNORE INTO taggings " +
                               "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
-                              "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                              "VALUES((select id from feed_items where uri = #{connection.quote(entry.id)})," + 
+                              "#{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
                               "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
         end
       rescue URI::InvalidURIError => urie

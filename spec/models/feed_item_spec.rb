@@ -168,7 +168,7 @@ describe FeedItem do
     it "properly filters on globally excluded feeds" do
       user_1 = User.create! valid_user_attributes
     
-      feed_1 = Feed.create! :via => "http://feedone.com"
+      feed_1 = Feed.create! valid_feed_attributes(:via => "http://feedone.com")
     
       FeedItem.delete_all # :(
       feed_item_1 = valid_feed_item!(:feed_id => feed_1.id)
@@ -235,7 +235,7 @@ describe FeedItem do
       @atom = Atom::Entry.new do |atom|
         atom.title = "Item Title"
         atom.updated = Time.now
-        atom.id = "urn:peerworks.org:feed_item#1"
+        atom.id = "urn:uuid:item1"
         atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
         atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
         atom.authors << Atom::Person.new(:name => 'Author')
@@ -270,7 +270,7 @@ describe FeedItem do
       @atom = Atom::Entry.new do |atom|
         atom.title = "Item Title"
         atom.updated = Time.now
-        atom.id = "urn:peerworks.org:feed_item#333"
+        atom.id = "urn:uuid:blahblah"
         atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
         atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
         atom.authors << Atom::Person.new(:name => 'Author')
@@ -287,7 +287,7 @@ describe FeedItem do
       it_should_behave_like "FeedItem update attributes from atom"
       
       it "should set the id" do
-        @item.id.should == 333
+        @item.uri.should == @atom.id
       end
           
       it "should create a new feed item" do
@@ -297,7 +297,7 @@ describe FeedItem do
     
     describe "with a complete entry and an existing id" do
       before(:each) do
-        @atom.id = "urn:peerworks.org:feed_item#1"
+        @atom.id = "urn:uuid:item1"
         @item = FeedItem.find_or_create_from_atom(@atom)        
       end
       
@@ -321,17 +321,7 @@ describe FeedItem do
         lambda { FeedItem.find_or_create_from_atom(@atom) }.should raise_error(ActiveRecord::RecordNotSaved)
       end      
     end
-    
-    describe "with an invalid id" do
-      before(:each) do
-        @atom.id = "urn:peerworks.org:feed_item"
-      end
-      
-      it "should reject the item" do
-        lambda { FeedItem.find_or_create_from_atom(@atom) }.should raise_error(ActiveRecord::RecordNotSaved)
-      end
-    end
-    
+        
     describe "without a title" do
       before(:each) do
         FeedItemContent.delete_all
@@ -387,7 +377,7 @@ describe FeedItem do
       @tag1 = Tag.create!(:name => 'tag1', :user => @user)
       @tag2 = Tag.create!(:name => 'tag2', :user => @user)
       @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", :title => "Example RSS Feed", :author => "Example Author")
-      @item.id = 50
+      @item.uri = "urn:uuid:item50"
       @item.save!
       @content = FeedItemContent.new(:content => "Example Content")
       @content.feed_item_id = @item.id
@@ -403,7 +393,7 @@ describe FeedItem do
     end
     
     it "should include the id" do
-      @atom.id.should == "urn:peerworks.org:entry##{@item.id}"
+      @atom.id.should == @item.uri
     end
     
     it "should include the updated date" do
@@ -465,8 +455,9 @@ describe FeedItem do
     fixtures :feed_item_contents
 
     before(:each) do
-      @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", :title => "Example RSS Feed", :author => "Example Author")
-      @item.id = 50
+      @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, 
+                           :link => "http://example.com/rss", :title => "Example RSS Feed", 
+                           :author => "Example Author", :uri => "urn:uuid:item30")
       @item.save!
       @content = FeedItemContent.new(:content => "this is not utf-8 \227")
       @content.feed_item_id = @item.id
@@ -703,7 +694,7 @@ describe FeedItem do
     end
   
     it "find_with_multiple_feed_filters_and_show_untagged_should_return_only_items_from_the_included_feeds" do
-      feed_item5 = FeedItem.create!(:feed_id => 3, :link => "http://fifth")
+      feed_item5 = FeedItem.create!(:feed_id => 3, :link => "http://fifth", :uri => "urn:uuid:item51")
     
       expected = FeedItem.find(1, 2, 3, 4)
       actual = FeedItem.find_with_filters(:user => users(:quentin), :feed_ids => "1,2", :order => 'id')

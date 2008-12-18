@@ -415,7 +415,7 @@ describe User do
   
     it "knows_feed_is_globally_excluded" do
       current_user = users(:quentin)
-      feed = Feed.create! :via => "http://news.google.com"
+      feed = Feed.create! valid_feed_attributes(:via => "http://news.google.com")
       current_user.feed_exclusions.create! :feed_id => feed.id
     
       assert current_user.globally_excluded?(feed)
@@ -423,7 +423,7 @@ describe User do
   
     it "knows_feed_is_not_globally_excluded" do
       current_user = users(:quentin)
-      feed = Feed.create! :via => "http://news.google.com"
+      feed = Feed.create! valid_feed_attributes(:via => "http://news.google.com")
     
       assert !current_user.globally_excluded?(feed)
     end
@@ -445,8 +445,8 @@ describe User do
   
     it "update_feed_state_moves_feed_subscriptions_when_feed_is_a_duplicate" do
       current_user = users(:quentin)
-      feed = Feed.create! :via => 'http://news.google.com'
-      duplicate = Feed.new :via => 'http://google.com/news'
+      feed = Feed.create! valid_feed_attributes(:via => 'http://news.google.com')
+      duplicate = Feed.new valid_feed_attributes(:via => 'http://google.com/news')
       duplicate.id = 1001
       duplicate.duplicate = feed
       duplicate.save!
@@ -465,7 +465,7 @@ describe User do
   
     it "update_feed_state_does_nothing_with_feed_is_not_a_duplicate" do
       current_user = users(:quentin)
-      feed = Feed.create! :via => 'http://news.google.com'
+      feed = Feed.create! valid_feed_attributes(:via => 'http://news.google.com')
       # create a subscription to the feed
       sub = FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
     

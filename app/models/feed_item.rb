@@ -21,6 +21,7 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
+  attr_readonly(:uri)
   attr_accessor :taggings_to_display
 
   validates_presence_of :link
@@ -66,11 +67,10 @@ class FeedItem < ActiveRecord::Base
   def self.find_or_create_from_atom(entry)
     # TODO: localization
     raise ActiveRecord::RecordNotSaved, 'Atom::Entry missing id' if entry.id.nil?
-    id = self.parse_id_uri(entry)
     
-    unless item = FeedItem.find_by_id(id)
+    unless item = FeedItem.find_by_uri(entry.id)
       item = FeedItem.new
-      item.id = id
+      item.uri = entry.id
     end
     
     item.update_from_atom(entry)
@@ -80,7 +80,7 @@ class FeedItem < ActiveRecord::Base
   
   def update_from_atom(entry)
     # TODO: localization
-    raise ArgumentError, "Atom entry has different id" if self.id != self.class.parse_id_uri(entry)
+    raise ArgumentError, "Atom entry has different id" if self.uri != entry.id
     
     self.attributes = {
       # TODO: localization
@@ -100,7 +100,7 @@ class FeedItem < ActiveRecord::Base
   def to_atom(options = {})
     Atom::Entry.new do |entry|
       entry.title = self.title
-      entry.id = "urn:peerworks.org:entry##{self.id}"
+      entry.id = self.uri
       entry.updated = self.updated
       entry.authors << Atom::Person.new(:name => self.author) if self.author
       entry.links << Atom::Link.new(:rel => 'self', :href => self.collector_link)
@@ -396,28 +396,5 @@ class FeedItem < ActiveRecord::Base
   
   def self.add_read_items_filter_conditions!(user, conditions)
     conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
-  end
-  
-  # Gets a UID suitable for use within the classifier
-  def uid 
-    "Winnow::FeedItem::#{self.id}"
-  end
-
-  def self.parse_id_uri(entry)
-    begin
-      uri = URI.parse(entry.id)
-    
-      if uri.fragment.nil?
-        # TODO: localization
-        raise ActiveRecord::RecordNotSaved, "Atom::Entry id is missing fragment: '#{entry.id}'"
-      end
-    
-      uri.fragment.to_i
-    rescue ActiveRecord::RecordNotSaved => e
-      raise e
-    rescue
-      # TODO: localization
-      raise ActiveRecord::RecordNotSaved, "Atom::Entry has missing or invalid id: '#{entry.id}'" 
-    end
   end
 end
