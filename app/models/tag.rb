@@ -11,20 +11,6 @@ def Tag(user, tag)
   end
 end
 
-require 'atom'
-require 'atom/pub'
-
-# Tag is a simple word used to tag an item. Every Tagging belongs to a Tag.
-# 
-# == Schema Information
-# Schema version: 57
-#
-# Table name: tags
-#
-#  id   :integer(11)   not null, primary key
-#  name :string(255)   
-#
-
 class Tag < ActiveRecord::Base  
   cattr_accessor :undertrained_threshold
   @@undertrained_threshold = 6
@@ -41,26 +27,14 @@ class Tag < ActiveRecord::Base
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
-
-  # Returns a suitable label for the classification UI display.
-  def classification_label
-    truncate(self.name, 15)
+  
+  def subscribed_by_current_user?
+    state.to_s == "0"
   end
   
-  # Returns JSON representation of the tag.
-  def to_json
-    self.name.to_json
+  def globally_excluded_by_current_user?
+    state.to_s == "1"
   end
-  
-  # Gets a string representation of the tag.
-  def to_s
-    self.name
-  end
-  
-  # Gets a parameter representation of the tag.
-  # def to_param
-  #   self.name
-  # end
   
   def positive_count
     read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
@@ -78,8 +52,14 @@ class Tag < ActiveRecord::Base
     feed_items_count.to_i - positive_count.to_i - negative_count.to_i
   end
   
-  def inspect
-    "<Tag name=#{name}, user=#{user.login}>"
+  def last_trained
+    if last_trained = read_attribute(:last_trained)
+      Time.parse(last_trained)
+    else
+      if tagging = taggings.find(:first, :conditions => ['classifier_tagging = ?', false], :order => 'created_on DESC')
+        tagging.created_on
+      end
+    end
   end
   
   # Provides the natural ordering of tags and their case-insensitive lexical ordering.
@@ -89,16 +69,6 @@ class Tag < ActiveRecord::Base
     else
       # TODO: localization
       raise ArgumentError, "Cannot compare Tag to #{other.class}"
-    end
-  end
-  
-  def last_trained
-    if last_trained = read_attribute(:last_trained)
-      Time.parse(last_trained)
-    else
-      if tagging = taggings.find(:first, :conditions => ['classifier_tagging = ?', false], :order => 'created_on DESC')
-        tagging.created_on
-      end
     end
   end
   
@@ -150,35 +120,6 @@ class Tag < ActiveRecord::Base
     self.positive_taggings.size < Tag.undertrained_threshold
   end
       
-  # This needs to be fast so we'll bypass Active Record
-  def taggings_from_atom(atom)
-    atom.entries.each do |entry|
-      begin
-        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
-          category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
-        else 
-          0.0
-        end
-
-        if strength >= 0.9
-          connection.execute "INSERT IGNORE INTO taggings " +
-                              "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
-                              "VALUES((select id from feed_items where uri = #{connection.quote(entry.id)})," + 
-                              "#{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
-                              "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
-        end
-      rescue URI::InvalidURIError => urie
-        logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
-      rescue ActiveRecord::StatementInvalid => arsi
-        logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
-      end
-    end
-    
-    connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
-  end
-  
-  private :taggings_from_atom
-  
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
       taggings_from_atom(atom)
@@ -196,7 +137,6 @@ class Tag < ActiveRecord::Base
   #
   # When :training_only => true all and only training examples will be included
   # in the document and it will conform to the Training Definition Document.
-  #
   def to_atom(options = {})
     Atom::Feed.new do |feed|
       feed.title = "#{self.user.login}:#{self.name}"
@@ -253,14 +193,6 @@ class Tag < ActiveRecord::Base
     end
   end
 
-  def subscribed_by_current_user?
-    state.to_s == "0"
-  end
-  
-  def globally_excluded_by_current_user?
-    state.to_s == "1"
-  end
-  
   named_scope :public, :conditions => { :public => true }
   
   named_scope :matching, lambda { |q|
@@ -327,4 +259,62 @@ class Tag < ActiveRecord::Base
       :group => "tags.id", :limit => options[:limit], :offset => options[:offset]
     )
   end
+
+  def inspect
+    "<Tag name=#{name}, user=#{user.login}>"
+  end
+
+private
+  # This needs to be fast so we'll bypass Active Record
+  def taggings_from_atom(atom)
+    atom.entries.each do |entry|
+      begin
+        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
+          category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
+        else 
+          0.0
+        end
+
+        if strength >= 0.9
+          connection.execute "INSERT IGNORE INTO taggings " +
+                              "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
+                              "VALUES((select id from feed_items where uri = #{connection.quote(entry.id)})," + 
+                              "#{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                              "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
+        end
+      rescue URI::InvalidURIError => urie
+        logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
+      rescue ActiveRecord::StatementInvalid => arsi
+        logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
+      end
+    end
+    
+    connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
+  end
+
+  # def taggings_from_atom(atom)
+  #   atom.entries.each do |entry|
+  #     begin
+  #       item_id = URI.parse(entry.id).fragment.to_i
+  #       strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
+  #         category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
+  #       else 
+  #         0.0
+  #       end
+  # 
+  #       if strength >= 0.9
+  #         connection.execute "INSERT IGNORE INTO taggings " +
+  #                             "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
+  #                             "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+  #                             "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
+  #       end
+  #     rescue URI::InvalidURIError => urie
+  #       logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
+  #     rescue ActiveRecord::StatementInvalid => arsi
+  #       logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
+  #     end
+  #   end
+  #   
+  #   connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
+  # end
 end
