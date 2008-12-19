@@ -47,7 +47,7 @@ describe Invite do
         Invite.create! valid_invite_attributes(:code => code)
         Invite.find_by_code(code).should_not be_nil
       
-        Invite.find_active(code).should be_nil
+        Invite.active(code).should be_nil
       end
     end
     
@@ -55,13 +55,13 @@ describe Invite do
       Invite.create! valid_invite_attributes(:code => "some code", :user_id => 1)
         Invite.find_by_code("some code").should_not be_nil
 
-      Invite.find_active("some code").should be_nil
+      Invite.active("some code").should be_nil
     end
     
     it "find the invite with the given code" do
       Invite.create! valid_invite_attributes(:code => "some code")
 
-      Invite.find_active("some code").should_not be_nil
+      Invite.active("some code").should_not be_nil
     end
   end
 

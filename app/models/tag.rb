@@ -261,29 +261,6 @@ class Tag < ActiveRecord::Base
     state.to_s == "1"
   end
   
-  def self.search(options = {})
-    select = ['tags.*', 
-              'users.login AS user_login',
-              '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_count',
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
-              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
-              '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count',
-              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0) AS last_trained',
-              "CASE " <<
-                "WHEN EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) THEN 0 " <<
-                "WHEN EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) THEN 1 " <<
-                "ELSE 2 END AS state"]
-    
-    scope = by(options[:order], options[:direction])
-    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
-    scope = scope.for(options[:user]) if options[:own]
-    
-    scope.all(
-      :select => select.join(","), :joins => :user,
-      :group => "tags.id", :limit => options[:limit], :offset => options[:offset]
-    )
-  end
-  
   named_scope :public, :conditions => { :public => true }
   
   named_scope :matching, lambda { |q|
@@ -327,4 +304,27 @@ class Tag < ActiveRecord::Base
     
     { :joins => :user, :order => [orders[order], directions[direction]].join(" ") }
   }
+
+  def self.search(options = {})
+    select = ['tags.*', 
+              'users.login AS user_login',
+              '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_count',
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
+              '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
+              '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count',
+              '(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0) AS last_trained',
+              "CASE " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_subscriptions WHERE tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}) THEN 0 " <<
+                "WHEN EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) THEN 1 " <<
+                "ELSE 2 END AS state"]
+    
+    scope = by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope = scope.for(options[:user]) if options[:own]
+    
+    scope.all(
+      :select => select.join(","), :joins => :user,
+      :group => "tags.id", :limit => options[:limit], :offset => options[:offset]
+    )
+  end
 end
