@@ -5,10 +5,11 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class FeedItemTextIndex < ActiveRecord::Base
   set_primary_key "feed_item_id"
+
   belongs_to :feed_item
   before_create :normalize_content
   
-  private
+private
   def normalize_content
     if self.content.nil? && self.feed_item && self.feed_item.content
       self.content = "#{self.feed_item.title} #{self.feed_item.content.content}"

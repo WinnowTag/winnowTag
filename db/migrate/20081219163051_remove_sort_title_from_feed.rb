@@ -3,9 +3,12 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-class TagUsage < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :tag
+class RemoveSortTitleFromFeed < ActiveRecord::Migration
+  def self.up
+    remove_column :feeds, :sort_title
+  end
 
-  validates_presence_of :tag_id
+  def self.down
+    add_column :feeds, :sort_title, :string
+  end
 end

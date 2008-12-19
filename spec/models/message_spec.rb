@@ -16,13 +16,6 @@ describe Message do
     end
   end
   
-  describe "to_s" do
-    it "returns the body" do
-      message = Message.new :body => "A Valid Body"
-      message.to_s.should == "A Valid Body"
-    end
-  end
-  
   describe "global" do
     it "returns only global messages" do
       message1 = Message.create! :body => "foo"

@@ -10,7 +10,7 @@ class Protector < ActiveRecord::Base
   validate_on_create :validates_as_singleton
   
   def self.id
-    if protector = Protector.find(:first)
+    if protector = Protector.first
       protector.protector_id
     end
   end
@@ -25,7 +25,7 @@ class Protector < ActiveRecord::Base
     end
   end
   
-  protected
+protected
   def validates_as_singleton
     if Protector.count > 0
       # TODO: localization

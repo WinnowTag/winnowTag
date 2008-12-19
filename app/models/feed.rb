@@ -13,10 +13,11 @@
 class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
+
   # TODO: localization
   validates_uniqueness_of :via, :message => 'Feed already exists'
+
   alias_attribute :name, :title
-  before_save :update_sort_title
 
   def self.find_or_create_from_atom(atom_feed)
     feed = find_or_create_from_atom_entry(atom_feed)
@@ -121,7 +122,21 @@ class Feed < ActiveRecord::Base
   end
   
 private
-  def update_sort_title
-    self.sort_title = read_attribute(:title) && read_attribute(:title).downcase
+  def self.parse_id_uri(entry)
+    begin
+      uri = URI.parse(entry.id)
+    
+      if uri.fragment.nil?
+        # TODO: localization
+        raise ActiveRecord::RecordNotSaved, "Atom::Entry id is missing fragment: '#{entry.id}'"
+      end
+    
+      uri.fragment.to_i
+    rescue ActiveRecord::RecordNotSaved => e
+      raise e
+    rescue
+      # TODO: localization
+      raise ActiveRecord::RecordNotSaved, "Atom::Entry has missing or invalid id: '#{entry.id}'" 
+    end
   end  
 end

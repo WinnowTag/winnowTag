@@ -1,3 +1,16 @@
+Models
+ - Comment
+   - find_for_user
+ - Feed
+ - FeedItem
+ - Folder
+ - Invite
+ - Message
+ - Tag
+ - Tagging
+ - User
+ - FeedItemTextIndex (and observer)
+
 Todo
  - item list blanks when I maximize window
  - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI

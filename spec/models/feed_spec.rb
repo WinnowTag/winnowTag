@@ -25,10 +25,6 @@ shared_examples_for "Feed updates attributes from Atom::Entry" do
   it "should set collector link from self" do
     @feed.collector_link.should == @atom.self.href
   end
-
-  it "should set the sort title" do
-    @feed.sort_title.should == @atom.title.downcase
-  end  
 end
 
 describe Feed do
@@ -99,10 +95,6 @@ describe Feed do
       
       it "should set the title to ''" do
         @feed.read_attribute(:title).should == ''        
-      end
-      
-      it "should set the sort title to ''" do
-        @feed.read_attribute(:sort_title).should == ''
       end
     end
     
