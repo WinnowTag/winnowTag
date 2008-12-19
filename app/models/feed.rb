@@ -11,8 +11,6 @@
 # get a list of feeds with item counts after applying similar
 # filters to those used by FeedItem.find_with_filters.
 class Feed < ActiveRecord::Base
-  alias_attribute :name, :title
-
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
 
@@ -53,10 +51,6 @@ class Feed < ActiveRecord::Base
     scope = non_duplicates.by(options[:order], options[:direction], options[:excluder])
     scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
     scope.all(:limit => options[:limit], :offset => options[:offset])
-  end
-  
-  def self.find_by_url_or_link(url)
-    self.find(:first, :conditions => ['url = ? or link = ?', url, url])
   end
   
   def self.find_or_create_from_atom(atom_feed)

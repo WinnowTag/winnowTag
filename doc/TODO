@@ -1,17 +1,8 @@
 Models
- - Feed
  - FeedItem
- - FeedItemContent
-   - validations
- - FeedItemTextIndex (and observer)
  - Folder
  - Invite
- - Message
- - Role
  - Tag
- - TagUsage
-   - validations
- - Tagging
  - User
 
 Todo

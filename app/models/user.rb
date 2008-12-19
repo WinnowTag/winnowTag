@@ -6,8 +6,7 @@
 class User < ActiveRecord::Base   
   module FindByFeedItem
     def find_by_feed_item(feed_item, type = :all, options = {})
-      with_scope(:find => {:conditions => 
-          ['taggings.feed_item_id = ?', feed_item.id]}) do
+      with_scope(:find => {:conditions => ['taggings.feed_item_id = ?', feed_item.id]}) do
         find(type, options)
       end
     end

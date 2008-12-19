@@ -32,7 +32,6 @@ describe FeedsController do
     before(:each) do
       login_as(1)
       mock_user_for_controller
-      Feed.stub!(:find_by_url_or_link)
       @feed = mock_model(Feed)
       Feed.stub!(:find_by_id).and_return(@feed)
       @feeds = mock('feeds')
