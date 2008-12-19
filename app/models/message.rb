@@ -19,10 +19,6 @@ class Message < ActiveRecord::Base
     { :order => "created at DESC", :limit => limit }
   }
   
-  def to_s
-    body
-  end
-
   def self.read_by!(user)
     readings_attributes = unread(user).for(user).map do |message|
       { :readable_type => "Message", :readable_id => message.id, :user_id => user.id }

@@ -30,7 +30,6 @@ class Feedback < ActiveRecord::Base
     { :include => :user, :order => [orders[order], directions[direction]].join(" ") }
   }
 
-
   def self.search(options = {})
     scope = by(options[:order], options[:direction])
     scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?

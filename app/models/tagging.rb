@@ -51,6 +51,7 @@
 # See ClassifierExecution and RenameTagging for examples of classes that can be used as tagging metdata.
 class Tagging < ActiveRecord::Base
   acts_as_immutable
+  
   belongs_to :tag
   belongs_to :feed_item
   belongs_to :user
@@ -67,8 +68,6 @@ class Tagging < ActiveRecord::Base
     DeletedTagging.create(tagging.attributes.merge(:deleted_at => Time.now.utc))
   end
   
-  # Returns true if this tagging is positive based on the definition
-  # of positive defined by the Tagger.
   def positive?
     !negative?
   end
@@ -81,10 +80,9 @@ class Tagging < ActiveRecord::Base
     "<Tagging user=#{user.login}, item=#{feed_item.id}, tag=#{tag.name}, classifier=#{classifier_tagging?}>"
   end
   
-  private
+private
   def update_tag_timestamp
-    self.tag.updated_on = Time.now.utc
-    self.tag.save!
+    tag.update_attribute(:updated_on, Time.now.utc)
   end
   
   def remove_preexisting_tagging
