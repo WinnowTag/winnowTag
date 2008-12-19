@@ -89,16 +89,10 @@ class User < ActiveRecord::Base
     
       options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
       
-      results = find(:all, options_for_find.merge(
-                     :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
-                     :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
-                     :order => order, :group => "users.id", :limit => options[:limit], :offset => options[:offset]))
-      
-      if options[:count]
-        [results, count(options_for_find)]
-      else
-        results
-      end
+      find(:all, options_for_find.merge(
+           :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
+           :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
+           :order => order, :group => "users.id", :limit => options[:limit], :offset => options[:offset]))
     end
   end
   

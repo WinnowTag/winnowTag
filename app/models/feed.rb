@@ -24,7 +24,6 @@ class Feed < ActiveRecord::Base
     conditions = %w[feeds.title feeds.alternate].map do |attribute|
       "#{attribute} LIKE :q"
     end.join(" OR ")
-
     { :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   

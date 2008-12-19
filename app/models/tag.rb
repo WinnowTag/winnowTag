@@ -287,7 +287,10 @@ class Tag < ActiveRecord::Base
   named_scope :public, :conditions => { :public => true }
   
   named_scope :matching, lambda { |q|
-    { :joins => :user, :conditions => ["(tags.name LIKE :q OR tags.comment LIKE :q OR users.login LIKE :q)", { :q => "%#{q}%" }] }
+    conditions = %w[tags.name tags.comment users.login].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+    { :joins => :user, :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   
   named_scope :for, lambda { |user|

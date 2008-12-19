@@ -8,7 +8,6 @@
 module Remote
   class ClassifierClues
     def self.find_by_item_id_and_tag_url(item_id, tag_url)
-      # require 'md5'
       # clues = []
       # 101.times do |i|
       #   clues << { 'prob' => rand.round(6), 'clue' => "t:#{MD5.hexdigest(rand.to_s)[0..rand(16)]}" }

@@ -17,52 +17,41 @@ class Invite < ActiveRecord::Base
   end
   
   def activate!
-    require 'md5'
     self.update_attribute :code, MD5.hexdigest("#{email}--#{Time.now}--#{rand}")
   end
 
-  class << self
-    def find_active(code)
-      find(:first, :conditions => ["code = ? AND code IS NOT NULL AND code != '' AND user_id IS NULL", code.to_s])
-    end
+  named_scope :matching, lambda { |q|
+    conditions = %w[invites.email].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+    { :conditions => [conditions, { :q => "%#{q}%" }] }
+  }
+  
+  named_scope :by, lambda { |order, direction|
+    orders = {
+      "id"         => "invites.id",
+      "email"      => "invites.email",
+      "created_at" => "invites.created_at",
+      "status"     => "CASE WHEN invites.user_id IS NOT NULL THEN 2 WHEN invites.code IS NOT NULL THEN 1 ELSE 0 END"
+    }
+    orders.default = "invites.created_at"
+    
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+    
+    { :order => [orders[order], directions[direction]].join(" ") }
+  }
 
-    def search(options = {})
-      conditions, values = [], []
-      
-      unless options[:text_filter].blank?
-        ored_conditions = []
-        [:email].each do |attribute|
-          ored_conditions << "invites.#{attribute} LIKE ?"
-          values          << "%#{options[:text_filter]}%"
-        end
-        conditions << "(" + ored_conditions.join(" OR ") + ")"
-      end
+  def self.search(options = {})
+    scope = by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope.all(:limit => options[:limit], :offset => options[:offset])
+  end
 
-      order = case options[:order]
-      when "created_at", "email", "id"
-        "invites.#{options[:order]}"
-      when "status"
-        options[:order]
-      else
-        "invites.created_at"
-      end
-      
-      case options[:direction]
-      when "asc", "desc"
-        order = "#{order} #{options[:direction].upcase}"
-      end
-
-      options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
-      
-      results = find(:all, options_for_find.merge(
-                     :select => "invites.*, (CASE WHEN user_id IS NOT NULL THEN 2 WHEN code IS NOT NULL THEN 1 ELSE 0 END) AS status",
-                     :order => order, :limit => options[:limit], :offset => options[:offset]))
-      
-      if options[:count]
-        [results, count(options_for_find)]
-      else
-        results
-      end
-    end
+  def self.active(code)
+    find(:first, :conditions => ["code = ? AND code IS NOT NULL AND code != '' AND user_id IS NULL", code.to_s])
   end
 end
