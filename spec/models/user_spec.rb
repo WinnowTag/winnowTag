@@ -345,40 +345,25 @@ describe User do
       pw = Tag(u, 'peerworks')
       tag = Tag(u, 'tag')
 
-      assert_equal 0, u.tagging_percentage
-      assert_nil u.last_tagging_on
       assert_equal 0, u.average_taggings_per_item
-      assert_equal 0, u.number_of_tagged_items
 
       assert Tagging.create(:user => u, :feed_item => FeedItem.find(1), :tag => pw)
       assert last = Tagging.create(:user => u, :feed_item => FeedItem.find(2), :tag => pw)
 
-      assert_equal 50, u.tagging_percentage
-      assert_equal last.created_on.to_s, u.last_tagging_on.to_s
       assert_equal 1, u.average_taggings_per_item
-      assert_equal 2, u.number_of_tagged_items
 
       Tagging.create(:user => u, :feed_item => FeedItem.find(1), :tag => tag)
       last = Tagging.create(:user => u, :feed_item => FeedItem.find(2), :tag => tag)
 
-      assert_equal 50, u.tagging_percentage
-      assert_equal last.created_on.to_s, u.last_tagging_on.to_s
       assert_equal 2, u.average_taggings_per_item
-      assert_equal 2, u.number_of_tagged_items
 
       Tagging.create(:user => u, :feed_item => FeedItem.find(3), :tag => pw)
       last = Tagging.create(:user => u, :feed_item => FeedItem.find(4), :tag => pw)
 
-      assert_equal 100, u.tagging_percentage
-      assert_equal last.created_on.to_s, u.last_tagging_on.to_s
       assert_equal 1.5, u.average_taggings_per_item
-      assert_equal 4, u.number_of_tagged_items
 
       User.find_by_login('quentin').taggings.clear
-      assert_equal 0, u.tagging_percentage
-      assert_nil u.last_tagging_on
       assert_equal 0, u.average_taggings_per_item
-      assert_equal 0, u.number_of_tagged_items
     end
   
     it "knows_that_given_user_is_not_subscribed_to_a_tag" do

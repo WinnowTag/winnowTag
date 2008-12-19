@@ -56,53 +56,59 @@ class User < ActiveRecord::Base
     end
   end
   
-  class << self
-    def search(options = {})
-      conditions, values = [], []
-      
-      unless options[:text_filter].blank?
-        ored_conditions = []
-        [:login, :email, :firstname, :lastname].each do |attribute|
-          ored_conditions << "users.#{attribute} LIKE ?"
-          values          << "%#{options[:text_filter]}%"
-        end
-        conditions << "(" + ored_conditions.join(" OR ") + ")"
-      end
-      
-      direction = case options[:direction]
-      when "asc", "desc"
-        options[:direction].upcase
-      end
-
-      order = case options[:order]
-      when "login", "email", "logged_in_at", "last_accessed_at", "id"
-        "users.#{options[:order]} #{direction}"
-      when "name"
-        "lastname #{direction}, firstname #{direction}"
-      when "last_tagging_on", "tag_count"
-        "#{options[:order]} #{direction}"
-      else
-        "users.login"
-      end
-
+  named_scope :matching, lambda { |q|
+    conditions = %w[users.login users.email users.firstname users.lastname].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+    { :conditions => [conditions, { :q => "%#{q}%" }] }
+  }
+  
+  named_scope :by, lambda { |order, direction|
+    orders = {
+      "id"               => "users.id",
+      "login"            => "users.login",
+      "email"            => "users.email",
+      "logged_in_at"     => "users.logged_in_at",
+      "last_accessed_at" => "users.last_accessed_at",
+      "name"             => %w[users.lastname users.firstname],
+      "last_tagging_on"  => "last_tagging_on", # depends on select from search
+      "tag_count"        => "tag_count"        # depends on select from search
+    }
+    orders.default = "users.login"
     
-      options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
-      
-      find(:all, options_for_find.merge(
-           :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
-           :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
-           :order => order, :group => "users.id", :limit => options[:limit], :offset => options[:offset]))
-    end
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+
+    { :order => Array(orders[order]).map { |o| [o, directions[direction]].join(" ") }.join(", ") }
+  }
+
+  def self.search(options = {})
+    select = [
+      "users.*",
+      "(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.user_id = users.id AND taggings.classifier_tagging = false) AS last_tagging_on",
+      "(SELECT COUNT(*) FROM tags WHERE tags.user_id = users.id) AS tag_count",
+      "(100 * (SELECT COUNT(DISTINCT feed_item_id) FROM taggings WHERE taggings.user_id = users.id) / (SELECT COUNT(*) FROM feed_items)) AS tagging_percentage"
+    ]
+    
+    scope = by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope.all(
+      :select => select.join(", "),
+      :limit => options[:limit], :offset => options[:offset]
+    )
+  end
+
+  def last_tagging_on
+    Time.parse(read_attribute(:last_tagging_on).to_s)
   end
   
-  # Gets the date the tagger last created a tagging.
-  def last_tagging_on
-    if last_tagging_on = read_attribute(:last_tagging_on)
-      Time.parse(last_tagging_on)
-    else
-      last_tagging = self.manual_taggings.find(:first, :order => 'taggings.created_on DESC')
-      last_tagging ? last_tagging.created_on : nil
-    end
+  def average_taggings_per_item
+    Tagging.find_by_sql(
+      "SELECT AVG(count) AS average FROM (SELECT COUNT(taggings.id) AS count FROM taggings WHERE taggings.user_id = #{self.id} GROUP BY taggings.feed_item_id) AS counts"
+    ).first.average.to_f
   end
   
   # Updates any feed state between this feed and the user.
@@ -125,30 +131,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Gets the number of items tagged by this tagger
-  def number_of_tagged_items
-    self.taggings.find(:first, :select => 'COUNT(DISTINCT feed_item_id) AS count').count.to_i
-  end
-
-  # Gets the percentage of items tagged by this tagger
-  def tagging_percentage(klass = FeedItem)
-    100 * number_of_tagged_items.to_f / klass.count
-  end
-
-  # Gets the average number of tags a user has applied to an item.
-  def average_taggings_per_item
-    Tagging.find_by_sql(<<-END_SQL
-      SELECT AVG(count) AS average FROM (
-         SELECT COUNT(id) AS count
-         FROM taggings
-         WHERE
-           user_id = #{self.id}
-         GROUP BY feed_item_id
-       ) AS counts;
-      END_SQL
-    ).first.average.to_f
-  end
-  
   def changed_tags
     self.tags.find(:all, :conditions => ['updated_on > last_classified_at or last_classified_at is NULL'])
   end
