@@ -6,6 +6,8 @@
 class Feedback < ActiveRecord::Base
   belongs_to :user
   
+  validates_presence_of :user_id, :body
+  
   named_scope :matching, lambda { |q|
     conditions = %w[feedbacks.body users.login].map do |attribute|
       "#{attribute} LIKE :q"

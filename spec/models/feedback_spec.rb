@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe Feedback do
   describe "validations" do
     before(:each) do
-      @feedback = Feedback.new
+      @feedback = Feedback.new :user_id => 1, :body => "some feedback"
     end
 
     it "should be valid" do

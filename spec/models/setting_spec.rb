@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Setting do
   before(:each) do
-    @setting = Setting.new
+    @setting = Setting.new :name => "info", :value => "welcome to winnow"
   end
 
   it "should be valid" do

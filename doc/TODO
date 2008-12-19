@@ -1,15 +1,22 @@
 Models
  - Comment
    - find_for_user
+ - DeletedTagging
+   - validations
  - Feed
  - FeedItem
+ - FeedItemContent
+   - validations
+ - FeedItemTextIndex (and observer)
  - Folder
  - Invite
  - Message
+ - Role
  - Tag
+ - TagUsage
+   - validations
  - Tagging
  - User
- - FeedItemTextIndex (and observer)
 
 Todo
  - item list blanks when I maximize window
