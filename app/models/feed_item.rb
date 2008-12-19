@@ -32,11 +32,7 @@ class FeedItem < ActiveRecord::Base
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
   has_many :taggings
-  has_many :tags, :through => :taggings do
-    def from_user
-      find(:all, :conditions => ["taggings.classifier_tagging = ?", false])
-    end
-  end
+  has_many :tags, :through => :taggings
   
   validates_presence_of :link
   validates_uniqueness_of :link
