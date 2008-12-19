@@ -11,39 +11,15 @@
 # get a list of feeds with item counts after applying similar
 # filters to those used by FeedItem.find_with_filters.
 class Feed < ActiveRecord::Base
+  alias_attribute :name, :title
+
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
 
   # TODO: localization
   validates_uniqueness_of :via, :message => 'Feed already exists'
 
-  alias_attribute :name, :title
 
-  def self.find_or_create_from_atom(atom_feed)
-    feed = find_or_create_from_atom_entry(atom_feed)
-    
-    atom_feed.each_entry(:paginate => true) do |entry|
-      feed.feed_items.find_or_create_from_atom(entry)
-    end
-    
-    feed.save!
-    feed.feed_items(:reload)
-    feed
-  end
-  
-  def self.find_or_create_from_atom_entry(entry)
-    # TODO: localization
-    raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
-    
-    unless feed = Feed.find_by_uri(entry.id)
-      feed = Feed.new
-      feed.uri = entry.id
-    end
-    
-    feed.update_from_atom(entry)    
-    feed
-  end
-  
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
   
   named_scope :matching, lambda { |q|
@@ -82,6 +58,45 @@ class Feed < ActiveRecord::Base
   def self.find_by_url_or_link(url)
     self.find(:first, :conditions => ['url = ? or link = ?', url, url])
   end
+  
+  def self.find_or_create_from_atom(atom_feed)
+    feed = find_or_create_from_atom_entry(atom_feed)
+    
+    atom_feed.each_entry(:paginate => true) do |entry|
+      feed.feed_items.find_or_create_from_atom(entry)
+    end
+    
+    feed.save!
+    feed.feed_items(:reload)
+    feed
+  end
+  
+  def self.find_or_create_from_atom_entry(entry)
+    # TODO: localization
+    raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
+    
+    unless feed = Feed.find_by_uri(entry.id)
+      feed = Feed.new
+      feed.uri = entry.id
+    end
+    
+    feed.update_from_atom(entry)    
+    feed
+  end
+
+  # def self.find_or_create_from_atom_entry(entry)
+  #   # TODO: localization
+  #   raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
+  #   id = parse_id_uri(entry)
+  #   
+  #   unless feed = Feed.find_by_id(id)
+  #     feed = Feed.new
+  #     feed.id = id
+  #   end
+  #   
+  #   feed.update_from_atom(entry)    
+  #   feed
+  # end
   
   def update_from_atom(entry)
     if self.uri != entry.id

@@ -1,8 +1,4 @@
 Models
- - Comment
-   - find_for_user
- - DeletedTagging
-   - validations
  - Feed
  - FeedItem
  - FeedItemContent
