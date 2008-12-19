@@ -56,7 +56,7 @@ class Tagging < ActiveRecord::Base
   belongs_to :feed_item
   belongs_to :user
   
-  validates_presence_of [:tag, :user, :feed_item]
+  validates_presence_of :tag, :user, :feed_item
   validates_numericality_of :strength
   validates_inclusion_of :strength, :in => 0..1
   validates_associated :tag
