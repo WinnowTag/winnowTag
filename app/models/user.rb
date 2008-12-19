@@ -128,6 +128,7 @@ class User < ActiveRecord::Base
     if tag_or_feed.is_a?(Tag)
       excluded_tags.include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
+      excluded_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
       excluded_feeds.include?(tag_or_feed)
     end
   end

@@ -49,13 +49,13 @@ class Feed < ActiveRecord::Base
     { :conditions => ["(feeds.title LIKE :q OR feeds.alternate LIKE :q)", { :q => "%#{q}%" }] }
   }
   
-  named_scope :by, lambda { |order, direction|
+  named_scope :by, lambda { |order, direction, excluder|
     orders = {
       "title" => "feeds.title",
       "created_on" => "feeds.created_on",
       "updated_on" => "feeds.updated_on",
       "feed_items_count" => "feeds.feed_items_count",
-      "globally_exclude" => "globally_exclude"
+      "globally_exclude" => sanitize_sql(["NOT EXISTS(SELECT 1 FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = ?)", excluder])
     }
     orders.default = "feeds.title"
     
@@ -69,15 +69,9 @@ class Feed < ActiveRecord::Base
   }
   
   def self.search(options = {})
-    scope = non_duplicates.by(options[:order], options[:direction])
+    scope = non_duplicates.by(options[:order], options[:direction], options[:excluder])
     scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
-  
-    select = ["feeds.*"]
-    if options[:excluder]
-      select << "NOT EXISTS(SELECT 1 FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) AS globally_exclude"
-    end
-
-    scope.all(:select => select.join(", "), :limit => options[:limit], :offset => options[:offset])
+    scope.all(:limit => options[:limit], :offset => options[:offset])
   end
   
   def self.find_by_url_or_link(url)
