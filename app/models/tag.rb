@@ -28,14 +28,6 @@ class Tag < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
   
-  def subscribed_by_current_user?
-    state.to_s == "0"
-  end
-  
-  def globally_excluded_by_current_user?
-    state.to_s == "1"
-  end
-  
   def positive_count
     read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
   end

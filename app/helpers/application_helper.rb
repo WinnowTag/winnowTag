@@ -112,8 +112,7 @@ module ApplicationHelper
       globally_exclude_feed_path(:id => tag_or_feed.id)
     end
     
-    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", 
-      tag_or_feed.respond_to?(:state) ? tag_or_feed.globally_excluded_by_current_user? : current_user.globally_excluded?(tag_or_feed),
+    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed),
       :id => "#{dom_id(tag_or_feed, 'globally_exclude')}", :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
   end
   
@@ -210,9 +209,9 @@ module ApplicationHelper
     
     classes << "public" if tag.public?
     
-    if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
+    if current_user.globally_excluded?(tag)
       classes << "globally_excluded"
-    elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
+    elsif current_user.subscribed?(tag)
       classes << "subscribed"
     end
     classes.join(" ")
@@ -225,9 +224,9 @@ module ApplicationHelper
   end
 
   def tag_state(tag)
-    if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
+    if current_user.globally_excluded?(tag)
       "Excluded"
-    elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
+    elsif current_user.subscribed?(tag)
       "Subscribed"
     end
   end

@@ -2,7 +2,7 @@ Models
  - FeedItem
  # - Folder
  # - Tag
- - User
+ # - User
 
 Todo
  - item list blanks when I maximize window

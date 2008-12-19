@@ -48,10 +48,22 @@ class User < ActiveRecord::Base
     subscribed_feed_ids - excluded_feed_ids
   end
  
+  def globally_excluded?(tag_or_feed)
+    if tag_or_feed.is_a?(Tag)
+      excluded_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
+      excluded_tags.include?(tag_or_feed)
+    elsif tag_or_feed.is_a?(Feed)
+      excluded_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
+      excluded_feeds.include?(tag_or_feed)
+    end
+  end
+
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
+      subscribed_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
       subscribed_tags.include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
+      subscribed_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
       subscribed_feeds.include?(tag_or_feed)
     end
   end
@@ -122,15 +134,6 @@ class User < ActiveRecord::Base
     end
   end
   
-  def globally_excluded?(tag_or_feed)
-    if tag_or_feed.is_a?(Tag)
-      excluded_tags.include?(tag_or_feed)
-    elsif tag_or_feed.is_a?(Feed)
-      excluded_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
-      excluded_feeds.include?(tag_or_feed)
-    end
-  end
-
   def changed_tags
     self.tags.find(:all, :conditions => ['updated_on > last_classified_at or last_classified_at is NULL'])
   end
