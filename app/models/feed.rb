@@ -46,14 +46,18 @@ class Feed < ActiveRecord::Base
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
   
   named_scope :matching, lambda { |q|
-    { :conditions => ["(feeds.title LIKE :q OR feeds.alternate LIKE :q)", { :q => "%#{q}%" }] }
+    conditions = %w[feeds.title feeds.alternate].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+
+    { :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   
   named_scope :by, lambda { |order, direction, excluder|
     orders = {
-      "title" => "feeds.title",
-      "created_on" => "feeds.created_on",
-      "updated_on" => "feeds.updated_on",
+      "title"            => "feeds.title",
+      "created_on"       => "feeds.created_on",
+      "updated_on"       => "feeds.updated_on",
       "feed_items_count" => "feeds.feed_items_count",
       "globally_exclude" => sanitize_sql(["NOT EXISTS(SELECT 1 FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = ?)", excluder])
     }
