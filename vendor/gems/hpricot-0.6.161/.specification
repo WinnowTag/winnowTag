@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2008-03-19 00:00:00 -04:00
+date: 2008-03-19 14:30:00 +10:30
 default_executable: 
 dependencies: []
 
@@ -83,6 +83,7 @@ rdoc_options:
 - README
 - --inline-source
 require_paths: 
+- bin
 - lib/universal-darwin9.0
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
@@ -100,7 +101,7 @@ required_rubygems_version: !ruby/object:Gem::Requirement
 requirements: []
 
 rubyforge_project: 
-rubygems_version: 1.3.0
+rubygems_version: 1.3.1
 signing_key: 
 specification_version: 2
 summary: a swift, liberal HTML parser with a fantastic library
