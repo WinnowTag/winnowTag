@@ -22,7 +22,7 @@ module ItemCache
     
     def update
       begin
-        feed = Feed.find(params[:id])
+        feed = Feed.find_by_uri(params[:id])
         feed.update_from_atom(params[:atom])
         render :nothing => true
       rescue ArgumentError
@@ -34,7 +34,7 @@ module ItemCache
     def destroy
       respond_to do |wants|
         wants.atom do
-          Feed.find(params[:id]).destroy
+          Feed.find_by_uri(params[:id]).destroy
           render :nothing => true
         end
       end
