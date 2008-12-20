@@ -16,7 +16,8 @@ describe Tagging do
                                   :updated => Time.now.yesterday.yesterday.to_formatted_s(:db),
                                   :link => "http://first",
                                   :created_on => Time.now.yesterday.yesterday.to_formatted_s(:db),
-                                  :title => "This is a test"
+                                  :title => "This is a test",
+                                  :uri => "urn:uuid:item50"
   end
 
   it "create_tagging" do

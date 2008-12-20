@@ -7,7 +7,7 @@ def Tag(user, tag)
   if tag.nil? || tag.is_a?(Tag) 
     tag
   else
-    Tag.find_or_create_by_user_id_and_name(user.id, tag)    
+    Tag.find_or_create_by_user_id_and_name(user.id, tag)
   end
 end
 
@@ -37,6 +37,7 @@ class Tag < ActiveRecord::Base
   has_many :feed_items, :through => :taggings
   has_many :tag_subscriptions
   has_many :comments
+  has_many :usages, :class_name => "TagUsage"
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
@@ -153,7 +154,6 @@ class Tag < ActiveRecord::Base
   def taggings_from_atom(atom)
     atom.entries.each do |entry|
       begin
-        item_id = URI.parse(entry.id).fragment.to_i
         strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
           category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
         else 
@@ -163,7 +163,8 @@ class Tag < ActiveRecord::Base
         if strength >= 0.9
           connection.execute "INSERT IGNORE INTO taggings " +
                               "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
-                              "VALUES(#{item_id}, #{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                              "VALUES((select id from feed_items where uri = #{connection.quote(entry.id)})," + 
+                              "#{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
                               "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
         end
       rescue URI::InvalidURIError => urie
@@ -262,7 +263,7 @@ class Tag < ActiveRecord::Base
   
   def self.search(options = {})
     select = ['tags.*', 
-              'CONCAT(users.firstname, " ", users.lastname) AS user_display_name',
+              'users.login AS user_login',
               '(SELECT COUNT(*) FROM comments WHERE comments.tag_id = tags.id) AS comments_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
               '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 

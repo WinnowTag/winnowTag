@@ -119,8 +119,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   markAllItemsRead: function() {
-    $$('.feed_item.unread').invoke('addClassName', 'read').invoke('removeClassName', 'unread');
-    new Ajax.Request('/' + this.options.controller + '/mark_read', {method: 'put'});
+    this.container.select('.feed_item').invoke('addClassName', 'read');
+    new Ajax.Request('/' + this.options.controller + '/mark_read' + '?' + $H(this.filters).toQueryString(), {method: 'put'});
   },
   
   insertItem: function($super, item_id, content) {
@@ -128,29 +128,27 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     new Item(item_id);
   },
   
-  update_feed_filters: function(element, value) {
+  updateFeedFilters: function(element, feed) {
     element.value = "";
-    if(value.match("#add_new_feed")) {
-      new Ajax.Request("/feeds", {parameters: 'feed[url]='+encodeURIComponent(value.getAttribute("url")), method:'post'});
+    if(feed.match("#add_new_feed")) {
+      new Ajax.Request("/feeds", {parameters: 'feed[url]='+encodeURIComponent(feed.getAttribute("url")), method:'post'});
     } else {
-      value.removeClassName('selected');
-      $('feed_filters').insertInOrder('li', '.name', value, $(value).down(".name").innerHTML.unescapeHTML());
-     new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
-      itemBrowser.toggleSetFilters({feed_ids: $(value).getAttribute("id").gsub("feed_", "")});
-     new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
+      feed.removeClassName('selected');
+      $('feed_filters').insertInOrder('li', '.name', feed, $(feed).down(".name").innerHTML.unescapeHTML());
+      this.bindFeedFilterEvents(feed);
+      new Ajax.Request(feed.getAttribute("subscribe_url"), {method:'put'});
     }
   },
   
-  update_tag_filters: function(element, value) {
+  updateTagFilters: function(element, tag) {
     element.value = "";
-    if(value.match("#add_new_tag")) {
-      new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(value.getAttribute("name")), method:'post'});
+    if(tag.match("#add_new_tag")) {
+      new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(tag.getAttribute("name")), method:'post'});
     } else {
-      value.removeClassName('selected');
-      $('tag_filters').insertInOrder('li', '.name', value, $(value).down(".name").innerHTML.unescapeHTML());
-     new Draggable(value.getAttribute("id"), {constraint:'vertical', ghosting:true, revert:true, reverteffect:function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }, scroll:'sidebar'});
-      itemBrowser.toggleSetFilters({tag_ids: $(value).getAttribute("id").gsub("tag_", "")});
-     new Ajax.Request(value.getAttribute("subscribe_url"), {method:'put'});
+      tag.removeClassName('selected');
+      $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
+      this.bindTagFilterEvents(tag);
+      new Ajax.Request(tag.getAttribute("subscribe_url"), {method:'put'});
     }
   },
   
@@ -259,21 +257,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   styleFilters: function($super) {
     $super();
     
-    var modes = ["all", "unread", "trained"];
-    if(this.filters.mode) {
-      modes.without(this.filters.mode).each(function(mode) {
-        $("mode_" + mode).removeClassName("selected")
-      });
-    
-      $("mode_" + this.filters.mode).addClassName("selected");
-    } else {
-      modes.without("unread").each(function(mode) {
-        $("mode_" + mode).removeClassName("selected")
-      });
-    
-      $("mode_unread").addClassName("selected");
-    }
-        
     var feed_ids = this.filters.feed_ids ? this.filters.feed_ids.split(",") : [];
     $$(".feeds li").each(function(element) {
       var feed_id = element.getAttribute("id").gsub("feed_", "");
@@ -329,6 +312,80 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + $H(this.filters).toQueryString();
     }
   },
+  
+  bindTagFiltersEvents: function() {
+    $$(".filter_list li.tag").each(function(tag) {
+      this.bindTagFilterEvents(tag);
+    }.bind(this));
+  },
+
+  bindTagFilterEvents: function(tag) {
+    var tag_id = tag.getAttribute('id').match(/\d+/).first();
+    var link = tag.down(".name");
+    var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id});
+    link.observe("click", click_event);
+
+    if(tag.hasClassName("draggable")) {
+      Draggables.addObserver({
+        onStart: function(eventName, draggable, event) {
+          if(draggable.element == tag) {
+            link.stopObserving("click", click_event);
+          }
+        },
+        onEnd: function(eventName, draggable, event) {
+          if(draggable.element == tag) {
+            setTimeout(function() {
+              link.observe("click", click_event);
+            }, 1);
+          }
+        }
+      });
+
+      new Draggable(tag.getAttribute("id"), { 
+        ghosting: true, revert: true, scroll: 'sidebar', 
+        reverteffect: function(element, top_offset, left_offset) {
+          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
+        }
+      });
+    }
+  },
+  
+  bindFeedFiltersEvents: function() {
+    $$(".filter_list li.feed").each(function(feed) {
+      this.bindFeedFilterEvents(feed);
+    }.bind(this));
+  },
+  
+  bindFeedFilterEvents: function(feed) {
+    var feed_id = feed.getAttribute('id').match(/\d+/).first();
+    var link = feed.down(".name");
+    var click_event = this.toggleSetFilters.bind(this, {feed_ids: feed_id});
+    link.observe("click", click_event);
+    
+    if(feed.hasClassName("draggable")) {
+      Draggables.addObserver({
+        onStart: function(eventName, draggable, event) {
+          if(draggable.element == feed) {
+            link.stopObserving("click", click_event);
+          }
+        },
+        onEnd: function(eventName, draggable, event) {
+          if(draggable.element == feed) {
+            setTimeout(function() {
+              link.observe("click", click_event);
+            }, 1);
+          }
+        }
+      });
+    
+      new Draggable(feed.getAttribute("id"), { 
+        ghosting: true, revert: true, scroll: 'sidebar', 
+        reverteffect: function(element, top_offset, left_offset) {
+          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
+        }
+      });
+    }
+  },
 
   bindTextFilterEvents: function() {
     $("text_filter_form").observe("submit", function() {
@@ -369,6 +426,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   initializeFilters: function($super) {
     $super();
+    this.bindTagFiltersEvents();
+    this.bindFeedFiltersEvents();
     this.bindClearFilterEvents();
     this.bindNextPreviousEvents();
     this.bindMarkAllReadEvents();

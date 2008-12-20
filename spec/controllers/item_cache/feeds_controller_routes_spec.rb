@@ -16,20 +16,20 @@ describe ItemCache::FeedsController do
       route_for(:controller => "item_cache/feeds", :action => "new").should == "/item_cache/feeds/new"
     end
   
-    it "should map { :controller => 'feeds', :action => 'show', :id => 1 } to /item_cache/feeds/1" do
-      route_for(:controller => "item_cache/feeds", :action => "show", :id => 1).should == "/item_cache/feeds/1"
+    it "should map { :controller => 'feeds', :action => 'show', :id => 'urn:uuid:blah' } to /item_cache/feeds/urn:uuid:blah" do
+      route_for(:controller => "item_cache/feeds", :action => "show", :id => 'urn:uuid:blah').should == "/item_cache/feeds/urn:uuid:blah"
     end
   
-    it "should map { :controller => 'feeds', :action => 'edit', :id => 1 } to /item_cache/feeds/1<%= resource_edit_path %>" do
-      route_for(:controller => "item_cache/feeds", :action => "edit", :id => 1).should == "/item_cache/feeds/1/edit"
+    it "should map { :controller => 'feeds', :action => 'edit', :id => 'urn:uuid:blah' } to /item_cache/feeds/urn:uuid:blah<%= resource_edit_path %>" do
+      route_for(:controller => "item_cache/feeds", :action => "edit", :id => 'urn:uuid:blah').should == "/item_cache/feeds/urn:uuid:blah/edit"
     end
   
-    it "should map { :controller => 'feeds', :action => 'update', :id => 1} to /item_cache/feeds/1" do
-      route_for(:controller => "item_cache/feeds", :action => "update", :id => 1).should == "/item_cache/feeds/1"
+    it "should map { :controller => 'feeds', :action => 'update', :id =>'urn:uuid:blah'} to /item_cache/feeds/urn:uuid:blah" do
+      route_for(:controller => "item_cache/feeds", :action => "update", :id =>'urn:uuid:blah').should == "/item_cache/feeds/urn:uuid:blah"
     end
   
-    it "should map { :controller => 'feeds', :action => 'destroy', :id => 1} to /item_cache/feeds/1" do
-      route_for(:controller => "item_cache/feeds", :action => "destroy", :id => 1).should == "/item_cache/feeds/1"
+    it "should map { :controller => 'feeds', :action => 'destroy', :id =>'urn:uuid:blah'} to /item_cache/feeds/urn:uuid:blah" do
+      route_for(:controller => "item_cache/feeds", :action => "destroy", :id =>'urn:uuid:blah').should == "/item_cache/feeds/urn:uuid:blah"
     end
   end
 
@@ -47,20 +47,20 @@ describe ItemCache::FeedsController do
       params_from(:post, "/item_cache/feeds").should == {:controller => "item_cache/feeds", :action => "create"}
     end
   
-    it "should generate params { :controller => 'feeds', action => 'show', id => '1' } from GET /feeds/1" do
-      params_from(:get, "/item_cache/feeds/1").should == {:controller => "item_cache/feeds", :action => "show", :id => "1"}
+    it "should generate params { :controller => 'feeds', action => 'show', id => '1' } from GET /feeds/urn:uuid:blah" do
+      params_from(:get, "/item_cache/feeds/urn:uuid:blah").should == {:controller => "item_cache/feeds", :action => "show", :id => "urn:uuid:blah"}
     end
   
-    it "should generate params { :controller => 'feeds', action => 'edit', id => '1' } from GET /feeds/1;edit" do
-      params_from(:get, "/item_cache/feeds/1/edit").should == {:controller => "item_cache/feeds", :action => "edit", :id => "1"}
+    it "should generate params { :controller => 'feeds', action => 'edit', id => '1' } from GET /feeds/urn:uuid:blah;edit" do
+      params_from(:get, "/item_cache/feeds/urn:uuid:blah/edit").should == {:controller => "item_cache/feeds", :action => "edit", :id => "urn:uuid:blah"}
     end
   
-    it "should generate params { :controller => 'feeds', action => 'update', id => '1' } from PUT /feeds/1" do
-      params_from(:put, "/item_cache/feeds/1").should == {:controller => "item_cache/feeds", :action => "update", :id => "1"}
+    it "should generate params { :controller => 'feeds', action => 'update', id => '1' } from PUT /feeds/urn:uuid:blah" do
+      params_from(:put, "/item_cache/feeds/urn:uuid:blah").should == {:controller => "item_cache/feeds", :action => "update", :id => "urn:uuid:blah"}
     end
   
-    it "should generate params { :controller => 'feeds', action => 'destroy', id => '1' } from DELETE /feeds/1" do
-      params_from(:delete, "/item_cache/feeds/1").should == {:controller => "item_cache/feeds", :action => "destroy", :id => "1"}
+    it "should generate params { :controller => 'feeds', action => 'destroy', id => '1' } from DELETE /feeds/urn:uuid:blah" do
+      params_from(:delete, "/item_cache/feeds/urn:uuid:blah").should == {:controller => "item_cache/feeds", :action => "destroy", :id => "urn:uuid:blah"}
     end
   end
 end

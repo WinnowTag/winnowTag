@@ -1,9 +1,9 @@
 page << <<-EOJS
-  if(confirm(#{_(:tags_merge_confirm_text, @tag.name, @name).to_json})) {
+  if(confirm(#{t(:tags_merge_confirm_text, :from => @tag.name, :to => @name).to_json})) {
     #{remote_function(:url => hash_for_merge_tag_path(:id => @tag, "tag[name]" => @name), :method => :put)};
   } else {
 EOJS
   page.select("##{dom_id(@tag)} .name, .#{dom_id(@tag)} .name").each do |element|
-    element.update @tag.name
+    element.update h(@tag.name)
   end
 page << "}"

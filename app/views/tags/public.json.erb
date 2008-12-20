@@ -1,6 +1,6 @@
 <%= {
   :full => @full,
   :items => @tags.map do |tag|
-    { :id => dom_id(tag), :content => render_to_string(:partial => 'public_tag.html.erb', :object => tag) }
+    { :id => dom_id(tag), :content => render(:partial => 'tag.html.erb', :object => tag) }
   end
 }.to_json %>

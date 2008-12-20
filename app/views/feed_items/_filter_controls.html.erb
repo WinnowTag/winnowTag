@@ -1,69 +1,19 @@
-<div class="section<%= open_tags? ? " open" : "" %>" id="tags_section">
-  <div class="header clearfix">
-    <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('tags', $(this).up('.section').hasClassName('open'), 365);"></span>
-    <%= link_to_function _(:sidebar_tags_header), "itemBrowser.toggleSetFilters({folder_ids: 'tags'}, event);", :id => "tag_filters_control", :class => "name" %>
-    
-    <div class="actions clearfix">
-      <%= link_to_function _(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('tag_name').focus();", :class => "add_link" %>
-      <%= link_to_function _(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
-      <%= link_to_function _(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit')", :class => "cancel_link" %>
-    </div>
-  </div>
+<%= render :partial => "sidebar_section", :locals => { 
+  :id => "tags_section", :title => t(:sidebar_tags_header), :select => "{folder_ids: 'tags'}", 
+  :add_form => text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path, :after_update_element => "function(e, v) { itemBrowser.updateTagFilters(e,v); $('tags_section').removeClassName('add'); }", :on_hide => "itemBrowser.clear_auto_complete"),
+  :content => tag_filter_controls(current_user.tags_for_sidebar(params[:tag_ids]), :editable => true, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list clearfix tags" })
 
-  <div class="content clearfix">
-    <div class="add_form">
-      <%= text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, 
-            :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path,
-            :after_update_element => "function(e, v) { itemBrowser.update_tag_filters(e,v); $('tags_section').removeClassName('add'); $('tags_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
-    </div>
-  
-    <%= tag_filter_controls(current_user.tags_for_sidebar(params[:tag_ids]), :editable => true, :draggable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list clearfix tags" }) %>
-  </div>
-</div>
-  
-<div class="section<%= open_feeds? ? " open" : "" %>" id="feeds_section">
-  <div class="header clearfix">
-    <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('feeds', $(this).up('.section').hasClassName('open'), 365);"></span>        
-    <%= link_to_function _(:sidebar_feeds_header), "itemBrowser.toggleSetFilters({folder_ids: 'feeds'}, event);", :class => "name" %>
+} %>
 
-    <div class="actions clearfix">
-      <%= link_to_function _(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('feed_title').focus();", :class => "add_link" %>
-      <%= link_to_function _(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
-      <%= link_to_function _(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit');", :class => "cancel_link" %>
-    </div>
-  </div>
+<%= render :partial => "sidebar_section", :locals => { 
+  :id => "feeds_section", :title => t(:sidebar_feeds_header), :select => "{folder_ids: 'feeds'}", 
+  :add_form => text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path, :after_update_element => "function(e, v) { itemBrowser.updateFeedFilters(e,v); $('feeds_section').removeClassName('add'); }", :on_hide => "itemBrowser.clear_auto_complete"),
+  :content => feed_filter_controls(feeds_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list clearfix feeds" })
+} %>
 
-  <div class="content clearfix">
-    <div class="add_form">
-      <%= text_field_with_auto_complete(:feed, :title, { :class => "filter_search" }, 
-            :skip_style => true, :param_name => 'feed[title]', :url => auto_complete_for_feed_title_feeds_path,
-            :after_update_element => "function(e, v) { itemBrowser.update_feed_filters(e,v); $('feeds_section').removeClassName('add'); $('feeds_section').addClassName('open'); }", :on_hide => "itemBrowser.clear_auto_complete") %>
-    </div>
-
-    <%= feed_filter_controls(feeds_for_sidebar, :draggable => true, :remove => :subscription, :ul_options => { :id => "feed_filters", :class => "filter_list clearfix feeds" }) %>
-  </div>
-</div>
-    
-<div class="section<%= open_folders? ? " open" : "" %>" id="folders_section">
-  <div class="header clearfix">
-    <span class="toggle_button" onclick="$(this).up('.section').toggleClassName('open'); Cookie.set('folders', $(this).up('.section').hasClassName('open'), 365);"></span>        
-    <%= content_tag :span, _(:sidebar_folders_header), :class => "name" %>
-
-    <div class="actions clearfix">
-      <%= link_to_function _(:sidebar_add), "$(this).up('.section').addClassName('open'); $(this).up('.section').addClassName('add'); $('folder_name').focus();", :class => "add_link" %>
-      <%= link_to_function _(:sidebar_edit), "$(this).up('.section').addClassName('open'); $(this).up('.section').toggleClassName('edit');", :class => "edit_link" %>
-      <%= link_to_function _(:sidebar_done), "$(this).up('.section').removeClassName('add'); $(this).up('.section').removeClassName('edit');", :class => "cancel_link" %>
-    </div>
-  </div>
-
-  <div class="content" id="folders">
-    <div id="add_folder" class="add_form">
-      <% remote_form_for :folder, :url => folders_path, :method => :post, :after => "$('folders_section').removeClassName('add'); $('folder_name').value = ''" do |form| -%>
-        <%= form.text_field :name, :class => "filter_search" %>
-      <% end -%>
-    </div>
-
-    <%= render :partial => "feed_items/folder", :collection => current_user.folders %>
-  </div>
-  <%= sortable_element("folders", :url => sort_folders_path, :method => :put, :constraint => :vertical, :tag => :div, :handle => ".header") %>
-</div>
+<%= render :partial => "sidebar_section", :locals => { 
+  :id => "folders_section", :title => t(:sidebar_folders_header), :select => false,
+  :add_form => render(:partial => "feed_items/add_folder_form"),
+  :content => "<div id='folders'>#{render(:partial => "feed_items/folder", :collection => current_user.folders)}</div>"
+} %>
+<%= sortable_element("folders", :url => sort_folders_path, :method => :put, :constraint => :vertical, :tag => "div", :handle => ".header") %>

@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
 
   include ExceptionNotifiable
   include AuthenticatedSystem
-  helper_method :render_to_string, :controller_name, :action_name
+  helper_method :controller_name, :action_name
   
   before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time
 
@@ -25,9 +25,8 @@ class ApplicationController < ActionController::Base
   MAX_LIMIT = 100 unless defined?(MAX_LIMIT)
 
 protected
-  # TODO: sanitize
   def check_atom
-    render(:text => params[:atom_error].message, :status => 400) if params[:atom_error]
+    render(:text => h(params[:atom_error].message), :status => 400) if params[:atom_error]
   end
 
   def set_time_zone

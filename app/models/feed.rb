@@ -39,11 +39,10 @@ class Feed < ActiveRecord::Base
   def self.find_or_create_from_atom_entry(entry)
     # TODO: localization
     raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
-    id = parse_id_uri(entry)
     
-    unless feed = Feed.find_by_id(id)
+    unless feed = Feed.find_by_uri(entry.id)
       feed = Feed.new
-      feed.id = id
+      feed.uri = entry.id
     end
     
     feed.update_from_atom(entry)    
@@ -93,12 +92,12 @@ class Feed < ActiveRecord::Base
   end
   
   def update_from_atom(entry)
-    if self.id != self.class.parse_id_uri(entry)
+    if self.uri != entry.id
       # TODO: localization
-      raise ArgumentError, "Tried to update feed attributes from entry with different id"
+      raise ArgumentError, "Tried to update feed (#{self.uri}) from entry with different id: #{entry.id}"
     else
       duplicate_id = if duplicate_link = entry.links.detect {|l| l.rel == "http://peerworks.org/duplicateOf"}
-        URI.parse(duplicate_link.href).fragment.to_i rescue nil
+        Feed.find_by_uri(duplicate_link.href).id rescue nil
       end
       
       self.attributes = {
@@ -109,12 +108,13 @@ class Feed < ActiveRecord::Base
         :collector_link => (entry.self and entry.self.href),
         :duplicate_id => duplicate_id
       }
+
+      self.save!
       
       if duplicate_id
         FeedSubscription.update_all("feed_id = #{duplicate_id}", "feed_id = #{self.id}")        
       end
     
-      self.save!
       self
     end
   end
@@ -132,23 +132,5 @@ class Feed < ActiveRecord::Base
 private
   def update_sort_title
     self.sort_title = read_attribute(:title) && read_attribute(:title).downcase
-  end
-  
-  def self.parse_id_uri(entry)
-    begin
-      uri = URI.parse(entry.id)
-    
-      if uri.fragment.nil?
-        # TODO: localization
-        raise ActiveRecord::RecordNotSaved, "Atom::Entry id is missing fragment: '#{entry.id}'"
-      end
-    
-      uri.fragment.to_i
-    rescue ActiveRecord::RecordNotSaved => e
-      raise e
-    rescue
-      # TODO: localization
-      raise ActiveRecord::RecordNotSaved, "Atom::Entry has missing or invalid id: '#{entry.id}'" 
-    end
   end  
 end

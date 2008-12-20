@@ -1,8 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
   map.namespace :item_cache do |item_cache|
-    item_cache.resources :feed_items
-    item_cache.resources :feeds do |feeds|
-      feeds.resources :feed_items
+    item_cache.resources :feed_items, :requirements => {:id => %r{[^/;,?]+}}
+    item_cache.resources :feeds, :requirements => {:id => %r{[^/;,?]+}} do |feeds|
+      feeds.resources :feed_items,:requirements => {:feed_id => %r{[^/;,?]+}, :id => %r{[^/;,?]+}}
     end
   end
   
@@ -102,7 +102,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :comments
                 
   map.with_options :controller => "account" do |account_map|
-    account_map.edit_account "account/edit", :action => "edit"
+    account_map.edit_account "account/edit/:id", :action => "edit"
     account_map.login "account/login/:code", :action => "login", :code => nil
     account_map.signup "account/signup", :action => "signup", :conditions => { :method => :post }
     account_map.signup_invite "account/invite", :action => "invite", :conditions => { :method => :post }

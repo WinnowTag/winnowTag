@@ -48,7 +48,7 @@ describe ItemCache::FeedsController do
       @before_count = Feed.count
       @atom = Atom::Entry.new do |e|
         e.title = "Feed Title"
-        e.id = "urn:peerworks.org:feed#1"
+        e.id = "urn:uuid:feed1"
         e.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/222')
       end
     end

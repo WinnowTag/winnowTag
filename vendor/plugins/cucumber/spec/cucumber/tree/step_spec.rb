@@ -24,6 +24,25 @@ module Cucumber
         #  Given 9****
         step.padding_length.should == 4
       end
+
+      it "should default step arity to 0" do
+        scenario = Scenario.new(nil, '9', 1)
+        step = scenario.create_step('Given', '9', 80)
+        
+        step.arity.should == 0
+      end
+
+      describe "utf-8 strings" do
+
+        it "should have padding_length 6 when 4 shorter" do
+          scenario = Scenario.new(nil, nil, 1)
+          long = scenario.create_step('Given', '999999999', 2)
+          step = scenario.create_step('Given', "こんばんは", 3)
+        
+          step.padding_length.should == 6
+        end
+
+      end
       
     end
   end

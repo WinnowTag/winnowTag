@@ -14,8 +14,6 @@
 # single uses of the tag by the user and the +TagsController+
 # operates on the many +Taggings+ that use a given +Tag+.
 class TagsController < ApplicationController
-  include ActionView::Helpers::SanitizeHelper
-  extend  ActionView::Helpers::SanitizeHelper::ClassMethods
   helper :bias_slider, :comments
 
   # Setup the HMAC authentication with credentials for the classifier role but don't assign to any actions
@@ -72,7 +70,8 @@ class TagsController < ApplicationController
 
   def show
     respond_to do |wants|
-      wants.atom do        
+      wants.atom do
+        TagUsage.create!(:tag_id => @tag.id, :ip_address => request.remote_ip)
         conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
           atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
           render :xml => atom.to_xml
@@ -91,7 +90,7 @@ class TagsController < ApplicationController
       if to
         if params[:overwrite] =~ /true/i
           from.overwrite(to)
-          flash[:notice] = _(:tag_copied, sanitize(from.name), sanitize(to.name))
+          flash[:notice] = t(:tag_copied, :from => h(from.name), :to => h(to.name))
           render :update do |page|
             page.redirect_to tags_path
           end
@@ -99,7 +98,7 @@ class TagsController < ApplicationController
           render :update do |page|
             # TODO: broken?
             page << <<-EOJS
-              if(confirm(#{_(:tag_replace, params[:name], from.name).to_json}) {
+              if(confirm(#{t(:tag_replace, :to => h(params[:name]), :from => h(from.name)).to_json}) {
                 #{remote_function(:url => hash_for_tags_path(:copy => from, :name => params[:name], :overwrite => true))};
               }
             EOJS
@@ -109,7 +108,7 @@ class TagsController < ApplicationController
         to = Tag(current_user, params[:name])
         from.copy(to)
       
-        flash[:notice] = _(:tag_copied, sanitize(from.name), sanitize(to.name))
+        flash[:notice] = t(:tag_copied, :from => h(from.name), :to => h(to.name))
       
         render :update do |page|
           page.redirect_to tags_path
@@ -138,7 +137,7 @@ class TagsController < ApplicationController
       end
     elsif comment = params[:tag][:comment]
       @tag.update_attribute(:comment, comment)
-      render :text => sanitize(@tag.comment)
+      render :text => h(@tag.comment)
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true
@@ -149,7 +148,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if merge_to = current_user.tags.find_by_name(params[:tag][:name])
         @tag.merge(merge_to)
-        flash[:notice] = _(:tag_merged, sanitize(@tag.name), sanitize(merge_to.name))
+        flash[:notice] = t(:tag_merged, :from => h(@tag.name), :to => h(merge_to.name))
       end
       
       format.html { redirect_to tags_path }
@@ -196,8 +195,7 @@ class TagsController < ApplicationController
     @tags = current_user.tags.find(:all, 
           :conditions => ['LOWER(name) LIKE LOWER(?)', "%#{@q}%"])
     @tags -= Array(@tag)
-    # TODO: sanitize
-    render :inline => '<%= auto_complete_result(@tags, :name, @q) %>'
+    render :layout => false
   end
   
   def auto_complete_for_sidebar
@@ -221,7 +219,7 @@ class TagsController < ApplicationController
     unless @tag.public?
       TagSubscription.delete_all(:tag_id => @tag)
     end
-    render :nothing => true
+    respond_to :js
   end
   
   def update_state
@@ -303,19 +301,16 @@ private
     if params[:user] && params[:tag_name]
       @user = User.find_by_login(params[:user])
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
-        # TODO: sanitize
-        render :status => :not_found, :text => _(:tag_not_found, @user.login, params[:tag_name])
+        render :status => :not_found, :text => t(:tag_not_found, :login => h(@user.login), :tag_name => h(params[:tag_name]))
       end
     elsif params[:id] && !current_user.nil?
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        # TODO: sanitize
-        render :status => :not_found, :text => _(:tag_id_not_found, params[:id])
+        render :status => :not_found, :text => t(:tag_id_not_found, :tag_id => h(params[:id]))
       end
     else
-        # TODO: sanitize
-      render :status => :not_found, :text => _(:tag_id_not_found, params[:id])
+      render :status => :not_found, :text => t(:tag_id_not_found, :tag_id => h(params[:id]))
     end
   end
   

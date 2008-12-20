@@ -1,43 +1,45 @@
 <% form_tag feeds_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feeds_header_search_placeholder) %>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:feeds_header_search_placeholder) %>
 <% end -%>
 
-<div class="toolbar right">
-  <%= rounded_button_function _(:feeds_header_add_import), "$('add_feed').toggle()", :icon => "add" %>
+<div class="order clearfix">
+  <label><%= t(:sort_label) %></label>        
+  <select id="order">
+    <option value="title"><%= t(:feeds_header_title) %></option>
+    <option value="globally_excluded"><%= t(:feeds_header_globally_exclude) %></option>
+    <option value="feed_items_count"><%= t(:feeds_header_items) %></option>
+    <option value="created_on"><%= t(:feeds_header_created) %></option>
+    <option value="updated_on"><%= t(:feeds_header_last_updated) %></option>
+  </select>
+  <%= direction_link %>
+</div>
   
-  <div class="group">
-    <label><%= _(:sort_label) %></label>
-
-    <%= rounded_button_function _(:feeds_header_title),            "", :icon => "", :id => "order_title", :class => "first" %>
-    <%= rounded_button_function _(:feeds_header_globally_exclude), "", :icon => "", :id => "order_globally_exclude" %>
-    <%= rounded_button_function _(:feeds_header_items),            "", :icon => "", :id => "order_feed_items_count" %>
-    <%= rounded_button_function _(:feeds_header_created),          "", :icon => "", :id => "order_created_on" %>
-    <%= rounded_button_function _(:feeds_header_last_updated),     "", :icon => "", :id => "order_updated_on" %>
-  </div>
+<div class="toolbar right">
+  <%= rounded_button_function t(:feeds_header_add_import), "$('add_feed').toggle()", :icon => "add" %>
 </div>
 
 <div id="add_feed" style="clear:both;<%= flash[:error] || params[:feed] ? '' : 'display:none' %>">
   <fieldset class="full">
-    <legend><%= _(:feeds_add_import) %></legend>
+    <legend><%= t(:feeds_add_import) %></legend>
     <% form_for :feed, @feed, :url => feeds_path do |f| %>
-      <p><%= _(:feeds_new_description) %></p>
+      <p><%= t(:feeds_new_description) %></p>
       <p>
         <%= f.text_field :url, :size => 70 %>
-        <%= submit_tag _(:add_feed_button) %> 
+        <%= submit_tag t(:add_feed_button) %> 
       </p>
     <% end %>
 
     <% form_tag import_feeds_path, :method => :post, :multipart => true do -%>
-      <p><%= _(:feeds_import_description) %></p>
+      <p><%= t(:feeds_import_description) %></p>
       <p>
         <%= file_field_tag 'opml', :size => 60 %>
-        <%= submit_tag _(:upload) %> 
+        <%= submit_tag t(:upload) %> 
       </p>
     <% end -%>
     
-    <p><%= _(:feeds_new_bookmarklet_description) %></p>
+    <p><%= t(:feeds_new_bookmarklet_description) %></p>
     
-    <%= link_to _(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => _(:feeds_add_to_winnow), 
-                  :onclick => "Message.add('error', #{_(:feeds_bookmarklet_js_error_message).to_json}); return false;" %>
+    <%= link_to t(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => t(:feeds_add_to_winnow), 
+                  :onclick => "Message.add('error', #{t(:feeds_bookmarklet_js_error_message).to_json}); return false;" %>
   </fieldset>
 </div>

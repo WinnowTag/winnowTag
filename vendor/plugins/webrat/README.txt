@@ -24,11 +24,11 @@ Initial development was sponsored by [EastMedia](http://www.eastmedia.com).
 === Synopsis
 
     def test_sign_up
-      visits "/"
-      clicks_link "Sign up"
-      fills_in "Email", :with => "good@example.com"
-      selects "Free account"
-      clicks_button "Register"
+      visit "/"
+      click_link "Sign up"
+      fill_in "Email", :with => "good@example.com"
+      select "Free account"
+      click_button "Register"
       ...
     end
   
@@ -59,6 +59,13 @@ tests to break unnecessarily as your application evolves:
 
 A test written with Webrat can handle these changes to these without any modifications.
 
+=== Merb
+To avoid losing sessions, you need this in environments/test.rb:
+
+Merb::Config.use do |c|
+  c[:session_store] = 'memory' 
+end  
+
 === Install
 
 To install the latest release:
@@ -70,13 +77,6 @@ In your stories/helper.rb:
     require "webrat"
   
 You could also unpack the gem into vendor/plugins.
-
-=== Requirements
-
-- Rails >= 1.2.6
-- Hpricot >= 0.6
-- Rails integration tests in Test::Unit _or_
-- RSpec stories (using an RSpec version >= revision 2997)
 
 === Authors
 

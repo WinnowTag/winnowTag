@@ -3,18 +3,18 @@
     <div class="info">
       <div class="details">
         <p>&nbsp;</p>
-        <strong><%= globally_exclude_check_box(feed) %> <%= _(:globally_exclude) %></strong>
+        <strong><%= globally_exclude_check_box(feed) %> <%= t(:globally_exclude) %></strong>
       </div>
       <div class="count">
         <p>Items</p>
         <strong><%= feed.feed_items_count %></strong>
       </div>
       <div class="date">
-         <p><%= _(:created) %></p> 
+         <p><%= t(:created) %></p> 
          <strong><%= format_date(feed.created_on) %></strong>
       </div>
       <div class="date">
-         <p><%= _(:last_updated) %></p> 
+         <p><%= t(:last_updated) %></p> 
          <strong><%= format_date(feed.updated_on) %></strong>
       </div>
     </div>    

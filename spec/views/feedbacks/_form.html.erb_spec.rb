@@ -19,7 +19,7 @@ describe '/feedbacks/_form.html.erb' do
     response.should have_tag("form[method=post][action=?]", feedbacks_path) do
       with_tag("textarea[name=?]", "feedback[body]")
       with_tag("input[type=submit]")
-      with_tag("a[onclick*=?]", "remove")
+      with_tag("a.cancel")
     end
   end
 end

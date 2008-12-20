@@ -34,27 +34,27 @@ module Spec
                                                           "an example name directly, causing RSpec to run just the example",
                                                           "matching that name"],
         :specification => ["-s", "--specification [NAME]", "DEPRECATED - use -e instead", "(This will be removed when autotest works with -e)"],
-        :line => ["-l", "--line LINE_NUMBER", Integer, "Execute behaviour or specification at given line.",
-                                                       "(does not work for dynamically generated specs)"],
+        :line => ["-l", "--line LINE_NUMBER", Integer, "Execute example group or example at given line.",
+                                                       "(does not work for dynamically generated examples)"],
         :format => ["-f", "--format FORMAT[:WHERE]","Specifies what format to use for output. Specify WHERE to tell",
                                                     "the formatter where to write the output. All built-in formats",
                                                     "expect WHERE to be a file name, and will write to $stdout if it's",
                                                     "not specified. The --format option may be specified several times",
                                                     "if you want several outputs",
                                                     " ",
-                                                    "Builtin formats for examples: ",
-                                                    "progress|p               : Text progress",
-                                                    "profile|o                : Text progress with profiling of 10 slowest examples",
-                                                    "specdoc|s                : Example doc as text",
-                                                    "indented|i               : Example doc as indented text",
+                                                    "Builtin formats for code examples:",
+                                                    "progress|p               : Text-based progress bar",
+                                                    "profile|o                : Text-based progress bar with profiling of 10 slowest examples",
+                                                    "specdoc|s                : Code example doc strings",
+                                                    "nested|n                 : Code example doc strings with nested groups intented",
                                                     "html|h                   : A nice HTML report",
                                                     "failing_examples|e       : Write all failing examples - input for --example",
                                                     "failing_example_groups|g : Write all failing example groups - input for --example",
                                                     " ",
-                                                    "Builtin formats for stories: ",
-                                                    "plain|p              : Plain Text",
-                                                    "html|h               : A nice HTML report",
-                                                    "progress|r           : Text progress",
+                                                    "Builtin formats for stories:",
+                                                    "plain|p                  : Plain Text",
+                                                    "html|h                   : A nice HTML report",
+                                                    "progress|r               : Text progress",
                                                     " ",
                                                     "FORMAT can also be the name of a custom formatter class",
                                                     "(in which case you should also specify --require to load it)"],
@@ -117,7 +117,8 @@ module Spec
       end
 
       def order!(argv, &blk)
-        @argv = (argv.empty? && Spec.spec_command?) ? ['--help'] : argv 
+        @argv = argv.dup
+        @argv = (@argv.empty? && Spec.spec_command?) ? ['--help'] : @argv 
         @options.argv = @argv.dup
         return if parse_generate_options
         return if parse_drb

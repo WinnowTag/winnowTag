@@ -7,11 +7,10 @@ module FeedItemsHelper
   include BiasSliderHelper
   
   def link_to_feed(feed, options = {})
-    # TODO: sanitize
     if feed.alternate
-      link_to(feed.title, feed.alternate, options.merge(:target => "_blank"))
+      link_to(h(feed.title), feed.alternate, options.merge(:target => "_blank"))
     else
-      feed.title
+      h(feed.title)
     end
   end
   
@@ -24,11 +23,10 @@ module FeedItemsHelper
   end
   
   def feed_item_title(feed_item)
-    # TODO: sanitize
-    if not feed_item.title.blank?
-      feed_item.title
+    if feed_item.title.blank?
+      content_tag :span, t(:feed_item_no_title), :class => "notitle"
     else
-      content_tag :span, _(:feed_item_no_title), :class => "notitle"
+      h(feed_item.title)
     end
   end
 
@@ -48,9 +46,9 @@ module FeedItemsHelper
   
   def feed_control_for(feed_item)
     if feed_item.author.blank?
-      _(:feed_item_feed_metadata, content_tag(:a, feed_item.feed_title, :class => "feed_title stop"))
+      t(:feed_item_feed_metadata, :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
     else
-      _(:feed_item_metadata, content_tag(:a, feed_item.feed_title, :class => "feed_title stop"), feed_item.author)
+      t(:feed_item_metadata, :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), :author => h(feed_item.author))
     end
   end
   
@@ -58,7 +56,7 @@ module FeedItemsHelper
   def format_classifier_strength(taggings)
     taggings = Array(taggings)
     
-    if classifier_tagging = taggings.detect {|tagging| tagging.classifier_tagging? }
+    if classifier_tagging = taggings.detect { |tagging| tagging.classifier_tagging? }
       "%.2f%" % (classifier_tagging.strength * 100)
     end
   end
@@ -66,13 +64,12 @@ module FeedItemsHelper
   # Note: Update item.js when this changes
   def tag_control_for(feed_item, tag, classes, strength)
     classes << "tag_control" << dom_id(tag) << "stop"
-    # TODO: sanitize
     content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
   end
   
   def tag_control_tooltip(tag, strength)
     title = []
-    title << "by #{tag.user.display_name}" if tag.user_id != current_user.id
+    title << "by #{h(tag.user.login)}" if tag.user_id != current_user.id
     title << "#{strength}" if strength
     title.join(", ") unless title.blank?
   end
@@ -127,7 +124,7 @@ module FeedItemsHelper
   
   def render_clue(clue)
     if clue
-      content_tag('td', clue['clue'], :class => 'clue') + content_tag('td', clue['prob'], :class => 'prob')
+      content_tag('td', h(clue['clue']), :class => 'clue') + content_tag('td', clue['prob'], :class => 'prob')
     else
       content_tag('td', nil, :class => 'clue') + content_tag('td', nil, :class => 'prob')
     end

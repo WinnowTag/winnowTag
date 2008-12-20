@@ -20,7 +20,7 @@ class MessagesController < ApplicationController
     @message = Message.new(params[:message])
 
     if @message.save
-      flash[:notice] = _(:message_created)
+      flash[:notice] = t(:message_created)
       redirect_to messages_path
     else
       render :action => "new"
@@ -31,7 +31,7 @@ class MessagesController < ApplicationController
     @message = Message.find(params[:id])
 
     if @message.update_attributes(params[:message])
-      flash[:notice] = _(:message_updated)
+      flash[:notice] = t(:message_updated)
       redirect_to messages_path
     else
       render :action => "edit"

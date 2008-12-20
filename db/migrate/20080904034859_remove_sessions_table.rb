@@ -3,8 +3,6 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-
-
 class RemoveSessionsTable < ActiveRecord::Migration
   def self.up
     drop_table :sessions    

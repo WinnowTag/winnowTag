@@ -1,5 +1,5 @@
 module Webrat
-  class Label
+  class Label #:nodoc:
     
     def initialize(field, element)
       @field    = field
@@ -11,7 +11,15 @@ module Webrat
     end
     
     def text
-      @element.innerText
+      str = @element.inner_text
+      str.gsub!("\n","")
+      str.strip!
+      str.squeeze!(" ")
+      str
+    end
+
+    def for_id
+      @element['for']
     end
     
   end

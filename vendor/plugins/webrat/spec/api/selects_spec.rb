@@ -5,14 +5,15 @@ describe "selects" do
     @session = Webrat::TestSession.new
   end
 
-  it "should fail if option not found" do
+  it "should fail with a helpful message when option not found" do
     @session.response_body = <<-EOS
       <form method="get" action="/login">
         <select name="month"><option value="1">January</option></select>
       </form>
     EOS
     
-    lambda { @session.selects "February", :from => "month" }.should raise_error
+    lambda { @session.selects "February", :from => "month" }.should raise_error(
+          Exception, "The 'February' option was not found in the 'month' select box") 
   end
   
   it "should fail if option not found in list specified by element name" do
@@ -57,7 +58,7 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "month" => "1")
     @session.selects "January", :from => "month"
-    @session.clicks_button
+    @session.click_button
   end
 
   it "should send values with HTML encoded ampersands" do
@@ -69,7 +70,7 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "encoded" => "A & B")
     @session.selects "Encoded", :from => "encoded"
-    @session.clicks_button
+    @session.click_button
   end
 
   it "should work with empty select lists" do
@@ -80,7 +81,7 @@ describe "selects" do
       </form>
     EOS
     @session.should_receive(:post).with("/login", 'month' => '')
-    @session.clicks_button
+    @session.click_button
   end
   
   it "should work without specifying the field name or label" do
@@ -92,7 +93,7 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "month" => "1")
     @session.selects "January"
-    @session.clicks_button
+    @session.click_button
   end
   
   it "should send value from option in list specified by name" do
@@ -105,7 +106,7 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "start_month" => "s1", "end_month" => "e1")
     @session.selects "January", :from => "end_month"
-    @session.clicks_button
+    @session.click_button
   end
   
   it "should send value from option in list specified by label" do
@@ -120,7 +121,7 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "start_month" => "s1", "end_month" => "e1")
     @session.selects "January", :from => "End Month"
-    @session.clicks_button
+    @session.click_button
   end
   
   it "should use option text if no value" do
@@ -132,7 +133,7 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "month" => "January")
     @session.selects "January", :from => "month"
-    @session.clicks_button
+    @session.click_button
   end
 
   it "should find option by regexp" do
@@ -144,7 +145,7 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "month" => "January")
     @session.selects(/jan/i)
-    @session.clicks_button
+    @session.click_button
   end
   
   it "should fail if no option matching the regexp exists" do
@@ -172,6 +173,6 @@ describe "selects" do
     EOS
     @session.should_receive(:post).with("/login", "start_month" => "s1", "end_month" => "e1")
     @session.selects(/jan/i, :from => "End Month")
-    @session.clicks_button
+    @session.click_button
   end
 end

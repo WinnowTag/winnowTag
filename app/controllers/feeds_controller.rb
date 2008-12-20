@@ -24,7 +24,7 @@ class FeedsController < ApplicationController
       end
     end
   end
-  
+
   def create   
     @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
     if @feed.errors.empty?
@@ -32,11 +32,10 @@ class FeedsController < ApplicationController
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
       
-      # TODO: sanitize
       flash[:notice] = if @feed.updated_on.nil?
-         _(:feed_added, @feed.url)
+         t(:feed_added, :url => h(@feed.url))
       else
-        _(:feed_existed, @feed.url)
+        t(:feed_existed, :url => h(@feed.url))
       end
       
       respond_to do |format|
@@ -45,7 +44,7 @@ class FeedsController < ApplicationController
       end
     else
       flash[:error] = @feed.errors.on(:url)
-      render :action => 'index'        
+      render :action => 'index'
     end
   end
   
@@ -55,7 +54,7 @@ class FeedsController < ApplicationController
       FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
       feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
     end
-    flash[:notice] = _(:feeds_imported, @feeds.size)
+    flash[:notice] = t(:feeds_imported, :count => @feeds.size)
     redirect_to feeds_url
   end
 

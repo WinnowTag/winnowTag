@@ -6,15 +6,12 @@
 module ApplicationHelper  
   include DateHelper
 
-  STRIPPED_ELEMENTS = %w(script style link meta) unless const_defined?(:STRIPPED_ELEMENTS)
+  def sth(content)
+    sanitize(textilize(Hpricot.parse(content.to_s).to_s))
+  end
   
-  # TODO: Replace usages with sanitize
-  def clean_html(html)
-    unless html.blank? 
-      doc = Hpricot(html)
-      doc.search(STRIPPED_ELEMENTS.join(',')).each {|e| e.parent.children.delete(e) }
-      doc.to_s
-    end
+  def sh(content)
+    sanitize(Hpricot.parse(content.to_s).to_s)
   end
   
   def tab_selected(controller, action = nil)
@@ -30,13 +27,17 @@ module ApplicationHelper
       Message.mark_read_for(current_user.id, message.id)
       
       if message.user
-        "Message.add('error', #{message.body.to_json});"
+        "Message.add('error', #{h(message.body).to_json});"
       else
-        "Message.add('warning', #{message.body.to_json});"
+        "Message.add('warning', #{sth(message.body).to_json});"
       end
     end.join if current_user
     
     javascript_tag(javascript) unless javascript.blank?
+  end
+  
+  def direction_link
+    link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction"
   end
   
   def is_admin?
@@ -88,21 +89,13 @@ module ApplicationHelper
     cookies[dom_id(folder)] =~ /true/i
   end
   
-  def open_tags?
-    cookies[:tags] =~ /true/i
-  end
-  
-  def open_feeds?
-    cookies[:feeds] =~ /true/i
-  end
-  
-  def open_folders?
-    cookies[:folders] =~ /true/i
+  def section_open?(id)
+    cookies[id] =~ /true/i
   end
   
   def search_field_tag(name, value = nil, options = {})
     options[:clear] ||= {}
-    options[:placeholder] ||= _(:default_search_placeholder)
+    options[:placeholder] ||= t(:default_search_placeholder)
     content_tag :div, 
       content_tag(:span, nil, :class => "sbox_l") +      
       tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name) +
@@ -126,8 +119,7 @@ module ApplicationHelper
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    # TODO: sanitize
-    content << content_tag(:li, _(:create_feed, options[:auto_complete]), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t(:create_feed, :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -143,24 +135,20 @@ module ApplicationHelper
     html = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:div, html, :class => "actions")
 
-    # TODO: sanitize
-    html << link_to_function(feed.title, "itemBrowser.toggleSetFilters({feed_ids: '#{feed.id}'}, event)", :class => "name")
+    html << link_to_function(h(feed.title), "", :class => "name")
     
     html =  content_tag(:div, html, :class => "filter")
-    # TODO: sanitize
-    html << content_tag(:span, highlight(feed.title, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
+    html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
 
     class_names = [dom_id(feed), "clearfix", "feed"]
     class_names << "draggable" if options[:draggable]
     html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-    html << draggable_element(dom_id(feed), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }") if options[:draggable]
     html
   end
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    # TODO: sanitize
-    content << content_tag(:li, _(:create_tag, options[:auto_complete]), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t(:create_tag, :tag => h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -183,12 +171,10 @@ module ApplicationHelper
     html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html  = content_tag(:div, html, :class => "actions")
 
-    # TODO: sanitize
-    html << link_to_function(tag.name, "itemBrowser.toggleSetFilters({tag_ids: '#{tag.id}'}, event)", :class => "name", :id => dom_id(tag, "name"))
-    
+    html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"))
+
     html =  content_tag(:div, html, :class => "filter clearfix")
-    # TODO: sanitize
-    html << content_tag(:span, highlight(tag.name, options[:auto_complete], '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
+    html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
     class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id
@@ -198,15 +184,14 @@ module ApplicationHelper
       when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
     end
     html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url, :title => tag_tooltip(tag))
-    html << draggable_element(dom_id(tag), :scroll => "'sidebar'", :ghosting => true, :revert => true, :reverteffect => "function(element, top_offset, left_offset) { new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 }); }") if options[:draggable]
     html
   end
   
   def tag_tooltip(tag)
     if tag.user_id == current_user.id 
-      _(:tag_tooltip, tag.positive_count, tag.negative_count, tag.classifier_count)
+      t(:tag_tooltip, :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     else
-      _(:public_tag_tooltip, tag.user.display_name, tag.positive_count, tag.negative_count, tag.classifier_count)
+      t(:public_tag_tooltip, :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     end
   end
   
@@ -221,11 +206,16 @@ module ApplicationHelper
   end
   
   def tag_classes(tag)
+    classes = [dom_id(tag)]
+    
+    classes << "public" if tag.public?
+    
     if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
-      "globally_excluded"
+      classes << "globally_excluded"
     elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
-      "subscribed"
-    end.to_s + " " + dom_id(tag)
+      classes << "subscribed"
+    end
+    classes.join(" ")
   end
 
   def feed_classes(feed)

@@ -1,5 +1,8 @@
+require "webrat/core/field"
+require "webrat/core_extensions/blank"
+
 module Webrat
-  class Form
+  class Form #:nodoc:
     attr_reader :element
     
     def initialize(session, element)
@@ -8,12 +11,10 @@ module Webrat
       @fields   = nil
     end
 
-    def find_field(id_or_name_or_label, *field_types)
-      possible_fields = fields_by_type(field_types)
-      
-      find_field_by_id(possible_fields, id_or_name_or_label)    ||
-      find_field_by_name(possible_fields, id_or_name_or_label)  ||
-      find_field_by_label(possible_fields, id_or_name_or_label) ||
+    def field(locator, *field_types)
+      field_with_id(locator, *field_types)    ||
+      field_named(locator, *field_types)  ||
+      field_labeled(locator, *field_types) ||
       nil
     end
     
@@ -38,34 +39,53 @@ module Webrat
     def fields
       return @fields if @fields
       
-      @fields = (@element / "button, input, textarea, select").collect do |field_element|
+      @fields = Webrat::XML.css_search(@element, "button", "input", "textarea", "select").collect do |field_element|
         Field.class_for_element(field_element).new(self, field_element)
       end
+    end
+    
+    def labels
+      @labels ||= element.search("label").map { |element| Label.new(nil, element) }
     end
     
     def submit
       @session.request_page(form_action, form_method, params)
     end
 
-  protected
-  
-    def find_field_by_id(possible_fields, id)
+    def field_with_id(id, *field_types)
+      possible_fields = fields_by_type(field_types)
       possible_fields.detect { |possible_field| possible_field.matches_id?(id) }
     end
     
-    def find_field_by_name(possible_fields, name)
+    def field_named(name, *field_types)
+      possible_fields = fields_by_type(field_types)
       possible_fields.detect { |possible_field| possible_field.matches_name?(name) }
     end
     
-    def find_field_by_label(possible_fields, label)      
+    def field_labeled(label, *field_types)
+      possible_fields = fields_by_type(field_types)      
       matching_fields = possible_fields.select do |possible_field|
         possible_field.matches_label?(label)
       end      
       matching_fields.min { |a, b| a.label_text.length <=> b.label_text.length }
     end
+
+    def label_matching(label_text)
+      labels.detect { |label| label.matches_text?(label_text) }
+    end
+    
+    def matches_id?(id)
+      @element["id"] == id.to_s
+    end
+    
+  protected
   
     def fields_by_type(field_types)
-      fields.select { |f| field_types.include?(f.class) }
+      if field_types.any?
+        fields.select { |f| field_types.include?(f.class) }
+      else
+        fields
+      end
     end
     
     def params
@@ -86,11 +106,15 @@ module Webrat
     def form_action
       @element["action"].blank? ? @session.current_url : @element["action"]
     end
+
+    HASH = [Hash]
+    HASH << HashWithIndifferentAccess rescue nil  # Rails
+    HASH << Mash rescue nil                       # Merb
     
     def merge(all_params, new_param)
       new_param.each do |key, value|
         case all_params[key]
-        when Hash, HashWithIndifferentAccess
+        when *hash_classes
           merge_hash_values(all_params[key], value)
         when Array
           all_params[key] += value
@@ -103,8 +127,8 @@ module Webrat
     def merge_hash_values(a, b) # :nodoc:
       a.keys.each do |k|
         if b.has_key?(k)
-          case [a[k], b[k]].map(&:class)
-          when [Hash, Hash]
+          case [a[k], b[k]].map{|value| value.class}
+          when *hash_classes.zip(hash_classes)
             a[k] = merge_hash_values(a[k], b[k])
             b.delete(k)
           when [Array, Array]
@@ -114,6 +138,13 @@ module Webrat
         end
       end
       a.merge!(b)
+    end
+    
+    def hash_classes
+      klasses = [Hash]
+      klasses << HashWithIndifferentAccess  if defined?(HashWithIndifferentAccess) # Rails
+      klasses << Mash                       if defined?(Mash)                      # Merb
+      klasses
     end
     
   end

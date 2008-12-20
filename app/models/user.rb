@@ -185,7 +185,8 @@ class User < ActiveRecord::Base
   # Virtual attribute for the unencrypted password
   attr_accessor :password
 
-  validates_presence_of     :login, :email, :time_zone
+  validates_format_of :login, :with => /^[a-zA-Z0-9_-]+$/
+  validates_presence_of     :email, :time_zone
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
   validates_uniqueness_of   :login, :email, :case_sensitive => false
@@ -203,12 +204,8 @@ class User < ActiveRecord::Base
     BCrypt::Password.create(password)
   end
 
-  def display_name
+  def full_name
     "#{self.firstname} #{self.lastname}"
-  end
-  
-  def to_s
-    self.display_name
   end
   
   def encrypt(password)

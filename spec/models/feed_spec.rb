@@ -40,7 +40,7 @@ describe Feed do
       @atom = Atom::Entry.new do |atom|
         atom.title = "Feed Title"
         atom.updated = Time.now
-        atom.id = "urn:peerworks.org:feed#222"
+        atom.id = "urn:uuid:blah-blah"
         atom.links << Atom::Link.new(:rel => 'via', :href => 'http://example.com/feed')
         atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
         atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
@@ -49,7 +49,7 @@ describe Feed do
     
     describe "with complete entry and existing feed id" do
       before(:each) do
-        @atom.id = "urn:peerworks.org:feed#1"
+        @atom.id = "urn:uuid:feed1"
         @feed = Feed.find_or_create_from_atom_entry(@atom)
       end
       
@@ -73,7 +73,7 @@ describe Feed do
       it_should_behave_like "Feed updates attributes from Atom::Entry"
         
       it "should set the id" do
-        @feed.id.should == 222
+        @feed.uri.should == @atom.id
       end
         
       it "should create a new feed" do
@@ -90,17 +90,7 @@ describe Feed do
         lambda { Feed.find_or_create_from_atom_entry(@atom) }.should raise_error(ActiveRecord::RecordNotSaved)
       end
     end
-    
-    describe "with invalid id" do
-      before(:each) do
-        @atom.id = "http://example.com"
-      end
-      
-      it "should reject the feed" do
-        lambda { Feed.find_or_create_from_atom_entry(@atom) }.should raise_error(ActiveRecord::RecordNotSaved)
-      end
-    end
-    
+
     describe 'with missing title' do
       before(:each) do
         @atom.title = nil
@@ -151,8 +141,8 @@ describe Feed do
     
     describe 'with duplicate link' do
       before(:each) do
-        @atom.id = "urn:peerworks.org:feed#3"
-        @atom.links << Atom::Link.new(:rel => "http://peerworks.org/duplicateOf", :href => 'urn:peerworks.org:feeds#2')
+        @atom.id = "urn:uuid:feed3"
+        @atom.links << Atom::Link.new(:rel => "http://peerworks.org/duplicateOf", :href => 'urn:uuid:feed2')
         FeedSubscription.create!(:user_id => 1, :feed_id => 3)        
         @feed = Feed.find_or_create_from_atom_entry(@atom)
       end
@@ -178,7 +168,7 @@ describe Feed do
         @before_feed_item_content_count = FeedItemContent.count
         
         @atom = Atom::Feed.new do |a|
-          a.id = "urn:peerworks.org:feed#444"
+          a.id = "urn:uuid:feed444"
           a.title = "Feed Title"
           a.updated = Time.now
           a.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/444')
@@ -210,7 +200,7 @@ describe Feed do
       it_should_behave_like "Feed updates attributes from Atom::Entry"
       
       it "should set the id" do
-        @feed.id.should == 444
+        @feed.uri.should == "urn:uuid:feed444"
       end
       
       it "should be saved in the database" do
@@ -241,7 +231,7 @@ describe Feed do
         atom.title = "Feed Title"
         atom.updated = Time.now
         atom.published = Time.now.yesterday
-        atom.id = "urn:peerworks.org:feed#1"
+        atom.id = "urn:uuid:feed1"
         atom.links << Atom::Link.new(:rel => 'via', :href => 'http://example.com/feed')
         atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
         atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
@@ -254,7 +244,7 @@ describe Feed do
     it_should_behave_like "Feed updates attributes from Atom::Entry"
     
     it "should not change the id" do
-      @feed.id.should == 1
+      @feed.uri.should == @atom.id
     end
     
     describe "with different ids" do

@@ -1,0 +1,24 @@
+<div class="section<%= section_open?(id) ? " open" : "" %>" id="<%= id %>">
+  <div class="header clearfix">
+    <span class="toggle_button"></span>
+    <% if select -%>
+      <%= link_to_function title, "itemBrowser.toggleSetFilters(#{select}, event);", :class => "name" %>
+    <% else -%>
+      <%= content_tag :span, title, :class => "name" %>
+    <% end -%>
+    
+    <div class="actions clearfix">
+      <%= link_to_function t(:sidebar_add),  "", :class => "add_link" %>
+      <%= link_to_function t(:sidebar_edit), "", :class => "edit_link" %>
+      <%= link_to_function t(:sidebar_done), "", :class => "cancel_link" %>
+    </div>
+  </div>
+
+  <div class="content clearfix">
+    <div class="add_form">
+      <%= add_form %>
+    </div>
+
+    <%= content %>
+  </div>
+</div>

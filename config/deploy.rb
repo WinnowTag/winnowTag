@@ -44,7 +44,7 @@ end
 task :trunk do
   set :deploy_to, "/home/mindloom/winnow.deploy"
   set :user, 'mindloom'
-  set :domain, 'ds400-1.blueboxgrid.com'
+  set :domain, 'trunk.mindloom.org'
   set :branch, "master" unless exists?(:branch)
 
   role :web, domain

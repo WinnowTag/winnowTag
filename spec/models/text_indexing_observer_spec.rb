@@ -13,7 +13,7 @@ describe TextIndexingObserver do
   it "should create entry in full text index when item is created" do
     FeedItem.with_observers(:text_indexing_observer) do
       count = FeedItemTextIndex.count
-      item = FeedItem.new(:title => 'test', :link => 'http://example.com', 
+      item = FeedItem.new(:title => 'test', :link => 'http://example.com', :uri => "urn:uuid:item45",
                           :content => FeedItemContent.new(:content => "This is item content"))
       item.id = 23
       item.save!

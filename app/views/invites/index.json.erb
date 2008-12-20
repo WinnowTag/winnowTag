@@ -1,6 +1,6 @@
 <%= {
   :full => @full,
   :items => @invites.map do |invite|
-    { :id => dom_id(invite), :content => render_to_string(:partial => 'invite.html.erb', :object => invite) }
+    { :id => dom_id(invite), :content => render(:partial => 'invite.html.erb', :object => invite) }
   end
 }.to_json %>

@@ -11,7 +11,6 @@ describe UsersController do
   it "admin_required" do
     cannot_access(:quentin, :get, :index)
     cannot_access(:quentin, :get, :create)
-    cannot_access(:quentin, :get, :show, :id => users(:quentin))
     cannot_access(:quentin, :get, :login_as, :id => users(:quentin))
     cannot_access(:quentin, :get, :update, :id => users(:quentin))
     cannot_access(:quentin, :get, :destroy, :id => users(:quentin))
@@ -75,22 +74,6 @@ describe UsersController do
     end
   end
   
-  it "show" do
-    login_as(:admin)
-    get :show, :id => users(:quentin).id
-    assert_response :success
-    assert_not_nil assigns(:user)
-    assert_equal users(:quentin), assigns(:user)
-  end
-  
-  it "show_works_with_login" do
-    login_as(:admin)
-    get :show, :id => users(:quentin).login
-    assert_response :success
-    assert_not_nil assigns(:user)
-    assert_equal users(:quentin), assigns(:user)
-  end
-    
   it "login_as_changes_current_user_and_redirects_to_index" do
     login_as(:admin)
     post :login_as, :id => users(:quentin).id

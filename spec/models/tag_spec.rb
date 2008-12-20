@@ -330,36 +330,36 @@ describe Tag do
     
     it "should contain all the tagged items" do
       @atom.should have(3).entries
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should_not be_nil
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should_not be_nil
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.should_not be_nil
+      @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should_not be_nil
+      @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.should_not be_nil
+      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.should_not be_nil
     end
     
     it "should not contain any negatively tagged items" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.should be_nil
+      @atom.entries.detect {|e| e.id == "urn:uuid:item3"}.should be_nil
     end
     
     it "should have atom:category for the classifier example" do
-      entry = @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}
+      entry = @atom.entries.detect {|e| e.id == "urn:uuid:item4"}
       entry.categories.first.should_not be_nil
     end
     
     it "should have the terms for the classifier example" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.categories.first.term.should == @tag.name
+      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.categories.first.term.should == @tag.name
     end
     
     it "should have the scheme for the classifier example" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
     end
     
     it "should have the strength for the classifier example" do
-      @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.categories.first[CLASSIFIER_NS, 'strength'].first.should == "0.95"
+      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.categories.first[CLASSIFIER_NS, 'strength'].first.should == "0.95"
     end
     
     describe "with since" do
       it "should only return items with updated date after :since" do
         @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org', :since => Time.now)
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should be_nil
+        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should be_nil
       end
     end
     
@@ -397,34 +397,34 @@ describe Tag do
     
       it "should contain all the manually tagged items" do
         @atom.should have(3).entries
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should_not be_nil
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should_not be_nil
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.should_not be_nil
+        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should_not be_nil
+        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.should_not be_nil
+        @atom.entries.detect {|e| e.id == "urn:uuid:item3"}.should_not be_nil
       end
     
       it "should not contain any classifier only tagged items" do
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#4"}.should be_nil
+        @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.should be_nil
       end
             
       it "should have a classifier:negative-example for all negative examples" do
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#3"}.links.detect do |l| 
+        @atom.entries.detect {|e| e.id == "urn:uuid:item3"}.links.detect do |l| 
           l.rel == "http://peerworks.org/classifier/negative-example" && l.href == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
         end.should_not be_nil
       end
         
       it "should have a atom:category for all positive examples" do
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.should have(1).categories
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.should have(1).categories
+        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should have(1).categories
+        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.should have(1).categories
       end
       
       it "should have the tag name as the term for atom:categories" do
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.categories.first.term.should == @tag.name
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.categories.first.term.should == @tag.name
+        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.categories.first.term.should == @tag.name
+        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.categories.first.term.should == @tag.name
       end
     
       it "should have the users tag index as the scheme for the atom:categories" do
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#1"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
-        @atom.entries.detect {|e| e.id == "urn:peerworks.org:entry#2"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
       end      
     end
   end
@@ -483,7 +483,7 @@ describe Tag do
       
       @atom = Atom::Feed.new do |f|
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:peerworks.org:entry#3"
+          e.id = "urn:uuid:item3"
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -492,7 +492,7 @@ describe Tag do
           end
         end
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:peerworks.org:entry#2"
+          e.id = "urn:uuid:item2"
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -508,7 +508,7 @@ describe Tag do
     describe 'with missing items in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
-          e.id = "urn:peerworks.org:entry#123"
+          e.id = "urn:uuid:item123"
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -523,7 +523,7 @@ describe Tag do
     describe 'with strength-less item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
-          e.id = "urn:peerworks.org:entry#4"
+          e.id = "urn:uuid:item4"
         end
       end
       it_should_behave_like 'create_taggings_from_atom'
@@ -547,7 +547,7 @@ describe Tag do
     describe 'with strength less than 0.9 item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
-          e.id = "urn:peerworks.org:entry#4"          
+          e.id = "urn:uuid:item4"          
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -571,7 +571,7 @@ describe Tag do
             
       @atom = Atom::Feed.new do |f|
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:peerworks.org:entry#3"
+          e.id = "urn:uuid:item3"
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -580,7 +580,7 @@ describe Tag do
           end
         end
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:peerworks.org:entry#2"
+          e.id = "urn:uuid:item2"
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name

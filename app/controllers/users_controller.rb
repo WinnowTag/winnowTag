@@ -35,9 +35,6 @@ class UsersController < ApplicationController
     end
   end
   
-  def show
-  end
-
   def login_as
     self.current_user = @user
     redirect_to('/')

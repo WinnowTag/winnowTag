@@ -2,6 +2,6 @@
   :full => @full,
   :items => @tags.map do |tag|
     { :id => dom_id(tag), 
-      :content => render_to_string(:partial => tag.user == current_user ? 'tag.html.erb' : 'subscribed_tag.html.erb', :object => tag) }
+      :content => render(:partial => 'tag.html.erb', :object => tag) }
   end
 }.to_json %>

@@ -1,17 +1,17 @@
 <% form_tag public_tags_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:tags_header_search_placeholder) %>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:tags_header_search_placeholder) %>
 <% end -%>
 
-<div class="toolbar right">
-  <div class="group">
-    <label><%= _(:sort_label) %></label>
-
-    <%= rounded_button_function _(:tags_header_name),         "", :icon => "", :id => "order_name", :class => "first" %>
-    <%= rounded_button_function _(:tags_header_state),        "", :icon => "", :id => "order_state" %>
-    <%= rounded_button_function _(:tags_header_comments),     "", :icon => "", :id => "order_comments_count" %>
-    <%= rounded_button_function _(:tags_header_positive),     "", :icon => "", :id => "order_positive_count" %>
-    <%= rounded_button_function _(:tags_header_negative),     "", :icon => "", :id => "order_negative_count" %>  
-    <%= rounded_button_function _(:tags_header_automatic),    "", :icon => "", :id => "order_classifier_count" %>
-    <%= rounded_button_function _(:tags_header_last_trained), "", :icon => "", :id => "order_last_trained" %>  
-  </div>
+<div class="order clearfix">
+  <label><%= t(:sort_label) %></label>        
+  <select id="order">
+    <option value="name"><%= t(:tags_header_name) %></option>
+    <option value="state"><%= t(:tags_header_state) %></option>
+    <option value="comments_count"><%= t(:tags_header_comments) %></option>
+    <option value="positive_count"><%= t(:tags_header_positive) %></option>
+    <option value="negative_count"><%= t(:tags_header_negative) %></option>
+    <option value="classifier_count"><%= t(:tags_header_automatic) %></option>
+    <option value="last_trained"><%= t(:tags_header_last_trained) %></option>
+  </select>
+  <%= direction_link %>
 </div>

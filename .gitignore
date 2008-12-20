@@ -2,8 +2,8 @@ coverage
 config/collector.conf
 config/database.yml
 config/selenium.yml
+config/fiveruns_tuneup.yml
 db/development_structure.sql
-doc/TODO
 log
 tmp
 .DS_Store
@@ -17,6 +17,10 @@ perf.log
 corpus
 credentials.js
 hmac_credentials.yml
+
+public/images/tuneup
+public/javascripts/tuneup
+public/stylesheets/tuneup
 
 vendor/gems/bcrypt-ruby-2.0.3/ext/Makefile
 vendor/gems/bcrypt-ruby-2.0.3/ext/bcrypt.o
@@ -33,9 +37,10 @@ vendor/gems/hpricot-0.6.161/ext/hpricot_scan/hpricot_scan.bundle
 vendor/gems/hpricot-0.6.161/ext/hpricot_scan/hpricot_scan.o
 vendor/gems/hpricot-0.6.161/ext/hpricot_scan/mkmf.log
 vendor/gems/hpricot-0.6.161/lib/universal-darwin9.0/
-vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/Makefile
-vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/redcloth_attributes.o
-vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/redcloth_inline.o
-vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/redcloth_scan.bundle
-vendor/gems/RedCloth-4.0.4/ext/redcloth_scan/redcloth_scan.o
-vendor/gems/RedCloth-4.0.4/lib/redcloth_scan.bundle
+vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/Makefile
+vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_attributes.o
+vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_inline.o
+vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_scan.bundle
+vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_scan.o
+vendor/gems/RedCloth-4.1.1/lib/redcloth_scan.bundle
+

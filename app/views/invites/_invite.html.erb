@@ -1,59 +1,59 @@
 <div id="invite_<%= invite.id %>" class="invite clearfix">
 	<ul class="controls">
     <% unless invite.code? -%>
-    <li><%= link_to _(:activate), activate_invite_path(invite), :class => :activate, :method => :put %></li>
-    <li><%= link_to _(:edit), edit_invite_path(invite), :class => :edit %></li>
+    <li><%= link_to t(:activate), activate_invite_path(invite), :class => :activate, :method => :put %></li>
+    <li><%= link_to t(:edit), edit_invite_path(invite), :class => :edit %></li>
     <% end -%>
-    <li><%= link_to _(:destroy), invite, :class => :destroy, :method => :delete, :confirm => _(:are_you_sure) %></li>
+    <li><%= link_to t(:destroy), invite, :class => :destroy, :method => :delete, :confirm => t(:are_you_sure) %></li>
 	</ul>
 	
 	<dl class="created clearfix">
-	  <dt><%= _(:created) %></dt>
+	  <dt><%= t(:created) %></dt>
 	  <dd><%= format_date(invite.created_at) %></dd>
-    <dt><%= _(:email_address) %></dt>
-    <dd><%= mail_to sanitize(invite.email) %></dd>
-	  <dt><%= _(:status) %></dt>
+    <dt><%= t(:email_address) %></dt>
+    <dd><%= mail_to h(invite.email) %></dd>
+	  <dt><%= t(:status) %></dt>
     <dd>
 	  <% if invite.user -%>
-	    <%= _(:invites_accepted) %> <%= link_to sanitize(invite.user.login), invite.user %>
+	    <%= t(:invites_accepted) %> <%=h invite.user.login %>
 	  <% elsif invite.code? -%>
-	    <%= _(:invites_activated) %> <%= invite.code %>
+	    <%= t(:invites_activated) %> <%=h invite.code %>
 	  <% else -%>
-	    <%= _(:invites_requested) %>
+	    <%= t(:invites_requested) %>
 	  <% end -%>
 	  </dd>
 	</dl>
 
 	<dl class="question clearfix">
-	  <dt><%= _(:invites_question) %></dt>
+	  <dt><%= t(:invites_question) %></dt>
 	  <dd>
 	    <% if invite.hear.blank? && invite.use.blank? -%>
-	      <em><%= _(:invites_no_answers) %></em>
+	      <em><%= t(:invites_no_answers) %></em>
 	    <% else -%>
     	  <% unless invite.hear.blank? -%>
-          <strong><%= _(:invites_how_did_you_hear) %></strong><br />
-          <%= sanitize invite.hear %><br />
+          <strong><%= t(:invites_how_did_you_hear) %></strong><br />
+          <%=h invite.hear %><br />
           <br />
         <% end -%>
     	  <% unless invite.use.blank? -%>
-          <strong><%= _(:invites_how_do_you_want_to_use_winnow) %></strong><br />
-          <%= sanitize invite.use %><br />
+          <strong><%= t(:invites_how_do_you_want_to_use_winnow) %></strong><br />
+          <%=h invite.use %><br />
         <% end -%>
       <% end -%>
     </dd>
 	</dl>
 	
 	<dl class="email clearfix">
-	  <dt><%= _(:email) %></dt>
+	  <dt><%= t(:email) %></dt>
 	  <dd>
     <% unless invite.subject.blank? -%>
-      <strong><%= _(:invites_subject_label) %></strong><br />
-      <%= invite.subject %><br />
+      <strong><%= t(:invites_subject_label) %></strong><br />
+      <%=h invite.subject %><br />
       <br />
     <% end -%>
     <% unless invite.body.blank? -%>
-      <strong><%= _(:invites_body_label) %></strong><br /> 
-      <%= invite.body %><br />
+      <strong><%= t(:invites_body_label) %></strong><br /> 
+      <%=h invite.body %><br />
     <% end -%>
     </dd>
 	</dl>

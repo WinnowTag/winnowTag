@@ -1,12 +1,12 @@
 <% form_tag feedbacks_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => _(:feedback_search_placeholder) %>
+  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:feedback_search_placeholder) %>
 <% end -%>
 
-<div class="toolbar right">
-  <div class="group">
-    <label><%= _(:sort_label) %></label>
-    <%= rounded_button_function _(:feedback_sort_user_label), "", :icon => "", :id => "order_user", :class => "first" %>
-    <%= rounded_button_function _(:feedback_sort_date_label), "", :icon => "", :id => "order_created_at" %>
-  </div>
+<div class="order clearfix">
+  <label><%= t(:sort_label) %></label>        
+  <select id="order">
+    <option value="user"><%= t(:feedback_sort_user_label) %></option>
+    <option value="created_at"><%= t(:feedback_sort_date_label) %></option>
+  </select>
+  <%= direction_link %>
 </div>
-  
