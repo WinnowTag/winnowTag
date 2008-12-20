@@ -20,6 +20,8 @@ class CopyUrisFromCollector < ActiveRecord::Migration
   # need some additional code to handle importing the new id map.
   #
   def self.up
+    say "This migration requires access to the collector database to copy across feed uris."
+    say "If you don't have the collector database setup you can just skip this."
     execute "update feeds set uri = (select uri from collector.feeds where collector.feeds.url = feeds.via)"
   end
 
