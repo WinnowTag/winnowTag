@@ -50,7 +50,7 @@ When("I update the item") do
 end
 
 When("I destroy the feed") do
-  delete_with_hmac item_cache_feed_url(Feed.find(@feed_id)), {}, 'Accept' => 'application/atom+xml'
+  delete_with_hmac item_cache_feed_url(:id => Feed.find(@feed_id).uri), {}, 'Accept' => 'application/atom+xml'
 end
 
 When("I destroy the item") do

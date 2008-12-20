@@ -54,28 +54,28 @@ describe ItemCache::FeedsController do
     end
     
     it "should update the feed" do
-      put :update, :id => 1, :atom => @atom
+      put :update, :id => @atom.id, :atom => @atom
       Feed.find(1).title.should == 'Feed Title'
     end
     
     it "should not add a new feed" do
-      put :update, :id => 1, :atom => @atom
+      put :update, :id => @atom.id, :atom => @atom
       Feed.count.should == @before_count
     end
     
     it "should render 200" do
-      put :update, :id => 1, :atom => @atom
+      put :update, :id => @atom.id, :atom => @atom
       response.code.should == "200"
     end
     
     describe "with a different id" do
       it "should not update the feed" do
-        put :update, :id => 2, :atom => @atom
+        put :update, :id => Feed.find(2).uri, :atom => @atom
         Feed.find(2).title.should_not == 'Feed Title'
       end
       
       it "should return a 412 (Precondition Failed) error" do
-        put :update, :id => 2, :atom => @atom
+        put :update, :id => Feed.find(2).uri, :atom => @atom
         response.code.should == "412"
       end
     end
@@ -85,8 +85,8 @@ describe ItemCache::FeedsController do
     it "should delete the feed" do
       feed = mock_model(Feed)
       feed.should_receive(:destroy)
-      Feed.should_receive(:find).with("1").and_return(feed)
-      delete :destroy, :id => 1
+      Feed.should_receive(:find_by_uri).with("urn:uuid:blah").and_return(feed)
+      delete :destroy, :id => "urn:uuid:blah"
     end    
   end
 end
