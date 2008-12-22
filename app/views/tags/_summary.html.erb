@@ -21,6 +21,10 @@
       <strong><%= tag.classifier_count %></strong>
     </div>
     <div class="date">
+       <p><%= t(:tags_last_classified) %></p> 
+       <strong><%= format_date(tag.last_classified_at) %></strong>
+    </div>
+    <div class="date">
        <p><%= t(:tags_last_trained) %></p> 
        <strong><%= format_date(tag.last_trained) %></strong>
     </div>

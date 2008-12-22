@@ -17,7 +17,6 @@ class Feed < ActiveRecord::Base
   # TODO: localization
   validates_uniqueness_of :via, :message => 'Feed already exists'
 
-
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
   
   named_scope :matching, lambda { |q|

@@ -4,7 +4,7 @@
 		document.observe('dom:loaded', function() {
 			itemBrowser = new ItemBrowser('tags', 'content', { orders: {
 			  asc:       ["name", "state", "comments_count", "positive_count", "negative_count", "classifier_count"],
-			  desc:      ["last_trained"],
+			  desc:      ["last_classified", "last_trained"],
 			  "default": "name"
 			}, url: "tags/public"});
 		});

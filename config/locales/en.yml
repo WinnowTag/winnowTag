@@ -322,6 +322,7 @@ en:
   
   # app/views/tags/_header_controls.html.erb
   tags_header_name: "Name"
+  tags_header_last_classified: "Last Classified"
   tags_header_last_trained: "Last Trained"
   tags_header_comments: "Comments"
   tags_header_positive: "Positive"
@@ -331,6 +332,7 @@ en:
   tags_header_search_placeholder: "Search Tags..."
 
   # app/views/tags/_public_tag.html.erb
+  tags_last_classified: "Last Classified"
   tags_last_trained: "Last Trained"
   tags_feed_link: "Feed"
   tags_globally_exclude: "Globally Exclude"

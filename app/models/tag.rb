@@ -215,6 +215,7 @@ class Tag < ActiveRecord::Base
       "comments_count"   => "comments_count",
       "positive_count"   => "positive_count",
       "negative_count"   => "negative_count",
+      "last_classified"  => "last_classified_at",
       "last_trained"     => "last_trained",
       "classifier_count" => "(feed_items_count - positive_count - negative_count)"
     }
