@@ -66,7 +66,6 @@ en:
   fifth_slider_marker: "Very Strongly Positive"
 
   # app/helpers/feed_items_helper.rb
-  automatic_label: "Automatic"
   start_classifier_button: "Auto-tag"
   stop_classifier_button: "Stop"
   classifier_progress: "Classify changed tags"
@@ -321,19 +320,18 @@ en:
   taggings_destroy_message: "You have removed the last example of tag {{tag}}, do you want to remove it from your tags page?"
   
   # app/views/tags/_header_controls.html.erb
-  tags_header_name: "Name"
-  tags_header_last_classified: "Last Classified"
-  tags_header_last_trained: "Last Trained"
-  tags_header_comments: "Comments"
-  tags_header_positive: "Positive"
-  tags_header_negative: "Negative"
-  tags_header_automatic: "Automatic"
-  tags_header_state: "State"
+  tags_name: "Name"
+  tags_state: "State"
+  tags_comments: "Comments"  
+  tags_positive: "Positive"
+  tags_negative: "Negative"
+  tags_automatic: "Automatic"
+  tags_last_classified: "Last Classified"
+  tags_last_trained: "Last Trained"
+
   tags_header_search_placeholder: "Search Tags..."
 
   # app/views/tags/_public_tag.html.erb
-  tags_last_classified: "Last Classified"
-  tags_last_trained: "Last Trained"
   tags_feed_link: "Feed"
   tags_globally_exclude: "Globally Exclude"
   tags_subscribe: "Subscribe"
@@ -344,9 +342,6 @@ en:
   add_a_comment: "Add a comment"
 
   # app/views/tags/_summary.html.erb
-  positive: "Positive"
-  negative: "Negative"
-  comments: "Comments"  
 
   # app/views/tags/_subscribed_tag.html.erb
   tags_public: "Public"
