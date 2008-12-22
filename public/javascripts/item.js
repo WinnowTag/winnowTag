@@ -297,7 +297,7 @@ var Item = Class.create({
         // Add/Update the filter for this tag
         if(!$('tag_filters').down("#" + data.id)) {
           $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name);
-          itembrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
+          itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
           itemBrowser.styleFilters();
         } else {
           $$(".filter_list ." + data.id).each(function(element) {
