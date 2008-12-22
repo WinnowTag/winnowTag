@@ -77,20 +77,6 @@ class Feed < ActiveRecord::Base
     feed
   end
 
-  # def self.find_or_create_from_atom_entry(entry)
-  #   # TODO: localization
-  #   raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
-  #   id = parse_id_uri(entry)
-  #   
-  #   unless feed = Feed.find_by_id(id)
-  #     feed = Feed.new
-  #     feed.id = id
-  #   end
-  #   
-  #   feed.update_from_atom(entry)    
-  #   feed
-  # end
-  
   def update_from_atom(entry)
     if self.uri != entry.id
       # TODO: localization
