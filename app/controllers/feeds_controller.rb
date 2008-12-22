@@ -28,7 +28,7 @@ class FeedsController < ApplicationController
   def create   
     @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
     if @feed.errors.empty?
-      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil      
+      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id)
       @collection_job = @feed.collect(:created_by => current_user.login, 
                                       :callback_url => collection_job_results_url(current_user))
       
@@ -87,7 +87,7 @@ class FeedsController < ApplicationController
   def subscribe
     if feed = Feed.find_by_id(params[:id])
       if params[:subscribe] =~ /true/i
-        current_user.feed_subscriptions.create(:feed_id => feed.id) rescue nil
+        current_user.feed_subscriptions.create!(:feed_id => feed.id)
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
@@ -110,6 +110,6 @@ private
       flash[:error] = "Winnow generated feeds cannot be added to Winnow."
       render :action => 'new'
     end
-  rescue
+  rescue URI::Error
   end
 end
