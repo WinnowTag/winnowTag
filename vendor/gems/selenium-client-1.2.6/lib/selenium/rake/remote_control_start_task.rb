@@ -2,6 +2,8 @@ module Selenium
   module Rake
   
     class RemoteControlStartTask
+      CONFIG = YAML.load_file(File.join("config", "selenium.yml")).symbolize_keys
+      
       attr_accessor :port, :timeout_in_seconds, :background, 
                     :wait_until_up_and_running, :additional_args
       attr_reader :jar_file
@@ -29,6 +31,7 @@ module Selenium
           remote_control = Selenium::RemoteControl::RemoteControl.new("0.0.0.0", @port, @timeout_in_seconds)
           remote_control.jar_file = @jar_file
           remote_control.additional_args = @additional_args
+          remote_control.display = CONFIG[:display]
           remote_control.start :background => @background
           if @background && @wait_until_up_and_running
             puts "Waiting for Remote Control to be up and running..."
