@@ -32,10 +32,6 @@ describe FeedsController do
     before(:each) do
       login_as(1)
       mock_user_for_controller
-      @feed = mock_model(Feed)
-      Feed.stub!(:find_by_id).and_return(@feed)
-      @feeds = mock('feeds')
-      Feed.stub!(:search).and_return(@feeds)
     end
   
     it "should re-render form on resource error" do
@@ -112,33 +108,21 @@ describe FeedsController do
     end 
   
     it "should create a feed subscription for the subscribe action" do
-      subscriptions = mock('subscriptions')
-      subscriptions.should_receive(:create).with(:feed_id => @feed.id)
-      @user.should_receive(:feed_subscriptions).and_return(subscriptions)
-    
-      post :subscribe, :id => @feed.id, :subscribe => 'true'
-    end
-  
-    it "should ignore duplicate subscription errors if the user attempts to add a feed more than once" do
-      @user.stub!(:messages).and_return(stub("messages", :create! => mock_model(Message)))
-
-      feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
-      feed.errors.should_receive(:empty?).and_return(true)
-      feed.should_receive(:collect)
-      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
-    
-      FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id).and_raise(ActiveRecord::StatementInvalid)
-    
-      post 'create', :feed => {:url => 'http://example.com'}
-      response.should redirect_to(feeds_path)
+      @feed = Feed.create! :uri => "some uri"
+      
+      lambda {
+        post :subscribe, :id => @feed.id, :subscribe => 'true'
+      }.should change(FeedSubscription, :count).by(1)
     end
   
     it "should ignore double subscriptions" do
-      subscriptions = mock('subscriptions')
-      subscriptions.should_receive(:create).with(:feed_id => @feed.id).and_raise(ActiveRecord::StatementInvalid)
-      @user.should_receive(:feed_subscriptions).and_return(subscriptions)
-    
+      @feed = Feed.create! :uri => "some uri"
+
       post :subscribe, :id => @feed.id, :subscribe => 'true'
+
+      lambda {
+        post :subscribe, :id => @feed.id, :subscribe => 'true'
+      }.should change(FeedSubscription, :count).by(0)
     end
   
     describe "create" do
