@@ -3,4 +3,3 @@ test_host: test.winnow.local
 # display: ":0"
 
 # start builder on boot
-# cc needs my ssh passphrase
