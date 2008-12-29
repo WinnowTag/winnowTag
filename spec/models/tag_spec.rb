@@ -282,7 +282,7 @@ describe 'to_atom', :shared => true do
     lambda { Atom::Feed.load_feed(@atom.to_xml) }.should_not raise_error
   end
   
-  it "should contain the full content for each item" do
+  xit "should contain the full content for each item" do
     @atom.entries.each do |e|
       e.content.to_s.size.should > 0
     end
