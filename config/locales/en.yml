@@ -239,6 +239,7 @@ en:
   email: "Email"
   status: "Status"
   invites_search_placeholder: "Search Invites..."
+  create_invite: "Create Invite"
   
   # app/views/invites/_invite.html.erb
   activate: "Activate"
@@ -260,9 +261,6 @@ en:
   # app/views/invites/edit.html.erb
   invites_edit_invite: "Edit Invite"
   
-  # app/views/invites/new.html.erb
-  invites_create_invite: "Create Invite"
-
   # app/views/layouts/_navbar.html.erb
   about: "About"
   profile: "Profile"
