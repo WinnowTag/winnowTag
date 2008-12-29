@@ -11,13 +11,14 @@ class TCPSocket
           socket = TCPSocket.new(options[:host], options[:port])
           return
         rescue Errno::ECONNREFUSED
-          puts ".\n"
+          print "."
           sleep 2
         end
       end
     end
   ensure
     socket.close unless socket.nil?
+    puts
   end
   
 end

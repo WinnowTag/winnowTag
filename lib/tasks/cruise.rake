@@ -43,5 +43,6 @@ task :cruise_with_selenium do
   Rake::Task['selenium'].invoke
   Rake::Task['selenium:rc:stop'].invoke
 
-  Rake::Task['rcov_for_cc'].invoke
+  # TODO: This needs to span specs, features, and selenium
+  # Rake::Task['rcov_for_cc'].invoke
 end
