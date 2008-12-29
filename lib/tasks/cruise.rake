@@ -39,10 +39,9 @@ task :cruise_with_selenium do
   Rake::Task['spec:models'].invoke
   Rake::Task['spec:views'].invoke
   Rake::Task['features'].invoke
-
-  Rake::Task['rcov_for_cc'].invoke
-
   # Rake::Task['selenium:rc:start'].invoke
   # Rake::Task['selenium'].invoke
   # Rake::Task['selenium:rc:stop'].invoke
+
+  Rake::Task['rcov_for_cc'].invoke
 end

@@ -12,7 +12,8 @@ ActionController::Base.param_parsers[Mime::Type.lookup("application/atom+xml")] 
   rescue ArgumentError
     begin
       { :atom => Atom::Feed.load_feed(body) }
-    rescue Atom::ParseError => ape
+    # on the ci server, an ArgumentError is thrown here
+    rescue ArgumentError, Atom::ParseError => ape
       { :atom_error => ape }
     end
   rescue Atom::ParseError => ape
