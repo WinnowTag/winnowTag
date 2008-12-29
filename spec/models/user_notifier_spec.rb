@@ -18,7 +18,7 @@ describe UserNotifier do
     end
 
     it "is described as a password reminder" do
-      @email.subject.should =~ /Password Reminder/
+      @email.subject.should == "[WINNOW] Password Reminder"
     end
     
     it "contains the login url in the email body" do
@@ -37,7 +37,7 @@ describe UserNotifier do
     end
 
     it "is described as a invite request" do
-      @email.subject.should =~ /Invite Requested/
+      @email.subject.should == "[WINNOW] Invite Requested"
     end
   end
   
@@ -53,7 +53,7 @@ describe UserNotifier do
     end
 
     it "is described as a invite accepted" do
-      @email.subject.should =~ /Invitation Accepted/
+      @email.subject.should == "[WINNOW] Invitation Accepted"
     end
     
     it "contains the signup url in the email body" do
