@@ -33,11 +33,11 @@ task :cruise_with_selenium do
   Rake::Task['db:migrate'].invoke
   system "touch tmp/restart.txt"
   Rake::Task['spec:code'].invoke
-  # Rake::Task['spec:controllers'].invoke
-  # Rake::Task['spec:helpers'].invoke
-  # Rake::Task['spec:models'].invoke
-  # Rake::Task['spec:views'].invoke
-  # Rake::Task['features'].invoke
+  Rake::Task['spec:controllers'].invoke
+  Rake::Task['spec:helpers'].invoke
+  Rake::Task['spec:models'].invoke
+  Rake::Task['spec:views'].invoke
+  Rake::Task['features'].invoke
   # Rake::Task['rcov_for_cc'].invoke
   # Rake::Task['selenium:rc:start'].invoke
   # Rake::Task['selenium'].invoke
