@@ -5,6 +5,10 @@
 # Please visit http://www.peerworks.org/contact for further information.
 module ItemCache
   class FeedItemsController < ItemCacheController
+    skip_before_filter :login_required
+    with_auth_hmac HMAC_CREDENTIALS['collector']
+    before_filter :check_atom
+    
     def create
       respond_to do |wants|
         wants.atom do
