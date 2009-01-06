@@ -68,9 +68,11 @@ vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_scan.bundle
 vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_scan.o
 vendor/gems/RedCloth-4.1.1/lib/redcloth_scan.bundle
 
-vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_scan.so
-vendor/gems/RedCloth-4.1.1/lib/redcloth_scan.so
 vendor/gems/bcrypt-ruby-2.0.3/ext/bcrypt_ext.so
 vendor/gems/bcrypt-ruby-2.0.3/lib/bcrypt_ext.so
 vendor/gems/hpricot-0.6.161/ext/fast_xs/fast_xs.so
 vendor/gems/hpricot-0.6.161/ext/hpricot_scan/hpricot_scan.so
+vendor/gems/nokogiri-1.1.0/ext/nokogiri/native.so
+vendor/gems/nokogiri-1.1.0/lib/nokogiri/native.so
+vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_scan.so
+vendor/gems/RedCloth-4.1.1/lib/redcloth_scan.so
