@@ -22,6 +22,4 @@ config.action_controller.allow_forgery_protection    = false
 config.action_mailer.delivery_method = :test
 
 config.gem :nokogiri
-
-# Must be compiled/installed on the target system
-config.gem :treetop
+config.gem :treetop, :lib => "treetop/runtime"
