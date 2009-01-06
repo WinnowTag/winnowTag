@@ -1,4 +1,8 @@
-* Close popup window
+* Close popup window in selenium specs
+* dns for ci.winnow.mutuallyhuman.com and for winnow.mutuallyhuman.com
+* selenium failures should show up as ci assets
+* add the collector to CI
+* new slice or upgrade slice for CI?
 
 Models
  - FeedItem
