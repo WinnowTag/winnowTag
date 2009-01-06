@@ -111,6 +111,8 @@ rdoc_options:
 - --main
 - README
 require_paths: 
+- bin
+- bin
 - lib
 - ext
 - lib/case_sensitive_require

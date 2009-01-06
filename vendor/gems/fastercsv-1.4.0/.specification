@@ -84,7 +84,7 @@ required_rubygems_version: !ruby/object:Gem::Requirement
 requirements: []
 
 rubyforge_project: fastercsv
-rubygems_version: 1.3.0
+rubygems_version: 1.3.1
 signing_key: 
 specification_version: 2
 summary: FasterCSV is CSV, but faster, smaller, and cleaner.

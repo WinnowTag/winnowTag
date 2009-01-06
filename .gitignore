@@ -24,6 +24,7 @@ public/images/tuneup
 public/javascripts/tuneup
 public/stylesheets/tuneup
 
+vendor/gems/bcrypt-ruby-2.0.3/bin/
 vendor/gems/bcrypt-ruby-2.0.3/ext/Makefile
 vendor/gems/bcrypt-ruby-2.0.3/ext/bcrypt.o
 vendor/gems/bcrypt-ruby-2.0.3/ext/bcrypt_ext.bundle
@@ -61,6 +62,7 @@ vendor/gems/nokogiri-1.1.0/ext/nokogiri/xml_xpath.o
 vendor/gems/nokogiri-1.1.0/ext/nokogiri/xml_xpath_context.o
 vendor/gems/nokogiri-1.1.0/ext/nokogiri/xslt_stylesheet.o
 vendor/gems/nokogiri-1.1.0/lib/nokogiri/native.bundle
+vendor/gems/RedCloth-4.1.1/bin/redcloth_scan.bundle
 vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/Makefile
 vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_attributes.o
 vendor/gems/RedCloth-4.1.1/ext/redcloth_scan/redcloth_inline.o

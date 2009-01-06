@@ -11,7 +11,7 @@ describe "headers" do
       lib/authenticated_system.rb lib/authenticated_test_helper.rb
       lib/mongrel_health_check_handler.rb 
       lib/tasks/cucumber.rake lib/tasks/rspec.rake
-      features/steps/env.rb features/steps/common_webrat.rb
+      features/support/env.rb features/step_definitions/webrat_steps.rb
       db/schema.rb
     ]
     

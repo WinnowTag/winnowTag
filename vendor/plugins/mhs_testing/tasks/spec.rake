@@ -17,7 +17,7 @@ Selenium::Rake::RemoteControlStopTask.new do |rc|
 end
 
 # TODO: How can I get around this?
-require File.join(Rails.root, 'vendor/plugins/rspec/lib', 'spec/rake/spectask')
+require File.join(Rails.root, 'vendor/gems/rspec-1.1.11/lib', 'spec/rake/spectask')
 desc 'Run acceptance tests for web application'
 Spec::Rake::SpecTask.new('selenium') do |t|
   t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/selenium_spec.opts\""]
