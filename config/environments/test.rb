@@ -22,7 +22,7 @@ config.action_controller.allow_forgery_protection    = false
 config.action_mailer.delivery_method = :test
 
 config.gem "nokogiri"
+config.gem "webrat"
 config.gem "rspec", :lib => false
 config.gem "rspec-rails", :lib => false
-config.gem "webrat"
-config.gem "cucumber"
+config.gem "cucumber", :lib => false
