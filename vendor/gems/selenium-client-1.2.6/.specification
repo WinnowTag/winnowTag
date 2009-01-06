@@ -58,7 +58,6 @@ rdoc_options:
 - --line-numbers
 require_paths: 
 - bin
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 

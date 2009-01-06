@@ -108,7 +108,6 @@ rdoc_options:
 - README.txt
 require_paths: 
 - bin
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 
