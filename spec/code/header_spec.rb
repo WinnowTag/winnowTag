@@ -12,6 +12,7 @@ describe "headers" do
       lib/mongrel_health_check_handler.rb 
       lib/tasks/cucumber.rake lib/tasks/rspec.rake
       features/steps/env.rb features/steps/common_webrat.rb
+      db/schema.rb
     ]
     
     (Dir["{app,lib,db,profiling,spec,features}/**/*.{rb,rake}"] - vendor).each do |filename|
