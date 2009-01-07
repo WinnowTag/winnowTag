@@ -41,7 +41,7 @@ var AppleSearch = Class.create({
   },
   
   clear: function () {
-    this.text_input.value = "";
+    this.text_input.clear();
     this.updateClearButton();
     this.text_input.focus();
   },
@@ -55,7 +55,7 @@ var AppleSearch = Class.create({
 
   removePlaceholder: function() {
     if(this.text_input.value == this.text_input.getAttribute("placeholder")) {
-      this.text_input.value = "";
+      this.text_input.clear();
     }
     this.text_input.removeClassName("placeholder");
   }

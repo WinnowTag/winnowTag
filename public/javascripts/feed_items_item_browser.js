@@ -129,7 +129,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   updateFeedFilters: function(element, feed) {
-    element.value = "";
+    element.clear();
     if(feed.match("#add_new_feed")) {
       new Ajax.Request("/feeds", {parameters: 'feed[url]='+encodeURIComponent(feed.getAttribute("url")), method:'post'});
     } else {
@@ -141,7 +141,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   updateTagFilters: function(element, tag) {
-    element.value = "";
+    element.clear();
     if(tag.match("#add_new_tag")) {
       new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(tag.getAttribute("name")), method:'post'});
     } else {

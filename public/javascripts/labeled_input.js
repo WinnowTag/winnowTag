@@ -8,7 +8,7 @@ document.observe('dom:loaded', function() {
     var example_value = element.value;
     element.observe("focus", function() {
       if(element.value == example_value) {
-        element.value = "";
+        element.clear();
         element.removeClassName("example");
       }
     });

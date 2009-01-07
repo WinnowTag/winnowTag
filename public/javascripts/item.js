@@ -188,7 +188,7 @@ var Item = Class.create({
 
     this.add_tag_form.observe("submit", function() {
       this.addTagging(this.add_tag_selected || this.add_tag_field.value, "positive");
-      this.add_tag_field.value = "";
+      this.add_tag_field.clear();
       this.addTagFieldChanged(this.add_tag_field, "");
     }.bind(this));
     
