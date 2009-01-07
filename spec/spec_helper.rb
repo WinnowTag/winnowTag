@@ -14,76 +14,8 @@ require "selenium/rspec/spec_helper"
 
 require 'authenticated_test_helper'
 require 'active_resource/http_mock'
-require File.expand_path(File.join(File.dirname(__FILE__), "generate"))
 
-module CustomSeleniumHelpers
-  def login(login = "quentin", password = "test")
-    page.open login_path
-    page.type "css=#login_form input[name=login]", login
-    page.type "css=#login_form input[name=password]", password
-    page.click "commit", :wait_for => :page
-  end
-
-  def see_element(*args)
-    page.should be_element("css=#{args.join}")
-  end
-
-  def dont_see_element(*args)
-    page.should_not be_element("css=#{args.join}")
-  end
-
-  def assert_visible(locator)
-    page.is_visible(locator).should be_true
-  end
-  
-  def assert_not_visible(locator)
-    page.is_visible(locator).should be_false
-  end
-  
-  def hit_enter(locator)
-    page.key_down(locator, '\13')
-    page.key_press(locator, '\13')
-    page.key_up(locator, '\13')
-  end
-end
-
-module WinnowMatchers
-  class KaphanHeaderMatcher
-    def initialize(comment_line, comment_start = nil, comment_end = nil)
-      @header = <<-EOHEADER
-#{comment_start || comment_line} Copyright (c) 2008 The Kaphan Foundation
-#{comment_line}
-#{comment_line} Possession of a copy of this file grants no permission or license
-#{comment_line} to use, modify, or create derivate works.
-#{comment_line} Please visit http://www.peerworks.org/contact for further information.
-EOHEADER
-      @header << "#{comment_end}\n" if comment_end
-      @header_size = @header.split(/\n/).size
-    end
-
-    def matches?(filename)
-      @filename = filename
-      @match = File.read(filename).match(/(?:.*\n){#{@header_size}}/)
-      @match && @match[0] == @header
-    end
-
-    def failure_message
-      "expected #{@filename} to have the header:\n#{@header}\nbut had the header:\n#{@match}"
-    end
-  end
-  
-  def have_ruby_kaphan_header
-    KaphanHeaderMatcher.new("#")
-  end
-  
-  def have_javascript_kaphan_header
-    KaphanHeaderMatcher.new("//")
-  end
-  
-  def have_stylesheet_kaphan_header
-    KaphanHeaderMatcher.new(" *", "/*", " */")
-  end
-end
+Dir[File.expand_path(File.join(File.dirname(__FILE__), "support", "*.rb"))].each { |file| require file }
 
 Spec::Runner.configure do |config|
   # If you're not using ActiveRecord you should remove these
@@ -129,68 +61,19 @@ Spec::Runner.configure do |config|
   config.include ValidationMatchers, AssociationMatchers, :type => :model
   config.include CustomSeleniumHelpers, :type => :selenium
   config.include WinnowMatchers, :type => :code
+  config.include ValidAttributes
 
   # Stub out User.encrypt for faster testing
   config.before(:each, :type => [:controllers, :helpers, :models, :views]) do
     User.stub!(:encrypt).and_return('password')
   end
 
-  def valid_feed_item_attributes(attributes = {})
-    unique_id = rand(10000)
-    { :link => "http://#{unique_id}.example.com",
-      :uri => "uri:uuid:#{unique_id}"
-    }.merge(attributes)
-  end
-  
   def valid_feed_item!(attributes = {})
     attributes = valid_feed_item_attributes(attributes)
     fi = FeedItem.new(attributes)
     fi.id = attributes[:id]
     fi.save!
     fi
-  end
-  
-  def valid_feed_attributes(attributes = {})
-    unique_id = rand(100000)
-    { :via => "http://#{unique_id}.example.com/index.xml",
-      :alternate => "http://#{unique_id}.example.com",
-      :title => "#{unique_id} Example",
-      :feed_items_count => 0,
-      :updated_on => Time.now,
-      :duplicate_id => nil,
-      :uri => "uri:#{unique_id}"
-    }.merge(attributes)
-  end
-  
-  def valid_user_attributes(attributes = {})
-    unique_id = rand(100000)
-    { :login => "user_#{unique_id}",
-      :email => "user_#{unique_id}@example.com",
-      :password => "password",
-      :password_confirmation => "password",
-      :firstname => "John_#{unique_id}",
-      :lastname => "Doe_#{unique_id}",
-      :time_zone => "UTC"
-    }.merge(attributes)
-  end
-  
-  def valid_tag_attributes(attributes = {})
-    unique_id = rand(1000)
-    {
-      :name => "Tag #{unique_id}",
-      :user_id => unique_id
-    }.merge(attributes)
-  end
-  
-  def valid_invite_attributes(attributes = {})
-    unique_id = rand(1000)
-    { :email => "user_#{unique_id}@example.com"
-    }.merge(attributes)
-  end
-  
-  def valid_tag_usage_attributes(attributes = {})
-    { :tag_id => "1"
-    }.merge(attributes)
   end
   
   def login_as(user_id_or_fixture_name)

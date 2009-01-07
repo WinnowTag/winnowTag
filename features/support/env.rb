@@ -12,3 +12,9 @@ require 'spec/mocks'
 
 require 'net/http'
 require 'active_resource/http_mock'
+
+require Pathname.new(Rails.root).join(*%w[spec support valid_attributes])
+
+class Cucumber::Rails::World
+  include ValidAttributes
+end

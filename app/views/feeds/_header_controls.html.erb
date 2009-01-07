@@ -21,7 +21,7 @@
 <div id="add_feed" style="clear:both;<%= flash[:error] || params[:feed] ? '' : 'display:none' %>">
   <fieldset class="full">
     <legend><%= t(:feeds_add_import) %></legend>
-    <% form_for :feed, @feed, :url => feeds_path do |f| %>
+    <% form_for :feed, @remote_feed, :url => feeds_path do |f| %>
       <p><%= t(:feeds_new_description) %></p>
       <p>
         <%= f.text_field :url, :size => 70 %>

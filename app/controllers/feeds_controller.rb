@@ -26,24 +26,25 @@ class FeedsController < ApplicationController
   end
 
   def create   
-    @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
-    if @feed.errors.empty?
-      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id)
-      @collection_job = @feed.collect(:created_by => current_user.login, 
-                                      :callback_url => collection_job_results_url(current_user))
-      
-      flash[:notice] = if @feed.updated_on.nil?
-         t(:feed_added, :url => h(@feed.url))
+    @remote_feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
+    if @remote_feed.errors.empty?
+      @collection_job = @remote_feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
+
+      flash[:notice] = if @feed = Feed.find_by_uri(@remote_feed.uri)
+        t(:feed_existed, :url => h(@feed.via))
       else
-        t(:feed_existed, :url => h(@feed.url))
+        @feed = Feed.create!(:uri => @remote_feed.uri, :via => @remote_feed.url)
+        t(:feed_added, :url => h(@feed.via))
       end
+      
+      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id)
       
       respond_to do |format|
         format.html { redirect_to feeds_path }
         format.js
       end
     else
-      flash[:error] = @feed.errors.on(:url)
+      flash[:error] = @remote_feed.errors.on(:url)
       render :action => 'index'
     end
   end
