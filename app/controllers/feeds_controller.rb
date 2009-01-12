@@ -23,22 +23,22 @@ class FeedsController < ApplicationController
   end
 
   def create
-    FeedManager.create(current_user, params[:feed][:url], collection_job_results_url(current_user), request.host) do |creation|
-      creation.success do |feed, message|
-        respond_to do |format|
-          format.html do
-            flash[:notice] = message
-            redirect_to feeds_path
-          end
-          format.js { @feed = feed }
+    creation = FeedManager.create(current_user, params[:feed][:url], collection_job_results_url(current_user))
+
+    creation.success do |feed, notice|
+      respond_to do |format|
+        format.html do
+          flash[:notice] = notice
+          redirect_to feeds_path
         end
+        format.js { @feed = feed }
       end
-      
-      creation.failed do |feed, message|
-        @feed = feed
-        flash.now[:error] = message
-        render :action => 'index'
-      end
+    end
+    
+    creation.failed do |feed, error|
+      @feed = feed
+      flash.now[:error] = error
+      render :action => 'index'
     end
   end
 
