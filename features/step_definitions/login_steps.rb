@@ -3,6 +3,11 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+Given(/^I am logged in$/) do
+  user = Generate.user! :login => "quentin"
+  post login_path, :login => "quentin", :password => "password"
+end
+
 When "I visit $path" do |path|
   get path
 end
@@ -10,6 +15,7 @@ end
 Then "I am redirected via rjs to $path" do |path|
   response.body.should =~ /window\.location\.href = "#{Regexp.escape(path)}";/
 end
-Then "I am redirected to $path" do |path|
+
+Then /^I am redirected to \/([\/a-zA-Z0-9]+)$/ do |path|
   response.should redirect_to(path)
 end

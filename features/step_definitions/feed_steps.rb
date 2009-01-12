@@ -3,34 +3,124 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-
-Given("I am logged in") do
-  User.delete_all
-  User.create!(valid_user_attributes(:login => 'quentin')).should_not be_nil
-  post '/account/login', :login => 'quentin', :password => 'password'
-  response.code.should == "302"
+Given(/^there is not a feed for "(.*)"$/) do |feed_url|
+  feed = Feed.find_by_via(feed_url)
+  feed.destroy if feed
 end
 
-Given('no feeds in the system') do
-  Feed.delete_all 
+Given /^there is a feed for "(.*)"$/ do |feed_url|
+  Generate.feed! :via =>  feed_url
 end
 
-Given('a running collector') do
-  now = Time.parse("Thu, 10 Jul 2008 03:29:56 GMT")
-  Time.stub!(:now).and_return(now)
-  ActiveResource::HttpMock.respond_to do |http|
-    http.post  "/feeds.xml", {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"},
-      {:url => 'http://example.org/feed', :created_by => 'quentin', :uri => "uri1"}.to_xml(:root => 'feed'), 201, 'Location' => '/feeds/23'
-    http.post  "/feeds/23/collection_jobs.xml", {"Authorization" => "AuthHMAC winnow_id:rs5dU0B3apzzOe4HnUf7L82wcsA=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
-               {:callback_url => 'http://www.example.com/users/quentin/collection_job_results', :created_by => 'quentin'}.to_xml(:root => 'collection_job'), 201, 'Location' => '/feeds/23'
+When(/^I create a feed for "(.*)"$/) do |feed_url|
+  invalid_url = lambda do |url| 
+    begin
+      URI.parse(url)
+      false
+    rescue URI::InvalidURIError
+      true
+    end
   end
+  
+  non_http_url = lambda do |url|
+    URI.parse(url).scheme != "http"
+  end
+  
+  winnow_url = lambda do |url|
+    URI.parse(url).host =~ /(winnow|trunk).mindloom.org/
+  end
+  
+  ActiveResource::BetterHttpMock.define("creation") do |request, response|
+    request.method  :post
+    request.path    "/feeds.xml"
+    request.headers "Authorization" => /^AuthHMAC winnow_id:.*/, 'Date' => /.*/, 'Content-Type' => "application/xml"
+    request.body    Remote::Feed.new(:url => feed_url, :created_by => 'quentin').to_xml
+
+    if invalid_url.call(feed_url)
+      response.code    422
+      response.body    %Q|
+        <?xml version="1.0" encoding="UTF-8"?>
+        <errors>
+          <error>Url is invalid</error>
+        </errors>
+      |
+    elsif non_http_url.call(feed_url)
+      response.code    422
+      response.body    %Q|
+        <?xml version="1.0" encoding="UTF-8"?>
+        <errors>
+          <error>Url is not http</error>
+        </errors>
+      |
+    elsif winnow_url.call(feed_url)
+      response.code    422
+      response.body    %Q|
+        <?xml version="1.0" encoding="UTF-8"?>
+        <errors>
+          <error>Winnow generated feeds cannot be added to Winnow</error>
+        </errors>
+      |
+    else
+      feed = Feed.find_by_via(feed_url)
+      response.code    201
+      response.headers 'Location' => '/feeds/23'
+      response.body    Remote::Feed.new(:url => feed_url, :created_by => 'quentin', :uri => feed ? feed.uri : "NewFeed").to_xml
+    end
+  end                
+                     
+  ActiveResource::BetterHttpMock.define("collection") do |request, response|
+    request.method  :post
+    request.path    "/feeds/23/collection_jobs.xml"
+    request.headers "Authorization" => /^AuthHMAC winnow_id:.*/, 'Date' => /.*/, 'Content-Type' => "application/xml"
+    request.body    Remote::CollectionJob.new(:callback_url => 'http://www.example.com/users/quentin/collection_job_results', :created_by => 'quentin').to_xml
+
+    # TODO: Is this response right?
+    response.code    201
+    response.headers 'Location' => '/collection_jobs/23'
+    response.body    Remote::CollectionJob.new(:callback_url => 'http://www.example.com/users/quentin/collection_job_results', :created_by => 'quentin').to_xml
+  end
+
+  visit feeds_path
+  fill_in "feed_url", :with => feed_url
+  click_button "Add Feed"
 end
 
-When("I create a new feed from $url") do |url|
-  post '/feeds', :feed => { :url => url }
+Then(/^I am redirected to the feeds page$/) do
+  current_url.should == feeds_path
 end
 
-Then("I am redirected") do
-  response.code.should == "302"
-  Time.rspec_reset
+# TODO: Make these smarter
+Then(/^I see the message "(.*)"$/) do |message|
+  response.body.should include_text(message)
+end
+
+Then /^I see the error "(.*)"$/ do |message|
+  response.body.should include_text(message)
+end
+
+Then(/^I see the feed for "(.*)"$/) do |feed_url|
+  visit feeds_path(:format => "json")
+  response.body.should include_text(feed_url)
+end
+
+Then(/^I am subscribed to "(.*)"$/) do |feed_url|
+  feed = Feed.find_by_via!(feed_url)
+  visit sidebar_feed_items_path
+  response.body.should include_text("feed_#{feed.id}")
+end
+
+Then(/^"(.*)" is created on the collector$/) do |feed_url|
+  ActiveResource::BetterHttpMock.should have_executed("creation")
+end
+
+Then(/^"(.*)" is scheduled for collection$/) do |feed_url|
+  ActiveResource::BetterHttpMock.should have_executed("collection")
+end
+
+Then /^I see the add feeds form$/ do
+  response.body.should have_tag("form[action=?][method=post]", feeds_path)
+end
+
+Then /^I see the url is set to "(.*)"$/ do |feed_url|
+  response.body.should have_tag("input#feed_url[value=?]", feed_url)
 end

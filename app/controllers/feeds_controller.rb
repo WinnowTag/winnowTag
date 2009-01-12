@@ -7,9 +7,6 @@
 # This controller doesn't create feeds directly. Instead it forwards
 # feed creation requests on to the collector using Remote::Feed.
 class FeedsController < ApplicationController
-  include ActionView::Helpers::TextHelper
-  before_filter :reject_winnow_feeds, :only => :create
-  
   def index
     respond_to do |format|
       format.html do
@@ -25,30 +22,26 @@ class FeedsController < ApplicationController
     end
   end
 
-  def create   
-    @remote_feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
-    if @remote_feed.errors.empty?
-      @collection_job = @remote_feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
-
-      flash[:notice] = if @feed = Feed.find_by_uri(@remote_feed.uri)
-        t(:feed_existed, :url => h(@feed.via))
-      else
-        @feed = Feed.create!(:uri => @remote_feed.uri, :via => @remote_feed.url)
-        t(:feed_added, :url => h(@feed.via))
+  def create
+    FeedManager.create(current_user, params[:feed][:url], collection_job_results_url(current_user), request.host) do |creation|
+      creation.success do |feed, message|
+        respond_to do |format|
+          format.html do
+            flash[:notice] = message
+            redirect_to feeds_path
+          end
+          format.js { @feed = feed }
+        end
       end
       
-      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id)
-      
-      respond_to do |format|
-        format.html { redirect_to feeds_path }
-        format.js
+      creation.failed do |feed, message|
+        @feed = feed
+        flash.now[:error] = message
+        render :action => 'index'
       end
-    else
-      flash[:error] = @remote_feed.errors.on(:url)
-      render :action => 'index'
     end
   end
-  
+
   def import
     @feeds = Remote::Feed.import_opml(params[:opml].read)
     @feeds.each do |feed|
@@ -103,14 +96,5 @@ class FeedsController < ApplicationController
     else
       render :nothing => true
     end
-  end
-  
-private
-  def reject_winnow_feeds
-    if URI.parse(params[:feed][:url]).host == request.host
-      flash[:error] = "Winnow generated feeds cannot be added to Winnow."
-      render :action => 'new'
-    end
-  rescue URI::Error
   end
 end
