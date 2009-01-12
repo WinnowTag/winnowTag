@@ -20,7 +20,7 @@ class FeedManager < Manager
       
       Multiblock[:success, feed, message]
     else
-      Multiblock[:failed, remote_feed, remote_feed.errors.full_messages.join(". ") << "."]
+      Multiblock[:failed, remote_feed, remote_feed.errors.full_messages.to_sentence]
     end
   end
 end
