@@ -60,34 +60,34 @@ Feature: Feed Creation
     When I create a feed for ""
     Then I see the add feeds form
       And I see the url is set to ""
-      And I see the error "Url is not http."
+      And I see the error "Url is not http"
 
   Scenario: Creating a new feed from a non-http url
     Given I am logged in
     When I create a feed for "ftp://www.example.com/feed.atom"
     Then I see the add feeds form
       And I see the url is set to "ftp://www.example.com/feed.atom"
-      And I see the error "Url is not http."
+      And I see the error "Url is not http"
 
   Scenario: Creating a new feed with an invalid url
     Given I am logged in
     When I create a feed for "http://invalid_subdomain.example.com/feed.atom"
     Then I see the add feeds form
       And I see the url is set to "http://invalid_subdomain.example.com/feed.atom"
-      And I see the error "Url is invalid."
+      And I see the error "Url is invalid"
 
   Scenario: Creating a new feed with a winnow url
     Given I am logged in
     When I create a feed for "http://winnow.mindloom.org/feed.atom"
     Then I see the add feeds form
-      And I see the error "Winnow generated feeds cannot be added to Winnow."
+      And I see the error "Winnow generated feeds cannot be added to Winnow"
       And I see the url is set to "http://winnow.mindloom.org/feed.atom"
 
   Scenario: Creating a new feed with a winnow dev url
     Given I am logged in
     When I create a feed for "http://trunk.mindloom.org/feed.atom"
     Then I see the add feeds form
-      And I see the error "Winnow generated feeds cannot be added to Winnow."
+      And I see the error "Winnow generated feeds cannot be added to Winnow"
       And I see the url is set to "http://trunk.mindloom.org/feed.atom"
   
   # Scenario: Creating a new feed from the feed items page

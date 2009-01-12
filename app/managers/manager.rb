@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class Manager
+  include ActionController::Translation
+
   def self.method_missing(method, *args)
     return super unless self.instance_methods.include?(method.to_s)
 

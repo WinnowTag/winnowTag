@@ -11,9 +11,9 @@ class FeedManager < Manager
       remote_feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url)
     
       message = if feed = Feed.find_by_uri(remote_feed.uri)
-        I18n.t(:feed_existed, :url => h(feed.via))
+        t(:feed_existed, :url => h(feed.via))
       else feed = Feed.create!(:uri => remote_feed.uri, :via => remote_feed.url)
-        I18n.t(:feed_added, :url => h(feed.via))
+        t(:feed_added, :url => h(feed.via))
       end
       
       FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
