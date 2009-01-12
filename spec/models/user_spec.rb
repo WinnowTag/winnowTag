@@ -340,32 +340,6 @@ describe User do
       assert_nil users(:quentin).remember_token
     end
    
-    it "tagging_statistics" do
-      u = users(:quentin)
-      pw = Tag(u, 'peerworks')
-      tag = Tag(u, 'tag')
-
-      assert_equal 0, u.average_taggings_per_item
-
-      assert Tagging.create(:user => u, :feed_item => FeedItem.find(1), :tag => pw)
-      assert last = Tagging.create(:user => u, :feed_item => FeedItem.find(2), :tag => pw)
-
-      assert_equal 1, u.average_taggings_per_item
-
-      Tagging.create(:user => u, :feed_item => FeedItem.find(1), :tag => tag)
-      last = Tagging.create(:user => u, :feed_item => FeedItem.find(2), :tag => tag)
-
-      assert_equal 2, u.average_taggings_per_item
-
-      Tagging.create(:user => u, :feed_item => FeedItem.find(3), :tag => pw)
-      last = Tagging.create(:user => u, :feed_item => FeedItem.find(4), :tag => pw)
-
-      assert_equal 1.5, u.average_taggings_per_item
-
-      User.find_by_login('quentin').taggings.clear
-      assert_equal 0, u.average_taggings_per_item
-    end
-  
     it "knows_that_given_user_is_not_subscribed_to_a_tag" do
       current_user = users(:quentin)
       tag = Tag(current_user, 'hockey')

@@ -101,8 +101,7 @@ class User < ActiveRecord::Base
     select = [
       "users.*",
       "(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.user_id = users.id AND taggings.classifier_tagging = false) AS last_tagging_on",
-      "(SELECT COUNT(*) FROM tags WHERE tags.user_id = users.id) AS tag_count",
-      "(100 * (SELECT COUNT(DISTINCT feed_item_id) FROM taggings WHERE taggings.user_id = users.id) / (SELECT COUNT(*) FROM feed_items)) AS tagging_percentage"
+      "(SELECT COUNT(*) FROM tags WHERE tags.user_id = users.id) AS tag_count"
     ]
     
     scope = by(options[:order], options[:direction])
@@ -115,12 +114,6 @@ class User < ActiveRecord::Base
 
   def last_tagging_on
     Time.parse(read_attribute(:last_tagging_on).to_s)
-  end
-  
-  def average_taggings_per_item
-    Tagging.find_by_sql(
-      "SELECT AVG(count) AS average FROM (SELECT COUNT(taggings.id) AS count FROM taggings WHERE taggings.user_id = #{self.id} GROUP BY taggings.feed_item_id) AS counts"
-    ).first.average.to_f
   end
   
   # Updates any feed state between this feed and the user.
