@@ -4,7 +4,7 @@ module Spec
   module Rails
     module Example
       class SeleniumExampleGroup < RailsExampleGroup
-        config_file = File.join(Rails.root, "config", "selenium.yml")
+        config_file = File.join(::Rails.root, "config", "selenium.yml")
         CONFIG = if File.exist?(config_file)
           YAML.load_file(config_file).symbolize_keys
         else
