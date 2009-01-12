@@ -2,7 +2,12 @@ module Selenium
   module Rake
   
     class RemoteControlStartTask
-      CONFIG = YAML.load_file(File.join("config", "selenium.yml")).symbolize_keys
+      config_file = File.join("config", "selenium.yml")
+      CONFIG = if File.exist?(config_file)
+        YAML.load_file(config_file).symbolize_keys
+      else
+        {}
+      end
       
       attr_accessor :port, :timeout_in_seconds, :background, 
                     :wait_until_up_and_running, :additional_args

@@ -4,7 +4,12 @@ module Spec
   module Rails
     module Example
       class SeleniumExampleGroup < RailsExampleGroup
-        CONFIG = YAML.load_file(File.join(RAILS_ROOT, "config", "selenium.yml")).symbolize_keys
+        config_file = File.join(Rails.root, "config", "selenium.yml")
+        CONFIG = if File.exist?(config_file)
+          YAML.load_file(config_file).symbolize_keys
+        else
+          {}
+        end
 
         include ActionController::UrlWriter
 
