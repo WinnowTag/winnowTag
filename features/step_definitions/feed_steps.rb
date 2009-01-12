@@ -90,12 +90,12 @@ Then(/^I am redirected to the feeds page$/) do
 end
 
 # TODO: Make these smarter
-Then(/^I see the message "(.*)"$/) do |message|
-  response.body.should include_text(message)
+Then(/^I see the notice "(.*)"$/) do |notice|
+  response.body.should include_text(notice)
 end
 
-Then /^I see the error "(.*)"$/ do |message|
-  response.body.should include_text(message)
+Then /^I see the error "(.*)"$/ do |error|
+  response.body.should include_text(error)
 end
 
 Then(/^I see the feed for "(.*)"$/) do |feed_url|
