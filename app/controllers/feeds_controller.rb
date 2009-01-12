@@ -34,7 +34,7 @@ class FeedsController < ApplicationController
         format.js { @feed = feed }
       end
     end
-    
+
     creation.failed do |feed, error|
       @feed = feed
       flash.now[:error] = error
