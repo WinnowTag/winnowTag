@@ -92,7 +92,7 @@ describe "FeedItemsTest" do
     feed1 = feed_item_1.feed
     page.click "css=#feed_item_#{feed_item_1.id} .feed_title", :wait_for => :ajax
     page.click "css=#feed_item_#{feed_item_1.id} #feed_#{feed1.id} a[href=/feed_items#feed_ids=#{feed1.id}]"
-    page.get_all_window_ids.should have(windows.size + 1).windows
+    page.get_all_window_names.should have(windows.size + 1).windows
   end
   
   it "displays an empty message when there are no feed items" do

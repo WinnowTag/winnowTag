@@ -24,12 +24,19 @@ module Spec
         end
 
         # before(:each) do
-        #   selenium_driver.start_new_browser_session
+        #   page.start_new_browser_session
         # end
 
         append_after(:each) do
-          selenium_driver.delete_all_visible_cookies
-          # selenium_driver.close_current_browser_session
+          page.delete_all_visible_cookies
+          # page.close_current_browser_session
+          
+          page.get_all_window_names[1..-1].each do |window|
+            page.select_window window
+            page.close
+          end
+          
+          page.select_window nil
         end
 
         Spec::Example::ExampleGroupFactory.register(:selenium, self)
