@@ -100,7 +100,7 @@ class User < ActiveRecord::Base
   def self.search(options = {})
     select = [
       "users.*",
-      "(SELECT MAX(taggings.created_on) FROM taggings WHERE taggings.user_id = users.id AND taggings.classifier_tagging = false) AS last_tagging_on",
+      "(SELECT MAX(taggings.created_on) FROM taggings USE INDEX (index_taggings_on_user_id_and_classifier_tagging) WHERE taggings.user_id = users.id AND taggings.classifier_tagging = false) AS last_tagging_on",
       "(SELECT COUNT(*) FROM tags WHERE tags.user_id = users.id) AS tag_count"
     ]
     

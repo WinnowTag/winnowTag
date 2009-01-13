@@ -1,3 +1,7 @@
+* xslt on trunk so gems:build works
+* quentin login taken when running specs+features at the same time
+* cleanup tagging indexes
+
 * Close popup window in selenium specs
 * dns for ci.winnow.mutuallyhuman.com and for winnow.mutuallyhuman.com
 * selenium failures should show up as ci assets
