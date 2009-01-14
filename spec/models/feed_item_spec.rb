@@ -34,80 +34,66 @@ shared_examples_for "FeedItem update attributes from atom" do
 end
 
 describe FeedItem do
-  fixtures :users, :tags
-
-  before(:all) do
-    Tagging.delete_all
-  end
-  
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
-      user_1 = User.create! valid_user_attributes
-        
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
       
-      FeedItem.delete_all
-      feed_item_1 = valid_feed_item!(:updated => Date.today)
-      feed_item_2 = valid_feed_item!(:updated => Date.today - 1)
+      feed_item1 = Generate.feed_item!(:updated => Date.today)
+      feed_item2 = Generate.feed_item!(:updated => Date.today - 1)
         
-      FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc").should == [feed_item_1, feed_item_2]
+      FeedItem.find_with_filters(:user => user, :order => 'date', :direction => "desc").should == [feed_item1, feed_item2]
     end
     
     it "properly sorts the feed items by oldest first" do
-      user_1 = User.create! valid_user_attributes
-        
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
       
-      FeedItem.delete_all
-      feed_item_1 = valid_feed_item!(:updated => Date.today)
-      feed_item_2 = valid_feed_item!(:updated => Date.today - 1)
+      feed_item1 = Generate.feed_item!(:updated => Date.today)
+      feed_item2 = Generate.feed_item!(:updated => Date.today - 1)
         
-      FeedItem.find_with_filters(:user => user_1, :order => 'date').should == [feed_item_2, feed_item_1]
+      FeedItem.find_with_filters(:user => user, :order => 'date').should == [feed_item2, feed_item1]
     end
     
     it "properly sorts the feed items by tag strength first" do
-      user_1 = User.create! valid_user_attributes
-        
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
+      tag3 = Generate.tag!(:user => user)
       
-      FeedItem.delete_all
-      feed_item_1 = valid_feed_item!
-      feed_item_2 = valid_feed_item!
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
       
-      tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id, :strength => 1
-      tagging_2 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id, :strength => 0.5      
-      tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_2.id, :tag_id => tag_3.id, :strength => 0.7
+      user.taggings.create!(:feed_item => feed_item1, :tag => tag1, :strength => 1)
+      user.taggings.create!(:feed_item => feed_item2, :tag => tag2, :strength => 0.5)
+      user.taggings.create!(:feed_item => feed_item2, :tag => tag3, :strength => 0.7)
       
-      FeedItem.find_with_filters(:user => user_1, :order => 'strength').should == [feed_item_2, feed_item_1]
+      FeedItem.find_with_filters(:user => user, :order => 'strength').should == [feed_item2, feed_item1]
     end
   end
   
   describe ".find_with_filters select" do
     it "can flag items as unread" do
-      user_1 = User.create! valid_user_attributes
+      user = Generate.user!
         
-      FeedItem.delete_all
-      feed_item_1 = valid_feed_item!(:updated => Date.today)
+      feed_item = Generate.feed_item!(:updated => Date.today)
       
-      expected, actual = [feed_item_1], FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc", :mode => "all")
+      expected, actual = [feed_item], FeedItem.find_with_filters(:user => user, :order => 'date', :direction => "desc", :mode => "all")
       expected.should == actual
       
       actual.first.should_not be_read_by_current_user
     end
     
     it "can flag items as read" do
-      user_1 = User.create! valid_user_attributes
+      user = Generate.user!
         
-      FeedItem.delete_all
-      feed_item_1 = valid_feed_item!(:updated => Date.today)
+      feed_item = Generate.feed_item!(:updated => Date.today)
 
-      feed_item_1.read_by!(user_1)
+      feed_item.read_by!(user)
       
-      expected, actual = [feed_item_1], FeedItem.find_with_filters(:user => user_1, :order => 'date', :direction => "desc", :mode => "all")
+      expected, actual = [feed_item], FeedItem.find_with_filters(:user => user, :order => 'date', :direction => "desc", :mode => "all")
       expected.should == actual
       
       actual.first.should be_read_by_current_user
@@ -116,133 +102,120 @@ describe FeedItem do
   
   describe ".find_with_filters" do    
     it "Properly filters feed items with included private tag and excluded public tag" do
-      user_1 = User.create! valid_user_attributes
-      user_2 = User.create! valid_user_attributes
-        
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
-      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      user1 = Generate.user!
+      user2 = Generate.user!
+      tag1 = Generate.tag!(:user => user1)
+      tag2 = Generate.tag!(:user => user2, :public => true)
+      tag3 = Generate.tag!(:user => user1)
+      user1.tag_subscriptions.create!(:tag => tag1)
+
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      feed_item3 = Generate.feed_item!
     
-      tag_subscription = TagSubscription.create! :tag_id => tag_1.id, :user_id => user_1.id
+      user1.taggings.create!(:feed_item => feed_item1, :tag => tag1)
+      user2.taggings.create!(:feed_item => feed_item2, :tag => tag2)
+      user1.taggings.create!(:feed_item => feed_item3, :tag => tag3)
     
-      feed_item_1 = valid_feed_item!
-      feed_item_2 = valid_feed_item!
-      feed_item_3 = valid_feed_item!
+      user1.tag_exclusions.create!(:tag => tag2)
     
-      tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
-      tagging_2 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id
-      tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_3.id, :tag_id => tag_3.id
-    
-      user_1.tag_exclusions.create! :tag_id => tag_2.id
-    
-      FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'id').should == [feed_item_1]
+      FeedItem.find_with_filters(:user => user1, :tag_ids => tag1.id.to_s, :order => 'id').should == [feed_item1]
     end
 
     it "Properly filters feed items with included private tag, excluded private tag, and excluded public tag" do
-      user_1 = User.create! valid_user_attributes
-      user_2 = User.create! valid_user_attributes
-        
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :public => true)
-      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      user1 = Generate.user!
+      user2 = Generate.user!
+      tag1 = Generate.tag!(:user => user1)
+      tag2 = Generate.tag!(:user => user2, :public => true)
+      tag3 = Generate.tag!(:user => user1)
+      user1.tag_subscriptions.create!(:tag => tag1)
     
-      tag_subscription = TagSubscription.create! :tag_id => tag_1.id, :user_id => user_1.id
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      feed_item3 = Generate.feed_item!
+      feed_item4 = Generate.feed_item!
     
-      feed_item_1 = valid_feed_item!
-      feed_item_2 = valid_feed_item!
-      feed_item_3 = valid_feed_item!
-      feed_item_4 = valid_feed_item!
+      user1.taggings.create!(:feed_item => feed_item1, :tag => tag1)
+      user2.taggings.create!(:feed_item => feed_item2, :tag => tag2)
+      user1.taggings.create!(:feed_item => feed_item3, :tag => tag3)
+      user1.taggings.create!(:feed_item => feed_item4, :tag => tag1)
+      user2.taggings.create!(:feed_item => feed_item4, :tag => tag2)
+
+      user1.tag_exclusions.create!(:tag => tag2)
+      user1.tag_exclusions.create!(:tag => tag3)
     
-      tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
-      tagging_2 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_2.id, :tag_id => tag_2.id
-      tagging_3 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_3.id, :tag_id => tag_3.id
-      tagging_4 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_4.id, :tag_id => tag_1.id
-      tagging_5 = Tagging.create! :user_id => user_2.id, :feed_item_id => feed_item_4.id, :tag_id => tag_2.id
-    
-      user_1.tag_exclusions.create! :tag_id => tag_2.id
-      user_1.tag_exclusions.create! :tag_id => tag_3.id
-    
-      FeedItem.find_with_filters(:user => user_1, :tag_ids => tag_1.id.to_s, :order => 'id').should == [feed_item_1]
+      FeedItem.find_with_filters(:user => user1, :tag_ids => tag1.id.to_s, :order => 'id').should == [feed_item1]
     end
   
     it "properly filters on globally excluded feeds" do
-      user_1 = User.create! valid_user_attributes
+      user = Generate.user!
+      feed1 = Generate.feed!
+      feed2 = Generate.feed!
+      feed3 = Generate.feed!
     
-      feed_1 = Feed.create! valid_feed_attributes(:via => "http://feedone.com")
+      feed_item1 = Generate.feed_item!(:feed => feed1)
+      feed_item2 = Generate.feed_item!(:feed => feed1)
+      feed_item3 = Generate.feed_item!(:feed => feed2)
+      feed_item4 = Generate.feed_item!(:feed => feed3)
+
+      user.excluded_feeds << feed1
     
-      FeedItem.delete_all # :(
-      feed_item_1 = valid_feed_item!(:feed_id => feed_1.id)
-      feed_item_2 = valid_feed_item!(:feed_id => feed_1.id)
-      feed_item_3 = valid_feed_item!(:feed_id => 2, :id => 3)
-      feed_item_4 = valid_feed_item!(:feed_id => 3, :id => 4)
-    
-      user_1.excluded_feeds << feed_1
-    
-      FeedItem.find_with_filters(:user => user_1, :order => 'id').should == [feed_item_3, feed_item_4]
+      FeedItem.find_with_filters(:user => user, :order => 'id').should == [feed_item3, feed_item4]
     end
     
     it "should work with a text filter" do
-      user_1 = User.create! valid_user_attributes
-      lambda { FeedItem.find_with_filters(:user => user_1, :text_filter => 'text')}.should_not raise_error
+      user = Generate.user!
+      lambda { FeedItem.find_with_filters(:user => user, :text_filter => 'text')}.should_not raise_error
     end
     
     it "filters out read items" do
-      user_1 = User.create! valid_user_attributes
-
-      FeedItem.delete_all
-      feed_item_1 = valid_feed_item!
-      feed_item_2 = valid_feed_item!
-
-      feed_item_2.read_by!(user_1)
+      user = Generate.user!
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      feed_item2.read_by!(user)
       
-      FeedItem.find_with_filters(:user => user_1, :mode => "unread", :order => "id").should == [feed_item_1]
+      FeedItem.find_with_filters(:user => user, :mode => "unread", :order => "id").should == [feed_item1]
     end
     
     it "can include read items" do
-      user_1 = User.create! valid_user_attributes
-
-      FeedItem.delete_all
-      feed_item_1 = valid_feed_item!(:id => 1)
-      feed_item_2 = valid_feed_item!(:id => 2)
-
-      feed_item_2.read_by!(user_1)
+      user = Generate.user!
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      feed_item2.read_by!(user)
       
-      FeedItem.find_with_filters(:user => user_1, :mode => "all", :order => "id").should == [feed_item_1, feed_item_2]
+      FeedItem.find_with_filters(:user => user, :mode => "all", :order => "id").should == [feed_item1, feed_item2]
     end
     
     it "filters out read items when there are more then 1 tags included" do
-      user_1 = User.create! valid_user_attributes
-        
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id)
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
+      feed_item = Generate.feed_item!
 
-      FeedItem.delete_all    
-      feed_item_1 = valid_feed_item!
-    
-      tagging_1 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_1.id
-      tagging_2 = Tagging.create! :user_id => user_1.id, :feed_item_id => feed_item_1.id, :tag_id => tag_2.id
+      user.taggings.create!(:feed_item => feed_item, :tag => tag1)
+      user.taggings.create!(:feed_item => feed_item, :tag => tag2)
 
-      feed_item_1.read_by!(user_1)
+      feed_item.read_by!(user)
       
-      FeedItem.find_with_filters(:user => user_1, :mode => "unread", :tag_ids => [tag_1.id, tag_2.id].join(","), :order => "id").should == []
+      FeedItem.find_with_filters(:user => user, :mode => "unread", :tag_ids => [tag1.id, tag2.id].join(","), :order => "id").should == []
     end
     
   end  
   
   describe "update_from_atom" do
     before(:each) do
+      @item = Generate.feed_item!
       @before_count = FeedItem.count
       @atom = Atom::Entry.new do |atom|
         atom.title = "Item Title"
         atom.updated = Time.now
-        atom.id = "urn:uuid:item1"
+        atom.id = @item.uri
         atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
         atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
         atom.authors << Atom::Person.new(:name => 'Author')
         atom.content = Atom::Content::Html.new('<p>content</p>')
       end
       
-      @item = FeedItem.find(1)
       @item.update_from_atom(@atom)
     end
     
@@ -254,18 +227,16 @@ describe FeedItem do
     
     describe "with different id" do
       it "should not update the attributes" do
-        lambda { FeedItem.find(2).update_from_atom(@atom) }.should raise_error(ArgumentError)
-        FeedItem.find(2).title.should_not == @atom.title
-      end
-      
-      it "should raise ArgumentError" do
-        lambda { FeedItem.find(2).update_from_atom(@atom) }.should raise_error(ArgumentError)
+        item = Generate.feed_item!
+        lambda { item.update_from_atom(@atom) }.should raise_error(ArgumentError)
+        item.reload.title.should_not == @atom.title
       end
     end
   end
   
   describe "find_or_create_from_atom" do
     before(:each) do
+      @item = Generate.feed_item!
       @before_count = FeedItem.count
       @atom = Atom::Entry.new do |atom|
         atom.title = "Item Title"
@@ -280,7 +251,6 @@ describe FeedItem do
     
     describe "with a complete entry" do
       before(:each) do
-        FeedItemContent.delete_all
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
     
@@ -297,7 +267,7 @@ describe FeedItem do
     
     describe "with a complete entry and an existing id" do
       before(:each) do
-        @atom.id = "urn:uuid:item1"
+        @atom.id = @item.uri
         @item = FeedItem.find_or_create_from_atom(@atom)        
       end
       
@@ -324,7 +294,6 @@ describe FeedItem do
         
     describe "without a title" do
       before(:each) do
-        FeedItemContent.delete_all
         @atom.title = nil
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
@@ -336,7 +305,6 @@ describe FeedItem do
     
     describe "without an author" do
       before(:each) do
-        FeedItemContent.delete_all
         @atom.authors.clear
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
@@ -358,7 +326,6 @@ describe FeedItem do
     
     describe "without collector link" do
       before(:each) do
-        FeedItemContent.delete_all
         @atom.links.delete(@atom.self)
         @item = FeedItem.find_or_create_from_atom(@atom)
       end
@@ -371,14 +338,10 @@ describe FeedItem do
   
   describe "to_atom" do
     before(:each) do
-      FeedItemContent.delete_all
-      
-      @user = users(:quentin)
-      @tag1 = Tag.create!(:name => 'tag1', :user => @user)
-      @tag2 = Tag.create!(:name => 'tag2', :user => @user)
-      @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, :link => "http://example.com/rss", :title => "Example RSS Feed", :author => "Example Author")
-      @item.uri = "urn:uuid:item50"
-      @item.save!
+      @user = Generate.user!
+      @tag1 = Generate.tag!(:user => @user)
+      @tag2 = Generate.tag!(:user => @user)
+      @item = Generate.feed_item!
       @content = FeedItemContent.new(:content => "Example Content")
       @content.feed_item_id = @item.id
       @content.save!
@@ -431,29 +394,26 @@ describe FeedItem do
     end
     
     it "should include positive tags for the specified tag" do
-      @atom.categories.detect {|cat| cat.scheme == 'http://winnow.mindloom.org/quentin/tags/' && cat.term == @tag1.name }.should_not be_nil
+      @atom.categories.detect {|cat| cat.scheme == "http://winnow.mindloom.org/#{@user.login}/tags/" && cat.term == @tag1.name }.should_not be_nil
     end
     
     it "should include negative tags for the specified tag" do
-      @atom.links.detect {|l| l.rel == 'http://peerworks.org/classifier/negative-example' && l.href == "http://winnow.mindloom.org/quentin/tags/tag1"}.should_not be_nil
+      @atom.links.detect {|l| l.rel == 'http://peerworks.org/classifier/negative-example' && l.href == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag1.name}"}.should_not be_nil
     end
     
     it "should not include positive tags for non-specified tags" do
-      @atom.categories.detect {|cat| cat.scheme == 'http://winnow.mindloom.org/quentin/tags' && cat.term == @tag2.name }.should be_nil
+      @atom.categories.detect {|cat| cat.scheme == "http://winnow.mindloom.org/#{@user.login}/tags" && cat.term == @tag2.name }.should be_nil
     end
   end
   
   describe "to_atom without an author" do
     it "should not output an author" do
-      item = FeedItem.find(1)
-      item.author = nil
+      item = Generate.feed_item!(:author => nil)
       item.to_atom.should have(0).authors
     end
   end
   
   describe "to_atom with non-utf8" do
-    fixtures :feed_item_contents
-
     before(:each) do
       @item = FeedItem.new(:feed_id => 1, :updated => 2.days.ago, :created_on => 2.days.ago, 
                            :link => "http://example.com/rss", :title => "Example RSS Feed", 
@@ -472,207 +432,174 @@ describe FeedItem do
   end
 
   describe "from test/unit" do
-    fixtures :users    
-  
-    # Tests for the find_with_filters method
+    before(:each) do
+      @feed_item1 = Generate.feed_item!
+      @feed_item2 = Generate.feed_item!
+      @feed_item3 = Generate.feed_item!
+      @feed_item4 = Generate.feed_item!
+    end
+    
     it "find_with_show_untagged_returns_all_items" do
-      feed_items = FeedItem.find_with_filters(:user => users(:quentin), :order => 'id')
-      assert_equal FeedItem.find(1, 2, 3, 4), feed_items
+      FeedItem.find_with_filters(:user => Generate.user!, :order => 'id').should == [@feed_item1, @feed_item2, @feed_item3, @feed_item4]
     end
   
     it "find_with_negatives_includes_negativey_tagged_items" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag, :strength => 0)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag, :strength => 0)
     
-      expected = FeedItem.find(2, 4)
-      assert_equal(expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :mode => "trained", :order => 'id'))
+      FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :mode => "trained", :order => 'id').should == [@feed_item1, @feed_item2]
     end
   
     it "find_with_tag_filter_should_only_return_items_with_that_tag" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
     
-      assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
+      FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s).should == [@feed_item1]
     end
   
     it "find_with_multiple_tag_filters_should_only_return_items_with_those_tags" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-    
-      expected = [FeedItem.find(2), FeedItem.find(3)]
-      actual = FeedItem.find_with_filters(:user => users(:quentin), :tag_ids => "#{tag.id},#{tag2.id}", :order => 'id')
-      assert_equal expected, actual
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag1)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag2)
+
+      FeedItem.find_with_filters(:user => user, :tag_ids => [tag1.id, tag2.id].join(","), :order => 'id').should == [@feed_item1, @feed_item2]
     end
   
     it "find_with_tag_filter_includes_negative_taggings" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag, :strength => 0)
 
-      assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id')
+      FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id').should == [@feed_item1, @feed_item2]
     end  
 
     it "find_with_tag_filter_include_negative_taggings_with_positive_classifier_taggings" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :classifier_tagging => true)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :strength => 0)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag, :classifier_tagging => true)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag, :strength => 0)
 
-      assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id')
+      FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id').should == [@feed_item1, @feed_item2]
     end
   
     it "find_with_tag_filter_should_ignore_other_users_tags" do
-      user = users(:quentin)
-      aaron = users(:aaron)
-      tag = Tag(user, 'tag1')
-      atag = Tag(aaron, 'tag1')
-    
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-      Tagging.create(:user => users(:aaron), :feed_item => FeedItem.find(3), :tag => atag)
+      user1 = Generate.user!
+      user2 = Generate.user!
+      tag1 = Generate.tag!(:user => user1)
+      tag2 = Generate.tag!(:user => user2)
+      user1.taggings.create!(:feed_item => @feed_item1, :tag => tag1)
+      user2.taggings.create!(:feed_item => @feed_item2, :tag => tag2)
 
-      assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s)
+      FeedItem.find_with_filters(:user => user1, :tag_ids => tag1.id.to_s).should == [@feed_item1]
     end
   
     it "find_with_tag_filter_should_include_classifier_tags" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag, :classifier_tagging => true)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag, :classifier_tagging => true)
 
-      assert_equal FeedItem.find(2, 3), FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id')
+      FeedItem.find_with_filters(:user => user, :tag_ids => tag.id.to_s, :order => 'id').should == [@feed_item1, @feed_item2]
     end
   
     it "find_with_excluded_tag_should_return_items_not_tagged_with_that_tag" do
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  
-      user.tag_exclusions.create! :tag_id => tag1.id
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag1)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag2)
+      user.tag_exclusions.create!(:tag_id => tag1.id)
     
-      assert_equal FeedItem.find(1, 3, 4), FeedItem.find_with_filters(:user => user, :order => 'id')
+      FeedItem.find_with_filters(:user => user, :order => 'id').should == [@feed_item2, @feed_item3, @feed_item4]
     end
   
     it "find_with_multiple_excluded_tags_should_return_items_not_tagged_with_those_tags" do
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      tag3 = Tag(user, 'tag3')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag3)
-  
-      user.tag_exclusions.create! :tag_id => tag1.id
-      user.tag_exclusions.create! :tag_id => tag2.id
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
+      tag3 = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag1)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag2)
+      user.taggings.create!(:feed_item => @feed_item3, :tag => tag3)
+      user.tag_exclusions.create!(:tag_id => tag1.id)
+      user.tag_exclusions.create!(:tag_id => tag2.id)
     
-      expected = FeedItem.find(1, 4)
-      assert_equal expected, FeedItem.find_with_filters(:user => user, :order => 'id')
-    end
-  
-    it "find_with_excluded_tag_should_return_items_not_tagged_with_that_tag" do
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  
-      user.tag_exclusions.create! :tag_id => tag1.id
-    
-      expected = FeedItem.find(1, 3, 4)
-      assert_equal expected, FeedItem.find_with_filters(:user => user, :order => 'id')
+      FeedItem.find_with_filters(:user => user, :order => 'id').should == [@feed_item3, @feed_item4]
     end
   
     it "find_with_included_and_excluded_tags_should_return_items_tagged_with_included_tag_and_not_the_excluded_tag" do
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
-      tag2 = Tag(user, 'tag2')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag1)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag1)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(3), :tag => tag2)
-  
-      user.tag_exclusions.create! :tag_id => tag2.id
-    
-      expected = [FeedItem.find(2)]
-      assert_equal expected, FeedItem.find_with_filters(:user => user, :tag_ids => tag1.id.to_s, :order => 'id')
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag1)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag1)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag2)
+      user.tag_exclusions.create!(:tag_id => tag2.id)
+
+      FeedItem.find_with_filters(:user => user, :tag_ids => tag1.id.to_s, :order => 'id').should == [@feed_item1]
     end
   
-    it "find_with_feed_filters_should_return_only_tagged_items_from_the_included_feed" do
-      user = users(:quentin)
-      tag1 = Tag(user, 'tag1')
+    it "find_with_feed_filters_should_return_only_items_from_the_included_feed" do
+      user = Generate.user!
     
-      expected = FeedItem.find(1, 2, 3)
-      actual = FeedItem.find_with_filters(:user => user, :feed_ids => "1", :order => 'id')
-      assert_equal expected, actual
+      FeedItem.find_with_filters(:user => user, :feed_ids => @feed_item1.feed_id.to_s, :order => 'id').should == [@feed_item1]
     end
   
     it "find_with_multiple_feed_filters_and_show_untagged_should_return_only_items_from_the_included_feeds" do
-      feed_item5 = FeedItem.create!(:feed_id => 3, :link => "http://fifth", :uri => "urn:uuid:item51")
+      user = Generate.user!
+      Generate.feed_item!
     
-      expected = FeedItem.find(1, 2, 3, 4)
-      actual = FeedItem.find_with_filters(:user => users(:quentin), :feed_ids => "1,2", :order => 'id')
-      assert_equal expected, actual
+      FeedItem.find_with_filters(:user => user, :feed_ids => [@feed_item1.feed_id, @feed_item2.feed_id].join(","), :order => 'id').should == [@feed_item1, @feed_item2]
     end
       
     it "find_with_tag_filter_and_feed_filter_should_only_return_items_with_that_tag_or_in_that_feed" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
-      Tagging.create(:user => user, :feed_item => FeedItem.find(4), :tag => tag)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
+      user.taggings.create!(:feed_item => @feed_item2, :tag => tag)
   
-      assert_equal FeedItem.find(2, 4), FeedItem.find_with_filters(:user => user, :feed_ids => "2", :tag_ids => tag.id.to_s, :order => 'id')
+      FeedItem.find_with_filters(:user => user, :feed_ids => [@feed_item1.feed_id, @feed_item2.feed_id].join(","), :tag_ids => tag.id.to_s, :order => 'id').should == [@feed_item1, @feed_item2]
     end
   
     it "options_for_filters_creates_text_filter" do
-      assert_match(/MATCH/, FeedItem.send(:options_for_filters, :user => users(:quentin), :text_filter => "text")[:joins])
+      FeedItem.send(:options_for_filters, :user => Generate.user!, :text_filter => "text")[:joins].should =~ /MATCH/
     end
     
     it "find_with_non_existent_include_tag_filter_should_ignore_the_nonexistent_tag" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
     
-      assert_equal [FeedItem.find(2)], FeedItem.find_with_filters(:user => user, :tag_ids => "#{tag.id},#{tag.id + 1}")
+      FeedItem.find_with_filters(:user => user, :tag_ids => [tag.id, tag.id + 1].join(",")).should == [@feed_item1]
     end
 
     it "find_with_non_existent_tag_exclude_filter_should_ignore_the_nonexistent_tag" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag1')
-      Tagging.create(:user => user, :feed_item => FeedItem.find(2), :tag => tag)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => @feed_item1, :tag => tag)
+      user.tag_exclusions.create!(:tag_id => tag.id)
+      user.tag_exclusions.create!(:tag_id => tag.id + 1)
     
-      user.tag_exclusions.create! :tag_id => tag.id
-      user.tag_exclusions.create! :tag_id => tag.id + 1
-    
-      assert_equal FeedItem.find(1,3,4), FeedItem.find_with_filters(:user => user, :order => 'id')
+      FeedItem.find_with_filters(:user => user, :order => 'id').should == [@feed_item2, @feed_item3, @feed_item4]
     end
   
     it "including_both_subscribed_and_private_tags_returns_feed_items_from_either_tag" do
-      quentin = users(:quentin)
-      aaron = users(:aaron)
-    
-      f1 = FeedItem.find(1)
-      f2 = FeedItem.find(2)
-    
-      tag1 = Tag(quentin, 'tag1')
-      tag2 = Tag(aaron, 'tag2')
-      tag2.public = true
-      tag2.save!
-    
-      tagging_1 = Tagging.create(:user => quentin, :feed_item => f1, :tag => tag1)
-      tagging_2 = Tagging.create(:user => aaron, :feed_item => f2, :tag => tag2)
-    
-      TagSubscription.create! :tag => tag2, :user => quentin
-    
-      assert_equal [f1, f2], FeedItem.find_with_filters(:user => quentin, :tag_ids => "#{tag1.id},#{tag2.id}", :order => 'id')
-    end
+      user1 = Generate.user!
+      user2 = Generate.user!
+      tag1 = Generate.tag!(:user => user1)
+      tag2 = Generate.tag!(:user => user2, :public => true)
+      user1.taggings.create!(:feed_item => @feed_item1, :tag => tag1)
+      user2.taggings.create!(:feed_item => @feed_item2, :tag => tag2)
+      TagSubscription.create!(:tag => tag2, :user => user1)
 
+      FeedItem.find_with_filters(:user => user1, :tag_ids => [tag1.id, tag2.id].join(","), :order => 'id').should == [@feed_item1, @feed_item2]
+    end
   end
 end

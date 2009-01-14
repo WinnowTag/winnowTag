@@ -11,7 +11,13 @@ class Generate
   end
   
   def self.comment(attributes = {})
-    Comment.new(:tag_id => 1, :user_id => 1, :body => "Example body")
+    unique_id = unique_id_for(:comment)
+    
+    Comment.new(attributes.reverse_merge(
+      :body => "Comment #{unique_id}",
+      :user => Generate.user!,
+      :tag => Generate.tag!
+    ))
   end
   
   def self.user!(attributes = {})
@@ -20,8 +26,7 @@ class Generate
     User.create!(attributes.reverse_merge(
       :login => "user_#{unique_id}",
       :email => "user_#{unique_id}@example.com",
-      :password => "password",
-      :password_confirmation => "password",
+      :crypted_password => BCrypt::Password.create(attributes.delete(:password) || "password"),
       :firstname => "John",
       :lastname => "Doe",
       :time_zone => "UTC",
@@ -29,6 +34,30 @@ class Generate
     ))
   end
   
+  def self.admin!(attributes = {})
+    admin = self.user!(attributes)
+    admin.has_role("admin")
+    admin
+  end
+  
+  def self.tag(attributes = {})
+    unique_id = unique_id_for(:tag)
+    
+    Tag.new(attributes.reverse_merge(
+      :name => "Tag #{unique_id}",
+      :user => Generate.user!
+    ))
+  end
+
+  def self.tag!(attributes = {})
+    unique_id = unique_id_for(:tag)
+    
+    Tag.create!(attributes.reverse_merge(
+      :name => "Tag #{unique_id}",
+      :user => Generate.user!
+    ))
+  end
+
   def self.feed!(attributes = {})
     unique_id = unique_id_for(:feed)
     
@@ -37,6 +66,19 @@ class Generate
       :alternate => "http://#{unique_id}.example.com",
       :title => "Feed #{unique_id}",
       :uri => "uri:Feed#{unique_id}"
+    ))
+  end
+
+  def self.feed_item!(attributes = {})
+    unique_id = unique_id_for(:feed_item)
+    
+    FeedItem.create!(attributes.reverse_merge(
+      :feed => self.feed!,
+      :link => "http://example.com/#{unique_id}",
+      :title => "Feed Item #{unique_id}",
+      :author => "Author #{unique_id}",
+      :collector_link => "http://collector.mindloom.org/feed_items/#{unique_id}.atom",
+      :uri => "uri:FeedItem#{unique_id}"
     ))
   end
 end

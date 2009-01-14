@@ -1,5 +1,16 @@
+Features
+ * fixtures
+ * quentin
+ * current user
+
+All
+ * urn:uuid
+ * valid_*_attributes
+ * id's to models
+
+
+
 * xslt on trunk so gems:build works
-* quentin login taken when running specs+features at the same time
 * cleanup tagging indexes
 
 * dns for ci.winnow.mutuallyhuman.com and for winnow.mutuallyhuman.com
@@ -14,9 +25,8 @@ Models
  # - User
 
 Todo
- - item list blanks when I maximize window
  - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI
- - Code refactoring/ceaning/testing, along with finishing Setup automated Selenium testing
+ - Code refactoring/ceaning/testing
  - Performance Enhancements
 
 Refactoring

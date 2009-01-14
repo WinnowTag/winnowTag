@@ -6,11 +6,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "keyboard shortcuts" do
-  fixtures :users, :feed_items, :feeds, :feed_item_contents
+  fixtures :feed_items, :feeds, :feed_item_contents
 
   before(:each) do
-    Reading.delete_all
-    login
+    login Generate.user!
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end

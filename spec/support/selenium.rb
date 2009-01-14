@@ -4,9 +4,9 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module CustomSeleniumHelpers
-  def login(login = "quentin", password = "test")
+  def login(user, password = "password")
     page.open login_path
-    page.type "css=#login_form input[name=login]", login
+    page.type "css=#login_form input[name=login]", user.login
     page.type "css=#login_form input[name=password]", password
     page.click "commit", :wait_for => :page
   end

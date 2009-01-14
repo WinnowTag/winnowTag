@@ -6,8 +6,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe User do
-  fixtures :users, :feeds, :tags
-
   describe "associations" do
     before(:each) do
       @user = User.new
@@ -54,7 +52,6 @@ describe User do
     
     it "creating from a prototype marks all system messages as read" do
       prototype = User.create! valid_user_attributes(:prototype => true)
-      Message.delete_all
       message = Message.create! :body => "some test message"
       user = User.create_from_prototype(valid_user_attributes)
       Message.unread(user).for(user).should be_empty
@@ -67,20 +64,26 @@ describe User do
     end
     
     it "creating from a prototype copies over custom folders" do
+      tag1 = Generate.tag!
+      tag2 = Generate.tag!
+      feed1 = Generate.feed!
+      feed2 = Generate.feed!
+      feed3 = Generate.feed!
+      
       prototype = User.create! valid_user_attributes(:prototype => true)
-      prototype.folders.create!(:name => "Big", :tag_ids => [1,2], :feed_ids => [1,2,3])
-      prototype.folders.create!(:name => "Small", :tag_ids => [1], :feed_ids => [3])
+      prototype.folders.create!(:name => "Big", :tag_ids => [tag1.id, tag2.id], :feed_ids => [feed1.id, feed2.id, feed3.id])
+      prototype.folders.create!(:name => "Small", :tag_ids => [tag1.id], :feed_ids => [feed3.id])
       
       user = User.create_from_prototype(valid_user_attributes)
       user.should have(2).folders
       
       user.folders.first.name.should == "Big"
-      user.folders.first.tag_ids.sort.should == [1,2]
-      user.folders.first.feed_ids.sort.should == [1,2,3]
+      user.folders.first.tag_ids.sort.should == [tag1.id, tag2.id]
+      user.folders.first.feed_ids.sort.should == [feed1.id, feed2.id, feed3.id]
 
       user.folders.last.name.should == "Small"
-      user.folders.last.tag_ids.should == [1]
-      user.folders.last.feed_ids.should == [3]
+      user.folders.last.tag_ids.should == [tag1.id]
+      user.folders.last.feed_ids.should == [feed3.id]
     end
     
     it "creating from a prototype copies over feed subscriptions" do
@@ -108,12 +111,15 @@ describe User do
     end
     
     it "creating from a prototype copies over tags" do
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      
       prototype = User.create! valid_user_attributes(:prototype => true)
                   
       tag1 = prototype.tags.create!(:name => "Tag 1", :public => false, :bias => 1.2, :show_in_sidebar => true, :comment => "Tag 1 Comment")
-      tag1.taggings.create! :classifier_tagging => true, :strength => 1, :feed_item_id => 1, :user_id => prototype.id
+      tag1.taggings.create! :classifier_tagging => true, :strength => 1, :feed_item_id => feed_item1.id, :user_id => prototype.id
       tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :comment => "Tag 2 Comment")
-      tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => 2, :user_id => prototype.id
+      tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => feed_item2.id, :user_id => prototype.id
       
       user = User.create_from_prototype(valid_user_attributes)
       user.should have(2).tags
@@ -127,7 +133,7 @@ describe User do
       user.tags.first.should have(1).taggings   
       user.tags.first.taggings.first.classifier_tagging.should == true
       user.tags.first.taggings.first.strength.should == 1
-      user.tags.first.taggings.first.feed_item_id.should == 1
+      user.tags.first.taggings.first.feed_item_id.should == feed_item1.id
       user.tags.first.taggings.first.user_id.should == user.id
       user.tags.first.taggings.first.tag_id.should == user.tags.first.id
       
@@ -140,7 +146,7 @@ describe User do
       user.tags.last.should have(1).taggings
       user.tags.last.taggings.first.classifier_tagging.should == false
       user.tags.last.taggings.first.strength.should == 0
-      user.tags.last.taggings.first.feed_item_id.should == 2
+      user.tags.last.taggings.first.feed_item_id.should == feed_item2.id
       user.tags.last.taggings.first.user_id.should == user.id    
       user.tags.last.taggings.first.tag_id.should == user.tags.last.id
     end
@@ -243,19 +249,24 @@ describe User do
   
   describe '#potentially_undertrained_changed_tags' do
     before(:each) do
-      valid_feed_item!
-      valid_feed_item!
-      @user = User.create! valid_user_attributes      
-      @changed_tag_with_5 = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
-      @changed_tag_with_6 = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
-      @unchanged_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.tomorrow.getutc))
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
+
+      @user = Generate.user!
+      @changed_tag_with_5 = Generate.tag!(:user => @user, :last_classified_at => Time.now.yesterday.getutc)
+      @changed_tag_with_6 = Generate.tag!(:user => @user, :last_classified_at => Time.now.yesterday.getutc)
+      @unchanged_tag = Generate.tag!(:user => @user, :last_classified_at => Time.now.tomorrow.getutc)
       
-      FeedItem.find(:all).first(5).each do |i|
+      FeedItem.all(:limit => 5).each do |i|
         @changed_tag_with_5.taggings.create!(:user => @user, :feed_item => i, :strength => 1)
-      end
-      FeedItem.find(:all).each do |i|
+      end.should have(5).feed_items
+      FeedItem.all(:limit => 6).each do |i|
         @changed_tag_with_6.taggings.create!(:user => @user, :feed_item => i, :strength => 1)
-      end
+      end.should have(6).feed_items
     end
     
     it "should not return an unchanged tag" do
@@ -272,8 +283,6 @@ describe User do
   end
   
   describe "password" do
-    fixtures :users, :feed_items
-    
     before(:each) do
       # Re-enable password hashing which is stubbed out in spec_helper.rb
       User.rspec_reset
@@ -290,25 +299,26 @@ describe User do
     end
     
     it "should_reset_password" do
-      users(:quentin).update_attributes(:password => 'new password', :password_confirmation => 'new password')
-      assert_equal users(:quentin), User.authenticate('quentin', 'new password')
+      user = Generate.user!
+      user.update_attributes(:password => 'new password', :password_confirmation => 'new password')
+      User.authenticate(user.login, 'new password').should == user
     end
 
     it "should_not_rehash_password" do
-      users(:quentin).update_attributes(:login => 'quentin2')
-      assert_equal users(:quentin), User.authenticate('quentin2', 'test')
+      user = Generate.user!
+      user.update_attributes(:firstname => "johnny")
+      User.authenticate(user.login, 'password').should == user
     end
 
     it "should_authenticate_user" do
-      assert_equal users(:quentin), User.authenticate('quentin', 'test')
+      user = Generate.user!
+      User.authenticate(user.login, 'password').should == user
     end
   end
   
   describe "from test/unit" do
-    fixtures :users, :feed_items
-    
     it "should_be_owner_of_self" do
-      u = create_user
+      u = Generate.user!
       assert u.has_role?('owner', u)
     end
   
@@ -328,119 +338,107 @@ describe User do
     end
 
     it "should_set_remember_token" do
-      users(:quentin).remember_me
-      assert_not_nil users(:quentin).remember_token
-      assert_not_nil users(:quentin).remember_token_expires_at
+      user = Generate.user!
+      user.remember_me
+      user.remember_token.should_not be_nil
+      user.remember_token_expires_at.should_not be_nil
     end
 
     it "should_unset_remember_token" do
-      users(:quentin).remember_me
-      assert_not_nil users(:quentin).remember_token
-      users(:quentin).forget_me
-      assert_nil users(:quentin).remember_token
+      user = Generate.user!
+
+      user.remember_me
+      user.remember_token.should_not be_nil
+      user.remember_token_expires_at.should_not be_nil
+
+      user.forget_me
+      user.remember_token.should be_nil
+      user.remember_token_expires_at.should be_nil
     end
    
     it "knows_that_given_user_is_not_subscribed_to_a_tag" do
-      current_user = users(:quentin)
-      tag = Tag(current_user, 'hockey')
-      TagSubscription.delete_all
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
     
-      assert !current_user.subscribed?(tag)
+      user.subscribed?(tag).should be_false
     end
   
     it "knows_that_given_user_is_subscribed_to_a_tag" do
-      current_user = users(:quentin)
-      tag = Tag(current_user, 'hockey')
-      TagSubscription.create! :tag_id => tag.id, :user_id => current_user.id
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      TagSubscription.create!(:tag => tag, :user => user)
     
-      assert current_user.subscribed?(tag)
+      user.subscribed?(tag).should be_true
     end
   
     it "knows_that_given_user_is_not_subscribed_to_a_feed" do
-      current_user = users(:quentin)
-      feed = Feed.find(:first)
-      FeedSubscription.delete_all
-    
-      assert !current_user.subscribed?(feed)
+      user = Generate.user!
+      feed = Generate.feed!
+
+      user.subscribed?(feed).should be_false
     end
   
     it "knows_that_given_user_is_subscribed_to_a_feed" do
-      current_user = users(:quentin)
-      feed = Feed.find(:first)
-      FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
+      user = Generate.user!
+      feed = Generate.feed!
+      FeedSubscription.create!(:feed => feed, :user => user)
     
-      assert current_user.subscribed?(feed)
+      user.subscribed?(feed).should be_true
     end
   
     it "knows_feed_is_globally_excluded" do
-      current_user = users(:quentin)
-      feed = Feed.create! valid_feed_attributes(:via => "http://news.google.com")
-      current_user.feed_exclusions.create! :feed_id => feed.id
+      user = Generate.user!
+      feed = Generate.feed!
+      user.feed_exclusions.create!(:feed => feed)
     
-      assert current_user.globally_excluded?(feed)
+      user.globally_excluded?(feed).should be_true
     end
   
     it "knows_feed_is_not_globally_excluded" do
-      current_user = users(:quentin)
-      feed = Feed.create! valid_feed_attributes(:via => "http://news.google.com")
+      user = Generate.user!
+      feed = Generate.feed!
     
-      assert !current_user.globally_excluded?(feed)
+      user.globally_excluded?(feed).should be_false
     end
   
     it "knows_tag_is_globally_excluded" do
-      current_user = users(:quentin)
-      tag = Tag(current_user, 'demo')
-      current_user.tag_exclusions.create! :tag_id => tag.id
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.tag_exclusions.create!(:tag => tag)
     
-      assert current_user.globally_excluded?(tag)
+      user.globally_excluded?(tag).should be_true
     end
   
     it "knows_tag_is_not_globally_excluded" do
-      current_user = users(:quentin)
-      tag = Tag(current_user, 'demo')
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
     
-      assert !current_user.globally_excluded?(tag)
+      user.globally_excluded?(tag).should be_false
     end
   
     it "update_feed_state_moves_feed_subscriptions_when_feed_is_a_duplicate" do
-      current_user = users(:quentin)
-      feed = Feed.create! valid_feed_attributes(:via => 'http://news.google.com')
-      duplicate = Feed.new valid_feed_attributes(:via => 'http://google.com/news')
-      duplicate.id = 1001
-      duplicate.duplicate = feed
-      duplicate.save!
+      user = Generate.user!
+      feed = Generate.feed!
+      duplicate = Generate.feed!(:duplicate => feed)
+      user.feed_subscriptions.create!(:feed => duplicate)
     
-      # create a subscription to the duplicate
-      sub = FeedSubscription.create! :feed_id => duplicate.id, :user_id => current_user.id
+      user.should be_subscribed(duplicate)
+      user.should_not be_subscribed(feed)
 
-      assert current_user.subscribed?(duplicate)
-      assert !current_user.subscribed?(feed)
-
-      current_user.update_feed_state(duplicate)
+      user.update_feed_state(duplicate)
     
-      assert !current_user.subscribed?(duplicate)
-      assert current_user.subscribed?(feed)
+      user.should_not be_subscribed(duplicate)
+      user.should be_subscribed(feed)
     end
   
     it "update_feed_state_does_nothing_with_feed_is_not_a_duplicate" do
-      current_user = users(:quentin)
-      feed = Feed.create! valid_feed_attributes(:via => 'http://news.google.com')
-      # create a subscription to the feed
-      sub = FeedSubscription.create! :feed_id => feed.id, :user_id => current_user.id
+      user = Generate.user!
+      feed = Generate.feed!
+      user.feed_subscriptions.create!(:feed => feed)
     
-      current_user.update_feed_state(feed)
+      user.update_feed_state(feed)
     
-      assert current_user.subscribed?(feed)
-    end
-    
-  private
-    def create_user(options = {})
-      User.create!({ :login => 'quire', 
-                    :email => 'quire@example.com', 
-                    :password => 'quire', 
-                    :firstname => 'Qu', 
-                    :lastname => 'Ire',
-                    :password_confirmation => 'quire' }.merge(options))
+      user.should be_subscribed(feed)
     end
   end
 end

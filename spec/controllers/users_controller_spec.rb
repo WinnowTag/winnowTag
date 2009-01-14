@@ -6,24 +6,24 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe UsersController do
-  fixtures :users, :roles, :roles_users
-
   it "admin_required" do
-    cannot_access(:quentin, :get, :index)
-    cannot_access(:quentin, :get, :create)
-    cannot_access(:quentin, :get, :login_as, :id => users(:quentin))
-    cannot_access(:quentin, :get, :update, :id => users(:quentin))
-    cannot_access(:quentin, :get, :destroy, :id => users(:quentin))
+    user = Generate.user!
+    
+    cannot_access(user, :get, :index)
+    cannot_access(user, :get, :create)
+    cannot_access(user, :get, :login_as, :id => user)
+    cannot_access(user, :get, :update,   :id => user)
+    cannot_access(user, :get, :destroy,  :id => user)
   end
   
   it "index" do
-    login_as(:admin)
+    login_as Generate.admin!
     get :index
     assert_response :success
   end
   
   it "new" do
-    login_as(:admin)
+    login_as Generate.admin!
     get :new
     assert_response :success
     # TODO: Move to view test
@@ -36,7 +36,7 @@ describe UsersController do
     end
     
     before(:each) do
-      login_as(:admin)
+      login_as Generate.admin!
       
       @user_params = "user params"
       @user = mock_model(User)
@@ -75,16 +75,20 @@ describe UsersController do
   end
   
   it "login_as_changes_current_user_and_redirects_to_index" do
-    login_as(:admin)
-    post :login_as, :id => users(:quentin).id
+    user = Generate.user!
+    
+    login_as Generate.admin!
+    post :login_as, :id => user.id
     assert_redirected_to('/')
-    assert_equal users(:quentin).id, session[:user]
+    assert_equal user.id, session[:user]
   end
     
   it "destroy" do
-    login_as(:admin)
-    delete :destroy, :id => users(:quentin).id
-    assert_raise(ActiveRecord::RecordNotFound) {User.find(users(:quentin).id)}
+    user = Generate.user!
+    
+    login_as Generate.admin!
+    delete :destroy, :id => user.id
+    assert_raise(ActiveRecord::RecordNotFound) { user.reload }
     assert_redirected_to users_path
   end
 end

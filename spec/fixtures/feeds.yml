@@ -1,19 +1,3 @@
-# == Schema Information
-# Schema version: 57
-#
-# Table name: feeds
-#
-#  id                :integer(11)   not null, primary key
-#  url               :string(255)   
-#  title             :string(255)   
-#  link              :string(255)   
-#  last_http_headers :text          
-#  updated_on        :datetime      
-#  active            :boolean(1)    default(TRUE)
-#  created_on        :datetime      
-#
-
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 dummy_feed:
   id: 1
   via: http://ruby-lang.org/en/index.rdf

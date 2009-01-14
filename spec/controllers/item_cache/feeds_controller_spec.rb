@@ -6,7 +6,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe ItemCache::FeedsController do
-  fixtures :feeds
   before(:each) do
     @controller.stub!(:hmac_authenticated?).and_return(true)
   end
@@ -45,17 +44,20 @@ describe ItemCache::FeedsController do
   
   describe "PUT Atom::Entry to /item_cache/feeds/1" do
     before(:each) do
+      @feed = Generate.feed!
+      
       @before_count = Feed.count
       @atom = Atom::Entry.new do |e|
         e.title = "Feed Title"
-        e.id = "urn:uuid:feed1"
+        e.id = @feed.uri
         e.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/222')
       end
     end
     
     it "should update the feed" do
       put :update, :id => @atom.id, :atom => @atom
-      Feed.find(1).title.should == 'Feed Title'
+      @feed.reload
+      @feed.title.should == 'Feed Title'
     end
     
     it "should not add a new feed" do
@@ -70,12 +72,15 @@ describe ItemCache::FeedsController do
     
     describe "with a different id" do
       it "should not update the feed" do
-        put :update, :id => Feed.find(2).uri, :atom => @atom
-        Feed.find(2).title.should_not == 'Feed Title'
+        feed2 = Generate.feed!
+        put :update, :id => feed2.uri, :atom => @atom
+        feed2.reload
+        feed2.title.should_not == 'Feed Title'
       end
       
       it "should return a 412 (Precondition Failed) error" do
-        put :update, :id => Feed.find(2).uri, :atom => @atom
+        feed2 = Generate.feed!
+        put :update, :id => feed2.uri, :atom => @atom
         response.code.should == "412"
       end
     end

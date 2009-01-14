@@ -8,8 +8,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe FeedsController do
   describe "#index" do
     before(:each) do
-      @user = User.create! valid_user_attributes
-      login_as @user
+      login_as Generate.user!
     end
 
     def do_get(params = {})
@@ -30,8 +29,8 @@ describe FeedsController do
   describe "old specs" do
   
     before(:each) do
-      login_as(1)
-      mock_user_for_controller
+      @user = Generate.user!
+      login_as @user
     end
 
     it "should import feeds from opml" do
@@ -70,19 +69,25 @@ describe FeedsController do
     end
   
     describe "auto_complete_for_feed_title" do
-      fixtures :feeds
-      
       before(:each) do
         @user.stub!(:subscribed_feeds).and_return([])
       end
     
       it "should return all feeds with matching title" do
+        Generate.feed! :title => "Ruby Lang"
+        Generate.feed! :title => "Ruby on Rails"
+        Generate.feed! :title => "Perl"
+        
         get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
         assigns[:feeds].size.should == 2
       end
     
       it "should not return duplicate feeds" do
-        Feed.create!(valid_feed_attributes(:title => 'Ruby', :duplicate_id => 1))
+        ruby_lang = Generate.feed! :title => "Ruby Lang"
+        Generate.feed! :title => "Ruby Lang", :duplicate_id => ruby_lang.id
+        Generate.feed! :title => "Ruby on Rails"
+        Generate.feed! :title => "Perl"
+
         get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
         assigns[:feeds].size.should == 2
       end

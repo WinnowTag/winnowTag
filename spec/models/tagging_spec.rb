@@ -4,24 +4,16 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
+
 Tag # auto-requires this class
 
 describe Tagging do
-  fixtures :users
-
   before(:each) do
-    Tagging.delete_all
-    FeedItem.delete_all
-    @feed_item = FeedItem.create! :feed_id => 1,
-                                  :updated => Time.now.yesterday.yesterday.to_formatted_s(:db),
-                                  :link => "http://first",
-                                  :created_on => Time.now.yesterday.yesterday.to_formatted_s(:db),
-                                  :title => "This is a test",
-                                  :uri => "urn:uuid:item50"
+    @feed_item = Generate.feed_item!
   end
 
   it "create_tagging" do
-    user = User.find(1)
+    user = Generate.user!
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag)
@@ -44,7 +36,7 @@ describe Tagging do
   end
   
   it "tagging_strength_is_set" do
-    user = User.find(1)
+    user = Generate.user!
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0)
@@ -53,7 +45,7 @@ describe Tagging do
   end
   
   it "strength_outside_0_to_1_is_invalid" do
-    user = User.find(1)
+    user = Generate.user!
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     assert_valid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0.5)
@@ -65,14 +57,14 @@ describe Tagging do
   end
   
   it "strength_must_be_a_number" do
-    user = User.find(1)
+    user = Generate.user!
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 'string').should_not be_valid
   end
   
   it "creating_duplicate_deletes_existing" do
-    user = users(:quentin)
+    user = Generate.user!
     item = @feed_item
     tag = Tag(user, 'tag')
     first_tagging = user.taggings.create(:feed_item => item, :tag => tag)
@@ -83,7 +75,7 @@ describe Tagging do
   end
   
   it "users_is_allowed_manual_and_classifier_taggings_on_an_item" do
-    user = users(:quentin)
+    user = Generate.user!
     item = @feed_item
     tag  = Tag(user, 'tag')
     
@@ -95,37 +87,41 @@ describe Tagging do
   end
   
   it "cannot_create_taggings_without_user" do
-    Tagging.new(:feed_item => @feed_item, :tag => Tag(users(:quentin), 'peerworks')).should_not be_valid
+    tag = 
+    Tagging.new(:feed_item => @feed_item, :tag => Generate.tag!).should_not be_valid
   end
   
   it "cannot_create_taggings_without_feed_item" do
-    Tagging.new(:user => User.find(1), :tag => Tag(users(:quentin), 'peerworks')).should_not be_valid
+    user = Generate.user!
+    Tagging.new(:user => user, :tag => Generate.tag!(:user => user)).should_not be_valid
   end
   
   it "cannot_create_taggings_without_tag" do
-    Tagging.new(:feed_item => @feed_item, :user => User.find(1)).should_not be_valid
+    Tagging.new(:feed_item => @feed_item, :user => Generate.user!).should_not be_valid
   end
   
   it "cannot_create_tagging_with_invalid_tag" do
-    Tagging.new(:feed_item => @feed_item, :user => User.find(1), :tag => Tag(users(:quentin), '')).should_not be_valid
+    user = Generate.user!
+    Tagging.new(:feed_item => @feed_item, :user => user, :tag => Generate.tag(:user => user, :name => "")).should_not be_valid
   end
   
   it "create_with_tag_user_feed_item_is_valid" do
-    Tagging.new(:user => User.find(1), :feed_item => @feed_item, :tag => Tag(users(:quentin), 'peerworks')).should be_valid
+    user = Generate.user!
+    Tagging.new(:user => user, :feed_item => @feed_item, :tag => Generate.tag!(:user => user)).should be_valid
   end
   
   it "should prevent deletion of a feed item with a tagging" do
-    user = User.find(1)
+    user = Generate.user!
+    tag = Generate.tag!(:user => user)
     feed_item = @feed_item
-    tag = Tag(user, 'peerworks')
     tagging = Tagging.create!(:user => user, :feed_item => feed_item, :tag => tag)
     lambda { feed_item.destroy }.should raise_error(ActiveRecord::StatementInvalid)
   end
 
   it "deletion_copies_tagging_to_deleted_taggings_table" do
-    user = User.find(1)
+    user = Generate.user!
+    tag = Generate.tag!(:user => user)
     feed_item = @feed_item
-    tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0.75)
     assert_not_nil tagging
     assert_not_nil Tagging.find(tagging.id)
@@ -140,9 +136,9 @@ describe Tagging do
   end
   
   it "taggings_are_immutable" do
-    user = users(:quentin)
+    user = Generate.user!
+    tag = Generate.tag!(:user => user)
     item = @feed_item
-    tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => item, :tag => tag)
     assert_not_nil tagging
     assert_valid tagging
@@ -156,6 +152,8 @@ describe Tagging do
   end
    
   it "classifier_tagging_defaults_to_false" do
-    assert !users(:quentin).taggings.create(:feed_item => @feed_item, :tag => Tag(users(:quentin), 'tag')).classifier_tagging?  
+    user = Generate.user!
+    tag = Generate.tag!(:user => user)
+    user.taggings.create(:feed_item => @feed_item, :tag => tag).should_not be_classifier_tagging
   end
 end

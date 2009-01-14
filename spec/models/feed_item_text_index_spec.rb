@@ -7,7 +7,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FeedItemTextIndex do
   after(:each) do
-    # Have to manually delete since it is a MyISAM table
     FeedItemTextIndex.delete_all
   end
   

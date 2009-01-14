@@ -6,10 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FeedItemsController do
-  fixtures :users, :feeds, :feed_items, :tags
-
   it "requires_login" do
-    assert_requires_login {|c| c.get :index, {}}
+    assert_requires_login { |c| c.get :index, {} }
   end
 
   describe "GET /feed_items" do
@@ -18,7 +16,7 @@ describe FeedItemsController do
     end
     
     before(:each) do
-      login_as :quentin
+      login_as Generate.user!
     end
     
     it "is successful" do
@@ -38,7 +36,7 @@ describe FeedItemsController do
     end
     
     before(:each) do
-      login_as :quentin
+      login_as Generate.user!
     end
     
     it "is successful" do
@@ -70,7 +68,7 @@ describe FeedItemsController do
     end
     
     before(:each) do
-      login_as :quentin
+      login_as Generate.user!
     end
     
     it "is successful" do
@@ -79,33 +77,39 @@ describe FeedItemsController do
     end
 
     it "logs a tag usage linked to the current user for each requested tag" do
-      TagUsage.should_receive(:create!).with(:tag_id => "1", :user_id => current_user.id)
-      TagUsage.should_receive(:create!).with(:tag_id => "2", :user_id => current_user.id)
+      tag1 = Generate.tag!
+      tag2 = Generate.tag!
+      
+      TagUsage.should_receive(:create!).with(:tag_id => tag1.id.to_s, :user_id => current_user.id)
+      TagUsage.should_receive(:create!).with(:tag_id => tag2.id.to_s, :user_id => current_user.id)
     
-      get_index :tag_ids => "1,2"
+      get_index :tag_ids => [tag1.id, tag2.id].join(",")
     end
   end
     
   it "body" do
-    login_as(:quentin)
-    get :body, :id => 1, :format => "js"
+    feed_item = Generate.feed_item!
+    
+    login_as Generate.user!
+    get :body, :id => feed_item.id, :format => "js"
     response.should be_success
     response.should render_template("body")
   end
   
   describe "/clues" do
     before(:each) do
-      login_as(:quentin)
-      @user = User.find(1)
-      @tag = Tag(@user, 'tag')
+      user = Generate.user!
+      @tag = Generate.tag!
+
+      login_as user
       
       @http_response = mock('response')
       @http_response.stub!(:code).and_return("200")
       @http_response.stub!(:body).and_return([{'clue' => 'bar', 'prob' => 0.01}, {'clue' => 'foo', 'prob' => 0.99}].to_json)
       Remote::ClassifierResource.site = "http://classifier.host/classifier"
-      url = Remote::ClassifierResource.site.to_s + "/clues?" +
-              "tag=#{URI.escape('http://test.host/quentin/tags/tag/training.atom')}" +
-              "&item=#{URI.escape('urn:peerworks.org:entry#1234')}"
+      tag_url = URI.escape("http://test.host/#{user.login}/tags/#{@tag.name}/training.atom")
+      item_url = URI.escape('urn:peerworks.org:entry#1234')
+      url = %Q|#{Remote::ClassifierResource.site}/clues?tag=#{tag_url}&item=#{item_url}|
       http = mock('http')
       http.should_receive(:request) do |request|
         request['Authorization'].should_not be_nil
@@ -144,48 +148,62 @@ describe FeedItemsController do
   end
     
   it "sets_last_accessed_time_on_each_request" do
-    login_as(:quentin)
-    user = User.find(users(:quentin).id)
+    user = Generate.user!
+    login_as user
     old_time = user.last_accessed_at = 1.minute.ago
     
     get :index
-    assert_instance_of(ActiveSupport::TimeWithZone, User.find(users(:quentin).id).last_accessed_at)
-    assert(old_time < User.find(users(:quentin).id).last_accessed_at)
+    user.reload
+    assert_instance_of(ActiveSupport::TimeWithZone, user.last_accessed_at)
+    assert(old_time < user.last_accessed_at)
   end
   
   it "mark_read" do
     assert_difference("Reading.count", 1) do
-      login_as(:quentin)
-      put :mark_read, :id => 1, :format => "js"
+      feed_item = Generate.feed_item!
+      
+      login_as Generate.user!
+      put :mark_read, :id => feed_item.id, :format => "js"
       assert_response :success
     end
   end
   
   it "mark_read_twice_only_creates_one_entry_and_doesnt_fail" do
     assert_difference("Reading.count", 1) do
-      login_as(:quentin)
-      put :mark_read, :id => 1, :format => "js"
+      feed_item = Generate.feed_item!
+      
+      login_as Generate.user!
+      put :mark_read, :id => feed_item.id, :format => "js"
       assert_response :success
-      put :mark_read, :id => 1, :format => "js"
+      put :mark_read, :id => feed_item.id, :format => "js"
       assert_response :success
     end
   end
   
   it "mark_many_read" do
-    users(:quentin).readings.create!(:readable_type => "FeedItem", :readable_id => 1)
-    users(:quentin).readings.create!(:readable_type => "FeedItem", :readable_id => 2)
+    feed_item1 = Generate.feed_item!
+    feed_item2 = Generate.feed_item!
+    feed_item3 = Generate.feed_item!
+    feed_item4 = Generate.feed_item!
+    
+    user = Generate.user!
+    user.readings.create!(:readable_type => "FeedItem", :readable_id => feed_item1.id)
+    user.readings.create!(:readable_type => "FeedItem", :readable_id => feed_item2.id)
     assert_difference("Reading.count", 2) do
-      login_as(:quentin)
+      login_as user
       put :mark_read, :format => "js"
       assert_response :success
     end
   end
   
   it "mark_unread" do
-    users(:quentin).readings.create!(:readable_type => "FeedItem", :readable_id => 2)
+    feed_item = Generate.feed_item!
+
+    user = Generate.user!
+    user.readings.create!(:readable_type => "FeedItem", :readable_id => feed_item.id)
     assert_difference("Reading.count", -1) do
-      login_as(:quentin)
-      put :mark_unread, :id => 2, :format => "js"
+      login_as user
+      put :mark_unread, :id => feed_item.id, :format => "js"
       assert_response :success
     end
   end

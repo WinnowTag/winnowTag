@@ -83,7 +83,6 @@ class AccountController < ApplicationController
   def activate
     if params[:activation_code]
       @user = User.find_by_activation_code(params[:activation_code]) 
-    
       if @user and @user.activate
         self.current_user = @user
         redirect_back_or_default(root_path)

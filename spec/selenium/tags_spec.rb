@@ -6,13 +6,12 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Tags" do
-  fixtures :users, :tags
+  fixtures :tags
   
   before(:each) do
-    TagSubscription.delete_all
-    TagSubscription.create! :user_id => 1, :tag_id => 2
+    TagSubscription.create!(:user_id => 1, :tag_id => 2)
     
-    login
+    login Generate.user!
     page.open tags_path
     page.wait_for :wait_for => :ajax
   end

@@ -6,10 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "sidebar" do
-  fixtures :users
-
   before(:each) do
-    login
+    login Generate.user!
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end

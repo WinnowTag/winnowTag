@@ -6,16 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "folders" do
-  fixtures :users
-  
   before(:each) do
-    Folder.delete_all
-    Feed.delete_all
-    FeedSubscription.delete_all
-    Tag.delete_all
-    TagSubscription.delete_all
-    
-    @current_user = User.find_by_login("quentin")
+    @current_user = Generate.user!
     @existing_folder = Folder.create! :user_id => @current_user.id, :name => "existing folder"
     @example_feed = Feed.new :title => "Example Feed", :via => "http://example.com/atom", :uri => "urn:test:example1"
     @example_feed.id = 1
@@ -32,7 +24,7 @@ describe "folders" do
     @private_tag_not_in_sidebar = Tag.create! :name => "private tag not in sidebar", :user_id => @current_user.id, :show_in_sidebar => false
     @public_tag_not_in_sidebar = Tag.create! :name => "public tag not in sidebar", :user_id => @user.id, :public => true
 
-    login
+    login @current_user
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end

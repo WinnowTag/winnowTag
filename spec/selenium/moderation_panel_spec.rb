@@ -8,13 +8,9 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "moderation panel" do
   include ActionView::Helpers::RecordIdentificationHelper
 
-  fixtures :users, :feed_items, :feeds, :feed_item_contents
+  fixtures :feed_items, :feeds, :feed_item_contents
   
   before(:each) do
-    Tagging.delete_all
-    Tag.delete_all
-    Reading.delete_all
-    
     @positive_tag = Tag.create! :user_id => 1, :name => "positive tag"
     @negative_tag = Tag.create! :user_id => 1, :name => "negative tag"
     @classifier_tag = Tag.create! :user_id => 1, :name => "classifier tag"
@@ -29,7 +25,7 @@ describe "moderation panel" do
     Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @negative_and_classifier_tag.id, :strength => 0,    :classifier_tagging => false
     Tagging.create! :feed_item_id => 4, :user_id => 1, :tag_id => @negative_and_classifier_tag.id, :strength => 0.99, :classifier_tagging => true
     
-    login
+    login Generate.user!
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end

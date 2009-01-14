@@ -6,15 +6,13 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe AdminController do
-  fixtures :users, :roles, :roles_users
-
   describe "#index" do
     it "cannot be accessed by a non admin user" do
-      cannot_access(:quentin, :get, :index)
+      cannot_access(Generate.user!, :get, :index)
     end
     
     it "can be accessed by an admin user" do
-      login_as(:admin)
+      login_as Generate.admin!
       get :index
       response.should be_success
     end
@@ -22,18 +20,18 @@ describe AdminController do
   
   describe "#info" do
     it "cannot be accessed by a non admin user" do
-      cannot_access(:quentin, :get, :info)
+      cannot_access(Generate.user!, :get, :info)
     end
     
     it "can be accessed by an admin user" do
-      login_as(:admin)
+      login_as Generate.admin!
       get :info
       response.should be_success
     end
     
     describe "GET" do
       it "sets the winnow info setting for the view" do
-        login_as(:admin)
+        login_as Generate.admin!
         
         info = mock_model(Setting)
         Setting.should_receive(:find_or_initialize_by_name).with("Info").and_return(info)
@@ -46,7 +44,7 @@ describe AdminController do
     
     describe "POST" do
       before(:each) do
-        login_as(:admin)
+        login_as Generate.admin!
         @info = mock_model(Setting, :value= => nil, :save! => nil)
         Setting.stub!(:find_or_initialize_by_name).and_return(@info)
       end
@@ -67,18 +65,18 @@ describe AdminController do
   
   describe "#help" do
     it "cannot be accessed by a non admin user" do
-      cannot_access(:quentin, :get, :help)
+      cannot_access(Generate.user!, :get, :help)
     end
     
     it "can be accessed by an admin user" do
-      login_as(:admin)
+      login_as Generate.admin!
       get :help
       response.should be_success
     end
     
     describe "GET" do
       it "sets the help setting for the view" do
-        login_as(:admin)
+        login_as Generate.admin!
         
         help = mock_model(Setting)
         Setting.should_receive(:find_or_initialize_by_name).with("Help").and_return(help)
@@ -91,7 +89,7 @@ describe AdminController do
     
     describe "POST" do
       before(:each) do
-        login_as(:admin)
+        login_as Generate.admin!
         @help = mock_model(Setting, :value= => nil, :save! => nil)
         Setting.stub!(:find_or_initialize_by_name).and_return(@help)
       end

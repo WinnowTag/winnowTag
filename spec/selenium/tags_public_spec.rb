@@ -6,14 +6,11 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "TagsPublicTest" do
-  fixtures :users
-  
   before(:each) do
-    Tag.delete_all
     user = User.create! valid_user_attributes
     @tag = Tag.create! :name => "foo", :public => true, :user_id => user.id
     
-    login
+    login Generate.user!
     page.open public_tags_path
     page.wait_for :wait_for => :ajax
   end

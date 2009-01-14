@@ -6,15 +6,14 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "FeedItemsTest" do
-  fixtures :users, :feed_items, :feeds, :tags
+  fixtures :feed_items, :feeds, :tags
 
   before(:each) do
-    Reading.delete_all
     Reading.create! :user_id => 1, :readable_type => "FeedItem", :readable_id => 2
     Reading.create! :user_id => 1, :readable_type => "FeedItem", :readable_id => 3
     Reading.create! :user_id => 1, :readable_type => "FeedItem", :readable_id => 4
     
-    login
+    login Generate.user!
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end
@@ -96,9 +95,6 @@ describe "FeedItemsTest" do
   end
   
   it "displays an empty message when there are no feed items" do
-    Tagging.delete_all
-    FeedItem.delete_all
-
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   

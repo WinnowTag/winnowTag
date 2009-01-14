@@ -68,19 +68,12 @@ Spec::Runner.configure do |config|
     User.stub!(:encrypt).and_return('password')
   end
 
-  def valid_feed_item!(attributes = {})
-    attributes = valid_feed_item_attributes(attributes)
-    fi = FeedItem.new(attributes)
-    fi.id = attributes[:id]
-    fi.save!
-    fi
-  end
-  
-  def login_as(user_id_or_fixture_name)
-    session[:user] = case user_id_or_fixture_name
-      when User;    user_id_or_fixture_name.id
-      when Numeric; user_id_or_fixture_name
-      when Symbol;  users(user_id_or_fixture_name).id
+  def login_as(user_or_user_id)
+    session[:user] = case user_or_user_id
+      when User;     user_or_user_id.id
+      when Numeric;  user_or_user_id
+      when NilClass; nil
+      else           raise "Cannot login as #{user_or_user_id.inspect}"
     end
   end
   
@@ -90,22 +83,6 @@ Spec::Runner.configure do |config|
   
   def mock_new_model(model_class, options_and_stubs = {})
     mock_model(model_class, options_and_stubs.reverse_merge(:id => nil, :to_param => nil, :new_record? => true))
-  end
-  
-  def mock_user_for_controller
-    @user = mock_model(User, valid_user_attributes)
-    @tags = mock("tags")
-    
-    User.stub!(:find_by_id).and_return(@user)
-    @user.stub!(:tags).and_return(@tags)
-    @user.should_receive(:update_attribute).any_number_of_times.with(:last_accessed_at, anything).and_return(true)
-  end
-  
-  def mock_model_with_dom_id(cls, attributes)
-    m = mock_model(cls, attributes)    
-    m.stub!(:dom_id).with(no_args()).and_return("#{cls.name.underscore}_#{m.id}")
-    m.should_receive(:dom_id).with(an_instance_of(String)).any_number_of_times.and_return {|p| "#{p}_#{cls.name.underscore}_#{m.id}"}
-    m
   end
   
   def referer(referer)
@@ -122,6 +99,7 @@ Spec::Runner.configure do |config|
   end
   
   include AuthenticatedTestHelper
+  
   def assert_requires_login(login = nil)
     yield HttpLoginProxy.new(self, login)
   end

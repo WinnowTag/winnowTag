@@ -7,21 +7,22 @@ require File.dirname(__FILE__) + '/../spec_helper'
 require 'active_resource/http_mock'
 
 describe Remote::Feed do
-  fixtures :feeds
   before(:each) do
     now = Time.parse("Thu, 10 Jul 2008 03:29:56 GMT")
     Time.should_receive(:now).at_least(1).and_return(now)
   end
   
   it "should send import_opml messages" do
+    feed = Generate.feed!
+    
     ActiveResource::HttpMock.respond_to do |http|
       http.post "/feeds/import_opml.xml", 
         {"Authorization" => "AuthHMAC winnow_id:qcSBTcXB/DPo4AatdqvnpRdzeA4=", "Content-Type" => "text/x-opml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 
-        [Feed.find(1)].to_xml, 200
+        [feed].to_xml, 200
     end
     
     feeds = Remote::Feed.import_opml(File.read(File.join(RAILS_ROOT, 'spec', 'fixtures', 'example.opml')))
-    feeds.should == [Remote::Feed.new(Feed.find(1).attributes)]
+    feeds.should == [Remote::Feed.new(feed.attributes)]
   end
     
   it "collect_creates_new_collection_job" do

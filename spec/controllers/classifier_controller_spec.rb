@@ -7,8 +7,9 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe ClassifierController do
   before(:each) do
-    mock_user_for_controller
-    login_as(1)
+    @user = Generate.user!
+    login_as @user
+    User.stub!(:find_by_id).and_return(@user)
     @user.stub!(:potentially_undertrained_changed_tags).and_return([])
     @user.stub!(:changed_tags).and_return([mock_model(Tag, :name => 'tag')])
   end  

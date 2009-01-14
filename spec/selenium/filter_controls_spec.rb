@@ -6,11 +6,11 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "filter controls" do
-  fixtures :users, :tags
+  fixtures :tags
 
   before(:each) do
-    @user = users(:quentin)
-    login
+    @user = Generate.user!
+    login @user
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end
@@ -64,9 +64,9 @@ describe "filter controls" do
   
   describe "tag filter" do
     before(:each) do
-      Tag.delete_all
-      @tag = Tag.create! :name => "ruby", :user => users(:quentin)
-      @sql = Tag.create! :name => "sql", :user => users(:quentin)
+      user = Generate.user!
+      @tag = Tag.create! :name => "ruby", :user => user
+      @sql = Tag.create! :name => "sql", :user => user
       page.open feed_items_path
       page.wait_for :wait_for => :ajax
     end
