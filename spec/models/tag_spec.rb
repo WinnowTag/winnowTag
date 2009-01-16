@@ -6,6 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Tag do
+  CLASSIFIER_NS = 'http://peerworks.org/classifier'
+
   describe "associations" do
     before(:each) do
       @tag = Tag.new
@@ -166,7 +168,7 @@ describe Tag do
       tag.taggings.should == [t1]
     end
   end
-  
+
   describe "#potentially_undertrained?" do
     before(:each) do
       @user = Generate.user!
@@ -198,7 +200,7 @@ describe Tag do
       @tag.should_not be_potentially_undertrained
     end
   end
-  
+
   describe '.to_atom' do
     before(:each) do
       @atom = Tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
@@ -235,7 +237,7 @@ describe Tag do
         e.links.detect {|l| l.rel = "#{CLASSIFIER_NS}/training" && l.href =~ %r{http://winnow.mindloom.org/\w+/tags/\w+/training.atom} }.should_not be_nil
       end
     end
-  end  
+  end
 end
 
 describe 'to_atom', :shared => true do
@@ -289,15 +291,13 @@ end
 
 describe Tag do
   describe "#to_atom" do
-    CLASSIFIER_NS = 'http://peerworks.org/classifier'
-    
-    before(:all) do
-      @user = User.create! valid_user_attributes
-      @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag', :last_classified_at => Time.now)
-      @tag.taggings.create!(:feed_item => @feed_item1 = Generate.feed_item!, :user => @user, :strength => 1)
-      @tag.taggings.create!(:feed_item => @feed_item2 = Generate.feed_item!, :user => @user, :strength => 1)
-      @tag.taggings.create!(:feed_item => @feed_item3 = Generate.feed_item!, :user => @user, :strength => 0)
-      @tag.taggings.create!(:feed_item => @feed_item4 = Generate.feed_item!, :user => @user, :strength => 0.95, :classifier_tagging => true)
+    before(:each) do
+      @user = Generate.user!
+      @tag = Generate.tag! :user => @user, :name => 'mytag', :last_classified_at => Time.now
+      @user.taggings.create!(:feed_item => @feed_item1 = Generate.feed_item!, :tag => @tag, :strength => 1)
+      @user.taggings.create!(:feed_item => @feed_item2 = Generate.feed_item!, :tag => @tag, :strength => 1)
+      @user.taggings.create!(:feed_item => @feed_item3 = Generate.feed_item!, :tag => @tag, :strength => 0)
+      @user.taggings.create!(:feed_item => @feed_item4 = Generate.feed_item!, :tag => @tag, :strength => 0.95, :classifier_tagging => true)
       @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
     end     
     
@@ -364,7 +364,7 @@ describe Tag do
     end
     
     describe "with training only" do   
-      before(:all) do
+      before(:each) do
         @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
       end
     
@@ -490,10 +490,10 @@ describe Tag do
           end
         end
       end
-    end    
-   
+    end
+
     it_should_behave_like 'create_taggings_from_atom'
-    
+
     describe 'with missing items in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
@@ -508,7 +508,7 @@ describe Tag do
       end
       it_should_behave_like 'create_taggings_from_atom'
     end
-    
+
     describe 'with strength-less item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
@@ -517,7 +517,7 @@ describe Tag do
       end
       it_should_behave_like 'create_taggings_from_atom'
     end
-    
+
     describe 'with bad id item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
@@ -532,7 +532,7 @@ describe Tag do
       end
       it_should_behave_like 'create_taggings_from_atom'
     end
-    
+
     describe 'with strength less than 0.9 item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
@@ -548,7 +548,7 @@ describe Tag do
       it_should_behave_like 'create_taggings_from_atom'
     end
   end
-  
+
   describe "#replace_taggings_from_atom" do
     before(:each) do
       @user = User.create! valid_user_attributes
@@ -605,7 +605,7 @@ describe Tag do
     end
   end
 end
-  
+
 describe Tag do
   describe "from test/unit" do
     it "cant_create_duplicate_tags" do

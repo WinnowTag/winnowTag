@@ -48,17 +48,17 @@ describe Folder do
       feed1 = Generate.feed!
       feed2 = Generate.feed!
       feed3 = Generate.feed!
-      first  = user.folders.create! :name => "First",  :feed_ids => [feed1.id, feed2.id, feed3.id]
-      second = user.folders.create! :name => "Second", :feed_ids => [feed2.id, feed1.id, feed3.id]
-      third  = user.folders.create! :name => "Third",  :feed_ids => [feed1.id, feed3.id, feed2.id]
-      fourth = user.folders.create! :name => "Forth",  :feed_ids => [feed1.id, feed3.id]
+      folder1 = user.folders.create! :name => "Folder 1", :feed_ids => [feed1.id, feed2.id, feed3.id]
+      folder2 = user.folders.create! :name => "Folder 2", :feed_ids => [feed2.id, feed1.id, feed3.id]
+      folder3 = user.folders.create! :name => "Folder 3", :feed_ids => [feed1.id, feed3.id, feed2.id]
+      folder4 = user.folders.create! :name => "Folder 4", :feed_ids => [feed1.id, feed3.id]
 
       Folder.remove_feed(user, feed2.id)
   
-      first.reload.feed_ids.should  == [feed1.id, feed3.id]
-      second.reload.feed_ids.should == [feed1.id, feed3.id]
-      third.reload.feed_ids.should  == [feed1.id, feed3.id]
-      fourth.reload.feed_ids.should == [feed1.id, feed3.id]
+      folder1.reload.feed_ids.should == [feed1.id, feed3.id]
+      folder2.reload.feed_ids.should == [feed1.id, feed3.id]
+      folder3.reload.feed_ids.should == [feed1.id, feed3.id]
+      folder4.reload.feed_ids.should == [feed1.id, feed3.id]
     end
   end
 end

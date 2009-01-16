@@ -22,11 +22,14 @@ class Generate
   
   def self.user!(attributes = {})
     unique_id = unique_id_for(:user)
+    crypted_password = attributes[:password] ? 
+      BCrypt::Password.create(attributes.delete(:password)) : 
+      "$2a$10$UyBxy/Db9lk/jKKVsBI0dOegH6R/FY9Zx4.kuZU/7HqiMKVmLYpLG" # password
     
     User.create!(attributes.reverse_merge(
       :login => "user_#{unique_id}",
       :email => "user_#{unique_id}@example.com",
-      :crypted_password => BCrypt::Password.create(attributes.delete(:password) || "password"),
+      :crypted_password => crypted_password,
       :firstname => "John",
       :lastname => "Doe",
       :time_zone => "UTC",
