@@ -90,7 +90,7 @@ describe Remote::Feed do
     assert job.errors.empty?
   end
   
-  it "find_or_create_by_url_with_duplicate    " do
+  it "find_or_create_by_url_with_duplicate" do
     ActiveResource::HttpMock.respond_to do |http|
       http.post "/feeds.xml", 
         {"Authorization" => "AuthHMAC winnow_id:HpYILSABqZYTFkEVKfDWZglB7GY=", "Content-Type" => "application/xml", 'Date' => "Thu, 10 Jul 2008 03:29:56 GMT"}, 

@@ -34,7 +34,7 @@ When(/^I create a feed for "(.*)"$/) do |feed_url|
     request.method  :post
     request.path    "/feeds.xml"
     request.headers "Authorization" => /^AuthHMAC winnow_id:.*/, 'Date' => /.*/, 'Content-Type' => "application/xml"
-    request.body    Remote::Feed.new(:url => feed_url, :created_by => 'quentin').to_xml
+    request.body    Remote::Feed.new(:url => feed_url, :created_by => current_user.login).to_xml
 
     if invalid_url.call(feed_url)
       response.code    422
@@ -64,7 +64,7 @@ When(/^I create a feed for "(.*)"$/) do |feed_url|
       feed = Feed.find_by_via(feed_url)
       response.code    201
       response.headers 'Location' => '/feeds/23'
-      response.body    Remote::Feed.new(:url => feed_url, :created_by => 'quentin', :uri => feed ? feed.uri : "NewFeed").to_xml
+      response.body    Remote::Feed.new(:url => feed_url, :created_by => current_user.login, :uri => feed ? feed.uri : "NewFeed").to_xml
     end
   end                
                      
@@ -72,12 +72,12 @@ When(/^I create a feed for "(.*)"$/) do |feed_url|
     request.method  :post
     request.path    "/feeds/23/collection_jobs.xml"
     request.headers "Authorization" => /^AuthHMAC winnow_id:.*/, 'Date' => /.*/, 'Content-Type' => "application/xml"
-    request.body    Remote::CollectionJob.new(:callback_url => 'http://www.example.com/users/quentin/collection_job_results', :created_by => 'quentin').to_xml
+    request.body    Remote::CollectionJob.new(:callback_url => "http://www.example.com/users/#{current_user.login}/collection_job_results", :created_by => current_user.login).to_xml
 
     # TODO: Is this response right?
     response.code    201
     response.headers 'Location' => '/collection_jobs/23'
-    response.body    Remote::CollectionJob.new(:callback_url => 'http://www.example.com/users/quentin/collection_job_results', :created_by => 'quentin').to_xml
+    response.body    Remote::CollectionJob.new(:callback_url => "http://www.example.com/users/#{current_user.login}/collection_job_results", :created_by => current_user.login).to_xml
   end
 
   visit feeds_path

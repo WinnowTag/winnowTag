@@ -16,10 +16,7 @@ require Pathname.new(Rails.root).join(*%w[spec support valid_attributes])
 class Cucumber::Rails::World
   include ValidAttributes
   
-  # TODO: Fix me
-  def current_user
-    User.find_by_login!("quentin")
-  end
+  attr_accessor :current_user
 end
 
 class Webrat::SearchField < Webrat::TextField

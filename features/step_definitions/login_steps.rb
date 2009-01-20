@@ -4,8 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 Given(/^I am logged in$/) do
-  user = Generate.user!
-  post login_path, :login => user.login, :password => "password"
+  @current_user = Generate.user!
+  post login_path, :login => @current_user.login, :password => "password"
 end
 
 When "I visit $path" do |path|
