@@ -11,11 +11,8 @@ require 'cucumber/rails/rspec'
 require 'spec/mocks'
 
 require Pathname.new(Rails.root).join(*%w[spec support generate])
-require Pathname.new(Rails.root).join(*%w[spec support valid_attributes])
 
 class Cucumber::Rails::World
-  include ValidAttributes
-  
   attr_accessor :current_user
 end
 

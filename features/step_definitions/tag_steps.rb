@@ -4,8 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 Given("a public tag in the system") do
-  @user = User.create!(valid_user_attributes)
-  @tag = Tag.create!(:name => 'storytag', :user => @user, :public => true)
+  @user = Generate.user!
+  @tag = Generate.tag!(:user => @user, :public => true)
 end
 
 When("I access /username/tags/tagname.atom") do

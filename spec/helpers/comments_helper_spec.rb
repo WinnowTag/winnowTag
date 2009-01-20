@@ -11,7 +11,7 @@ describe CommentsHelper do
   attr_reader :current_user
   
   before(:each) do
-    @current_user = mock_model(User, valid_user_attributes)
+    @current_user = Generate.user!
   end
   
   describe "#can_edit_comment?" do

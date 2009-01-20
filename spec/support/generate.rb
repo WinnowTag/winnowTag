@@ -10,6 +10,20 @@ class Generate
     UniqueId[key] += 1
   end
   
+  def self.invite(attributes = {})
+    unique_id = unique_id_for(:invite)
+    
+    Invite.new(attributes.reverse_merge(
+      :email => "user_#{unique_id}@example.com"
+    ))
+  end
+  
+  def self.invite!(attributes = {})
+    returning self.invite(attributes) do |invite|
+      invite.save!
+    end 
+  end
+  
   def self.comment(attributes = {})
     unique_id = unique_id_for(:comment)
     
@@ -20,13 +34,13 @@ class Generate
     ))
   end
   
-  def self.user!(attributes = {})
+  def self.user(attributes = {})
     unique_id = unique_id_for(:user)
     crypted_password = attributes[:password] ? 
       BCrypt::Password.create(attributes.delete(:password)) : 
       "$2a$10$UyBxy/Db9lk/jKKVsBI0dOegH6R/FY9Zx4.kuZU/7HqiMKVmLYpLG" # password
     
-    User.create!(attributes.reverse_merge(
+    User.new(attributes.reverse_merge(
       :login => "user_#{unique_id}",
       :email => "user_#{unique_id}@example.com",
       :crypted_password => crypted_password,
@@ -37,10 +51,16 @@ class Generate
     ))
   end
   
+  def self.user!(attributes = {})
+    returning self.user(attributes) do |user|
+      user.save!
+    end
+  end
+  
   def self.admin!(attributes = {})
-    admin = self.user!(attributes)
-    admin.has_role("admin")
-    admin
+    returning self.user!(attributes) do |admin|
+      admin.has_role("admin")
+    end
   end
   
   def self.tag(attributes = {})
@@ -53,14 +73,19 @@ class Generate
   end
 
   def self.tag!(attributes = {})
-    unique_id = unique_id_for(:tag)
+    returning self.tag(attributes) do |tag|
+      tag.save!
+    end
+  end
+  
+  def self.tag_usage(attributes = {})
+    unique_id = unique_id_for(:tag_usage)
     
-    Tag.create!(attributes.reverse_merge(
-      :name => "Tag #{unique_id}",
-      :user => Generate.user!
+    TagUsage.new(attributes.reverse_merge(
+      :tag => Generate.tag!
     ))
   end
-
+  
   def self.feed!(attributes = {})
     unique_id = unique_id_for(:feed)
     

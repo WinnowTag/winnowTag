@@ -61,7 +61,6 @@ Spec::Runner.configure do |config|
   config.include ValidationMatchers, AssociationMatchers, :type => :model
   config.include CustomSeleniumHelpers, :type => :selenium
   config.include WinnowMatchers, :type => :code
-  config.include ValidAttributes
 
   # Stub out User.encrypt for faster testing
   config.before(:each, :type => [:controllers, :helpers, :models, :views]) do

@@ -51,7 +51,7 @@ describe ClassifierController do
     end
   
     it "should not start a job when changed tags are potentially undertrained" do
-      tag = mock_model(Tag, valid_tag_attributes)
+      tag = mock_model(Tag, :name => "tag")
       @user.should_receive(:potentially_undertrained_changed_tags).and_return([tag])
       Remote::ClassifierJob.should_not_receive(:create)
       post 'classify'

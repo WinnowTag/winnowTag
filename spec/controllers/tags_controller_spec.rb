@@ -214,6 +214,8 @@ describe TagsController do
       @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
       @user.stub!(:tags).and_return(@mock_tags)
       User.stub!(:find_by_login).with(@user.login).and_return(@user)
+      
+      TagUsage.stub!(:create!)
     end
   
     it_should_behave_like 'conditional GET of tag'
@@ -300,12 +302,6 @@ describe TagsController do
       response.code.should == "400"
     end
     
-    it "should return 405 when not :put or :post" do
-      @controller.stub!(:hmac_authenticated?).and_return(true)
-      get :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
-      response.code.should == "405"
-    end
-    
     it "should call @tag.create_taggings_from_atom with POST and return 201" do
       @controller.stub!(:hmac_authenticated?).and_return(true)
       @tag.should_receive(:create_taggings_from_atom).with(@atom)
@@ -328,7 +324,7 @@ describe TagsController do
     
     it "should not allow POST when not logged in" do
       login_as(nil)
-      put :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
+      post :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
       response.code.should == "401"
     end
     
@@ -340,7 +336,7 @@ describe TagsController do
     
     it "should not allow PUT when not logged in" do
       login_as(nil)
-      post :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
+      put :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
       response.code.should == "401"
     end    
   end
@@ -399,16 +395,11 @@ describe TagsController do
     end
     
     it "should prevent destruction of other user's tag" do
-      tags = mock('other_user_tags')
-      tag = mock_model(Tag, valid_tag_attributes(:public? => true))
-      tag.should_not_receive(:destroy)
-      tags.should_receive(:find_by_name).with(tag.name).and_return(tag)
-      other_user = mock_model(User, valid_user_attributes)
-      other_user.stub!(:tags).and_return(tags)
-      User.stub!(:find_by_login).with(other_user.login).and_return(other_user)
-      
-      delete :destroy, :user => other_user.login, :tag_name => tag.name
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      delete :destroy, :user => user.login, :tag_name => tag.name
       response.should_not be_success
+      lambda { tag.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
     end
   end
   

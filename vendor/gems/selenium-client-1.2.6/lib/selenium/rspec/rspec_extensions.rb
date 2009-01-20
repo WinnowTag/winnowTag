@@ -23,7 +23,11 @@ module Spec
           @selenium_driver = Selenium::Client::Driver.instance "localhost", 4444, "*#{CONFIG[:browser]}", "http://#{CONFIG[:test_host]}", 10000
         end
 
-        prepend_before(:each) do
+        # prepend_before(:each) do
+        #   page.start_new_browser_session
+        # end
+
+        append_after(:each) do
           # Some deletes fail because of foreign key constraints. Catch any failures and try then again. Eventually it will work out.
           classes = ActiveRecord::Base.send(:subclasses).select(&:table_exists?)
           while classes.size > 0
@@ -35,10 +39,6 @@ module Spec
             end
           end
 
-          # page.start_new_browser_session
-        end
-
-        append_after(:each) do
           # page.close_current_browser_session
 
           page.delete_all_visible_cookies

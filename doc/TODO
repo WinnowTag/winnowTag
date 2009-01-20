@@ -1,9 +1,8 @@
 All
  * urn:uuid
- * valid_*_attributes
  * id's to models
  * new, create create!, find
-
+ * mock_model
 
 * xslt on trunk so gems:build works
 * cleanup tagging indexes

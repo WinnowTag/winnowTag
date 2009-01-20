@@ -14,7 +14,7 @@ Given("the item entry at '$entry'") do |entry|
 end
 
 Given("a feed in the system") do
-  @feed = Feed.new(valid_feed_attributes(:via => 'http://example.org/feed'))
+  @feed = Generate.feed!(:via => 'http://example.org/feed')
   @feed.save!
   @feed_id = @feed.id
 end

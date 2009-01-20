@@ -111,12 +111,12 @@ describe Tag do
   
   describe "specs" do
     it "filters items by search term" do
-      user_1 = User.create! valid_user_attributes
-      user_2 = User.create! valid_user_attributes(:login => "everman")
+      user_1 = Generate.user!
+      user_2 = Generate.user!(:login => "everman")
     
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "The best tag ever in the world", :comment => "")
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "Another Tag", :comment => "The second best tag ever")
-      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
+      tag_1 = Generate.tag!(:user => user_1, :name => "The best tag ever in the world", :comment => "")
+      tag_2 = Generate.tag!(:user => user_1, :name => "Another Tag", :comment => "The second best tag ever")
+      tag_3 = Generate.tag!(:user => user_2, :name => "My cool tag", :comment => "")
     
       tags = Tag.search(:user => user_1, :text_filter => "ever", :order => "id")
       tags.should == [tag_1, tag_2, tag_3]
@@ -135,7 +135,7 @@ describe Tag do
       user = Generate.user!
       feed_item = Generate.feed_item!
   
-      tag = Tag.create! valid_tag_attributes(:user => user, :name => "No this tag is the best tag in the world")
+      tag = Generate.tag!(:user => user, :name => "No this tag is the best tag in the world")
       updated_on = tag.updated_on = Time.now.yesterday
 
       Tagging.create! :tag => tag, :user => user, :feed_item => feed_item, :strength => 1    
@@ -146,7 +146,7 @@ describe Tag do
       user = Generate.user!
       feed_item = Generate.feed_item!
   
-      tag = Tag.create! valid_tag_attributes(:user => user, :name => "No this tag is the best tag in the world")
+      tag = Generate.tag!(:user => user, :name => "No this tag is the best tag in the world")
       tagging = Tagging.create! :tag => tag, :user => user, :feed_item => feed_item, :strength => 1    
       updated_on = tag.updated_on = Time.now.yesterday
       tagging.destroy
@@ -157,7 +157,7 @@ describe Tag do
       user = Generate.user!
       feed_item_1 = Generate.feed_item!
       feed_item_2 = Generate.feed_item!
-      tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "mytag")
+      tag = Generate.tag!(:user => user, :name => "mytag")
     
       t1 = Tagging.create! :user => user, :feed_item => feed_item_1, :tag => tag
       t2 = Tagging.create! :user => user, :feed_item => feed_item_2, :tag => tag, :classifier_tagging => true
@@ -172,8 +172,8 @@ describe Tag do
   describe "#potentially_undertrained?" do
     before(:each) do
       @user = Generate.user!
-      @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag')
-      # I need more items to tag
+      @tag = Generate.tag!(:user => @user, :name => 'mytag')
+
       Generate.feed_item!
       Generate.feed_item!
       Generate.feed_item!
@@ -458,8 +458,8 @@ end
 describe Tag do
   describe "#create_taggings_from_atom" do      
     before(:each) do
-      @user = User.create! valid_user_attributes
-      @tag = Tag.create! valid_tag_attributes(:user => @user)
+      @user = Generate.user!
+      @tag = Generate.tag!(:user => @user)
       @feed_item1 = Generate.feed_item!
       @feed_item2 = Generate.feed_item!
       @feed_item3 = Generate.feed_item!
@@ -551,9 +551,9 @@ describe Tag do
 
   describe "#replace_taggings_from_atom" do
     before(:each) do
-      @user = User.create! valid_user_attributes
-      @tag = Tag.create! valid_tag_attributes(:user => @user)
-      @tag2 = Tag.create! valid_tag_attributes(:user => @user)
+      @user = Generate.user!
+      @tag = Generate.tag!(:user => @user)
+      @tag2 = Generate.tag!(:user => @user)
       feed_item1 = Generate.feed_item!
       feed_item2 = Generate.feed_item!
       feed_item3 = Generate.feed_item!

@@ -34,10 +34,10 @@ describe User do
   
   describe "prototype" do
     it "marks all other users as non-prototypes when saving a prototype" do
-      original_prototype = User.create! valid_user_attributes(:prototype => true)
+      original_prototype = Generate.user!(:prototype => true)
       original_prototype.should be_prototype
       
-      new_prototype = User.create! valid_user_attributes(:prototype => true)
+      new_prototype = Generate.user!(:prototype => true)
       new_prototype.should be_prototype
       
       original_prototype.reload
@@ -45,20 +45,20 @@ describe User do
     end
 
     it "creating from a prototype activates the new user" do
-      prototype = User.create! valid_user_attributes(:prototype => true)
-      user = User.create_from_prototype(valid_user_attributes)
+      prototype = Generate.user!(:prototype => true)
+      user = User.create_from_prototype(Generate.user.attributes)
       user.should be_active
     end
     
     it "creating from a prototype marks all system messages as read" do
-      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype = Generate.user!(:prototype => true)
       message = Message.create! :body => "some test message"
-      user = User.create_from_prototype(valid_user_attributes)
+      user = User.create_from_prototype(Generate.user.attributes)
       Message.unread(user).for(user).should be_empty
     end
     
     it "creating from a prototype returns a new user record if the record was invalid" do
-      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype = Generate.user!(:prototype => true)
       user = User.create_from_prototype
       user.should be_new_record
     end
@@ -70,11 +70,11 @@ describe User do
       feed2 = Generate.feed!
       feed3 = Generate.feed!
       
-      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype = Generate.user!(:prototype => true)
       prototype.folders.create!(:name => "Big", :tag_ids => [tag1.id, tag2.id], :feed_ids => [feed1.id, feed2.id, feed3.id])
       prototype.folders.create!(:name => "Small", :tag_ids => [tag1.id], :feed_ids => [feed3.id])
       
-      user = User.create_from_prototype(valid_user_attributes)
+      user = User.create_from_prototype(Generate.user.attributes)
       user.should have(2).folders
       
       user.folders.first.name.should == "Big"
@@ -87,11 +87,11 @@ describe User do
     end
     
     it "creating from a prototype copies over feed subscriptions" do
-      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype = Generate.user!(:prototype => true)
       prototype.feed_subscriptions.create!(:feed_id => 1)
       prototype.feed_subscriptions.create!(:feed_id => 2)
       
-      user = User.create_from_prototype(valid_user_attributes)
+      user = User.create_from_prototype(Generate.user.attributes)
       user.should have(2).feed_subscriptions
       
       user.feed_subscriptions.first.feed_id.should == 1
@@ -99,11 +99,11 @@ describe User do
     end
     
     it "creating from a prototype copies over tag subscriptions" do
-      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype = Generate.user!(:prototype => true)
       prototype.tag_subscriptions.create!(:tag_id => 1)
       prototype.tag_subscriptions.create!(:tag_id => 2)
       
-      user = User.create_from_prototype(valid_user_attributes)
+      user = User.create_from_prototype(Generate.user.attributes)
       user.should have(2).tag_subscriptions
       
       user.tag_subscriptions.first.tag_id.should == 1
@@ -114,14 +114,14 @@ describe User do
       feed_item1 = Generate.feed_item!
       feed_item2 = Generate.feed_item!
       
-      prototype = User.create! valid_user_attributes(:prototype => true)
+      prototype = Generate.user!(:prototype => true)
                   
       tag1 = prototype.tags.create!(:name => "Tag 1", :public => false, :bias => 1.2, :show_in_sidebar => true, :comment => "Tag 1 Comment")
       tag1.taggings.create! :classifier_tagging => true, :strength => 1, :feed_item_id => feed_item1.id, :user_id => prototype.id
       tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :comment => "Tag 2 Comment")
       tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => feed_item2.id, :user_id => prototype.id
       
-      user = User.create_from_prototype(valid_user_attributes)
+      user = User.create_from_prototype(Generate.user.attributes)
       user.should have(2).tags
       
       user.tags.first.name.should == "Tag 1"
@@ -154,7 +154,7 @@ describe User do
   
   describe "logging login" do 
     before(:each) do
-      @user = User.create! valid_user_attributes
+      @user = Generate.user!
       @time = Time.now
       
       @user.logged_in_at.should_not == @time
@@ -172,7 +172,7 @@ describe User do
   
   describe "logging reminder login" do 
     before(:each) do
-      @user = User.create! valid_user_attributes(:reminder_code => "some randome string", :reminder_expires_at => 2.days.from_now)
+      @user = Generate.user!(:reminder_code => "some randome string", :reminder_expires_at => 2.days.from_now)
       @time = Time.now
       
       @user.logged_in_at.should_not == @time
@@ -200,7 +200,7 @@ describe User do
   
   describe "enabling reminder login" do 
     before(:each) do
-      @user = User.create! valid_user_attributes
+      @user = Generate.user!
 
       @user.reminder_code.should be_nil
       @user.reminder_expires_at.should be_nil
@@ -218,11 +218,11 @@ describe User do
   
   describe "searching" do
     it "can find users by login, email, firstname, or lastname" do
-      user1 = User.create! valid_user_attributes(:login => "mark")
-      user2 = User.create! valid_user_attributes(:email => "mark@example.com")
-      user3 = User.create! valid_user_attributes(:firstname => "mark")
-      user4 = User.create! valid_user_attributes(:lastname => "mark")
-      user5 = User.create! valid_user_attributes
+      user1 = Generate.user!(:login => "mark")
+      user2 = Generate.user!(:email => "mark@example.com")
+      user3 = Generate.user!(:firstname => "mark")
+      user4 = Generate.user!(:lastname => "mark")
+      user5 = Generate.user!
       
       expected_users = [user1, user2, user3, user4]
       
@@ -233,9 +233,9 @@ describe User do
   
   describe '#changed_tags' do
     before(:each) do
-      @user = User.create! valid_user_attributes      
-      @changed_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.yesterday.getutc))
-      @unchanged_tag = @user.tags.create!(valid_tag_attributes(:last_classified_at => Time.now.tomorrow.getutc))
+      @user = Generate.user!
+      @changed_tag = Generate.tag!(:user => @user, :last_classified_at => Time.now.yesterday.getutc)
+      @unchanged_tag = Generate.tag!(:user => @user, :last_classified_at => Time.now.tomorrow.getutc)
     end
     
     it "should return tag with updated_on later than last_classified" do
@@ -289,12 +289,12 @@ describe User do
     end
     
     it "should_require_login" do
-      user = User.new valid_user_attributes(:login => nil)
+      user = Generate.user(:login => nil)
       user.should have(1).error_on(:login)
     end
 
     it "should_require_password" do
-      user = User.new valid_user_attributes(:password => nil)
+      user = Generate.user(:crypted_password => nil, :password_confirmation => "password")
       user.should have(2).errors_on(:password)
     end
     
@@ -323,17 +323,17 @@ describe User do
     end
   
     it "should_require_email" do
-      user = User.new valid_user_attributes(:email => nil)
+      user = Generate.user(:email => nil)
       user.should have(1).error_on(:email)
     end
     
     it "login allows alphanumberic, -, and _" do
-      user = User.new(valid_user_attributes(:login => "John-J_Doe"))
+      user = Generate.user(:login => "John-J_Doe")
       user.should be_valid
     end
     
     it "login does not allow characters other than alphanumberic, -, and _" do
-      user = User.new(valid_user_attributes(:login => "john@example.com"))
+      user = Generate.user(:login => "john@example.com")
       user.should have(1).error_on(:login)
     end
 

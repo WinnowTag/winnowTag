@@ -7,8 +7,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe MessagesController do
   before(:each) do
-    @current_user = User.create! valid_user_attributes
-    login_as @current_user
+    login_as Generate.user!
   end
   
   describe "handling GET /messages" do
