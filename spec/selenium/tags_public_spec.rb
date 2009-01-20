@@ -7,8 +7,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "TagsPublicTest" do
   before(:each) do
-    user = User.create! valid_user_attributes
-    @tag = Tag.create! :name => "foo", :public => true, :user_id => user.id
+    @tag = Generate.tag! :public => true
     
     login Generate.user!
     page.open public_tags_path

@@ -1,11 +1,8 @@
-Selenium
- * fixtures
-
 All
  * urn:uuid
  * valid_*_attributes
  * id's to models
-
+ * new, create create!, find
 
 
 * xslt on trunk so gems:build works

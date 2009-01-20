@@ -16,7 +16,7 @@ describe "folders" do
     @another_example_feed.id = 2
     @another_example_feed.save!
     FeedSubscription.create! :feed_id => @another_example_feed.id, :user_id => @current_user.id
-    @user = User.create! valid_user_attributes
+    @user = Generate.user!
     @private_tag = Tag.create! :name => "private tag", :user_id => @current_user.id
     @public_tag = Tag.create! :name => "public tag", :user_id => @user.id, :public => true
     TagSubscription.create! :tag_id => @public_tag.id, :user_id => @current_user.id
