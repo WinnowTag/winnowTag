@@ -161,7 +161,7 @@ body#login .container .welcome {
   background-color: #d7e0f5;
 }
 
-body#login .container h2 {
+body#login .container .welcome h2 {
   margin-bottom: 0.75em;
   color: #069;  
   font-size: 2em;
