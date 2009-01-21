@@ -1,5 +1,5 @@
 <% form_tag public_tags_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:tags_header_search_placeholder) %>
+  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t(:tags_header_search_placeholder) %>
 <% end -%>
 
 <div class="order clearfix">

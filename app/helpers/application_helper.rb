@@ -93,16 +93,6 @@ module ApplicationHelper
     cookies[id] =~ /true/i
   end
   
-  def search_field_tag(name, value = nil, options = {})
-    options[:clear] ||= {}
-    options[:placeholder] ||= t(:default_search_placeholder)
-    content_tag :div, 
-      content_tag(:span, nil, :class => "sbox_l") +      
-      tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name) +
-      content_tag(:span, nil, :class => "sbox_r srch_clear"),
-      :class => "applesearch clearfix"
-  end
-
   def globally_exclude_check_box(tag_or_feed)
     url = if tag_or_feed.is_a?(Tag)
       globally_exclude_tag_path(tag_or_feed)
