@@ -342,9 +342,6 @@ describe FeedItem do
       @tag1 = Generate.tag!(:user => @user)
       @tag2 = Generate.tag!(:user => @user)
       @item = Generate.feed_item!
-      @content = FeedItemContent.new(:content => "Example Content")
-      @content.feed_item_id = @item.id
-      @content.save!
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 0, :strength => 1)
       @item.taggings.create!(:tag => @tag1, :user => @user, :classifier_tagging => 1, :strength => 0)
       @item.taggings.create!(:tag => @tag2, :user => @user, :classifier_tagging => 0, :strength => 1)
