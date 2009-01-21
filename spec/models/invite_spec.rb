@@ -13,14 +13,6 @@ describe Invite do
       invite.should_not be_valid
       invite.should have(1).errors_on(:email)
     end
-    
-    it "validates uniqueness of email" do
-      invite1 = Generate.invite!(:email => "someone@example.com")
-      invite2 = Generate.invite(:email => "someone@example.com")
-      
-      invite2.should_not be_valid
-      invite2.should have(1).errors_on(:email)
-    end
   end
   
   describe "activation" do
