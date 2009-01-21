@@ -40,7 +40,6 @@ module Spec
           end
 
           # page.close_current_browser_session
-
           page.delete_all_visible_cookies
           
           page.get_all_window_names[1..-1].each do |window|

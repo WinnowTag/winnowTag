@@ -106,7 +106,14 @@ class Generate
       :title => "Feed Item #{unique_id}",
       :author => "Author #{unique_id}",
       :collector_link => "http://collector.mindloom.org/feed_items/#{unique_id}.atom",
-      :uri => "uri:FeedItem#{unique_id}"
+      :uri => "uri:FeedItem#{unique_id}",
+      :content => Generate.feed_item_content
+    ))
+  end
+  
+  def self.feed_item_content(attributes = {})
+    FeedItemContent.new(attributes.reverse_merge(
+      :content => "Example Content"
     ))
   end
 end
