@@ -28,7 +28,8 @@ namespace :gems do
     gems_to_build.uniq.each do |gem|
       next unless gem.frozen? && (ENV['GEM'].blank? || ENV['GEM'] == gem.name)
       gem_dir = gem.gem_dir(Rails::GemDependency.unpacked_path)
-      spec_file = File.join(gem_dir, '.specification')
+      spec_file = gem.spec_filename(Rails::GemDependency.unpacked_path)
+      next unless File.exists?(spec_file)
       specification = YAML::load_file(spec_file)
       Rails::GemBuilder.new(specification, gem_dir).build_extensions
       puts "Built gem: '#{gem_dir}'"

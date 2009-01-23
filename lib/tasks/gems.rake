@@ -4,7 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# TODO: Get this merged into Rails. It is only patched locally right now.
+# Get this merged into Rails. It is only patched locally right now.
+# http://rails.lighthouseapp.com/projects/8994-ruby-on-rails/tickets/1793-make-rake-gemsbuild-respect-railsenv
 # namespace :gems do
 #   task :build => :base do
 #     require 'rails/gem_builder'
