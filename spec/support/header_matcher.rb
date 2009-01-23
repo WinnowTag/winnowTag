@@ -14,17 +14,15 @@ module WinnowMatchers
 #{comment_line} Please visit http://www.peerworks.org/contact for further information.
 EOHEADER
       @header << "#{comment_end}\n" if comment_end
-      @header_size = @header.split(/\n/).size
     end
 
     def matches?(filename)
       @filename = filename
-      @match = File.read(filename).match(/(?:.*\n){#{@header_size}}/)
-      @match && @match[0] == @header
+      File.read(filename).match(Regexp.new(Regexp.escape(@header))) ? true : false
     end
 
     def failure_message
-      "expected #{@filename} to have the header:\n#{@header}\nbut had the header:\n#{@match}"
+      "expected #{@filename} to have the header:\n#{@header}"
     end
   end
   
