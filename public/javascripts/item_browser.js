@@ -306,10 +306,10 @@ var ItemBrowser = Class.create({
     var text_filter = $("text_filter");
     if(text_filter) {
       if(this.filters.text_filter) {
-        text_filter.hidePlaceHolder();
+        text_filter.hidePlaceholder();
         text_filter.value = this.filters.text_filter;
       } else {
-        text_filter.showPlaceHolder();
+        text_filter.showPlaceholder();
       }
     }
   }
