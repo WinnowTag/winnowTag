@@ -31,11 +31,9 @@ Rails::Initializer.run do |config|
   config.gem "bcrypt-ruby",     :lib => "bcrypt"
   config.gem "fastercsv"
   config.gem "fiveruns_manage"
-  # config.gem "fiveruns_tuneup"
   config.gem "hpricot"
   config.gem "ratom",           :lib => "atom"
   config.gem "RedCloth"
-  config.gem "selenium-client", :lib => "selenium/client"
 
   # Must be compiled/installed on the target system
   config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"

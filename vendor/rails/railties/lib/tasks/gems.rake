@@ -22,14 +22,14 @@ namespace :gems do
   end
 
   desc "Build any native extensions for unpacked gems"
-  task :build do
-    $rails_gem_installer = true
+  task :build => :base do
     require 'rails/gem_builder'
-    Dir[File.join(Rails::GemDependency.unpacked_path, '*')].each do |gem_dir|
+    gems_to_build = Rails.configuration.gems + Rails.configuration.gems.map { |gem| gem.dependencies }.flatten
+    gems_to_build.uniq.each do |gem|
+      next unless gem.frozen? && (ENV['GEM'].blank? || ENV['GEM'] == gem.name)
+      gem_dir = gem.gem_dir(Rails::GemDependency.unpacked_path)
       spec_file = File.join(gem_dir, '.specification')
-      next unless File.exists?(spec_file)
       specification = YAML::load_file(spec_file)
-      next unless ENV['GEM'].blank? || ENV['GEM'] == specification.name
       Rails::GemBuilder.new(specification, gem_dir).build_extensions
       puts "Built gem: '#{gem_dir}'"
     end
