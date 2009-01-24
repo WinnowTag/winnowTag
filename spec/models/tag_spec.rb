@@ -6,7 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Tag do
-  fixtures :users, :feed_items, :feed_item_contents
+  CLASSIFIER_NS = 'http://peerworks.org/classifier'
+
   describe "associations" do
     before(:each) do
       @tag = Tag.new
@@ -27,11 +28,9 @@ describe Tag do
   
   describe "tagging counts" do
     it "is properly calculated for private tags" do
-      Tag.delete_all
-      
-      u = users(:quentin)
-      fi1 = feed_items(:first)
-      fi2 = feed_items(:forth)
+      u = Generate.user!
+      fi1 = Generate.feed_item!
+      fi2 = Generate.feed_item!
       classifier = Tag(u, 'classifier')
       classifier_diff = Tag(u, 'classifier_diff')
       classifier_neg = Tag(u, 'classifier_neg')
@@ -91,20 +90,19 @@ describe Tag do
     end
   
     it "is properly calculated for subscribed tags" do
-      Tag.delete_all
-
-      u = users(:quentin)
-      fi1 = FeedItem.find(1)
-      fi2 = FeedItem.find(4)
+      u = Generate.user!
+      u2 = Generate.user!
+      fi1 = Generate.feed_item!
+      fi2 = Generate.feed_item!
       peerworks = Tag(u, 'peerworks')
       test = Tag(u, 'test')
       tag = Tag(u, 'tag')
       Tagging.create(:user => u, :feed_item => fi1, :tag => peerworks)
       Tagging.create(:user => u, :feed_item => fi2, :tag => peerworks)
       Tagging.create(:user => u, :feed_item => fi1, :tag => test)
-      TagSubscription.create(:tag_id => tag.id, :user_id => users(:aaron).id)
+      TagSubscription.create(:tag_id => tag.id, :user => u2)
 
-      tags = Tag.search(:user => users(:aaron), :own => true, :order => "name")
+      tags = Tag.search(:user => u2, :own => true, :order => "name")
       assert_equal 1, tags.size
       assert_equal 'tag', tags[0].name
       assert_equal 0, tags[0].positive_count.to_i
@@ -113,12 +111,12 @@ describe Tag do
   
   describe "specs" do
     it "filters items by search term" do
-      user_1 = User.create! valid_user_attributes
-      user_2 = User.create! valid_user_attributes(:login => "everman")
+      user_1 = Generate.user!
+      user_2 = Generate.user!(:login => "everman")
     
-      tag_1 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "The best tag ever in the world", :comment => "")
-      tag_2 = Tag.create! valid_tag_attributes(:user_id => user_1.id, :name => "Another Tag", :comment => "The second best tag ever")
-      tag_3 = Tag.create! valid_tag_attributes(:user_id => user_2.id, :name => "My cool tag", :comment => "")
+      tag_1 = Generate.tag!(:user => user_1, :name => "The best tag ever in the world", :comment => "")
+      tag_2 = Generate.tag!(:user => user_1, :name => "Another Tag", :comment => "The second best tag ever")
+      tag_3 = Generate.tag!(:user => user_2, :name => "My cool tag", :comment => "")
     
       tags = Tag.search(:user => user_1, :text_filter => "ever", :order => "id")
       tags.should == [tag_1, tag_2, tag_3]
@@ -134,10 +132,10 @@ describe Tag do
     end
   
     it "should update it's timestamp when a new tag is created" do
-      user = users(:quentin)
-      feed_item = FeedItem.find(:first)
+      user = Generate.user!
+      feed_item = Generate.feed_item!
   
-      tag = Tag.create! valid_tag_attributes(:user => user, :name => "No this tag is the best tag in the world")
+      tag = Generate.tag!(:user => user, :name => "No this tag is the best tag in the world")
       updated_on = tag.updated_on = Time.now.yesterday
 
       Tagging.create! :tag => tag, :user => user, :feed_item => feed_item, :strength => 1    
@@ -145,10 +143,10 @@ describe Tag do
     end
   
     it "should update it's timestamp when a tag is deleted" do
-      user = users(:quentin)
-      feed_item = FeedItem.find(:first)
+      user = Generate.user!
+      feed_item = Generate.feed_item!
   
-      tag = Tag.create! valid_tag_attributes(:user => user, :name => "No this tag is the best tag in the world")
+      tag = Generate.tag!(:user => user, :name => "No this tag is the best tag in the world")
       tagging = Tagging.create! :tag => tag, :user => user, :feed_item => feed_item, :strength => 1    
       updated_on = tag.updated_on = Time.now.yesterday
       tagging.destroy
@@ -156,10 +154,10 @@ describe Tag do
     end
     
     it "should delete classifier taggings" do
-      user = User.create! valid_user_attributes
-      feed_item_1 = valid_feed_item!
-      feed_item_2 = valid_feed_item!
-      tag = Tag.create! valid_tag_attributes(:user_id => user.id, :name => "mytag")
+      user = Generate.user!
+      feed_item_1 = Generate.feed_item!
+      feed_item_2 = Generate.feed_item!
+      tag = Generate.tag!(:user => user, :name => "mytag")
     
       t1 = Tagging.create! :user => user, :feed_item => feed_item_1, :tag => tag
       t2 = Tagging.create! :user => user, :feed_item => feed_item_2, :tag => tag, :classifier_tagging => true
@@ -170,18 +168,22 @@ describe Tag do
       tag.taggings.should == [t1]
     end
   end
-  
+
   describe "#potentially_undertrained?" do
     before(:each) do
-      @user = User.create! valid_user_attributes
-      @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag')
-      # I need more items to tag
-      valid_feed_item!
-      valid_feed_item!
+      @user = Generate.user!
+      @tag = Generate.tag!(:user => @user, :name => 'mytag')
+
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
+      Generate.feed_item!
     end
     
     it "should return true if positive taggings less than 6" do
-      FeedItem.find(:all).first(5).each do |i|
+      FeedItem.all(:limit => 5).each do |i|
         @tag.taggings.create!(:feed_item => i, :user => @user, :classifier_tagging => false, :strength => 1)
       end
       
@@ -198,10 +200,8 @@ describe Tag do
       @tag.should_not be_potentially_undertrained
     end
   end
-  
-  describe '.to_atom' do
-    fixtures :tags, :users
 
+  describe '.to_atom' do
     before(:each) do
       @atom = Tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
     end
@@ -237,7 +237,7 @@ describe Tag do
         e.links.detect {|l| l.rel = "#{CLASSIFIER_NS}/training" && l.href =~ %r{http://winnow.mindloom.org/\w+/tags/\w+/training.atom} }.should_not be_nil
       end
     end
-  end  
+  end
 end
 
 describe 'to_atom', :shared => true do
@@ -290,17 +290,14 @@ describe 'to_atom', :shared => true do
 end
 
 describe Tag do
-  fixtures :feed_items, :feed_item_contents
-
   describe "#to_atom" do
-    CLASSIFIER_NS = 'http://peerworks.org/classifier'
-    before(:all) do
-      @user = User.create! valid_user_attributes
-      @tag = Tag.create! valid_tag_attributes(:user_id => @user.id, :name => 'mytag', :last_classified_at => Time.now)
-      @tag.taggings.create!(:feed_item => FeedItem.find(1), :user => @user, :strength => 1)
-      @tag.taggings.create!(:feed_item => FeedItem.find(2), :user => @user, :strength => 1)
-      @tag.taggings.create!(:feed_item => FeedItem.find(3), :user => @user, :strength => 0)
-      @tag.taggings.create!(:feed_item => FeedItem.find(4), :user => @user, :strength => 0.95, :classifier_tagging => true)
+    before(:each) do
+      @user = Generate.user!
+      @tag = Generate.tag! :user => @user, :name => 'mytag', :last_classified_at => Time.now
+      @user.taggings.create!(:feed_item => @feed_item1 = Generate.feed_item!, :tag => @tag, :strength => 1)
+      @user.taggings.create!(:feed_item => @feed_item2 = Generate.feed_item!, :tag => @tag, :strength => 1)
+      @user.taggings.create!(:feed_item => @feed_item3 = Generate.feed_item!, :tag => @tag, :strength => 0)
+      @user.taggings.create!(:feed_item => @feed_item4 = Generate.feed_item!, :tag => @tag, :strength => 0.95, :classifier_tagging => true)
       @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org')
     end     
     
@@ -318,36 +315,36 @@ describe Tag do
     
     it "should contain all the tagged items" do
       @atom.should have(3).entries
-      @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should_not be_nil
-      @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.should_not be_nil
-      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.should_not be_nil
+      @atom.entries.detect {|e| e.id == @feed_item1.uri}.should_not be_nil
+      @atom.entries.detect {|e| e.id == @feed_item2.uri}.should_not be_nil
+      @atom.entries.detect {|e| e.id == @feed_item4.uri}.should_not be_nil
     end
     
     it "should not contain any negatively tagged items" do
-      @atom.entries.detect {|e| e.id == "urn:uuid:item3"}.should be_nil
+      @atom.entries.detect {|e| e.id == @feed_item3.uri}.should be_nil
     end
     
     it "should have atom:category for the classifier example" do
-      entry = @atom.entries.detect {|e| e.id == "urn:uuid:item4"}
+      entry = @atom.entries.detect {|e| e.id == @feed_item4.uri}
       entry.categories.first.should_not be_nil
     end
     
     it "should have the terms for the classifier example" do
-      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.categories.first.term.should == @tag.name
+      @atom.entries.detect {|e| e.id == @feed_item4.uri}.categories.first.term.should == @tag.name
     end
     
     it "should have the scheme for the classifier example" do
-      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+      @atom.entries.detect {|e| e.id == @feed_item4.uri}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
     end
     
     it "should have the strength for the classifier example" do
-      @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.categories.first[CLASSIFIER_NS, 'strength'].first.should == "0.95"
+      @atom.entries.detect {|e| e.id == @feed_item4.uri}.categories.first[CLASSIFIER_NS, 'strength'].first.should == "0.95"
     end
     
     describe "with since" do
       it "should only return items with updated date after :since" do
         @atom = @tag.to_atom(:base_uri => 'http://winnow.mindloom.org', :since => Time.now)
-        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should be_nil
+        @atom.entries.detect {|e| e.id == @feed_item1.uri}.should be_nil
       end
     end
     
@@ -367,7 +364,7 @@ describe Tag do
     end
     
     describe "with training only" do   
-      before(:all) do
+      before(:each) do
         @atom = @tag.to_atom(:training_only => true, :base_uri => 'http://winnow.mindloom.org')
       end
     
@@ -385,35 +382,35 @@ describe Tag do
     
       it "should contain all the manually tagged items" do
         @atom.should have(3).entries
-        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should_not be_nil
-        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.should_not be_nil
-        @atom.entries.detect {|e| e.id == "urn:uuid:item3"}.should_not be_nil
+        @atom.entries.detect {|e| e.id == @feed_item1.uri}.should_not be_nil
+        @atom.entries.detect {|e| e.id == @feed_item2.uri}.should_not be_nil
+        @atom.entries.detect {|e| e.id == @feed_item3.uri}.should_not be_nil
       end
     
       it "should not contain any classifier only tagged items" do
-        @atom.entries.detect {|e| e.id == "urn:uuid:item4"}.should be_nil
+        @atom.entries.detect {|e| e.id == @feed_item4.uri}.should be_nil
       end
             
       it "should have a classifier:negative-example for all negative examples" do
-        @atom.entries.detect {|e| e.id == "urn:uuid:item3"}.links.detect do |l| 
+        @atom.entries.detect {|e| e.id == @feed_item3.uri}.links.detect do |l| 
           l.rel == "http://peerworks.org/classifier/negative-example" && l.href == "http://winnow.mindloom.org/#{@user.login}/tags/#{@tag.name}"
         end.should_not be_nil
       end
         
       it "should have a atom:category for all positive examples" do
-        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.should have(1).categories
-        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.should have(1).categories
+        @atom.entries.detect {|e| e.id == @feed_item1.uri}.should have(1).categories
+        @atom.entries.detect {|e| e.id == @feed_item2.uri}.should have(1).categories
       end
       
       it "should have the tag name as the term for atom:categories" do
-        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.categories.first.term.should == @tag.name
-        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.categories.first.term.should == @tag.name
+        @atom.entries.detect {|e| e.id == @feed_item1.uri}.categories.first.term.should == @tag.name
+        @atom.entries.detect {|e| e.id == @feed_item2.uri}.categories.first.term.should == @tag.name
       end
     
       it "should have the users tag index as the scheme for the atom:categories" do
-        @atom.entries.detect {|e| e.id == "urn:uuid:item1"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
-        @atom.entries.detect {|e| e.id == "urn:uuid:item2"}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
-      end      
+        @atom.entries.detect {|e| e.id == @feed_item1.uri}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+        @atom.entries.detect {|e| e.id == @feed_item2.uri}.categories.first.scheme.should == "http://winnow.mindloom.org/#{@user.login}/tags/"
+      end
     end
   end
 end
@@ -442,7 +439,7 @@ describe 'create_taggings_from_atom', :shared => true do
   
   it "should have the new classifier tagging" do
     @tag.create_taggings_from_atom(@atom)
-    @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = 3 and classifier_tagging = 1']).strength.should == 0.99
+    @tag.classifier_taggings.find(:first, :conditions => ['feed_item_id = ? and classifier_tagging = 1', @feed_item3]).strength.should == 0.99
   end
   
   it "should not change the updated timestamp" do
@@ -461,17 +458,21 @@ end
 describe Tag do
   describe "#create_taggings_from_atom" do      
     before(:each) do
-      @user = User.create! valid_user_attributes
-      @tag = Tag.create! valid_tag_attributes(:user => @user)
-      @ut = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
-      @ct = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+      @user = Generate.user!
+      @tag = Generate.tag!(:user => @user)
+      @feed_item1 = Generate.feed_item!
+      @feed_item2 = Generate.feed_item!
+      @feed_item3 = Generate.feed_item!
+      @feed_item4 = Generate.feed_item!
+      @ut = @tag.taggings.create!(:user => @user, :feed_item => @feed_item1, :classifier_tagging => false)
+      @ct = @tag.taggings.create!(:user => @user, :feed_item => @feed_item2, :classifier_tagging => true, :strength => 0.95)
       @updated_strength = 0.97
       @before_classifier_taggings_size = @tag.classifier_taggings.size
       @number_of_new_taggings = 1
       
       @atom = Atom::Feed.new do |f|
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:uuid:item3"
+          e.id = @feed_item3.uri
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -480,7 +481,7 @@ describe Tag do
           end
         end
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:uuid:item2"
+          e.id = @feed_item2.uri
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -489,14 +490,14 @@ describe Tag do
           end
         end
       end
-    end    
-   
+    end
+
     it_should_behave_like 'create_taggings_from_atom'
-    
+
     describe 'with missing items in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
-          e.id = "urn:uuid:item123"
+          e.id = "urn:uuid:FeedItemUnknown"
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -507,16 +508,16 @@ describe Tag do
       end
       it_should_behave_like 'create_taggings_from_atom'
     end
-    
+
     describe 'with strength-less item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
-          e.id = "urn:uuid:item4"
+          e.id = @feed_item4.uri
         end
       end
       it_should_behave_like 'create_taggings_from_atom'
     end
-    
+
     describe 'with bad id item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
@@ -531,11 +532,11 @@ describe Tag do
       end
       it_should_behave_like 'create_taggings_from_atom'
     end
-    
+
     describe 'with strength less than 0.9 item in the document' do
       before(:each) do 
         @atom.entries << Atom::Entry.new do |e|
-          e.id = "urn:uuid:item4"          
+          e.id = @feed_item4.uri
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -547,19 +548,22 @@ describe Tag do
       it_should_behave_like 'create_taggings_from_atom'
     end
   end
-  
+
   describe "#replace_taggings_from_atom" do
     before(:each) do
-      @user = User.create! valid_user_attributes
-      @tag = Tag.create! valid_tag_attributes(:user => @user)
-      @tag2 = Tag.create! valid_tag_attributes(:user => @user)
-      @ut = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(1), :classifier_tagging => false)
-      @ct = @tag.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
-      @ct2 = @tag2.taggings.create!(:user => @user, :feed_item => FeedItem.find(2), :classifier_tagging => true, :strength => 0.95)
+      @user = Generate.user!
+      @tag = Generate.tag!(:user => @user)
+      @tag2 = Generate.tag!(:user => @user)
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      feed_item3 = Generate.feed_item!
+      @ut = @tag.taggings.create!(:user => @user, :feed_item => feed_item1, :classifier_tagging => false)
+      @ct = @tag.taggings.create!(:user => @user, :feed_item => feed_item2, :classifier_tagging => true, :strength => 0.95)
+      @ct2 = @tag2.taggings.create!(:user => @user, :feed_item => feed_item2, :classifier_tagging => true, :strength => 0.95)
             
       @atom = Atom::Feed.new do |f|
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:uuid:item3"
+          e.id = feed_item3.uri
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -568,7 +572,7 @@ describe Tag do
           end
         end
         f.entries << Atom::Entry.new do |e|
-          e.id = "urn:uuid:item2"
+          e.id = feed_item2.uri
           e.categories << Atom::Category.new do |c|
             c.scheme = "http://winnow.mindloom.org/#{@user.login}/tags/"
             c.term = @tag.name
@@ -601,122 +605,132 @@ describe Tag do
     end
   end
 end
-  
+
 describe Tag do
   describe "from test/unit" do
-    fixtures :users
-
     it "cant_create_duplicate_tags" do
-      Tag.create!(:user => users(:quentin), :name => 'foo')
-      Tag.new(:user => users(:quentin), :name => 'foo').should_not be_valid
+      user = Generate.user!
+      tag = Generate.tag!(:user => user, :name => "tag")
+      Generate.tag(:user => user, :name => "tag").should_not be_valid
     end
   
     it "cant_create_empty_tags" do
-      Tag.new(:user => users(:quentin), :name => '').should_not be_valid
+      user = Generate.user!
+      Generate.tag(:user => user, :name => "").should_not be_valid
     end
   
     it "case_sensitive" do
-      tag1 = Tag(users(:quentin), 'TAG1')
-      tag2 = Tag(users(:quentin), 'tag1')
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user, :name => "TAG")
+      tag2 = Generate.tag!(:user => user, :name => "tag")
       assert_not_equal tag1, tag2
     end
   
     it "tag_function" do
-      tag = Tag(users(:quentin), 'tag1')
+      user = Generate.user!
+      tag = Tag(user, 'tag1')
       assert tag.is_a?(Tag)
       assert_equal 'tag1', tag.name
       assert !tag.new_record?    
-      tag2 = Tag(users(:quentin), tag)
+      tag2 = Tag(user, tag)
       assert_equal tag, tag2
     end
   
     it "sorting" do
-      tag1 = Tag(users(:quentin), 'aaa')
-      tag2 = Tag(users(:quentin), 'bbb')
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user, :name => "aaa")
+      tag2 = Generate.tag!(:user => user, :name => "bbb")
       assert_equal([tag1, tag2], [tag1, tag2].sort)
       assert_equal([tag1, tag2], [tag2, tag1].sort)
     end
   
     it "sorting_is_case_insensitive" do
-      tag1 = Tag(users(:quentin), 'aaa')
-      tag2 = Tag(users(:quentin), 'Abb')
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user, :name => "aaa")
+      tag2 = Generate.tag!(:user => user, :name => "Abb")
       assert_equal([tag1, tag2], [tag1, tag2].sort)
       assert_equal([tag1, tag2], [tag2, tag1].sort)
     end
   
     it "sorting_with_non_tag_raises_exception" do
-      tag = Tag(users(:quentin), 'tag')
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
       assert_raise(ArgumentError) { tag <=> 42 }
     end
   
     it "two_tags_belonging_to_different_users_are_different" do
-      assert_not_equal(Tag(users(:quentin), "tag"), Tag(users(:aaron), "tag"))    
+      user1 = Generate.user!
+      user2 = Generate.user!
+      tag1 = Generate.tag!(:user => user1)
+      tag2 = Generate.tag!(:user => user2)
+
+      tag1.should_not == tag2
     end
   
     it "copy_tag_to_self" do
-      u = users(:quentin)
-      tag = Tag(u, 'tag1')
-      copy = Tag(u, 'copy of tag1')
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => tag)
-      u.taggings.create(:feed_item => FeedItem.find(2), :tag => tag)
-      u.taggings.create(:feed_item => FeedItem.find(3), :tag => tag)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      copy = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
     
       tag.copy(copy)
-      assert_equal(3, u.taggings.find_by_tag(copy).size)
-      assert_equal(3, u.taggings.find_by_tag(tag).size)
+      assert_equal(3, user.taggings.find_by_tag(copy).size)
+      assert_equal(3, user.taggings.find_by_tag(tag).size)
     end
   
     it "copy_tag_to_another_user" do
-      u = users(:quentin)
-      u2 = users(:aaron)
-      tag_quent = Tag(u, 'tag1')
-      tag_aaron = Tag(u2, 'tag1')
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => tag_quent)
-      u.taggings.create(:feed_item => FeedItem.find(2), :tag => tag_quent)
-      u.taggings.create(:feed_item => FeedItem.find(3), :tag => tag_quent)
+      user1 = Generate.user!
+      user2 = Generate.user!
+      tag1 = Generate.tag!(:user => user1)
+      tag2 = Generate.tag!(:user => user2)
 
-      tag_quent.copy(tag_aaron)
-      assert_equal(3, u.taggings.find_by_tag(tag_quent).size)
-      assert_equal(3, u2.taggings.find_by_tag(tag_aaron).size)
+      user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag1)
+      user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag1)
+      user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag1)
+
+      tag1.copy(tag2)
+      assert_equal(3, user1.taggings.find_by_tag(tag1).size)
+      assert_equal(3, user2.taggings.find_by_tag(tag2).size)
     end
   
     it "copy_with_the_same_name_raises_error" do
-      u = users(:quentin)
-      tag = Tag(u, 'tag1')
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => tag)
-      u.taggings.create(:feed_item => FeedItem.find(2), :tag => tag)
-      u.taggings.create(:feed_item => FeedItem.find(3), :tag => tag)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
     
       assert_raise(ArgumentError) { tag.copy(tag) }
     end
   
     it "copy_to_other_user_when_tag_already_exists_raises_error" do
-      u = users(:quentin)
-      u2 = users(:aaron)
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => Tag(u, 'tag1'))
-      u2.taggings.create(:feed_item => FeedItem.find(2), :tag => Tag(u, 'tag1'))
+      user1 = Generate.user!
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user1)
+      user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
+      user2.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
     
-      assert_raise(ArgumentError) { Tag(u, 'tag1').copy(Tag(u, 'tag1')) }
+      assert_raise(ArgumentError) { tag.copy(tag) }
     end
   
     it "copying_a_tag_skips_classifier_taggings" do
-      u = users(:quentin)
-      tag = Tag(u, 'tag1')
-      copy = Tag(u, 'copy of tag1')
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => tag)
-      u.taggings.create(:feed_item => FeedItem.find(2), :tag => tag, :classifier_tagging => true)
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      copy = Generate.tag!(:user => user)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag, :classifier_tagging => true)
     
       tag.copy(copy)
-      assert_equal(3, u.taggings.size)
-      assert_equal(1, u.classifier_taggings.size)
+      assert_equal(3, user.taggings.size)
+      assert_equal(1, user.classifier_taggings.size)
     end
   
     it "copying_copies_the_tag_comment_and_bias" do
-      user = users(:quentin)
-      old_tag = Tag(user, 'old')
-      old_tag.update_attributes :comment => "old tag comment", :bias => 0.9
-      new_tag = Tag(user, 'new')
-      new_tag.update_attributes :comment => "new tag comment"
+      user = Generate.user!
+      old_tag = Generate.tag!(:user => user, :comment => "old tag comment", :bias => 0.9)
+      new_tag = Generate.tag!(:user => user, :comment => "new tag comment")
         
       old_tag.copy(new_tag)
     
@@ -727,48 +741,48 @@ describe Tag do
     end
   
     it "merge_into_another_tag" do
-      u = users(:quentin)
-      old = Tag(u, 'old')
-      new_tag = Tag(u, 'new')
+      user = Generate.user!
+      old_tag = Generate.tag!(:user => user)
+      new_tag = Generate.tag!(:user => user)
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item! 
+      user.taggings.create!(:feed_item => feed_item1, :tag => old_tag)
+      user.taggings.create!(:feed_item => feed_item2, :tag => new_tag)
     
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => old)
-      u.taggings.create(:feed_item => FeedItem.find(2), :tag => new_tag)
+      old_tag.merge(new_tag)
     
-      old.merge(new_tag)
-    
-      assert_equal([], old.taggings)
-      assert_equal([1, 2], new_tag.taggings.map(&:feed_item_id).sort)
+      assert_equal([], old_tag.taggings)
+      assert_equal([feed_item1.id, feed_item2.id], new_tag.taggings.map(&:feed_item_id).sort)
     end
   
     it "merge_when_tag_exists_on_item" do
-      u = users(:quentin)
-      old = Tag(u, 'old')
-      new_tag = Tag(u, 'new')
+      user = Generate.user!
+      old_tag = Generate.tag!(:user => user)
+      new_tag = Generate.tag!(:user => user)
+      feed_item = Generate.feed_item!
+      user.taggings.create!(:feed_item => feed_item, :tag => old_tag)
+      user.taggings.create!(:feed_item => feed_item, :tag => new_tag)
     
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => old)
-      u.taggings.create(:feed_item => FeedItem.find(1), :tag => new_tag)
+      old_tag.merge(new_tag)
     
-      old.merge(new_tag)
-    
-      assert_equal([], old.taggings.map(&:feed_item_id))
-      assert_equal([1], new_tag.taggings.map(&:feed_item_id))    
+      assert_equal([], old_tag.taggings.map(&:feed_item))
+      assert_equal([feed_item], new_tag.taggings.map(&:feed_item))    
     end
   
     it "overwriting_a_tag" do
-      user = users(:quentin)
-      old_tag = Tag(user, 'old')
-      old_tag.update_attributes :comment => "old tag comment", :bias => 0.9
-      new_tag = Tag(user, 'new')
-      new_tag.update_attributes :comment => "new tag comment"
-    
-      user.taggings.create(:feed_item => FeedItem.find(1), :tag => old_tag)
-      user.taggings.create(:feed_item => FeedItem.find(2), :tag => new_tag)
+      user = Generate.user!
+      old_tag = Generate.tag!(:user => user, :comment => "old tag comment", :bias => 0.9)
+      new_tag = Generate.tag!(:user => user, :comment => "new tag comment")
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      user.taggings.create!(:feed_item => feed_item1, :tag => old_tag)
+      user.taggings.create!(:feed_item => feed_item2, :tag => new_tag)
     
       old_tag.overwrite(new_tag)
     
       new_tag.reload
     
-      assert_equal [1], new_tag.taggings(:reload).map(&:feed_item_id)
+      assert_equal [feed_item1], new_tag.taggings(:reload).map(&:feed_item)
       assert_equal 0.9, new_tag.bias
       assert_equal "old tag comment", new_tag.comment
     end

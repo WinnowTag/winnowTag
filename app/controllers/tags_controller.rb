@@ -176,13 +176,13 @@ class TagsController < ApplicationController
   end
   
   def classifier_taggings    
-    if !(request.post? || request.put?)
-      render :status => :method_not_allowed, :text => "Only PUT or POST are allowed"
-    elsif params[:atom].nil?
+    if params[:atom].nil?
       render :status => :bad_request, :text => "Missing Atom Document"
-    elsif request.post? || request.put?
-      request.post? ? @tag.create_taggings_from_atom(params[:atom]) : 
-                      @tag.replace_taggings_from_atom(params[:atom])
+    elsif request.post?
+      @tag.create_taggings_from_atom(params[:atom])
+      render :status => :no_content, :nothing => true
+    elsif request.put?
+      @tag.replace_taggings_from_atom(params[:atom])
       render :status => :no_content, :nothing => true
     end
   end

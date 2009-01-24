@@ -10,5 +10,11 @@ require 'cucumber/rails/rspec'
 # TODO: Remove the need for mocks/stubs in features
 require 'spec/mocks'
 
-require 'net/http'
-require 'active_resource/http_mock'
+require Pathname.new(Rails.root).join(*%w[spec support generate])
+
+class Cucumber::Rails::World
+  attr_accessor :current_user
+end
+
+class Webrat::SearchField < Webrat::TextField
+end

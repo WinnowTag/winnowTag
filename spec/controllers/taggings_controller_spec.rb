@@ -6,103 +6,90 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TaggingsController do
-  fixtures :users, :feed_items
-
   it "create_requires_post" do
-    login_as(:quentin)
+    login_as Generate.user!
     get :create
     assert_response 400
   end
   
   it "destroy_requires_post" do
-    login_as(:quentin)
+    login_as Generate.user!
     get :destroy
     assert_response 400
   end
     
   it "create_without_parameters_fails" do
-    login_as(:quentin)
+    login_as Generate.user!
     post :create, {}
     assert_response 400
   end
   
   it "create_without_tag_doesnt_create_tagging" do
-    login_as(:quentin)
+    login_as Generate.user!
     assert_no_difference("Tagging.count") do
       post :create, :tagging => {:feed_item_id => '1'} rescue ActiveRecord::RecordInvalid
     end
   end
   
   it "create_with_blank_tag_doesnt_create_tagging" do
-    login_as(:quentin)
+    login_as Generate.user!
     assert_no_difference("Tagging.count") do
       post :create, :tagging => {:feed_item_id => '1', :tag => ''} rescue ActiveRecord::RecordInvalid
     end
   end
   
-  it "create_with_other_user_fails" do
-    login_as(:aaron)
-    tag = Tag(users(:aaron), 'peerworks')
-    post :create, :format => "json", :tagging => {:feed_item_id => 1, :tag => 'peerworks'}
-    
-    assert_nil Tagging.find(:first, :conditions => ["user_id = 1 and feed_item_id = 1 and tag_id = ?", tag.id])
-  end
-  
   it "create_tagging_with_strength_zero" do
-    login_as(:quentin)
-    tag = Tag(users(:quentin), 'peerworks')
+    user = Generate.user!
+    tag = Generate.tag!(:user => user)
+    feed_item = Generate.feed_item!
+
+    login_as user
     
-    assert_nil Tagging.find(:first, :conditions => 
-                                        ["user_id = 1 and feed_item_id = 1 and strength = 0 and " + 
-                                          "tag_id = ?", tag.id])
-                                          
-    assert_difference(users(:quentin).taggings, :count) do                                                    
-      post :create, :format => "json", :tagging => {:strength => '0', :feed_item_id => 1, :tag => 'peerworks'}
+    Tagging.first(:conditions => { :user_id => user.id, :feed_item_id => feed_item.id, :tag_id => tag.id, :strength => 0 }).should be_nil
+                
+    assert_difference(user.taggings, :count) do                                                    
+      post :create, :format => "json", :tagging => { :strength => 0, :feed_item_id => feed_item.id, :tag => tag.name }
     end
     
-    assert_not_nil Tagging.find(:first, :conditions => 
-                                          ["user_id = 1 and feed_item_id = 1 and strength = 0 and " + 
-                                            "tag_id = ?", tag.id])
+    Tagging.first(:conditions => { :user_id => user.id, :feed_item_id => feed_item.id, :tag_id => tag.id, :strength => 0 }).should_not be_nil
   end
   
   it "create updates the tag to show in sidebar" do
-    login_as(:quentin)
-    tag = Tag(users(:quentin), 'peerworks')
-    tag.update_attribute :show_in_sidebar, false
+    user = Generate.user!
+    tag = Generate.tag!(:user => user, :show_in_sidebar => false)
+    feed_item = Generate.feed_item!
 
-    post :create, :format => "json", :tagging => {:strength => '1', :feed_item_id => '1', :tag => 'peerworks'}
+    login_as user
+
+    post :create, :format => "json", :tagging => { :strength => 1, :feed_item_id => feed_item.id, :tag => tag.name }
 
     tag.reload
     tag.show_in_sidebar?.should be_true
   end
       
   it "destroy_tagging_specified_by_taggable_and_tag_name_with_ajax" do
-    tagger = User.find(1)
-    tag = Tag(tagger, 'peerworks')
-    taggable = FeedItem.find(1)
-    tagging = Tagging.create(:feed_item => taggable, :user => tagger, :tag => tag)
+    user = Generate.user!
+    tag = Generate.tag!(:user => user, :show_in_sidebar => false)
+    feed_item = Generate.feed_item!
+    tagging = feed_item.taggings.create!(:tag => tag, :user => user)
 
-    login_as(:quentin)
-    post :destroy, :format => "json", :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
+    login_as user
+    post :destroy, :format => "json", :tagging => { :feed_item_id => feed_item.id, :tag => tag.name }
     assert_template 'destroy'
-    assert_raise (ActiveRecord::RecordNotFound) {Tagging.find(tagging.id)}
+    assert_raise(ActiveRecord::RecordNotFound) { Tagging.find(tagging.id) }
   end
   
   it "destroy_does_not_destroy_classifier_taggings" do
-    Tagging.delete_all
-    
-    login_as(:quentin)
+    user = Generate.user!
+    tag = Generate.tag!(:user => user, :show_in_sidebar => false)
+    feed_item = Generate.feed_item!
+    tagging = feed_item.taggings.create!(:tag => tag, :user => user)
+    tagging = feed_item.taggings.create!(:tag => tag, :user => user, :classifier_tagging => true)
 
-    user = User.find(1)
-    tag = Tag(user, 'peerworks')
-    feed_item = FeedItem.find(1)
-    tagging = Tagging.create!(:feed_item => feed_item, :user => user, :tag => tag)
-    tagging = Tagging.create!(:feed_item => feed_item, :user => user, :tag => tag, :classifier_tagging => true)
+    login_as user
 
     assert_equal 2, Tagging.count
-    
-    post :destroy, :format => "json", :tagging => {:feed_item_id => '1', :tag => 'peerworks'}
-
+    post :destroy, :format => "json", :tagging => { :feed_item_id => feed_item.id, :tag => tag.name }
     assert_equal 1, Tagging.count
   end
 end

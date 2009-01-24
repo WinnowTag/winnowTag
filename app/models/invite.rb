@@ -7,9 +7,7 @@ class Invite < ActiveRecord::Base
   belongs_to :user
   
   validates_presence_of :email
-  # TODO: localization
-  validates_uniqueness_of :email, :message => "has already been submitted"
-  
+
   def initialize(*args, &block)
     super(*args, &block)
     self.subject ||= I18n.t(:default_invite_accepted_subject)

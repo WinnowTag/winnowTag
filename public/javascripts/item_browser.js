@@ -272,24 +272,10 @@ var ItemBrowser = Class.create({
     }
   },
   
-  bindTextFilterClearEvents: function() {
-    var text_filter = $("text_filter");
-    if(text_filter) {
-      var clear_button = text_filter.next(".srch_clear");
-      if(clear_button) {
-        clear_button.observe("click", function() {
-          // TODO: don't do this if the button was not active
-          this.addFilters({text_filter: null});
-        }.bind(this));
-      }
-    }
-  },
-
   initializeFilters: function() {
     this.bindModeFiltersEvents();
     this.bindOrderFilterEvents();
     this.bindTextFilterEvents();
-    this.bindTextFilterClearEvents();
 
     this.filters = { order: this.defaultOrder(), direction: this.defaultDirection(), mode: this.defaultMode() };
     
@@ -320,11 +306,10 @@ var ItemBrowser = Class.create({
     var text_filter = $("text_filter");
     if(text_filter) {
       if(this.filters.text_filter) {
+        text_filter.hidePlaceholder();
         text_filter.value = this.filters.text_filter;
-        text_filter.fire("applesearch:setup");
       } else {
-        text_filter.value = "";
-        text_filter.fire("applesearch:blur");
+        text_filter.showPlaceholder();
       }
     }
   }

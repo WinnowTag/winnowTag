@@ -32,16 +32,15 @@ describe Comment do
   
   describe ".find_for_user" do
     before(:each) do
-      @tagger = User.create! valid_user_attributes
-      @tag = Tag.create! :user_id => @tagger.id, :name => "tag"
+      @tagger = Generate.user!
+      @tag = Generate.tag!(:user => @tagger)
       
-      @commenter = User.create! valid_user_attributes
-      @comment = @commenter.comments.create! :tag_id => @tag.id, :body => "comment"
+      @commenter = Generate.user!
+      @comment = @commenter.comments.create!(:tag => @tag, :body => "comment")
     end
 
     it "admin can find tag" do
-      admin = User.create! valid_user_attributes
-      admin.has_role("admin")
+      admin = Generate.admin!
       
       Comment.find_for_user(admin, @comment.id).should == @comment
     end
@@ -55,7 +54,7 @@ describe Comment do
     end
 
     it "noone else can find tag" do
-      user = User.create! valid_user_attributes
+      user = Generate.user!
       
       lambda {
         Comment.find_for_user(user, @comment.id)

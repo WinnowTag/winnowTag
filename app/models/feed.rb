@@ -20,7 +20,7 @@ class Feed < ActiveRecord::Base
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
   
   named_scope :matching, lambda { |q|
-    conditions = %w[feeds.title feeds.alternate].map do |attribute|
+    conditions = %w[feeds.title feeds.via feeds.alternate].map do |attribute|
       "#{attribute} LIKE :q"
     end.join(" OR ")
     { :conditions => [conditions, { :q => "%#{q}%" }] }

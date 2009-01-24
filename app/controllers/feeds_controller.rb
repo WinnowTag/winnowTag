@@ -7,9 +7,6 @@
 # This controller doesn't create feeds directly. Instead it forwards
 # feed creation requests on to the collector using Remote::Feed.
 class FeedsController < ApplicationController
-  include ActionView::Helpers::TextHelper
-  before_filter :reject_winnow_feeds, :only => :create
-  
   def index
     respond_to do |format|
       format.html do
@@ -25,29 +22,26 @@ class FeedsController < ApplicationController
     end
   end
 
-  def create   
-    @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
-    if @feed.errors.empty?
-      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id)
-      @collection_job = @feed.collect(:created_by => current_user.login, 
-                                      :callback_url => collection_job_results_url(current_user))
-      
-      flash[:notice] = if @feed.updated_on.nil?
-         t(:feed_added, :url => h(@feed.url))
-      else
-        t(:feed_existed, :url => h(@feed.url))
-      end
-      
+  def create
+    creation = FeedManager.create(current_user, params[:feed][:url], collection_job_results_url(current_user))
+
+    creation.success do |feed, notice|
       respond_to do |format|
-        format.html { redirect_to feeds_path }
-        format.js
+        format.html do
+          flash[:notice] = notice
+          redirect_to feeds_path
+        end
+        format.js { @feed = feed }
       end
-    else
-      flash[:error] = @feed.errors.on(:url)
+    end
+
+    creation.failed do |feed, error|
+      @feed = feed
+      flash.now[:error] = error
       render :action => 'index'
     end
   end
-  
+
   def import
     @feeds = Remote::Feed.import_opml(params[:opml].read)
     @feeds.each do |feed|
@@ -102,14 +96,5 @@ class FeedsController < ApplicationController
     else
       render :nothing => true
     end
-  end
-  
-private
-  def reject_winnow_feeds
-    if URI.parse(params[:feed][:url]).host == request.host
-      flash[:error] = "Winnow generated feeds cannot be added to Winnow."
-      render :action => 'new'
-    end
-  rescue URI::Error
   end
 end

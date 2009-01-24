@@ -9,7 +9,6 @@
   
   <% if @invite and @invite.code? -%>
     <%= render :partial => "signup", :object => @invite %>
-    
   <% else -%>
     <%= render :partial => "login" %>
     <%= render :partial => "reminder" %>

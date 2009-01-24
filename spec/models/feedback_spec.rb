@@ -28,11 +28,11 @@ describe Feedback do
   
   describe "search" do
     it "can find feedback by body or by user login" do
-      user1 = User.create! valid_user_attributes(:login => "mark")
+      user1 = Generate.user!(:login => "mark")
       feedback1 = user1.feedbacks.create! :body => "Just some request"
-      user5 = User.create! valid_user_attributes
+      user5 = Generate.user!
       feedback5 = user5.feedbacks.create! :body => "Some request from mark"
-      user6 = User.create! valid_user_attributes
+      user6 = Generate.user!
       feedback6 = user6.feedbacks.create! :body => "Just some request"
       
       feedbacks = Feedback.search :text_filter => "mark", :order => "id"

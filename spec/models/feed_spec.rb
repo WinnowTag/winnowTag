@@ -28,10 +28,9 @@ shared_examples_for "Feed updates attributes from Atom::Entry" do
 end
 
 describe Feed do
-  fixtures :feed_items, :feeds, :feed_item_contents
-  
   describe "find_or_create_from_atom_entry" do
     before(:each) do
+      @original_feed = Generate.feed!
       @feed_count = Feed.count
       @atom = Atom::Entry.new do |atom|
         atom.title = "Feed Title"
@@ -45,7 +44,7 @@ describe Feed do
     
     describe "with complete entry and existing feed id" do
       before(:each) do
-        @atom.id = "urn:uuid:feed1"
+        @atom.id = @original_feed.uri
         @feed = Feed.find_or_create_from_atom_entry(@atom)
       end
       
@@ -55,7 +54,7 @@ describe Feed do
       
       it "should return existing feed" do
         @feed.should_not be_new_record
-        @feed.id.should == 1
+        @feed.id.should == @original_feed.id
       end
       
       it_should_behave_like "Feed updates attributes from Atom::Entry"
@@ -133,19 +132,22 @@ describe Feed do
     
     describe 'with duplicate link' do
       before(:each) do
-        @atom.id = "urn:uuid:feed3"
-        @atom.links << Atom::Link.new(:rel => "http://peerworks.org/duplicateOf", :href => 'urn:uuid:feed2')
-        FeedSubscription.create!(:user_id => 1, :feed_id => 3)        
+        @user = Generate.user!
+        @original_feed = Generate.feed!
+        @duplicate_feed = Generate.feed!
+        @atom.id = @duplicate_feed.uri
+        @atom.links << Atom::Link.new(:rel => "http://peerworks.org/duplicateOf", :href => @original_feed.uri)
+        FeedSubscription.create!(:user => @user, :feed => @duplicate_feed)
         @feed = Feed.find_or_create_from_atom_entry(@atom)
       end
       
       it "should set the duplicate_id" do
-        @feed.duplicate_id.should == 2
+        @feed.duplicate_id.should == @original_feed.id
       end
       
       it "should update any subscriptions to point to the 'root' feed" do
-        FeedSubscription.find_by_user_id_and_feed_id(1, 3).should be_nil
-        FeedSubscription.find_by_user_id_and_feed_id(1, 2).should_not be_nil        
+        FeedSubscription.find_by_user_id_and_feed_id(@user, @duplicate_feed).should be_nil
+        FeedSubscription.find_by_user_id_and_feed_id(@user, @original_feed).should_not be_nil        
       end
     end
   end
@@ -153,8 +155,6 @@ describe Feed do
   describe "find_or_create_from_atom" do
     describe "with single page feed" do      
       before(:each) do
-        FeedItemContent.delete_all
-
         @before_feed_count = Feed.count
         @before_feed_items_count = FeedItem.count
         @before_feed_item_content_count = FeedItemContent.count
@@ -219,17 +219,17 @@ describe Feed do
   
   describe "update_from_atom_entry" do
     before(:each) do
+      @feed = Generate.feed!
+
       @atom = Atom::Entry.new do |atom|
         atom.title = "Feed Title"
         atom.updated = Time.now
         atom.published = Time.now.yesterday
-        atom.id = "urn:uuid:feed1"
+        atom.id = @feed.uri
         atom.links << Atom::Link.new(:rel => 'via', :href => 'http://example.com/feed')
         atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
         atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
       end
-      
-      @feed = Feed.find(1)
       @feed.update_from_atom(@atom)
     end
     
@@ -241,8 +241,8 @@ describe Feed do
     
     describe "with different ids" do
       before(:each) do
-        @original_feed = Feed.find(2)
-        @feed = Feed.find(2)
+        @feed = Generate.feed!
+        @original_attributes = @feed.attributes.freeze
       end
       
       it "should raise an ArgumentError" do
@@ -251,18 +251,23 @@ describe Feed do
       
       it "should not change anything" do
         lambda { @feed.update_from_atom(@atom) }.should raise_error(ArgumentError)
-        @original_feed.attributes.should == @feed.attributes
+        @feed.attributes.should == @original_attributes
       end
     end
   end
   
   describe 'search' do
     it "should find items by search term" do
+      Generate.feed!(:title => "Ruby Lang")
+      Generate.feed!(:title => "Ruby on Rails")
+      Generate.feed!(:title => "Python")
+      
       Feed.search(:text_filter => 'ruby').size.should == 2
     end
     
     it "should skip duplicates" do
-      Feed.create! valid_feed_attributes(:title => 'Duplicate', :duplicate_id => 1)
+      feed = Generate.feed!(:title => "Ruby Lang")
+      duplicate = Generate.feed!(:title => "Duplicate", :duplicate => feed)
       Feed.search(:text_filter => 'Duplicate').should be_empty
     end
   end

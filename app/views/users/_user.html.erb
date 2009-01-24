@@ -28,10 +28,6 @@
       <dd><%= format_date(user.last_tagging_on) %></dd>
       <dt><%= t(:users_number_of_tags) %></dt>
       <dd><%= user.tag_count %></dd>
-		  <dt><%= t(:users_average_tags_per_item) %></dt>
-		  <dd><%= user.average_taggings_per_item %></dd>
-		  <dt><%= t(:users_percentage_tagged) %></dt>
-		  <dd class="last"><%= number_to_percentage user.tagging_percentage %></dd>
     </dl>
   </div>
 </div>

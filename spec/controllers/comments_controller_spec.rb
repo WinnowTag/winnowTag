@@ -12,7 +12,7 @@ describe CommentsController do
       
       @comments = stub("comments", :new => @comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
 
       current_user.stub!(:comments).and_return(@comments)
@@ -55,7 +55,7 @@ describe CommentsController do
       
       Comment.stub!(:find_for_user).and_return(@comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
     end
     
@@ -85,7 +85,7 @@ describe CommentsController do
       
       Comment.stub!(:find_for_user).and_return(@comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
     end
     
@@ -131,7 +131,7 @@ describe CommentsController do
       
       Comment.stub!(:find_for_user).and_return(@comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
     end
     

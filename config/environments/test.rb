@@ -33,3 +33,4 @@ config.gem "diff-lcs", :lib => "diff/lcs"
 config.gem "rspec", :lib => false
 config.gem "rspec-rails", :lib => false
 config.gem "cucumber", :lib => false
+config.gem "selenium-client", :lib => "selenium/client"

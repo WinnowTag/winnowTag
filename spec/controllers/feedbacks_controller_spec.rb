@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FeedbacksController do
   before(:each) do
-    @current_user = User.create! valid_user_attributes
+    @current_user = Generate.user!
     login_as @current_user
   end
   

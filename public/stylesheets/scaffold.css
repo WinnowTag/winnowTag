@@ -20,11 +20,10 @@ pre {
 }
 
 #errorExplanation {
-  width: 100%;
-  border: 2px solid red;
+  border: 2px solid #c00;
   padding: 7px;
   padding-bottom: 12px;
-  margin-right: 1em;
+  margin-bottom: 1em;
   background-color: #f0f0f0;
 }
 
@@ -33,7 +32,7 @@ pre {
   font-weight: bold;
   padding: 5px 5px 5px 15px;
   font-size: 12px;
-  margin: -7px;
+  margin: -7px -7px 0 -7px;
   background-color: #c00;
   color: #fff;
 }

@@ -13,7 +13,7 @@ shared_examples_for 'conditional GET of tag' do
     @tag.should_receive(:to_atom).never
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
   
-    get @action, :tag_name => @tag.name, :user => 'quentin'
+    get @action, :tag_name => @tag.name, :user => @user.login
     response.code.should == '304'
   end
 
@@ -21,7 +21,7 @@ shared_examples_for 'conditional GET of tag' do
     @tag.stub!(:last_classified_at).and_return(Time.now.yesterday.yesterday)
     request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
   
-    get @action, :tag_name => @tag.name, :user => 'quentin'
+    get @action, :tag_name => @tag.name, :user => @user.login
     response.should be_success
   end
 end
@@ -30,14 +30,14 @@ shared_examples_for 'tag access controls' do
   it "anyone can access feeds if the tag is public" do
     @tag.stub!(:public?).and_return(true)
     login_as(nil)
-    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    get @action, :user => @user.login, :tag_name => @tag.name, :format => "atom"
     response.should be_success
   end
   
   it "should prevent anyone accessing private tags" do
     @tag.stub!(:public?).and_return(false)
     login_as(nil)
-    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    get @action, :user => @user.login, :tag_name => @tag.name, :format => "atom"
     response.code.should == "401"
   end
   
@@ -49,8 +49,8 @@ shared_examples_for 'tag access controls' do
   
   it "should allow the owner to access private tags" do
     @tag.stub!(:public?).and_return(false)
-    login_as(:quentin)
-    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    login_as @user
+    get @action, :user => @user.login, :tag_name => @tag.name, :format => "atom"
     response.code.should == "200"
   end
   
@@ -58,64 +58,63 @@ shared_examples_for 'tag access controls' do
     @tag.stub!(:public?).and_return(false)
     login_as(nil)
     @controller.stub!(:hmac_authenticated?).and_return(true)
-    get @action, :user => 'quentin', :tag_name => @tag.name, :format => "atom"
+    get @action, :user => @user.login, :tag_name => @tag.name, :format => "atom"
     response.code.should == "200"
   end
 end
 
 describe TagsController do
-  fixtures :users, :feed_items
-
   before(:each) do
-    Tag.delete_all
-    login_as(:quentin)
+    @user = Generate.user!
+    @feed_item = Generate.feed_item!
+    
+    login_as @user
   end
   
   describe "create" do
     before(:each) do
-      @tag = Tag(users(:quentin), 'tag')
-      @tagging = Tagging.create(:user => users(:quentin), :tag => @tag, :feed_item => FeedItem.find(1))
+      @tag = Generate.tag!(:user => @user)
+      @tagging = Tagging.create(:user => @user, :tag => @tag, :feed_item => @feed_item)
     end
 
     it "copies named tag" do
-      users(:quentin).taggings.create(:tag => @tag, :feed_item => FeedItem.find(1))
-      assert_difference("users(:quentin).tags.count") do
-        post :create, :copy => @tag, :name => "tag - copy"
+      @user.taggings.create(:tag => @tag, :feed_item => @feed_item)
+      assert_difference("@user.tags.count") do
+        post :create, :copy => @tag.id, :name => "tag - copy"
         assert_response :success
-        assert_equal("tag successfully copied to tag - copy", flash[:notice])
+        assert_equal("#{@tag.name} successfully copied to tag - copy", flash[:notice])
       end
-      assert users(:quentin).tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])
-      assert_equal(2, users(:quentin).taggings.size)
+      assert @user.tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])
+      assert_equal(2, @user.taggings.size)
     end
   
     it "prompts the user to overwrite when copying to an existing tag" do
-      tag2 = Tag(users(:quentin), 'tag2')
+      tag2 = Generate.tag!(:user => @user)
     
-      post :create, :copy => @tag, :name => "tag2"
+      post :create, :copy => @tag.id, :name => tag2.name
       assert_response :success
     
       assert_match /confirm/, response.body
     end
   
     it "overwrites an existing tag when overwrite is set to true" do
-      tag2 = Tag(users(:quentin), 'tag2')
+      tag2 = Generate.tag!(:user => @user)
     
-      feed_item_1 = FeedItem.find(1)
-      feed_item_2 = FeedItem.find(2)
+      feed_item2 = Generate.feed_item!
     
-      users(:quentin).taggings.create(:tag => @tag, :feed_item => feed_item_1)
-      users(:quentin).taggings.create(:tag => tag2, :feed_item => feed_item_2)
+      @user.taggings.create(:tag => @tag, :feed_item => @feed_item)
+      @user.taggings.create(:tag => tag2, :feed_item => feed_item2)
 
-      assert_equal [feed_item_1], @tag.taggings.map(&:feed_item)
-      assert_equal [feed_item_2], tag2.taggings.map(&:feed_item)
+      assert_equal [@feed_item], @tag.taggings.map(&:feed_item)
+      assert_equal [feed_item2], tag2.taggings.map(&:feed_item)
 
-      assert_difference("users(:quentin).tags.count", 0) do
-        post :create, :copy => @tag, :name => "tag2", :overwrite => "true"
+      assert_difference("@user.tags.count", 0) do
+        post :create, :copy => @tag.id, :name => tag2.name, :overwrite => "true"
         assert_response :success
-        assert_equal("tag successfully copied to tag2", flash[:notice])
+        assert_equal("#{@tag.name} successfully copied to #{tag2.name}", flash[:notice])
       end
 
-      assert_equal [feed_item_1], tag2.taggings(:reload).map(&:feed_item)
+      assert_equal [@feed_item], tag2.taggings(:reload).map(&:feed_item)
     end
     
     it "can create a new tag" do
@@ -208,14 +207,15 @@ describe TagsController do
   describe "show" do
     before(:each) do
       @action = "show" # for 'conditional GET of tag'
-      mock_user_for_controller
       @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true, :user_id => @user.id)
       @tag.stub!(:to_atom).and_return(Atom::Feed.new)
       @mock_tags = mock('tags')
       @mock_tags.stub!(:find_by_name).and_return(nil)
       @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
       @user.stub!(:tags).and_return(@mock_tags)
-      User.stub!(:find_by_login).with('quentin').and_return(@user)
+      User.stub!(:find_by_login).with(@user.login).and_return(@user)
+      
+      TagUsage.stub!(:create!)
     end
   
     it_should_behave_like 'conditional GET of tag'
@@ -225,28 +225,28 @@ describe TagsController do
       @tag.stub!(:updated_on).and_return(Time.now.yesterday.yesterday)
       request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.yesterday.httpdate
     
-      get :show, :tag_name => @tag.name, :user => 'quentin'
+      get :show, :tag_name => @tag.name, :user => @user.login
       response.should be_success
     end
     
     it "atom_feed_contains_items_in_tag" do
-      user = users(:quentin)
-      tag = Tag(user, 'tag')
-      tag.update_attribute :public, true
+      tag = Generate.tag! :user => @user, :public => true
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
     
-      user.taggings.create!(:feed_item => FeedItem.find(1), :tag => tag)
-      user.taggings.create!(:feed_item => FeedItem.find(2), :tag => tag)
+      @user.taggings.create!(:feed_item => feed_item1, :tag => tag)
+      @user.taggings.create!(:feed_item => feed_item2, :tag => tag)
 
       @mock_tags.stub!(:find).with(tag.id.to_s).and_return(tag)
     
-      get :show, :user_id => user.login, :id => tag.id, :format => "atom"
+      get :show, :user_id => @user.login, :id => tag.id, :format => "atom"
     
       response.should be_success
     end
 
     it "atom_feed_with_missing_tag_returns_404" do
       @mock_tags.stub!(:find_by_id).with("missing").and_return(nil)
-      get :show, :user => users(:quentin).login, :tag_name => "missing", :format => "atom"
+      get :show, :user => @user.login, :tag_name => "missing", :format => "atom"
       response.code.should == "404"
     end
   end
@@ -254,32 +254,31 @@ describe TagsController do
   describe "GET training" do
     before(:each) do
       @action = "training" # for 'conditional GET of tag'
-      mock_user_for_controller
       @tag = mock_model(Tag, :updated_on => Time.now, :name => 'atag', :public? => true, :user_id => @user.id)    
       Tag.stub!(:find).with(@tag.id.to_s).and_return(@tag)
       @tag.stub!(:to_atom).and_return(Atom::Feed.new)
       @mock_tags = mock('tags')
       @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
       @user.stub!(:tags).and_return(@mock_tags)
-      User.stub!(:find_by_login).with("quentin").and_return(@user)
+      User.stub!(:find_by_login).with(@user.login).and_return(@user)
     end
     
     it "should call to_atom with :training_only => true" do      
       @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
-      get :training, :user => 'quentin', :tag_name => @tag.name
+      get :training, :user => @user.login, :tag_name => @tag.name
       response.should be_success
     end
     
     it "should set the content type to application/atom+xml" do
       @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
-      get :training, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      get :training, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
       response.should be_success
       response.content_type.should == "application/atom+xml"
     end
     
     it "should set the Last-Modified header" do
       @tag.should_receive(:to_atom).with(:training_only => true, :base_uri => 'http://test.host:80').and_return(Atom::Feed.new)
-      get :training, :user => 'quentin', :tag_name => @tag.name
+      get :training, :user => @user.login, :tag_name => @tag.name
       response.headers['Last-Modified'].should_not be_nil
     end
     
@@ -288,120 +287,106 @@ describe TagsController do
   end
     
   describe "/classifier_taggings" do
-    before(:each) do 
-      mock_user_for_controller
+    before(:each) do
       @tag = mock_model(Tag, :updated_on => Time.now, :name => 'atag', :public? => true, :user_id => @user.id)
       @mock_tags = mock('tags')
       @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
       @user.stub!(:tags).and_return(@mock_tags)
-      User.stub!(:find_by_login).with("quentin").and_return(@user)
+      User.stub!(:find_by_login).with(@user.login).and_return(@user)
       @atom = mock('atom')
     end
     
     it "should return 400 without :atom" do
       @controller.stub!(:hmac_authenticated?).and_return(true)
-      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name
+      put :classifier_taggings, :user => @user.login, :tag_name => @tag.name
       response.code.should == "400"
-    end
-    
-    it "should return 405 when not :put or :post" do
-      @controller.stub!(:hmac_authenticated?).and_return(true)
-      get :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
-      response.code.should == "405"
     end
     
     it "should call @tag.create_taggings_from_atom with POST and return 201" do
       @controller.stub!(:hmac_authenticated?).and_return(true)
       @tag.should_receive(:create_taggings_from_atom).with(@atom)
-      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
+      post :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :atom => @atom, :format => 'atom'
       response.code.should == "204"
     end
     
     it "should call @tag.replace_taggings_from_atom with PUT and return 204" do
       @controller.stub!(:hmac_authenticated?).and_return(true)
       @tag.should_receive(:replace_taggings_from_atom).with(@atom)
-      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :atom => @atom, :format => 'atom'
+      put :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :atom => @atom, :format => 'atom'
       response.code.should =="204"
     end
     
     it "should not allow POST from other user" do
       @tag.stub!(:user_id).and_return(@user.id + 1)
-      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom', :atom => @atom
+      put :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom', :atom => @atom
       response.code.should == "401"
     end
     
     it "should not allow POST when not logged in" do
       login_as(nil)
-      put :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      post :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
       response.code.should == "401"
     end
     
     it "should not allow PUT from other user" do
       @tag.stub!(:user_id).and_return(@user.id + 1)
-      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      post :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
       response.code.should == "401"
     end
     
     it "should not allow PUT when not logged in" do
       login_as(nil)
-      post :classifier_taggings, :user => 'quentin', :tag_name => @tag.name, :format => 'atom'
+      put :classifier_taggings, :user => @user.login, :tag_name => @tag.name, :format => 'atom'
       response.code.should == "401"
     end    
   end
   
   describe "PUT /tags/id" do
     before(:each) do
-      mock_user_for_controller
-      @tag = mock_model(Tag, :updated_on => Time.now, :last_classified_at => Time.now, :name => 'Tag23', :public? => true, :user_id => @user.id)
-      @mock_tags = mock('tags')
-      @mock_tags.stub!(:find).with(@tag.id.to_s).and_return(@tag)
-      @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
-      @user.stub!(:tags).and_return(@mock_tags)
-      User.stub!(:find_by_login).and_return(@user)
+      @tag = Generate.tag!(:user => @user, :public => true, :bias => 1)
+      login_as @user
     end
     
     it "should update the tag's bias" do
-      @tag.should_receive(:update_attribute).with(:bias, 1.2)
-      put "update", :id => @tag.id, :tag => {:bias => 1.2}
+      put "update", :id => @tag.id, :tag => { :bias => 1.2 }
       response.should be_success
+      @tag.reload.bias.should == 1.2
     end
     
     it "should update the tag's bias via /:user/tags/:tag_name request" do
-      @tag.should_receive(:update_attribute).with(:bias, 1.2)
-      put "update", :user => 'quentin', :tag_name => @tag.name, :tag => {:bias => 1.2}
+      put "update", :user => @user.login, :tag_name => @tag.name, :tag => { :bias => 1.2 }
       response.should be_success
+      @tag.reload.bias.should == 1.2
     end
     
     it "should not allow a logged in user to update someelse's tag" do
-      @tag.stub!(:user_id).and_return(@user.id + 1)
-      @tag.should_not_receive(:update_attribute).with(:bias, 1.2)
-      put "update", :user => 'quentin', :tag_name => @tag.name, :tag => {:bias => 1.2}
+      tag = Generate.tag! :bias => 1
+      put "update", :user => @user.login, :tag_name => tag.name, :tag => { :bias => 1.2 }
       response.should_not be_success
+      tag.reload.bias.should_not == 1.2
     end
   end
   
   describe "DELETE" do
     before(:each) do
-      mock_user_for_controller
-      @tag = mock_model(Tag, valid_tag_attributes(:public? => false, :user_id => @user.id))
-      @mock_tags = mock('tags')
-      @mock_tags.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
-      @mock_tags.stub!(:find).with(@tag.id.to_s).and_return(@tag)
-      @mock_tags.stub!(:find_by_name).with(@tag.name).and_return(@tag)
-      @user.stub!(:tags).and_return(@mock_tags)
-      User.stub!(:find_by_login).with(@user.login).and_return(@user)
+      @tag = Generate.tag!(:user => @user)
+      login_as @user
     end
     
     it "/tags/id" do
-      @tag.should_receive(:destroy)
       delete :destroy, :id => @tag.id
       response.should be_success
+      lambda {
+        @tag.reload
+      }.should raise_error(ActiveRecord::RecordNotFound)
     end
     
     it "/user/tags/name" do
-      @tag.should_receive(:destroy)
       delete :destroy, :user => @user.login, :tag_name => @tag.name
-      response.code.should == "200"
+      response.should be_success
+      lambda {
+        @tag.reload
+      }.should raise_error(ActiveRecord::RecordNotFound)
     end
   
     it "destroy_by_unused_tag" do
@@ -410,30 +395,21 @@ describe TagsController do
     end
     
     it "should prevent destruction of other user's tag" do
-      tags = mock('other_user_tags')
-      tag = mock_model(Tag, valid_tag_attributes(:public? => true))
-      tag.should_not_receive(:destroy)
-      tags.should_receive(:find_by_name).with(tag.name).and_return(tag)
-      other_user = mock_model(User, valid_user_attributes)
-      other_user.stub!(:tags).and_return(tags)
-      User.stub!(:find_by_login).with(other_user.login).and_return(other_user)
-      
-      delete :destroy, :user => other_user.login, :tag_name => tag.name
+      user = Generate.user!
+      tag = Generate.tag!(:user => user)
+      delete :destroy, :user => user.login, :tag_name => tag.name
       response.should_not be_success
+      lambda { tag.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
     end
   end
   
   describe 'PUT subscribe' do
-    it "subscribe_to_public_tag    " do
-      other_user = users(:aaron)
-
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, true
+    it "subscribe_to_public_tag" do
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user2, :public => true)
     
-      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-    
-      put :subscribe, :id => tag, :subscribe => "true"
-    
+      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => @user.id)
+      put :subscribe, :id => tag.id, :subscribe => "true"
       assert_response :success
     end
     
@@ -442,22 +418,18 @@ describe TagsController do
     #     sufficient, it also needs the name of the user since tags are only unique for a user.
     #     In fact it probably makes sense to use the public_tag route to call subscribe.
     it "subscribe_to_other_users_tag_with_same_name" do
-      other_user = users(:aaron)
-      tag = Tag(other_user, 'tag')
-      tag.update_attribute :public, true
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user2, :public => true)
     
-      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-    
-      put :subscribe, :id => tag, :subscribe => "true"
-    
+      TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => @user.id)
+      put :subscribe, :id => tag.id, :subscribe => "true"
       assert_response :success
     end
 
     # SG: This ensures that only public tags can be subscribed to.
     it "cant_subscribe_to_other_users_non_public_tags" do
-      other_user = users(:aaron)
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, false
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user2, :public => false)
 
       assert_no_difference("TagSubscription.count") do
         put :subscribe, :id => tag, :subscribe => "true"
@@ -468,31 +440,26 @@ describe TagsController do
   
     # Test how unsubscribing as implemented on the "Public Tags" page
     it "unsubscribe_from_public_tag_via_subscribe_action" do
-      other_user = users(:aaron)
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user2, :public => true)
 
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, true
     
-      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-    
+      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => @user.id)
       put :subscribe, :id => tag, :subscribe => "false"
-    
       assert_response :success
     end
 
     # Test unsubscribing as implemented on the "My Tags" page
     it "unsubscribe_from_public_tag_via_unsubscribe_action" do
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user2, :public => true)
+
       referer("/tags")
-      other_user = users(:aaron)
 
-      tag = Tag(other_user, 'hockey')
-      tag.update_attribute :public, true
-
-      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => users(:quentin).id)
-      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
+      TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => @user.id)
+      Folder.should_receive(:remove_tag).with(@user, tag.id)
 
       put :unsubscribe, :id => tag
-
       assert_response :redirect
     end
   end
@@ -500,46 +467,54 @@ describe TagsController do
   describe 'sidebar' do
     # Test unsubscribing as implemented on the "My Tags" page
     it "sidebar - false" do
-      tag = Tag(users(:quentin), 'hockey')
+      tag = Generate.tag!(:user => @user)
 
-      Folder.should_receive(:remove_tag).with(users(:quentin), tag.id)
+      Folder.should_receive(:remove_tag).with(@user, tag.id)
 
       put :sidebar, :id => tag, :sidebar => "false"
-
       assert_response :success
     end
 
     # Test unsubscribing as implemented on the "My Tags" page
     it "sidebar - true" do
-      tag = Tag(users(:quentin), 'hockey')
+      tag = Generate.tag!(:user => @user)
 
       Folder.should_not_receive(:remove_tag)
 
       put :sidebar, :id => tag, :sidebar => "true"
-
       assert_response :success
     end
   end
   
   describe 'merge' do
     it "tag_merging" do
-      old = Tag(users(:quentin), 'old')
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
-      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
+      tag1 = Generate.tag!(:user => @user)
+      tag2 = Generate.tag!(:user => @user)
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      feed_item3 = Generate.feed_item!
+      
+      @user.taggings.create!(:tag => tag1, :feed_item => feed_item1)
+      @user.taggings.create!(:tag => tag1, :feed_item => feed_item2)
+      @user.taggings.create!(:tag => tag2, :feed_item => feed_item3)
     
-      put :merge, :id => old, :tag => {:name => 'new'}, :merge => "true"
+      put :merge, :id => tag1, :tag => { :name => tag2.name }, :merge => "true"
       assert_redirected_to tags_path
-      assert_equal("old merged with new", flash[:notice])
+      assert_equal("#{tag1.name} merged with #{tag2.name}", flash[:notice])
     end
   
     it "renaming_when_merge_will_happen" do
-      old = Tag(users(:quentin), 'old')
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(1))
-      Tagging.create(:user => users(:quentin), :tag => old, :feed_item => FeedItem.find(2))
-      Tagging.create(:user => users(:quentin), :tag => Tag(users(:quentin), 'new'), :feed_item => FeedItem.find(3))
-    
-      put :update, :id => old, :tag => {:name => 'new'}
+      tag1 = Generate.tag!(:user => @user)
+      tag2 = Generate.tag!(:user => @user)
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      feed_item3 = Generate.feed_item!
+      
+      @user.taggings.create!(:tag => tag1, :feed_item => feed_item1)
+      @user.taggings.create!(:tag => tag1, :feed_item => feed_item2)
+      @user.taggings.create!(:tag => tag2, :feed_item => feed_item3)
+
+      put :update, :id => tag1, :tag => { :name => tag2.name }
       response.should be_success
       response.should render_template("merge.js.rjs")
     end
@@ -547,13 +522,13 @@ describe TagsController do
   
   describe 'rename' do    
     before(:each) do
-      @tag = Tag(users(:quentin), 'tag')
+      @tag = Generate.tag!(:user => @user)
     end
     
     it "rename the tag" do
-      put :update, :id => @tag, :tag => {:name => 'new'}
+      put :update, :id => @tag, :tag => { :name => 'new' }
       response.should be_success
-      assert users(:quentin).tags.find_by_name('new')
+      assert @user.tags.find_by_name('new')
     end    
   end
   
@@ -601,16 +576,13 @@ describe TagsController do
 end
 
 describe TagsController, "GET show when not logged in" do
-  fixtures :users
-  
   it "logs a tag usage with the client's ip address" do
-    user = users(:quentin)
-    tag = Tag(user, "ruby")
-    tag.update_attribute :public, true
+    user = Generate.user!
+    tag = Generate.tag!(:user => user, :public => true)
 
     TagUsage.should_receive(:create!).with(:tag_id => tag.id, :ip_address => "3.4.5.6")
     
     request.env['REMOTE_ADDR'] = '3.4.5.6'
-    get :show, :user => "quentin", :tag_name => "ruby", :format => "atom"
+    get :show, :user => user.login, :tag_name => tag.name, :format => "atom"
   end
 end

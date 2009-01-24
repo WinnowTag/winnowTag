@@ -6,21 +6,21 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe AccountController do
-  fixtures :users
-
   before(:each) do
     @emails = ActionMailer::Base.deliveries 
     @emails.clear
   end
 
   it "should_login_and_redirect_to_feed_items_path" do
-    post :login, :login => 'quentin', :password => 'test'
+    user = Generate.user!
+    post :login, :login => user.login, :password => "password"
     assert session[:user]
     response.should redirect_to(feed_items_path)
   end
 
   it "should_fail_login_and_not_redirect" do
-    post :login, :login => 'quentin', :password => 'bad password'
+    user = Generate.user!
+    post :login, :login => user.login, :password => "bad password"
     assert_nil session[:user]
     assert_response :success
   end
@@ -58,54 +58,60 @@ describe AccountController do
   end
 
   it "should_logout" do
-    login_as :quentin
+    login_as Generate.user!
     get :logout
     assert_nil session[:user]
     assert_response :redirect
   end
 
   it "should_remember_me" do
-    post :login, :login => 'quentin', :password => 'test', :remember_me => "1"
+    user = Generate.user!
+    post :login, :login => user.login, :password => "password", :remember_me => "1"
     assert_not_nil @response.cookies["auth_token"]
   end
 
   it "should_not_remember_me" do
-    post :login, :login => 'quentin', :password => 'test', :remember_me => "0"
+    user = Generate.user!
+    post :login, :login => user.login, :password => "password", :remember_me => "0"
     assert_nil @response.cookies["auth_token"]
   end
   
   it "should_delete_token_on_logout" do
-    login_as :quentin
+    login_as Generate.user!
     get :logout
     assert_equal @response.cookies["auth_token"], []
   end
 
   it "should_login_with_cookie" do
-    users(:quentin).remember_me
-    @request.cookies["auth_token"] = cookie_for(:quentin)
+    user = Generate.user!
+    user.remember_me
+    @request.cookies["auth_token"] = cookie_for(user)
     get :edit
     assert @controller.send(:logged_in?)
   end
 
   it "should_fail_cookie_login" do
-    users(:quentin).remember_me
-    users(:quentin).update_attribute :remember_token_expires_at, 5.minutes.ago.utc
-    @request.cookies["auth_token"] = cookie_for(:quentin)
+    user = Generate.user!
+    user.remember_me
+    user.update_attribute :remember_token_expires_at, 5.minutes.ago.utc
+    @request.cookies["auth_token"] = cookie_for(user)
     get :edit
     assert !@controller.send(:logged_in?)
   end
 
   it "should_fail_cookie_login_again" do
-    users(:quentin).remember_me
+    user = Generate.user!
+    user.remember_me
     @request.cookies["auth_token"] = auth_token('invalid_auth_token')
     get :edit
     assert !@controller.send(:logged_in?)
   end
   
   it "should_activate_user" do
-    assert_nil User.authenticate('aaron', 'test')
-    get :activate, :activation_code => users(:aaron).activation_code
-    assert_equal users(:aaron), User.authenticate('aaron', 'test')
+    user = Generate.user! :activated_at => nil
+    assert_nil User.authenticate(user.login, "password")
+    get :activate, :activation_code => user.activation_code
+    assert_equal user, User.authenticate(user.login, "password")
   end
   
   it "should_not_activate_nil" do
@@ -120,20 +126,28 @@ describe AccountController do
   end
 
   it "edit_can_only_change_some_values" do
-    referer('')
-    login_as(:quentin)
+    user = Generate.user!
+    original_login = user.login
+    original_crypted_password = user.crypted_password
+
+    login_as user
+
+    referer "/feed_items"
     post :edit, :current_user => {:firstname => 'Someone', :lastname => 'Else', :email => 'someone@else.com', :login => 'evil'}
-    u = User.find(users(:quentin).id)
-    assert_equal 'Someone', u.firstname
-    assert_equal 'Else', u.lastname
-    assert_equal 'someone@else.com', u.email
-    assert_equal users(:quentin).crypted_password, u.crypted_password
-    assert_equal users(:quentin).login, u.login
-    assert_redirected_to ''
+
+    user.reload
+    user.firstname.should == "Someone"
+    user.lastname.should == "Else"
+    user.email.should == "someone@else.com"
+
+    user.login.should == original_login
+    user.crypted_password.to_s.should == user.crypted_password.to_s
+
+    assert_redirected_to "/feed_items"
   end
   
   it "get_edit_returns_the_form" do
-    login_as(:quentin)
+    login_as Generate.user!
     get :edit
     assert_response :success
     assert_template 'edit'
@@ -147,10 +161,13 @@ describe AccountController do
   end
       
   it "login_updates_logged_in_at_time" do
-    previous_login_time = User.find_by_login('quentin').logged_in_at
-    post :login, :login => 'quentin', :password => 'test'
-    assert_not_nil User.find_by_login('quentin').logged_in_at
-    assert_not_equal previous_login_time, User.find_by_login('quentin').logged_in_at
+    user = Generate.user!
+    previous_login_time = user.logged_in_at
+    post :login, :login => user.login, :password => "password"
+    
+    user.reload
+    assert_not_nil user.logged_in_at
+    assert_not_equal previous_login_time, user.logged_in_at
   end
     
 protected
@@ -167,7 +184,7 @@ protected
   end
 
   def cookie_for(user)
-    auth_token users(user).remember_token
+    auth_token user.remember_token
   end
 
   def assert_activate_error

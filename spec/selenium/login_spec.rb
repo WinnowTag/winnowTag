@@ -6,15 +6,13 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Login" do
-  fixtures :users
-  
   it "successful_login" do
-    login
+    login Generate.user!
     page.location.should =~ /^#{feed_items_url}#.*$/
   end
   
   it "unsuccessful_login" do
-    login "quentin", "wrong"
+    login Generate.user!, "wrong"
     page.location.should == login_url
     page.text_content("css=.warning .content").should == "Invalid credentials. Please try again."
   end

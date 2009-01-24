@@ -6,12 +6,11 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FoldersController do
-  fixtures :users, :tags
-
   before(:each) do
-    login_as(:quentin)
-    mock_user_for_controller
+    @user = Generate.user!
+    login_as @user
     
+    User.stub!(:find_by_id).and_return(@user)
     @folder = mock_model(Folder, :save => true)
     @folders = mock("folders", :create! => @folder)
     @user.stub!(:folders).and_return(@folders)

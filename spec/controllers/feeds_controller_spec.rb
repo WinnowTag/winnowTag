@@ -8,8 +8,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe FeedsController do
   describe "#index" do
     before(:each) do
-      @user = User.create! valid_user_attributes
-      login_as @user
+      login_as Generate.user!
     end
 
     def do_get(params = {})
@@ -30,66 +29,10 @@ describe FeedsController do
   describe "old specs" do
   
     before(:each) do
-      login_as(1)
-      mock_user_for_controller
+      @user = Generate.user!
+      login_as @user
     end
-  
-    it "should re-render form on resource error" do
-      feed = mock_model(Remote::Feed)
-      feed.errors.should_receive(:empty?).and_return(false)
-      feed.errors.should_receive(:on).with(:url).and_return("Error")
-      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
-    
-      post 'create', :feed => {:url => 'http://example.com'}
-      response.should be_success
-      response.should render_template("index")
-      assigns[:feed].should == feed
-      flash[:error].should == "Error"
-    end
-  
-    it "should create resource and then collect it " do    
-      feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => nil)
-      feed.errors.should_receive(:empty?).and_return(true)
-      feed.should_receive(:collect)
-      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
-    
-      FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
-    
-      post 'create', :feed => {:url => 'http://example.com'}
-      response.should redirect_to(feeds_path)
-      flash[:notice].should == "Thanks for adding the feed from http://example.com. We will fetch the items soon. " + 
-                               "The feed has also been added to your feeds folder in the sidebar."
-    end
-  
-    it "should collect it a feed even if it already exists" do    
-      feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now)
-      feed.errors.should_receive(:empty?).and_return(true)
-      feed.should_receive(:collect)
-      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
-    
-      FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(feed.id, @user.id)
-  
-      post 'create', :feed => {:url => 'http://example.com'}
-      response.should redirect_to(feeds_path)
-      flash[:notice].should == "We already have the feed from http://example.com, however we will update it now. " + 
-                               "The feed has also been added to your feeds folder in the sidebar."
-    end
-    
-    it "should reject a feed from winnow" do
-      post 'create', :feed => {:url => 'http://test.host'}
-      flash[:error].should == "Winnow generated feeds cannot be added to Winnow."
-    end
-      
-    it "should not raise an error when the feed URL is invalid" do
-      feed = mock_model(Remote::Feed)
-      feed.errors.should_receive(:empty?).and_return(false)
-      feed.errors.should_receive(:on).with(:url).and_return("Error")
-      Remote::Feed.should_receive(:find_or_create_by_url_and_created_by).with('http://feed_does_not_exist_test.com/blog', @user.login).and_return(feed)
-      
-      post 'create', :feed => {:url => 'http://feed_does_not_exist_test.com/blog'}
-      response.should be_success
-    end
-    
+
     it "should import feeds from opml" do
       mock_feed1 = mock_model(Remote::Feed)
       mock_feed2 = mock_model(Remote::Feed)
@@ -125,34 +68,26 @@ describe FeedsController do
       }.should change(FeedSubscription, :count).by(0)
     end
   
-    describe "create" do
-      it "renders the rjs template on a javascript call" do
-        @user.stub!(:messages).and_return(stub("messages", :create! => mock_model(Message)))
-        
-        feed = mock_model(Remote::Feed, :url => 'http://example.com', :updated_on => Time.now, :collect => nil)
-        feed.errors.stub!(:empty?).and_return(true)
-        Remote::Feed.stub!(:find_or_create_by_url_and_created_by).with('http://example.com', @user.login).and_return(feed)
-        FeedSubscription.stub!(:find_or_create_by_feed_id_and_user_id)
-    
-        post :create, :feed => {:url => 'http://example.com'}, :format => 'js'
-        response.should render_template("create")
-      end
-    end
-  
     describe "auto_complete_for_feed_title" do
-      fixtures :feeds
-      
       before(:each) do
         @user.stub!(:subscribed_feeds).and_return([])
       end
     
       it "should return all feeds with matching title" do
+        Generate.feed! :title => "Ruby Lang"
+        Generate.feed! :title => "Ruby on Rails"
+        Generate.feed! :title => "Perl"
+        
         get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
         assigns[:feeds].size.should == 2
       end
     
       it "should not return duplicate feeds" do
-        Feed.create!(valid_feed_attributes(:title => 'Ruby', :duplicate_id => 1))
+        ruby_lang = Generate.feed! :title => "Ruby Lang"
+        Generate.feed! :title => "Ruby Lang", :duplicate_id => ruby_lang.id
+        Generate.feed! :title => "Ruby on Rails"
+        Generate.feed! :title => "Perl"
+
         get :auto_complete_for_feed_title, :feed => { :title => 'Ruby'}
         assigns[:feeds].size.should == 2
       end

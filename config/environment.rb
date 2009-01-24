@@ -27,15 +27,13 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "auth-hmac"
+  config.gem "auth-hmac"  # These seem to be dependencies - hoe rubyforge
   config.gem "bcrypt-ruby",     :lib => "bcrypt"
   config.gem "fastercsv"
   config.gem "fiveruns_manage"
-  # config.gem "fiveruns_tuneup"
   config.gem "hpricot"
   config.gem "ratom",           :lib => "atom"
-  config.gem "RedCloth"
-  config.gem "selenium-client", :lib => "selenium/client"
+  config.gem "RedCloth" # These seem to be dependencies - echoe highline
 
   # Must be compiled/installed on the target system
   config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"
@@ -47,7 +45,10 @@ Rails::Initializer.run do |config|
   config.plugins = [ :authorization, :all ]
 
   # Add additional load paths for your own custom dirs
-  config.load_paths += %W( #{RAILS_ROOT}/app/mailers )
+  config.load_paths += %W(
+    #{RAILS_ROOT}/app/mailers
+    #{RAILS_ROOT}/app/managers
+  )
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)

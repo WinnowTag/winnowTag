@@ -1,19 +1,16 @@
-* Close popup window in selenium specs
-* dns for ci.winnow.mutuallyhuman.com and for winnow.mutuallyhuman.com
-* selenium failures should show up as ci assets
-* add the collector to CI
-* new slice or upgrade slice for CI?
+Spec Cleanup
+ * urn:uuid
+ * id's to models
+ * new, create create!, find
+ * mock_model
 
-Models
- - FeedItem
- # - Folder
- # - Tag
- # - User
+* cleanup tagging indexes
+
+* selenium failures should show up as ci assets
 
 Todo
- - item list blanks when I maximize window
  - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI
- - Code refactoring/ceaning/testing, along with finishing Setup automated Selenium testing
+ - Code refactoring/ceaning/testing
  - Performance Enhancements
 
 Refactoring

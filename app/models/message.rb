@@ -16,7 +16,7 @@ class Message < ActiveRecord::Base
   }
   
   named_scope :latest, lambda { |limit|
-    { :order => "created at DESC", :limit => limit }
+    { :order => "created_at DESC", :limit => limit }
   }
   
   def self.read_by!(user)

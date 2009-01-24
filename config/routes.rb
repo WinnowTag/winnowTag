@@ -66,7 +66,7 @@ ActionController::Routing::Routes.draw do |map|
                   :auto_complete_for_tag_name => :any,
                   :training => :get,
                   :information => :get,
-                  :classifier_taggings => :any,
+                  :classifier_taggings => [:post, :put],
                   :merge => :put,
                   :comments => :get
                 }

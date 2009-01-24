@@ -2,27 +2,24 @@
 
 <% form_for @invite do |form| -%>
 	<p>
-	  <%= form.label :email %>
+	  <%= form.label :email %><br/>
 	  <%= form.text_field :email %>
 	</p>
 	
-	<p>
-	  <label for="activate"><%= t(:invites_activate) %></label>
-	  <%= check_box_tag :activate, true, true %>
-	</p>
-	
   <p>
-    <%= form.label :subject %>
+    <%= form.label :subject %><br/>
     <%= form.text_field :subject %>
   </p>
   
   <p>
-    <%= form.label :body %>
-    <%= form.text_area :body, :size => "29x5" %>
+    <%= form.label :body %><br/>
+    <%= form.text_area :body, :size => "50x5" %>
   </p>
 
 	<p>
-		<label>&nbsp;</label>
-		<%= submit_tag @invite.new_record? ? t(:create) : t(:update) %> or <%= link_to t(:cancel), invites_path %>
+	  <label for="activate"><%= t(:invites_activate) %></label>
+	  <%= check_box_tag :activate, true, true %>
+    &nbsp;&nbsp;
+		<%= submit_tag @invite.new_record? ? t(:create) : t(:update) %>
 	</p>
 <%  end -%>

@@ -29,7 +29,7 @@
 
 <% content_for :header_controls do -%>
   <% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
-    <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:feed_items_search_placeholder) %>
+    <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t(:feed_items_search_placeholder) %>
   <% end -%>
 
   <div class="order clearfix">

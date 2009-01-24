@@ -8,8 +8,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe AboutController do
   describe "old specs" do
     before(:each) do
-      login_as(1)
-      mock_user_for_controller
+      login_as Generate.user!
     end
   
     it "should fetch classifier info" do
@@ -30,7 +29,7 @@ describe AboutController do
   
   describe "info" do
     before(:each) do
-      @user = User.create! valid_user_attributes
+      @user = Generate.user!
       login_as @user
 
       @info = mock_model(Setting)
