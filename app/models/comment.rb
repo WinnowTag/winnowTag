@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class Comment < ActiveRecord::Base
+  acts_as_readable
+  
   belongs_to :user
   belongs_to :tag
   

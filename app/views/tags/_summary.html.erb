@@ -6,7 +6,9 @@
     </div>
     <div class="comments">
       <p><%= t(:tags_comments) %></p>  
-      <strong><%= tag.comments_count %></strong>
+      <strong>
+        <span class="unread_comments"><%= tag.comments.unread(current_user).count %></span> / <span class="total_comments"><%= tag.comments_count %></span>
+      </strong>
     </div>
     <div class="positive">
       <p><%= t(:tags_positive) %></p>

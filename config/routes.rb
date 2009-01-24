@@ -99,7 +99,10 @@ ActionController::Routing::Routes.draw do |map|
               
   map.resources :messages  
   map.resources :feedbacks
-  map.resources :comments
+  map.resources :comments,
+                :collection => {
+                  :mark_read => :put
+                }
                 
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit/:id", :action => "edit"

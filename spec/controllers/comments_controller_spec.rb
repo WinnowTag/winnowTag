@@ -159,4 +159,36 @@ describe CommentsController do
       response.should render_template("destroy")
     end
   end
+  
+  describe "#mark_read" do
+    def mark_comments_read
+      xhr :put, :mark_read, :comment_ids => @comments.map(&:to_param)
+    end
+    
+    before(:each) do
+      @comments = [mock_model(Comment, :read_by! => nil), mock_model(Comment, :read_by! => nil)]
+      
+      Comment.stub!(:find).and_return(@comments)
+      
+      @current_user = User.create! valid_user_attributes
+      login_as @current_user
+    end
+    
+    it "finds the comments" do
+      Comment.should_receive(:find).with(@comments.map(&:to_param)).and_return(@comments)
+      mark_comments_read
+    end
+    
+    it "marks the comments as read" do
+      @comments.each do |comment|
+        comment.should_receive(:read_by!).with(@current_user)
+      end
+      mark_comments_read
+    end
+    
+    it "renders the mark_read partial" do
+      mark_comments_read
+      response.should render_template("mark_read")
+    end
+  end
 end

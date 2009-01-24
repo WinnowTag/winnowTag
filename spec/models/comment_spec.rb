@@ -62,4 +62,20 @@ describe Comment do
       }.should raise_error(ActiveRecord::RecordNotFound)
     end
   end
+  
+  describe "marking read" do
+    
+    it "is marked as read only once per reader" do
+      tagger = User.create! valid_user_attributes
+      tag = tagger.tags.create! :name => "tag"
+      commenter = User.create! valid_user_attributes
+      comment = commenter.comments.create! :tag => tag, :body => "comment"
+      
+      lambda {
+        comment.read_by!(tagger)
+        comment.read_by!(tagger)
+      }.should change(Reading, :count).by(1)
+    end
+    
+  end
 end
