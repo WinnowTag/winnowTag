@@ -170,7 +170,7 @@ describe CommentsController do
       
       Comment.stub!(:find).and_return(@comments)
       
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
     end
     

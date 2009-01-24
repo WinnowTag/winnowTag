@@ -65,9 +65,9 @@ describe Comment do
   describe "marking read" do
     
     it "is marked as read only once per reader" do
-      tagger = User.create! valid_user_attributes
-      tag = tagger.tags.create! :name => "tag"
-      commenter = User.create! valid_user_attributes
+      tagger = Generate.user!
+      tag = Generate.tag!(:user => tagger, :name => "tag")
+      commenter = Generate.user!
       comment = commenter.comments.create! :tag => tag, :body => "comment"
       
       lambda {
