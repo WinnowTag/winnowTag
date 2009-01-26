@@ -5,16 +5,14 @@
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "Tag without comments" do
-  fixtures :users, :tags
-  
+describe "Tag without comments" do  
   before(:each) do
-    Comment.delete_all
-    TagSubscription.delete_all
+    user = Generate.user!
+    @tag = Generate.tag!(:user => user)
     
-    @tag = TagSubscription.create!(:user_id => 1, :tag_id => 2).tag
+    TagSubscription.create!(:user => user, :tag => @tag)
     
-    login
+    login user
     page.open tags_path
     page.wait_for :wait_for => :ajax
   end
@@ -27,23 +25,20 @@ describe "Tag without comments" do
   it "shows 0 total comments" do
     comment_count = page.get_text("css=#tag_#{@tag.id} .total_comments")
     comment_count.should == "0"
-  end
-  
+  end  
 end
 
 describe "Tag with no unread comments" do
-  fixtures :users, :tags
-  
   before(:each) do
-    Comment.delete_all
-    TagSubscription.delete_all
+    user = Generate.user!
+    @tag = Generate.tag!(:user => user)
     
-    tag_sub = TagSubscription.create!(:user_id => 1, :tag_id => 2)
-    @tag = tag_sub.tag
-    comment = Comment.create! :user => tag_sub.user, :tag => @tag, :body => "good one"
-    comment.read_by!(tag_sub.user)
+    TagSubscription.create!(:user => user, :tag => @tag)
     
-    login
+    comment = Comment.create! :user => user, :tag => @tag, :body => "good one"
+    comment.read_by!(user)
+    
+    login user
     page.open tags_path
     page.wait_for :wait_for => :ajax
   end
@@ -57,21 +52,18 @@ describe "Tag with no unread comments" do
     comment_count = page.get_text("css=#tag_#{@tag.id} .total_comments")
     comment_count.should == "1"
   end
-  
 end
 
 describe "Tag with one unread comment" do
-  fixtures :users, :tags
-  
   before(:each) do
-    Comment.delete_all
-    TagSubscription.delete_all
+    user = Generate.user!
+    @tag = Generate.tag!(:user => user)
     
-    tag_sub = TagSubscription.create!(:user_id => 1, :tag_id => 2)
-    @tag = tag_sub.tag
-    Comment.create! :user => tag_sub.user, :tag => @tag, :body => "good one"
+    TagSubscription.create!(:user => user, :tag => @tag)
     
-    login
+    Comment.create! :user => user, :tag => @tag, :body => "good one"
+    
+    login user
     page.open tags_path
     page.wait_for :wait_for => :ajax
   end
@@ -85,5 +77,4 @@ describe "Tag with one unread comment" do
     comment_count = page.get_text("css=#tag_#{@tag.id} .total_comments")
     comment_count.should == "1"
   end
-  
 end
