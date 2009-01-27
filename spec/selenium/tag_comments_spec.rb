@@ -78,3 +78,30 @@ describe "Tag with one unread comment" do
     comment_count.should == "1"
   end
 end
+
+describe "Marking comments read" do
+  
+  before(:each) do
+    user = Generate.user!
+    @tag = Generate.tag!(:user => user)
+    
+    TagSubscription.create!(:user => user, :tag => @tag)
+    
+    Comment.create! :user => user, :tag => @tag, :body => "good one"
+    
+    login user
+    page.open tags_path
+    page.wait_for :wait_for => :ajax
+  end
+  
+  it "marks comments read when exapanding tag" do
+    comment_count = page.get_text("css=#tag_#{@tag.id} .unread_comments")
+    comment_count.should == "1"
+    
+    page.click "css=#tag_#{@tag.id} .summary"
+    
+    comment_count = page.get_text("css=#tag_#{@tag.id} .unread_comments")
+    comment_count.should == "0"
+  end
+  
+end
