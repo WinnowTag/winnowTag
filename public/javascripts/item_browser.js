@@ -74,6 +74,7 @@ var ItemBrowser = Class.create({
  
   updateEmptyMessage: function() {
     if(this.full && this.numberOfItems().size() == 0) {
+      // # TODO: localization
       this.container.insert('<div class="empty" style="display:none">No items matched your search criteria.</div>');
       var message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
   
@@ -95,6 +96,7 @@ var ItemBrowser = Class.create({
   },
   
   showLoadingIndicator: function() {
+    // # TODO: localization
     this.container.insert('<div class="indicator" style="display:none">Loading Items...</div>');
     var indicator = $$("#" + this.container.getAttribute("id") + " > .indicator").first();
   

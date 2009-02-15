@@ -12,6 +12,7 @@
  *  - onFinished
  */
 var Classification = Class.create({
+  // # TODO: localization
   timeoutMessage: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like.",
   
   initialize: function(classifier_url, has_changed_tags, options) {
@@ -35,6 +36,7 @@ var Classification = Class.create({
         this.cancel_classification_button.show();
 
         this.progress_bar.setStyle({width: '0%'});
+        // # TODO: localization
         this.progress_title.update("Starting Classifier");
         this.classification_progress.show();
 
@@ -52,6 +54,7 @@ var Classification = Class.create({
       onCancelled: function() {
         this.classification_progress.hide();
         this.progress_bar.setStyle({width: '0%'});
+        // # TODO: localization
         this.progress_title.update("Classify changed tags");
         
         this.cancel_classification_button.hide();
@@ -63,8 +66,10 @@ var Classification = Class.create({
       onFinished: function() {
         this.classification_progress.hide();
         this.notify("Cancelled")
+        // # TODO: localization
         this.progress_title.update("Classification Complete");
         this.disableClassification();
+        // # TODO: localization
         if (confirm("Classification has completed.\nDo you want to reload the items?")) {
           itemBrowser.reload();
         }
@@ -110,6 +115,7 @@ var Classification = Class.create({
         this.startProgressUpdater();  
       }.bind(this),
       onFailure: function(transport) {
+        // # TODO: localization
         if (transport.responseJSON == "The classifier is already running.") {
           this.notify("Started");
           this.startProgressUpdater();

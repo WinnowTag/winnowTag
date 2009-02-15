@@ -391,6 +391,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     $("text_filter_form").observe("submit", function() {
       var value = $F('text_filter');
       if(value.length < 4) {
+        // # TODO: localization
         Message.add('error', "Search requires a word with at least 4 characters");
       } else {
         this.addFilters({text_filter: value});

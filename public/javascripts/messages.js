@@ -74,7 +74,7 @@ var TimeoutMessage = Class.create({
   initialize: function(ajax) {
     this.timeout_id = TimeoutMessage.identifier++;
     this.ajax = ajax;
-
+    // # TODO: localization
     Message.add("warning", "The server is taking a while to repond. We'll keep trying but you can " +
                            '<a href="#" id="timeout_' + this.timeout_id + '">cancel</a> if you like.', false, function() {
       $("timeout_" + this.timeout_id).observe('click', this.cancel.bind(this));
