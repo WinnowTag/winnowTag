@@ -1,15 +1,16 @@
 --- !ruby/object:Gem::Specification 
 name: auth-hmac
 version: !ruby/object:Gem::Version 
-  version: 1.0.1
+  version: 1.1.0
 platform: ruby
 authors: 
 - Sean Geoghegan
+- ascarter
 autorequire: 
 bindir: bin
 cert_chain: []
 
-date: 2008-08-21 00:00:00 -04:00
+date: 2009-02-26 00:00:00 +10:30
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
@@ -20,11 +21,10 @@ dependencies:
     requirements: 
     - - ">="
       - !ruby/object:Gem::Version 
-        version: 1.7.0
+        version: 1.8.2
     version: 
 description: A gem providing HMAC based authentication for HTTP
-email: 
-- seangeo@gmail.com
+email: seangeo@gmail.com
 executables: []
 
 extensions: []
@@ -71,7 +71,6 @@ rdoc_options:
 - --main
 - README.txt
 require_paths: 
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 

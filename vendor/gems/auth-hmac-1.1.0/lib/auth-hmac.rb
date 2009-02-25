@@ -17,6 +17,12 @@ require 'base64'
 # As a result of the generalization, it won't work with AWS because it doesn't support
 # the Amazon extension headers.
 #
+# === References
+# Cryptographic Hash functions:: http://en.wikipedia.org/wiki/Cryptographic_hash_function
+# SHA-1 Hash function::          http://en.wikipedia.org/wiki/SHA-1
+# HMAC algorithm::               http://en.wikipedia.org/wiki/HMAC
+# RFC 2104::                     http://tools.ietf.org/html/rfc2104
+#
 class AuthHMAC
   module Headers # :nodoc:
     # Gets the headers for a request.
@@ -42,69 +48,7 @@ class AuthHMAC
   end
   
   include Headers
-  
-  # Signs a request using a given access key id and secret.
-  #
-  def AuthHMAC.sign!(request, access_key_id, secret)
-    self.new(access_key_id => secret).sign!(request, access_key_id)
-  end
-  
-  def AuthHMAC.authenticated?(request, access_key_id, secret)
-    self.new(access_key_id => secret).authenticated?(request)
-  end
-  
-  # Create an AuthHMAC instance using a given credential store.
-  #
-  # A credential store must respond to the [] method and return
-  # the secret for the access key id passed to [].
-  #
-  def initialize(credential_store)
-    @credential_store = credential_store
-  end
-  
-  # Signs a request using the access_key_id and the secret associated with that id
-  # in the credential store.
-  #
-  # Signing a requests adds an Authorization header to the request in the format:
-  #
-  #  AuthHMAC <access_key_id>:<signature>
-  #
-  # where <signature> is the Base64 encoded HMAC-SHA1 of the CanonicalString and the secret.
-  #
-  def sign!(request, access_key_id)
-    secret = @credential_store[access_key_id]
-    raise ArgumentError, "No secret found for key id '#{access_key_id}'" if secret.nil?
-    request['Authorization'] = build_authorization_header(request, access_key_id, secret)
-  end
-  
-  # Authenticates a request using HMAC
-  #
-  # Returns true if the request has an AuthHMAC Authorization header and
-  # the access id and HMAC match an id and HMAC produced for the secret
-  # in the credential store. Otherwise returns false.
-  #
-  def authenticated?(request)
-    if md = /^AuthHMAC ([^:]+):(.+)$/.match(find_header(%w(Authorization HTTP_AUTHORIZATION), headers(request)))
-      access_key_id = md[1]
-      hmac = md[2]
-      secret = @credential_store[access_key_id]      
-      !secret.nil? && hmac == build_signature(request, secret)
-    else
-      false
-    end
-  end
-  
-  private
-    def build_authorization_header(request, access_key_id, secret)
-      "AuthHMAC #{access_key_id}:#{build_signature(request, secret)}"      
-    end
-    
-    def build_signature(request, secret)
-      canonical_string = CanonicalString.new(request)
-      digest = OpenSSL::Digest::Digest.new('sha1')
-      Base64.encode64(OpenSSL::HMAC.digest(digest, secret, canonical_string)).strip
-    end
-  
+ 
   # Build a Canonical String for a HTTP request.
   #
   # A Canonical String has the following format:
@@ -145,10 +89,10 @@ class AuthHMAC
       def header_values(headers)
         [ content_type(headers),
           content_md5(headers),
-          (date(headers) or headers['Date'] = Time.now.getutc.httpdate)
+          (date(headers) or headers['Date'] = Time.now.utc.httpdate)
         ].join("\n")
       end
-      
+     
       def content_type(headers)
         find_header(%w(CONTENT-TYPE CONTENT_TYPE HTTP_CONTENT_TYPE), headers)
       end
@@ -172,7 +116,129 @@ class AuthHMAC
         path[/^[^?]*/]
       end
   end
+   
+  @@default_signature_class = CanonicalString
+
+  # Create an AuthHMAC instance using the given credential store
+  #
+  # Credential Store:
+  # * Credential store must respond to the [] method and return a secret for access key id
+  # 
+  # Options:
+  # Override default options
+  # *  <tt>:service_id</tt> - Service ID used in the AUTHORIZATION header string. Default is AuthHMAC.
+  # *  <tt>:signature_method</tt> - Proc object that takes request and produces the signature string
+  #                                 used for authentication. Default is CanonicalString.
+  # Examples:
+  #   my_hmac = AuthHMAC.new('access_id1' => 'secret1', 'access_id2' => 'secret2')
+  #
+  #   cred_store = { 'access_id1' => 'secret1', 'access_id2' => 'secret2' }
+  #   options = { :service_id => 'MyApp', :signature_method => lambda { |r| MyRequestString.new(r) } }
+  #   my_hmac = AuthHMAC.new(cred_store, options)
+  #   
+  def initialize(credential_store, options = nil)
+    @credential_store = credential_store
+
+    # Defaults
+    @service_id = self.class.name
+    @signature_class = @@default_signature_class
+
+    unless options.nil?
+      @service_id = options[:service_id] if options.key?(:service_id)
+      @signature_class = options[:signature] if options.key?(:signature) && options[:signature].is_a?(Class)
+    end
     
+    @signature_method = lambda { |r| @signature_class.send(:new, r) }
+  end
+
+  # Generates canonical signing string for given request
+  #
+  # Supports same options as AuthHMAC.initialize for overriding service_id and
+  # signature method.
+  # 
+  def AuthHMAC.canonical_string(request, options = nil)
+    self.new(nil, options).canonical_string(request)
+  end
+
+  # Generates signature string for a given secret
+  #
+  # Supports same options as AuthHMAC.initialize for overriding service_id and
+  # signature method.
+  # 
+  def AuthHMAC.signature(request, secret, options = nil)
+    self.new(nil, options).signature(request, secret)
+  end
+
+  # Signs a request using a given access key id and secret.
+  #
+  # Supports same options as AuthHMAC.initialize for overriding service_id and
+  # signature method.
+  # 
+  def AuthHMAC.sign!(request, access_key_id, secret, options = nil)
+    credentials = { access_key_id => secret }
+    self.new(credentials, options).sign!(request, access_key_id)
+  end
+  
+  # Authenticates a request using HMAC
+  #
+  # Supports same options as AuthHMAC.initialize for overriding service_id and
+  # signature method.
+  # 
+  def AuthHMAC.authenticated?(request, access_key_id, secret, options)
+    credentials = { access_key_id => secret }
+    self.new(credentials, options).authenticated?(request)
+  end
+  
+  # Signs a request using the access_key_id and the secret associated with that id
+  # in the credential store.
+  #
+  # Signing a requests adds an Authorization header to the request in the format:
+  #
+  #  <service_id> <access_key_id>:<signature>
+  #
+  # where <signature> is the Base64 encoded HMAC-SHA1 of the CanonicalString and the secret.
+  #
+  def sign!(request, access_key_id)
+    secret = @credential_store[access_key_id]
+    raise ArgumentError, "No secret found for key id '#{access_key_id}'" if secret.nil?
+    request['Authorization'] = authorization(request, access_key_id, secret)
+  end
+  
+  # Authenticates a request using HMAC
+  #
+  # Returns true if the request has an AuthHMAC Authorization header and
+  # the access id and HMAC match an id and HMAC produced for the secret
+  # in the credential store. Otherwise returns false.
+  #
+  def authenticated?(request)
+    rx = Regexp.new("#{@service_id} ([^:]+):(.+)$")
+    if md = rx.match(authorization_header(request))
+      access_key_id = md[1]
+      hmac = md[2]
+      secret = @credential_store[access_key_id]
+      !secret.nil? && hmac == signature(request, secret)
+    else
+      false
+    end
+  end
+
+  def signature(request, secret)
+    digest = OpenSSL::Digest::Digest.new('sha1')
+    Base64.encode64(OpenSSL::HMAC.digest(digest, secret, canonical_string(request))).strip
+  end
+
+  def canonical_string(request)
+    @signature_method.call(request)
+  end
+  
+  def authorization_header(request)
+    find_header(%w(Authorization HTTP_AUTHORIZATION), headers(request))
+  end
+
+  def authorization(request, access_key_id, secret)
+    "#{@service_id} #{access_key_id}:#{signature(request, secret)}"      
+  end
+  
   # Integration with Rails
   #
   class Rails # :nodoc:
@@ -185,21 +251,22 @@ class AuthHMAC
         #   * +failure_message+: The text to use when authentication fails.
         #   * +only+: A list off actions to protect.
         #   * +except+: A list of actions to not protect.
+        #   * +hmac+: Options for HMAC creation. See AuthHMAC#initialize for options.
         #
         def with_auth_hmac(credentials, options = {})
           unless credentials.nil?
             self.credentials = credentials
-            self.authhmac = AuthHMAC.new(self.credentials)
             self.authhmac_failure_message = (options.delete(:failure_message) or "HMAC Authentication failed")
+            self.authhmac = AuthHMAC.new(self.credentials, options.delete(:hmac))
             before_filter(:hmac_login_required, options)
           else
-            $stderr << "with_auth_hmac called with nil credentials - authentication will be skipped\n"
+            $stderr.puts("with_auth_hmac called with nil credentials - authentication will be skipped")
           end
         end
       end
       
       module InstanceMethods # :nodoc:
-        def hmac_login_required          
+        def hmac_login_required
           unless hmac_authenticated?
             response.headers['WWW-Authenticate'] = 'AuthHMAC'
             render :text => self.class.authhmac_failure_message, :status => :unauthorized
@@ -243,6 +310,7 @@ class AuthHMAC
           base.class_inheritable_accessor :hmac_access_id
           base.class_inheritable_accessor :hmac_secret
           base.class_inheritable_accessor :use_hmac
+          base.class_inheritable_accessor :hmac_options
         end
         
         module ClassMethods
@@ -268,7 +336,7 @@ class AuthHMAC
           # patch of the internals of ActiveResource it might not work with past or
           # future versions.
           #
-          def with_auth_hmac(access_id, secret = nil)
+          def with_auth_hmac(access_id, secret = nil, options = nil)
             if access_id.is_a?(Hash)
               self.hmac_access_id = access_id.keys.first
               self.hmac_secret = access_id[self.hmac_access_id]
@@ -277,6 +345,7 @@ class AuthHMAC
               self.hmac_secret = secret
             end
             self.use_hmac = true
+            self.hmac_options = options
             
             class << self
               alias_method_chain :connection, :hmac
@@ -288,6 +357,7 @@ class AuthHMAC
             c.hmac_access_id = self.hmac_access_id
             c.hmac_secret = self.hmac_secret
             c.use_hmac = self.use_hmac
+            c.hmac_options = self.hmac_options
             c
           end          
         end
@@ -300,7 +370,7 @@ class AuthHMAC
         def self.included(base)
           base.send :alias_method_chain, :request, :hmac
           base.class_eval do
-            attr_accessor :hmac_secret, :hmac_access_id, :use_hmac
+            attr_accessor :hmac_secret, :hmac_access_id, :use_hmac, :hmac_options
           end
         end
 
@@ -308,7 +378,7 @@ class AuthHMAC
           if use_hmac && hmac_access_id && hmac_secret
             arguments.last['Date'] = Time.now.httpdate if arguments.last['Date'].nil?
             temp = "Net::HTTP::#{method.to_s.capitalize}".constantize.new(path, arguments.last)
-            AuthHMAC.sign!(temp, hmac_access_id, hmac_secret)
+            AuthHMAC.sign!(temp, hmac_access_id, hmac_secret, hmac_options)
             arguments.last['Authorization'] = temp['Authorization']
           end
           
