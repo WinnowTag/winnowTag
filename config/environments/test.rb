@@ -26,15 +26,14 @@ config.gem "term-ansicolor", :version => "1.0.3", :lib => "term/ansicolor"
 config.gem "polyglot", :version => "0.2.3", :lib => false
 config.gem "treetop", :version => "1.2.4", :lib => "treetop/runtime"
 
-# Commented out until we can deploy without test dependencies
-#
+# Not bundled until we can deploy without test dependencies being built
 # See http://rails.lighthouseapp.com/projects/8994-ruby-on-rails/tickets/1793-make-rake-gemsbuild-respect-railsenv
-#
+config.gem "nokogiri", :version => "1.1.1"
+
 # Bundled in vendor/gems
-# config.gem "nokogiri"
 config.gem "webrat"
-# config.gem "diff-lcs", :lib => "diff/lcs"
-# config.gem "rspec", :lib => false
-# config.gem "rspec-rails", :lib => false
-# config.gem "cucumber", :lib => false
-# config.gem "selenium-client", :lib => "selenium/client"
+config.gem "diff-lcs", :lib => "diff/lcs"
+config.gem "rspec", :lib => false
+config.gem "rspec-rails", :lib => false
+config.gem "cucumber", :lib => false
+config.gem "selenium-client", :lib => "selenium/client"
