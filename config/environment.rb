@@ -27,7 +27,7 @@ Rails::Initializer.run do |config|
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "auth-hmac", :version => "1.1.0"  # These seem to be dependencies - hoe rubyforge
+  config.gem "auth-hmac" # These seem to be dependencies - hoe rubyforge
   config.gem "bcrypt-ruby",     :lib => "bcrypt"
   config.gem "fastercsv"
   config.gem "fiveruns_manage"
