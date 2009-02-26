@@ -32,7 +32,7 @@ config.gem "treetop", :version => "1.2.4", :lib => "treetop/runtime"
 #
 # Bundled in vendor/gems
 # config.gem "nokogiri"
-# config.gem "webrat"
+config.gem "webrat"
 # config.gem "diff-lcs", :lib => "diff/lcs"
 # config.gem "rspec", :lib => false
 # config.gem "rspec-rails", :lib => false
