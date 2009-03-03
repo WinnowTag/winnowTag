@@ -16,6 +16,10 @@ When("I access /tags.atom") do
   get_with_hmac "/tags.atom"
 end
 
+When("I access that tag's tagging information") do
+  get information_tag_path(@tag)
+end
+
 Then("the response is $code") do |code|
   response.code.should == code
 end
@@ -26,4 +30,8 @@ end
 
 Then("the body is parseable by ratom") do
   lambda { Atom::Feed.load_feed(response.body) }.should_not raise_error
+end
+
+Then("the response should be only that tagging information") do
+  response.body.should == "From #{@user.login}, Positive: 0, Negative: 0, Automatic: 0"
 end

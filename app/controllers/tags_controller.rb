@@ -289,6 +289,7 @@ class TagsController < ApplicationController
   
   def information
     @tag = Tag.find(params[:id])
+    render :layout => false
   end
 
   def comments
