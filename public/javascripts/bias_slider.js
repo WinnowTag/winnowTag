@@ -4,21 +4,40 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 var BiasSlider = Class.create(Control.Slider, {
-  initialize: function($super, handle, track, options) {
+  initialize: function($super, slider) {
+    this.slider = slider;
+    
+    var handle = this.slider.down(".slider_handle");
+    var track = this.slider.down(".slider_track");
+    var bias = parseFloat(this.slider.getAttribute("bias"));
+    var options = {
+      disabled: this.slider.match("[disabled]"),
+			sliderValue: bias,
+			range: $R(0.9, [bias, 1.3].max()), 
+			onChange: this.sendUpdate.bind(this)
+		};
     $super(handle, track, options);
+    
     this.initializeTicks();
   },
+  
   setDisabled: function() {
     this.disabled = true;
     this.track.addClassName('disabled');    
   },
+  
   setEnabled: function() {
     this.disabled = false;
     this.track.removeClassName('disabled');
   },
-  sendUpdate: function(bias, tag_id) {
-    new Ajax.Request("/tags/" + tag_id + "?tag[bias]=" + bias, {method: "PUT"});
+  
+  sendUpdate: function(bias) {
+    new Ajax.Request(this.slider.getAttribute("href"), {
+      method: this.slider.getAttribute("method"),
+      parameters: { "tag[bias]": bias }
+    });
   },
+  
   initializeTicks: function() {
     var ticks = $H({0.9: "0_9", 1.0: "1_0", 1.1: "1_1", 1.2: "1_2", 1.3: "1_3"});
     ticks.each(function(key_value) {
@@ -31,5 +50,3 @@ var BiasSlider = Class.create(Control.Slider, {
     }.bind(this));
   }
 });
-
-BiasSlider.sliders = {};
