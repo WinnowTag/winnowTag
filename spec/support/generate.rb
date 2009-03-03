@@ -34,6 +34,12 @@ class Generate
     ))
   end
   
+  def self.comment!(attributes = {})
+    returning self.comment(attributes) do |comment|
+      comment.save!
+    end 
+  end
+
   def self.user(attributes = {})
     unique_id = unique_id_for(:user)
     crypted_password = attributes[:password] ? 
