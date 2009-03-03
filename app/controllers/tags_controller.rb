@@ -304,7 +304,7 @@ private
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
         render :status => :not_found, :text => t(:tag_not_found, :login => h(@user.login), :tag_name => h(params[:tag_name]))
       end
-    elsif params[:id] && !current_user.nil?
+    elsif params[:id] && current_user
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound
