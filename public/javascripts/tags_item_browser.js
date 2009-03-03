@@ -4,10 +4,6 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 var TagsItemBrowser = Class.create(ItemBrowser, {
-  // initialize: function($super, name, container, options) {
-  //   $super(name, container, options);
-  // },
-  
   initializeTag: function(tag) {
     tag = $(tag);
 
@@ -16,7 +12,9 @@ var TagsItemBrowser = Class.create(ItemBrowser, {
     var comments = extended.down(".comments");
     summary.observe("click", function() {
       extended.toggle();
-      comments.load();
+      comments.load(function() {
+        tag.down(".summary .comments .unread_comments").update("0");
+      }.bind(this));
       var slider = tag.down(".slider");
       if(!slider.bias_slider) {
         slider.bias_slider = new BiasSlider(slider);

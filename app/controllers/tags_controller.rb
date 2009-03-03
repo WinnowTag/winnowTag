@@ -294,6 +294,7 @@ class TagsController < ApplicationController
 
   def comments
     @tag = Tag.find(params[:id])
+    @tag.comments.each { |comment| comment.read_by!(current_user) }
     render :layout => false
   end
   

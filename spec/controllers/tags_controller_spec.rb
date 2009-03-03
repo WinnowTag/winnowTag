@@ -586,3 +586,42 @@ describe TagsController, "GET show when not logged in" do
     get :show, :user => user.login, :tag_name => tag.name, :format => "atom"
   end
 end
+
+
+describe TagsController do
+  describe "#comments" do
+    def get_comments
+      xhr :get, :comments, :id => @tag.id
+    end
+    
+    before(:each) do
+      @current_user = Generate.user!
+      @tag = Generate.tag! :user => @current_user
+      @tag.comments = [
+        Generate.comment!(:tag => @tag),
+        Generate.comment!(:tag => @tag)
+      ]
+    
+      Tag.stub!(:find).and_return(@tag)
+      
+      login_as @current_user
+    end
+    
+    it "finds the tag" do
+      Tag.should_receive(:find).with(@tag.id.to_s).and_return(@tag)
+      get_comments
+    end
+    
+    it "marks the tag's comments as read" do
+      @tag.comments.each do |comment|
+        comment.should_receive(:read_by!).with(@current_user)
+      end
+      get_comments
+    end
+    
+    it "renders the comments template" do
+      get_comments
+      response.should render_template("comments")
+    end
+  end
+end
