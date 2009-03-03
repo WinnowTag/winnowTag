@@ -75,9 +75,10 @@ class Tag < ActiveRecord::Base
       raise ArgumentError, "Target tagger already has a #{to.name} tag"
     end
     
-    self.manual_taggings.each do |tagging|
-      to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength, :user_id => to.user_id)
-    end
+    Tagging.connection.execute(%Q|
+      INSERT INTO taggings(feed_item_id, strength, classifier_tagging, tag_id, user_id) 
+      (SELECT feed_item_id, strength, classifier_tagging, #{to.id}, #{to.user_id} FROM taggings WHERE tag_id = #{self.id})
+    |)
     
     to.bias = self.bias    
     to.comment = self.comment

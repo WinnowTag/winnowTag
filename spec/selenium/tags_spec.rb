@@ -36,7 +36,7 @@ describe "Tags" do
       dont_see_element "#name_tag_#{@other.id}"
     end
   end
-  
+
   it "can change the name of a tag" do
     new_name = "#{@tag1.name}-renamed"
     page.click "name_tag_#{@tag1.id}"
