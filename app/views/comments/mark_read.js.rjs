@@ -1,1 +1,0 @@
-page[@comment.tag].down(".summary .comments .unread_comments").update @comment.tag.comments.unread(current_user).count

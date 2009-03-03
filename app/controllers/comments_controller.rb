@@ -32,12 +32,6 @@ class CommentsController < ApplicationController
     @comment.destroy
     respond_to :js
   end
-  
-  def mark_read
-    comments = Comment.find(params[:comment_ids])
-    comments.each { |comment| comment.read_by!(current_user) }
-    respond_to :js
-  end
 
 private
   def find_comment
