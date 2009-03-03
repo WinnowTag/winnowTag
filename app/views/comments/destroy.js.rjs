@@ -1,5 +1,5 @@
 page[@comment].fade
-page[@comment.tag].down(".summary .comments strong").update @comment.tag.comments.count
+page[@comment.tag].down(".summary .comments .total_comments").update @comment.tag.comments.count
 
 if @comment.tag.comments.empty?
   page.delay(1) do
