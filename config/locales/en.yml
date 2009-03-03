@@ -260,6 +260,9 @@ en:
   feeds_header_last_updated: "Last Updated"
   feeds_header_search_placeholder: "Search Feeds..."
   
+  # app/views/feeds/index.html.erb
+  total_feeds: "Total Feeds:"
+  
   # app/views/feeds/error.html.erb
   feeds_back_to_feeds: "Back to Feeds"
 

@@ -14,3 +14,9 @@
 <% content_for :header_controls do -%>
   <%= render :partial => "header_controls" %>
 <% end -%>
+
+<% content_for :footer do -%>	
+  <span class="total">
+    <label><%= t(:total_feeds) %></label> <%= Feed.count %>
+  </span>
+<% end -%>

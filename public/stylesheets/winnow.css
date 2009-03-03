@@ -834,6 +834,11 @@ body#feeds .feed {
   margin-bottom: 1.5em;
 }
 
+#footer .total {
+  float: right;
+  padding: 0.5em 1em;
+}
+
 /*
  * =user
  */
