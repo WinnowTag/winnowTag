@@ -1,0 +1,2 @@
+require "babilu"
+Babilu.generate

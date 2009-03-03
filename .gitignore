@@ -24,6 +24,8 @@ public/images/tuneup
 public/javascripts/tuneup
 public/stylesheets/tuneup
 
+public/javascripts/locales.js
+
 Makefile
 *.log
 *.out

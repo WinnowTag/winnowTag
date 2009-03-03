@@ -15,3 +15,9 @@ Feature: Tag Feeds
     Then the response is 200
     And the body is parseable by ratom
     And the content type is atom
+
+  Scenario: Accessing the tagging information
+    Given I am logged in
+      And a public tag in the system
+    When I access that tag's tagging information
+    Then the response should be only that tagging information

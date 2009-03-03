@@ -667,20 +667,21 @@ describe Tag do
       tag1.should_not == tag2
     end
   
-    it "copy_tag_to_self" do
+    it "copy tag to another tag for the same user" do
       user = Generate.user!
       tag = Generate.tag!(:user => user)
       copy = Generate.tag!(:user => user)
       user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
       user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
       user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
+      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag, :classifier_tagging => true)
     
       tag.copy(copy)
-      assert_equal(3, user.taggings.find_by_tag(copy).size)
-      assert_equal(3, user.taggings.find_by_tag(tag).size)
+      assert_equal(4, user.taggings.find_by_tag(copy).size)
+      assert_equal(4, user.taggings.find_by_tag(tag).size)
     end
   
-    it "copy_tag_to_another_user" do
+    it "copy tag to a tag for a different user" do
       user1 = Generate.user!
       user2 = Generate.user!
       tag1 = Generate.tag!(:user => user1)
@@ -689,10 +690,11 @@ describe Tag do
       user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag1)
       user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag1)
       user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag1)
+      user1.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag1, :classifier_tagging => true)
 
       tag1.copy(tag2)
-      assert_equal(3, user1.taggings.find_by_tag(tag1).size)
-      assert_equal(3, user2.taggings.find_by_tag(tag2).size)
+      assert_equal(4, user1.taggings.find_by_tag(tag1).size)
+      assert_equal(4, user2.taggings.find_by_tag(tag2).size)
     end
   
     it "copy_with_the_same_name_raises_error" do
@@ -713,18 +715,6 @@ describe Tag do
       user2.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
     
       assert_raise(ArgumentError) { tag.copy(tag) }
-    end
-  
-    it "copying_a_tag_skips_classifier_taggings" do
-      user = Generate.user!
-      tag = Generate.tag!(:user => user)
-      copy = Generate.tag!(:user => user)
-      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag)
-      user.taggings.create!(:feed_item => Generate.feed_item!, :tag => tag, :classifier_tagging => true)
-    
-      tag.copy(copy)
-      assert_equal(3, user.taggings.size)
-      assert_equal(1, user.classifier_taggings.size)
     end
   
     it "copying_copies_the_tag_comment_and_bias" do

@@ -32,8 +32,11 @@ var Item = Class.create({
     this.status.observe("click", this.toggleReadUnread.bind(this));
 
     this.status.observe("mouseover", function() {
-      // # TODO: localization
-      this.status.title = 'Click to mark as ' + (this.element.match(".read") ? 'unread' : 'read');
+      if(this.element.match(".read")) {
+        this.status.title = I18n.t("winnow.javascript.itembrowser.mark_unread");
+      } else {
+        this.status.title = I18n.t("winnow.javascript.itembrowser.mark_read");
+      }
     }.bind(this));
 
     this.feed_title.observe("click", this.toggleFeedInformation.bind(this));

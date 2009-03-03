@@ -23,11 +23,14 @@ config.action_mailer.delivery_method = :test
 
 # Must be compiled/installed on the target system
 config.gem "term-ansicolor", :version => "1.0.3", :lib => "term/ansicolor"
-config.gem "polyglot", :version => "0.2.3", :lib => false
+config.gem "polyglot", :version => "0.2.4", :lib => false
 config.gem "treetop", :version => "1.2.4", :lib => "treetop/runtime"
 
+# Not bundled until we can deploy without test dependencies being built
+# See http://rails.lighthouseapp.com/projects/8994-ruby-on-rails/tickets/1793-make-rake-gemsbuild-respect-railsenv
+config.gem "nokogiri", :version => "1.2.1"
+
 # Bundled in vendor/gems
-config.gem "nokogiri"
 config.gem "webrat"
 config.gem "diff-lcs", :lib => "diff/lcs"
 config.gem "rspec", :lib => false

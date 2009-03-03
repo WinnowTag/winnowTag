@@ -7,8 +7,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "keyboard shortcuts" do
   before(:each) do
-    @feed_item2 = Generate.feed_item!
-    @feed_item1 = Generate.feed_item!
+    @feed_item2 = Generate.feed_item! :updated => 1.minute.ago
+    @feed_item1 = Generate.feed_item! :updated => 0.minutes.ago
     
     login Generate.user!
     page.open feed_items_path

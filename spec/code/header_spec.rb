@@ -23,7 +23,7 @@ describe "kaphan foundation header" do
   it "should be required on all javascript files" do
     vendor = %w[
       public/javascripts/controls.js public/javascripts/dragdrop.js public/javascripts/effects.js public/javascripts/prototype.js
-      public/javascripts/slider.js public/javascripts/unittest.js public/javascripts/all.js
+      public/javascripts/slider.js public/javascripts/unittest.js public/javascripts/all.js public/javascripts/locales.js
       public/javascripts/tuneup/init.js public/javascripts/tuneup/prototype.js public/javascripts/tuneup/tuneup.js
       public/javascripts/placeholder.js
     ]
