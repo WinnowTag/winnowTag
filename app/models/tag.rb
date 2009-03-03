@@ -59,20 +59,17 @@ class Tag < ActiveRecord::Base
     if other.is_a? Tag
       self.name.downcase <=> other.name.downcase
     else
-      # TODO: localization
-      raise ArgumentError, "Cannot compare Tag to #{other.class}"
+      raise ArgumentError, I18n.t("winnow.errors.tag.compare_error", :other => other.class.name)
     end
   end
   
   def copy(to)
-    if self == to 
-      # TODO: localization
-      raise ArgumentError, "Can't copy tag to tag of the same name."
+    if self == to
+      raise ArgumentError, I18n.t("winnow.errors.tag.copy_name_error")
     end
     
     if to.taggings.size > 0
-      # TODO: localization
-      raise ArgumentError, "Target tagger already has a #{to.name} tag"
+      raise ArgumentError, I18n.t("winnow.errors.tag.copy_exists_error", :to => to.name)
     end
     
     Tagging.connection.execute(%Q|
@@ -87,8 +84,7 @@ class Tag < ActiveRecord::Base
   
   def merge(to)
     if self == to 
-      # TODO: localization
-      raise ArgumentError, "Can't copy tag to tag of the same name."
+      raise ArgumentError, I18n.t("winnow.errors.tag.merge_name_error")
     end
     
     self.manual_taggings.each do |tagging|

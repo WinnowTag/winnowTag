@@ -12,9 +12,6 @@
  *  - onFinished
  */
 var Classification = Class.create({
-  // # TODO: localization
-  timeoutMessage: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like.",
-  
   initialize: function(classifier_url, has_changed_tags, options) {
     Classification.instance = this;
     
@@ -36,8 +33,7 @@ var Classification = Class.create({
         this.cancel_classification_button.show();
 
         this.progress_bar.setStyle({width: '0%'});
-        // # TODO: localization
-        this.progress_title.update("Starting Classifier");
+        this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.start"));
         this.classification_progress.show();
 
         Content.instance.resizeHeight();
@@ -54,8 +50,7 @@ var Classification = Class.create({
       onCancelled: function() {
         this.classification_progress.hide();
         this.progress_bar.setStyle({width: '0%'});
-        // # TODO: localization
-        this.progress_title.update("Classify changed tags");
+        this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.cancel"));
         
         this.cancel_classification_button.hide();
         this.classification_button.show();
@@ -66,11 +61,9 @@ var Classification = Class.create({
       onFinished: function() {
         this.classification_progress.hide();
         this.notify("Cancelled")
-        // # TODO: localization
-        this.progress_title.update("Classification Complete");
+        this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.finish"));
         this.disableClassification();
-        // # TODO: localization
-        if (confirm("Classification has completed.\nDo you want to reload the items?")) {
+        if(confirm(I18n.t("winnow.javascript.classifier.progress_bar.reload"))) {
           itemBrowser.reload();
         }
         $$(".filter_list .tag").each(function(tag) {
@@ -105,8 +98,8 @@ var Classification = Class.create({
     parameters = null;
     if (puct_confirm) {
       parameters = {puct_confirm: 'true'};
-    }  
-          
+    }
+      
     new Ajax.Request(this.classifier_url + '/classify', {
       parameters: parameters,
       evalScripts: true,
@@ -115,8 +108,7 @@ var Classification = Class.create({
         this.startProgressUpdater();  
       }.bind(this),
       onFailure: function(transport) {
-        // # TODO: localization
-        if (transport.responseJSON == "The classifier is already running.") {
+        if(transport.responseJSON == I18n.t("winnow.javascript.classifier.progress_bar.running")) {
           this.notify("Started");
           this.startProgressUpdater();
         } else {
@@ -126,7 +118,7 @@ var Classification = Class.create({
       }.bind(this),
       onTimeout: function() {
         this.notify("Cancelled");
-        Message.add('error', this.timeoutMessage)
+        Message.add('error', I18n.t("winnow.javascript.errors.classifier.timeout"));
       }.bind(this),
       on412: function(response) {
         this.notify('Cancelled');
@@ -180,7 +172,7 @@ var Classification = Class.create({
           onTimeout: function() {
             executer.stop();
             this.notify("Cancelled");
-            Message.add('error', this.timeoutMessage);
+            Message.add('error', I18n.t("winnow.javascript.errors.classifier.timeout"));
           }.bind(this)
         });
       }

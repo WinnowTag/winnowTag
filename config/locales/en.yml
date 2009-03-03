@@ -1,7 +1,52 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
+  winnow:
+    errors:
+      atom:
+        missing_entry_id: "Atom::Entry is missing id"
+        wrong_entry_id:   "Tried to update feed ({{uri}}) from entry with different id: {{entry_id}}"
+        missing_fragment: "Atom::Entry id is missing fragment: {{entry_id}}"
+        invalid_entry_id: "Atom::Entry has missing or invalid id: {{entry_id}}"
+      tag:
+        compare_error:     "Cannot compare Tag to {{other}}"
+        copy_name_error:   "Can't copy tag to tag of the same name."
+        copy_exists_error: "Target tagger already has a {{to}} tag"
+        merge_name_error:  "Can't merge tag to tag of the same name."
+    defaults:
+      feed_item:
+        title: "Unknown Title"
+    feeds:
+      feed_item:
+        mode_feeds_tags_text_filter: "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds_tags:             "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}}"
+        mode_feeds_text_filter:      "Winnow feed for {{mode}} items from {{feeds}} including text '{{text_filter}}'"
+        mode_tags_text_filter:       "Winnow feed for {{mode}} items tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds:                  "Winnow feed for {{mode}} items from {{feeds}}"
+        mode_tags:                   "Winnow feed for {{mode}} items tagged by {{tags}}"
+        mode_text_filter:            "Winnow feed for {{mode}} items including text '{{text_filter}}'"
+        mode:                        "Winnow feed for {{mode}} items"
+    javascript:
+      errors:
+        classifier:
+          timeout: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like."
+        ajax:
+          timeout: "The server is taking a while to repond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
+      classifier:
+        progress_bar:
+          start:   "Starting Classifier"
+          cancel:  "Classify changed tags"
+          finish:  "Classification Complete"
+          reload:  "Classification has completed. Do you want to reload the items?"
+          # NOTE: This is never displayed to the user, it is only user as a check against a json response. Do not change this.
+          running: "The classifier is already running."
+      itembrowser:
+        text_filter:
+          too_short: "Search requires a word with at least 4 characters"
+        mark_unread: "Click to mark as unread"
+        mark_read:   "Click to mark as read"
+        empty:       "No items matched your search criteria."
+        loading:     "Loading Items..."
+        
+  
   # app/controllers/account_controller.rb
   profile_update: "Information Updated"
   credentials_invalid: "Invalid credentials. Please try again."

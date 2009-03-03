@@ -38,8 +38,7 @@ class FeedItem < ActiveRecord::Base
   validates_uniqueness_of :link
   
   def self.find_or_create_from_atom(entry)
-    # TODO: localization
-    raise ActiveRecord::RecordNotSaved, 'Atom::Entry missing id' if entry.id.nil?
+    raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
     unless item = FeedItem.find_by_uri(entry.id)
       item = FeedItem.new
@@ -52,12 +51,10 @@ class FeedItem < ActiveRecord::Base
   end
   
   def update_from_atom(entry)
-    # TODO: localization
-    raise ArgumentError, "Atom entry has different id" if self.uri != entry.id
+    raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id) if uri != entry.id
     
     self.attributes = {
-      # TODO: localization
-      :title   => (entry.title or 'Unknown Title'),
+      :title   => (entry.title or I18n.t("winnow.defaults.feed_item.title")),
       :link    => (entry.alternate and entry.alternate.href),
       :author  => (entry.authors.empty? ? nil : entry.authors.first.name),
       :updated => entry.updated,
@@ -127,12 +124,24 @@ class FeedItem < ActiveRecord::Base
     text_filter = filters[:text_filter]
     mode = filters[:mode]
 
-    # TODO: localization
-    title = "Winnow feed for #{mode} items"
-    title << " from #{feeds.to_sentence}" unless feeds.blank?
-    title << " tagged by #{tags.to_sentence}" unless tags.blank?
-    title << " including text '#{text_filter}'" unless text_filter.blank?
-    
+    title = if feeds.present? && tags.present? && text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds_tags_text_filter", :mode => mode, :feeds => feeds.to_sentence, :tags => tags.to_sentence, :text_filter => text_filter)
+    elsif feeds.present? && tags.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds_tags", :mode => mode, :feeds => feeds.to_sentence, :tags => tags.to_sentence)
+    elsif feeds.present? && text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds_text_filter", :mode => mode, :feeds => feeds.to_sentence, :text_filter => text_filter)
+    elsif tags.present? && text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_tags_text_filter", :mode => mode, :tags => tags.to_sentence, :text_filter => text_filter)
+    elsif feeds.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds", :mode => mode, :feeds => feeds.to_sentence)
+    elsif tags.present?
+      I18n.t("winnow.feeds.feed_item.mode_tags", :mode => mode, :tags => tags.to_sentence)
+    elsif text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_text_filter", :mode => mode, :text_filter => text_filter)
+    else
+      I18n.t("winnow.feeds.feed_item.mode", :mode => mode)
+    end
+
     feed = Atom::Feed.new do |feed|
       feed.title = title
       feed.id = self_link

@@ -14,11 +14,8 @@ class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
 
-  # TODO: localization
-  validates_uniqueness_of :via, :message => 'Feed already exists'
-
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
-  
+
   named_scope :matching, lambda { |q|
     conditions = %w[feeds.title feeds.via feeds.alternate].map do |attribute|
       "#{attribute} LIKE :q"
@@ -64,8 +61,7 @@ class Feed < ActiveRecord::Base
   end
   
   def self.find_or_create_from_atom_entry(entry)
-    # TODO: localization
-    raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
+    raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
     unless feed = Feed.find_by_uri(entry.id)
       feed = Feed.new
@@ -77,9 +73,8 @@ class Feed < ActiveRecord::Base
   end
 
   def update_from_atom(entry)
-    if self.uri != entry.id
-      # TODO: localization
-      raise ArgumentError, "Tried to update feed (#{self.uri}) from entry with different id: #{entry.id}"
+    if uri != entry.id
+      raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id)
     else
       duplicate_id = if duplicate_link = entry.links.detect {|l| l.rel == "http://peerworks.org/duplicateOf"}
         Feed.find_by_uri(duplicate_link.href).id rescue nil
@@ -120,16 +115,14 @@ private
       uri = URI.parse(entry.id)
     
       if uri.fragment.nil?
-        # TODO: localization
-        raise ActiveRecord::RecordNotSaved, "Atom::Entry id is missing fragment: '#{entry.id}'"
+        raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_fragment", :entry_id => entry.id)
       end
     
       uri.fragment.to_i
     rescue ActiveRecord::RecordNotSaved => e
       raise e
     rescue
-      # TODO: localization
-      raise ActiveRecord::RecordNotSaved, "Atom::Entry has missing or invalid id: '#{entry.id}'" 
+      raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.invalid_entry_id", :entry_id => entry.id)
     end
   end  
 end

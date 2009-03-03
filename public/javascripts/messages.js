@@ -74,9 +74,12 @@ var TimeoutMessage = Class.create({
   initialize: function(ajax) {
     this.timeout_id = TimeoutMessage.identifier++;
     this.ajax = ajax;
-    // # TODO: localization
-    Message.add("warning", "The server is taking a while to repond. We'll keep trying but you can " +
-                           '<a href="#" id="timeout_' + this.timeout_id + '">cancel</a> if you like.', false, function() {
+
+    var message = I18n.t("winnow.javascript.errors.ajax.timeout", {
+      cancel_link_start: '<a href="#" id="timeout_' + this.timeout_id + '">',
+      cancel_link_end: '</a>'
+    });
+    Message.add("warning", message, false, function() {
       $("timeout_" + this.timeout_id).observe('click', this.cancel.bind(this));
     }.bind(this));
   },
@@ -86,6 +89,8 @@ var TimeoutMessage = Class.create({
   },
   
   cancel: function() {
+    this.clear();
+
     if (this.ajax) {      
 			// disable the standard Prototype state change handle to avoid
 			// confusion between timeouts and exceptions
@@ -96,8 +101,6 @@ var TimeoutMessage = Class.create({
 				this.ajax.options.onComplete(this.ajax.transport, this.ajax.json);
 			}
     }
-    
-    this.clear();
   }
 });
 TimeoutMessage.identifier = 1;
