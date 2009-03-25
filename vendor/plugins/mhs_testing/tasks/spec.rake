@@ -1,5 +1,5 @@
 # TODO: How can I get around this?
-require File.join(Rails.root, 'vendor/gems/selenium-client-1.2.6/lib', 'selenium/rake/tasks')
+require File.join(Rails.root, 'vendor/gems/selenium-client-1.2.14/lib', 'selenium/rake/tasks')
 Selenium::Rake::RemoteControlStartTask.new do |rc|
   rc.port = 4444
   rc.timeout_in_seconds = 3 * 60
