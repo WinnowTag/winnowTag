@@ -254,7 +254,6 @@ en:
   # app/views/feeds/_header_controls.html.erb
   feeds_header_add_import: "Add / Import"
   feeds_header_title: "Title"
-  feeds_header_globally_exclude: "Globally Exclude"
   feeds_header_items: "Items"
   feeds_header_created: "Created"
   feeds_header_last_updated: "Last Updated"
@@ -379,7 +378,6 @@ en:
 
   # app/views/tags/_public_tag.html.erb
   tags_feed_link: "Feed"
-  tags_globally_exclude: "Globally Exclude"
   tags_subscribe: "Subscribe"
   view_all_items: "Show items tagged with {{tag}}"
   view_tagged_items: "Show items trained with {{tag}}"

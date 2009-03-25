@@ -11,7 +11,7 @@
             <span class="fewer">Fewer Items</span> <%= bias_slider_html(tag) %> <span class="more">More Items</span>
           </li>
           <li class="globally_exclude">
-            <%= globally_exclude_check_box(tag) %> <label for="<%= dom_id(tag, 'globally_exclude') %>"><%= t(:tags_globally_exclude) %></label>
+            <%= globally_exclude_check_box(tag) %> <label for="<%= dom_id(tag, 'globally_exclude') %>"><%= t(:globally_exclude) %></label>
           </li>
           <li class="subscribe">
             <% if tag.user_id != current_user.id -%>

@@ -220,7 +220,7 @@ module ApplicationHelper
 
   def tag_state(tag)
     if current_user.globally_excluded?(tag)
-      "Excluded"
+      "Globally Excluded"
     elsif current_user.subscribed?(tag)
       "Subscribed"
     end
