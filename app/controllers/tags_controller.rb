@@ -137,7 +137,7 @@ class TagsController < ApplicationController
       end
     elsif description = params[:tag][:description]
       @tag.update_attribute(:description, description)
-      render :text => @tag.description.blank? ? t(:tags_blank_description) : h(@tag.description)
+      render :partial => "update_description"
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true

@@ -396,7 +396,7 @@ en:
   # app/views/tags/_tag.html.erb
   tags_click_to_edit_tag_text: "Click to edit tag name"
   tags_save_text: "Save"
-  tags_blank_description: "..."
+  tags_blank_description: "add a description"
   tags_click_to_edit_description_text: "Click to edit tag description"
   tags_destroy_confirm_text: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
   tags_merge_confirm_text: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"

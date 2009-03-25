@@ -1374,6 +1374,15 @@ body#item_caches .item_cache {
   background-color: #ccf28f;
 }
 
+.tag .summary .description.empty span {
+  display: none;
+  font-style: italic;
+}
+
+.tag .summary:hover .description.empty span {
+  display: inline;
+}
+
 .tag.globally_excluded .summary {
   border-color: #E7ACAD;
   background-color: #F6E0E0;

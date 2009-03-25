@@ -39,7 +39,7 @@
             :click_to_edit_text => t(:tags_click_to_edit_tag_text), :save_text => t(:tags_save_text), :html_response => false) %>
     </h4>
 
-    <div class="description">
+    <div class="description <%= 'empty' if tag.description.blank? %>">
       <span id="<%= dom_id(tag, 'description') %>"><%= tag.description.blank? ? t(:tags_blank_description) : h(tag.description) %></span>
       <%= in_place_editor(dom_id(tag, "description"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[description]",
             :click_to_edit_text => t(:tags_click_to_edit_description_text), :save_text => t(:tags_save_text), :rows => 5, :cols => 50) %>
