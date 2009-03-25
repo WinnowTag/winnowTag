@@ -1,5 +1,4 @@
 # require 'spec/example/example_group'
-require 'spec/example/errors'
 
 module Spec
   module Rails
@@ -94,7 +93,7 @@ module Spec
           end
 
           options.reporter.example_finished(self, @execution_error)
-          success = @execution_error.nil? || ExamplePendingError === @execution_error
+          success = @execution_error.nil? || Spec::Example::ExamplePendingError === @execution_error
         end
 
         Spec::Example::ExampleGroupFactory.register(:selenium, self)
