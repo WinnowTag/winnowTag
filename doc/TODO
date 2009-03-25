@@ -4,9 +4,8 @@ Spec Cleanup
  * new, create create!, find
  * mock_model
 
+* selenium tests running on multiple browsers
 * cleanup tagging indexes
-
-* selenium failures should show up as ci assets
 
 Todo
  - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI
@@ -21,14 +20,13 @@ Bug
  - fix folders sortable + dropable
 
 winnow:
- * update selenium-cilent
  * vendor mysql, libxml-ruby
  * test server with passenger
 rails:
  * for unpack type
  * for unpacking non-frozen gems that think they are frozen
 selenium-client:
- * bunch of them
+ * merged changes into mvanholstyn/selenium-client repo, need to push back upstream
 mhs testing:
  * loading issue on rake task
  * update
