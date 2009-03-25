@@ -10,7 +10,9 @@ var TagsItemBrowser = Class.create(ItemBrowser, {
     var summary = tag.down(".summary");
     var extended = tag.down(".extended");
     var comments = extended.down(".comments");
-    summary.observe("click", function() {
+    summary.observe("click", function(event) {
+      if(["a", "input", "textarea"].include(event.element().tagName.toLowerCase())) { return; }
+
       extended.toggle();
       comments.load(function() {
         tag.down(".summary .comments .unread_comments").update("0");
