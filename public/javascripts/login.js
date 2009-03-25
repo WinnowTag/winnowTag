@@ -9,13 +9,13 @@ var Login = Class.create({
     this.invite_form = $('invite_form');
     this.reminder_form = $('reminder_form');
     this.signup_form = $('signup_form');
-
+    
     if(this.login_form) {
       this.login_form.down(".invitation a").observe("click", this.showInviteForm.bind(this));
       this.login_form.down(".forgot_password_link").observe("click", this.showReminderForm.bind(this));
       this.showLoginForm();
     }
-
+    
     if(this.invite_form) {
       this.invite_form.down(".login a").observe("click", this.showLoginForm.bind(this));
       
@@ -23,11 +23,11 @@ var Login = Class.create({
         this.showInviteForm();
       }
     }
-
+    
     if(this.reminder_form) {
       this.reminder_form.down(".forgot_password_link").observe("click", this.showLoginForm.bind(this));
     }
-
+    
     if(this.signup_form) {
       this.signup_form.down('input').focus();
     }
@@ -54,7 +54,7 @@ var Login = Class.create({
 });
 
 document.observe('dom:loaded', function() {
-  if(document.body.match("#login")) {
+  if($(document.body).match("#login")) {
     new Login();
   }
 });

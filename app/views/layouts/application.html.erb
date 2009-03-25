@@ -3,8 +3,12 @@
 <head>
   <title>Winnow</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <%= javascript_include_tag :defaults, :winnow, "locales", :cache => true %>
   <%= stylesheet_link_tag :winnow, :cache => true %>
+  <!--[if IE]>
+    <%= stylesheet_link_tag "ie" %>
+  <![endif]-->
+
+  <%= javascript_include_tag :defaults, :winnow, "locales", :cache => true %>
   <% javascript_tag do -%>
     document.observe('dom:loaded', Content.setup);
   <% end -%>

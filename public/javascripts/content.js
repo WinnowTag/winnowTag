@@ -5,7 +5,7 @@
 // Please visit http://www.peerworks.org/contact for further information.
 var Content = Class.create({
   initialize: function() {
-    this.body            = document.body;
+    this.body            = $(document.body);
     this.container       = $("container");
     this.content         = $("content");
     this.footer          = $("footer");
@@ -14,15 +14,20 @@ var Content = Class.create({
     this.sidebar_control = $("sidebar_control");
     
     Event.observe(window, 'resize', this.resize.bind(this));
-		setInterval(this.checkFontSize.bind(this), 500);
+    setInterval(this.checkFontSize.bind(this), 500);
+    this.resize();
   },
   
   checkFontSize: function() {
-		var currentFontSize = window.getComputedStyle(document.documentElement, null).fontSize;
-		if(!this.lastFontSize || currentFontSize != this.lastFontSize) {
-			this.lastFontSize = currentFontSize;
-      this.resize();
-		}
+    if(/MSIE/.test(navigator.userAgent)) {
+      // TODO: Figure out an IE solution
+    } else {
+  		var currentFontSize = window.getComputedStyle(document.documentElement, null).fontSize;
+  		if(!this.lastFontSize || currentFontSize != this.lastFontSize) {
+  			this.lastFontSize = currentFontSize;
+        this.resize();
+  		}
+    }
   },
   
   resize: function() {
