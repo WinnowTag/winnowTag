@@ -8,7 +8,7 @@ require "base64"
 # require "rubygems"
 # gem "rspec", "1.1.12"
 # require "spec"
-# require 'spec/runner/formatter/html_formatter'
+require 'spec/runner/formatter/html_formatter'
 require File.expand_path(File.dirname(__FILE__) + "/file_path_strategy")
 require File.expand_path(File.dirname(__FILE__) + "/system_capture")
 require File.expand_path(File.dirname(__FILE__) + "/html_report")

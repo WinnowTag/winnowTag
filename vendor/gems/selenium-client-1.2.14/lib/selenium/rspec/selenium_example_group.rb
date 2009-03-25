@@ -1,4 +1,5 @@
 # require 'spec/example/example_group'
+require 'spec/example/errors'
 
 module Spec
   module Rails
@@ -48,6 +49,52 @@ module Spec
           end
           
           page.select_window nil
+        end
+
+        prepend_after(:each) do
+          begin 
+            Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(selenium_driver, self) if execution_error
+            if selenium_driver.session_started?
+              selenium_driver.set_context "Ending example '#{self.description}'"
+            end
+          rescue Exception => e
+            STDERR.puts "Problem while capturing system state" + e
+          end
+        end
+
+        append_before(:each) do
+          begin 
+            if selenium_driver && selenium_driver.session_started?
+              selenium_driver.set_context "Starting example '#{self.description}'"
+            end
+          rescue Exception => e
+            STDERR.puts "Problem while setting context on example start" + e
+          end
+        end
+
+        attr_reader :execution_error
+
+        def execute(options, instance_variables)
+          options.reporter.example_started(self)
+          set_instance_variables_from_hash(instance_variables)
+        
+          @execution_error = nil
+          Timeout.timeout(options.timeout) do
+            begin
+              before_each_example
+              eval_block
+            rescue Exception => e
+              @execution_error ||= e
+            end
+            begin
+              after_each_example
+            rescue Exception => e
+              @execution_error ||= e
+            end
+          end
+
+          options.reporter.example_finished(self, @execution_error)
+          success = @execution_error.nil? || ExamplePendingError === @execution_error
         end
 
         Spec::Example::ExampleGroupFactory.register(:selenium, self)
