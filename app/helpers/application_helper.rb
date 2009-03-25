@@ -103,7 +103,12 @@ module ApplicationHelper
     end
     
     check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed),
-      :id => "#{dom_id(tag_or_feed, 'globally_exclude')}", :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+      :id => dom_id(tag_or_feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+  end
+
+  def subscribe_check_box(tag)
+    check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :id => dom_id(tag, 'subscribe'), 
+      :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}")
   end
   
   def feed_filter_controls(feeds, options = {})

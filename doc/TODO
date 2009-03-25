@@ -50,7 +50,6 @@ refactoring:
    * app/views/tags/sidebar.js.rjs
    * app/views/tags/subscribe.js.rjs
    * app/views/tags/unsubscribe.js.rjs
-   * app/views/tags/update_state.js.rjs
  * refactor application.js, item_browser.js, sidebar.js, content.js, feed_items_item_browser.js, item.js
  * removing a tag should fade then remove (sidebar, training control)
  * insertInOrder should be able to appear

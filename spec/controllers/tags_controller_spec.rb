@@ -531,48 +531,6 @@ describe TagsController do
       assert @user.tags.find_by_name('new')
     end    
   end
-  
-  describe 'PUT update_state' do
-    before(:each) do
-      @tag = mock_model(Tag, :id => "1")
-      Tag.should_receive(:find).with(@tag.id).and_return(@tag)
-    end
-    
-    after(:each) do
-      response.should be_success
-      response.should render_template("tags/update_state")
-    end
-    
-    def do_put(state)
-      put :update_state, :id => @tag.id, :state => state
-    end
-    
-    it "updates the tag state to globally exclude" do
-      @tag_exclusions = stub("tag_exclusions")
-      current_user.should_receive(:tag_exclusions).and_return(@tag_exclusions)      
-      @tag_exclusions.should_receive(:create!).with(:tag_id => @tag.id)
-            
-      TagSubscription.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
-      Folder.should_receive(:remove_tag).with(current_user, @tag.id)
-      
-      do_put "globally_exclude"
-    end
-    
-    it "updates the tag state to subscribed" do
-      TagSubscription.should_receive(:create!).with(:tag_id => @tag.id, :user_id => current_user.id)
-      TagExclusion.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
-      
-      do_put "subscribe"
-    end
-    
-    it "updates the tag state to neither" do
-      TagSubscription.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
-      Folder.should_receive(:remove_tag).with(current_user, @tag.id)
-      TagExclusion.should_receive(:delete_all).with(:tag_id => @tag.id, :user_id => current_user.id)
-      
-      do_put "neither"
-    end
-  end
 end
 
 describe TagsController, "GET show when not logged in" do

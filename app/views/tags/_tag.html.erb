@@ -10,8 +10,13 @@
             <h4>Apply <span><%=h tag.name %></span> to:</h4>
             <span class="fewer">Fewer Items</span> <%= bias_slider_html(tag) %> <span class="more">More Items</span>
           </li>
-          <li class="state">
-            <%= render :partial => "state.html.erb", :locals => { :tag => tag } %>
+          <li class="globally_exclude">
+            <%= globally_exclude_check_box(tag) %> <label for="<%= dom_id(tag, 'globally_exclude') %>"><%= t(:tags_globally_exclude) %></label>
+          </li>
+          <li class="subscribe">
+            <% if tag.user_id != current_user.id -%>
+              <%= subscribe_check_box(tag) %> <label for="<%= dom_id(tag, 'subscribe') %>"><%= t(:tags_subscribe) %></label>
+            <% end %>
           </li>
           <% if tag.user_id == current_user.id -%>
             <li class="public">
