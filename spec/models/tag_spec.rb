@@ -114,9 +114,9 @@ describe Tag do
       user_1 = Generate.user!
       user_2 = Generate.user!(:login => "everman")
     
-      tag_1 = Generate.tag!(:user => user_1, :name => "The best tag ever in the world", :comment => "")
-      tag_2 = Generate.tag!(:user => user_1, :name => "Another Tag", :comment => "The second best tag ever")
-      tag_3 = Generate.tag!(:user => user_2, :name => "My cool tag", :comment => "")
+      tag_1 = Generate.tag!(:user => user_1, :name => "The best tag ever in the world", :description => "")
+      tag_2 = Generate.tag!(:user => user_1, :name => "Another Tag", :description => "The second best tag ever")
+      tag_3 = Generate.tag!(:user => user_2, :name => "My cool tag", :description => "")
     
       tags = Tag.search(:user => user_1, :text_filter => "ever", :order => "id")
       tags.should == [tag_1, tag_2, tag_3]
@@ -717,17 +717,17 @@ describe Tag do
       assert_raise(ArgumentError) { tag.copy(tag) }
     end
   
-    it "copying_copies_the_tag_comment_and_bias" do
+    it "copying_copies_the_tag_description_and_bias" do
       user = Generate.user!
-      old_tag = Generate.tag!(:user => user, :comment => "old tag comment", :bias => 0.9)
-      new_tag = Generate.tag!(:user => user, :comment => "new tag comment")
+      old_tag = Generate.tag!(:user => user, :description => "old tag description", :bias => 0.9)
+      new_tag = Generate.tag!(:user => user, :description => "new tag description")
         
       old_tag.copy(new_tag)
     
       new_tag.reload
     
       assert_equal 0.9, new_tag.bias
-      assert_equal "old tag comment", new_tag.comment
+      assert_equal "old tag description", new_tag.description
     end
   
     it "merge_into_another_tag" do
@@ -761,8 +761,8 @@ describe Tag do
   
     it "overwriting_a_tag" do
       user = Generate.user!
-      old_tag = Generate.tag!(:user => user, :comment => "old tag comment", :bias => 0.9)
-      new_tag = Generate.tag!(:user => user, :comment => "new tag comment")
+      old_tag = Generate.tag!(:user => user, :description => "old tag description", :bias => 0.9)
+      new_tag = Generate.tag!(:user => user, :description => "new tag description")
       feed_item1 = Generate.feed_item!
       feed_item2 = Generate.feed_item!
       user.taggings.create!(:feed_item => feed_item1, :tag => old_tag)
@@ -774,7 +774,7 @@ describe Tag do
     
       assert_equal [feed_item1], new_tag.taggings(:reload).map(&:feed_item)
       assert_equal 0.9, new_tag.bias
-      assert_equal "old tag comment", new_tag.comment
+      assert_equal "old tag description", new_tag.description
     end
   end
 end

@@ -122,7 +122,7 @@ class TagsController < ApplicationController
     end
   end
 
-  # Rename, or change the comment on a tag.
+  # Rename, or change the description on a tag.
   def update
     if @name = params[:tag][:name]
       if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
@@ -135,9 +135,9 @@ class TagsController < ApplicationController
           render :action => "error.js.rjs"
         end
       end
-    elsif comment = params[:tag][:comment]
-      @tag.update_attribute(:comment, comment)
-      render :text => h(@tag.comment)
+    elsif description = params[:tag][:description]
+      @tag.update_attribute(:description, description)
+      render :text => @tag.description.blank? ? t(:tags_blank_description) : h(@tag.description)
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true

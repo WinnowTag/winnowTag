@@ -40,15 +40,15 @@
     </h4>
 
     <div class="description">
-      <span id="<%= dom_id(tag, 'comment') %>"><%= tag.comment.blank? ? t(:tags_blank_comment) : h(tag.comment) %></span>
-      <%= in_place_editor(dom_id(tag, "comment"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[comment]",
-            :click_to_edit_text => t(:tags_click_to_edit_comment_text), :save_text => t(:tags_save_text), :rows => 5, :cols => 50) %>
+      <span id="<%= dom_id(tag, 'description') %>"><%= tag.description.blank? ? t(:tags_blank_description) : h(tag.description) %></span>
+      <%= in_place_editor(dom_id(tag, "description"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[description]",
+            :click_to_edit_text => t(:tags_click_to_edit_description_text), :save_text => t(:tags_save_text), :rows => 5, :cols => 50) %>
     </div>
   <% else %>
     <h4 class="name"><%=h tag.name %></h4>
 
     <div class="description">
-      <%=h tag.comment %>
+      <%=h tag.description %>
     </div>
   <% end %>
 </div>

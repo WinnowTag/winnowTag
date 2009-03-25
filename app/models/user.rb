@@ -172,7 +172,7 @@ class User < ActiveRecord::Base
       end
       
       prototype.tags.each do |tag|
-        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :show_in_sidebar => tag.show_in_sidebar, :comment => tag.comment
+        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :show_in_sidebar => tag.show_in_sidebar, :description => tag.description
 
         tag.taggings.each do |tagging|
           user.taggings.create! :classifier_tagging => tagging.classifier_tagging, :strength => tagging.strength, :feed_item_id => tagging.feed_item_id, :tag_id => new_tag.id

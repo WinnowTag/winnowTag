@@ -78,7 +78,7 @@ class Tag < ActiveRecord::Base
     |)
     
     to.bias = self.bias    
-    to.comment = self.comment
+    to.description = self.description
     to.save!
   end
   
@@ -185,7 +185,7 @@ class Tag < ActiveRecord::Base
   named_scope :public, :conditions => { :public => true }
   
   named_scope :matching, lambda { |q|
-    conditions = %w[tags.name tags.comment users.login].map do |attribute|
+    conditions = %w[tags.name tags.description users.login].map do |attribute|
       "#{attribute} LIKE :q"
     end.join(" OR ")
     { :joins => :user, :conditions => [conditions, { :q => "%#{q}%" }] }

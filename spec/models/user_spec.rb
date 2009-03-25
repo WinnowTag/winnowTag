@@ -116,9 +116,9 @@ describe User do
       
       prototype = Generate.user!(:prototype => true)
                   
-      tag1 = prototype.tags.create!(:name => "Tag 1", :public => false, :bias => 1.2, :show_in_sidebar => true, :comment => "Tag 1 Comment")
+      tag1 = prototype.tags.create!(:name => "Tag 1", :public => false, :bias => 1.2, :show_in_sidebar => true, :description => "Tag 1 Comment")
       tag1.taggings.create! :classifier_tagging => true, :strength => 1, :feed_item_id => feed_item1.id, :user_id => prototype.id
-      tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :comment => "Tag 2 Comment")
+      tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :description => "Tag 2 Comment")
       tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => feed_item2.id, :user_id => prototype.id
       
       user = User.create_from_prototype(Generate.user.attributes)
@@ -128,7 +128,7 @@ describe User do
       user.tags.first.public.should == false
       user.tags.first.bias.should == 1.2
       user.tags.first.show_in_sidebar.should == true
-      user.tags.first.comment.should == "Tag 1 Comment"
+      user.tags.first.description.should == "Tag 1 Comment"
 
       user.tags.first.should have(1).taggings   
       user.tags.first.taggings.first.classifier_tagging.should == true
@@ -141,7 +141,7 @@ describe User do
       user.tags.last.public.should == true
       user.tags.last.bias.should == 1.5
       user.tags.last.show_in_sidebar.should == false
-      user.tags.last.comment.should == "Tag 2 Comment"
+      user.tags.last.description.should == "Tag 2 Comment"
 
       user.tags.last.should have(1).taggings
       user.tags.last.taggings.first.classifier_tagging.should == false
