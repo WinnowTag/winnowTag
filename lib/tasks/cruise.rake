@@ -27,23 +27,18 @@ task :cruise do
   Rake::Task['features'].invoke
 end
 
-task :cruise_with_selenium do
+task :setup_test_environment do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
-  Rake::Task['gems:build'].invoke
-  Rake::Task['db:migrate'].invoke
-  Rake::Task['assets:clean'].invoke
-  system "touch tmp/restart.txt"
-  
-  Rake::Task['spec:code'].invoke
-  Rake::Task['spec:controllers'].invoke
-  Rake::Task['spec:helpers'].invoke
-  Rake::Task['spec:models'].invoke
-  Rake::Task['spec:views'].invoke
-  Rake::Task['features'].invoke
-  Rake::Task['selenium:rc:start'].invoke
-  Rake::Task['selenium'].invoke
-  Rake::Task['selenium:rc:stop'].invoke
-
-  # TODO: This needs to span specs, features, and selenium
-  # Rake::Task['rcov_for_cc'].invoke
 end
+
+task :restart_test_server do
+  system "touch tmp/restart.txt"
+end
+
+task :cruise_with_selenium => [
+  "setup_test_environment", "gems:build", "db:migrate", "assets:clean", "restart_test_server",
+  "spec:code", "spec:controllers", "spec:helpers", "spec:models", "spec:views", "features",
+  "selenium:rc:start", "selenium", "selenium:rc:stop"
+  # TODO: This needs to span specs, features, and selenium
+  # "rcov_for_cc"
+]
