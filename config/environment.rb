@@ -32,11 +32,11 @@ Rails::Initializer.run do |config|
   config.gem "fastercsv"
   config.gem "fiveruns_manage"
   config.gem "hpricot"
-  config.gem "ratom",           :lib => "atom"
+  config.gem "ratom",       :version => "0.6.0",    :lib => "atom"
   config.gem "RedCloth" # These seem to be dependencies - echoe highline
 
   # Must be compiled/installed on the target system
-  config.gem "libxml-ruby", :version => "0.8.3", :lib => "libxml"
+  config.gem "libxml-ruby", :version => ">= 0.8.3", :lib => "libxml"
   config.gem "mysql",       :version => "2.7"
 
   # Only load the plugins named here, in the order given. By default, all plugins 

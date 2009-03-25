@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: ratom
 version: !ruby/object:Gem::Version 
-  version: 0.5.1
+  version: 0.6.0
 platform: ruby
 authors: 
 - Peerworks
@@ -10,7 +10,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2008-08-10 00:00:00 -04:00
+date: 2009-03-19 00:00:00 +10:30
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
@@ -21,7 +21,7 @@ dependencies:
     requirements: 
     - - ">="
       - !ruby/object:Gem::Version 
-        version: 0.8.0
+        version: 1.1.2
     version: 
 - !ruby/object:Gem::Dependency 
   name: hoe
@@ -31,7 +31,7 @@ dependencies:
     requirements: 
     - - ">="
       - !ruby/object:Gem::Version 
-        version: 1.7.0
+        version: 1.8.2
     version: 
 description: Atom Syndication and Publication API
 email: sean@peerworks.org
@@ -107,7 +107,6 @@ rdoc_options:
 - --main
 - README.txt
 require_paths: 
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 

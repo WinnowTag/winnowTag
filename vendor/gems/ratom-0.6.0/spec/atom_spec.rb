@@ -654,6 +654,20 @@ describe Atom do
           @entry.links.map{|l| l.href }.should include('http://www.snellspace.com/public/linktests/example')
         end
       end
+
+      describe 'linktest9' do
+        before(:all) do
+          @entry = @entries[8]
+        end
+        
+        it "should parse all links" do
+          @entry.should have(3).links
+        end
+        
+        it "should pick the alternate without hreflang" do
+          @entry.alternate.href.should == 'http://www.snellspace.com/public/linktests/alternate'
+        end
+      end
     end
     
     describe 'ordertest.atom' do
@@ -1071,21 +1085,40 @@ describe Atom do
   
   describe 'single custom_extensions' do
      before(:all) do
-       Atom::Entry.add_extension_namespace :custom, "http://custom.namespace"
-       Atom::Entry.element "custom:property", :class => Atom::Extensions::Property
+       Atom::Entry.add_extension_namespace :custom, "http://single.custom.namespace"
+       Atom::Entry.element "custom:singleproperty", :class => Atom::Extensions::Property
        @entry = Atom::Entry.load_entry(File.open('spec/fixtures/entry_with_single_custom_extension.atom'))
      end
 
      it "should load single custom extensions for entry" do
-       @entry.custom_property.should_not be_nil
+       @entry.custom_singleproperty.should_not be_nil
      end
 
      it "should load correct data for custom extensions for entry" do
-       @entry.custom_property.name.should == 'foo'
-       @entry.custom_property.value.should == 'bar'
+       @entry.custom_singleproperty.name.should == 'foo'
+       @entry.custom_singleproperty.value.should == 'bar'
      end
    end
-  
+
+  describe 'write_support' do
+    # FIXME this example depends on "custom_extensions" for configuring Atom::Entry
+    before(:all) do
+      @entry = Atom::Entry.new
+      @entry.ns_alias_property << Atom::Extensions::Property.new('ratom', 'rocks')
+      @entry.ns_alias_property << Atom::Extensions::Property.new('custom extensions', 'also rock')
+      @node = @entry.to_xml(true)
+    end
+
+    it "should_write_custom_extensions_on_to_xml" do
+      @node.children.size.should == 2
+      ratom, custom_extensions = @node.children
+      ratom.attributes["name"].should == "ratom"
+      ratom.attributes["value"].should == "rocks"
+      custom_extensions.attributes["name"].should == "custom extensions"
+      custom_extensions.attributes["value"].should == "also rock"
+    end
+  end
+
   describe Atom::Link do
     before(:each) do
       @href = 'http://example.org/next'
@@ -1185,6 +1218,22 @@ describe Atom do
     end
   end
   
+  describe Atom::Content::Text do
+    it "should be createable from a string" do
+      txt = Atom::Content::Text.new("This is some text")
+      txt.should == "This is some text"
+      txt.type.should == "text"
+    end
+  end
+  
+  describe Atom::Content::Xhtml do
+    it "should be createable from a string" do
+      txt = Atom::Content::Xhtml.new("<p>This is some text</p>")
+      txt.should == "<p>This is some text</p>"
+      txt.type.should == "xhtml"
+    end
+  end
+    
   describe 'Atom::Category initializer' do
     it "should create a empty category" do
       lambda { Atom::Category.new }.should_not raise_error
@@ -1233,18 +1282,23 @@ describe Atom do
     end
     
     it "should create from a hash" do
-      source = Atom::Generator.new(:name => 'generator', :uri => 'http://generator')
-      source.name.should == 'generator'
-      source.uri.should == 'http://generator'
+      generator = Atom::Generator.new(:name => 'generator', :uri => 'http://generator')
+      generator.name.should == 'generator'
+      generator.uri.should == 'http://generator'
     end
     
     it "should create from a block" do
-      source = Atom::Generator.new do |source|
-        source.name = 'generator'
-        source.uri = 'http://generator'
+      generator = Atom::Generator.new do |generator|
+        generator.name = 'generator'
+        generator.uri = 'http://generator'
       end
-      source.name.should == 'generator'
-      source.uri.should == 'http://generator'
+      generator.name.should == 'generator'
+      generator.uri.should == 'http://generator'
+    end
+    
+    it "should output the name as the text of the generator element" do
+      generator = Atom::Generator.new({:name => "My Generator"})
+      generator.to_xml(true).to_s.should == "<generator>My Generator</generator>"      
     end
   end
 end

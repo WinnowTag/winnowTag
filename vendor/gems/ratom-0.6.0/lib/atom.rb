@@ -8,7 +8,7 @@
 require 'forwardable'
 require 'delegate'
 require 'rubygems'
-gem 'libxml-ruby', '>= 0.8.0'
+gem 'libxml-ruby', '>= 1.1.2'
 require 'xml/libxml'
 require 'atom/xml/parser.rb'
 
@@ -83,6 +83,14 @@ module Atom # :nodoc:
       end
       
       yield(self) if block_given?
+    end
+    
+    def to_xml(nodeonly = true, name = 'generator', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
+      node = XML::Node.new("#{namespace_map.prefix(Atom::NAMESPACE, name)}")
+      node << @name if @name
+      node['uri'] = @uri if @uri
+      node['version'] = @version if @version
+      node
     end
   end
     
@@ -185,9 +193,15 @@ module Atom # :nodoc:
     # Text content within an Atom document.
     class Text < Base      
       attribute :type, :'xml:lang'
-      def initialize(xml)
-        super(xml.read_string)
-        parse(xml, :once => true)
+      def initialize(o)
+        case o
+        when String
+          super(o)
+          @type = "text"
+        when XML::Reader
+          super(o.read_string)
+          parse(o, :once => true)  
+        end        
       end
       
       def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
@@ -207,7 +221,7 @@ module Atom # :nodoc:
       def initialize(o)
         case o
         when XML::Reader
-          super(o.read_string.gsub(/\s+/, ' ').strip)
+          super(o.read_string)
           parse(o, :once => true)
         when String
           super(o)
@@ -241,22 +255,29 @@ module Atom # :nodoc:
       XHTML = 'http://www.w3.org/1999/xhtml'      
       attribute :type, :'xml:lang'
       
-      def initialize(xml)     
-        super("")   
-        parse(xml, :once => true)
-        starting_depth = xml.depth
-        
-        # Get the next element - should be a div according to the atom spec
-        while xml.read == 1 && xml.node_type != XML::Reader::TYPE_ELEMENT; end
-        
-        if xml.local_name == 'div' && xml.namespace_uri == XHTML
-          set_content(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
-        else
-          set_content(xml.read_outer_xml)
+      def initialize(o)
+        case o
+        when String
+          super(o)
+          @type = "xhtml"
+        when XML::Reader
+          super("")   
+          xml = o
+          parse(xml, :once => true)
+          starting_depth = xml.depth
+
+          # Get the next element - should be a div according to the atom spec
+          while xml.read && xml.node_type != XML::Reader::TYPE_ELEMENT; end        
+
+          if xml.local_name == 'div' && xml.namespace_uri == XHTML        
+            set_content(xml.read_inner_xml.strip.gsub(/\s+/, ' '))
+          else
+            set_content(xml.read_outer_xml)
+          end
+
+          # get back to the end of the element we were created with
+          while xml.read == 1 && xml.depth > starting_depth; end          
         end
-        
-        # get back to the end of the element we were created with
-        while xml.read == 1 && xml.depth > starting_depth; end
       end
       
       def to_xml(nodeonly = true, name = 'content', namespace = nil, namespace_map = Atom::Xml::NamespaceMap.new)
@@ -533,7 +554,7 @@ module Atom # :nodoc:
           o.read
           parse(o)
         else
-          raise ArgumentError, "Entry created with node other than atom:entry: #{o.name}"
+          raise ParseError, "Entry created with node other than atom:entry: #{o.name}"
         end
       when Hash
         o.each do |k,v|
@@ -573,7 +594,11 @@ module Atom # :nodoc:
     #
     # Returns the first link with rel == 'alternate' that matches the given type.
     def alternate(type = nil)
-      detect { |link| (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) }
+      detect { |link| 
+        (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) && (link.hreflang.nil?) 
+      } || detect { |link| 
+        (link.rel.nil? || link.rel == Link::Rel::ALTERNATE) && (type.nil? || type == link.type) 
+      }
     end
     
     # Get all alternates.
@@ -654,7 +679,7 @@ module Atom # :nodoc:
     end    
     
     include Xml::Parseable
-    attribute :href, :rel, :type, :length
+    attribute :href, :rel, :type, :length, :hreflang
         
     # Create a link.
     #
@@ -669,7 +694,7 @@ module Atom # :nodoc:
           raise ArgumentError, "Link created with node other than atom:link: #{o.name}"
         end
       when Hash
-        [:href, :rel, :type, :length].each do |attr|
+        [:href, :rel, :type, :length, :hreflang].each do |attr|
           self.send("#{attr}=", o[attr])
         end
       else

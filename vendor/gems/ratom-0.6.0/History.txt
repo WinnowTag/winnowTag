@@ -1,3 +1,15 @@
+== 0.6.0 2009-19-03
+
+* Now depends on libxml-ruby 1.1.2.
+* Added support for hreflang on links. (David Arango)
+* Update to work with latest version of libxml-ruby. (oortle & me)
+* Content::Text and Content::Xhtml can now be created with String's like Content::Html.
+* Make sure Atom::Generator outputs the generator name as the text of the element.
+
+== 0.5.2 2008-12-06
+
+* Remove whitespace modification in content. (dlisboa)
+
 == 0.5.1 2008-08-05
 
 * Added optional AuthHMAC support
