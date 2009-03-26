@@ -457,10 +457,11 @@ var Draggable = Class.create({
 
   draw: function(point) {
     var pos = Position.cumulativeOffset(this.element);
-    if(this.options.ghosting) {
-      var r   = Position.realOffset(this.element);
-      pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
-    }
+    // NOTE: peerworks change
+    // if(this.options.ghosting) {
+    //   var r   = Position.realOffset(this.element);
+    //   pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
+    // }
 
     var d = this.currentDelta();
     pos[0] -= d[0]; pos[1] -= d[1];
