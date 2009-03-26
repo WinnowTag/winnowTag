@@ -2,17 +2,19 @@ IE 7
  * dropping on folder causes rjs error
  * dragging when scrolled makes the offset wrong
  * dragging folder - causes open/close
-
- * add tag/feed/folder to sidebar
- * remove tag/feed in sidebar
- * rename tag/folder in sidebar
  * autotag - needs to be tested
- 
+
+content height in ie 7
+
+Adding feed in safari:
+TypeError: Result of expression 'this.selectedItem()' [undefined] is not an object.
+controls.js (line 224)TypeError: Result of expression 'this.update.firstChild' [null] is not an object. 
  
 
 
 * selenium tests running on multiple browsers
 * IE 6/7/8
+* fix sidebar tag filter width issues when tag name is longer and actions are shown
 
 Spec Cleanup
  * urn:uuid

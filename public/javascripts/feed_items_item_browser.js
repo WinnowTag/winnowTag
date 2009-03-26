@@ -140,8 +140,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
   },
   
-  updateTagFilters: function(element, tag) {
-    element.clear();
+  updateTagFilters: function(input, tag) {
+    input.clear();
     if(tag.match("#add_new_tag")) {
       new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(tag.getAttribute("name")), method:'post'});
     } else {
@@ -152,10 +152,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
   },
   
-  clear_auto_complete: function(element, list) {
-    list.update('');
-  },
-
   expandFolderParameters: function(parameters) {
     if(parameters.folder_ids) {
       var tag_ids = parameters.tag_ids ? parameters.tag_ids.split(",") : [];

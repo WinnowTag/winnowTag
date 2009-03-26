@@ -515,6 +515,7 @@ ul.filter_list {
 
 ul.filter_list li {
   display: inline-block;
+  min-width: 8em;
   margin: 0 0 0.25em 0;
   margin-right: 0.25em;
   padding: 0 0.5em 0 1.5em;
@@ -522,7 +523,6 @@ ul.filter_list li {
   background-repeat: no-repeat;
   background-position: 0.5em 0.3em;
   font-weight: bold;
-  min-width: 8em;
 }
 
 ul.filter_list.tags li {
@@ -1763,7 +1763,6 @@ body#item_caches .item_cache {
  * =auto_complete
  */
 .auto_complete {
-  background: #fff;
   z-index: 100;
   font-weight: normal;
   font-style: normal;
@@ -1777,6 +1776,7 @@ body#item_caches .item_cache {
 }
 
 .auto_complete ul li {
+  background: #fff;
   margin: 0;
   padding: 0;
 }
