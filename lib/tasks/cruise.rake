@@ -32,7 +32,8 @@ task :cruise_with_selenium do
   Rake::Task['gems:build'].invoke
   Rake::Task['db:migrate'].invoke
   Rake::Task['assets:clean'].invoke
-  system 'mongrel_rails start -e test -p 4000 -d'
+  system "touch tmp/restart.txt"
+  # system 'mongrel_rails start -e test -p 4000 -d'
   
   Rake::Task['spec:code'].invoke
   Rake::Task['spec:controllers'].invoke
@@ -43,7 +44,7 @@ task :cruise_with_selenium do
   Rake::Task['selenium:rc:start'].invoke
   at_exit { 
     Rake::Task['selenium:rc:stop'].invoke 
-    system('mongrel_rails stop')
+    # system('mongrel_rails stop')
   }
   Rake::Task['selenium'].invoke
 
