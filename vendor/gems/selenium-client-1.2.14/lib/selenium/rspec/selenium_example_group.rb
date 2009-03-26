@@ -6,7 +6,7 @@ module Spec
       class SeleniumExampleGroup < RailsExampleGroup
         config_file = File.join(::Rails.root, "config", "selenium.yml")
         CONFIG = if File.exist?(config_file)
-          YAML.load_file(config_file).symbolize_keys
+          YAML.load_file(config_file)
         else
           {}
         end
@@ -14,13 +14,13 @@ module Spec
         include ActionController::UrlWriter
 
         self.use_transactional_fixtures = false
-        self.default_url_options = { :host => CONFIG[:test_host] }
+        self.default_url_options = { :host => CONFIG["default"]["test_host"] }
 
 	      attr_reader :selenium_driver
 	      alias :page :selenium_driver
 
         before(:all) do
-          @selenium_driver = Selenium::Client::Driver.instance "localhost", 4444, "*#{CONFIG[:browser]}", "http://#{CONFIG[:test_host]}", 10000
+          @selenium_driver = Selenium::Client::Driver.instance CONFIG["default"]["selenium_host"] || "localhost", CONFIG["default"]["selenium_port"] || 4444, "*#{CONFIG['default']['browser']}", "http://#{CONFIG['default']['test_host']}", 10000
         end
 
         # prepend_before(:each) do

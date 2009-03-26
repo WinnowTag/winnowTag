@@ -4,7 +4,7 @@ module Selenium
     class RemoteControlStartTask
       config_file = File.join("config", "selenium.yml")
       CONFIG = if File.exist?(config_file)
-        YAML.load_file(config_file).symbolize_keys
+        YAML.load_file(config_file)
       else
         {}
       end
@@ -15,7 +15,7 @@ module Selenium
 
       def initialize(name = :'selenium:rc:start')
         @name = name
-        @port = 4444
+        @port = CONFIG["default"]["selenium_port"] || 4444
         @timeout_in_seconds = 5
         @jar_file = "vendor/selenium/selenium-server-1.0-standalone.jar"
         @additional_args = []
@@ -36,7 +36,7 @@ module Selenium
           remote_control = Selenium::RemoteControl::RemoteControl.new("0.0.0.0", @port, @timeout_in_seconds)
           remote_control.jar_file = @jar_file
           remote_control.additional_args = @additional_args
-          remote_control.display = CONFIG[:display]
+          remote_control.display = CONFIG["default"]["display"]
           remote_control.start :background => @background
           if @background && @wait_until_up_and_running
             puts "Waiting for Remote Control to be up and running..."
