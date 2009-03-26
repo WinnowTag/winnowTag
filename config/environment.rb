@@ -28,16 +28,16 @@ Rails::Initializer.run do |config|
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "auth-hmac" # These seem to be dependencies - hoe rubyforge
-  config.gem "bcrypt-ruby",     :lib => "bcrypt"
+  config.gem "bcrypt-ruby",    :lib => "bcrypt"
   config.gem "fastercsv"
   config.gem "fiveruns_manage"
   config.gem "hpricot"
-  config.gem "ratom",       :version => "0.6.0",    :lib => "atom"
+  config.gem "ratom",          :lib => "atom"
   config.gem "RedCloth" # These seem to be dependencies - echoe highline
 
   # Must be compiled/installed on the target system
-  config.gem "libxml-ruby", :version => ">= 0.8.3", :lib => "libxml"
-  config.gem "mysql",       :version => "2.7"
+  config.gem "libxml-ruby",    :lib => "libxml", :version => "1.1.3"
+  config.gem "mysql",                            :version => "2.7"
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
