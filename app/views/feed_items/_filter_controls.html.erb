@@ -15,4 +15,4 @@
   :add_form => render(:partial => "feed_items/add_folder_form"),
   :content => "<div id='folders'>#{render(:partial => "feed_items/folder", :collection => current_user.folders)}</div>"
 } %>
-<%= sortable_element("folders", :url => sort_folders_path, :method => :put, :constraint => :vertical, :tag => "div", :handle => ".header") %>
+<%= sortable_element("folders", :url => sort_folders_path, :method => :put, :tag => "div", :handle => "header") %>

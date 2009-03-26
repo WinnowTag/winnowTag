@@ -379,6 +379,7 @@ body#login .container .form .content #invite_use {
  * =sidebar
  */
 #sidebar {
+  position: relative;
   float: left;
   width: 25%;
   height: auto;

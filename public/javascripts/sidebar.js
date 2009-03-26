@@ -59,7 +59,8 @@ var Sidebar = Class.create({
         this.sidebar_control.setStyle({backgroundColor: ""});
         this.resize();
         this.enableToggle();
-      }.bind(this)});
+      }.bind(this)
+    });
   },
   
   disableResize: function() {

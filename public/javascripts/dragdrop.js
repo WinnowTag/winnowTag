@@ -303,7 +303,9 @@ var Draggable = Class.create({
     if(Event.isLeftClick(event)) {
       // abort on form elements, fixes a Firefox issue
       var src = Event.element(event);
-      if((tag_name = src.tagName.toUpperCase()) && (
+      // NOTE: Peerworks change
+      var tag_name = src.tagName.toUpperCase()
+      if(tag_name && (
         tag_name=='INPUT' ||
         tag_name=='SELECT' ||
         tag_name=='OPTION' ||

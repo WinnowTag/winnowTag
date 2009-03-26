@@ -341,7 +341,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         }
       });
 
-      new Draggable(tag.getAttribute("id"), { 
+      new Draggable(tag, { 
         ghosting: true, revert: true, scroll: 'sidebar', 
         reverteffect: function(element, top_offset, left_offset) {
           new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
@@ -378,7 +378,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         }
       });
     
-      new Draggable(feed.getAttribute("id"), { 
+      new Draggable(feed, { 
         ghosting: true, revert: true, scroll: 'sidebar', 
         reverteffect: function(element, top_offset, left_offset) {
           new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
