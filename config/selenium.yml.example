@@ -1,5 +1,4 @@
-browser: firefox # i needed to "ln -s /usr/lib/firefox-3.0.5/firefox /usr/bin/firefox-bin"
-test_host: localhost:4000
+# Ubuntu: ln -s /usr/lib/firefox-3.0.5/firefox /usr/bin/firefox-bin (replace 3.0.5 with whatever version of firefox you are using)
+browser: firefox
+test_host: test.winnow.local
 # display: ":0"
-
-# start builder on boot
