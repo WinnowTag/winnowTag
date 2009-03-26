@@ -1,5 +1,5 @@
 browser: firefox # i needed to "ln -s /usr/lib/firefox-3.0.5/firefox /usr/bin/firefox-bin"
-test_host: test.winnow.local
+test_host: localhost:4000
 # display: ":0"
 
 # start builder on boot
