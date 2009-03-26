@@ -1,10 +1,12 @@
+* selenium tests running on multiple browsers
+* IE 6/7/8
+
 Spec Cleanup
  * urn:uuid
  * id's to models
  * new, create create!, find
  * mock_model
 
-* selenium tests running on multiple browsers
 * cleanup tagging indexes
 
 Todo
