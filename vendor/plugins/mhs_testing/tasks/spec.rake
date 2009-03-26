@@ -19,7 +19,8 @@ desc 'Run acceptance tests for web application on default browser defined in con
 Spec::Rake::SpecTask.new('selenium') do |t|
   t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/selenium_spec.opts\""]
   path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
-  t.spec_opts << "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/acceptance_tests_report.html'"
+  file = ENV['SELENIUM_CONFIGURATION'] || "acceptance_tests_report"
+  t.spec_opts << "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/#{file}.html'"
   t.spec_files = FileList['spec/selenium/*_spec.rb']
 end
 
