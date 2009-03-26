@@ -516,8 +516,7 @@ ul.filter_list {
 ul.filter_list li {
   display: inline-block;
   min-width: 8em;
-  margin: 0 0 0.25em 0;
-  margin-right: 0.25em;
+  margin: 0 0.25em 0.25em 0;
   padding: 0 0.5em 0 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
