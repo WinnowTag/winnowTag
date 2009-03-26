@@ -34,3 +34,5 @@ Makefile
 *.bundle
 
 vendor/gems/nokogiri-1.1.0/ext/nokogiri/conftest.dSYM
+all.js
+all.css
