@@ -356,21 +356,23 @@ body#login .container .form .content #invite_use {
 #feedback {
   position: relative;
   border: none;
+  z-index: 1000;
 }
 
 #feedback form {
   position: absolute;
   top: 1.5em;
   right: 0;
-  z-index: 1000;
+  width: 22em;
   padding: 1em;
   background-color: #fff;
   border: 1px solid #666;
 }
 
 #feedback form textarea {
-  width: 20em;
+  width: 97%;
   height: 5em;
+  margin-bottom: 0.5em;
 }
 
 /*
@@ -1481,8 +1483,8 @@ body#item_caches .item_cache {
 }
 
 .tag .extended .comment .body {
-  padding: 0.5em 0 0.5em .5em;
-  border-left: 10.9em solid #d7e0f5;
+  padding: 0.5em 0 0.5em 0.75em;
+  border-left: 10.8em solid #d7e0f5;
 }
 
 .tag .extended .comment .body *:first-child {
@@ -1497,12 +1499,12 @@ body#item_caches .item_cache {
   border-top: 1px solid #C0C7CD;
 }
 
-.tag .extended .comment form {
+.tag .extended .comment .form {
   padding: 0.5em;
   border-left: 10.9em solid #d7e0f5;
 }
 
-.tag .extended .comment form  textarea {
+.tag .extended .comment form textarea {
   width: 100%;
   border: 1px solid #C0C7CD;
   height: 80px;

@@ -1,4 +1,4 @@
-page[@comment].down('form').remove
+page[@comment].down('.form').remove
 page[@comment].down('.body').update sth(@comment.body)
 page[@comment].down('.body').show
 page[@comment].highlight :duration => 3

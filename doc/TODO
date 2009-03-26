@@ -1,3 +1,15 @@
+IE 7
+ * drag/drop in sidebar
+ * add tag/feed/folder to sidebar
+ * remove tag/feed in sidebar
+ * rename tag/folder in sidebar
+ * sidebar scrolling
+ * autotag - needs to be tested
+ * sidebar open/close/dragging
+ 
+ 
+
+
 * selenium tests running on multiple browsers
 * IE 6/7/8
 
