@@ -15,11 +15,19 @@ end
 
 # TODO: How can I get around this?
 require File.join(Rails.root, 'vendor/gems/rspec-1.1.11/lib', 'spec/rake/spectask')
-desc 'Run acceptance tests for web application'
+desc 'Run acceptance tests for web application on default browser defined in config/selenium.yml'
 Spec::Rake::SpecTask.new('selenium') do |t|
   t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/selenium_spec.opts\""]
   path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
   t.spec_opts << "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/acceptance_tests_report.html'"
   t.spec_files = FileList['spec/selenium/*_spec.rb']
+end
+
+desc 'Run acceptance tests for web application on all browsers defined in config/selenium.yml'
+task 'selenium:all' do
+  Selenium::Configuration.each do |configuration|
+    ENV['SELENIUM_CONFIGURATION'] = configuration
+    Rake::Task["selenium"].invoke
+  end
 end
 
