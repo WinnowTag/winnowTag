@@ -140,8 +140,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
   },
   
-  updateTagFilters: function(element, tag) {
-    element.clear();
+  updateTagFilters: function(input, tag) {
+    input.clear();
     if(tag.match("#add_new_tag")) {
       new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(tag.getAttribute("name")), method:'post'});
     } else {
@@ -152,10 +152,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
   },
   
-  clear_auto_complete: function(element, list) {
-    list.update('');
-  },
-
   expandFolderParameters: function(parameters) {
     if(parameters.folder_ids) {
       var tag_ids = parameters.tag_ids ? parameters.tag_ids.split(",") : [];
@@ -341,7 +337,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         }
       });
 
-      new Draggable(tag.getAttribute("id"), { 
+      new Draggable(tag, { 
         ghosting: true, revert: true, scroll: 'sidebar', 
         reverteffect: function(element, top_offset, left_offset) {
           new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
@@ -378,7 +374,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         }
       });
     
-      new Draggable(feed.getAttribute("id"), { 
+      new Draggable(feed, { 
         ghosting: true, revert: true, scroll: 'sidebar', 
         reverteffect: function(element, top_offset, left_offset) {
           new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });

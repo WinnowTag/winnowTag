@@ -4,7 +4,8 @@ Spec Cleanup
  * new, create create!, find
  * mock_model
 
-* selenium tests running on multiple browsers
+* fix sidebar tag filter width issues when tag name is longer and actions are shown
+* dragging folder - causes open/close
 * cleanup tagging indexes
 
 Todo

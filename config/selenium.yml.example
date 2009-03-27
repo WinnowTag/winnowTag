@@ -1,5 +1,14 @@
-browser: firefox # i needed to "ln -s /usr/lib/firefox-3.0.5/firefox /usr/bin/firefox-bin"
-test_host: localhost:4000
-# display: ":0"
-
-# start builder on boot
+# Ubuntu: ln -s /usr/lib/firefox-3.0.5/firefox /usr/bin/firefox-bin (replace 3.0.5 with whatever version of firefox you are using)
+default:
+  test_host: test.winnow.local
+  selenium_host: localhost
+  selenium_port: 4444
+  browser: firefox
+  # display: ":0"
+firefox:
+  browser: firefox
+safari:
+  browser: safari
+# ie7:
+#   browser: ie7
+#   selenium_host: 192.168.1.1

@@ -5,9 +5,9 @@ module Selenium
       attr_accessor :host, :port, :timeout_in_seconds, :wait_until_stopped
 
       def initialize(name = :'selenium:rc:stop')
-        @host = "localhost"
+        @host = Selenium::Configuration.selenium_host
         @name = name
-        @port = 4444
+        @port = Selenium::Configuration.selenium_port
         @timeout_in_seconds = 5
         @wait_until_stopped = true
         yield self if block_given?

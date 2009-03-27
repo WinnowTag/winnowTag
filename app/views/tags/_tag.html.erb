@@ -13,11 +13,11 @@
           <li class="globally_exclude">
             <%= globally_exclude_check_box(tag) %> <label for="<%= dom_id(tag, 'globally_exclude') %>"><%= t(:globally_exclude) %></label>
           </li>
-          <li class="subscribe">
-            <% if tag.user_id != current_user.id -%>
+          <% if tag.user_id != current_user.id -%>
+            <li class="subscribe">
               <%= subscribe_check_box(tag) %> <label for="<%= dom_id(tag, 'subscribe') %>"><%= t(:tags_subscribe) %></label>
-            <% end %>
-          </li>
+            </li>
+          <% end %>
           <% if tag.user_id == current_user.id -%>
             <li class="public">
               <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <label for="<%= dom_id(tag, "public") %>"><%= t(:tags_public) %></label>

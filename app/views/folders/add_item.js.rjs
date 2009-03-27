@@ -1,8 +1,8 @@
 if @tag
   page["#{dom_id(@folder)}_tag_items"].insertInOrder 'li', '.name', tag_filter_control(@tag, :remove => @folder), @tag.name
-  page << "itemBrowser.bindTagFilterEvents($('#{dom_id(@folder)}_tag_items').down('##{dom_id(@tag)}'));"
+  page << "itemBrowser.bindTagFilterEvents($('#{dom_id(@folder)}_tag_items').down('.#{dom_id(@tag)}'));"
 elsif @feed
   page["#{dom_id(@folder)}_feed_items"].insertInOrder 'li', '.name', feed_filter_control(@feed, :remove => @folder), @feed.title
-  page << "itemBrowser.bindFeedFilterEvents($('#{dom_id(@folder)}_feed_items').down('##{dom_id(@feed)}'));"
+  page << "itemBrowser.bindFeedFilterEvents($('#{dom_id(@folder)}_feed_items').down('.#{dom_id(@feed)}'));"
 end
 page << "itemBrowser.styleFilters();"

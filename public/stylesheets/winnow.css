@@ -356,27 +356,30 @@ body#login .container .form .content #invite_use {
 #feedback {
   position: relative;
   border: none;
+  z-index: 1000;
 }
 
 #feedback form {
   position: absolute;
   top: 1.5em;
   right: 0;
-  z-index: 1000;
+  width: 22em;
   padding: 1em;
   background-color: #fff;
   border: 1px solid #666;
 }
 
 #feedback form textarea {
-  width: 20em;
+  width: 97%;
   height: 5em;
+  margin-bottom: 0.5em;
 }
 
 /*
  * =sidebar
  */
 #sidebar {
+  position: relative;
   float: left;
   width: 25%;
   height: auto;
@@ -507,20 +510,18 @@ ul.filter_list {
   list-style: none;
   margin: 0;
   padding: 0;
-  float: left;
+  display: inline;
 }
 
 ul.filter_list li {
-  position: relative;
-  float: left;
-  margin: 0 0 0.25em 0;
-  margin-right: 0.25em;
+  display: inline-block;
+  min-width: 8em;
+  margin: 0 0.25em 0.25em 0;
   padding: 0 0.5em 0 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
   background-position: 0.5em 0.3em;
   font-weight: bold;
-  min-width: 8em;
 }
 
 ul.filter_list.tags li {
@@ -597,7 +598,6 @@ ul.filter_list li .auto_complete_name {
 }
 
 .folder .header {
-  position: relative;
   background-color: inherit;
   cursor: move;
   padding-left: 0.5em;
@@ -1481,8 +1481,8 @@ body#item_caches .item_cache {
 }
 
 .tag .extended .comment .body {
-  padding: 0.5em 0 0.5em .5em;
-  border-left: 10.9em solid #d7e0f5;
+  padding: 0.5em 0 0.5em 0.75em;
+  border-left: 10.8em solid #d7e0f5;
 }
 
 .tag .extended .comment .body *:first-child {
@@ -1497,12 +1497,12 @@ body#item_caches .item_cache {
   border-top: 1px solid #C0C7CD;
 }
 
-.tag .extended .comment form {
+.tag .extended .comment .form {
   padding: 0.5em;
   border-left: 10.9em solid #d7e0f5;
 }
 
-.tag .extended .comment form  textarea {
+.tag .extended .comment form textarea {
   width: 100%;
   border: 1px solid #C0C7CD;
   height: 80px;
@@ -1762,7 +1762,6 @@ body#item_caches .item_cache {
  * =auto_complete
  */
 .auto_complete {
-  background: #fff;
   z-index: 100;
   font-weight: normal;
   font-style: normal;
@@ -1776,6 +1775,7 @@ body#item_caches .item_cache {
 }
 
 .auto_complete ul li {
+  background: #fff;
   margin: 0;
   padding: 0;
 }

@@ -389,7 +389,7 @@ en:
 
   # app/views/tags/_subscribed_tag.html.erb
   tags_public: "Public"
-  tags_destroy_link_title: "Unsubscribe {{tag}}"
+  tags_destroy_link_title: "Destroy {{tag}}"
 
   # app/views/tags/_tag.html.erb
   tags_click_to_edit_tag_text: "Click to edit tag name"
