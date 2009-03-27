@@ -206,7 +206,7 @@ Start/Stop a Selenium Remote Control Server
     
     Selenium::Rake::RemoteControlStartTask.new do |rc|
       rc.port = 4444
-      rc.timeout_in_seconds = 3 * 60
+      rc.timeout_in_seconds = 60
       rc.background = true
       rc.wait_until_up_and_running = true
       rc.jar_file = "/path/to/where/selenium-rc-standalone-jar-is-installed"
@@ -216,7 +216,7 @@ Start/Stop a Selenium Remote Control Server
     Selenium::Rake::RemoteControlStopTask.new do |rc|
       rc.host = "localhost"
       rc.port = 4444
-      rc.timeout_in_seconds = 3 * 60
+      rc.timeout_in_seconds = 60
     end
     
  Check out [RemoteControlStartTask](http://selenium-client.rubyforge.org/classes/Selenium/Rake/RemoteControlStartTask.html) and [RemoteControlStopTask](http://selenium-client.rubyforge.org/classes/Selenium/Rake/RemoteControlStopTask.html) for more 

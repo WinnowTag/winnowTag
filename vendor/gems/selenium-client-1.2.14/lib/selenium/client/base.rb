@@ -41,14 +41,14 @@ module Selenium
           @port = options[:port].to_i
           @browser_string = options[:browser]
           @browser_url = options[:url]
-          @default_timeout_in_seconds = (options[:timeout_in_seconds] || 300).to_i
+          @default_timeout_in_seconds = (options[:timeout_in_seconds] || 10).to_i
           @default_javascript_framework = options[:javascript_framework] || :prototype
         else
           @host = args[0]
           @port = args[1].to_i
           @browser_string = args[2]
           @browser_url = args[3]
-          @default_timeout_in_seconds = (args[4] || 300).to_i
+          @default_timeout_in_seconds = (args[4] || 10).to_i
           @default_javascript_framework = :prototype
         end
 

@@ -15,7 +15,7 @@ module Spec
         before(:all) do
           @selenium_driver = Selenium::Client::Driver.instance(
             Selenium::Configuration.selenium_host, Selenium::Configuration.selenium_port,
-            Selenium::Configuration.browser, Selenium::Configuration.test_url, 10000
+            Selenium::Configuration.browser, Selenium::Configuration.test_url, 10
           )
         end
 
@@ -72,7 +72,7 @@ module Spec
         def execute(options, instance_variables)
           options.reporter.example_started(self)
           set_instance_variables_from_hash(instance_variables)
-        
+
           @execution_error = nil
           Timeout.timeout(options.timeout) do
             begin

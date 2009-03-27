@@ -9,7 +9,7 @@ module Selenium
       def initialize(name = :'selenium:rc:start')
         @name = name
         @port = Selenium::Configuration.selenium_port
-        @timeout_in_seconds = 5
+        @timeout_in_seconds = 60
         @jar_file = "vendor/selenium/selenium-server-1.0-standalone.jar"
         @additional_args = []
         @background = false

@@ -5,7 +5,7 @@ module Selenium
       attr_reader :host, :port, :timeout_in_seconds
       attr_accessor :additional_args, :jar_file, :display
       
-      def initialize(host, port, timeout_in_seconds = 2 * 60)
+      def initialize(host, port, timeout_in_seconds = 60)
         @host, @port, @timeout_in_seconds = host, port, timeout_in_seconds
         @additional_args = []
         @shell = Nautilus::Shell.new

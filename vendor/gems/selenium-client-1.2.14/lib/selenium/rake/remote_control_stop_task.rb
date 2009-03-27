@@ -8,7 +8,7 @@ module Selenium
         @host = Selenium::Configuration.selenium_host
         @name = name
         @port = Selenium::Configuration.selenium_port
-        @timeout_in_seconds = 5
+        @timeout_in_seconds = 60
         @wait_until_stopped = true
         yield self if block_given?
         define
