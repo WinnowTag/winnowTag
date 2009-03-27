@@ -100,15 +100,19 @@ class User < ActiveRecord::Base
   def self.search(options = {})
     select = [
       "users.*",
-      "(SELECT MAX(taggings.created_on) FROM taggings USE INDEX (index_taggings_on_user_id_and_classifier_tagging) WHERE taggings.user_id = users.id AND taggings.classifier_tagging = false) AS last_tagging_on",
-      "(SELECT COUNT(*) FROM tags WHERE tags.user_id = users.id) AS tag_count"
+      "MAX(taggings.created_on) as last_tagging_on",
+      "COUNT(DISTINCT(tags.id)) as tag_count"      
     ]
     
     scope = by(options[:order], options[:direction])
     scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
     scope.all(
       :select => select.join(", "),
-      :limit => options[:limit], :offset => options[:offset]
+      :joins => "left outer join tags on users.id = tags.user_id " +
+                "left outer join taggings on tags.id = taggings.tag_id and taggings.classifier_tagging = 0",
+      :group => "users.id",
+      :limit => options[:limit], 
+      :offset => options[:offset]
     )
   end
 
