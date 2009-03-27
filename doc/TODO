@@ -7,6 +7,7 @@ Spec Cleanup
 * fix sidebar tag filter width issues when tag name is longer and actions are shown
 * dragging folder - causes open/close
 * cleanup tagging indexes
+* selenium grid
 
 Todo
  - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI
