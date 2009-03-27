@@ -21,6 +21,10 @@ module Atom
       def initialize(response)
         @response = response
       end
+      
+      def to_s
+        "Invalid response: #{@response}"
+      end
     end
     
     class Service
@@ -29,7 +33,7 @@ module Atom
       elements :workspaces
       loadable! do |reader, message, severity, base, line|
         if severity == XML::Reader::SEVERITY_ERROR
-          raise ParseError, "#{message} at #{line}"
+          raise ArgumentError, "#{message} at #{line}"
         end
       end
       
@@ -141,7 +145,7 @@ module Atom
         when Net::HTTPCreated
           published = begin
             Atom::Entry.load_entry(response.body)
-          rescue Atom::ParseError
+          rescue ArgumentError
             entry
           end
         

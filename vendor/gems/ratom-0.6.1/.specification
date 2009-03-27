@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: ratom
 version: !ruby/object:Gem::Version 
-  version: 0.6.0
+  version: 0.6.1
 platform: ruby
 authors: 
 - Peerworks
@@ -10,7 +10,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-03-19 00:00:00 +10:30
+date: 2009-03-27 00:00:00 +10:30
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
