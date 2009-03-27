@@ -4,8 +4,8 @@ module Selenium
       
       class FilePathStrategy
       
-        def initialize(final_report_file_path)
-          @final_report_file_path = final_report_file_path
+        def initialize(final_report_file_path = nil)
+          @final_report_file_path = final_report_file_path || "./tmp/acceptance_tests_report.html"
           @relative_dir = nil
         end
 
