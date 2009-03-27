@@ -79,7 +79,7 @@ describe AccountController do
   it "should_delete_token_on_logout" do
     login_as Generate.user!
     get :logout
-    assert_equal @response.cookies["auth_token"], []
+    response.cookies["auth_token"].should be_nil
   end
 
   it "should_login_with_cookie" do

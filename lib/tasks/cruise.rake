@@ -3,7 +3,7 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-require File.dirname(__FILE__) + '/../../vendor/gems/rspec-1.1.11/lib/spec/rake/spectask'
+require File.dirname(__FILE__) + '/../../vendor/gems/rspec-1.2.2/lib/spec/rake/spectask'
 
 desc "Run all examples with RCov"
 Spec::Rake::SpecTask.new('rcov_for_cc') do |t|

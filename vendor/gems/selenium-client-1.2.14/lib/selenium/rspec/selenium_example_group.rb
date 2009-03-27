@@ -4,7 +4,7 @@ require 'selenium/rspec/reporting/selenium_test_report_formatter'
 module Spec
   module Rails
     module Example
-      class SeleniumExampleGroup < RailsExampleGroup
+      class SeleniumExampleGroup < ActionController::TestCase
         include ActionController::UrlWriter
 
         self.use_transactional_fixtures = false

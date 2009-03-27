@@ -42,7 +42,7 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :controller => "tags" do |tags_map|
     tags_map.connect ":user/tags.:format", :action => 'index'
     tags_map.connect ":user/tags", :action => 'index'
-    tags_map.with_options :requirements => {:tag_name => %r{[^/;,?]+}} do |tags_map|
+    tags_map.with_options :requirements => {:tag_name => %r{[^/;,?.]+}} do |tags_map|
       tags_map.connect ":user/tags/:tag_name.:format", :action => 'show'
       tags_map.connect ":user/tags/:tag_name", :action => 'show'
       tags_map.connect ":user/tags/:tag_name/:action.:format"
@@ -105,7 +105,8 @@ ActionController::Routing::Routes.draw do |map|
                 
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit/:id", :action => "edit"
-    account_map.login "account/login/:code", :action => "login", :code => nil
+    account_map.login "account/login", :action => "login"
+    account_map.connect "account/login/:code", :action => "login"
     account_map.signup "account/signup", :action => "signup", :conditions => { :method => :post }
     account_map.signup_invite "account/invite", :action => "invite", :conditions => { :method => :post }
     account_map.logout "account/logout", :action => "logout"
