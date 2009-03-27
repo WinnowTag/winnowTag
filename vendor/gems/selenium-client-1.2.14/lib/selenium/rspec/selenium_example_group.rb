@@ -1,4 +1,5 @@
 # require 'spec/example/example_group'
+require 'selenium/rspec/reporting/selenium_test_report_formatter'
 
 module Spec
   module Rails

@@ -15,10 +15,15 @@ end
 require File.join(Rails.root, 'vendor/gems/rspec-1.1.11/lib', 'spec/rake/spectask')
 desc 'Run acceptance tests for web application on default browser defined in config/selenium.yml'
 Spec::Rake::SpecTask.new('selenium') do |t|
-  t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/selenium_spec.opts\""]
   path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
   file = ENV['SELENIUM_CONFIGURATION'] || "acceptance_tests_report"
-  t.spec_opts << "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/#{file}.html'"
+
+  t.spec_opts = [
+    "--colour",
+    "--format=profile",
+    "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/#{file}.html'"
+  ]
+
   t.spec_files = FileList['spec/selenium/*_spec.rb']
 end
 

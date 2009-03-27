@@ -1,3 +1,0 @@
---colour
---require vendor/gems/selenium-client-1.2.14/lib/selenium/rspec/reporting/selenium_test_report_formatter
---format=profile
