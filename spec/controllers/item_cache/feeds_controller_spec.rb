@@ -42,6 +42,32 @@ describe ItemCache::FeedsController do
     end
   end
   
+  describe "PUT Atom:Entry to /item_cache/feeds/1 without existing feed" do
+    before(:each) do
+      @before_count = Feed.count
+      @atom = Atom::Entry.new do |e|
+        e.title = "Feed Title"
+        e.id = "urn:newtest"
+        e.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/222')
+      end
+    end
+    
+    it "should create the feed" do
+      put :update, :id => @atom.id, :atom => @atom
+      Feed.count.should == (@before_count + 1)
+    end
+    
+    it "should return 200" do
+      put :update, :id => @atom.id, :atom => @atom
+      response.code.should == "200"
+    end
+    
+    it "should create a feed with the same uri" do
+      put :update, :id => @atom.id, :atom => @atom
+      Feed.find_by_uri(@atom.id).should_not be_nil
+    end
+  end
+  
   describe "PUT Atom::Entry to /item_cache/feeds/1" do
     before(:each) do
       @feed = Generate.feed!
