@@ -4,7 +4,7 @@ module Selenium
     CONFIG = if File.exist?(config_file)
       YAML.load_file(config_file)
     else
-      {}
+      {'default' => {}}
     end
     
     def self.each(&block)
