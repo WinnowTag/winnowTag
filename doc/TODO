@@ -10,7 +10,7 @@ Spec Cleanup
 * selenium grid
 
 Todo
- - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI
+ - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI (#973, #993)
  - Code refactoring/ceaning/testing
  - Performance Enhancements
 
@@ -22,6 +22,7 @@ Bug
  - fix folders sortable + dropable
 
 winnow:
+ * use schema.rb or squash migrations so they are consistent with the production db
  * vendor mysql, libxml-ruby
  * test server with passenger
 rails:
