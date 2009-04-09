@@ -18,7 +18,7 @@ module Fiveruns::Manage::Targets
         Fiveruns::Manage.log :warn, "Rails version (#{version}) is not supported (>= #{SUPPORT[:min]}); instrumentation may not function correctly"
         true
       elsif version >= SUPPORT[:min] && version < SUPPORT[:max]
-        Fiveruns::Manage.log :debug, "Rails version (#{version}) is supported"          
+        #Fiveruns::Manage.log :debug, "Rails version (#{version}) is supported"          
         true
       else
         Fiveruns::Manage.log :warn, "Rails version (#{version}) is untested (< #{SUPPORT[:max]}); instrumentation may not function correctly"
