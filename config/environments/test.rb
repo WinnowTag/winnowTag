@@ -30,5 +30,8 @@ config.action_mailer.delivery_method = :test
 config.gem "webrat"
 config.gem "rspec",           :lib => false
 config.gem "rspec-rails",     :lib => false
-config.gem "cucumber",        :lib => false # treetop polyglot term-ansicolor builder
+config.gem "cucumber",        :lib => false
 config.gem "selenium-client", :lib => "selenium/client"
+
+# Must be compiled/installed on the target system
+# cucumber dependencies - treetop polyglot term-ansicolor builder
