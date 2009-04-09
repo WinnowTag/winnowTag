@@ -19,23 +19,22 @@ Rails::Initializer.run do |config|
     #{RAILS_ROOT}/app/mailers
     #{RAILS_ROOT}/app/managers
   )
-``
+
   # Specify gems that this application depends on and have them installed with rake gems:install
   # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "auth-hmac" # These seem to be dependencies - hoe rubyforge
+  config.gem "auth-hmac"
   config.gem "bcrypt-ruby",    :lib => "bcrypt"
   config.gem "fastercsv"
   config.gem "fiveruns_manage"
   config.gem "hpricot"
   config.gem "ratom",          :lib => "atom"
-  config.gem "RedCloth" # These seem to be dependencies - echoe highline
+  config.gem "RedCloth"
 
   # Must be compiled/installed on the target system
-  config.gem "libxml-ruby",    :lib => "libxml", :version => "1.1.3"
-  config.gem "mysql",                            :version => "2.7"
+  # config.gem "mysql",                            :version => "2.7"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
