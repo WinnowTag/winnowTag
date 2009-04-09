@@ -555,7 +555,7 @@ Ajax.InPlaceEditor = Class.create({
     if (this.options.loadTextURL)
       this.loadExternalText();
     // NOTE: peerworks change
-    fld.observe("keydown", this.checkForEscapeOrReturn.bind(this));
+    fld.onkeydown = this.checkForEscapeOrReturn.bindAsEventListener(this);
     this._form.appendChild(this._controls.editor);
   },
   createForm: function() {
