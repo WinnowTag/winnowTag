@@ -32,8 +32,11 @@ var Item = Class.create({
     this.status.observe("click", this.toggleReadUnread.bind(this));
 
     this.status.observe("mouseover", function() {
-      // # TODO: localization
-      this.status.title = 'Click to mark as ' + (this.element.match(".read") ? 'unread' : 'read');
+      if(this.element.match(".read")) {
+        this.status.title = I18n.t("winnow.javascript.itembrowser.mark_unread");
+      } else {
+        this.status.title = I18n.t("winnow.javascript.itembrowser.mark_read");
+      }
     }.bind(this));
 
     this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
@@ -188,7 +191,7 @@ var Item = Class.create({
 
     this.add_tag_form.observe("submit", function() {
       this.addTagging(this.add_tag_selected || this.add_tag_field.value, "positive");
-      this.add_tag_field.value = "";
+      this.add_tag_field.clear();
       this.addTagFieldChanged(this.add_tag_field, "");
     }.bind(this));
     
@@ -297,7 +300,7 @@ var Item = Class.create({
         // Add/Update the filter for this tag
         if(!$('tag_filters').down("#" + data.id)) {
           $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name);
-          itembrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
+          itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
           itemBrowser.styleFilters();
         } else {
           $$(".filter_list ." + data.id).each(function(element) {

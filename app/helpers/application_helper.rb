@@ -23,8 +23,8 @@ module ApplicationHelper
       "Message.add('#{name}', #{flash[name].to_json});" unless flash[name].blank?
     end.join
     
-    javascript << Message.find_unread_for_user_and_global(current_user).map do |message|
-      Message.mark_read_for(current_user.id, message.id)
+    javascript << Message.unread(current_user).for(current_user).map do |message|
+      message.read_by!(current_user)
       
       if message.user
         "Message.add('error', #{h(message.body).to_json});"
@@ -93,16 +93,6 @@ module ApplicationHelper
     cookies[id] =~ /true/i
   end
   
-  def search_field_tag(name, value = nil, options = {})
-    options[:clear] ||= {}
-    options[:placeholder] ||= t(:default_search_placeholder)
-    content_tag :div, 
-      content_tag(:span, nil, :class => "sbox_l") +      
-      tag(:input, :type => "search", :name => name, :id => name, :value =>  value, :results => 5, :placeholder => options[:placeholder], :autosave => name) +
-      content_tag(:span, nil, :class => "sbox_r srch_clear"),
-      :class => "applesearch clearfix"
-  end
-
   def globally_exclude_check_box(tag_or_feed)
     url = if tag_or_feed.is_a?(Tag)
       globally_exclude_tag_path(tag_or_feed)
@@ -112,9 +102,13 @@ module ApplicationHelper
       globally_exclude_feed_path(:id => tag_or_feed.id)
     end
     
-    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", 
-      tag_or_feed.respond_to?(:state) ? tag_or_feed.globally_excluded_by_current_user? : current_user.globally_excluded?(tag_or_feed),
-      :id => "#{dom_id(tag_or_feed, 'globally_exclude')}", :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed),
+      :id => dom_id(tag_or_feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+  end
+
+  def subscribe_check_box(tag)
+    check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :id => dom_id(tag, 'subscribe'), 
+      :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}")
   end
   
   def feed_filter_controls(feeds, options = {})
@@ -167,8 +161,8 @@ module ApplicationHelper
     end
 
     html  = ""
-    html << link_to_function("Rename", "var new_tag_name = prompt('Tag Name:', this.up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
-    html << link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html << link_to_function("Rename", "var new_tag_name = prompt('Tag Name:', $(this).up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
+    html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html  = content_tag(:div, html, :class => "actions")
 
     html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"))
@@ -210,9 +204,9 @@ module ApplicationHelper
     
     classes << "public" if tag.public?
     
-    if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
+    if current_user.globally_excluded?(tag)
       classes << "globally_excluded"
-    elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
+    elsif current_user.subscribed?(tag)
       classes << "subscribed"
     end
     classes.join(" ")
@@ -225,9 +219,9 @@ module ApplicationHelper
   end
 
   def tag_state(tag)
-    if tag.respond_to?(:state) ? tag.globally_excluded_by_current_user? : current_user.globally_excluded?(tag)
-      "Excluded"
-    elsif tag.respond_to?(:state) ? tag.subscribed_by_current_user? : current_user.subscribed?(tag)
+    if current_user.globally_excluded?(tag)
+      "Globally Excluded"
+    elsif current_user.subscribed?(tag)
       "Subscribed"
     end
   end

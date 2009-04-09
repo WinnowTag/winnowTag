@@ -303,7 +303,9 @@ var Draggable = Class.create({
     if(Event.isLeftClick(event)) {
       // abort on form elements, fixes a Firefox issue
       var src = Event.element(event);
-      if((tag_name = src.tagName.toUpperCase()) && (
+      // NOTE: Peerworks change
+      var tag_name = src.tagName.toUpperCase()
+      if(tag_name && (
         tag_name=='INPUT' ||
         tag_name=='SELECT' ||
         tag_name=='OPTION' ||
@@ -455,10 +457,11 @@ var Draggable = Class.create({
 
   draw: function(point) {
     var pos = Position.cumulativeOffset(this.element);
-    if(this.options.ghosting) {
-      var r   = Position.realOffset(this.element);
-      pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
-    }
+    // NOTE: peerworks change
+    // if(this.options.ghosting) {
+    //   var r   = Position.realOffset(this.element);
+    //   pos[0] += r[0] - Position.deltaX; pos[1] += r[1] - Position.deltaY;
+    // }
 
     var d = this.currentDelta();
     pos[0] -= d[0]; pos[1] -= d[1];

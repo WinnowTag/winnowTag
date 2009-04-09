@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/admin/index' do
   before(:each) do
-    login_as stub("user")
+    login_as Generate.user!
   end
   
   def render_it

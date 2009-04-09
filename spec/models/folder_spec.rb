@@ -28,34 +28,37 @@ describe Folder do
   end
   
   describe "removing ad item from all of a users folders" do
-    fixtures :tags, :feeds
-    
     it "can remove a tag from all of a users folders" do
-      user   = User.create! valid_user_attributes
-      first  = user.folders.create! :name => "First",  :tag_ids => [1,2]
-      second = user.folders.create! :name => "Second", :tag_ids => [2,1]
-      third = user.folders.create! :name => "Forth",  :tag_ids => [1]
+      user = Generate.user!
+      tag1 = Generate.tag!(:user => user)
+      tag2 = Generate.tag!(:user => user)
+      first  = user.folders.create! :name => "First",  :tag_ids => [tag1.id, tag2.id]
+      second = user.folders.create! :name => "Second", :tag_ids => [tag2.id, tag1.id]
+      third = user.folders.create! :name => "Forth",  :tag_ids => [tag1.id]
 
-      Folder.remove_tag(user, 2)
+      Folder.remove_tag(user, tag2.id)
   
-      first.reload.tag_ids.should == [1]
-      second.reload.tag_ids.should == [1]
-      third.reload.tag_ids.should == [1]
+      first.reload.tag_ids.should  == [tag1.id]
+      second.reload.tag_ids.should == [tag1.id]
+      third.reload.tag_ids.should  == [tag1.id]
     end
 
     it "can remove a feed from all of a users folders" do
-      user   = User.create! valid_user_attributes
-      first  = user.folders.create! :name => "First",  :feed_ids => [1,2,3]
-      second = user.folders.create! :name => "Second", :feed_ids => [2,1,3]
-      third  = user.folders.create! :name => "Third",  :feed_ids => [1,3,2]
-      fourth = user.folders.create! :name => "Forth",  :feed_ids => [1,3]
+      user = Generate.user!
+      feed1 = Generate.feed!
+      feed2 = Generate.feed!
+      feed3 = Generate.feed!
+      folder1 = user.folders.create! :name => "Folder 1", :feed_ids => [feed1.id, feed2.id, feed3.id]
+      folder2 = user.folders.create! :name => "Folder 2", :feed_ids => [feed2.id, feed1.id, feed3.id]
+      folder3 = user.folders.create! :name => "Folder 3", :feed_ids => [feed1.id, feed3.id, feed2.id]
+      folder4 = user.folders.create! :name => "Folder 4", :feed_ids => [feed1.id, feed3.id]
 
-      Folder.remove_feed(user, 2)
+      Folder.remove_feed(user, feed2.id)
   
-      first.reload.feed_ids.should == [1,3]
-      second.reload.feed_ids.should == [1,3]
-      third.reload.feed_ids.should == [1,3]
-      fourth.reload.feed_ids.should == [1,3]
+      folder1.reload.feed_ids.should == [feed1.id, feed3.id]
+      folder2.reload.feed_ids.should == [feed1.id, feed3.id]
+      folder3.reload.feed_ids.should == [feed1.id, feed3.id]
+      folder4.reload.feed_ids.should == [feed1.id, feed3.id]
     end
   end
 end

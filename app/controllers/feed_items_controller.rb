@@ -79,22 +79,20 @@ class FeedItemsController < ApplicationController
   
   def mark_read
     if params[:id]
-      @feed_item_id = params[:id]
-      FeedItem.mark_read_for(current_user.id, @feed_item_id)
+      FeedItem.find(params[:id]).read_by!(current_user)
     else
       filters = { :feed_ids => params[:feed_ids],
                   :tag_ids => params[:tag_ids],
                   :text_filter => params[:text_filter],
                   :mode => params[:mode],
                   :user => current_user }
-      FeedItem.mark_read(filters)
+      FeedItem.read_by!(filters)
     end
     render :nothing => true
   end
   
   def mark_unread
-    @feed_item = FeedItem.find(params[:id])
-    current_user.read_items.find(:all, :conditions => {:feed_item_id => @feed_item}).each { |ri| ri.destroy }
+    FeedItem.find(params[:id]).unread_by!(current_user)
     render :nothing => true
   end
   

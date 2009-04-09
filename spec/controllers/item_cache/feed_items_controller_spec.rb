@@ -6,8 +6,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe ItemCache::FeedItemsController do
-  fixtures :feed_items, :feeds
-  
   before(:each) do
     @controller.stub!(:hmac_authenticated?).and_return(true)
   end
@@ -46,18 +44,21 @@ describe ItemCache::FeedItemsController do
   
   describe "PUT to /feeds/urn:uuid:feed1/feed_items/urn:uuid:item1" do
     before(:each) do
+      @feed_item = Generate.feed_item!
+      
       @before_count = Feed.count
-      @atom = Atom::Entry.new do |e|
+      atom = Atom::Entry.new do |e|
         e.title = "Item Title"
-        e.id = "urn:uuid:item1"
+        e.id = @feed_item.uri
         e.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/1')
         e.links << Atom::Link.new(:rel => 'alternate', :href => 'http://collector.org/1')
       end
-      put "update", :id => "urn:uuid:item1", :feed_id => "urn:uuid:feed1", :atom => @atom
+      put "update", :id => @feed_item.uri, :feed_id => "urn:uuid:feed1", :atom => atom
+      @feed_item.reload
     end
     
     it "should update the feed item" do
-      FeedItem.find(1).title.should == 'Item Title'
+      @feed_item.title.should == 'Item Title'
     end
     
     it "should respond with 200" do
@@ -71,18 +72,21 @@ describe ItemCache::FeedItemsController do
   
   describe "PUT to /feed_items/urn:uuid:item1" do
     before(:each) do
+      @feed_item = Generate.feed_item!
+      
       @before_count = Feed.count
-      @atom = Atom::Entry.new do |e|
+      atom = Atom::Entry.new do |e|
         e.title = "Item Title"
-        e.id = "urn:uuid:item1"
+        e.id = @feed_item.uri
         e.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/1')
         e.links << Atom::Link.new(:rel => 'alternate', :href => 'http://collector.org/1')
       end
-      put "update", :id => "urn:uuid:item1", :atom => @atom
+      put "update", :id => @feed_item.uri, :atom => atom
+      @feed_item.reload
     end
     
     it "should update the feed item" do
-      FeedItem.find(1).title.should == 'Item Title'
+      @feed_item.title.should == 'Item Title'
     end
     
     it "should respond with 200" do
@@ -96,18 +100,21 @@ describe ItemCache::FeedItemsController do
   
   describe "PUT to /feed_items/urn:uuid:item1 with wrong id in entry" do
     before(:each) do
+      @feed_item = Generate.feed_item!
+
       @before_count = Feed.count
       @atom = Atom::Entry.new do |e|
         e.title = "Item Title"
-        e.id = "urn:uuid:item2"
+        e.id = "#{@feed_item.uri}Wrong"
         e.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/1')
         e.links << Atom::Link.new(:rel => 'alternate', :href => 'http://collector.org/1')
       end
-      put "update", :id => "urn:uuid:item1", :atom => @atom
+      put "update", :id => @feed_item.uri, :atom => @atom
+      @feed_item.reload
     end
     
     it "should not update the entry" do
-      FeedItem.find(1).title.should_not == 'Item Title'
+      @feed_item.title.should_not == 'Item Title'
     end
     
     it "should respond with 412" do

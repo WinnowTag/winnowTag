@@ -22,8 +22,11 @@ module ItemCache
     
     def update
       begin
-        feed = Feed.find_by_uri(params[:id])
-        feed.update_from_atom(params[:atom])
+        if feed = Feed.find_by_uri(params[:id])
+          feed.update_from_atom(params[:atom])
+        else
+          Feed.find_or_create_from_atom_entry(params[:atom])
+        end
         render :nothing => true
       rescue ArgumentError
         render :nothing => true,

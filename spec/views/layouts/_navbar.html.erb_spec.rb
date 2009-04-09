@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/layouts/_navbar.html.erb' do
   def render_it
-    login_as(User.create!(valid_user_attributes))
+    login_as Generate.user!
     
     render :partial => '/layouts/navbar.html.erb'
   end

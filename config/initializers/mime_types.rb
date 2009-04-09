@@ -9,13 +9,12 @@ Mime::Type.register "application/atomsvc+xml", :atomsvc
 ActionController::Base.param_parsers[Mime::Type.lookup("application/atom+xml")] = Proc.new do |body|
   begin
     { :atom => Atom::Entry.load_entry(body) } 
-  rescue ArgumentError
+  rescue ArgumentError => e1
     begin
       { :atom => Atom::Feed.load_feed(body) }
-    rescue Atom::ParseError => ape
-      { :atom_error => ape }
+    rescue ArgumentError => e2
+      { :atom_error => ArgumentError.new("Could not parse request as either atom:feed or atom:entry. " +
+                                         "Errors are '#{e1.message}' and '#{e2.message}'") }
     end
-  rescue Atom::ParseError => ape
-    { :atom_error => ape }
   end
 end

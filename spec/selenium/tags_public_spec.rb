@@ -6,14 +6,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "TagsPublicTest" do
-  fixtures :users
-  
   before(:each) do
-    Tag.delete_all
-    user = User.create! valid_user_attributes
-    @tag = Tag.create! :name => "foo", :public => true, :user_id => user.id
+    @tag = Generate.tag! :public => true
     
-    login
+    login Generate.user!
     page.open public_tags_path
     page.wait_for :wait_for => :ajax
   end
@@ -21,14 +17,12 @@ describe "TagsPublicTest" do
   it "subscribes to a public tag" do    
     dont_see_element "#tag_#{@tag.id}.subscribed"
     assert !page.is_checked("subscribe_tag_#{@tag.id}")
-    assert page.is_checked("neither_tag_#{@tag.id}")
     page.click "subscribe_tag_#{@tag.id}"
     
     page.wait_for :wait_for => :ajax 
   
     see_element "#tag_#{@tag.id}.subscribed"
     assert page.is_checked("subscribe_tag_#{@tag.id}")
-    assert !page.is_checked("neither_tag_#{@tag.id}")
     
     page.refresh
     page.wait_for :wait_for => :page
@@ -36,20 +30,17 @@ describe "TagsPublicTest" do
     
     see_element "#tag_#{@tag.id}.subscribed"
     assert page.is_checked("subscribe_tag_#{@tag.id}")
-    assert !page.is_checked("neither_tag_#{@tag.id}")
   end
   
   it "globally excludes a public tag" do
     dont_see_element "#tag_#{@tag.id}.globally_excluded"
     assert !page.is_checked("globally_exclude_tag_#{@tag.id}")
-    assert page.is_checked("neither_tag_#{@tag.id}")
     page.click "globally_exclude_tag_#{@tag.id}"
     
     page.wait_for :wait_for => :ajax 
 
     see_element "#tag_#{@tag.id}.globally_excluded"
     assert page.is_checked("globally_exclude_tag_#{@tag.id}")
-    assert !page.is_checked("neither_tag_#{@tag.id}")
     
     page.refresh
     page.wait_for :wait_for => :page
@@ -57,6 +48,5 @@ describe "TagsPublicTest" do
     
     see_element "#tag_#{@tag.id}.globally_excluded"
     assert page.is_checked("globally_exclude_tag_#{@tag.id}")
-    assert !page.is_checked("neither_tag_#{@tag.id}")
   end
 end

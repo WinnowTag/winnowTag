@@ -1,7 +1,17 @@
+Spec Cleanup
+ * urn:uuid
+ * id's to models
+ * new, create create!, find
+ * mock_model
+
+* fix sidebar tag filter width issues when tag name is longer and actions are shown
+* dragging folder - causes open/close
+* cleanup tagging indexes
+* selenium grid
+
 Todo
- - item list blanks when I maximize window
  - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI
- - Code refactoring/ceaning/testing, along with finishing Setup automated Selenium testing
+ - Code refactoring/ceaning/testing
  - Performance Enhancements
 
 Refactoring
@@ -12,14 +22,13 @@ Bug
  - fix folders sortable + dropable
 
 winnow:
- * update selenium-cilent
  * vendor mysql, libxml-ruby
  * test server with passenger
 rails:
  * for unpack type
  * for unpacking non-frozen gems that think they are frozen
 selenium-client:
- * bunch of them
+ * merged changes into mvanholstyn/selenium-client repo, need to push back upstream
 mhs testing:
  * loading issue on rake task
  * update
@@ -43,7 +52,6 @@ refactoring:
    * app/views/tags/sidebar.js.rjs
    * app/views/tags/subscribe.js.rjs
    * app/views/tags/unsubscribe.js.rjs
-   * app/views/tags/update_state.js.rjs
  * refactor application.js, item_browser.js, sidebar.js, content.js, feed_items_item_browser.js, item.js
  * removing a tag should fade then remove (sidebar, training control)
  * insertInOrder should be able to appear

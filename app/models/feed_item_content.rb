@@ -7,6 +7,7 @@
 # Stores the contents for a feed item. This is the title, author,
 # description and encoded content extracted from the original XML.
 class FeedItemContent < ActiveRecord::Base
-  belongs_to :feed_item
   set_primary_key "feed_item_id"
+
+  belongs_to :feed_item
 end

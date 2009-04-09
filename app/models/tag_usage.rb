@@ -4,5 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class TagUsage < ActiveRecord::Base
-  validates_presence_of :tag_id
+  belongs_to :user
+  belongs_to :tag
+
+  validates_presence_of :tag
 end

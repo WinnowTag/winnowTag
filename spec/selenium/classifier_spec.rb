@@ -7,7 +7,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe 'Classifier Controls' do
   before(:each) do
-    Tag.delete_all
     @tag = Tag.create! :name => 'tag', :user_id => 1
     login
     open feed_items_path

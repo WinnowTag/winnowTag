@@ -4,5 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class FeedExclusion < ActiveRecord::Base
+  belongs_to :user
   belongs_to :feed
+
+  validates_presence_of :user_id, :feed_id
 end

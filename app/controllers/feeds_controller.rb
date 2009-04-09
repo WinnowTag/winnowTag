@@ -7,9 +7,6 @@
 # This controller doesn't create feeds directly. Instead it forwards
 # feed creation requests on to the collector using Remote::Feed.
 class FeedsController < ApplicationController
-  include ActionView::Helpers::TextHelper
-  before_filter :reject_winnow_feeds, :only => :create
-  
   def index
     respond_to do |format|
       format.html do
@@ -25,29 +22,26 @@ class FeedsController < ApplicationController
     end
   end
 
-  def create   
-    @feed = Remote::Feed.find_or_create_by_url_and_created_by(params[:feed][:url], current_user.login)
-    if @feed.errors.empty?
-      FeedSubscription.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id) rescue nil      
-      @collection_job = @feed.collect(:created_by => current_user.login, 
-                                      :callback_url => collection_job_results_url(current_user))
-      
-      flash[:notice] = if @feed.updated_on.nil?
-         t(:feed_added, :url => h(@feed.url))
-      else
-        t(:feed_existed, :url => h(@feed.url))
-      end
-      
+  def create
+    creation = FeedManager.create(current_user, params[:feed][:url], collection_job_results_url(current_user))
+
+    creation.success do |feed, notice|
       respond_to do |format|
-        format.html { redirect_to feeds_path }
-        format.js
+        format.html do
+          flash[:notice] = notice
+          redirect_to feeds_path
+        end
+        format.js { @feed = feed }
       end
-    else
-      flash[:error] = @feed.errors.on(:url)
+    end
+
+    creation.failed do |feed, error|
+      @feed = feed
+      flash.now[:error] = error
       render :action => 'index'
     end
   end
-  
+
   def import
     @feeds = Remote::Feed.import_opml(params[:opml].read)
     @feeds.each do |feed|
@@ -70,14 +64,14 @@ class FeedsController < ApplicationController
       values << feed_ids
     end
     
-    @feeds = Feed.find_without_duplicates(:all, :conditions => [conditions.join(" AND "), *values], :limit => 30)
+    @feeds = Feed.non_duplicates.all(:conditions => [conditions.join(" AND "), *values], :limit => 30)
     render :layout => false
   end
   
   def globally_exclude
     @feed = Feed.find(params[:id])
     if params[:globally_exclude] =~ /true/i
-      current_user.feed_exclusions.create! :feed_id => @feed.id
+      FeedExclusion.find_or_create_by_feed_id_and_user_id(@feed.id, current_user.id)
     else
       FeedExclusion.delete_all :feed_id => @feed.id, :user_id => current_user.id
     end
@@ -87,7 +81,7 @@ class FeedsController < ApplicationController
   def subscribe
     if feed = Feed.find_by_id(params[:id])
       if params[:subscribe] =~ /true/i
-        current_user.feed_subscriptions.create(:feed_id => feed.id) rescue nil
+        FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
@@ -102,14 +96,5 @@ class FeedsController < ApplicationController
     else
       render :nothing => true
     end
-  end
-  
-private
-  def reject_winnow_feeds
-    if URI.parse(params[:feed][:url]).host == request.host
-      flash[:error] = "Winnow generated feeds cannot be added to Winnow."
-      render :action => 'new'
-    end
-  rescue
   end
 end

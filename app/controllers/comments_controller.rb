@@ -9,6 +9,7 @@ class CommentsController < ApplicationController
   def create
     @comment = current_user.comments.new(params[:comment])
     if @comment.save
+      @comment.read_by!(current_user)
       respond_to :js
     else
       render :action => "error.js.rjs"

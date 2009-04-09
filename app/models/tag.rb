@@ -11,20 +11,6 @@ def Tag(user, tag)
   end
 end
 
-require 'atom'
-require 'atom/pub'
-
-# Tag is a simple word used to tag an item. Every Tagging belongs to a Tag.
-# 
-# == Schema Information
-# Schema version: 57
-#
-# Table name: tags
-#
-#  id   :integer(11)   not null, primary key
-#  name :string(255)   
-#
-
 class Tag < ActiveRecord::Base  
   cattr_accessor :undertrained_threshold
   @@undertrained_threshold = 6
@@ -41,26 +27,6 @@ class Tag < ActiveRecord::Base
   belongs_to :user
   validates_uniqueness_of :name, :scope => :user_id
   validates_presence_of :name
-
-  # Returns a suitable label for the classification UI display.
-  def classification_label
-    truncate(self.name, 15)
-  end
-  
-  # Returns JSON representation of the tag.
-  def to_json
-    self.name.to_json
-  end
-  
-  # Gets a string representation of the tag.
-  def to_s
-    self.name
-  end
-  
-  # Gets a parameter representation of the tag.
-  # def to_param
-  #   self.name
-  # end
   
   def positive_count
     read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
@@ -78,20 +44,6 @@ class Tag < ActiveRecord::Base
     feed_items_count.to_i - positive_count.to_i - negative_count.to_i
   end
   
-  def inspect
-    "<Tag name=#{name}, user=#{user.login}>"
-  end
-  
-  # Provides the natural ordering of tags and their case-insensitive lexical ordering.
-  def <=>(other)
-    if other.is_a? Tag
-      self.name.downcase <=> other.name.downcase
-    else
-      # TODO: localization
-      raise ArgumentError, "Cannot compare Tag to #{other.class}"
-    end
-  end
-  
   def last_trained
     if last_trained = read_attribute(:last_trained)
       Time.parse(last_trained)
@@ -102,30 +54,37 @@ class Tag < ActiveRecord::Base
     end
   end
   
+  # Provides the natural ordering of tags and their case-insensitive lexical ordering.
+  def <=>(other)
+    if other.is_a? Tag
+      self.name.downcase <=> other.name.downcase
+    else
+      raise ArgumentError, I18n.t("winnow.errors.tag.compare_error", :other => other.class.name)
+    end
+  end
+  
   def copy(to)
-    if self == to 
-      # TODO: localization
-      raise ArgumentError, "Can't copy tag to tag of the same name."
+    if self == to
+      raise ArgumentError, I18n.t("winnow.errors.tag.copy_name_error")
     end
     
     if to.taggings.size > 0
-      # TODO: localization
-      raise ArgumentError, "Target tagger already has a #{to.name} tag"
+      raise ArgumentError, I18n.t("winnow.errors.tag.copy_exists_error", :to => to.name)
     end
     
-    self.manual_taggings.each do |tagging|
-      to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength, :user_id => to.user_id)
-    end
+    Tagging.connection.execute(%Q|
+      INSERT INTO taggings(feed_item_id, strength, classifier_tagging, tag_id, user_id) 
+      (SELECT feed_item_id, strength, classifier_tagging, #{to.id}, #{to.user_id} FROM taggings WHERE tag_id = #{self.id})
+    |)
     
     to.bias = self.bias    
-    to.comment = self.comment
+    to.description = self.description
     to.save!
   end
   
   def merge(to)
     if self == to 
-      # TODO: localization
-      raise ArgumentError, "Can't copy tag to tag of the same name."
+      raise ArgumentError, I18n.t("winnow.errors.tag.merge_name_error")
     end
     
     self.manual_taggings.each do |tagging|
@@ -150,35 +109,6 @@ class Tag < ActiveRecord::Base
     self.positive_taggings.size < Tag.undertrained_threshold
   end
       
-  # This needs to be fast so we'll bypass Active Record
-  def taggings_from_atom(atom)
-    atom.entries.each do |entry|
-      begin
-        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
-          category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
-        else 
-          0.0
-        end
-
-        if strength >= 0.9
-          connection.execute "INSERT IGNORE INTO taggings " +
-                              "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
-                              "VALUES((select id from feed_items where uri = #{connection.quote(entry.id)})," + 
-                              "#{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
-                              "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
-        end
-      rescue URI::InvalidURIError => urie
-        logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
-      rescue ActiveRecord::StatementInvalid => arsi
-        logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
-      end
-    end
-    
-    connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
-  end
-  
-  private :taggings_from_atom
-  
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
       taggings_from_atom(atom)
@@ -196,7 +126,6 @@ class Tag < ActiveRecord::Base
   #
   # When :training_only => true all and only training examples will be included
   # in the document and it will conform to the Training Definition Document.
-  #
   def to_atom(options = {})
     Atom::Feed.new do |feed|
       feed.title = "#{self.user.login}:#{self.name}"
@@ -253,14 +182,51 @@ class Tag < ActiveRecord::Base
     end
   end
 
-  def subscribed_by_current_user?
-    state.to_s == "0"
-  end
+  named_scope :public, :conditions => { :public => true }
   
-  def globally_excluded_by_current_user?
-    state.to_s == "1"
-  end
+  named_scope :matching, lambda { |q|
+    conditions = %w[tags.name tags.description users.login].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+    { :joins => :user, :conditions => [conditions, { :q => "%#{q}%" }] }
+  }
   
+  named_scope :for, lambda { |user|
+    joins = [
+      "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = :user_id",
+      "LEFT JOIN tag_exclusions ON tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = :user_id"
+    ]
+      
+    { :joins => sanitize_sql([joins.join(" "), { :user_id => user.id }]), 
+      :conditions => ["(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL OR tag_exclusions.id IS NOT NULL)", user.id]
+    }
+  }
+  
+  named_scope :by, lambda { |order, direction|
+    orders = {
+      "id"               => "tags.id",
+      "name"             => "tags.name",
+      "public"           => "tags.public",
+      "login"            => "users.login",
+      "state"            => "state",
+      "comments_count"   => "comments_count",
+      "positive_count"   => "positive_count",
+      "negative_count"   => "negative_count",
+      "last_classified"  => "last_classified_at",
+      "last_trained"     => "last_trained",
+      "classifier_count" => "(feed_items_count - positive_count - negative_count)"
+    }
+    orders.default = "tags.name"
+    
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+    
+    { :joins => :user, :order => [orders[order], directions[direction]].join(" ") }
+  }
+
   def self.search(options = {})
     select = ['tags.*', 
               'users.login AS user_login',
@@ -274,58 +240,45 @@ class Tag < ActiveRecord::Base
                 "WHEN EXISTS(SELECT 1 FROM tag_exclusions WHERE tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}) THEN 1 " <<
                 "ELSE 2 END AS state"]
     
-    joins = ["LEFT JOIN users ON tags.user_id = users.id"]
+    scope = by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope = scope.for(options[:user]) if options[:own]
+    
+    scope.all(
+      :select => select.join(","), :joins => :user,
+      :group => "tags.id", :limit => options[:limit], :offset => options[:offset]
+    )
+  end
 
-    conditions, values = [], []
-    if options[:conditions]
-      conditions << sanitize_sql(options[:conditions])
-    end
+  def inspect
+    "<Tag name=#{name}, user=#{user.login}>"
+  end
 
-    if options[:own]
-      joins << "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = #{options[:user].id}"
-      joins << "LEFT JOIN tag_exclusions ON tags.id = tag_exclusions.tag_id AND tag_exclusions.user_id = #{options[:user].id}"
-      conditions << "(tags.user_id = ? OR tag_subscriptions.id IS NOT NULL OR tag_exclusions.id IS NOT NULL)"
-      values << options[:user].id
-    end
-        
-    if !options[:text_filter].blank?
-      ored_conditions = []
-      ored_conditions << "LOWER(tags.name) LIKE LOWER(?)"
-      ored_conditions << "LOWER(tags.comment) LIKE LOWER(?)"
-      ored_conditions << "LOWER(users.login) LIKE LOWER(?)"
-      conditions << "(#{ored_conditions.join(" OR ")})"
-      
-      value = "%#{options[:text_filter]}%"
-      values << value << value << value
-    end
-    
-    order = case options[:order]
-    when "name", "public", "id"
-      "tags.#{options[:order]}"
-    when "state", "comments_count", "positive_count", "negative_count", "last_trained"
-      options[:order]
-    when "classifier_count"
-      "(feed_items_count - positive_count - negative_count)"
-    when "login"
-      "users.#{options[:order]}"
-    else
-      "tags.name"
-    end
-    
-    case options[:direction]
-    when "asc", "desc"
-      order = "#{order} #{options[:direction].upcase}"
-    end
+private
+  # This needs to be fast so we'll bypass Active Record
+  def taggings_from_atom(atom)
+    atom.entries.each do |entry|
+      begin
+        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
+          category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
+        else 
+          0.0
+        end
 
-    options_for_find = { :joins => joins.join(" "), :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
-    
-    results = find(:all, options_for_find.merge(:select => select.join(","),
-                   :order => order, :group => "tags.id", :limit => options[:limit], :offset => options[:offset]))
-    
-    if options[:count]
-      [results, count(options_for_find)]
-    else
-      results
+        if strength >= 0.9
+          connection.execute "INSERT IGNORE INTO taggings " +
+                              "(feed_item_id, tag_id, user_id, classifier_tagging, strength, created_on) " +
+                              "VALUES((select id from feed_items where uri = #{connection.quote(entry.id)})," + 
+                              "#{self.id}, #{self.user_id}, 1, #{strength}, UTC_TIMESTAMP()) " +
+                              "ON DUPLICATE KEY UPDATE strength = VALUES(strength);"
+        end
+      rescue URI::InvalidURIError => urie
+        logger.warn "Invalid URI in Tag Assignment Document: #{entry.id}"
+      rescue ActiveRecord::StatementInvalid => arsi
+        logger.warn "Invalid taggings statement for #{entry.id}, probably the item doesn't exist."
+      end
     end
+    
+    connection.execute("UPDATE tags SET last_classified_at = '#{Time.now.getutc.to_formatted_s(:db)}' where id = #{self.id}")
   end
 end

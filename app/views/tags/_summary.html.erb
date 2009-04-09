@@ -1,24 +1,30 @@
-<div class="summary clearfix" onclick="$(this).next('.extended').toggle(); <%= bias_slider_js(tag, :disabled => !editable) %> this.up('.tag').down('.extended .comments').load();">
+<div class="summary clearfix">
   <div class="info">      
     <div class="details">
       <p><%=h tag.user_login %></p>
       <strong class="state"><%= tag_state(tag) %></strong>
     </div>
     <div class="comments">
-      <p><%= t(:comments) %></p>  
-      <strong><%= tag.comments_count %></strong>
+      <p><%= t(:tags_comments) %></p>  
+      <strong>
+        <span class="unread_comments"><%= tag.comments.unread(current_user).count %></span> / <span class="total_comments"><%= tag.comments_count %></span>
+      </strong>
     </div>
     <div class="positive">
-      <p><%= t(:positive) %></p>
+      <p><%= t(:tags_positive) %></p>
       <strong><%= tag.positive_count %></strong>
     </div>
     <div class="negative">
-      <p><%= t(:negative) %></p>
+      <p><%= t(:tags_negative) %></p>
       <strong><%= tag.negative_count %></strong>
     </div>
     <div class="automatic">
-      <p><%= t(:automatic_label) %></p>
+      <p><%= t(:tags_automatic) %></p>
       <strong><%= tag.classifier_count %></strong>
+    </div>
+    <div class="date">
+       <p><%= t(:tags_last_classified) %></p> 
+       <strong><%= format_date(tag.last_classified_at) %></strong>
     </div>
     <div class="date">
        <p><%= t(:tags_last_trained) %></p> 
@@ -33,16 +39,16 @@
             :click_to_edit_text => t(:tags_click_to_edit_tag_text), :save_text => t(:tags_save_text), :html_response => false) %>
     </h4>
 
-    <div class="description">
-      <span id="<%= dom_id(tag, 'comment') %>"><%= tag.comment.blank? ? t(:tags_blank_comment) : h(tag.comment) %></span>
-      <%= in_place_editor(dom_id(tag, "comment"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[comment]",
-            :click_to_edit_text => t(:tags_click_to_edit_comment_text), :save_text => t(:tags_save_text), :rows => 5, :cols => 50) %>
+    <div class="description <%= 'empty' if tag.description.blank? %>">
+      <span id="<%= dom_id(tag, 'description') %>"><%= tag.description.blank? ? t(:tags_blank_description) : h(tag.description) %></span>
+      <%= in_place_editor(dom_id(tag, "description"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[description]",
+            :click_to_edit_text => t(:tags_click_to_edit_description_text), :save_text => t(:tags_save_text), :rows => 5, :cols => 50) %>
     </div>
   <% else %>
     <h4 class="name"><%=h tag.name %></h4>
 
     <div class="description">
-      <%=h tag.comment %>
+      <%=h tag.description %>
     </div>
   <% end %>
 </div>

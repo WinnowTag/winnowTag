@@ -4,10 +4,17 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class User < ActiveRecord::Base   
-  module FindByFeedItem
+  acts_as_authorized_user
+  acts_as_authorizable
+  
+  has_many :messages, :order => "created_at DESC"
+  has_many :feedbacks
+  has_many :comments
+  has_many :tags, :dependent => :delete_all
+  has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
+  has_many :taggings, :dependent => :delete_all do
     def find_by_feed_item(feed_item, type = :all, options = {})
-      with_scope(:find => {:conditions => 
-          ['taggings.feed_item_id = ?', feed_item.id]}) do
+      with_scope(:find => {:conditions => ['taggings.feed_item_id = ?', feed_item.id]}) do
         find(type, options)
       end
     end
@@ -18,23 +25,9 @@ class User < ActiveRecord::Base
       end
     end
   end
-  
-  acts_as_authorized_user
-  acts_as_authorizable
-  has_many :messages, :order => "created_at DESC"
-  has_many :feedbacks
-  has_many :comments
-  has_many :tags, :dependent => :delete_all
-  has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
-  has_many :taggings, :extend => FindByFeedItem, :dependent => :delete_all
   has_many :manual_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', false]
   has_many :classifier_taggings, :class_name => 'Tagging', :conditions => ['classifier_tagging = ?', true]
   has_many :deleted_taggings, :dependent => :delete_all
-  has_many :read_items, :dependent => :delete_all do
-    def for(feed)
-      find(:all, :joins => :feed_item, :conditions => { "feed_items.feed_id" => feed })
-    end
-  end
   has_many :tag_subscriptions, :dependent => :delete_all
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
   has_many :feed_subscriptions, :dependent => :delete_all
@@ -48,74 +41,83 @@ class User < ActiveRecord::Base
   before_save :update_prototype
  
   def feeds
-    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.name.to_s }
+    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.title.downcase.to_s }
   end
   
   def feed_ids
     subscribed_feed_ids - excluded_feed_ids
   end
  
+  def globally_excluded?(tag_or_feed)
+    if tag_or_feed.is_a?(Tag)
+      excluded_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
+      excluded_tags.include?(tag_or_feed)
+    elsif tag_or_feed.is_a?(Feed)
+      excluded_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
+      excluded_feeds.include?(tag_or_feed)
+    end
+  end
+
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
+      subscribed_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
       subscribed_tags.include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
+      subscribed_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
       subscribed_feeds.include?(tag_or_feed)
     end
   end
   
-  class << self
-    def search(options = {})
-      conditions, values = [], []
-      
-      unless options[:text_filter].blank?
-        ored_conditions = []
-        [:login, :email, :firstname, :lastname].each do |attribute|
-          ored_conditions << "users.#{attribute} LIKE ?"
-          values          << "%#{options[:text_filter]}%"
-        end
-        conditions << "(" + ored_conditions.join(" OR ") + ")"
-      end
-      
-      direction = case options[:direction]
-      when "asc", "desc"
-        options[:direction].upcase
-      end
-
-      order = case options[:order]
-      when "login", "email", "logged_in_at", "last_accessed_at", "id"
-        "users.#{options[:order]} #{direction}"
-      when "name"
-        "lastname #{direction}, firstname #{direction}"
-      when "last_tagging_on", "tag_count"
-        "#{options[:order]} #{direction}"
-      else
-        "users.login"
-      end
-
-    
-      options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
-      
-      results = find(:all, options_for_find.merge(
-                     :select => "users.*, MAX(taggings.created_on) AS last_tagging_on, (SELECT count(*) FROM tags WHERE tags.user_id = users.id) AS tag_count", 
-                     :joins => "LEFT JOIN taggings ON taggings.user_id = users.id AND taggings.classifier_tagging = false",
-                     :order => order, :group => "users.id", :limit => options[:limit], :offset => options[:offset]))
-      
-      if options[:count]
-        [results, count(options_for_find)]
-      else
-        results
-      end
-    end
-  end
+  named_scope :matching, lambda { |q|
+    conditions = %w[users.login users.email users.firstname users.lastname].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+    { :conditions => [conditions, { :q => "%#{q}%" }] }
+  }
   
-  # Gets the date the tagger last created a tagging.
+  named_scope :by, lambda { |order, direction|
+    orders = {
+      "id"               => "users.id",
+      "login"            => "users.login",
+      "email"            => "users.email",
+      "logged_in_at"     => "users.logged_in_at",
+      "last_accessed_at" => "users.last_accessed_at",
+      "name"             => %w[users.lastname users.firstname],
+      "last_tagging_on"  => "last_tagging_on", # depends on select from search
+      "tag_count"        => "tag_count"        # depends on select from search
+    }
+    orders.default = "users.login"
+    
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+
+    { :order => Array(orders[order]).map { |o| [o, directions[direction]].join(" ") }.join(", ") }
+  }
+
+  def self.search(options = {})
+    select = [
+      "users.*",
+      "MAX(taggings.created_on) as last_tagging_on",
+      "COUNT(DISTINCT(tags.id)) as tag_count"      
+    ]
+    
+    scope = by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope.all(
+      :select => select.join(", "),
+      :joins => "left outer join tags on users.id = tags.user_id " +
+                "left outer join taggings on tags.id = taggings.tag_id and taggings.classifier_tagging = 0",
+      :group => "users.id",
+      :limit => options[:limit], 
+      :offset => options[:offset]
+    )
+  end
+
   def last_tagging_on
-    if last_tagging_on = read_attribute(:last_tagging_on)
-      Time.parse(last_tagging_on)
-    else
-      last_tagging = self.manual_taggings.find(:first, :order => 'taggings.created_on DESC')
-      last_tagging ? last_tagging.created_on : nil
-    end
+    Time.parse(read_attribute(:last_tagging_on).to_s)
   end
   
   # Updates any feed state between this feed and the user.
@@ -127,38 +129,6 @@ class User < ActiveRecord::Base
         subscribed_feeds.reload
       end
     end
-  end
-  
-  def globally_excluded?(tag_or_feed)
-    if tag_or_feed.is_a?(Tag)
-      excluded_tags.include?(tag_or_feed)
-    elsif tag_or_feed.is_a?(Feed)
-      excluded_feeds.include?(tag_or_feed)
-    end
-  end
-
-  # Gets the number of items tagged by this tagger
-  def number_of_tagged_items
-    self.taggings.find(:first, :select => 'COUNT(DISTINCT feed_item_id) AS count').count.to_i
-  end
-
-  # Gets the percentage of items tagged by this tagger
-  def tagging_percentage(klass = FeedItem)
-    100 * number_of_tagged_items.to_f / klass.count
-  end
-
-  # Gets the average number of tags a user has applied to an item.
-  def average_taggings_per_item
-    Tagging.find_by_sql(<<-END_SQL
-      SELECT AVG(count) AS average FROM (
-         SELECT COUNT(id) AS count
-         FROM taggings
-         WHERE
-           user_id = #{self.id}
-         GROUP BY feed_item_id
-       ) AS counts;
-      END_SQL
-    ).first.average.to_f
   end
   
   def changed_tags
@@ -181,15 +151,54 @@ class User < ActiveRecord::Base
       :order => "tags.name"
   end
 
+  def full_name
+    "#{self.firstname} #{self.lastname}"
+  end
+  
+  def self.create_from_prototype(attributes = {})
+    user = new(attributes)
+    user.save!
+    user.activate
+    # Mark all existing message as read
+    Message.read_by!(user)
+    
+    if prototype = User.find_by_prototype(true)
+      prototype.folders.each do |folder| 
+        user.folders.create! :name => folder.name, :tag_ids => folder.tag_ids, :feed_ids => folder.feed_ids
+      end
+      
+      prototype.feed_subscriptions.each do |feed_subscription| 
+        user.feed_subscriptions.create! :feed_id => feed_subscription.feed_id
+      end
+      
+      prototype.tag_subscriptions.each do |tag_subscription| 
+        user.tag_subscriptions.create! :tag_id => tag_subscription.tag_id
+      end
+      
+      prototype.tags.each do |tag|
+        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :show_in_sidebar => tag.show_in_sidebar, :description => tag.description
+
+        tag.taggings.each do |tagging|
+          user.taggings.create! :classifier_tagging => tagging.classifier_tagging, :strength => tagging.strength, :feed_item_id => tagging.feed_item_id, :tag_id => new_tag.id
+        end
+      end
+    end
+    
+    user
+  rescue ActiveRecord::RecordInvalid
+    user
+  end
+
   # Code Generated by Acts_as_authenticated
   # Virtual attribute for the unencrypted password
   attr_accessor :password
 
   validates_format_of :login, :with => /^[a-zA-Z0-9_-]+$/
-  validates_presence_of     :email, :time_zone
-  validates_length_of       :password, :within => 4..40, :if => :password_required?
+  validates_presence_of :email, :time_zone
+  validates_length_of :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
-  validates_uniqueness_of   :login, :email, :case_sensitive => false
+  validates_uniqueness_of :login, :email, :case_sensitive => false
+
   before_create :make_activation_code
   after_create :make_owner_of_self
   before_save :encrypt_password
@@ -204,10 +213,6 @@ class User < ActiveRecord::Base
     BCrypt::Password.create(password)
   end
 
-  def full_name
-    "#{self.firstname} #{self.lastname}"
-  end
-  
   def encrypt(password)
     self.class.encrypt(password)
   end
@@ -267,40 +272,6 @@ class User < ActiveRecord::Base
     self.reminder_code = nil
     self.reminder_expires_at = nil
     self.save!
-  end
-  
-  def self.create_from_prototype(attributes = {})
-    user = new(attributes)
-    user.save!
-    user.activate
-    # Mark all existing message as read
-    Message.mark_read_for(user.id)
-    
-    if prototype = User.find_by_prototype(true)
-      prototype.folders.each do |folder| 
-        user.folders.create! :name => folder.name, :tag_ids => folder.tag_ids, :feed_ids => folder.feed_ids
-      end
-      
-      prototype.feed_subscriptions.each do |feed_subscription| 
-        user.feed_subscriptions.create! :feed_id => feed_subscription.feed_id
-      end
-      
-      prototype.tag_subscriptions.each do |tag_subscription| 
-        user.tag_subscriptions.create! :tag_id => tag_subscription.tag_id
-      end
-      
-      prototype.tags.each do |tag|
-        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :show_in_sidebar => tag.show_in_sidebar, :comment => tag.comment
-
-        tag.taggings.each do |tagging|
-          user.taggings.create! :classifier_tagging => tagging.classifier_tagging, :strength => tagging.strength, :feed_item_id => tagging.feed_item_id, :tag_id => new_tag.id
-        end
-      end
-    end
-    
-    user
-  rescue ActiveRecord::RecordInvalid
-    user
   end
   
 protected

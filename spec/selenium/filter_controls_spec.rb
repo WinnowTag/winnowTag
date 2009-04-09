@@ -6,11 +6,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "filter controls" do
-  fixtures :users, :tags
-
   before(:each) do
-    @user = users(:quentin)
-    login
+    @user = Generate.user!
+
+    login @user
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end
@@ -48,25 +47,26 @@ describe "filter controls" do
     end
     
     it "keeps mode and tag/feed filters intact" do
+      @tag = Generate.tag!
+      
       page.open login_path
-      page.open feed_items_path(:anchor => "mode=trained&tag_ids=1&feed_ids=1")
+      page.open feed_items_path(:anchor => "mode=trained&tag_ids=#{@tag.id}&feed_ids=1")
       page.wait_for :wait_for => :ajax
 
-      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=1&feed_ids=1$/
+      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1$/
 
       page.type "text_filter", "ruby"
       hit_enter "text_filter"
 
-      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=1&feed_ids=1&text_filter=ruby$/
+      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
     end
   end
   
   
   describe "tag filter" do
     before(:each) do
-      Tag.delete_all
-      @tag = Tag.create! :name => "ruby", :user => users(:quentin)
-      @sql = Tag.create! :name => "sql", :user => users(:quentin)
+      @tag = Generate.tag!(:user => @user)
+      @sql = Generate.tag!(:user => @user)
       page.open feed_items_path
       page.wait_for :wait_for => :ajax
     end
@@ -81,10 +81,10 @@ describe "filter controls" do
     
     it "resets feed/tag filters only" do
       page.open login_path
-      page.open feed_items_path(:anchor => "mode=trained&text_filter=ruby&feed_ids=1&tag_ids=999")
+      page.open feed_items_path(:anchor => "mode=trained&text_filter=ruby&feed_ids=1&tag_ids=#{@tag.id}")
       page.wait_for :wait_for => :ajax
 
-      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=999&feed_ids=1&text_filter=ruby$/
+      page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
 
       page.click "css=#name_tag_#{@tag.id}"
       
@@ -93,10 +93,10 @@ describe "filter controls" do
     
     it "turns off a tag filter" do
       page.open login_path
-      page.open feed_items_path(:anchor => "tag_ids=1,#{@tag.id}")
+      page.open feed_items_path(:anchor => "tag_ids=#{@sql.id},#{@tag.id}")
       page.wait_for :wait_for => :ajax
 
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=1%2C#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@sql.id}%2C#{@tag.id}$/
 
       page.click "css=#name_tag_#{@tag.id}"
       

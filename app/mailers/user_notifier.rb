@@ -40,6 +40,6 @@ protected
   def setup_email(email, options = {})
     recipients  email
     from        "winnowadmin@mindloom.org"
-    subject     "#{t(:subject_prefix)} #{options[:subject]}"
+    subject     "#{I18n.t(:subject_prefix)} #{options[:subject]}"
   end
 end

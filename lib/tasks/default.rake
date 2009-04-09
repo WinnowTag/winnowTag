@@ -3,7 +3,10 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-task :default => [:spec, :features]
+task :default do
+  Rake::Task['spec'].invoke
+  Rake::Task['features'].invoke
+end
 
 task :all do
   begin

@@ -21,52 +21,24 @@
 #
 # See also FeedItemContent and FeedItemTokensContainer.
 class FeedItem < ActiveRecord::Base
-  attr_readonly(:uri)
+  acts_as_readable
+  
+  attr_readonly :uri
   attr_accessor :taggings_to_display
 
-  validates_presence_of :link
-  validates_uniqueness_of :link
+  acts_as_readable
+
   belongs_to :feed, :counter_cache => true
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
-  
-  # Extends tagging associations with a find_by_tagger method.
-  #
-  # This also adds some trickery that allows us to cache some taggings so we can
-  # load all the taggings for the current feed items into memory at once instead
-  # of using a query for each feed item.
-  #
-  # See FeedItem.find_by_filters for how this is done.
-  #
   has_many :taggings
+  has_many :tags, :through => :taggings
   
-  has_many :tags, :through => :taggings do
-    def from_user
-      find(:all, :conditions => ["taggings.classifier_tagging = ?", false])
-    end
-  end
-  
-  # Finds some random items with their tokens.  
-  #
-  # Instead of using order by rand(), which is very slow for large tables,
-  # we use a modified version of the method described at http://jan.kneschke.de/projects/mysql/order-by-rand/
-  # to get a random set of items. The trick here is to generate a list of random ids 
-  # by multiplying rand() and max(position). This list is then joined with the feed_items table
-  # to get the items.  Generating this list is very fast since MySQL can do it without accessing
-  # the tables or indexes at all.
-  #
-  # We use the position column to randomize since that is guarenteed to not have any holes
-  # and to have even distribution.
-  #
-  def self.find_random_items_with_tokens(size)
-    self.find(:all,
-      :joins => "INNER JOIN random_backgrounds AS rnd ON feed_items.id = rnd.feed_item_id ",
-      :limit => size)
-  end
+  validates_presence_of :link
+  validates_uniqueness_of :link
   
   def self.find_or_create_from_atom(entry)
-    # TODO: localization
-    raise ActiveRecord::RecordNotSaved, 'Atom::Entry missing id' if entry.id.nil?
+    raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
     unless item = FeedItem.find_by_uri(entry.id)
       item = FeedItem.new
@@ -79,12 +51,10 @@ class FeedItem < ActiveRecord::Base
   end
   
   def update_from_atom(entry)
-    # TODO: localization
-    raise ArgumentError, "Atom entry has different id" if self.uri != entry.id
+    raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id) if uri != entry.id
     
     self.attributes = {
-      # TODO: localization
-      :title   => (entry.title or 'Unknown Title'),
+      :title   => (entry.title or I18n.t("winnow.defaults.feed_item.title")),
       :link    => (entry.alternate and entry.alternate.href),
       :author  => (entry.authors.empty? ? nil : entry.authors.first.name),
       :updated => entry.updated,
@@ -142,43 +112,6 @@ class FeedItem < ActiveRecord::Base
       end
     end
   end
-    
-  # Override count to use feed_id because InnoDB tables are slow with count(*)
-  def self.count(*args)
-    if args.first.is_a? String
-      super(*args)
-    elsif args.first.is_a? Hash
-      super('id', args.first)
-    elsif args.size == 0
-      super('id', {})
-    end
-  end
-  
-  # Destroy feed items older that +since+.
-  #
-  # This also deletes all classifier taggings that are on items older than +since+,
-  # Manual taggings are untouched.
-  #
-  # You could do this in the one SQL statement, however using ActiveRecord,
-  # while taking slightly longer, will break this up into multiple transactions
-  # and reduce the chance of getting a deadlock with a long transaction.
-  def self.archive_items(since = 30.days.ago.getutc)
-    taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
-    conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
-    items = FeedItem.find(:all, :conditions => conditions)
-    items.each do |item|
-      item.destroy
-    end
-    logger.info("ARCHIVAL: Deleted #{items.size} items and #{taggings_deleted} classifier taggings older than #{since}")
-  end
-  
-  # Gets a count of the number of items that meet conditions applied by the filters.
-  #
-  # See options_for_filters.
-  def self.count_with_filters(filters = {})
-    options = options_for_filters(filters).merge(:select => "feed_items.id").except(:limit, :offset, :order)
-    FeedItem.count(options)
-  end
   
   def self.atom_with_filters(filters = {})
     base_uri = filters.delete(:base_uri)
@@ -191,12 +124,24 @@ class FeedItem < ActiveRecord::Base
     text_filter = filters[:text_filter]
     mode = filters[:mode]
 
-    # TODO: localization
-    title = "Winnow feed for #{mode} items"
-    title << " from #{feeds.to_sentence}" unless feeds.blank?
-    title << " tagged by #{tags.to_sentence}" unless tags.blank?
-    title << " including text '#{text_filter}'" unless text_filter.blank?
-    
+    title = if feeds.present? && tags.present? && text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds_tags_text_filter", :mode => mode, :feeds => feeds.to_sentence, :tags => tags.to_sentence, :text_filter => text_filter)
+    elsif feeds.present? && tags.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds_tags", :mode => mode, :feeds => feeds.to_sentence, :tags => tags.to_sentence)
+    elsif feeds.present? && text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds_text_filter", :mode => mode, :feeds => feeds.to_sentence, :text_filter => text_filter)
+    elsif tags.present? && text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_tags_text_filter", :mode => mode, :tags => tags.to_sentence, :text_filter => text_filter)
+    elsif feeds.present?
+      I18n.t("winnow.feeds.feed_item.mode_feeds", :mode => mode, :feeds => feeds.to_sentence)
+    elsif tags.present?
+      I18n.t("winnow.feeds.feed_item.mode_tags", :mode => mode, :tags => tags.to_sentence)
+    elsif text_filter.present?
+      I18n.t("winnow.feeds.feed_item.mode_text_filter", :mode => mode, :text_filter => text_filter)
+    else
+      I18n.t("winnow.feeds.feed_item.mode", :mode => mode)
+    end
+
     feed = Atom::Feed.new do |feed|
       feed.title = title
       feed.id = self_link
@@ -226,7 +171,7 @@ class FeedItem < ActiveRecord::Base
     
     options_for_find = options_for_filters(filters).merge(:select => [
       'feed_items.*', 'feeds.title AS feed_title', 
-      "EXISTS (SELECT 1 FROM read_items WHERE read_items.feed_item_id = feed_items.id AND read_items.user_id = #{user.id}) AS read_by_current_user"
+      "EXISTS (SELECT 1 FROM readings WHERE readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id AND readings.user_id = #{user.id}) AS read_by_current_user"
     ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
     
@@ -268,21 +213,17 @@ class FeedItem < ActiveRecord::Base
     feed_items
   end
   
-  def self.mark_read(filters)
+  def self.read_by!(filters)
     options_for_find = options_for_filters(filters)   
 
-    feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, UTC_TIMESTAMP() FROM feed_items"
+    feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, 'FeedItem', UTC_TIMESTAMP(), UTC_TIMESTAMP() FROM feed_items"
     feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
     feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
 
-    ReadItem.connection.execute "INSERT IGNORE INTO read_items (user_id, feed_item_id, created_at) #{feed_item_ids_sql}"
+    Reading.connection.execute "INSERT IGNORE INTO readings (user_id, readable_id, readable_type, created_at, updated_at) #{feed_item_ids_sql}"
   end
   
-  def self.mark_read_for(user_id, feed_item_id)
-    ReadItem.find_or_create_by_user_id_and_feed_item_id(user_id, feed_item_id)
-  end
-  
-  # This builds the SQL to use for the find_with_filters and count_with_filters methods.
+  # This builds the SQL to use for the find_with_filters method.
   #
   # The SQL is pretty complex, I had a go at trying to find a nicer way to generate it, as opposed
   # to building up two big strings, one for join conditions and one for where conditions.  I tried
@@ -350,7 +291,7 @@ class FeedItem < ActiveRecord::Base
     end
     
     if filters[:mode] =~ /unread/i # only filter out read items when showing unread items
-      add_read_items_filter_conditions!(filters[:user], conditions)
+      add_readings_filter_conditions!(filters[:user], conditions)
     end
         
     options[:conditions] = conditions.compact.blank? ? nil : conditions.compact.join(" AND ")
@@ -394,7 +335,7 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  def self.add_read_items_filter_conditions!(user, conditions)
-    conditions << "NOT EXISTS (SELECT 1 FROM read_items WHERE user_id = #{user.id} AND feed_item_id = feed_items.id)"
+  def self.add_readings_filter_conditions!(user, conditions)
+    conditions << "NOT EXISTS (SELECT 1 FROM readings WHERE readings.user_id = #{user.id} AND readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id)"
   end
 end

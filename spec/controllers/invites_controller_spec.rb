@@ -6,10 +6,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe InvitesController do
-  fixtures :users, :roles, :roles_users
-
   before(:each) do
-    login_as(:admin)
+    login_as Generate.admin!
   end
   
   describe "#index" do

@@ -11,13 +11,15 @@ var Sidebar = Class.create({
     
     if(Cookie.get("sidebar_width")) {
       this.sidebar.style.width = Cookie.get("sidebar_width") + 'px';
+      Content.instance.resizeWidth();
     }
     
-    if(Cookie.get("show_sidebar") != false) {
+    if(Cookie.get("show_sidebar") != "false") {
       this.sidebar_control.addClassName("open")
       this.enableResize();
     } else {
       this.sidebar.hide();
+      Content.instance.resizeWidth();
     }
     
     this.enableToggle();
@@ -37,7 +39,7 @@ var Sidebar = Class.create({
   toggle: function() {
     this.sidebar.toggle();
     this.sidebar_control.toggleClassName("open")
-    Cookie.set("show_sidebar", this.sidebar.visible(), 365);
+    Cookie.set("show_sidebar", this.sidebar.visible() ? "true" : "false", 365);
 
     if(this.sidebar.visible()) {
       this.enableResize();
@@ -59,7 +61,8 @@ var Sidebar = Class.create({
         this.sidebar_control.setStyle({backgroundColor: ""});
         this.resize();
         this.enableToggle();
-      }.bind(this)});
+      }.bind(this)
+    });
   },
   
   disableResize: function() {

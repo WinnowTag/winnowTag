@@ -60,7 +60,7 @@ class TagsController < ApplicationController
       format.html
       format.json do
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
-        @tags = Tag.search(:user => current_user, :text_filter => params[:text_filter], :conditions => ["tags.public = ?", true], 
+        @tags = Tag.public.search(:user => current_user, :text_filter => params[:text_filter], 
                            :order => params[:order], :direction => params[:direction], 
                            :limit => limit, :offset => params[:offset])
         @full = @tags.size < limit
@@ -122,7 +122,7 @@ class TagsController < ApplicationController
     end
   end
 
-  # Rename, or change the comment on a tag.
+  # Rename, or change the description on a tag.
   def update
     if @name = params[:tag][:name]
       if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
@@ -135,9 +135,9 @@ class TagsController < ApplicationController
           render :action => "error.js.rjs"
         end
       end
-    elsif comment = params[:tag][:comment]
-      @tag.update_attribute(:comment, comment)
-      render :text => h(@tag.comment)
+    elsif description = params[:tag][:description]
+      @tag.update_attribute(:description, description)
+      render :partial => "update_description"
     elsif bias = params[:tag][:bias]
       @tag.update_attribute(:bias, bias)
       render :nothing => true
@@ -176,13 +176,13 @@ class TagsController < ApplicationController
   end
   
   def classifier_taggings    
-    if !(request.post? || request.put?)
-      render :status => :method_not_allowed, :text => "Only PUT or POST are allowed"
-    elsif params[:atom].nil?
+    if params[:atom].nil?
       render :status => :bad_request, :text => "Missing Atom Document"
-    elsif request.post? || request.put?
-      request.post? ? @tag.create_taggings_from_atom(params[:atom]) : 
-                      @tag.replace_taggings_from_atom(params[:atom])
+    elsif request.post?
+      @tag.create_taggings_from_atom(params[:atom])
+      render :status => :no_content, :nothing => true
+    elsif request.put?
+      @tag.replace_taggings_from_atom(params[:atom])
       render :status => :no_content, :nothing => true
     end
   end
@@ -222,29 +222,12 @@ class TagsController < ApplicationController
     respond_to :js
   end
   
-  def update_state
-    @tag = Tag.find(params[:id])
-    
-    if params[:state] == 'globally_exclude'
-      current_user.tag_exclusions.create! :tag_id => @tag.id
-      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      Folder.remove_tag(current_user, @tag.id)
-    elsif params[:state] == 'subscribe'
-      TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
-      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
-    else
-      TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      Folder.remove_tag(current_user, @tag.id)
-      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
-    end
-    
-    respond_to :js
-  end
-  
   def globally_exclude
     @tag = Tag.find(params[:id])
     if params[:globally_exclude] =~ /true/i
       current_user.tag_exclusions.create! :tag_id => @tag.id
+      # TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      Folder.remove_tag(current_user, @tag.id)
     else
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
@@ -255,6 +238,7 @@ class TagsController < ApplicationController
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       if params[:subscribe] =~ /true/i
         TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
+        # TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
       else
         TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
         Folder.remove_tag(current_user, @tag.id)
@@ -289,10 +273,12 @@ class TagsController < ApplicationController
   
   def information
     @tag = Tag.find(params[:id])
+    render :layout => false
   end
 
   def comments
     @tag = Tag.find(params[:id])
+    @tag.comments.each { |comment| comment.read_by!(current_user) }
     render :layout => false
   end
   
@@ -303,7 +289,7 @@ private
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
         render :status => :not_found, :text => t(:tag_not_found, :login => h(@user.login), :tag_name => h(params[:tag_name]))
       end
-    elsif params[:id] && !current_user.nil?
+    elsif params[:id] && current_user
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound

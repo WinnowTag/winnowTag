@@ -48,6 +48,6 @@ var SidebarSection = Class.create({
   cancel: function() {
     this.element.removeClassName('add');
     this.element.removeClassName('edit');
-    this.input.value = "";
+    this.input.clear();
   }
 });

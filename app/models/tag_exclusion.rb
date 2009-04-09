@@ -4,5 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class TagExclusion < ActiveRecord::Base
+  belongs_to :user
   belongs_to :tag
+
+  validates_presence_of :user_id, :tag_id
 end

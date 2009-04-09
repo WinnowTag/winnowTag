@@ -27,7 +27,7 @@ div.slider_handle {
 	position: absolute;
 	top: -1px;
 	opacity: 0.6;
-	filter:alpha(opacity=6);
+	filter:alpha(opacity=60);
 	cursor: pointer;
 }
 
@@ -65,7 +65,7 @@ div.bias_marker.one_point_two {
 }
 
 div.slider_track.disabled div.slider_handle {
-	background-color:  #555;
+	background-color: #555;
 	cursor: default;
 }
 

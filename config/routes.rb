@@ -57,7 +57,6 @@ ActionController::Routing::Routes.draw do |map|
                   :auto_complete_for_sidebar => :any
                 },
                 :member => { 
-                  :update_state => :put,
                   :globally_exclude => :post,
                   :publicize => :put, 
                   :subscribe => :put,
@@ -66,7 +65,7 @@ ActionController::Routing::Routes.draw do |map|
                   :auto_complete_for_tag_name => :any,
                   :training => :get,
                   :information => :get,
-                  :classifier_taggings => :any,
+                  :classifier_taggings => [:post, :put],
                   :merge => :put,
                   :comments => :get
                 }
@@ -99,7 +98,10 @@ ActionController::Routing::Routes.draw do |map|
               
   map.resources :messages  
   map.resources :feedbacks
-  map.resources :comments
+  map.resources :comments,
+                :collection => {
+                  :mark_read => :put
+                }
                 
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit/:id", :action => "edit"

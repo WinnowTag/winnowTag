@@ -1,12 +1,12 @@
 <% form_tag feeds_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= search_field_tag "text_filter", params[:text_filter], :placeholder => t(:feeds_header_search_placeholder) %>
+  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t(:feeds_header_search_placeholder) %>
 <% end -%>
 
 <div class="order clearfix">
   <label><%= t(:sort_label) %></label>        
   <select id="order">
     <option value="title"><%= t(:feeds_header_title) %></option>
-    <option value="globally_excluded"><%= t(:feeds_header_globally_exclude) %></option>
+    <option value="globally_exclude"><%= t(:globally_exclude) %></option>
     <option value="feed_items_count"><%= t(:feeds_header_items) %></option>
     <option value="created_on"><%= t(:feeds_header_created) %></option>
     <option value="updated_on"><%= t(:feeds_header_last_updated) %></option>

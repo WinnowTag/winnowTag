@@ -42,12 +42,12 @@ class AccountController < ApplicationController
         redirect_to login_path(:code => nil)
       end
     elsif params[:invite]
-      @invite = Invite.find_active(params[:invite])
+      @invite = Invite.active(params[:invite])
     end
   end
 
   def signup
-    if @invite = Invite.find_active(params[:invite])
+    if @invite = Invite.active(params[:invite])
       @user = User.create_from_prototype(params[:user])
       unless @user.new_record?
         @invite.update_attribute :user_id, @user.id
@@ -83,7 +83,6 @@ class AccountController < ApplicationController
   def activate
     if params[:activation_code]
       @user = User.find_by_activation_code(params[:activation_code]) 
-    
       if @user and @user.activate
         self.current_user = @user
         redirect_back_or_default(root_path)

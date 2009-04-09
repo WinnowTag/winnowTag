@@ -1,7 +1,52 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
+  winnow:
+    errors:
+      atom:
+        missing_entry_id: "Atom::Entry is missing id"
+        wrong_entry_id:   "Tried to update feed ({{uri}}) from entry with different id: {{entry_id}}"
+        missing_fragment: "Atom::Entry id is missing fragment: {{entry_id}}"
+        invalid_entry_id: "Atom::Entry has missing or invalid id: {{entry_id}}"
+      tag:
+        compare_error:     "Cannot compare Tag to {{other}}"
+        copy_name_error:   "Can't copy tag to tag of the same name."
+        copy_exists_error: "Target tagger already has a {{to}} tag"
+        merge_name_error:  "Can't merge tag to tag of the same name."
+    defaults:
+      feed_item:
+        title: "Unknown Title"
+    feeds:
+      feed_item:
+        mode_feeds_tags_text_filter: "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds_tags:             "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}}"
+        mode_feeds_text_filter:      "Winnow feed for {{mode}} items from {{feeds}} including text '{{text_filter}}'"
+        mode_tags_text_filter:       "Winnow feed for {{mode}} items tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds:                  "Winnow feed for {{mode}} items from {{feeds}}"
+        mode_tags:                   "Winnow feed for {{mode}} items tagged by {{tags}}"
+        mode_text_filter:            "Winnow feed for {{mode}} items including text '{{text_filter}}'"
+        mode:                        "Winnow feed for {{mode}} items"
+    javascript:
+      errors:
+        classifier:
+          timeout: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like."
+        ajax:
+          timeout: "The server is taking a while to repond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
+      classifier:
+        progress_bar:
+          start:   "Starting Classifier"
+          cancel:  "Classify changed tags"
+          finish:  "Classification Complete"
+          reload:  "Classification has completed. Do you want to reload the items?"
+          # NOTE: This is never displayed to the user, it is only user as a check against a json response. Do not change this.
+          running: "The classifier is already running."
+      itembrowser:
+        text_filter:
+          too_short: "Search requires a word with at least 4 characters"
+        mark_unread: "Click to mark as unread"
+        mark_read:   "Click to mark as read"
+        empty:       "No items matched your search criteria."
+        loading:     "Loading Items..."
+        
+  
   # app/controllers/account_controller.rb
   profile_update: "Information Updated"
   credentials_invalid: "Invalid credentials. Please try again."
@@ -66,7 +111,6 @@ en:
   fifth_slider_marker: "Very Strongly Positive"
 
   # app/helpers/feed_items_helper.rb
-  automatic_label: "Automatic"
   start_classifier_button: "Auto-tag"
   stop_classifier_button: "Stop"
   classifier_progress: "Classify changed tags"
@@ -210,11 +254,13 @@ en:
   # app/views/feeds/_header_controls.html.erb
   feeds_header_add_import: "Add / Import"
   feeds_header_title: "Title"
-  feeds_header_globally_exclude: "Globally Exclude"
   feeds_header_items: "Items"
   feeds_header_created: "Created"
   feeds_header_last_updated: "Last Updated"
   feeds_header_search_placeholder: "Search Feeds..."
+  
+  # app/views/feeds/index.html.erb
+  total_feeds: "Total Feeds:"
   
   # app/views/feeds/error.html.erb
   feeds_back_to_feeds: "Back to Feeds"
@@ -240,6 +286,7 @@ en:
   email: "Email"
   status: "Status"
   invites_search_placeholder: "Search Invites..."
+  create_invite: "Create Invite"
   
   # app/views/invites/_invite.html.erb
   activate: "Activate"
@@ -261,9 +308,6 @@ en:
   # app/views/invites/edit.html.erb
   invites_edit_invite: "Edit Invite"
   
-  # app/views/invites/new.html.erb
-  invites_create_invite: "Create Invite"
-
   # app/views/layouts/_navbar.html.erb
   about: "About"
   profile: "Profile"
@@ -321,19 +365,19 @@ en:
   taggings_destroy_message: "You have removed the last example of tag {{tag}}, do you want to remove it from your tags page?"
   
   # app/views/tags/_header_controls.html.erb
-  tags_header_name: "Name"
-  tags_header_last_trained: "Last Trained"
-  tags_header_comments: "Comments"
-  tags_header_positive: "Positive"
-  tags_header_negative: "Negative"
-  tags_header_automatic: "Automatic"
-  tags_header_state: "State"
+  tags_name: "Name"
+  tags_state: "State"
+  tags_comments: "Comments"  
+  tags_positive: "Positive"
+  tags_negative: "Negative"
+  tags_automatic: "Automatic"
+  tags_last_classified: "Last Classified"
+  tags_last_trained: "Last Trained"
+
   tags_header_search_placeholder: "Search Tags..."
 
   # app/views/tags/_public_tag.html.erb
-  tags_last_trained: "Last Trained"
   tags_feed_link: "Feed"
-  tags_globally_exclude: "Globally Exclude"
   tags_subscribe: "Subscribe"
   view_all_items: "Show items tagged with {{tag}}"
   view_tagged_items: "Show items trained with {{tag}}"
@@ -342,19 +386,16 @@ en:
   add_a_comment: "Add a comment"
 
   # app/views/tags/_summary.html.erb
-  positive: "Positive"
-  negative: "Negative"
-  comments: "Comments"  
 
   # app/views/tags/_subscribed_tag.html.erb
   tags_public: "Public"
-  tags_destroy_link_title: "Unsubscribe {{tag}}"
+  tags_destroy_link_title: "Destroy {{tag}}"
 
   # app/views/tags/_tag.html.erb
   tags_click_to_edit_tag_text: "Click to edit tag name"
   tags_save_text: "Save"
-  tags_blank_comment: "..."
-  tags_click_to_edit_comment_text: "Click to edit tag comment"
+  tags_blank_description: "add a description"
+  tags_click_to_edit_description_text: "Click to edit tag description"
   tags_destroy_confirm_text: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
   tags_merge_confirm_text: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
   tags_sidebar_confirm_message: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
@@ -403,7 +444,5 @@ en:
   users_save_changes: "Save changes"
   
   users_registered: "Registered"
-  users_average_tags_per_item: "Average Tags per Item"
-  users_percentage_tagged: "Percentage Tagged"
   
   # Javascript

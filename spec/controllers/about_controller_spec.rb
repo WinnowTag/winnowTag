@@ -8,8 +8,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe AboutController do
   describe "old specs" do
     before(:each) do
-      login_as(1)
-      mock_user_for_controller
+      login_as Generate.user!
     end
   
     it "should fetch classifier info" do
@@ -30,14 +29,15 @@ describe AboutController do
   
   describe "info" do
     before(:each) do
-      @user = User.create! valid_user_attributes
+      @user = Generate.user!
       login_as @user
 
       @info = mock_model(Setting)
       Setting.stub!(:find_or_initialize_by_name).and_return(@info)
 
       @message = mock_model(Message)
-      Message.stub!(:find_for_user_and_global).and_return([@message])
+      @for_scope = stub("for scope", :latest => [@message])
+      Message.stub!(:for).and_return(@for_scope)
     end
     
     def do_get
@@ -52,7 +52,8 @@ describe AboutController do
     end
     
     it "sets the messages for the view" do
-      Message.should_receive(:find_for_user_and_global).with(@user.id, :limit => 30, :order => "created_at DESC").and_return([@message])
+      Message.should_receive(:for).with(@user).and_return(@for_scope)
+      @for_scope.should_receive(:latest).with(30).and_return([@message])
       
       do_get
       assigns[:messages].should == [@message]

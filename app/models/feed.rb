@@ -13,15 +13,39 @@
 class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
-  # TODO: localization
-  validates_uniqueness_of :via, :message => 'Feed already exists'
-  alias_attribute :name, :title
-  before_save :update_sort_title
 
-  def self.find_without_duplicates(*parameters)
-    with_scope(:find => {:conditions => 'duplicate_id is null'}) do
-      find(*parameters)
-    end
+  named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
+
+  named_scope :matching, lambda { |q|
+    conditions = %w[feeds.title feeds.via feeds.alternate].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+    { :conditions => [conditions, { :q => "%#{q}%" }] }
+  }
+  
+  named_scope :by, lambda { |order, direction, excluder|
+    orders = {
+      "title"            => "feeds.title",
+      "created_on"       => "feeds.created_on",
+      "updated_on"       => "feeds.updated_on",
+      "feed_items_count" => "feeds.feed_items_count",
+      "globally_exclude" => sanitize_sql(["NOT EXISTS(SELECT 1 FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = ?)", excluder])
+    }
+    orders.default = "feeds.title"
+    
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+    
+    { :order => [orders[order], directions[direction]].join(" ") }
+  }
+  
+  def self.search(options = {})
+    scope = non_duplicates.by(options[:order], options[:direction], options[:excluder])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope.all(:limit => options[:limit], :offset => options[:offset])
   end
   
   def self.find_or_create_from_atom(atom_feed)
@@ -37,8 +61,7 @@ class Feed < ActiveRecord::Base
   end
   
   def self.find_or_create_from_atom_entry(entry)
-    # TODO: localization
-    raise ActiveRecord::RecordNotSaved, "Atom::Entry is missing id" if entry.id.nil?
+    raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
     unless feed = Feed.find_by_uri(entry.id)
       feed = Feed.new
@@ -48,53 +71,10 @@ class Feed < ActiveRecord::Base
     feed.update_from_atom(entry)    
     feed
   end
-  
-  def self.search options = {}
-    conditions, values = ['duplicate_id is ?'], [nil]
-    
-    unless options[:text_filter].blank?
-      conditions << '(feeds.title LIKE ? OR feeds.alternate LIKE ?)'
-      values << "%#{options[:text_filter]}%" << "%#{options[:text_filter]}%"
-    end
-  
-    select = ["feeds.*"]
-    if options[:excluder]
-      select << "NOT EXISTS(SELECT 1 FROM feed_exclusions WHERE feeds.id = feed_exclusions.feed_id AND feed_exclusions.user_id = #{options[:excluder].id}) AS globally_exclude"
-    end
 
-    order = case options[:order]
-    when "title", "created_on", "updated_on", "feed_items_count"
-      "feeds.#{options[:order]}"
-    when "globally_exclude"
-      options[:order]
-    else
-      "feeds.title"
-    end
-    
-    case options[:direction]
-    when "asc", "desc"
-      order = "#{order} #{options[:direction].upcase}"
-    end
-    
-    options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values] }
-    
-    results = find(:all, options_for_find.merge(:select => select.join(","), :order => order, :limit => options[:limit], :offset => options[:offset]))
-    
-    if options[:count]
-      [results, count(options_for_find)]
-    else
-      results
-    end
-  end
-  
-  def self.find_by_url_or_link(url)
-    self.find(:first, :conditions => ['url = ? or link = ?', url, url])
-  end
-  
   def update_from_atom(entry)
-    if self.uri != entry.id
-      # TODO: localization
-      raise ArgumentError, "Tried to update feed (#{self.uri}) from entry with different id: #{entry.id}"
+    if uri != entry.id
+      raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id)
     else
       duplicate_id = if duplicate_link = entry.links.detect {|l| l.rel == "http://peerworks.org/duplicateOf"}
         Feed.find_by_uri(duplicate_link.href).id rescue nil
@@ -130,7 +110,19 @@ class Feed < ActiveRecord::Base
   end
   
 private
-  def update_sort_title
-    self.sort_title = read_attribute(:title) && read_attribute(:title).downcase
+  def self.parse_id_uri(entry)
+    begin
+      uri = URI.parse(entry.id)
+    
+      if uri.fragment.nil?
+        raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_fragment", :entry_id => entry.id)
+      end
+    
+      uri.fragment.to_i
+    rescue ActiveRecord::RecordNotSaved => e
+      raise e
+    rescue
+      raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.invalid_entry_id", :entry_id => entry.id)
+    end
   end  
 end

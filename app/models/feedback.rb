@@ -6,44 +6,35 @@
 class Feedback < ActiveRecord::Base
   belongs_to :user
   
-  class << self
-    def search(options = {})
-      conditions, values = [], []
-      
-      unless options[:text_filter].blank?
-        ored_conditions = []
-        %w[feedbacks.body users.login users.firstname users.lastname users.email].each do |attribute|
-          ored_conditions << "#{attribute} LIKE ?"
-          values          << "%#{options[:text_filter]}%"
-        end
-        conditions << "(" + ored_conditions.join(" OR ") + ")"
-      end
-      
-      direction = case options[:direction]
-      when "asc", "desc"
-        options[:direction].upcase
-      end
-
-      order = case options[:order]
-      when "created_at", "id"
-        "feedbacks.#{options[:order]} #{direction}"
-      when "user"
-        "users.login #{direction}"
-      else
-        "feedbacks.created_at"
-      end
+  validates_presence_of :user_id, :body
+  
+  named_scope :matching, lambda { |q|
+    conditions = %w[feedbacks.body users.login].map do |attribute|
+      "#{attribute} LIKE :q"
+    end.join(" OR ")
+    { :include => :user, :conditions => [conditions, { :q => "%#{q}%" }] }
+  }
+  
+  named_scope :by, lambda { |order, direction|
+    orders = {
+      "id"         => "feedbacks.id",
+      "created_at" => "feedbacks.created_at",
+      "user"       => "users.login"
+    }
+    orders.default = "feedbacks.created_at"
     
-      options_for_find = { :conditions => conditions.blank? ? nil : [conditions.join(" AND "), *values],
-                           :joins => "LEFT JOIN users ON users.id = feedbacks.user_id" }
-      
-      results = find(:all, options_for_find.merge(
-                     :order => order, :limit => options[:limit], :offset => options[:offset]))
-      
-      if options[:count]
-        [results, count(options_for_find)]
-      else
-        results
-      end
-    end
+    directions = {
+      "asc" => "ASC",
+      "desc" => "DESC"
+    }
+    directions.default = "ASC"
+    
+    { :include => :user, :order => [orders[order], directions[direction]].join(" ") }
+  }
+
+  def self.search(options = {})
+    scope = by(options[:order], options[:direction])
+    scope = scope.matching(options[:text_filter]) unless options[:text_filter].blank?
+    scope.all(:limit => options[:limit], :offset => options[:offset])
   end
 end

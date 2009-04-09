@@ -5,13 +5,14 @@
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe "headers" do
-  it "all ruby files should have the kaphan foundation header" do
+describe "kaphan foundation header" do
+  it "should be required on all ruby files" do
     vendor = %w[
       lib/authenticated_system.rb lib/authenticated_test_helper.rb
       lib/mongrel_health_check_handler.rb 
       lib/tasks/cucumber.rake lib/tasks/rspec.rake
-      features/steps/env.rb features/steps/common_webrat.rb
+      features/support/env.rb features/step_definitions/webrat_steps.rb
+      db/schema.rb
     ]
     
     (Dir["{app,lib,db,profiling,spec,features}/**/*.{rb,rake}"] - vendor).each do |filename|
@@ -19,11 +20,12 @@ describe "headers" do
     end
   end
   
-  it "all javascript files should have the kaphan foundation header" do
+  it "should be required on all javascript files" do
     vendor = %w[
       public/javascripts/controls.js public/javascripts/dragdrop.js public/javascripts/effects.js public/javascripts/prototype.js
-      public/javascripts/slider.js public/javascripts/unittest.js public/javascripts/all.js
+      public/javascripts/slider.js public/javascripts/unittest.js public/javascripts/all.js public/javascripts/locales.js
       public/javascripts/tuneup/init.js public/javascripts/tuneup/prototype.js public/javascripts/tuneup/tuneup.js
+      public/javascripts/placeholder.js
     ]
     
     (Dir["public/javascripts/**/*.js"] - vendor).each do |filename|
@@ -31,7 +33,7 @@ describe "headers" do
     end
   end
   
-  it "all stylesheets files should have the kaphan foundation header" do
+  it "should be required on all stylesheet files" do
     vendor = %w[
       public/stylesheets/all.css
       public/stylesheets/tuneup/tuneup.css

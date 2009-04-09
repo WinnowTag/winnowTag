@@ -6,99 +6,92 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "FeedItemsTest" do
-  fixtures :users, :feed_items, :feeds, :tags
-
   before(:each) do
-    ReadItem.delete_all
-    ReadItem.create! :user_id => 1, :feed_item_id => 2
-    ReadItem.create! :user_id => 1, :feed_item_id => 3
-    ReadItem.create! :user_id => 1, :feed_item_id => 4
+    @user = Generate.user!
     
-    login
+    @feed_item1 = Generate.feed_item!
+    @feed_item2 = Generate.feed_item!
+    @feed_item3 = Generate.feed_item!
+    @feed_item4 = Generate.feed_item!
+    
+    Reading.create! :user_id => @user, :readable_type => "FeedItem", :readable => @feed_item2
+    Reading.create! :user_id => @user, :readable_type => "FeedItem", :readable => @feed_item3
+    Reading.create! :user_id => @user, :readable_type => "FeedItem", :readable => @feed_item4
+    
+    login @user
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   end
 
   it "mark_read_unread" do
-    feed_item_1 = FeedItem.find(1)
-        
-    dont_see_element "#feed_item_#{feed_item_1.id}.read"
+    dont_see_element "#feed_item_#{@feed_item1.id}.read"
 
-    page.click "css=#feed_item_#{feed_item_1.id} .status"
-    see_element "#feed_item_#{feed_item_1.id}.read"
+    page.click "css=#feed_item_#{@feed_item1.id} .status"
+    see_element "#feed_item_#{@feed_item1.id}.read"
     
     page.refresh
     page.wait_for :wait_for => :page
     page.wait_for :wait_for => :ajax
-    dont_see_element "#feed_item_#{feed_item_1.id}"
+    dont_see_element "#feed_item_#{@feed_item1.id}"
 
     # TODO: Make this work with mode=all
-    # click "css=#feed_item_#{feed_item_1.id} .status a"
-    # see_element "#feed_item_#{feed_item_1.id}.read"
+    # click "css=#feed_item_#{@feed_item1.id} .status a"
+    # see_element "#feed_item_#{@feed_item1.id}.read"
     # 
     # refresh_and_wait
     # wait_for_ajax
-    # see_element "#feed_item_#{feed_item_1.id}.read"
+    # see_element "#feed_item_#{@feed_item1.id}.read"
   end
   
   it "open_close_item" do
-    feed_item = FeedItem.find(1)
-
-    assert_not_visible "css=#feed_item_#{feed_item.id} .body"
+    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
     
-    page.click "css=#feed_item_#{feed_item.id} .closed"
-    assert_visible "css=#feed_item_#{feed_item.id} .body"
+    page.click "css=#feed_item_#{@feed_item1.id} .closed"
+    assert_visible "css=#feed_item_#{@feed_item1.id} .body"
     
-    page.click "css=#feed_item_#{feed_item.id} .closed"
-    assert_not_visible "css=#feed_item_#{feed_item.id} .body"
+    page.click "css=#feed_item_#{@feed_item1.id} .closed"
+    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
   end
 
   it "open_close_moderation_panel " do
-    feed_item = FeedItem.find(1)
+    assert_not_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
  
-    assert_not_visible "css=#feed_item_#{feed_item.id} .moderation_panel"
+    page.click "css=#feed_item_#{@feed_item1.id} .train" 
+    assert_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
  
-    page.click "css=#feed_item_#{feed_item.id} .train" 
-    assert_visible "css=#feed_item_#{feed_item.id} .moderation_panel"
- 
-    page.click "css=#feed_item_#{feed_item.id} .train" 
-    assert_not_visible "css=#feed_item_#{feed_item.id} .moderation_panel"
+    page.click "css=#feed_item_#{@feed_item1.id} .train" 
+    assert_not_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
   end 
   
   it "open_close_moderation_panel_does_not_open_close_item" do
-    feed_item = FeedItem.find(1)
-    assert_not_visible "css=#feed_item_#{feed_item.id} .body"
-    page.click "css=#feed_item_#{feed_item.id} .train" 
-    assert_not_visible "css=#feed_item_#{feed_item.id} .body"
+    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
+    page.click "css=#feed_item_#{@feed_item1.id} .train" 
+    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
   end
   
   it "opening_item_marks_it_read" do
-    feed_item_1 = FeedItem.find(1)
+    dont_see_element "#feed_item_#{@feed_item1.id}.read"
 
-    dont_see_element "#feed_item_#{feed_item_1.id}.read"
-
-    page.click "css=#feed_item_#{feed_item_1.id} .closed"
-    see_element "#feed_item_#{feed_item_1.id}.read"
+    page.click "css=#feed_item_#{@feed_item1.id} .closed"
+    see_element "#feed_item_#{@feed_item1.id}.read"
 
     page.refresh
     page.wait_for :wait_for => :page
     page.wait_for :wait_for => :ajax
-    dont_see_element "#feed_item_#{feed_item_1.id}"
+    dont_see_element "#feed_item_#{@feed_item1.id}"
   end
   
   it "click_feed_title_takes_you_to_feed_page" do
     windows = page.get_all_window_ids
-    feed_item_1 = FeedItem.find(1)
-    feed1 = feed_item_1.feed
-    page.click "css=#feed_item_#{feed_item_1.id} .feed_title", :wait_for => :ajax
-    page.click "css=#feed_item_#{feed_item_1.id} #feed_#{feed1.id} a[href=/feed_items#feed_ids=#{feed1.id}]"
-    page.get_all_window_ids.should have(windows.size + 1).windows
+    feed1 = @feed_item1.feed
+    page.click "css=#feed_item_#{@feed_item1.id} .feed_title", :wait_for => :ajax
+    page.click "css=#feed_item_#{@feed_item1.id} #feed_#{feed1.id} a[href=/feed_items#feed_ids=#{feed1.id}]"
+    page.get_all_window_names.should have(windows.size + 1).windows
   end
   
   it "displays an empty message when there are no feed items" do
-    Tagging.delete_all
     FeedItem.delete_all
-
+    
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   

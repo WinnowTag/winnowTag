@@ -1,0 +1,21 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please visit http://www.peerworks.org/contact for further information.
+Given(/^I am logged in$/) do
+  @current_user = Generate.user!
+  post login_path, :login => @current_user.login, :password => "password"
+end
+
+When "I visit $path" do |path|
+  get path
+end
+
+Then "I am redirected via rjs to $path" do |path|
+  response.body.should =~ /window\.location\.href = "#{Regexp.escape(path)}";/
+end
+
+Then /^I am redirected to \/([\/a-zA-Z0-9]+)$/ do |path|
+  response.should redirect_to(path)
+end

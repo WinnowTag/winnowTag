@@ -8,11 +8,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe CommentsController do
   describe "#create" do
     before(:each) do
-      @comment = mock_model(Comment, :save => true)
+      @comment = mock_model(Comment, :save => true, :read_by! => nil)
       
       @comments = stub("comments", :new => @comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
 
       current_user.stub!(:comments).and_return(@comments)
@@ -33,6 +33,11 @@ describe CommentsController do
     end
     
     describe "successful create" do
+      it "marks the commment read by the current user" do
+        @comment.should_receive(:read_by!).with(current_user)
+        do_post
+      end
+      
       it "renders the create partial" do
         @comment.stub!(:save).and_return(true)
         do_post
@@ -55,7 +60,7 @@ describe CommentsController do
       
       Comment.stub!(:find_for_user).and_return(@comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
     end
     
@@ -85,7 +90,7 @@ describe CommentsController do
       
       Comment.stub!(:find_for_user).and_return(@comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
     end
     
@@ -131,7 +136,7 @@ describe CommentsController do
       
       Comment.stub!(:find_for_user).and_return(@comment)
 
-      @current_user = User.create! valid_user_attributes
+      @current_user = Generate.user!
       login_as @current_user
     end
     
