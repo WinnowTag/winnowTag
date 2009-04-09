@@ -1,0 +1,17 @@
+<div class="dialog">  
+  <div class="header">
+    <h2><%= t(:no_script_message) %></h2>
+  </div>
+
+  <div class="content">
+    <p>Winnow requires a browser feature called JavaScript. All modern browsers support JavaScript. You probably just need to change a setting in order to turn it on.</p>
+
+    <p>Please see: <%= link_to "How to enable JavaScript in your browser.", "http://www.google.com/support/bin/answer.py?answer=23852", :target => "_blank" %></p>
+
+    <p>If you use ad-blocking software, it may require you to allow JavaScript from winnow.example.com.</p>
+
+    <p>Once you've enabled JavaScript you can <%= link_to "try loading this page again", url_for(params) %>.</p>
+
+    <p>Thank you.</p>
+  </div>
+</div>

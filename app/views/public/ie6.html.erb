@@ -1,0 +1,29 @@
+<div class="header">
+  <h2>We're sorry.  Internet Explorer 6 and lower versions are not supported</h2>
+</div>
+
+<div class="content">
+  <h3>Why is IE 6 not supported?</h3>
+  <p>IE 6 was released <%= Time.now.year - 2001 %> years ago. It doesn't support the same features as today's modern browsers. Continuing to support IE 6 prevents us from delivering improvements that would benefit the majority of our users who use modern web browsers.</p>
+
+  <h3>Upgrading to a new browser is fast and free</h3>
+  <p>Today's best modern web browsers are all available for free. Once you download and install one of the web browsers below, your web browsing experience on all the sites you visit will be improved.</p>
+  
+  <div class="browsers clearfix">
+    <div class="firefox">
+      <%= image_tag "firefox.png" %> <%= link_to "Firefox", "http://www.mozilla.com/en-US/firefox/" %>
+      <p>Windows, Mac, &amp; Linux</p>
+    </div>
+    <div class="safari">
+      <%= image_tag "safari.png" %> <%= link_to "Safari", "http://www.apple.com/safari/download/" %>
+      <p>Windows &amp; Mac</p>      
+    </div>
+    <div class="internet_explorer7">
+      <%= image_tag "ie7.png" %> <%= link_to "IE 7", "http://www.microsoft.com/windows/downloads/ie/getitnow.mspx" %>
+      <p>Windows Only</p>
+    </div>
+  </div>
+
+  <h3>Have questions?</h3>
+  <p>If you have any questions about this transition, please get in touch.</p>
+</div>

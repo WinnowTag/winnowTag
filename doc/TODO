@@ -1,3 +1,5 @@
+* ie6 & noscript erros - i18n
+
 Spec Cleanup
  * urn:uuid
  * id's to models
@@ -10,7 +12,7 @@ Spec Cleanup
 * selenium grid
 
 Todo
- - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI
+ - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI (#973, #993)
  - Code refactoring/ceaning/testing
  - Performance Enhancements
 
@@ -22,11 +24,17 @@ Bug
  - fix folders sortable + dropable
 
 winnow:
+ * use schema.rb or squash migrations so they are consistent with the production db
  * vendor mysql, libxml-ruby
  * test server with passenger
 rails:
  * for unpack type
  * for unpacking non-frozen gems that think they are frozen
+ ! gems:build tries to install/unpack first
+ ! don't load gems when $gems_rake_task
+ ! gems:install:dependencies - add this task (why does it install frozen dependencies sometimes? - diff-lcs)
+ ! error on builder form some reason when runnign in cruise and not installed
+ ! gems:refresh_specs adds bin
 selenium-client:
  * merged changes into mvanholstyn/selenium-client repo, need to push back upstream
 mhs testing:

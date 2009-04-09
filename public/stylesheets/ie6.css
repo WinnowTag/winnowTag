@@ -1,0 +1,82 @@
+/* Copyright (c) 2008 The Kaphan Foundation
+ *
+ * Possession of a copy of this file grants no permission or license
+ * to use, modify, or create derivate works.
+ * Please visit http://www.peerworks.org/contact for further information.
+ */
+body.ie6 {
+  background-image: url(../images/overlay.png);  
+}
+
+body.ie6 .container {
+  width: 700px;
+  margin: 6em auto;
+  background-color: #fff;  
+  -webkit-box-shadow: 0 0 5em #333;
+  -moz-box-shadow: #333 0 0 5em;  
+}
+
+body.ie6 .header {
+  padding: 0.25em;
+  background-image: url(../images/dialog_header_bg.png);
+  background-repeat: repeat-x;
+  background-position: top left;  
+}
+
+body.ie6 .header h2 {
+  margin: 0;
+  padding: 0.25em 0 0.25em 4em;
+  line-height: 2.67em;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #829AB3;  
+  color: #fff;
+  background-image: url(../images/dialog_info.png);
+  background-repeat: no-repeat;
+  background-position: 0.67em center;  
+}
+
+body.ie6 .content {
+  padding: 1.25em 1.5em 1.5em 1.5em;
+  background-image: url(../images/panel_grad_bg.png);
+  background-repeat: repeat-x;
+  background-position: bottom left;
+}
+
+body.ie6 .content h3 {
+  font-size: 1.375em;
+  font-weight: bold;
+}
+
+body.ie6 .content .browsers {
+  margin-bottom: 1.5em;
+  text-align: center;  
+}
+
+body.ie6 .content .browsers .internet_explorer7,
+body.ie6 .content .browsers .safari,
+body.ie6 .content .browsers .firefox {
+  float: left;
+  width: 30%;
+  padding: 1.5em 0 0.25em;
+  border: 1px solid #dedede;
+  background-image: url(../images/browser_bg.png);
+  background-repeat: repeat-x;
+  background-position: 1px left; 
+}
+
+body.ie6 .content .browsers .safari,
+body.ie6 .content .browsers .firefox {
+  margin-right: 4.5%;
+}
+
+body.ie6 .content .browsers img {
+  margin-right: 0.5em;
+}
+
+body.ie6 .content .browsers a {
+  font-weight: bold;
+  font-size: 2em;
+  line-height: 44px;
+  vertical-align: top;
+}

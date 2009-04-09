@@ -1,10 +1,11 @@
 # require 'spec/example/example_group'
+require 'spec/interop/test/unit/testcase'
 require 'selenium/rspec/reporting/selenium_test_report_formatter'
 
 module Spec
   module Rails
     module Example
-      class SeleniumExampleGroup < RailsExampleGroup
+      class SeleniumExampleGroup < ActionController::TestCase
         include ActionController::UrlWriter
 
         self.use_transactional_fixtures = false
@@ -70,17 +71,18 @@ module Spec
 
         attr_reader :execution_error
 
-        def execute(options, instance_variables)
-          options.reporter.example_started(self)
+        def execute(run_options, instance_variables)
+          puts caller unless caller(0)[1] =~ /example_group_methods/
+          run_options.reporter.example_started(@_proxy)
           set_instance_variables_from_hash(instance_variables)
-
+        
           @execution_error = nil
-          Timeout.timeout(options.timeout) do
+          Timeout.timeout(run_options.timeout) do
             begin
               before_each_example
-              eval_block
+              instance_eval(&@_implementation)
             rescue Exception => e
-              @execution_error ||= e
+              execution_error ||= e
             end
             begin
               after_each_example
@@ -89,7 +91,7 @@ module Spec
             end
           end
 
-          options.reporter.example_finished(self, @execution_error)
+          run_options.reporter.example_finished(@_proxy.update(description), @execution_error)
           success = @execution_error.nil? || Spec::Example::ExamplePendingError === @execution_error
         end
 

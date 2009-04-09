@@ -1,16 +1,25 @@
 # Sets up the Rails environment for Cucumber
-ENV["RAILS_ENV"] = "test"
+ENV["RAILS_ENV"] ||= "test"
 require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
 require 'cucumber/rails/world'
+require 'cucumber/formatter/unicode' # Comment out this line if you don't want Cucumber Unicode support
 Cucumber::Rails.use_transactional_fixtures
+Cucumber::Rails.bypass_rescue # Comment out this line if you want Rails own error handling 
+                              # (e.g. rescue_action_in_public / rescue_responses / rescue_from)
 
-# Comment out the next line if you're not using RSpec's matchers (should / should_not) in your steps.
+require 'webrat'
+
+Webrat.configure do |config|
+  config.mode = :rails
+end
+
 require 'cucumber/rails/rspec'
+require 'webrat/core/matchers'
 
 # TODO: Remove the need for mocks/stubs in features
 require 'spec/mocks'
 
-require Pathname.new(Rails.root).join(*%w[spec support generate])
+require Rails.root.join('spec/support/generate')
 
 class Cucumber::Rails::World
   attr_accessor :current_user

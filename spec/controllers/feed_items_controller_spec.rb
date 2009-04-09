@@ -55,10 +55,17 @@ describe FeedItemsController do
     end
 
     it "logs a tag usage linked to the current user for each requested tag" do
-      TagUsage.should_receive(:create!).with(:tag_id => "1", :user_id => current_user.id)
-      TagUsage.should_receive(:create!).with(:tag_id => "2", :user_id => current_user.id)
+      tag1, tag2 = stub("tag1"), stub("tag2")
+      Tag.should_receive(:find_by_id).with("1").and_return(tag1)
+      Tag.should_receive(:find_by_id).with("2").and_return(tag2)
+      TagUsage.should_receive(:create!).with(:tag => tag1, :user => current_user)
+      TagUsage.should_receive(:create!).with(:tag => tag2, :user => current_user)
     
       get_index :tag_ids => "1,2"
+    end
+
+    it "does not attempt to log a tag usage when the requested tag does not exist" do
+      get_index :tag_ids => "1"
     end
   end
   

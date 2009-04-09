@@ -6,6 +6,55 @@
  */
 
 /*
+ * =noscript
+ */
+noscript {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-image: url(../images/overlay.png);
+  overflow: none;
+}
+
+noscript .dialog {
+  width: 46em;
+  margin: 6em auto;
+  background-color: #fff;  
+  -webkit-box-shadow: 0 0 5em #333;
+  -moz-box-shadow: #333 0 0 5em;  
+}
+
+noscript .header {
+  padding: 0.25em;
+  background-image: url(../images/dialog_header_bg.png);
+  background-repeat: repeat-x;
+  background-position: top left;  
+}
+
+noscript .header h2 {
+  margin: 0;
+  padding: 0.25em 0 0.25em 4em;
+  line-height: 2.67em;
+  font-size: 1.5em;
+  font-weight: bold;  
+  text-shadow: 1px 1px 2px #829AB3;  
+  color: #fff;
+  background-image: url(../images/dialog_info.png);
+  background-repeat: no-repeat;
+  background-position: 0.67em center;  
+}
+
+noscript .content {
+  padding: 1.25em 1.5em 0.25em 1.5em;
+  background-image: url(../images/panel_grad_bg.png);
+  background-repeat: repeat-x;
+  background-position: bottom left;
+}
+
+/*
  * =layout
  */
 html {
@@ -1149,7 +1198,6 @@ body#feeds .feed {
 
 .feed_item .moderation_panel .close {
   float: right;
-  margin-left: 1em;
 }
 
 .feed_item .moderation_panel form {
@@ -1169,6 +1217,7 @@ body#feeds .feed {
   border-color: transparent;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
+  white-space: nowrap;
 }
 
 .training_controls .tag .name {

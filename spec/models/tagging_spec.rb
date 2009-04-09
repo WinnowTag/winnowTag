@@ -40,15 +40,15 @@ describe Tagging do
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
     tagging = Tagging.create(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0)
-    assert_valid tagging
-    assert_equal 0, tagging.strength
+    tagging.should be_valid
+    tagging.strength.should == 0
   end
   
   it "strength_outside_0_to_1_is_invalid" do
     user = Generate.user!
     feed_item = @feed_item
     tag = Tag(user, 'peerworks')
-    assert_valid Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0.5)
+    Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 0.5).should be_valid
     Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => 1.1).should_not be_valid
     Tagging.new(:user => user, :feed_item => feed_item, :tag => tag, :strength => -0.1).should_not be_valid
     # boundaries
@@ -68,9 +68,9 @@ describe Tagging do
     item = @feed_item
     tag = Tag(user, 'tag')
     first_tagging = user.taggings.create(:feed_item => item, :tag => tag)
-    assert_valid first_tagging
+    first_tagging.should be_valid
     second_tagging = user.taggings.create(:feed_item => item, :tag => tag)
-    assert_valid second_tagging
+    second_tagging.should be_valid
     assert_raise(ActiveRecord::RecordNotFound) { Tagging.find(first_tagging.id) }
   end
   
@@ -79,11 +79,13 @@ describe Tagging do
     item = @feed_item
     tag  = Tag(user, 'tag')
     
-    assert_valid first = user.taggings.create(:feed_item => item, :tag => tag)
-    assert_valid second = user.taggings.create(:feed_item => item, :tag => tag, :classifier_tagging => true)
+    first = user.taggings.create(:feed_item => item, :tag => tag)
+    first.should be_valid
+    second = user.taggings.create(:feed_item => item, :tag => tag, :classifier_tagging => true)
+    second.should be_valid
     assert_nothing_raised(ActiveRecord::RecordNotFound) { Tagging.find(first.id) }
     assert_nothing_raised(ActiveRecord::RecordNotFound) { Tagging.find(second.id) }
-    assert_equal(2, user.taggings.size)
+    user.should have(2).taggings
   end
   
   it "cannot_create_taggings_without_user" do
@@ -140,15 +142,15 @@ describe Tagging do
     tag = Generate.tag!(:user => user)
     item = @feed_item
     tagging = Tagging.create(:user => user, :feed_item => item, :tag => tag)
-    assert_not_nil tagging
-    assert_valid tagging
-    assert !tagging.new_record?
+    tagging.should_not be_nil
+    tagging.should be_valid
+    tagging.should_not be_new_record
     tagging.tag = Tag(user, 'failed')
-    assert !tagging.save
+    tagging.save.should be_false
     tagging = Tagging.find(tagging.id)
-    assert_equal tag, tagging.tag
-    assert_equal user, tagging.user
-    assert_equal item, tagging.feed_item
+    tagging.tag.should == tag
+    tagging.user.should == user
+    tagging.feed_item.should == item
   end
    
   it "classifier_tagging_defaults_to_false" do

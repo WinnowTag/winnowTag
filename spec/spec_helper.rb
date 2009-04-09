@@ -6,15 +6,14 @@
 
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
 # from the project root directory.
-ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-require 'spec'
+ENV["RAILS_ENV"] ||= 'test'
+require File.dirname(__FILE__) + "/../config/environment" unless defined?(RAILS_ROOT)
+require 'spec/autorun'
 require 'spec/rails'
-require "selenium/rspec/spec_helper"
 
+require "selenium/rspec/spec_helper"
 require 'authenticated_test_helper'
 require 'active_resource/http_mock'
-
 Dir[File.expand_path(File.join(File.dirname(__FILE__), "support", "*.rb"))].each { |file| require file }
 
 Spec::Runner.configure do |config|
@@ -55,7 +54,7 @@ Spec::Runner.configure do |config|
   #
   # == Notes
   # 
-  # For more information take a look at Spec::Example::Configuration and Spec::Runner
+  # For more information take a look at Spec::Runner::Configuration and Spec::Runner
 
   # TODO: Pull this call into mhs_testing
   config.include ValidationMatchers, AssociationMatchers, :type => :model
