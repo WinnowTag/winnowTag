@@ -31,6 +31,9 @@ winnow:
 rails:
  * for unpack type
  * for unpacking non-frozen gems that think they are frozen
+ ! gems:build tries to install/unpack first
+ ! don't load gems when $gems_rake_task
+ ! gems:install:dependencies - add this task (why does it install frozen dependencies sometimes?)
 selenium-client:
  * merged changes into mvanholstyn/selenium-client repo, need to push back upstream
 mhs testing:

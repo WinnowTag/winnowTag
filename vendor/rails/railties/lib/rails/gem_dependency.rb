@@ -166,12 +166,13 @@ module Rails
       dependencies.each { |dep| dep.build }
     end
 
-    def install
+    def install(options={})
       unless installed?
         cmd = "#{gem_command} #{install_command.join(' ')}"
         puts cmd
         puts %x(#{cmd})
       end
+      dependencies.each { |dep| dep.install } if options[:recursive]
     end
 
     def load

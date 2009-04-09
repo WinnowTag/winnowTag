@@ -29,6 +29,13 @@ namespace :gems do
     current_gems.each &:install
   end
 
+  namespace :install do
+    desc "Installs all required gems and their dependencies."
+    task :dependencies => :base do
+      current_gems.each { |gem| gem.install(:recursive => true) }
+    end
+  end
+
   desc "Unpacks all required gems into vendor/gems."
   task :unpack => :install do
     current_gems.each &:unpack
