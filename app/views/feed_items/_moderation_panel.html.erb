@@ -1,6 +1,6 @@
 <%= link_to_function "Close", "", :class => "close" %>
 
-<div class="training_controls">
+<div class="training_controls clearfix">
   <% (current_user.sidebar_tags - current_user.excluded_tags).each do |tag| -%>
     <% taggings = @feed_item.taggings.select { |t| t.user == current_user && t.tag == tag } %>
     <%# Note: Update item.js when this changes %>

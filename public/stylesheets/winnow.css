@@ -1198,7 +1198,6 @@ body#feeds .feed {
 
 .feed_item .moderation_panel .close {
   float: right;
-  margin-left: 1em;
 }
 
 .feed_item .moderation_panel form {
@@ -1218,6 +1217,7 @@ body#feeds .feed {
   border-color: transparent;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
+  white-space: nowrap;
 }
 
 .training_controls .tag .name {
