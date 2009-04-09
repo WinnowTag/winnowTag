@@ -228,7 +228,7 @@ en:
   feed_items_search_placeholder: "Search Feed Items..."
 
   # app/views/feed_items/index.html.erb
-  no_script_message: "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+  no_script_message: "You need to change a setting in your web browser"
   selected_filters: "Selected Filters"
   previous_item: "Previous Item"
   next_item: "Next Item"

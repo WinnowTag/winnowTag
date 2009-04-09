@@ -9,6 +9,10 @@
     <%= stylesheet_link_tag "ie7" %>
   <![endif]-->
 
+  <!--[if lte IE 6]>
+    <%= javascript_include_tag "ie6" %>
+  <![endif]-->
+
   <%= javascript_include_tag :defaults, :winnow, "locales", :cache => true %>
   <% javascript_tag do -%>
     document.observe('dom:loaded', Content.setup);
@@ -16,8 +20,12 @@
   <%= yield(:head) %>
 </head>
 <body id="<%= yield(:body) %>">
-  <%= render :partial => 'layouts/navbar' %>
+  <noscript>
+    <%= render :partial => "layouts/javascript_is_required" %>
+  </noscript>
   
+  <%= render :partial => 'layouts/navbar' %>
+
   <% if header_controls = yield(:header_controls) -%>
     <div id="header_controls" class="clearfix"><%= header_controls %></div>
   <% end -%>
@@ -29,7 +37,6 @@
 
   <div id="container">
     <div id="content" class="clearfix">
-      <noscript><%= t(:no_script_message) %></noscript>
       <%= yield %>
     </div>
 
@@ -37,12 +44,12 @@
       <div id="footer" class="clearfix"><%= footer_content %></div>
     <% end -%>
   </div>
-  
+
   <div id="messages" style="display:none">
     <a href="#" class="close">close</a>
     <div class="content"></div>
   </div>
-  
+
   <%= show_flash_messages %>
 </body>
 </html>

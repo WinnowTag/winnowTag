@@ -1,0 +1,1 @@
+window.location = "/public/ie6";
