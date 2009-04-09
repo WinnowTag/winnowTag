@@ -24,14 +24,14 @@ CREATE TABLE `deleted_taggings` (
   KEY `dt_user` (`user_id`),
   CONSTRAINT `dt_tag` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE,
   CONSTRAINT `dt_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=113395 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=113537 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `feed_exclusions` (
   `id` int(11) NOT NULL auto_increment,
   `feed_id` int(11) default NULL,
   `user_id` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `feed_item_contents` (
   `feed_item_id` int(11) NOT NULL default '0',
@@ -47,7 +47,7 @@ CREATE TABLE `feed_item_text_indices` (
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`feed_item_id`),
   FULLTEXT KEY `feed_items_full_text_index` (`content`)
-) ENGINE=MyISAM AUTO_INCREMENT=2174694 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2716187 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `feed_items` (
   `id` int(11) NOT NULL auto_increment,
@@ -64,7 +64,7 @@ CREATE TABLE `feed_items` (
   UNIQUE KEY `index_feed_items_on_link` (`link`),
   KEY `index_feed_items_on_time` (`updated`),
   KEY `index_feed_items_on_feed_id` (`feed_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2174694 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2716187 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `feed_subscriptions` (
   `id` int(11) NOT NULL auto_increment,
@@ -73,7 +73,7 @@ CREATE TABLE `feed_subscriptions` (
   `created_at` datetime default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_feed_subscriptions_on_feed_id_and_user_id` (`feed_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=537 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1790 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `feedbacks` (
   `id` int(11) NOT NULL auto_increment,
@@ -82,7 +82,7 @@ CREATE TABLE `feedbacks` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `feeds` (
   `id` int(11) NOT NULL auto_increment,
@@ -100,7 +100,7 @@ CREATE TABLE `feeds` (
   UNIQUE KEY `index_feeds_on_uri` (`uri`),
   KEY `index_feeds_on_title` (`title`),
   KEY `index_feeds_on_link` (`alternate`)
-) ENGINE=InnoDB AUTO_INCREMENT=3102 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3925 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `feeds_folders` (
   `folder_id` int(11) default NULL,
@@ -115,7 +115,7 @@ CREATE TABLE `folders` (
   `updated_at` datetime default NULL,
   `position` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `folders_tags` (
   `folder_id` int(11) default NULL,
@@ -134,7 +134,7 @@ CREATE TABLE `invites` (
   `subject` varchar(255) default NULL,
   `body` text,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `message_readings` (
   `id` int(11) NOT NULL auto_increment,
@@ -143,7 +143,7 @@ CREATE TABLE `message_readings` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1353 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `messages` (
   `id` int(11) NOT NULL auto_increment,
@@ -152,7 +152,7 @@ CREATE TABLE `messages` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1282 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `read_items` (
   `id` int(11) NOT NULL auto_increment,
@@ -162,7 +162,7 @@ CREATE TABLE `read_items` (
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_read_items_on_user_id_and_feed_item_id` (`user_id`,`feed_item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=619155 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1261838 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `readings` (
   `id` int(11) NOT NULL auto_increment,
@@ -173,7 +173,7 @@ CREATE TABLE `readings` (
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_readings_on_user_id_and_readable_id_and_readable_type` (`user_id`,`readable_id`,`readable_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=619172 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1253000 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL auto_increment,
@@ -183,7 +183,7 @@ CREATE TABLE `roles` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `roles_users` (
   `user_id` int(11) default NULL,
@@ -191,10 +191,6 @@ CREATE TABLE `roles_users` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `schema_info` (
-  `version` int(11) default NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 CREATE TABLE `schema_migrations` (
   `version` varchar(255) NOT NULL,
@@ -215,7 +211,7 @@ CREATE TABLE `tag_exclusions` (
   `tag_id` int(11) default NULL,
   `user_id` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `tag_subscriptions` (
   `id` int(11) NOT NULL auto_increment,
@@ -224,7 +220,7 @@ CREATE TABLE `tag_subscriptions` (
   `created_at` datetime default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_tag_subscriptions_on_tag_id_and_user_id` (`tag_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=337 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `tag_usages` (
   `id` int(11) NOT NULL auto_increment,
@@ -234,7 +230,7 @@ CREATE TABLE `tag_usages` (
   `created_at` datetime default NULL,
   `updated_at` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=614 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `taggings` (
   `id` int(11) NOT NULL auto_increment,
@@ -249,7 +245,7 @@ CREATE TABLE `taggings` (
   KEY `index_taggings_on_tag_id_and_classifier_tagging_and_strength` (`tag_id`,`classifier_tagging`,`strength`),
   CONSTRAINT `taggings_feed_item` FOREIGN KEY (`feed_item_id`) REFERENCES `feed_items` (`id`),
   CONSTRAINT `taggings_ibfk_1` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2194277 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3916530 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `tags` (
   `id` int(11) NOT NULL auto_increment,
@@ -264,7 +260,7 @@ CREATE TABLE `tags` (
   `show_in_sidebar` tinyint(1) default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_tags_on_user_id_and_name` (`user_id`,`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=314 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL auto_increment,
@@ -287,7 +283,7 @@ CREATE TABLE `users` (
   `reminder_expires_at` datetime default NULL,
   `prototype` tinyint(1) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1;
 
 INSERT INTO schema_migrations (version) VALUES ('1');
 

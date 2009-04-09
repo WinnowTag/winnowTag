@@ -1,3 +1,6 @@
+* public/ie6 - route, controller, i18n views
+* no js - i18n
+
 Spec Cleanup
  * urn:uuid
  * id's to models
