@@ -1,5 +1,4 @@
-* public/ie6 - route, controller, i18n views
-* no js - i18n
+* ie6 & noscript erros - i18n
 
 Spec Cleanup
  * urn:uuid
