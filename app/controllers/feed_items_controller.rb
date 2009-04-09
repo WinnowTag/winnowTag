@@ -29,7 +29,9 @@ class FeedItemsController < ApplicationController
       format.html
       format.json do
         params[:tag_ids].to_s.split(",").each do |tag_id|
-          TagUsage.create!(:tag_id => tag_id, :user_id => current_user.id)
+          if tag = Tag.find_by_id(tag_id)
+            TagUsage.create!(:tag => tag, :user => current_user)
+          end
         end
 
         limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
