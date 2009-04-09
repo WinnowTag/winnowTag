@@ -36,19 +36,7 @@ module Selenium
         Selenium::RSpec::Reporting::HtmlReport.inject_placeholder(super)
       end
   
-      def example_passed(example)
-        include_example_group_description example
-        super
-      end
-  
-      def example_pending(example, message, pending_caller)
-        include_example_group_description example
-        super
-      end
-  
       def example_failed(example, counter, failure)
-        include_example_group_description example
-        
         old_output = @output
         @output = StringIO.new
         super
@@ -83,15 +71,6 @@ module Selenium
 	      # and RSpec reporting work for a proper fix.
 	      @@file_path_strategy ||= Selenium::RSpec::Reporting::FilePathStrategy.new(ENV["SELENIUM_TEST_REPORT_FILE"])
 	    end
-	
-      protected
-        
-      def include_example_group_description(example)
-        def example.description
-          self.class.description.to_s + " :: " + super
-        end
-      end
-  
     end
   end
 end
