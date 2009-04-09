@@ -1,0 +1,61 @@
+--- !ruby/object:Gem::Specification 
+name: selenium-client
+version: !ruby/object:Gem::Version 
+  version: 1.2.14
+platform: ruby
+authors: []
+
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2009-04-09 00:00:00 -04:00
+default_executable: 
+dependencies: []
+
+description: 
+email: 
+executables: []
+
+extensions: []
+
+extra_rdoc_files: []
+
+files: 
+- lib
+- lib/nautilus
+- lib/selenium
+- lib/selenium.rb
+- lib/tcp_socket_extension.rb
+has_rdoc: false
+homepage: 
+post_install_message: 
+rdoc_options: []
+
+require_paths: 
+- bin
+- bin
+- bin
+- bin
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.1
+signing_key: 
+specification_version: 2
+summary: 
+test_files: []
+

@@ -29,6 +29,7 @@ end
 
 task :cruise_with_selenium do
   ENV['RAILS_ENV'] = RAILS_ENV = 'test'
+  Rake::Task['gems:install:dependencies'].invoke
   Rake::Task['gems:build'].invoke
   Rake::Task['db:migrate'].invoke
   Rake::Task['assets:clean'].invoke
