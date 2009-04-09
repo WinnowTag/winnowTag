@@ -18,9 +18,9 @@ namespace :gems do
   end
 
   desc "Build any native extensions for unpacked gems"
-  task :build do
+  task :build => :base do
     $gems_build_rake_task = true
-    Rake::Task['gems:unpack'].invoke
+    # Rake::Task['gems:unpack'].invoke
     current_gems.each &:build
   end
 
