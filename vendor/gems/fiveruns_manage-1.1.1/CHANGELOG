@@ -1,3 +1,5 @@
+v1.1.1. Fix spurious warning with Rails 2.2.x.  You will see a warning in 2.3.x.
+
 v1.1.0. Fix an edge case where the Manage client might not be able to parse the emitted YAML.  This version
         of the plugin is incompatible with Manage clients older than version 17.
         Rails 2.2 compatibility fix.

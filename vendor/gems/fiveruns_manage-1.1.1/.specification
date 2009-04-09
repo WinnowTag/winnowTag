@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: fiveruns_manage
 version: !ruby/object:Gem::Version 
-  version: 1.1.0
+  version: 1.1.1
 platform: ruby
 authors: 
 - FiveRuns Development Team
@@ -9,7 +9,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2008-11-19 08:30:00 -05:00
+date: 2009-01-09 00:00:00 +10:30
 default_executable: fiveruns_manage
 dependencies: []
 
@@ -86,7 +86,6 @@ rdoc_options:
 - --main
 - README.rdoc
 require_paths: 
-- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 

@@ -5,7 +5,7 @@ module Fiveruns::Manage::Targets
     SUPPORT = {
       :obsolete => Fiveruns::Manage::Version.new(1, 2, 0),
       :min      => Fiveruns::Manage::Version.new(1, 2, 6),
-      :max      => Fiveruns::Manage::Version.new(2, 2, 0)
+      :max      => Fiveruns::Manage::Version.new(2, 3, 0)
     }
     
     def self.allowed?
@@ -17,11 +17,11 @@ module Fiveruns::Manage::Targets
       elsif version >= SUPPORT[:obsolete] && version < SUPPORT[:min]
         Fiveruns::Manage.log :warn, "Rails version (#{version}) is not supported (>= #{SUPPORT[:min]}); instrumentation may not function correctly"
         true
-      elsif version >= SUPPORT[:min] && version <= SUPPORT[:max]
+      elsif version >= SUPPORT[:min] && version < SUPPORT[:max]
         Fiveruns::Manage.log :debug, "Rails version (#{version}) is supported"          
         true
       else
-        Fiveruns::Manage.log :warn, "Rails version (#{version}) is not currently supported (<= #{SUPPORT[:max]}); instrumentation may not function correctly"
+        Fiveruns::Manage.log :warn, "Rails version (#{version}) is untested (< #{SUPPORT[:max]}); instrumentation may not function correctly"
         true
       end
     rescue
