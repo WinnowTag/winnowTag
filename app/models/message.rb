@@ -12,7 +12,11 @@ class Message < ActiveRecord::Base
     
   named_scope :global, :conditions => { :user_id => nil }
   named_scope :for, lambda { |user|
-    { :conditions => ["messages.user_id IS NULL OR messages.user_id = ?", user.id] }
+    if user
+      { :conditions => ["messages.user_id IS NULL OR messages.user_id = ?", user.id] }
+    else
+      { :conditions => "messages.user_id IS NULL" }
+    end
   }
   
   named_scope :latest, lambda { |limit|

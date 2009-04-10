@@ -126,5 +126,5 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   map.connect 'public/ie6', :controller => "public", :action => "ie6"
-  map.root :controller => "feed_items"
+  map.root :info
 end

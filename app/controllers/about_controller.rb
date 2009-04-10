@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class AboutController < ApplicationController
+  skip_before_filter :login_required
+  
   def index
     # Capistrano now stores the revision in RAILS_ROOT/REVISION
     cap_rev_file = File.join(RAILS_ROOT, 'REVISION')
