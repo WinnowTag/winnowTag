@@ -25,14 +25,14 @@
 <% else -%>
   <div id="navigation" class="navigation clearfix">
   	<ul class="extra">
-      <li><%= link_to "Login", login_path %></li>
-      <li><%= link_to(t(:about), about_path) %></li>
+      <li><%= link_to(t("winnow.navigation.login"), login_path, :title => t("winnow.navigation.loging_tooltip")) %></li>
+      <li><%= link_to(t("winnow.navigation.about"), about_path, :title => t("winnow.navigation.about_tooltip")) %></li>
     </ul>
 
   	<ul class="main clearfix">
-      <li><%= link_to(t(:winnow_info), info_path, :class => tab_selected('about', "info")) %></li>
+      <li><%= link_to(t("winnow.navigation.winnow_info"), info_path, :class => tab_selected('about', "info"), :title => t("winnow.navigation.winnow_info_tooltip")) %></li>
       <% if help_path -%>
-        <li><%= link_to(t(:help), help_path, :target => "_blank", :class => "help") %></li>
+        <li><%= link_to(t("winnow.navigation.help"), help_path, :target => "_blank", :class => "help", :title => t("winnow.navigation.help_tooltip")) %></li>
       <% end -%>
   	</ul>
 	</div>

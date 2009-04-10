@@ -115,6 +115,8 @@ en:
       logged_in_as: "Logged in as"
       logout: "Logout"
       logout_tooltip: ""
+      login: "Login"
+      login_tooltip: ""
       winnow_info: "Winnow Info"
       winnow_info_tooltip: ""
       items: "Items"
