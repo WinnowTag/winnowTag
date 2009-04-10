@@ -350,6 +350,8 @@ en:
         default_accepted_subject: "Invite Accepted"
         default_accepted_body: "You request for an invitation to Winnow has been accepted!"
     messages:
+      general:
+        pinned: "Pin this message?"
       header:
         create_message: "Create Message"
         create_message_tooltip: ""

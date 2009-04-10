@@ -1,4 +1,4 @@
-<h1><%= t("winnow.messages.new.new_message") %></h1>
+<h3><%= t("winnow.messages.new.new_message") %></h3>
 
 <%= error_messages_for :message %>
 
@@ -8,8 +8,12 @@
     <%= t("winnow.general.textile_reference") %>
   </p>
   <p>
+    <%= f.check_box :pinned %>
+    <%= f.label :pinned, t("winnow.messages.general.pinned") %>
+  </p>
+  <p>
     <%= f.submit t("winnow.general.create") %>
   </p>
 <% end %>
 
-<%= link_to t("winnow.general.back"), messages_path %>
+<%= link_to t("winnow.general.back"), messages_path, :title => t("winnow.general.back_tooltip") %>

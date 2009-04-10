@@ -20,11 +20,11 @@ class Message < ActiveRecord::Base
   }
   
   named_scope :latest, lambda { |limit|
-    { :order => "created_at DESC", :limit => limit }
+    { :limit => limit }
   }
   
-  named_scope :since, lambda { |date| 
-    { :conditions => ["messages.created_at >= ?", date] }
+  named_scope :pinned_or_since, lambda { |date| 
+    { :conditions => ["messages.pinned = ? OR messages.created_at >= ?", true, date], :order => "messages.pinned DESC, messages.created_at DESC" }
   }
   
   def self.read_by!(user)

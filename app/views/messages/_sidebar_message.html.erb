@@ -1,4 +1,6 @@
 <li class="sidebar_message clearfix">
-  <span class="date"><%= format_date sidebar_message.created_at %></span>  
+  <% unless sidebar_message.pinned? %>
+    <span class="date"><%= format_date sidebar_message.created_at %></span>  
+  <% end %>
   <span class="body"><%=sth sidebar_message.body %></span>
 </li>

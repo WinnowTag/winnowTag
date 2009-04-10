@@ -36,7 +36,7 @@ describe AboutController do
       Setting.stub!(:find_or_initialize_by_name).and_return(@info)
 
       @message = mock_model(Message)
-      @latest_scope = stub("latest scope", :since => [@message])
+      @latest_scope = stub("latest scope", :pinned_or_since => [@message])
       @for_scope = stub("for scope", :latest => @latest_scope)
       Message.stub!(:for).and_return(@for_scope)
     end
@@ -56,7 +56,7 @@ describe AboutController do
       Message.stub!(:info_cutoff).and_return(60.days.ago)
       Message.should_receive(:for).with(@user).and_return(@for_scope)
       @for_scope.should_receive(:latest).with(30).and_return(@latest_scope)
-      @latest_scope.should_receive(:since).with(Message.info_cutoff).and_return([@message])
+      @latest_scope.should_receive(:pinned_or_since).with(Message.info_cutoff).and_return([@message])
       
       do_get
       assigns[:messages].should == [@message]

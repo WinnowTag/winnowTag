@@ -25,6 +25,6 @@ class AboutController < ApplicationController
 
   def info
     @info = Setting.find_or_initialize_by_name("Info")
-    @messages = Message.for(current_user).latest(30).since(Message.info_cutoff)
+    @messages = Message.for(current_user).latest(30).pinned_or_since(Message.info_cutoff)
   end
 end
