@@ -1,8 +1,8 @@
 <div id="user_<%= user.id %>" class="user clearfix">
   <% unless user == current_user -%>
   <ul class="controls">
-    <li><%= link_to t("winnow.general.login"), login_as_user_url(user), :class => :login, :method => :post, :confirm => t("winnow.users.main.login_confirm", :login => user.login) %></li>
-    <li><%= link_to t("winnow.general.destroy"), user_url(user), :class => :destroy, :method => :delete, :confirm => t("winnow.users.main.destroy_confirm", :login => user.login) %></li>
+    <li><%= link_to t("winnow.general.login"), login_as_user_url(user), :class => :login, :title => t("winnow.users.main.login_tooltip"), :method => :post, :confirm => t("winnow.users.main.login_confirm", :login => user.login) %></li>
+    <li><%= link_to t("winnow.general.destroy"), user_url(user), :class => :destroy, :title => t("winnow.general.destroy_tooltip"), :method => :delete, :confirm => t("winnow.users.main.destroy_confirm", :login => user.login) %></li>
   </ul>
   <% end -%>
 

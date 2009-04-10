@@ -1,10 +1,10 @@
 <div id="invite_<%= invite.id %>" class="invite clearfix">
 	<ul class="controls">
     <% unless invite.code? -%>
-    <li><%= link_to t("winnow.invites.main.activate"), activate_invite_path(invite), :class => :activate, :method => :put %></li>
-    <li><%= link_to t("winnow.general.edit"), edit_invite_path(invite), :class => :edit %></li>
+    <li><%= link_to t("winnow.invites.main.activate"), activate_invite_path(invite), :class => :activate, :title => t("winnow.invites.main.activate_tooltip"), :method => :put %></li>
+    <li><%= link_to t("winnow.general.edit"), edit_invite_path(invite), :class => :edit, :title => t("winnow.general.edit_tooltip") %></li>
     <% end -%>
-    <li><%= link_to t("winnow.general.destroy"), invite, :class => :destroy, :method => :delete, :confirm => t("winnow.general.are_you_sure") %></li>
+    <li><%= link_to t("winnow.general.destroy"), invite, :class => :destroy, :title => t("winnow.general.destroy_tooltip"), :method => :delete, :confirm => t("winnow.general.are_you_sure") %></li>
 	</ul>
 	
 	<dl class="created clearfix">

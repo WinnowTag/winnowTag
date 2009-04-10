@@ -1,16 +1,16 @@
 <div class="section<%= section_open?(id) ? " open" : "" %>" id="<%= id %>">
   <div class="header clearfix">
-    <span class="toggle_button"></span>
+    <span class="toggle_button" title="<%= section_open?(id) ? t('winnow.items.sidebar.collapse') : t('winnow.items.sidebar.expand') %>"></span>
     <% if select -%>
-      <%= link_to_function title, "itemBrowser.toggleSetFilters(#{select}, event);", :class => "name" %>
+      <%= link_to_function title, "itemBrowser.toggleSetFilters(#{select}, event);", :class => "name", :title => tooltip %>
     <% else -%>
       <%= content_tag :span, title, :class => "name" %>
     <% end -%>
     
     <div class="actions clearfix">
-      <%= link_to_function t("winnow.items.sidebar.add"),  "", :class => "add_link" %>
-      <%= link_to_function t("winnow.general.edit"), "", :class => "edit_link" %>
-      <%= link_to_function t("winnow.items.sidebar.done"), "", :class => "cancel_link" %>
+      <%= link_to_function t("winnow.items.sidebar.add"),  "", :class => "add_link", :title => t("winnow.items.sidebar.add_tooltip") %>
+      <%= link_to_function t("winnow.general.edit"), "", :class => "edit_link", :title => t("winnow.general.edit_tooltip") %>
+      <%= link_to_function t("winnow.items.sidebar.done"), "", :class => "cancel_link", :title => t("winnow.items.sidebar.done_tooltip") %>
     </div>
   </div>
 

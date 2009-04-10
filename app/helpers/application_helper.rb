@@ -37,7 +37,7 @@ module ApplicationHelper
   end
   
   def direction_link
-    link_to_function "<span class='asc'>#{t("winnow.sort_direction.ascending")}</span><span class='desc'>#{t("winnow.sort_direction.descending")}</span>", "", :id => "direction"
+    link_to_function "<span class='asc' title='#{t("winnow.sort_direction.ascending_tooltip")}'>#{t("winnow.sort_direction.ascending")}</span><span class='desc' title='#{t("winnow.sort_direction.descending_tooltip")}'>#{t("winnow.sort_direction.descending")}</span>", "", :id => "direction"
   end
   
   def is_admin?
@@ -103,12 +103,14 @@ module ApplicationHelper
     end
     
     check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed),
-      :id => dom_id(tag_or_feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+      :id => dom_id(tag_or_feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}"),
+      :title => t("winnow.general.globally_exclude_tooltip")
   end
 
   def subscribe_check_box(tag)
     check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :id => dom_id(tag, 'subscribe'), 
-      :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}")
+      :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}"),
+      :title => t("winnow.tags.main.subscribe_tooltip")
   end
   
   def feed_filter_controls(feeds, options = {})

@@ -1,5 +1,5 @@
 <% form_tag users_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.users.header.search_placeholder") %>
+  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.users.header.search_placeholder"), :title => t("winnow.users.header.search_tooltip") %>
 <% end -%>
 
 <div class="order clearfix">
@@ -17,6 +17,6 @@
 </div>
 
 <div class="toolbar right">
-  <%= rounded_button_link t("winnow.users.header.create_user"), new_user_url, :icon => "add_user" %>
-  <%= rounded_button_link t("winnow.users.header.export"), formatted_users_path(:csv, params.except(:controller, :action)), :icon => "export" %>
+  <%= rounded_button_link t("winnow.users.header.create_user"), new_user_url, :icon => "add_user", :title => t("winnow.users.header.create_user_tooltip") %>
+  <%= rounded_button_link t("winnow.users.header.export"), formatted_users_path(:csv, params.except(:controller, :action)), :icon => "export", :title => t("winnow.users.header.export_tooltip") %>
 </div>  

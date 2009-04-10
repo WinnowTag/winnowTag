@@ -4,8 +4,8 @@
     <div class="date"><%= format_date(comment.updated_at) %></div>
     <% if can_edit_comment?(comment) -%>
     <div class="actions">
-      <%= link_to_remote t("winnow.general.edit"), :url => edit_comment_path(comment), :method => :get, :condition => "!$(this).up('.comment').down('form')" %>
-      <%= link_to_remote t("winnow.general.destroy"), :url => comment_path(comment), :method => :delete, :confirm => t("winnow.general.are_you_sure") %>
+      <%= link_to_remote t("winnow.general.edit"), :url => edit_comment_path(comment), :method => :get, :condition => "!$(this).up('.comment').down('form')", :html => { :title => t("winnow.general.edit_tooltip") } %>
+      <%= link_to_remote t("winnow.general.destroy"), :url => comment_path(comment), :method => :delete, :confirm => t("winnow.general.are_you_sure"), :title => t("winnow.general.destroy_tooltip"), :html => { :title => t("winnow.general.destroy_tooltip") } %>
     </div>
     <% end -%>
   </div>

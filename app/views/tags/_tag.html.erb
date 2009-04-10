@@ -11,25 +11,25 @@
             <span class="fewer"><%= t("winnow.tags.main.fewer_items") %></span> <%= bias_slider_html(tag) %> <span class="more"><%= t("winnow.tags.main.more_items") %></span>
           </li>
           <li class="globally_exclude">
-            <%= globally_exclude_check_box(tag) %> <label for="<%= dom_id(tag, 'globally_exclude') %>"><%= t("winnow.general.globally_exclude") %></label>
+            <%= globally_exclude_check_box(tag) %> <label title="<%= t('winnow.general.globally_exclude_tooltip') %>" for="<%= dom_id(tag, 'globally_exclude') %>"><%= t("winnow.general.globally_exclude") %></label>
           </li>
           <% if tag.user_id != current_user.id -%>
             <li class="subscribe">
-              <%= subscribe_check_box(tag) %> <label for="<%= dom_id(tag, 'subscribe') %>"><%= t("winnow.tags.main.subscribe") %></label>
+              <%= subscribe_check_box(tag) %> <label title="<%= t("winnow.tags.main.subscribe_tooltip") %>" for="<%= dom_id(tag, 'subscribe') %>"><%= t("winnow.tags.main.subscribe") %></label>
             </li>
           <% end %>
           <% if tag.user_id == current_user.id -%>
             <li class="public">
-              <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <label for="<%= dom_id(tag, "public") %>"><%= t("winnow.tags.main.public") %></label>
+              <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :title => t("winnow.tags.main.public_tooltip"), :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <label title="<%= t("winnow.tags.main.public_tooltip") %>" for="<%= dom_id(tag, "public") %>"><%= t("winnow.tags.main.public") %></label>
             </li>
           <% end -%>
-          <li><%= link_to_remote t("winnow.tags.main.copy"), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", #{tag.name.to_json} + " - copy")|, :html => { :class => "copy" } %></li>
+          <li><%= link_to_remote t("winnow.tags.main.copy"), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", #{tag.name.to_json} + " - copy")|, :html => { :class => "copy", :title => t("winnow.tags.main.copy_tooltip") } %></li>
           <% if tag.user_id == current_user.id -%>
             <li><%= link_to_remote t("winnow.general.destroy"), :url => tag_path(tag), :method => 'delete', :confirm => t("winnow.tags.main.destroy_confirm", :tag => tag.name), :html => { :title => t("winnow.tags.main.destroy_tooltip", :tag => tag.name), :class => "destroy", :id => dom_id(tag, 'destroy') } %></li>
           <% end -%>
-          <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show' %></li>
-          <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained"), :class => "show" %></li>
-          <li><%= link_to t("winnow.tags.main.feed"), url_for(:user => tag.user_login, :tag_name => tag.name, :action => 'show', :format => :atom), :class => "feed" %></li>
+          <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show', :title => t("winnow.tags.main.items_tagged_with_tooltip") %></li>
+          <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained"), :class => "show", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
+          <li><%= link_to t("winnow.tags.main.feed"), url_for(:user => tag.user_login, :tag_name => tag.name, :action => 'show', :format => :atom), :class => "feed", :title => t("winnow.tags.main.feed_tooltip") %></li>
         </ul>
       </div>
       
