@@ -2,38 +2,38 @@
 
 <% form_for :current_user do |f| %>
   <fieldset class="profile">
-  	<legend><%= t(:edit_profile_header) %></legend>
+  	<legend><%= t("winnow.profile.header") %></legend>
   	
   	<p>
-  	  <%= f.label :login, t(:login_label) %>
+  	  <%= f.label :login, t("winnow.general.login") %>
   	  <%= f.text_field :login, :disabled => true %>
   	</p>
   	<p>
-  	  <%= f.label :password, t(:password_label) %>
+  	  <%= f.label :password, t("winnow.general.password") %>
   	  <%= f.password_field :password %>
   	</p>
   	<p>
-  	  <%= f.label :password_confirmation, t(:password_confirmation_label) %>
+  	  <%= f.label :password_confirmation, t("winnow.general.password_confirmation") %>
   	  <%= f.password_field :password_confirmation %>
   	</p>
   	<p>
-  	  <%= f.label :email, t(:email_label) %>
+  	  <%= f.label :email, t("winnow.general.email") %>
   	  <%= f.text_field :email %>
   	</p>
   	<p>
-  	  <%= f.label :firstname, t(:firstname_label) %>
+  	  <%= f.label :firstname, t("winnow.profile.first_name") %>
   	  <%= f.text_field :firstname %>
   	</p>
   	<p>
-  	  <%= f.label :lastname, t(:lastname_label) %>
+  	  <%= f.label :lastname, t("winnow.profile.last_name") %>
   	  <%= f.text_field :lastname %>
   	</p>
   	<p>
-      <%= f.label :time_zone, t(:time_zone_label) %>
+      <%= f.label :time_zone, t("winnow.profile.time_zone") %>
       <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :model => ActiveSupport::TimeZone, :include_blank => true %>
   	</p>
   	<p>
-  	  <%= submit_tag t(:edit_profile_submit_button) %>
+  	  <%= submit_tag t("winnow.general.save") %>
   	</p>
   </fieldset>
 <% end %>

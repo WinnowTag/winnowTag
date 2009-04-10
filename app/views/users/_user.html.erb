@@ -1,8 +1,8 @@
 <div id="user_<%= user.id %>" class="user clearfix">
   <% unless user == current_user -%>
   <ul class="controls">
-    <li><%= link_to t(:login_label), login_as_user_url(user), :class => :login, :method => :post, :confirm => t(:users_login_confirm, :login => user.login) %></li>
-    <li><%= link_to t(:destroy), user_url(user), :class => :destroy, :method => :delete, :confirm => t(:users_destroy_confirm, :login => user.login) %></li>
+    <li><%= link_to t("winnow.general.login"), login_as_user_url(user), :class => :login, :method => :post, :confirm => t("winnow.users.main.login_confirm", :login => user.login) %></li>
+    <li><%= link_to t("winnow.general.destroy"), user_url(user), :class => :destroy, :method => :delete, :confirm => t("winnow.users.main.destroy_confirm", :login => user.login) %></li>
   </ul>
   <% end -%>
 
@@ -10,23 +10,23 @@
 
   <div class="clearfix">
     <dl class="account_detail">
-      <dt><%= t(:users_full_name) %></dt>
+      <dt><%= t("winnow.users.attributes.name") %></dt>
   		<dd><%=h user.full_name %></dd>
-      <dt><%= t(:email) %></dt>
+      <dt><%= t("winnow.general.email") %></dt>
   		<dd><%=h user.email %></dd>
     </dl>
     <dl class="login_detail">
-		  <dt><%= t(:users_registered) %></dt>
+		  <dt><%= t("winnow.users.attributes.registered") %></dt>
 		  <dd><%= format_date(user.created_at) %></dd>
-      <dt><%= t(:users_last_logged_in) %></dt>
+      <dt><%= t("winnow.users.attributes.last_logged_in") %></dt>
       <dd><%= format_date(user.logged_in_at) %></dd>
-      <dt><%= t(:users_last_accessed) %></dt>
+      <dt><%= t("winnow.users.attributes.last_accessed") %></dt>
       <dd><%= format_date(user.last_accessed_at) %></dd>
     </dl>
     <dl class="tag_detail">
-      <dt><%= t(:users_last_trained) %></dt>
+      <dt><%= t("winnow.users.attributes.last_trained") %></dt>
       <dd><%= format_date(user.last_tagging_on) %></dd>
-      <dt><%= t(:users_number_of_tags) %></dt>
+      <dt><%= t("winnow.users.attributes.number_of_tags") %></dt>
       <dd><%= user.tag_count %></dd>
     </dl>
   </div>

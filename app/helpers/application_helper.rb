@@ -37,7 +37,7 @@ module ApplicationHelper
   end
   
   def direction_link
-    link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction"
+    link_to_function "<span class='asc'>#{t("winnow.sort_direction.ascending")}</span><span class='desc'>#{t("winnow.sort_direction.descending")}</span>", "", :id => "direction"
   end
   
   def is_admin?
@@ -113,7 +113,7 @@ module ApplicationHelper
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, t(:create_feed, :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -142,7 +142,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content << content_tag(:li, t(:create_tag, :tag => h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t("winnow.items.sidebar.create_tag", :tag => h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -183,9 +183,9 @@ module ApplicationHelper
   
   def tag_tooltip(tag)
     if tag.user_id == current_user.id 
-      t(:tag_tooltip, :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      t("winnow.items.sidebar.tag_tooltip", :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     else
-      t(:public_tag_tooltip, :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      t("winnow.items.sidebar.public_tag_tooltip", :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     end
   end
   
@@ -220,9 +220,9 @@ module ApplicationHelper
 
   def tag_state(tag)
     if current_user.globally_excluded?(tag)
-      "Globally Excluded"
+      t("winnow.tags.general.globally_excluded")
     elsif current_user.subscribed?(tag)
-      "Subscribed"
+      t("winnow.tags.general.subscribed")
     end
   end
 

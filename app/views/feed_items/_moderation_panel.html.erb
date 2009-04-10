@@ -1,4 +1,4 @@
-<%= link_to_function "Close", "", :class => "close" %>
+<%= link_to_function t("winnow.items.main.close"), "", :class => "close" %>
 
 <div class="training_controls clearfix">
   <% (current_user.sidebar_tags - current_user.excluded_tags).each do |tag| -%>
@@ -12,5 +12,5 @@
 
 <% form_tag "", :onsubmit => "return false;" do -%>
   <%= text_field_tag 'tag', nil %>
-  <%= submit_tag t(:add_tag_button) %>
+  <%= submit_tag t("winnow.items.main.add_tag") %>
 <% end -%>

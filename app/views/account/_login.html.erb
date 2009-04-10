@@ -1,30 +1,30 @@
 <div id="login_form" class="form clearfix">
   <% form_tag login_path do -%> 
     <div class="title">
-      <span class="login"><%= t(:login_header) %></span>
-      <span class="invitation"><%= link_to_function t(:invite_header) %></span>
+      <span class="login"><%= t("winnow.general.login") %></span>
+      <span class="invitation"><%= link_to_function t("winnow.login.request_invitation") %></span>
     </div>
     
     <div class="content">
       <div class="clearfix">
       	<div class="login">
-      	  <label for="login"><%= t(:login_label) %></label>
+      	  <label for="login"><%= t("winnow.general.login") %></label>
       	  <%= text_field_tag :login %>
       	</div>
 
       	<div class="password">
-      	  <label for="password"><%= t(:password_label) %></label>
+      	  <label for="password"><%= t("winnow.general.password") %></label>
       	  <%= password_field_tag :password %>
       	</div>
       </div>
   
     	<div class="remember">
-    	  <%= check_box_tag :remember_me %> <label for="remember_me" class="inline"><%= t(:remember_me_label) %></label>
+    	  <%= check_box_tag :remember_me %> <label for="remember_me" class="inline"><%= t("winnow.login.remember_me") %></label>
     	</div>
 
     	<div class="submit">
-    	  <%= submit_tag t(:login_submit_button) %>
-    	  <%= link_to_function t(:forgot_password_link), "", :class => "forgot_password_link" %>
+    	  <%= submit_tag t("winnow.general.login") %>
+    	  <%= link_to_function t("winnow.login.forgot_password"), "", :class => "forgot_password_link" %>
     	</div>
   	</div>
   <% end -%>

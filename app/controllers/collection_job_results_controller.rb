@@ -16,7 +16,7 @@ class CollectionJobResultsController < ApplicationController
     end
     
     if params[:collection_job_result][:failed].to_s =~ /true/i
-      user.messages.create!(:body => t(:collection_failed, :title => feed.title, :message => params[:collection_job_result][:message]))
+      user.messages.create!(:body => t("winnow.notifications.collection_failed", :title => feed.title, :message => params[:collection_job_result][:message]))
     end
     
     render :nothing => true, :status => :created

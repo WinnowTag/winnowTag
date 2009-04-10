@@ -1,33 +1,33 @@
 <div id="invite_form" class="form" style="display: none;">
   <% form_for :invite, :url => signup_invite_path do |f| -%>
     <div class="title">
-      <span class="login"><%= link_to_function t(:login_header) %></span>        
-      <span class="invitation"><%= t(:invite_header) %></span>
+      <span class="login"><%= link_to_function t("winnow.general.login") %></span>        
+      <span class="invitation"><%= t("winnow.login.request_invitation") %></span>
     </div>
 
     <div class="content" class="clearfix">
       <%= error_messages_for :invite %>
 
       <div class="email">
-        <%= f.label :email, t(:email_label) %>
+        <%= f.label :email, t("winnow.general.email") %>
         <%= f.text_field :email %>
       </div>
 
-      <p class="description"><%= t(:questions_description) %></p>
-      <h4><%= t(:questions_header) %></h4>
+      <p class="description"><%= t("winnow.login.questions_description") %></p>
+      <h4><%= t("winnow.login.questions_header") %></h4>
 
       <div>
-        <%= f.label :hear, t(:hear_question) %>
+        <%= f.label :hear, t("winnow.general.how_did_you_hear") %>
         <%= f.text_area :hear %>
       </div>
 
       <div>
-        <%= f.label :use, t(:use_question) %>
+        <%= f.label :use, t("winnow.general.how_do_you_want_to_use") %>
         <%= f.text_area :use %>
       </div>
 
       <div class="submit">
-        <%= submit_tag t(:invite_submit_button) %>
+        <%= submit_tag t("winnow.login.request_invitation") %>
       </div>
     </div>
   <% end -%>

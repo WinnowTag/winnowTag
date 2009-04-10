@@ -1,5 +1,334 @@
 en:
   winnow:
+    general:
+      never: "Never"
+      loading: "Loading Items..."
+      empty: "No items matched your search criteria."
+      sort_label: "Sort"
+      textile_reference: "Accepts <a href='http://www.textism.com/tools/textile/index.php'>textile</a> formatting"
+      globally_exclude: "Globally Exclude"
+      or: "or"
+      submit: "Submit"
+      create: "Create"
+      created: "Created"
+      save: "Save"
+      destroy: "Destroy"
+      edit: "Edit"
+      cancel: "Cancel"
+      back: "Back"
+      email: "Email"
+      update: "Update"
+      are_you_sure: "Are you sure?"
+      content: "Content"
+      login: "Login"
+      password: "Password"
+      password_confirmation: "Password Confirmation"
+      how_did_you_hear: "How did you hear about Winnow?"
+      how_do_you_want_to_use: "How/why do you want to use Winnow?"
+      javascript_disabled: "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+      last_updated: "Last Updated"
+    email:
+      subject_prefix: "[WINNOW]"
+      deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
+      deployed_body: |-
+        Hello Peerworks folk,
+
+        Revision {{revision}} of {{repository}} has just been deployed to {{host}} by {{deployer}}.
+
+        Comment: {{comment}}
+
+        Regards,
+
+        Winnow Deployment Notifier
+      invite_requested_subject: "Invite Requested"
+      invite_requested_body: |-
+        {{email}} has submitted an invitation request.
+
+        How did you hear about Winnow?
+        {{hear}}
+
+        How/why do you want to use Winnow?
+        {{use}}
+      invite_request_submitted_body: "Your request for an invitation to Winnow has been submitted. You will be notified at {{email}} when your invitation is accepted."
+      invite_accepted_body: |-
+        {{invite}}
+
+        Please visit {{url}} to signup for your account.
+      account_activation_body: "{{user}}, your account has been activated.  You may now visit winnow at: {{url}}"
+      reminder_subject: "Password Reminder"
+      reminder_body: "To update your password, visit {{url}}"
+      signup_notification_body: |-
+        Welcome to Winnow, {{user}}.
+
+        Please click on the following link to confirm your registration:
+
+        <a href="{{registration_url}}">Click me!</a>
+
+        {{winnow_url}}
+    notifications:
+      feed_items_search_too_short: "Search requires a word with at least 4 characters"
+      server_slow_responding: "The server is taking a while to repond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
+      bookmarklet_error_message: "Drag this button to your bookmark or right click and select 'Bookmark This Link'"
+      credentials_invalid: "Invalid credentials. Please try again."
+      profile_updated: "Information Updated"
+      reminder_code_invalid: "Invalid reminder code"
+      reminder_sent: "A password reminder has been sent"
+      update_password: "Please update your password"
+      invitation_request_submitted: "Your invitation request has been submitted"
+      account_activated: "Your account has been activated"
+      account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
+      feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
+      feed_existed: "We already have the feed from {{url}}, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
+      feeds_imported:
+        one:   "Imported 1 feed from your OPML file"
+        other: "Imported {{count}} feeds from your OPML file"
+      message_created: "Message was successfully created"
+      message_updated: "Message was successfully updated"
+      tag_copied: "{{from}} successfully copied to {{to}}"
+      tag_merged: "{{from}} merged with {{to}}"
+      classifier:
+        could_not_be_started: "The classifier could not be started. Please try again."
+        already_running: "The classifier is already running"
+        not_running: "No classification process running"
+        tags_not_changed: "There are no changes to your tags"
+      collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
+      tags_unsubscribe: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
+    taggings:
+      bad_method: "Bad Request. Should be POST. Please report this bug. Make sure you have Javascript enabled too!"
+      bad_params: "Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!"
+      destroy_message: "You have removed the last example of tag {{tag}}, do you want to remove it from your tags page?"
+      classifier_progress: "Classify changed tags"
+    sort_direction:
+      ascending: "Ascending"
+      descending: "Descending" 
+    navigation:
+      about: "About"
+      profile: "Profile"
+      logged_in_as: "Logged in as"
+      logout: "Logout"
+      winnow_info: "Winnow Info"
+      items: "Items"
+      my_tags: "My Tags"
+      public_tags: "Public Tags"
+      feeds: "Feeds"
+      admin: "Admin"
+      help: "Help"
+      leave_feedback: "Leave Feedback"
+    items:
+      header:
+        feed_items_search_placeholder: "Search Feed Items..."
+        selected_filters: "Selected Filters"
+        clear_selected_filters: "Clear"
+        feed_for_selected_filters: "Feed"
+        show_label: "Show"
+        show_all_label: "All"
+        show_unread_label: "Unread"
+        show_trained_label: "Trained"
+        sort_date_label: "Date"
+        sort_strength_label: "Strength"
+      sidebar:
+        tags_header: "Tags"
+        feeds_header: "Feeds"
+        folders_header: "Folders"
+        add: "Add"
+        done: "Done"
+        tag_tooltip: "Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
+        public_tag_tooltip: "From {{login}}, Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
+        create_feed: "Create Feed: '{{feed}}'"
+        create_tag: "Create Tag: '{{tag}}'"
+        merge_confirm: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
+        sidebar_confirm: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
+      main:
+        train: "Train"
+        open_original_feed_item: "Go to original item"
+        mark_unread: "Click to mark as unread"
+        mark_read:   "Click to mark as read"
+        no_title: "(no title)"
+        feed_metadata: "from {{feed_title}}"
+        metadata: "from {{feed_title}} by {{author}}"
+        add_tag: "Add Tag"
+        close: "Close"
+        could_not_load_clues: "Could not load the clues, please try again later."
+      footer:
+        previous_item: "Previous Item"
+        next_item: "Next Item"
+        mark_all_read: "Mark All Read"
+        start_classifier_button: "Auto-tag"
+        stop_classifier_button: "Stop"
+        classifier_progress: "Classify changed tags"
+    tags:
+      general:
+        no_comments: "There are no comments for this tag."
+        globally_excluded: "Globally Excluded"
+        subscribed: "Subscribed"
+      attributes:
+        name: "Name"
+        state: "State"
+        comments: "Comments"  
+        positive: "Positive"
+        negative: "Negative"
+        automatic: "Automatic"
+        last_classified: "Last Classified"
+        last_trained: "Last Trained"
+      header:
+        search_placeholder: "Search Tags..."
+      main:
+        click_to_edit_name: "Click to edit tag name"
+        blank_description: "add a description"
+        click_to_edit_description: "Click to edit tag description"
+        destroy_confirm: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
+        add_a_comment: "Add a comment"
+        apply_to: "Apply <span>{{tag}}</span> to"
+        fewer_items: "Fewer Items"
+        more_items: "More Items"
+        public: "Public"
+        destroy_tooltip: "Destroy {{tag}}"
+        feed: "Feed"
+        subscribe: "Subscribe"
+        items_tagged_with: "Show items tagged with {{tag}}"
+        items_trained_with: "Show items trained with {{tag}}"
+        copy: "Copy"
+        stats: "Stats"
+        subscribers: "Subscribers"
+        usage: "Usage"
+        slider_tooltips:
+          handle: "Drag to set the sensitivity of the classifier."
+          first_marker: "Very Negative"
+          second_marker: "Neutral"
+          third_marker: "Slightly Positive"
+          fourth_marker: "Strongly Positive"
+          fifth_marker: "Very Strongly Positive"
+        replace: "Tag {{to}} already exists. This copy will completely replace it with a copy of {{from}}."
+        not_found: "{{login}} and no tag {{tag_name}}"
+        id_not_found: "Tag with id {{tag_id}} not found"
+    feeds:
+      header:
+        add_import: "Add / Import"
+        title: "Title"
+        items: "Items"
+        created: "Created"
+        last_updated: "Last Updated"
+        search_placeholder: "Search Feeds..."
+        add_feed_description: "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
+        add_feed_button: "Add Feed"
+        upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
+        upload_button: "Upload"
+        add_to_winnow_bookmarklet: "Add to Winnow"
+        add_to_winnow_bookmarklet_description: "Drag this button to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
+      feed_item:
+        mode_feeds_tags_text_filter: "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds_tags:             "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}}"
+        mode_feeds_text_filter:      "Winnow feed for {{mode}} items from {{feeds}} including text '{{text_filter}}'"
+        mode_tags_text_filter:       "Winnow feed for {{mode}} items tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds:                  "Winnow feed for {{mode}} items from {{feeds}}"
+        mode_tags:                   "Winnow feed for {{mode}} items tagged by {{tags}}"
+        mode_text_filter:            "Winnow feed for {{mode}} items including text '{{text_filter}}'"
+        mode:                        "Winnow feed for {{mode}} items"
+      footer:
+        total_feeds: "Total Feeds:"
+    admin:
+      users_link: "User Management"
+      users_description: "View and manage users of winnow."
+      invites_link: "Invites"
+      invites_description: "View and manage invites."
+      messages_link: "Messages"
+      messages_description: "View and manage messages."
+      info_link: "Winnow Info"
+      info_description: "View and manage the winnow info content."
+      help_link: "Help Links"
+      help_description: "View and manage the help links in winnow."
+      feedback_link: "Feedback"
+      feedback_description: "View feedback left by the users of winnow."
+    users:
+      header:
+        create_user: "Create User"
+        export: "Export (CSV)"
+        search_placeholder: "Search Users..."
+      attributes:  
+        login: "Login"
+        name: "Name"
+        last_logged_in: "Last Logged In"
+        last_accessed: "Last Accessed"
+        last_trained: "Last Trained"
+        number_of_tags: "Number of Tags"
+        registered: "Registered"
+      main:
+        login_confirm: |-
+          This will log you in as {{login}}. You will need to log out and login as yourself to use your own account again.
+
+          Are you sure you want to continue?
+        destroy_confirm: "Really delete {{login}}?"
+    invites:
+      general:
+        create_invite: "Create Invite"        
+      header:
+        search_placeholder: "Search Invites..."
+      attributes:
+        created: "Created"
+        status: "Status"
+      main:
+        activate: "Activate"
+        accepted: "Accepted:"
+        activated: "Activated:"
+        requested: "Requested"
+        question: "Question"
+        no_answers: "The user did not answer any questions."
+        subject: "Subject:"
+        body: "Body:"
+      edit:
+        edit_invite: "Edit Invite"
+        activate: "Activate?"
+        create: "Create"
+        update: "Update"
+        default_accepted_subject: "Invite Accepted"
+        default_accepted_body: "You request for an invitation to Winnow has been accepted!"
+    messages:
+      header:
+        create_message: "Create Message"
+      sidebar:
+        messages: "Messages"
+        empty: "You have no recent messages."
+      edit:
+        editing_message: "Editing message"
+      new:
+        new_message: "New message"
+    feedback:
+      header:
+        user: "User"
+        date: "Date"
+        search_placeholder: "Search Feedback..."
+      main:
+        metadata: "{{login}} on {{created_at}}"
+    profile:
+      header: "Account Details"
+      first_name: "First Name"
+      last_name: "Last Name"
+      time_zone: "Time Zone"
+    login:
+      welcome_header: "Welcome to Winnow"
+      welcome_text: |-
+        <p>
+          Winnow is the demonstration environment for the auto-tagging classifier built by <a href="http://www.peerworks.org">Peerworks</a>.
+        </p>
+        <p>
+          This version of Winnow is only tested in the  <a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser, 
+          as such things may not work correctly in other browsers.
+        </p>
+      request_invitation: "Request Invitation"
+      remember_me: "Remember Me"
+      forgot_password: "Forgot your password?"
+      questions_description: "optional, answers may encourage a response"
+      questions_header: "Questions"
+      reminder_header: "Password Reminder"
+      back: "Back to login"
+      signup_submit: "Signup"
+    about:
+      build: "This is build {{build}} of Winnow."
+      classifier_info: "Using classifier version {{version}} at build {{build}}."
+      classifier_info_not_found: "The classifer could not be contacted."
+    activation:
+      activation_code: "Activation Code"
+      activate: "Activate"
     errors:
       atom:
         missing_entry_id: "Atom::Entry is missing id"
@@ -14,22 +343,10 @@ en:
     defaults:
       feed_item:
         title: "Unknown Title"
-    feeds:
-      feed_item:
-        mode_feeds_tags_text_filter: "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
-        mode_feeds_tags:             "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}}"
-        mode_feeds_text_filter:      "Winnow feed for {{mode}} items from {{feeds}} including text '{{text_filter}}'"
-        mode_tags_text_filter:       "Winnow feed for {{mode}} items tagged by {{tags}} including text '{{text_filter}}'"
-        mode_feeds:                  "Winnow feed for {{mode}} items from {{feeds}}"
-        mode_tags:                   "Winnow feed for {{mode}} items tagged by {{tags}}"
-        mode_text_filter:            "Winnow feed for {{mode}} items including text '{{text_filter}}'"
-        mode:                        "Winnow feed for {{mode}} items"
     javascript:
       errors:
         classifier:
           timeout: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like."
-        ajax:
-          timeout: "The server is taking a while to repond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
       classifier:
         progress_bar:
           start:   "Starting Classifier"
@@ -38,411 +355,3 @@ en:
           reload:  "Classification has completed. Do you want to reload the items?"
           # NOTE: This is never displayed to the user, it is only user as a check against a json response. Do not change this.
           running: "The classifier is already running."
-      itembrowser:
-        text_filter:
-          too_short: "Search requires a word with at least 4 characters"
-        mark_unread: "Click to mark as unread"
-        mark_read:   "Click to mark as read"
-        empty:       "No items matched your search criteria."
-        loading:     "Loading Items..."
-        
-  
-  # app/controllers/account_controller.rb
-  profile_update: "Information Updated"
-  credentials_invalid: "Invalid credentials. Please try again."
-  update_password: "Please update your password"
-  reminder_invalid: "Invalid reminder code"
-  reminder_sent: "A password reminder has been sent"
-  invitation_submitted: "Your invitation request has been submitted"
-  account_activated: "Your account has been activated"
-  account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
-  login_invalid: "Unable to activate the account. Did you provide the correct information?"
-
-  # app/controllers/classifier_controller.rb
-  classifier_running: "The classifier is already running"
-  classifier_not_running: "No classification process running"
-  tags_not_changed: "There are no changes to your tags"
-
-  # app/controllers/collection_job_results_controller.rb
-  collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
-
-  # app/controllers/feed_items_controller.rb
-  could_not_load_clues: "Could not load the clues, please try again later."
-  
-  # app/controllers/feeds_controller.rb
-  feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
-  feed_existed: "We already have the feed from {{url}}, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
-  feeds_imported:
-    one:   "Imported 1 feed from your OPML file"
-    other: "Imported {{count}} feeds from your OPML file"
-
-  # app/controllers/messages_controller.rb
-  message_created: "Message was successfully created"
-  message_updated: "Message was successfully updated"
-
-  # app/controllers/taggings_controller.rb
-  bad_method: "Bad Request. Should be POST. Please report this bug. Make sure you have Javascript enabled too!"
-  bad_params: "Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!"
-
-  # app/controllers/tags_controller.rb
-  tag_copied: "{{from}} successfully copied to {{to}}"
-  tag_replace: "Tag {{to}} already exists. This copy will completely replace it with a copy of {{from}}."
-  tag_merged: "{{from}} merged with {{to}}"
-  tag_not_found: "{{login}} and no tag {{tag_name}}"
-  tag_id_not_found: "Tag with id {{tag_id}} not found"
-
-  # app/helpers/about_helper.rb
-  classifier_info: "Using classifier version {{version}} at build {{build}}."
-  classifier_info_not_found: "The classifer could not be contacted."
-
-  # app/helpers/application_helper.rb
-  default_search_placeholder: "Search..."
-  create_feed: "Create Feed: '{{feed}}'"
-  create_tag: "Create Tag: '{{tag}}'"
-  public_tag_tooltip: "From {{login}}, Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
-  tag_tooltip: "Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
-
-  # app/helpers/bais_slider_helper.rb
-  slider_handle_tooltip: "Drag to set the sensitvity of the classifier."
-  first_slider_marker: "Very Negative"
-  second_slider_marker: "Neutral"
-  third_slider_marker: "Slightly Positive"
-  fourth_slider_marker: "Strongly Positive"
-  fifth_slider_marker: "Very Strongly Positive"
-
-  # app/helpers/feed_items_helper.rb
-  start_classifier_button: "Auto-tag"
-  stop_classifier_button: "Stop"
-  classifier_progress: "Classify changed tags"
-  feed_item_no_title: "(no title)"
-  
-  # app/mailers/notifier.rb
-  subject_prefix: "[WINNOW]"
-  deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
-  invite_requested_subject: "Invite Requested"
-
-  # app/mailers/notifier.rb
-  reminder_subject: "Password Reminder"
-  
-  # app/models/invite.rb
-  default_invite_accepted_subject: "Invite Accepted"
-  default_invite_accepted_body: "You request for an invitation to Winnow has been accepted!"
-  
-  # app/views/about/index.html.erb
-  winnow_revision: "This is build {{build}} of Winnow."
-  
-  # app/views/account/activate.html.erb
-  activation_code_label: "Activation Code"
-  activate_submit_button: "Activate"
-  
-  # app/views/account/edit.html.erb
-  edit_profile_header: "Account Details"
-  login_label: "Login"
-  password_label: "Password"
-  password_confirmation_label: "Password Confirmation"
-  email_label: "Email"
-  firstname_label: "First Name"
-  lastname_label: "Last Name"
-  time_zone_label: "Time Zone"
-  edit_profile_submit_button: "Save"
-
-  # app/views/account/login.html.erb
-  login_header: "Login"
-  remember_me_label: "Remember Me"
-  forgot_password_link: "Forgot your password?"
-  login_submit_button: "Login"
-  reminder_header: "Password Reminder"
-  login_link: "Back to login"
-  reminder_submit_button: "Submit"
-  signup_submit_button: "Signup"
-  invite_header: "Request Invitation"
-  questions_header: "Questions"
-  questions_description: "optional, answers may encourage a response"
-  hear_question: "How did you hear about Winnow?"
-  use_question: "How/why do you want to use Winnow?"
-  invite_submit_button: "Request Invitation"
-  welcome_header: "Welcome to Winnow"
-  welcome_text: |-
-    <p>
-      Winnow is the demonstration environment for the auto-tagging classifier built by <a href="http://www.peerworks.org">Peerworks</a>.
-    </p>
-    <p>
-      This version of Winnow is only tested in the  <a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser, 
-      as such things may not work correctly in other browsers.
-    </p>
-
-  # app/views/admin/help.html.erb
-  content_label: "Content"
-  save_button: "Save"
-  
-  # app/views/admin/info.html.erb
-  textile_reference: "Accepts <a href='http://www.textism.com/tools/textile/index.php'>textile</a> formatting"
-  
-  # app/views/admin/index.html.erb
-  manage_users_link: "User Management"
-  manage_users_description: "View and manage users of winnow."
-  manage_invites_link: "Invites"
-  manage_invites_description: "View and manage invites."
-  manage_messages_link: "Messages"
-  manage_messages_description: "View and manage messages."
-  manage_info_link: "Winnow Info"
-  manage_info_description: "View and manage the winnow info content."
-  manage_help_link: "Help Links"
-  manage_help_description: "View and manage the help links in winnow."
-  manage_feedback_link: "Feedback"
-  manage_feedback_description: "View feedback left by the users of winnow."
-
-  # app/views/feed_items/_description.html.erb
-  feed_item_feed_metadata: "from {{feed_title}}"
-  feed_item_metadata: "from {{feed_title}} by {{author}}"
-  
-  # app/views/feed_items/_feed_item.html.erb
-  train: "Train"
-  open_original_feed_item: "Go to original item"
-  
-  # app/views/feed_items/_filter_controls.html.erb
-  show_label: "Show"
-  show_all_label: "All"
-  show_unread_label: "Unread"
-  show_trained_label: "Trained"
-  sort_label: "Sort"
-  sort_date_label: "Date"
-  sort_strength_label: "Strength"
-  sidebar_tags_header: "Tags"
-  sidebar_add: "Add"
-  sidebar_edit: "Edit"
-  sidebar_done: "Done"
-  sidebar_feeds_header: "Feeds"
-  sidebar_folders_header: "Folders"
-  feed_for_selected_filters: "Feed"
-  clear_selected_filters: "Clear"
-  
-  # app/views/feed_items/_info.html.erb
-  confirm_destroy_folder: "Are you sure?"
-  
-  # app/views/feed_items/_moderation_panel.html.erb
-  add_tag_button: "Add Tag"
-
-
-  # app/views/feed_items/_text_filter_controls.html.erb
-  feed_items_search_placeholder: "Search Feed Items..."
-
-  # app/views/feed_items/index.html.erb
-  no_script_message: "You need to change a setting in your web browser"
-  selected_filters: "Selected Filters"
-  previous_item: "Previous Item"
-  next_item: "Next Item"
-  mark_all_read: "Mark All Read"    
-  
-  # app/views/feedbacks/_feedback.html.erb
-  feedback_metadata: "{{login}} on {{created_at}}"
-  
-  # app/views/feedbacks/_form.html.erb
-  feedback_submit_button: "Submit"
-  feedback_cancel_link: "cancel"
-  
-  # app/views/feedbacks/_header_controls.html.erb
-  feedback_sort_user_label: "User"
-  feedback_sort_date_label: "Date"
-  feedback_search_placeholder: "Search Feedback..."
-
-  # app/views/feeds/_feed.html.erb
-  last_updated: "Last Updated"
-  globally_exclude: "Globally Exclude"
-  show: "Show"
-  
-  # app/views/feeds/_header_controls.html.erb
-  feeds_header_add_import: "Add / Import"
-  feeds_header_title: "Title"
-  feeds_header_items: "Items"
-  feeds_header_created: "Created"
-  feeds_header_last_updated: "Last Updated"
-  feeds_header_search_placeholder: "Search Feeds..."
-  
-  # app/views/feeds/index.html.erb
-  total_feeds: "Total Feeds:"
-  
-  # app/views/feeds/error.html.erb
-  feeds_back_to_feeds: "Back to Feeds"
-
-  # app/views/feeds/import.html.erb
-  feeds_add_import: "Add / Import Feeds"
-  feeds_new_description: "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
-  add_feed_button: "Add Feed"
-  feeds_import_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
-  upload: "Upload"
-  feeds_add_to_winnow: "Add to Winnow"
-  feeds_new_bookmarklet_description: "Drag this button to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
-  feeds_bookmarklet_js_error_message: "Drag this button to your bookmark or right click and select 'Bookmark This Link'"
-  cancel: "cancel"
-  
-  # app/views/invites/_form.html.erb
-  invites_activate: "Activate?"
-  create: "Create"
-  update: "Update"
-
-  # app/views/invites/header_controls.html.erb
-  created: "Created"
-  email: "Email"
-  status: "Status"
-  invites_search_placeholder: "Search Invites..."
-  create_invite: "Create Invite"
-  
-  # app/views/invites/_invite.html.erb
-  activate: "Activate"
-  edit: "Edit"
-  destroy: "Destroy"
-  are_you_sure: "Are you sure?"
-  email_address: "Email Address"
-  invites_accepted: "Accepted:"
-  invites_activated: "Activated:"
-  invites_requested: "Requested"
-  invites_question: "Question"
-  invites_no_answers: "The user did not answer any questions."
-  invites_how_did_you_hear: "How did you hear about Winnow?"
-  invites_how_do_you_want_to_use_winnow: "How/why do you want to use Winnow?"
-  
-  invites_subject_label: "Subject:"
-  invites_body_label: "Body:"
-  
-  # app/views/invites/edit.html.erb
-  invites_edit_invite: "Edit Invite"
-  
-  # app/views/layouts/_navbar.html.erb
-  about: "About"
-  profile: "Profile"
-  logout: "Logout"
-  winnow_info: "Winnow Info"
-  items: "Items"
-  my_tags: "My Tags"
-  public_tags: "Public Tags"
-  feeds: "Feeds"
-  admin: "Admin"
-  help: "Help"
-  leave_feedback: "Leave Feedback"
-
-  # app/views/messages/_header_controls.html.erb  
-  messages_create_message: "Create Message"
-
-  # app/views/messages/_sidebar.html.erb
-  messages_messages: "Messages"
-  messages_empty: "You have no recent messages."
-
-  # app/views/messages/edit.html.erb
-  messages_editing_messages: "Editing message"
-  back: "Back"
-  
-  # app/views/messages/index.html.erb
-  messages_no_messages_match: "No messages matched your search criteria."
-  
-  # app/views/messages/new.html.erb
-  messages_new_message: "New message"
-  
-  # app/views/notifier/deployed.html.erb
-  # :revision => @revision, :repository => @repository, :host => @host, :deployer => @deployer, :comment => @comment) %>
-  notifier_deployed_text: |-
-    Hello Peerworks folk,
-
-    Revision {{revision}} of {{repository}} has just been deployed to {{host}} by {{deployer}}.
-
-    Comment: {{comment}}
-
-    Regards,
-
-    Winnow Deployment Notifier
-
-  # app/views/notifier/invite_requested.html.erb  
-  notifier_invite_requested_text: |-
-    {{email}} has submitted an invitation request.
-
-    How did you hear about Winnow?
-    {{hear}}
-
-    How/why do you want to use Winnow?
-    {{use}}
-  
-  # app/views/taggings/destroy.js.rjs
-  taggings_destroy_message: "You have removed the last example of tag {{tag}}, do you want to remove it from your tags page?"
-  
-  # app/views/tags/_header_controls.html.erb
-  tags_name: "Name"
-  tags_state: "State"
-  tags_comments: "Comments"  
-  tags_positive: "Positive"
-  tags_negative: "Negative"
-  tags_automatic: "Automatic"
-  tags_last_classified: "Last Classified"
-  tags_last_trained: "Last Trained"
-
-  tags_header_search_placeholder: "Search Tags..."
-
-  # app/views/tags/_public_tag.html.erb
-  tags_feed_link: "Feed"
-  tags_subscribe: "Subscribe"
-  view_all_items: "Show items tagged with {{tag}}"
-  view_tagged_items: "Show items trained with {{tag}}"
-  copy: "Copy"
-  no_comments_for_this_tag: "There are no comments for this tag."
-  add_a_comment: "Add a comment"
-
-  # app/views/tags/_summary.html.erb
-
-  # app/views/tags/_subscribed_tag.html.erb
-  tags_public: "Public"
-  tags_destroy_link_title: "Destroy {{tag}}"
-
-  # app/views/tags/_tag.html.erb
-  tags_click_to_edit_tag_text: "Click to edit tag name"
-  tags_save_text: "Save"
-  tags_blank_description: "add a description"
-  tags_click_to_edit_description_text: "Click to edit tag description"
-  tags_destroy_confirm_text: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
-  tags_merge_confirm_text: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
-  tags_sidebar_confirm_message: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
-  tags_unsubscribe_text: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
-  
-  # app/views/user_notifier
-  user_notifier_activation_text: "{{user}}, your account has been activated.  You may now visit winnow at: {{url}}"
-  user_notifier_invite_accepted: |-
-    {{invite}}
-
-    Please visit {{url}} to signup for your account.
-  user_notifier_invite_requested: "Your request for an invitation to Winnow has been submitted. You will be notified at {{email}} when your invitation is accepted."
-  user_notifier_reminder_text: "To update your password, visit {{url}}"
-  user_notifier_signup_notification_text: |-
-    Welcome to Winnow, {{user}}.
-
-    Please click on the following link to confirm your registration:
-
-    <a href="{{registration_url}}">Click me!</a>
-
-    {{winnow_url}}
-
-  # app/views/users/_header_controls.html.erb
-  users_create_user: "Create User"
-  users_export: "Export (CSV)"
-  users_header_login: "Login"
-  users_header_name: "Name"
-  users_header_email: "Email"
-  users_header_last_logged_in: "Last Logged In"
-  users_header_last_accessed: "Last Accessed"
-  users_header_last_trained: "Last Trained"
-  users_header_number_of_tags: "Number of Tags"
-  users_search_placeholder: "Search Users..."
-  
-  users_login_confirm: |-
-    This will log you in as {{login}}. You will need to log out and login as yourself to use your own account again.
-  
-    Are you sure you want to continue?
-  users_destroy_confirm: "Really delete {{login}}?"
-  
-  users_full_name: "Full Name"
-  users_last_logged_in: "Last Logged In"
-  users_last_accessed: "Last Accessed"
-  users_last_trained: "Last Trained"
-  users_number_of_tags: "Number of Tags"
-  users_save_changes: "Save changes"
-  
-  users_registered: "Registered"
-  
-  # Javascript

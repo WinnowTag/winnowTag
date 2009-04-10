@@ -1,10 +1,10 @@
 <div id="<%= dom_id(feed_item) %>" class="record feed_item<%= ' read' if feed_item.read_by_current_user? %>">
   <div class="closed clearfix">
     <div class="date"><%= format_date(feed_item.updated) %></div>
-    <%= link_to_function t(:train), "", :class => "train stop" %>
+    <%= link_to_function t("winnow.items.main.train"), "", :class => "train stop" %>
   	<%= link_to_function "", "", :class => "status stop" %>
   	<%= link_to_function feed_item_title(feed_item), "", :class => "title" %>
-    <%= link_to(image_tag("external.gif"), feed_item.link, :target => "_blank", :title => t(:open_original_feed_item), :class => "stop") %>
+    <%= link_to(image_tag("external.gif"), feed_item.link, :target => "_blank", :title => t("winnow.items.main.open_original_feed_item"), :class => "stop") %>
     <%= feed_control_for(feed_item) %>
     <%= tag_controls(feed_item) %>
   </div>

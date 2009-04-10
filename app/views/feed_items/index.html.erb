@@ -29,30 +29,30 @@
 
 <% content_for :header_controls do -%>
   <% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
-    <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t(:feed_items_search_placeholder) %>
+    <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder") %>
   <% end -%>
 
   <div class="order clearfix">
-    <label><%= t(:sort_label) %></label>        
+    <label><%= t("winnow.general.sort_label") %></label>        
     <select id="order">
-      <option value="date"><%= t(:sort_date_label) %></option>
-      <option value="strength"><%= t(:sort_strength_label) %></option>
+      <option value="date"><%= t("winnow.items.header.sort_date_label") %></option>
+      <option value="strength"><%= t("winnow.items.header.sort_strength_label") %></option>
     </select>
     <%= direction_link %>
   </div>
 
   <div class="toolbar right">
     <div class="group">
-      <label><%= t(:selected_filters) %></label>
-      <%= rounded_button_function t(:clear_selected_filters), "", :icon => "clear", :id => "clear_selected_filters", :class => "first" %>
-      <%= rounded_button_link t(:feed_for_selected_filters), "", :icon => "feed", :base_url => formatted_feed_items_path(:atom), :id => "feed_with_selected_filters" %>
+      <label><%= t("winnow.items.header.selected_filters") %></label>
+      <%= rounded_button_function t("winnow.items.header.clear_selected_filters"), "", :icon => "clear", :id => "clear_selected_filters", :class => "first" %>
+      <%= rounded_button_link t("winnow.items.header.feed_for_selected_filters"), "", :icon => "feed", :base_url => formatted_feed_items_path(:atom), :id => "feed_with_selected_filters" %>
     </div>
     
     <div class="group">
-      <label><%= t(:show_label) %></label>        
-      <%= rounded_button_function t(:show_all_label),     "", :icon => "all",     :id => "mode_all", :class => "first" %>
-      <%= rounded_button_function t(:show_unread_label),  "", :icon => "unread",  :id => "mode_unread" %>
-      <%= rounded_button_function t(:show_trained_label), "", :icon => "trained", :id => "mode_trained" %>
+      <label><%= t("winnow.items.header.show_label") %></label>        
+      <%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first" %>
+      <%= rounded_button_function t("winnow.items.header.show_unread_label"),  "", :icon => "unread",  :id => "mode_unread" %>
+      <%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained" %>
     </div>
   </div>
 <% end -%>
@@ -62,11 +62,11 @@
 <% content_for :footer do -%>	
   <div class="toolbar">
     <div class="group">
-      <%= rounded_button_function t(:previous_item), "", :icon => "previous" %>  
-      <%= rounded_button_function t(:next_item),     "", :icon => "next" %>
+      <%= rounded_button_function t("winnow.items.footer.previous_item"), "", :icon => "previous" %>  
+      <%= rounded_button_function t("winnow.items.footer.next_item"),     "", :icon => "next" %>
     </div>
   
-    <%= rounded_button_function t(:mark_all_read),   "", :icon => "read" %>
+    <%= rounded_button_function t("winnow.items.footer.mark_all_read"),   "", :icon => "read" %>
   </div>
 	
 	<%= render :partial => "classification_controls" %>

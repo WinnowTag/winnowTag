@@ -1,6 +1,6 @@
 <div id="<%= dom_id(feedback) %>" class="feedback clearfix">
   <span class="metadata">
-    <%= t(:feedback_metadata, :login => h(feedback.user.login), :created_at => format_date(feedback.created_at)) %>
+    <%= t("winnow.feedback.main.metadata", :login => h(feedback.user.login), :created_at => format_date(feedback.created_at)) %>
   </span>
   <%=h feedback.body %>
 </div>

@@ -75,7 +75,7 @@ var TimeoutMessage = Class.create({
     this.timeout_id = TimeoutMessage.identifier++;
     this.ajax = ajax;
 
-    var message = I18n.t("winnow.javascript.errors.ajax.timeout", {
+    var message = I18n.t("winnow.notifications.server_slow_responding", {
       cancel_link_start: '<a href="#" id="timeout_' + this.timeout_id + '">',
       cancel_link_end: '</a>'
     });

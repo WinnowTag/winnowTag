@@ -2,19 +2,19 @@
   <% form_remote_tag :url => reminder_path do -%>
 
     <div class="title">
-      <span class="reminder"><%= t(:reminder_header) %></span>
+      <span class="reminder"><%= t("winnow.login.reminder_header") %></span>
     </div>
 
     <div class="content">
     	<div class="login clearfix">
-    	  <label for="login"><%= t(:login_label) %></label>
+    	  <label for="login"><%= t("winnow.general.login") %></label>
     	  <%= text_field_tag :login %>
     	</div>
 
     	<div class="submit">
     	  <label>&nbsp;</label>
-    	  <%= submit_tag t(:reminder_submit_button) %>
-    	  <%= link_to_function t(:login_link), "", :class => "forgot_password_link" %>        	  
+    	  <%= submit_tag t("winnow.general.submit") %>
+    	  <%= link_to_function t("winnow.login.back"), "", :class => "forgot_password_link" %>        	  
     	</div>
     </div>
   <% end -%>

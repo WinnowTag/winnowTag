@@ -17,9 +17,9 @@
   </p>
 
 	<p>
-	  <label for="activate"><%= t(:invites_activate) %></label>
+	  <label for="activate"><%= t("winnow.invites.edit.activate") %></label>
 	  <%= check_box_tag :activate, true, true %>
     &nbsp;&nbsp;
-		<%= submit_tag @invite.new_record? ? t(:create) : t(:update) %>
+		<%= submit_tag @invite.new_record? ? t("winnow.invites.edit.create") : t("winnow.invites.edit.update") %>
 	</p>
 <%  end -%>

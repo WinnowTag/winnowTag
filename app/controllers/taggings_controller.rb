@@ -18,10 +18,10 @@ class TaggingsController < ApplicationController
   helper :feed_items
 
   verify :method => :post, :render => {
-    :text => t(:bad_method), :status => 400
+    :text => t("winnow.taggings.bad_method"), :status => 400
   }
   verify :params => :tagging, :render => {
-    :text => t(:bad_params), :status => 400
+    :text => t("winnow.taggings.bad_params"), :status => 400
   }
   
   # Creates a single tagging for a <Taggable, Tagger, Tag>

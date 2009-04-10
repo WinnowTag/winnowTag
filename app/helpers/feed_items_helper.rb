@@ -24,7 +24,7 @@ module FeedItemsHelper
   
   def feed_item_title(feed_item)
     if feed_item.title.blank?
-      content_tag :span, t(:feed_item_no_title), :class => "notitle"
+      content_tag :span, t("winnow.items.main.no_title"), :class => "notitle"
     else
       h(feed_item.title)
     end
@@ -46,9 +46,9 @@ module FeedItemsHelper
   
   def feed_control_for(feed_item)
     if feed_item.author.blank?
-      t(:feed_item_feed_metadata, :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
+      t("winnow.items.main.feed_metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
     else
-      t(:feed_item_metadata, :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), :author => h(feed_item.author))
+      t("winnow.items.main.metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), :author => h(feed_item.author))
     end
   end
   
