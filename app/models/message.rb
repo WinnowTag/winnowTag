@@ -23,11 +23,19 @@ class Message < ActiveRecord::Base
     { :order => "created_at DESC", :limit => limit }
   }
   
+  named_scope :since, lambda { |date| 
+    { :conditions => ["messages.created_at >= ?", date] }
+  }
+  
   def self.read_by!(user)
     readings_attributes = unread(user).for(user).map do |message|
       { :readable_type => "Message", :readable_id => message.id, :user_id => user.id }
     end
 
     Reading.create!(readings_attributes)
+  end
+  
+  def self.info_cutoff
+    60.days.ago
   end
 end

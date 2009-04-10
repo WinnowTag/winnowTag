@@ -23,6 +23,28 @@ describe Message do
       Message.global.should == [message1]
     end
   end
+  
+  describe "since" do
+    it "doesn't return message created before the date" do
+      since_date = 100.days.ago
+      message1 = Message.create! :created_at => 110.days.ago, :body => "Some body"
+      message2 = Message.create! :body => "Some other body"
+      Message.since(since_date).should == [message2]
+    end
+    
+    it "returns messages created on the date" do
+      since_date = 100.days.ago
+      message1 = Message.create! :created_at => since_date, :body => "Some body"
+      message2 = Message.create! :body => "Some other body"
+      Message.since(since_date).should == [message1, message2]
+    end
+  end
+  
+  describe "info_cutoff" do
+    it "returns a time" do
+      Message.info_cutoff.should be_a(Time) 
+    end
+  end
 
   describe "for" do
     it "returns only global messages and messages belonging to the specified user" do
