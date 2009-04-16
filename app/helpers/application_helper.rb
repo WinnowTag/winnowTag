@@ -129,11 +129,11 @@ module ApplicationHelper
     end
 
     html = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html = content_tag(:div, html, :class => "actions")
+    html = content_tag(:span, html, :class => "actions")
 
     html << link_to_function(h(feed.title), "", :class => "name")
     
-    html =  content_tag(:div, html, :class => "filter")
+    html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
 
     class_names = [dom_id(feed), "clearfix", "feed"]
@@ -165,11 +165,11 @@ module ApplicationHelper
     html  = ""
     html << link_to_function("Rename", "var new_tag_name = prompt('Tag Name:', $(this).up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
     html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html  = content_tag(:div, html, :class => "actions")
+    html  = content_tag(:span, html, :class => "actions")
 
     html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"))
 
-    html =  content_tag(:div, html, :class => "filter clearfix")
+    html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
     class_names = [dom_id(tag), "clearfix", "tag"]
