@@ -12,11 +12,11 @@ module CustomSeleniumHelpers
   end
 
   def see_element(*args)
-    page.should be_element("css=#{args.join}")
+    page.is_element_present("css=#{args.join}").should be_true
   end
 
   def dont_see_element(*args)
-    page.should_not be_element("css=#{args.join}")
+    page.is_element_present("css=#{args.join}").should be_false
   end
 
   def assert_visible(locator)

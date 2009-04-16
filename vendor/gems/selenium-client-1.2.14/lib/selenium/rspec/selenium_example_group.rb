@@ -21,9 +21,9 @@ module Spec
           )
         end
 
-        # prepend_before(:each) do
-        #   page.start_new_browser_session
-        # end
+        prepend_before(:each) do
+          page.start_new_browser_session
+        end
 
         append_after(:each) do
           # Some deletes fail because of foreign key constraints. Catch any failures and try then again. Eventually it will work out.
@@ -37,15 +37,15 @@ module Spec
             end
           end
 
-          # page.close_current_browser_session
-          page.delete_all_visible_cookies
-          
-          page.get_all_window_names[1..-1].each do |window|
-            page.select_window window
-            page.close
-          end
-          
-          page.select_window nil
+          page.close_current_browser_session
+          # page.delete_all_visible_cookies
+          #
+          # page.get_all_window_names[1..-1].each do |window|
+          #   page.select_window window
+          #   page.close
+          # end
+          #
+          # page.select_window nil
         end
 
         prepend_after(:each) do
@@ -82,7 +82,7 @@ module Spec
               before_each_example
               instance_eval(&@_implementation)
             rescue Exception => e
-              execution_error ||= e
+              @execution_error ||= e
             end
             begin
               after_each_example

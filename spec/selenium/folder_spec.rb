@@ -72,7 +72,7 @@ describe "folders" do
     page.wait_for :wait_for => :element, :element => "css=#feed_title_auto_complete #feed_#{@example_feed.id}"
     hit_enter "feed_title"
     page.wait_for :wait_for => :ajax
-    see_element "#feed_filters #feed_#{@example_feed.id}"
+    see_element "#feed_#{@example_feed.id}"
   end
   
   it "can have feeds removed" do
