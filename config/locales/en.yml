@@ -29,7 +29,7 @@ en:
       password_confirmation: "Password Confirmation"
       how_did_you_hear: "How did you hear about Winnow?"
       how_do_you_want_to_use: "How/why do you want to use Winnow?"
-      javascript_disabled: "Winnow requires Javascript to be enabled. Please enable Javascript in your browser and refresh."
+      no_script_message: "You need to change a setting in your web browser"
       last_updated: "Last Updated"
     email:
       subject_prefix: "[WINNOW]"
