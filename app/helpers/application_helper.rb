@@ -128,7 +128,7 @@ module ApplicationHelper
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
     end
 
-    html = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:span, html, :class => "actions")
 
     html << link_to_function(h(feed.title), "", :class => "name")
