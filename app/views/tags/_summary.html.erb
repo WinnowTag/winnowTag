@@ -1,33 +1,33 @@
-<div class="summary clearfix">
+<div class="summary clearfix" title="<%= t('winnow.tags.main.tag_summary_tooltip') %>">
   <div class="info">      
     <div class="details">
       <p><%=h tag.user_login %></p>
       <strong class="state"><%= tag_state(tag) %></strong>
     </div>
     <div class="comments">
-      <p><%= t(:tags_comments) %></p>  
+      <p><%= t("winnow.tags.attributes.comments") %></p>  
       <strong>
         <span class="unread_comments"><%= tag.comments.unread(current_user).count %></span> / <span class="total_comments"><%= tag.comments_count %></span>
       </strong>
     </div>
     <div class="positive">
-      <p><%= t(:tags_positive) %></p>
+      <p><%= t("winnow.tags.attributes.positive") %></p>
       <strong><%= tag.positive_count %></strong>
     </div>
     <div class="negative">
-      <p><%= t(:tags_negative) %></p>
+      <p><%= t("winnow.tags.attributes.negative") %></p>
       <strong><%= tag.negative_count %></strong>
     </div>
     <div class="automatic">
-      <p><%= t(:tags_automatic) %></p>
+      <p><%= t("winnow.tags.attributes.automatic") %></p>
       <strong><%= tag.classifier_count %></strong>
     </div>
     <div class="date">
-       <p><%= t(:tags_last_classified) %></p> 
+       <p><%= t("winnow.tags.attributes.last_classified") %></p> 
        <strong><%= format_date(tag.last_classified_at) %></strong>
     </div>
     <div class="date">
-       <p><%= t(:tags_last_trained) %></p> 
+       <p><%= t("winnow.tags.attributes.last_trained") %></p> 
        <strong><%= format_date(tag.last_trained) %></strong>
     </div>
   </div>
@@ -36,13 +36,13 @@
     <h4>
       <span id="<%= dom_id(tag, 'name') %>" class="name"><%=h tag.name %></span>
       <%= in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
-            :click_to_edit_text => t(:tags_click_to_edit_tag_text), :save_text => t(:tags_save_text), :html_response => false) %>
+            :click_to_edit_text => t("winnow.tags.main.click_to_edit_name"), :save_text => t("winnow.general.save"), :html_response => false) %>
     </h4>
 
     <div class="description <%= 'empty' if tag.description.blank? %>">
-      <span id="<%= dom_id(tag, 'description') %>"><%= tag.description.blank? ? t(:tags_blank_description) : h(tag.description) %></span>
+      <span id="<%= dom_id(tag, 'description') %>"><%= tag.description.blank? ? t("winnow.tags.main.blank_description") : h(tag.description) %></span>
       <%= in_place_editor(dom_id(tag, "description"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[description]",
-            :click_to_edit_text => t(:tags_click_to_edit_description_text), :save_text => t(:tags_save_text), :rows => 5, :cols => 50) %>
+            :click_to_edit_text => t("winnow.tags.main.click_to_edit_description"), :save_text => t("winnow.general.save"), :rows => 5, :cols => 50) %>
     </div>
   <% else %>
     <h4 class="name"><%=h tag.name %></h4>

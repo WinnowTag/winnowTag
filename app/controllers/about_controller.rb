@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class AboutController < ApplicationController
+  skip_before_filter :login_required
+  
   def index
     # Capistrano now stores the revision in RAILS_ROOT/REVISION
     cap_rev_file = File.join(RAILS_ROOT, 'REVISION')
@@ -23,6 +25,6 @@ class AboutController < ApplicationController
 
   def info
     @info = Setting.find_or_initialize_by_name("Info")
-    @messages = Message.for(current_user).latest(30)
+    @messages = Message.for(current_user).latest(30).pinned_or_since(Message.info_cutoff)
   end
 end

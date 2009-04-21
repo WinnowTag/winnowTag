@@ -1,19 +1,19 @@
 <% if tag.comments.empty? -%>
-  <div class="empty"><%= t(:no_comments_for_this_tag) %></div>
+  <div class="empty"><%= t("winnow.tags.general.no_comments") %></div>
 <% else -%>
   <%= render :partial => "comments/comment.html.erb", :collection => tag.comments %>
 <% end -%>
 
 <div class="block comment_form clearfix">
-  <h5><%= t(:add_a_comment) %></h5>
+  <h5><%= t("winnow.tags.main.add_a_comment") %></h5>
   
   <% form_remote_for :comment, :url => comments_path do |form|  -%>
     <%= form.hidden_field :tag_id, :value => tag.id %>
     <%= form.text_area :body %>
-    <span class="reference"><%= t(:textile_reference) %></span>
+    <span class="reference"><%= t("winnow.general.textile_reference") %></span>
     <div class="input">
       <div class="errors" id="<%= dom_id(tag, 'new_comment_error') %>"></div>
-      <%= submit_tag 'Submit' %>
+      <%= submit_tag t("winnow.general.submit") %>
     </div>
   <% end -%>
 </div>

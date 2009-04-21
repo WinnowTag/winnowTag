@@ -10,6 +10,7 @@ describe "/messages/new.html.erb" do
     @message = mock_model(Message)
     @message.stub!(:new_record?).and_return(true)
     @message.stub!(:body).and_return("MyText")
+    @message.stub!(:pinned).and_return(true)
     assigns[:message] = @message
   end
 
@@ -18,6 +19,7 @@ describe "/messages/new.html.erb" do
     
     response.should have_tag("form[action=?][method=post]", messages_path) do
       with_tag("textarea#message_body[name=?]", "message[body]")
+      with_tag('input[type=checkbox][name=?]', 'message[pinned]')
     end
   end
 end

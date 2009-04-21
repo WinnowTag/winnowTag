@@ -90,7 +90,7 @@ class TagsController < ApplicationController
       if to
         if params[:overwrite] =~ /true/i
           from.overwrite(to)
-          flash[:notice] = t(:tag_copied, :from => h(from.name), :to => h(to.name))
+          flash[:notice] = t("winnow.notifications.tag_copied", :from => h(from.name), :to => h(to.name))
           render :update do |page|
             page.redirect_to tags_path
           end
@@ -98,7 +98,7 @@ class TagsController < ApplicationController
           render :update do |page|
             # TODO: broken?
             page << <<-EOJS
-              if(confirm(#{t(:tag_replace, :to => h(params[:name]), :from => h(from.name)).to_json}) {
+              if(confirm(#{t('winnow.tags.main.replace', :to => h(params[:name]), :from => h(from.name)).to_json}) {
                 #{remote_function(:url => hash_for_tags_path(:copy => from, :name => params[:name], :overwrite => true))};
               }
             EOJS
@@ -108,7 +108,7 @@ class TagsController < ApplicationController
         to = Tag(current_user, params[:name])
         from.copy(to)
       
-        flash[:notice] = t(:tag_copied, :from => h(from.name), :to => h(to.name))
+        flash[:notice] = t("winnow.notifications.tag_copied", :from => h(from.name), :to => h(to.name))
       
         render :update do |page|
           page.redirect_to tags_path
@@ -148,7 +148,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       if merge_to = current_user.tags.find_by_name(params[:tag][:name])
         @tag.merge(merge_to)
-        flash[:notice] = t(:tag_merged, :from => h(@tag.name), :to => h(merge_to.name))
+        flash[:notice] = t("winnow.notifications.tag_merged", :from => h(@tag.name), :to => h(merge_to.name))
       end
       
       format.html { redirect_to tags_path }
@@ -287,16 +287,16 @@ private
     if params[:user] && params[:tag_name]
       @user = User.find_by_login(params[:user])
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
-        render :status => :not_found, :text => t(:tag_not_found, :login => h(@user.login), :tag_name => h(params[:tag_name]))
+        render :status => :not_found, :text => t("winnow.tags.main.not_found", :login => h(@user.login), :tag_name => h(params[:tag_name]))
       end
     elsif params[:id] && current_user
       begin
         @tag = current_user.tags.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render :status => :not_found, :text => t(:tag_id_not_found, :tag_id => h(params[:id]))
+        render :status => :not_found, :text => t("winnow.tags.main.id_not_found", :tag_id => h(params[:id]))
       end
     else
-      render :status => :not_found, :text => t(:tag_id_not_found, :tag_id => h(params[:id]))
+      render :status => :not_found, :text => t("winnow.tags.main.id_not_found", :tag_id => h(params[:id]))
     end
   end
   

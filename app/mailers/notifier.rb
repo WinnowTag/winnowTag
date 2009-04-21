@@ -5,12 +5,12 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class Notifier < ActionMailer::Base
   def deployed(host, repository, revision, deployer, comment)
-    setup_email :subject => I18n.t(:deployed_subject, :revision => revision)
+    setup_email :subject => I18n.t("winnow.email.deployed_subject", :revision => revision)
     body        :host => host, :repository => repository, :revision => revision, :deployer => deployer, :comment => comment
   end
 
   def invite_requested(invite)
-    setup_email :subject => "#{I18n.t(:subject_prefix)} #{I18n.t(:invite_requested_subject)}"
+    setup_email :subject => "#{I18n.t('winnow.email.subject_prefix')} #{I18n.t('winnow.email.invite_requested_subject')}"
     body        :invite => invite
   end
     

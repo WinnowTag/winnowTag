@@ -1,45 +1,45 @@
 <% form_tag feeds_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t(:feeds_header_search_placeholder) %>
+  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.feeds.header.search_placeholder"), :title => t("winnow.feeds.header.search_tooltip") %>
 <% end -%>
 
 <div class="order clearfix">
-  <label><%= t(:sort_label) %></label>        
+  <label><%= t("winnow.general.sort_label") %></label>        
   <select id="order">
-    <option value="title"><%= t(:feeds_header_title) %></option>
-    <option value="globally_exclude"><%= t(:globally_exclude) %></option>
-    <option value="feed_items_count"><%= t(:feeds_header_items) %></option>
-    <option value="created_on"><%= t(:feeds_header_created) %></option>
-    <option value="updated_on"><%= t(:feeds_header_last_updated) %></option>
+    <option value="title"><%= t("winnow.feeds.header.title") %></option>
+    <option value="globally_exclude"><%= t("winnow.general.globally_exclude") %></option>
+    <option value="feed_items_count"><%= t("winnow.feeds.header.items") %></option>
+    <option value="created_on"><%= t("winnow.feeds.header.created") %></option>
+    <option value="updated_on"><%= t("winnow.general.last_updated") %></option>
   </select>
   <%= direction_link %>
 </div>
   
 <div class="toolbar right">
-  <%= rounded_button_function t(:feeds_header_add_import), "$('add_feed').toggle()", :icon => "add" %>
+  <%= rounded_button_function t("winnow.feeds.header.add_import"), "$('add_feed').toggle()", :icon => "add", :title => t("winnow.feeds.header.add_import_tooltip") %>
 </div>
 
 <div id="add_feed" style="clear:both;<%= flash[:error] || params[:feed] ? '' : 'display:none' %>">
   <fieldset class="full">
-    <legend><%= t(:feeds_add_import) %></legend>
+    <legend><%= t("winnow.feeds.header.add_import") %></legend>
     <% form_for :feed, @feed, :url => feeds_path do |f| %>
-      <p><%= t(:feeds_new_description) %></p>
+      <p><%= t("winnow.feeds.header.add_feed_description") %></p>
       <p>
-        <%= f.text_field :url, :size => 70 %>
-        <%= submit_tag t(:add_feed_button) %> 
+        <%= f.text_field :url, :size => 70, :title => t("winnow.feeds.header.add_feed_tooltip") %>
+        <%= submit_tag t("winnow.feeds.header.add_feed_button") %> 
       </p>
     <% end %>
 
     <% form_tag import_feeds_path, :method => :post, :multipart => true do -%>
-      <p><%= t(:feeds_import_description) %></p>
+      <p><%= t("winnow.feeds.header.upload_opml_description") %></p>
       <p>
-        <%= file_field_tag 'opml', :size => 60 %>
-        <%= submit_tag t(:upload) %> 
+        <%= file_field_tag 'opml', :size => 60, :title => t("winnow.feeds.header.upload_tooltip") %>
+        <%= submit_tag t("winnow.feeds.header.upload_button") %> 
       </p>
     <% end -%>
     
-    <p><%= t(:feeds_new_bookmarklet_description) %></p>
+    <p><%= t("winnow.feeds.header.add_to_winnow_bookmarklet_description") %></p>
     
-    <%= link_to t(:feeds_add_to_winnow), bookmarklet_js, :class => "bookmarklet", :title => t(:feeds_add_to_winnow), 
-                  :onclick => "Message.add('error', #{t(:feeds_bookmarklet_js_error_message).to_json}); return false;" %>
+    <%= link_to t("winnow.feeds.header.add_to_winnow_bookmarklet"), bookmarklet_js, :class => "bookmarklet", :title => t("winnow.feeds.header.add_to_winnow_bookmarklet"), 
+                  :onclick => "Message.add('error', #{t("winnow.notifications.bookmarklet_error_message").to_json}); return false;" %>
   </fieldset>
 </div>

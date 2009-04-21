@@ -1,24 +1,38 @@
 <% if current_user -%>
   <div id="navigation" class="navigation clearfix">
   	<ul class="extra">
-      <li>Logged in as <%=h current_user.login %></li>
-      <li><%= link_to(t(:profile), edit_account_path(current_user)) %></li>
-      <li><%= link_to(t(:logout), logout_path) %></li>
-      <li><%= link_to(t(:about), about_path) %></li>
-      <li id="feedback"><%= link_to(t(:leave_feedback), new_feedback_path) %></li>
+      <li><%= t("winnow.navigation.logged_in_as") %> <%=h current_user.login %></li>
+      <li><%= link_to(t("winnow.navigation.profile"), edit_account_path(current_user), :title => t("winnow.navigation.profile_tooltip")) %></li>
+      <li><%= link_to(t("winnow.navigation.logout"), logout_path, :title => t("winnow.navigation.logout_tooltip")) %></li>
+      <li><%= link_to(t("winnow.navigation.about"), about_path, :title => t("winnow.navigation.about_tooltip")) %></li>
+      <li id="feedback"><%= link_to(t("winnow.navigation.leave_feedback"), new_feedback_path, :title => t("winnow.navigation.leave_feedback_tooltip")) %></li>
     </ul>
 
   	<ul class="main clearfix">
-      <li><%= link_to(t(:winnow_info), info_path, :class => tab_selected('about', "info")) %></li>
-      <li><%= link_to(t(:items), feed_items_path, :class => tab_selected('feed_items')) %></li>
-  	  <li><%= link_to(t(:my_tags), tags_path, :class => tab_selected('tags', 'index')) %></li>
-  	  <li><%= link_to(t(:public_tags), public_tags_path, :class => tab_selected('tags', 'public')) %></li>
-      <li><%= link_to(t(:feeds), feeds_path, :class => tab_selected('feeds')) %></li>
+      <li><%= link_to(t("winnow.navigation.winnow_info"), info_path, :class => tab_selected('about', "info"), :title => t("winnow.navigation.winnow_info_tooltip")) %></li>
+      <li><%= link_to(t("winnow.navigation.items"), feed_items_path, :class => tab_selected('feed_items'), :title => t("winnow.navigation.items_tooltip")) %></li>
+  	  <li><%= link_to(t("winnow.navigation.my_tags"), tags_path, :class => tab_selected('tags', 'index'), :title => t("winnow.navigation.my_tags_tooltip")) %></li>
+  	  <li><%= link_to(t("winnow.navigation.public_tags"), public_tags_path, :class => tab_selected('tags', 'public'), :title => t("winnow.navigation.public_tags_tooltip")) %></li>
+      <li><%= link_to(t("winnow.navigation.feeds"), feeds_path, :class => tab_selected('feeds'), :title => t("winnow.navigation.feeds_tooltip")) %></li>
       <% if is_admin? -%>
-        <li><%= link_to(t(:admin), admin_path, :class => tab_selected('admin')) %></li>
+        <li><%= link_to(t("winnow.navigation.admin"), admin_path, :class => tab_selected('admin'), :title => t("winnow.navigation.admin_tooltip")) %></li>
       <% end -%>
       <% if help_path -%>
-        <li><%= link_to(t(:help), help_path, :target => "_blank", :class => "help") %></li>
+        <li><%= link_to(t("winnow.navigation.help"), help_path, :target => "_blank", :class => "help", :title => t("winnow.navigation.help_tooltip")) %></li>
+      <% end -%>
+  	</ul>
+	</div>
+<% else -%>
+  <div id="navigation" class="navigation clearfix">
+  	<ul class="extra">
+      <li><%= link_to(t("winnow.navigation.login"), login_path, :title => t("winnow.navigation.loging_tooltip")) %></li>
+      <li><%= link_to(t("winnow.navigation.about"), about_path, :title => t("winnow.navigation.about_tooltip")) %></li>
+    </ul>
+
+  	<ul class="main clearfix">
+      <li><%= link_to(t("winnow.navigation.winnow_info"), info_path, :class => tab_selected('about', "info"), :title => t("winnow.navigation.winnow_info_tooltip")) %></li>
+      <% if help_path -%>
+        <li><%= link_to(t("winnow.navigation.help"), help_path, :target => "_blank", :class => "help", :title => t("winnow.navigation.help_tooltip")) %></li>
       <% end -%>
   	</ul>
 	</div>

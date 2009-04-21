@@ -37,7 +37,7 @@ module ApplicationHelper
   end
   
   def direction_link
-    link_to_function "<span class='asc'>Ascending</span><span class='desc'>Descending</span>", "", :id => "direction"
+    link_to_function "<span class='asc' title='#{t("winnow.sort_direction.ascending_tooltip")}'>#{t("winnow.sort_direction.ascending")}</span><span class='desc' title='#{t("winnow.sort_direction.descending_tooltip")}'>#{t("winnow.sort_direction.descending")}</span>", "", :id => "direction"
   end
   
   def is_admin?
@@ -103,17 +103,19 @@ module ApplicationHelper
     end
     
     check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed),
-      :id => dom_id(tag_or_feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}")
+      :id => dom_id(tag_or_feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}"),
+      :title => t("winnow.general.globally_exclude_tooltip")
   end
 
   def subscribe_check_box(tag)
     check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :id => dom_id(tag, 'subscribe'), 
-      :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}")
+      :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}"),
+      :title => t("winnow.tags.main.subscribe_tooltip")
   end
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, t(:create_feed, :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -126,12 +128,12 @@ module ApplicationHelper
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
     end
 
-    html = link_to_function("Remove", "#{function}this.up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html = content_tag(:div, html, :class => "actions")
+    html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    html = content_tag(:span, html, :class => "actions")
 
     html << link_to_function(h(feed.title), "", :class => "name")
     
-    html =  content_tag(:div, html, :class => "filter")
+    html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
 
     class_names = [dom_id(feed), "clearfix", "feed"]
@@ -142,7 +144,7 @@ module ApplicationHelper
   
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content << content_tag(:li, t(:create_tag, :tag => h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
+    content << content_tag(:li, t("winnow.items.sidebar.create_tag", :tag => h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
@@ -163,11 +165,11 @@ module ApplicationHelper
     html  = ""
     html << link_to_function("Rename", "var new_tag_name = prompt('Tag Name:', $(this).up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
     html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html  = content_tag(:div, html, :class => "actions")
+    html  = content_tag(:span, html, :class => "actions")
 
     html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"))
 
-    html =  content_tag(:div, html, :class => "filter clearfix")
+    html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
     class_names = [dom_id(tag), "clearfix", "tag"]
@@ -183,9 +185,9 @@ module ApplicationHelper
   
   def tag_tooltip(tag)
     if tag.user_id == current_user.id 
-      t(:tag_tooltip, :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      t("winnow.items.sidebar.tag_tooltip", :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     else
-      t(:public_tag_tooltip, :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      t("winnow.items.sidebar.public_tag_tooltip", :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     end
   end
   
@@ -220,9 +222,9 @@ module ApplicationHelper
 
   def tag_state(tag)
     if current_user.globally_excluded?(tag)
-      "Globally Excluded"
+      t("winnow.tags.general.globally_excluded")
     elsif current_user.subscribed?(tag)
-      "Subscribed"
+      t("winnow.tags.general.subscribed")
     end
   end
 

@@ -1,5 +1,5 @@
 <%# NOTE: sadly, we need to do this crappy formatting so that the value in the text box does not have new lines -%>
-<%= @tag.description.blank? ? t(:tags_blank_description) : h(@tag.description) %><% javascript_tag do -%>
+<%= @tag.description.blank? ? t("winnow.tags.main.blank_description") : h(@tag.description) %><% javascript_tag do -%>
   <% if @tag.description.blank? -%>
     $("<%= dom_id(@tag) %>").down(".summary .description").addClassName("empty");
   <% else -%>

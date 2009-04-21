@@ -3,6 +3,6 @@ page[@comment.tag].down(".summary .comments .total_comments").update @comment.ta
 
 if @comment.tag.comments.empty?
   page.delay(1) do
-    page[@comment.tag].down('.comments .comment_form').insert(:before => content_tag(:div, t(:no_comments_for_this_tag), :class => "empty"))
+    page[@comment.tag].down('.comments .comment_form').insert(:before => content_tag(:div, t("winnow.tags.general.no_comments"), :class => "empty"))
   end
 end

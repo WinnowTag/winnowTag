@@ -1,3 +1,10 @@
+loading message
+auto test
+zen test
+textmate specs
+devel structure
+deploy installs gems
+
 * ie6 & noscript erros - i18n
 
 Spec Cleanup
@@ -37,6 +44,7 @@ rails:
  ! gems:refresh_specs adds bin
 selenium-client:
  * merged changes into mvanholstyn/selenium-client repo, need to push back upstream
+ * http://seleniumhq.org/projects/ruby/
 mhs testing:
  * loading issue on rake task
  * update

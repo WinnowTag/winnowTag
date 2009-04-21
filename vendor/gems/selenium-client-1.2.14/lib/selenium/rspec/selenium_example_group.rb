@@ -82,7 +82,7 @@ module Spec
               before_each_example
               instance_eval(&@_implementation)
             rescue Exception => e
-              execution_error ||= e
+              @execution_error ||= e
             end
             begin
               after_each_example

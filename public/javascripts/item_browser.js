@@ -74,7 +74,7 @@ var ItemBrowser = Class.create({
  
   updateEmptyMessage: function() {
     if(this.full && this.numberOfItems().size() == 0) {
-      this.container.insert('<div class="empty" style="display:none">' + I18n.t("winnow.javascript.itembrowser.empty") + '</div>');
+      this.container.insert('<div class="empty" style="display:none">' + I18n.t("winnow.general.empty") + '</div>');
       var message = $$("#" + this.container.getAttribute("id") + " > .empty").first();
   
       var message_padding = parseInt(message.getStyle("padding-top")) + parseInt(message.getStyle("padding-bottom"));
@@ -95,7 +95,7 @@ var ItemBrowser = Class.create({
   },
   
   showLoadingIndicator: function() {
-    this.container.insert('<div class="indicator" style="display:none">' + I18n.t("winnow.javascript.itembrowser.loading") + '</div>');
+    this.container.insert('<div class="indicator" style="display:none">' + I18n.t("winnow.general.loading") + '</div>');
     var indicator = $$("#" + this.container.getAttribute("id") + " > .indicator").first();
   
     if(this.numberOfItems().size() == 0) {

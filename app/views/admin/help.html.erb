@@ -1,10 +1,10 @@
 <% form_tag do -%>
   <p>
-    <b><label for="value"><%= t(:content_label) %></label></b><br/>
+    <b><label for="value"><%= t("winnow.general.content") %></label></b><br/>
     <%= text_area_tag :value, @help.value, :class => "content" %>
   </p>
   
   <p>
-    <%= submit_tag t(:save_button) %>
+    <%= submit_tag t("winnow.general.save") %>
   </p>
 <% end %>

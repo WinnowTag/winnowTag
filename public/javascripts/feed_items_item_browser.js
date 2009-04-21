@@ -387,7 +387,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     $("text_filter_form").observe("submit", function() {
       var value = $F('text_filter');
       if(value.length < 4) {
-        Message.add('error', I18n.t("winnow.javascript.itembrowser.text_filter.too_short"));
+        Message.add('error', I18n.t("winnow.notifications.feed_items_search_too_short"));
       } else {
         this.addFilters({text_filter: value});
       }

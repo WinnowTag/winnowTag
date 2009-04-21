@@ -2,7 +2,7 @@
   <div class="header clearfix">
     <div class="actions clearfix">
       <%= link_to_function "Rename", "var new_folder_name = prompt('Folder Name:', this.up('.folder').down('.name').innerHTML.unescapeHTML()); if(new_folder_name) { #{remote_function(:url => folder_path(folder), :method => :put, :with => "'folder[name]=' + encodeURIComponent(new_folder_name)")} }", :class => "edit" %>  
-      <%= link_to_remote "Remove", :url => folder_path(folder), :method => :delete, :confirm => t(:confirm_destroy_folder), :html => { :class => "remove" } %>
+      <%= link_to_remote "Remove", :url => folder_path(folder), :method => :delete, :confirm => t("winnow.general.are_you_sure"), :html => { :class => "remove" } %>
     </div>
     <span class="toggle_button"  onclick="$(this).up('.folder').toggleClassName('open'); Cookie.set('<%= dom_id(folder) %>', $(this).up('.folder').hasClassName('open'), 365);"></span>
     <%= link_to_function h(folder.name), "itemBrowser.toggleSetFilters({folder_ids: '#{folder.id}'}, event);", :class => "name" %>

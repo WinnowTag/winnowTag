@@ -27,6 +27,8 @@ var SidebarSection = Class.create({
   
   toggleOpen: function() {
     this.element.toggleClassName('open');
+    var tooltip = this.element.hasClassName('open') ? I18n.t('winnow.items.sidebar.collapse') : I18n.t('winnow.items.sidebar.expand');
+    this.toggle_button.writeAttribute('title', tooltip)
     this.cancel();
   },
   

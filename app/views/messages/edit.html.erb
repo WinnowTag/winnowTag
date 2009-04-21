@@ -1,17 +1,19 @@
-<h1><%= t(:messages_editing_messages) %></h1>
+<h3><%= t("winnow.messages.edit.editing_message") %></h3>
 
 <%= error_messages_for :message %>
 
 <% form_for(@message) do |f| %>
   <p>
-    <b>Body</b><br />
-    <%= f.text_area :body %>
+    <%= f.text_area :body %><br />
+    <%= t("winnow.general.textile_reference") %>
   </p>
-
   <p>
-    <%= f.submit t(:update) %>
+    <%= f.check_box :pinned %>
+    <%= f.label :pinned, t("winnow.messages.general.pinned") %>
+  </p>
+  <p>
+    <%= f.submit t("winnow.general.update") %>
   </p>
 <% end %>
 
-<%= link_to t(:show), @message %> |
-<%= link_to t(:back), messages_path %>
+<%= link_to t("winnow.general.back"), messages_path, :title => t("winnow.general.back_tooltip") %>

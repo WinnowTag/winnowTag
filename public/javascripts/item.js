@@ -33,9 +33,9 @@ var Item = Class.create({
 
     this.status.observe("mouseover", function() {
       if(this.element.match(".read")) {
-        this.status.title = I18n.t("winnow.javascript.itembrowser.mark_unread");
+        this.status.title = I18n.t("winnow.items.main.mark_unread");
       } else {
-        this.status.title = I18n.t("winnow.javascript.itembrowser.mark_read");
+        this.status.title = I18n.t("winnow.items.main.mark_read");
       }
     }.bind(this));
 

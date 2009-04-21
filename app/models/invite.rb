@@ -10,8 +10,8 @@ class Invite < ActiveRecord::Base
 
   def initialize(*args, &block)
     super(*args, &block)
-    self.subject ||= I18n.t(:default_invite_accepted_subject)
-    self.body ||= I18n.t(:default_invite_accepted_body)
+    self.subject ||= I18n.t("winnow.invites.edit.default_accepted_subject")
+    self.body ||= I18n.t("winnow.invites.edit.default_accepted_body")
   end
   
   def activate!

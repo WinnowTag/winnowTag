@@ -11,7 +11,7 @@ describe FoldersController do
     login_as @user
     
     User.stub!(:find_by_id).and_return(@user)
-    @folder = mock_model(Folder, :save => true)
+    @folder = mock_model(Folder, :save => true, :destroy => nil)
     @folders = mock("folders", :create! => @folder)
     @user.stub!(:folders).and_return(@folders)
 
@@ -62,7 +62,7 @@ describe FoldersController do
 
   describe "#destroy" do
     before(:each) do
-      @folders.stub!(:destroy)
+      @folders.stub!(:find).with("1").and_return(@folder)
     end
 
     def do_delete
@@ -70,7 +70,8 @@ describe FoldersController do
     end
     
     it "destroys a new folder for the current user" do
-      @folders.should_receive(:destroy).with("1")
+      @folders.should_receive(:find).with("1").and_return(@folder)
+      @folder.should_receive(:destroy)
       do_delete
     end
     

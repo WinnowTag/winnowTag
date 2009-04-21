@@ -1,10 +1,10 @@
 <div class="form">
   <% form_remote_for comment, :html => { :class => "clearfix" } do |form|  -%>
     <%= form.text_area :body %>
-    <span class="reference"><%= t(:textile_reference) %></span>
+    <span class="reference"><%= t("winnow.general.textile_reference") %></span>
     <div class="input">
       <div class="errors" id="<%= dom_id(comment, 'error') %>"></div>
-      <%= submit_tag t(:update) %> or <%= link_to_function t(:cancel), "$(this).up('.comment').down('.body').show();$(this).up('.form').remove()" %>
+      <%= submit_tag t("winnow.general.update") %> or <%= link_to_function t("winnow.general.cancel"), "$(this).up('.comment').down('.body').show();$(this).up('.form').remove()" %>
     </div>
   <% end -%>  
 </div>

@@ -30,7 +30,7 @@ describe CollectionJobResultsController do
   end
   
   it "creates a failure messsage when unsuccessful" do
-    @messages.should_receive(:create!).with(:body => I18n.t(:collection_failed, :title => "Some Blog", :message => "Couldn't contact server")).and_return(@message)  
+    @messages.should_receive(:create!).with(:body => I18n.t("winnow.notifications.collection_failed", :title => "Some Blog", :message => "Couldn't contact server")).and_return(@message)  
     do_post("Couldn't contact server")
   end
   

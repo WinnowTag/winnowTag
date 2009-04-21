@@ -12,11 +12,19 @@ class Message < ActiveRecord::Base
     
   named_scope :global, :conditions => { :user_id => nil }
   named_scope :for, lambda { |user|
-    { :conditions => ["messages.user_id IS NULL OR messages.user_id = ?", user.id] }
+    if user
+      { :conditions => ["messages.user_id IS NULL OR messages.user_id = ?", user.id] }
+    else
+      { :conditions => "messages.user_id IS NULL" }
+    end
   }
   
   named_scope :latest, lambda { |limit|
-    { :order => "created_at DESC", :limit => limit }
+    { :limit => limit }
+  }
+  
+  named_scope :pinned_or_since, lambda { |date| 
+    { :conditions => ["messages.pinned = ? OR messages.created_at >= ?", true, date], :order => "messages.pinned DESC, messages.created_at DESC" }
   }
   
   def self.read_by!(user)
@@ -25,5 +33,9 @@ class Message < ActiveRecord::Base
     end
 
     Reading.create!(readings_attributes)
+  end
+  
+  def self.info_cutoff
+    60.days.ago
   end
 end

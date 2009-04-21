@@ -1,22 +1,22 @@
 <% form_tag users_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
-  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t(:users_search_placeholder) %>
+  <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.users.header.search_placeholder"), :title => t("winnow.users.header.search_tooltip") %>
 <% end -%>
 
 <div class="order clearfix">
-  <label><%= t(:sort_label) %></label>        
+  <label><%= t("winnow.general.sort_label") %></label>        
   <select id="order">
-    <option value="login"><%= t(:users_header_login) %></option>
-    <option value="name"><%= t(:users_header_name) %></option>
-    <option value="email"><%= t(:users_header_email) %></option>
-    <option value="logged_in_at"><%= t(:users_header_last_logged_in) %></option>
-    <option value="last_accessed_at"><%= t(:users_header_last_accessed) %></option>
-    <option value="last_tagging_on"><%= t(:users_header_last_trained) %></option>
-    <option value="tag_count"><%= t(:users_header_number_of_tags) %></option>
+    <option value="login"><%= t("winnow.users.attributes.login") %></option>
+    <option value="name"><%= t("winnow.users.attributes.name") %></option>
+    <option value="email"><%= t("winnow.general.email") %></option>
+    <option value="logged_in_at"><%= t("winnow.users.attributes.last_logged_in") %></option>
+    <option value="last_accessed_at"><%= t("winnow.users.attributes.last_accessed") %></option>
+    <option value="last_tagging_on"><%= t("winnow.users.attributes.last_trained") %></option>
+    <option value="tag_count"><%= t("winnow.users.attributes.number_of_tags") %></option>
   </select>
   <%= direction_link %>
 </div>
 
 <div class="toolbar right">
-  <%= rounded_button_link t(:users_create_user), new_user_url, :icon => "add_user" %>
-  <%= rounded_button_link t(:users_export), formatted_users_path(:csv, params.except(:controller, :action)), :icon => "export" %>
+  <%= rounded_button_link t("winnow.users.header.create_user"), new_user_url, :icon => "add_user", :title => t("winnow.users.header.create_user_tooltip") %>
+  <%= rounded_button_link t("winnow.users.header.export"), formatted_users_path(:csv, params.except(:controller, :action)), :icon => "export", :title => t("winnow.users.header.export_tooltip") %>
 </div>  

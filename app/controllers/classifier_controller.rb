@@ -39,14 +39,14 @@ class ClassifierController < ApplicationController
       rescue => detail       
         logger.fatal(detail) 
         logger.fatal(detail.backtrace.join("\n"))
-        format.json { render :json => "The classifier could not be started. Please try again.".to_json, :status => 500 }
+        format.json { render :json => I18n.t("winnow.notifications.classifier.could_not_be_started").to_json, :status => 500 }
       end
     end
   end
   
   def status
     respond_to do |wants|
-      status = {:error_message => t(:classifier_not_running), :progress => 100}
+      status = {:error_message => t("winnow.notifications.classifier.not_running"), :progress => 100}
       
       session[:classification_job_id] && session[:classification_job_id].dup.each_with_index do |job_id, index|
         if job = Remote::ClassifierJob.find(job_id)
@@ -93,14 +93,14 @@ class ClassifierController < ApplicationController
 private
   def start_classification_job
     if job_running?
-      raise ClassificationStartException.new(t(:classifier_running), 500)
+      raise ClassificationStartException.new(t("winnow.notifications.classifier.already_running"), 500)
     elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
       tag_names = puct.map { |tag| h(tag.name) }.to_sentence
       message = "You are about to classify " + tag_names + " which #{puct.size > 1 ? 'have' : 'has'} less than 6 positive examples. " <<
                 "This might not work as well as you would expect.\nDo you want to proceed anyway?"
       raise ClassificationStartException.new(message, 412)
     elsif current_user.changed_tags.empty?
-      raise ClassificationStartException.new(t(:tags_not_changed), 500)
+      raise ClassificationStartException.new(t("winnow.notifications.classifier.tags_not_changed"), 500)
     else
       session[:classification_job_id] = []
       current_user.changed_tags.each do |tag|

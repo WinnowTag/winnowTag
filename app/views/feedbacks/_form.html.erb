@@ -1,4 +1,4 @@
 <% form_for feedback do |form| -%>
-  <%= form.text_area :body %>
-  <%= submit_tag t(:feedback_submit_button) %> or <%= link_to_function t(:feedback_cancel_link), "", :class => "cancel" %>
+  <%= form.text_area :body, :title => t("winnow.navigation.leave_feedback_textbox_tooltip") %>
+  <%= submit_tag t("winnow.general.submit") %> <%= t("winnow.general.or") %> <%= link_to_function t("winnow.general.cancel"), "", :class => "cancel" %>
 <% end -%>
