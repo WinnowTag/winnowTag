@@ -131,24 +131,38 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   updateFeedFilters: function(element, feed) {
     element.clear();
     if(feed.match("#add_new_feed")) {
-      new Ajax.Request("/feeds", {parameters: 'feed[url]='+encodeURIComponent(feed.getAttribute("url")), method:'post'});
+      new Ajax.Request("/feeds", {
+        parameters: 'feed[url]=' + encodeURIComponent(feed.getAttribute("url")),
+        method: 'post',
+        onComplete: function() {
+          this.styleFilters();  
+        }.bind(this)
+      });
     } else {
       feed.removeClassName('selected');
       $('feed_filters').insertInOrder('li', '.name', feed, $(feed).down(".name").innerHTML.unescapeHTML());
       this.bindFeedFilterEvents(feed);
       new Ajax.Request(feed.getAttribute("subscribe_url"), {method:'put'});
+      this.styleFilters();
     }
   },
   
   updateTagFilters: function(input, tag) {
     input.clear();
     if(tag.match("#add_new_tag")) {
-      new Ajax.Request("/tags", {parameters: 'name='+encodeURIComponent(tag.getAttribute("name")), method:'post'});
+      new Ajax.Request("/tags", {
+        parameters: 'name=' + encodeURIComponent(tag.getAttribute("name")), 
+        method: 'post',
+        onComplete: function() {
+          this.styleFilters();  
+        }.bind(this)
+      });
     } else {
       tag.removeClassName('selected');
       $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
       this.bindTagFilterEvents(tag);
       new Ajax.Request(tag.getAttribute("subscribe_url"), {method:'put'});
+      this.styleFilters();
     }
   },
   
@@ -201,6 +215,18 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
 
   toggleSetFilters: function(parameters, event) {
+    if(parameters.folder_ids) {
+      var empty = false;
+      parameters.folder_ids.split(",").each(function(folder_id) {
+        var folder = $("folder_" + folder_id);
+        if(folder_id == "tags" || folder_id == "feeds") {
+          folder = $(folder_id + "_section");
+        }
+        empty = folder.hasClassName("empty");
+      });
+      if(empty) { return false; }
+    }
+    
     if(event && event.metaKey) {
       this.expandFolderParameters(parameters);
       var selected = true;
@@ -282,15 +308,22 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         }
       });
       
-      if(items.size() > 0 && selected == items.size()) {
+      if(items.size() == 0) {
+        folder.removeClassName("some_selected");
+        folder.removeClassName("selected");
+        folder.addClassName("empty");
+      } else if(selected == items.size()) {
+        folder.removeClassName("empty");
         folder.removeClassName("some_selected");
         folder.addClassName("selected");
       } else if(selected > 0) {
+        folder.removeClassName("empty");
         folder.removeClassName("selected");
         folder.addClassName("some_selected");
       } else {
-        folder.removeClassName("selected");
+        folder.removeClassName("empty");
         folder.removeClassName("some_selected");        
+        folder.removeClassName("selected");
       }
     });
     
