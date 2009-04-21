@@ -1,0 +1,19 @@
+development:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: winnow_development
+  pool: 5
+  username: root
+  password:
+  host: localhost
+
+test:
+  adapter: mysql
+  encoding: utf8
+  reconnect: false
+  database: winnow_test
+  pool: 5
+  username: root
+  password:
+  host: localhost
