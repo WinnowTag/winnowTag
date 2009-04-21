@@ -8,7 +8,7 @@ module I18n
   module Backend
     class Simple
       def all_translations
-        send(:init_translations) unless initialized?
+        init_translations unless initialized?
         translations
       end
     end
