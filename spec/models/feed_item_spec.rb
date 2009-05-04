@@ -427,7 +427,86 @@ describe FeedItem do
       @atom.to_xml.should match(/this is not utf-8/)
     end
   end
+    
+  describe '.archive' do
+    before(:each) do
+      @before_count = FeedItem.count
+      ActiveRecord::Base.record_timestamps = false
+    end
+    
+    after(:each) do
+      ActiveRecord::Base.record_timestamps = true
+    end
+    
+    it "should delete items older than the parameter" do
+      item = Generate.feed_item!(:updated => 10.days.ago.getutc)
+      FeedItem.archive_items(9.days.ago)
+      lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
+      FeedItem.count.should == @before_count
+    end
+    
+    it "should delete items older than 30 days by default" do
+      older = Generate.feed_item!(:updated => 31.days.ago.getutc, :content => FeedItemContent.new(:content => 'this is content'))
+      newer = Generate.feed_item!(:updated => 30.days.ago.getutc)
+      FeedItem.archive_items
+      lambda { older.reload }.should raise_error(ActiveRecord::RecordNotFound)
+      lambda { newer.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+      FeedItem.count.should == (@before_count + 1)
+    end
+    
+    it "should exclude items with manual taggings" do
+      item = Generate.feed_item!(:updated => 31.days.ago.getutc)
+      user = Generate.user!
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      Tagging.create!(:tag => tag, :feed_item => item, :user => user)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+      FeedItem.count.should == (@before_count + 1)
+    end
+    
+    it "should delete items with only classifier taggings older than 30 days" do
+      item = Generate.feed_item!(:updated => 31.days.ago.getutc)
+      user = Generate.user!
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true, :created_on => 31.days.ago.getutc)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
+    end
+    
+    it "should delete old items with recent classifier tagging" do
+      item = Generate.feed_item!(:updated => 31.days.ago.getutc)
+      user = Generate.user!
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
+    end
+    
+    it "should not delete old items with recent user tagging" do
+      item = Generate.feed_item!(:updated => 31.days.ago.getutc)
+      user = Generate.user!
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => false)
+      
+      FeedItem.archive_items
+      lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+    end
+      
+    it "should not delete items with a classifier and a manual tagging" do
+      item = Generate.feed_item!(:updated => 31.days.ago.getutc)
+      user = Generate.user!
+      tag = Tag.create!(:user => user, :name => 'newtag')
+      user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true, :created_on => 31.days.ago.getutc)
+      user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => false, :created_on => 31.days.ago.getutc)
 
+      FeedItem.archive_items
+      lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+  
   describe "from test/unit" do
     before(:each) do
       @feed_item1 = Generate.feed_item!
