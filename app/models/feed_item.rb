@@ -122,11 +122,12 @@ class FeedItem < ActiveRecord::Base
   def self.archive_items(since = 30.days.ago.getutc)
     taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
     conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
-    items = FeedItem.find(:all, :conditions => conditions)
-    items.each do |item|
+    counter = 0
+    FeedItem.find_each(:conditions => conditions) do |item|
       item.destroy
+      counter += 1
     end
-    logger.info("ARCHIVAL: Deleted #{items.size} items and #{taggings_deleted} classifier taggings older than #{since}")
+    logger.info("ARCHIVAL: Deleted #{counter} items and #{taggings_deleted} classifier taggings older than #{since}")
   end
   
   def self.atom_with_filters(filters = {})
