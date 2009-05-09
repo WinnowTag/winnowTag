@@ -26,16 +26,14 @@ class FeedItem < ActiveRecord::Base
   attr_readonly :uri
   attr_accessor :taggings_to_display
 
-  acts_as_readable
-
+  validates_presence_of :link
+  validates_uniqueness_of :link
   belongs_to :feed, :counter_cache => true
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
   has_many :taggings
-  has_many :tags, :through => :taggings
   
-  validates_presence_of :link
-  validates_uniqueness_of :link
+  has_many :tags, :through => :taggings  
   
   def self.find_or_create_from_atom(entry)
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
@@ -111,6 +109,25 @@ class FeedItem < ActiveRecord::Base
         end
       end
     end
+  end
+  
+  # Destroy feed items older that +since+.
+  #
+  # This also deletes all classifier taggings that are on items older than +since+,
+  # Manual taggings are untouched.
+  #
+  # You could do this in the one SQL statement, however using ActiveRecord,
+  # while taking slightly longer, will break this up into multiple transactions
+  # and reduce the chance of getting a deadlock with a long transaction.
+  def self.archive_items(since = 30.days.ago.getutc)
+    taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
+    conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
+    counter = 0
+    FeedItem.find_each(:conditions => conditions) do |item|
+      item.destroy
+      counter += 1
+    end
+    logger.info("ARCHIVAL: Deleted #{counter} items and #{taggings_deleted} classifier taggings older than #{since}")
   end
   
   def self.atom_with_filters(filters = {})
