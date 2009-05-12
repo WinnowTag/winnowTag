@@ -259,7 +259,7 @@ private
   def taggings_from_atom(atom)
     atom.entries.each do |entry|
       begin
-        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{self.user.login}/tags/$}}
+        strength = if category = entry.categories.detect {|c| c.term == self.name && c.scheme =~ %r{/#{Regexp.escape(self.user.login)}/tags/$}}
           category[CLASSIFIER_NAMESPACE, 'strength'].first.to_f
         else 
           0.0
