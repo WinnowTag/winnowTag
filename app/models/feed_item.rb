@@ -84,7 +84,7 @@ class FeedItem < ActiveRecord::Base
       if self.content
         begin
           entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'utf-8', self.content.content).first)
-        rescue Iconv::IllegalSequence
+        rescue Iconv::IllegalSequence, Iconv::InvalidCharacter
           entry.content = Atom::Content::Html.new(Iconv.iconv('utf-8', 'LATIN1', self.content.content).first)
         end
       end
