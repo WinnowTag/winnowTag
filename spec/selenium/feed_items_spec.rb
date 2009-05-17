@@ -99,6 +99,6 @@ describe "FeedItemsTest" do
   end
   
   it "does not display an empty message when there are feed items" do
-    dont_see_element "#feed_items .empty"
+    dont_see_element "#content .empty"
   end
 end
