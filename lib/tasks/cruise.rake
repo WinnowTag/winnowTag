@@ -34,7 +34,7 @@ task :cruise_with_selenium do
   Rake::Task['db:migrate'].invoke
   Rake::Task['assets:clean'].invoke
   # system "touch tmp/restart.txt"
-  system "mongrel_rails start -e test -p 4000 -d"
+  system "mongrel_rails start -e test -p 3000 -d"
   
   Rake::Task['spec:code'].invoke
   Rake::Task['spec:controllers'].invoke
