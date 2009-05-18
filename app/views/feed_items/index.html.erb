@@ -45,7 +45,7 @@
     <div class="group">
       <label><%= t("winnow.items.header.selected_filters") %></label>
       <%= rounded_button_function t("winnow.items.header.clear_selected_filters"), "", :icon => "clear", :id => "clear_selected_filters", :class => "first", :title => t("winnow.items.header.clear_selected_filters_tooltip") %>
-      <%= rounded_button_link t("winnow.items.header.feed_for_selected_filters"), "", :icon => "feed", :base_url => formatted_feed_items_path(:atom), :id => "feed_with_selected_filters", :title => t("winnow.items.header.feed_for_selected_filters_tooltip") %>
+      <%= rounded_button_link t("winnow.items.header.feed_for_selected_filters"), "", :icon => "feed", :base_url => feed_items_path(:format => :atom), :id => "feed_with_selected_filters", :title => t("winnow.items.header.feed_for_selected_filters_tooltip") %>
     </div>
     
     <div class="group">
