@@ -77,8 +77,19 @@ describe ClassifierController do
       response.should be_success
     end
   
-    it "should start a job when the stored job id is complete" do
+    it "should remove the old job and start a new job when the stored job id is complete" do
       job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::COMPLETE)
+      job.should_receive(:destroy)
+      Remote::ClassifierJob.should_receive(:find).with("EXISTING-JOB-ID").and_return(job)
+      Remote::ClassifierJob.should_receive(:create).and_return(mock_model(Remote::ClassifierJob, :id => "NEWJOB"))
+      session[:classification_job_id] = ["EXISTING-JOB-ID"]
+      post "classify"
+      response.should be_success
+    end
+    
+    it "should remove the old job and start a new job when the stored job id is in error" do
+      job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::ERROR)
+      job.should_receive(:destroy)
       Remote::ClassifierJob.should_receive(:find).with("EXISTING-JOB-ID").and_return(job)
       Remote::ClassifierJob.should_receive(:create).and_return(mock_model(Remote::ClassifierJob, :id => "NEWJOB"))
       session[:classification_job_id] = ["EXISTING-JOB-ID"]

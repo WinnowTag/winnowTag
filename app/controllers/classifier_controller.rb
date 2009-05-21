@@ -117,7 +117,12 @@ private
     if session[:classification_job_id] && job_id = session[:classification_job_id].first
       begin
         job = Remote::ClassifierJob.find(job_id)
-        return job.status != Remote::ClassifierJob::Status::COMPLETE
+        if [Remote::ClassifierJob::Status::COMPLETE, Remote::ClassifierJob::Status::ERROR].include?(job.status)
+          job.destroy
+          false
+        else
+          true
+        end
       rescue ActiveResource::ResourceNotFound => ex
         return false
       end
