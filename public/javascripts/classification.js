@@ -24,7 +24,7 @@ var Classification = Class.create({
     this.progress_bar = $('progress_bar');
     this.progress_title = $('progress_title');
     
-    this.classification_button.observe("click", this.start.bind(this))
+    this.classification_button.observe("click", this.clickStart.bind(this))
     this.cancel_classification_button.observe("click", this.cancel.bind(this))
     
     this.options = {
@@ -89,6 +89,9 @@ var Classification = Class.create({
     this.classification_button.removeClassName("disabled");
   },
   
+  clickStart: function() {
+      this.start(false);
+  },
   /* puct_confirm == true means that that user has confirmed that they want to 
    * classify some potentially undertrained tags.
    */
