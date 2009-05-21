@@ -19,18 +19,15 @@ var Classification = Class.create({
     this.has_changed_tags = has_changed_tags;
     
     this.classification_button = $('classification_button');
-    this.cancel_classification_button = $('cancel_classification_button');
     this.classification_progress = $('classification_progress');
     this.progress_bar = $('progress_bar');
     this.progress_title = $('progress_title');
     
     this.classification_button.observe("click", this.clickStart.bind(this))
-    this.cancel_classification_button.observe("click", this.cancel.bind(this))
     
     this.options = {
       onStarted: function(c) {     
         this.classification_button.hide();
-        this.cancel_classification_button.show();
 
         this.progress_bar.setStyle({width: '0%'});
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.start"));
@@ -47,12 +44,10 @@ var Classification = Class.create({
         this.progress_bar.setStyle({width: progress.progress + '%'});      
       }.bind(this),
       
-      onCancelled: function() {
+      onReset: function() {
         this.classification_progress.hide();
         this.progress_bar.setStyle({width: '0%'});
-        this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.cancel"));
-        
-        this.cancel_classification_button.hide();
+        this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.cancel"));        
         this.classification_button.show();
 
         Content.instance.resizeHeight();
@@ -60,7 +55,7 @@ var Classification = Class.create({
       
       onFinished: function() {
         this.classification_progress.hide();
-        this.notify("Cancelled")
+        this.notify("Reset");
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.finish"));
         this.disableClassification();
         if(confirm(I18n.t("winnow.javascript.classifier.progress_bar.reload"))) {
@@ -96,6 +91,7 @@ var Classification = Class.create({
    * classify some potentially undertrained tags.
    */
   start: function(puct_confirm) {
+    console.log(puct_confirm)
     if(this.classification_button.hasClassName("disabled")) { return; }
     
     parameters = null;
@@ -120,11 +116,11 @@ var Classification = Class.create({
         }
       }.bind(this),
       onTimeout: function() {
-        this.notify("Cancelled");
+        this.notify("Reset");
         Message.add('error', I18n.t("winnow.javascript.errors.classifier.timeout"));
       }.bind(this),
       on412: function(response) {
-        this.notify('Cancelled');
+        this.notify('Reset');
         if (response.responseJSON) {
           new ConfirmationMessage(response.responseJSON, function() {
             this.start(true);
@@ -133,22 +129,7 @@ var Classification = Class.create({
       }.bind(this)
     });
   },
-  
-  cancel: function() {
-    this.progressUpdater.stop();
-    this.reset();
-        
-    new Ajax.Request(this.classifier_url + '/cancel?no_redirect=true', {
-      onComplete: function() {
-        this.notify('Cancelled');
-      }.bind(this),
-      onFailure: function(transport) {
-        Message.add('error', transport.responseText);
-        this.notify('Cancelled');
-      }
-    });    
-  },
-  
+    
   startProgressUpdater: function() {
     this.notify('StartProgressUpdater');
     this.progressUpdater = new PeriodicalExecuter(function(executer) {
@@ -168,13 +149,13 @@ var Classification = Class.create({
             }
           }.bind(this),
           onFailure: function(transport) {
-            this.notify("Cancelled");
+            this.notify("Reset");
             executer.stop();
             Message.add('error', transport.responseJSON);
           }.bind(this),
           onTimeout: function() {
             executer.stop();
-            this.notify("Cancelled");
+            this.notify("Reset");
             Message.add('error', I18n.t("winnow.javascript.errors.classifier.timeout"));
           }.bind(this)
         });

@@ -173,30 +173,4 @@ describe ClassifierController do
       response.headers['X-JSON'].should include('"progress": 50.0')      
     end
   end
-  
-  describe '#cancel' do
-    it "should cancel a running job" do
-      job = mock_model(Remote::ClassifierJob)
-      job.should_receive(:destroy)
-    
-      Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
-      session[:classification_job_id] = ["JOB-ID"]
-    
-      post "cancel"
-      session[:classification_job_id].should be_nil
-    end
-    
-    it "should cancel all classification jobs" do
-      job1 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 75)
-      job2 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 25)
-      job1.should_receive(:destroy)
-      job2.should_receive(:destroy)
-      Remote::ClassifierJob.should_receive(:find).with("JOB-1").and_return(job1)
-      Remote::ClassifierJob.should_receive(:find).with("JOB-2").and_return(job2)
-      session[:classification_job_id] = ["JOB-1", "JOB-2"]      
-      
-      post "cancel"
-      session[:classification_job_id].should be_nil
-    end
-  end  
 end

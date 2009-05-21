@@ -78,18 +78,6 @@ class ClassifierController < ApplicationController
     end
   end
   
-  def cancel
-    session[:classification_job_id] && session[:classification_job_id].each do |job_id|
-      if job = Remote::ClassifierJob.find(job_id)
-        job.destroy
-      end
-    end
-    
-    session[:classification_job_id] = nil
-    
-    render :nothing => true
-  end
-  
 private
   def start_classification_job
     if job_running?
