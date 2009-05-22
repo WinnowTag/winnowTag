@@ -91,7 +91,6 @@ var Classification = Class.create({
    * classify some potentially undertrained tags.
    */
   start: function(puct_confirm) {
-    console.log(puct_confirm)
     if(this.classification_button.hasClassName("disabled")) { return; }
     
     parameters = null;
