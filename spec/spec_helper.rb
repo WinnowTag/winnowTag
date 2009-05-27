@@ -97,8 +97,4 @@ Spec::Runner.configure do |config|
   end
   
   include AuthenticatedTestHelper
-  
-  def assert_requires_login(login = nil)
-    yield HttpLoginProxy.new(self, login)
-  end
 end
