@@ -151,7 +151,6 @@ en:
         show_trained_label: "Trained"
         show_trained_tooltip: ""
         sort_date_label: "Date"
-        sort_strength_label: "Strength"
       sidebar:
         expand: "Expand"
         collapse: "Collapse"

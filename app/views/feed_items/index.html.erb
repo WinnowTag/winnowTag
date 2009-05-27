@@ -7,7 +7,7 @@
 			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
 			  modes: ["unread", "all", "trained"],
 			  orders: {
-			    desc:      ["date", "strength"],
+			    desc:      ["date"],
 			    "default": "date"
 			  }
 			});
@@ -36,7 +36,6 @@
     <label><%= t("winnow.general.sort_label") %></label>        
     <select id="order">
       <option value="date"><%= t("winnow.items.header.sort_date_label") %></option>
-      <option value="strength"><%= t("winnow.items.header.sort_strength_label") %></option>
     </select>
     <%= direction_link %>
   </div>
