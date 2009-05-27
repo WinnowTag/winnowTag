@@ -57,6 +57,13 @@ describe FeedItem do
       FeedItem.find_with_filters(:user => user, :order => 'date').should == [feed_item2, feed_item1]
     end
     
+    it "properly sorts the feed items by tag strength when the user has no tags" do
+      user = Generate.user!
+      feed_item1 = Generate.feed_item!
+      feed_item2 = Generate.feed_item!
+      FeedItem.find_with_filters(:user => user, :order => 'strength').should == [feed_item1, feed_item2]
+    end
+    
     it "properly sorts the feed items by tag strength first" do
       user = Generate.user!
       tag1 = Generate.tag!(:user => user)
