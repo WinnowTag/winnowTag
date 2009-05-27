@@ -9,13 +9,13 @@ Given(/^I am logged in$/) do
 end
 
 When "I visit $path" do |path|
-  get path
+  visit path
 end
 
-Then "I am redirected via rjs to $path" do |path|
-  response.body.should =~ /window\.location\.href = "#{Regexp.escape(path)}";/
+Then /^I am redirected via rjs to (.*)$/ do |page_name|
+  response.body.should =~ /window\.location\.href = "#{Regexp.escape(path_to(page_name))}";/
 end
 
-Then /^I am redirected to \/([\/a-zA-Z0-9]+)$/ do |path|
-  response.should redirect_to(path)
+Then /^I am redirected to (.*)$/ do |page_name|
+  Then "I should be on #{page_name}"
 end

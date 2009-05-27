@@ -85,10 +85,6 @@ When(/^I create a feed for "(.*)"$/) do |feed_url|
   click_button "Add Feed"
 end
 
-Then(/^I am redirected to the feeds page$/) do
-  current_url.should == feeds_url
-end
-
 # TODO: Make these smarter
 Then(/^I see the notice "(.*)"$/) do |notice|
   response.body.should include_text(notice)

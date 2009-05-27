@@ -9,9 +9,10 @@ module NavigationHelpers
     
     when /the homepage/
       root_path
-    
-    # Add more page name => path mappings here
-    
+    when /the login page/
+      login_path
+    when /the feeds page/
+      feeds_path
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in features/support/paths.rb"
