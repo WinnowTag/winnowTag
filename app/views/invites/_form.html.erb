@@ -21,5 +21,6 @@
 	  <%= check_box_tag :activate, true, true %></label>
     &nbsp;&nbsp;
 		<%= submit_tag @invite.new_record? ? t("winnow.invites.edit.create") : t("winnow.invites.edit.update") %>
+    <%= t("winnow.general.or") %> <%= link_to t("winnow.general.cancel"), invites_path %>
 	</p>
 <%  end -%>
