@@ -370,10 +370,12 @@ en:
       main:
         metadata: "{{login}} on {{created_at}}"
     profile:
-      header: "Account Details"
+      header: "Update your information"
       first_name: "First Name"
       last_name: "Last Name"
       time_zone: "Time Zone"
+      password:
+        header: "Change your password"
     login:
       welcome_header: "Welcome to Winnow"
       welcome_text: |-
