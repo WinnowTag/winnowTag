@@ -18,7 +18,7 @@
 
 	<p>
 	  <label for="activate" title="<%= t('winnow.invites.main.activate_tooltip') %>"><%= t("winnow.invites.edit.activate") %>
-	  <%= check_box_tag :activate, true, true %></label>
+	  <%= check_box_tag :activate, true %></label>
     &nbsp;&nbsp;
 		<%= submit_tag @invite.new_record? ? t("winnow.invites.edit.create") : t("winnow.invites.edit.update") %>
     <%= t("winnow.general.or") %> <%= link_to t("winnow.general.cancel"), invites_path %>
