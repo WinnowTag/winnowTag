@@ -115,7 +115,15 @@ module ApplicationHelper
   
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    if options[:add]
+      begin
+        uri = URI.parse(options[:auto_complete])
+        if uri.scheme.present?
+          content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(uri.to_s)), :id => "add_new_feed", :url => uri.to_s)
+        end
+      rescue URI::Error # don't add the "Create Feed" option if the URI is not valid
+      end
+    end
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
