@@ -149,21 +149,11 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   updateTagFilters: function(input, tag) {
     input.clear();
-    if(tag.match("#add_new_tag")) {
-      new Ajax.Request("/tags", {
-        parameters: 'name=' + encodeURIComponent(tag.getAttribute("name")), 
-        method: 'post',
-        onComplete: function() {
-          this.styleFilters();  
-        }.bind(this)
-      });
-    } else {
-      tag.removeClassName('selected');
-      $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
-      this.bindTagFilterEvents(tag);
-      new Ajax.Request(tag.getAttribute("subscribe_url"), {method:'put'});
-      this.styleFilters();
-    }
+    tag.removeClassName('selected');
+    $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
+    this.bindTagFilterEvents(tag);
+    new Ajax.Request(tag.getAttribute("subscribe_url"), {method:'put'});
+    this.styleFilters();
   },
   
   expandFolderParameters: function(parameters) {

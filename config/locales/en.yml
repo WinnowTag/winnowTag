@@ -166,7 +166,6 @@ en:
         tag_tooltip: "Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
         public_tag_tooltip: "From {{login}}, Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
         create_feed: "Create Feed: '{{feed}}'"
-        create_tag: "Create Tag: '{{tag}}'"
         merge_confirm: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
         sidebar_confirm: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
       main:
