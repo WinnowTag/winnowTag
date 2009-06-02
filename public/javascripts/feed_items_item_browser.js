@@ -123,6 +123,11 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     new Ajax.Request('/' + this.options.controller + '/mark_read' + '?' + $H(this.filters).toQueryString(), {method: 'put'});
   },
   
+  markAllItemsUnread: function() {
+    this.container.select('.feed_item').invoke('removeClassName', 'read');
+    new Ajax.Request('/' + this.options.controller + '/mark_unread' + '?' + $H(this.filters).toQueryString(), {method: 'put'});
+  },
+
   insertItem: function($super, item_id, content) {
     $super(item_id, content);
     new Item(item_id);
@@ -440,6 +445,11 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var mark_all_read_control = $("footer").down("a .read");
     if(mark_all_read_control) {
       mark_all_read_control.up("a").observe("click", this.markAllItemsRead.bind(this));
+    }
+
+    var mark_all_unread_control = $("footer").down("a .unread");
+    if(mark_all_unread_control) {
+      mark_all_unread_control.up("a").observe("click", this.markAllItemsUnread.bind(this));
     }
   },
   

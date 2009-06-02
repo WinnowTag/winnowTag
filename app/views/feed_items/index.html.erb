@@ -61,11 +61,14 @@
 <% content_for :footer do -%>	
   <div class="toolbar">
     <div class="group">
-      <%= rounded_button_function t("winnow.items.footer.previous_item"), "", :icon => "previous", :title => t("winnow.items.footer.previous_item_tooltip") %>  
-      <%= rounded_button_function t("winnow.items.footer.next_item"),     "", :icon => "next", :title => t("winnow.items.footer.next_item_tooltip") %>
+      <%= rounded_button_function t("winnow.items.footer.previous_item"), "", :icon => "previous", :title => t("winnow.items.footer.previous_item_tooltip") %>
+      <%= rounded_button_function t("winnow.items.footer.next_item"),     "", :icon => "next",     :title => t("winnow.items.footer.next_item_tooltip") %>
     </div>
   
-    <%= rounded_button_function t("winnow.items.footer.mark_all_read"),   "", :icon => "read", :title => t("winnow.items.footer.mark_all_read_tooltip") %>
+    <div class="group">
+      <%= rounded_button_function t("winnow.items.footer.mark_all_read"),   "", :icon => "read",   :title => t("winnow.items.footer.mark_all_read_tooltip") %>
+      <%= rounded_button_function t("winnow.items.footer.mark_all_unread"), "", :icon => "unread", :title => t("winnow.items.footer.mark_all_unread_tooltip") %>
+    </div>
   </div>
 	
 	<%= render :partial => "classification_controls" %>

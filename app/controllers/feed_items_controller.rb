@@ -94,7 +94,16 @@ class FeedItemsController < ApplicationController
   end
   
   def mark_unread
-    FeedItem.find(params[:id]).unread_by!(current_user)
+    if params[:id]
+      FeedItem.find(params[:id]).unread_by!(current_user)
+    else
+      filters = { :feed_ids => params[:feed_ids],
+                  :tag_ids => params[:tag_ids],
+                  :text_filter => params[:text_filter],
+                  :mode => params[:mode],
+                  :user => current_user }
+      FeedItem.unread_by!(filters)
+    end
     render :nothing => true
   end
   

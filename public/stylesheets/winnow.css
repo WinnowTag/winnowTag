@@ -2014,7 +2014,7 @@ body#info .messages ul li.sidebar_message .date {
 }
 
 .button .icon.read {
-  background-image: url(../images/unread_large.png);
+  background-image: url(../images/read_large.png);
 }
 
 .button .icon.previous {
