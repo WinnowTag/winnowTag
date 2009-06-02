@@ -192,21 +192,6 @@ class FeedItem < ActiveRecord::Base
     ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
     
-    # With feed exclusions MySQL will sometimes decide to use the feed_id index,
-    # however this results in using a filesort to sort the results, which is bad.
-    # So here we tell MySQL to ignore the feed_id index so it uses the index for
-    # sorting.
-    #
-    # My testing without the index hint shows MySQL to be pretty variable in whether
-    # it chooses to use the feed_id index or not.  It seems to be related to table
-    # sizes and whether statistics have been analyzed or not or whether the hint has
-    # been used before.  So having the hint in there takes the variation out of it
-    # and MySQL will always avoid a filesort triggered by using the feed_id index.
-    #
-    # See #842 for more info.
-    #
-    options_for_find[:from] = "`feed_items` IGNORE INDEX (index_feed_items_on_feed_id)"
-
     feed_items = FeedItem.find(:all, options_for_find)
     
     selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
@@ -229,7 +214,7 @@ class FeedItem < ActiveRecord::Base
     
     feed_items
   end
-  
+
   def self.read_by!(filters)
     options_for_find = options_for_filters(filters)   
 
