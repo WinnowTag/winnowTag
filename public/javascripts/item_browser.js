@@ -138,6 +138,7 @@ var ItemBrowser = Class.create({
   },
 
   clear: function() {
+    this.full = false;
     this.container.update('');
   },
   
