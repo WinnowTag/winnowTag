@@ -125,7 +125,19 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   markAllItemsUnread: function() {
     this.container.select('.feed_item').invoke('removeClassName', 'read');
-    new Ajax.Request('/' + this.options.controller + '/mark_unread' + '?' + $H(this.filters).toQueryString(), {method: 'put'});
+
+    this.loading = true;
+    this.clear();
+    this.showLoadingIndicator();
+
+    new Ajax.Request('/' + this.options.controller + '/mark_unread', {
+      parameters: this.filters, method: 'put',
+      onSuccess: function() {
+        this.hideLoadingIndicator();
+        this.loading = false;
+        this.reload();
+      }.bind(this)
+    });
   },
 
   insertItem: function($super, item_id, content) {
