@@ -70,10 +70,7 @@ ActionController::Routing::Routes.draw do |map|
                   :merge => :put,
                   :comments => :get
                 }
-  
-  map.public_tag "tags/public/:user_id/:id", :controller => "tags", :action => "show"
-  map.formatted_public_tag "tags/public/:user_id/:id.:format", :controller => "tags", :action => "show"
-  
+
   map.with_options :controller => "taggings" do |taggings_map|
     taggings_map.connect 'taggings/create', :action => "create"
     taggings_map.connect 'taggings/destroy', :action => "destroy"
