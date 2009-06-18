@@ -186,18 +186,7 @@ class TagsController < ApplicationController
       render :status => :no_content, :nothing => true
     end
   end
-  
-  # Action to get tag names for the auto-complete tag field on the merge/rename form.
-  def auto_complete_for_tag_name
-    @tag = current_user.tags.find_by_name(params[:id])
-    
-    @q = params[:tag][:name]
-    @tags = current_user.tags.find(:all, 
-          :conditions => ['LOWER(name) LIKE LOWER(?)', "%#{@q}%"])
-    @tags -= Array(@tag)
-    render :layout => false
-  end
-  
+
   def auto_complete_for_sidebar
     @q = params[:tag][:name]
     

@@ -48,11 +48,10 @@ ActionController::Routing::Routes.draw do |map|
     tags_map.connect ":user/tags/:tag_name/:action.:format"
     tags_map.connect ":user/tags/:tag_name/:action"
   end
-  
+
   map.resources :tags,
                 :collection => { 
                   :public => :get,
-                  :auto_complete_for_tag_name => :any,
                   :auto_complete_for_sidebar => :any
                 },
                 :member => { 
@@ -61,7 +60,6 @@ ActionController::Routing::Routes.draw do |map|
                   :subscribe => :put,
                   :unsubscribe => :put, 
                   :sidebar => :put,
-                  :auto_complete_for_tag_name => :any,
                   :training => :get,
                   :information => :get,
                   :classifier_taggings => [:post, :put],
