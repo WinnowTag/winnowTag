@@ -36,7 +36,7 @@ class TagsController < ApplicationController
   before_filter :login_or_hmac_required_unless_tag_is_public, :only => [:show, :index, :training]
 
   # For operations done by users, make sure it is the own of the tag doing it
-  before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy]
+  before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy, :merge, :publicize]
   
   def index
     respond_to do |format|
@@ -289,9 +289,9 @@ private
       unless @user && @tag = @user.tags.find_by_name(params[:tag_name])
         render :status => :not_found, :text => t("winnow.tags.main.not_found", :login => h(@user.login), :tag_name => h(params[:tag_name]))
       end
-    elsif params[:id] && current_user
+    elsif params[:id]
       begin
-        @tag = current_user.tags.find(params[:id])
+        @tag = Tag.find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render :status => :not_found, :text => t("winnow.tags.main.id_not_found", :tag_id => h(params[:id]))
       end
