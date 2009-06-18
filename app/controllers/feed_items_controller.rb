@@ -69,7 +69,7 @@ class FeedItemsController < ApplicationController
   def clues
     tries = params[:tries].to_i
     tag = Tag.find(params[:tag])
-    tag_url = url_for(:controller => 'tags', :action => 'training', :tag_name => tag.name, :user => tag.user, :format => 'atom')
+    tag_url = training_tag_url(tag, :format => 'atom')
     @clues = Remote::ClassifierClues.find_by_item_id_and_tag_url(params[:id], tag_url)
     
     if @clues == :redirect && tries < 7

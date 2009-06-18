@@ -92,9 +92,7 @@ private
     else
       session[:classification_job_id] = []
       current_user.changed_tags.each do |tag|
-        tag_url = url_for(:controller => 'tags', :action => 'training', 
-                          :format => 'atom',     :user => current_user.login, 
-                          :tag_name => tag.name)
+        tag_url = training_tag_url(tag, :format => 'atom')
         job = Remote::ClassifierJob.create(:tag_url => tag_url)
         session[:classification_job_id] << job.id
       end
