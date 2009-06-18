@@ -29,7 +29,7 @@
           <% end -%>
           <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'show', :title => t("winnow.tags.main.items_tagged_with_tooltip") %></li>
           <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained"), :class => "show", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
-          <li><%= link_to t("winnow.tags.main.feed"), url_for(:user => tag.user_login, :tag_name => tag.name, :action => 'show', :format => :atom), :class => "feed", :title => t("winnow.tags.main.feed_tooltip") %></li>
+          <li><%= link_to t("winnow.tags.main.feed"), url_for(:controller => "tags", :action => "show", :user => tag.user_login, :tag_name => tag.name, :format => "atom"), :class => "feed", :title => t("winnow.tags.main.feed_tooltip") %></li>
         </ul>
       </div>
       
