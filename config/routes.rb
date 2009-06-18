@@ -2,7 +2,7 @@ ActionController::Routing::Routes.draw do |map|
   map.namespace :item_cache do |item_cache|
     item_cache.resources :feed_items, :requirements => {:id => %r{[^/;,?]+}}
     item_cache.resources :feeds, :requirements => {:id => %r{[^/;,?]+}} do |feeds|
-      feeds.resources :feed_items,:requirements => {:feed_id => %r{[^/;,?]+}, :id => %r{[^/;,?]+}}
+      feeds.resources :feed_items, :requirements => {:feed_id => %r{[^/;,?]+}, :id => %r{[^/;,?]+}}
     end
   end
   
