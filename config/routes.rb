@@ -43,11 +43,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :controller => "tags" do |tags_map|
     tags_map.connect ":user/tags.:format", :action => 'index'
-    tags_map.connect ":user/tags", :action => 'index'
     tags_map.connect ":user/tags/:tag_name.:format", :action => 'show'
-    tags_map.connect ":user/tags/:tag_name", :action => 'show'
     tags_map.connect ":user/tags/:tag_name/:action.:format"
-    tags_map.connect ":user/tags/:tag_name/:action"
   end
 
   map.resources :tags, :only => [:index, :show, :create, :update, :destroy],
