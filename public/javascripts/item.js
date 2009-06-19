@@ -280,7 +280,7 @@ var Item = Class.create({
       this.addTrainingControl(tag_name);
     }
       
-    new Ajax.Request('/taggings/create', { method: 'post', requestHeaders: { Accept: 'application/json' },
+    new Ajax.Request('/taggings', { method: 'post', requestHeaders: { Accept: 'application/json' },
       parameters: {
         "tagging[feed_item_id]": this.id,
         "tagging[tag]": tag_name,
@@ -338,7 +338,7 @@ var Item = Class.create({
       training_control.removeClassName('negative');
     }
 
-    new Ajax.Request('/taggings/destroy', { method: 'post', requestHeaders: { Accept: 'application/json' },
+    new Ajax.Request('/taggings', { method: 'delete', requestHeaders: { Accept: 'application/json' },
       parameters: {
         "tagging[feed_item_id]": this.id,
         "tagging[tag]": tag_name

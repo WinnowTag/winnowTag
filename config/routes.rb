@@ -1,31 +1,32 @@
 ActionController::Routing::Routes.draw do |map|
   map.namespace :item_cache do |item_cache|
-    item_cache.resources :feed_items, :requirements => {:id => %r{[^/;,?]+}}
-    item_cache.resources :feeds, :requirements => {:id => %r{[^/;,?]+}} do |feeds|
-      feeds.resources :feed_items, :requirements => {:feed_id => %r{[^/;,?]+}, :id => %r{[^/;,?]+}}
+    item_cache.resources :feed_items, :only => [:create, :update, :destroy], :requirements => {:id => %r{[^/;,?]+}}
+    item_cache.resources :feeds, :only => [:create, :update, :destroy], :requirements => {:id => %r{[^/;,?]+}} do |feeds|
+      feeds.resources :feed_items, :only => [:create, :update, :destroy], :requirements => {:feed_id => %r{[^/;,?]+}, :id => %r{[^/;,?]+}}
     end
   end
-  
-  map.resources :invites, 
+
+  map.resources :invites, :except => :show,
                 :member => {
                   :activate => :put
                 }
-  map.resources :users,
-                :member => { 
+
+  map.resources :users, :only => [:index, :new, :create, :destroy],
+                :member => {
                   :login_as => :post
                 }
-                
-  map.resources :feeds,
+
+  map.resources :feeds, :only => [:index, :create],
                 :member => {
                   :globally_exclude => :post,
-                  :subscribe => :put,
-                  :unsubscribe => :put
+                  :subscribe => :put
                 },
                 :collection => {
                   :auto_complete_for_feed_title => :any,
                   :import => :any
                 }
-  map.resources :feed_items,
+
+  map.resources :feed_items, :only => :index,
                 :member => {
                   :clues => :get,
                   :moderation_panel => :get,
@@ -39,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
                   :mark_unread => :put,
                   :sidebar => :get
                 }                
-                
+
   map.with_options :controller => "tags" do |tags_map|
     tags_map.connect ":user/tags.:format", :action => 'index'
     tags_map.connect ":user/tags", :action => 'index'
@@ -49,7 +50,7 @@ ActionController::Routing::Routes.draw do |map|
     tags_map.connect ":user/tags/:tag_name/:action"
   end
 
-  map.resources :tags,
+  map.resources :tags, :only => [:index, :show, :create, :update, :destroy],
                 :collection => { 
                   :public => :get,
                   :auto_complete_for_sidebar => :any
@@ -67,21 +68,18 @@ ActionController::Routing::Routes.draw do |map|
                   :comments => :get
                 }
 
-  map.with_options :controller => "taggings" do |taggings_map|
-    taggings_map.connect 'taggings/create', :action => "create"
-    taggings_map.connect 'taggings/destroy', :action => "destroy"
-  end
-  
-  map.resource :classifier, :controller => "classifier",
+  map.resources :taggings, :only => [:create] #, :collection => { :destroy => :delete } # This does not work, so we will do it manually below
+  map.destroy_taggings '/taggings', :controller => 'taggings', :action => 'destroy', :conditions => { :method => :delete }
+
+  map.resource :classifier, :controller => "classifier", :only => [],
                :member => {
                  :status => :post,
-                 :cancel => :post,
                  :classify => :post
                }
               
-  map.resources :collection_job_results, :path_prefix => '/users/:user_id'
-  
-  map.resources :folders, 
+  map.resources :collection_job_results, :path_prefix => '/users/:user_id', :only => :create
+
+  map.resources :folders, :only => [:create, :update, :destroy],
                 :member => {
                   :add_item => :put,
                   :remove_item => :put
@@ -89,14 +87,11 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => {
                   :sort => :put
                 }
-              
-  map.resources :messages  
-  map.resources :feedbacks
-  map.resources :comments,
-                :collection => {
-                  :mark_read => :put
-                }
-                
+
+  map.resources :messages, :except => :show
+  map.resources :feedbacks, :only => [:index, :new, :create]
+  map.resources :comments, :only => [:create, :edit, :update, :destroy]
+
   map.with_options :controller => "account" do |account_map|
     account_map.edit_account "account/edit/:id", :action => "edit"
     account_map.login "account/login/:code", :action => "login", :code => nil, :requirements => { :code => /.*/ } # the requirements seems to get rid of the trailing slash when using login_path
