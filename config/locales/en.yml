@@ -315,6 +315,7 @@ en:
         last_trained: "Last Trained"
         number_of_tags: "Number of Tags"
         registered: "Registered"
+        prototype: "Make this user the prototype"
       main:
         login_tooltip: ""
         login_confirm: |-
