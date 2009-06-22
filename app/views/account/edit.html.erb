@@ -31,11 +31,15 @@
   	<legend><%= t("winnow.profile.password.header") %></legend>
 
   	<p>
-  	  <%= f.label :password, t("winnow.general.password") %>
+  	  <%= f.label :current_password, t("winnow.profile.password.current") %>
+  	  <%= f.password_field :current_password %>
+  	</p>
+  	<p>
+  	  <%= f.label :password, t("winnow.profile.password.new") %>
   	  <%= f.password_field :password %>
   	</p>
   	<p>
-  	  <%= f.label :password_confirmation, t("winnow.general.password_confirmation") %>
+  	  <%= f.label :password_confirmation, t("winnow.profile.password.new_confirmation") %>
   	  <%= f.password_field :password_confirmation %>
   	</p>
   	<p>
