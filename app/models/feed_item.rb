@@ -27,7 +27,7 @@ class FeedItem < ActiveRecord::Base
   attr_accessor :taggings_to_display
 
   validates_presence_of :link
-  validates_uniqueness_of :link
+  validates_uniqueness_of :link, :case_sensitive => false
   belongs_to :feed, :counter_cache => true
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'

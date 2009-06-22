@@ -28,7 +28,7 @@ class Tag < ActiveRecord::Base
   
   validates_presence_of :name
   validates_format_of :name, :with => /^[^.]+$/, :allow_blank => true, :message => "can't contain periods"
-  validates_uniqueness_of :name, :scope => :user_id
+  validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false
   
   def positive_count
     read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")

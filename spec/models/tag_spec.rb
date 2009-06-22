@@ -617,7 +617,17 @@ describe Tag do
       tag2.should have(1).error
       tag2.errors.on(:name).should == "has already been taken"
     end
-    
+
+    it "requries a user to have unique tag names even when the case is different" do
+      user = Generate.user!
+      tag = Generate.tag!(:user => user, :name => "TAG")
+      tag2 = Generate.tag(:user => user, :name => "tag")
+
+      tag2.should_not be_valid
+      tag2.should have(1).error
+      tag2.errors.on(:name).should == "has already been taken"
+    end
+
     it "does not require different users to have unique tag names" do
       user = Generate.user!
       tag = Generate.tag!(:user => user, :name => "tag")
@@ -645,13 +655,6 @@ describe Tag do
   end
   
   describe "from test/unit" do
-    it "case_sensitive" do
-      user = Generate.user!
-      tag1 = Generate.tag!(:user => user, :name => "TAG")
-      tag2 = Generate.tag!(:user => user, :name => "tag")
-      assert_not_equal tag1, tag2
-    end
-  
     it "tag_function" do
       user = Generate.user!
       tag = Tag(user, 'tag1')
