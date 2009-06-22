@@ -607,18 +607,44 @@ describe Tag do
 end
 
 describe Tag do
-  describe "from test/unit" do
-    it "cant_create_duplicate_tags" do
+  describe "validations" do
+    it "requires a user to have unique tag names" do
       user = Generate.user!
       tag = Generate.tag!(:user => user, :name => "tag")
-      Generate.tag(:user => user, :name => "tag").should_not be_valid
+      tag2 = Generate.tag(:user => user, :name => "tag")
+
+      tag2.should_not be_valid
+      tag2.should have(1).error
+      tag2.errors.on(:name).should == "has already been taken"
     end
-  
-    it "cant_create_empty_tags" do
+    
+    it "does not require different users to have unique tag names" do
       user = Generate.user!
-      Generate.tag(:user => user, :name => "").should_not be_valid
+      tag = Generate.tag!(:user => user, :name => "tag")
+      user2 = Generate.user!
+      tag2 = Generate.tag(:user => user2, :name => "tag")
+
+      tag2.should be_valid
     end
   
+    it "does not allow tags with no name" do
+      user = Generate.user!
+      tag = Generate.tag(:user => user, :name => "")
+      tag.should_not be_valid
+      tag.should have(1).error
+      tag.errors.on(:name).should == "can't be blank"
+    end
+  
+    it "does not allow tags with periods in the name" do
+      user = Generate.user!
+      tag = Generate.tag(:user => user, :name => "tag.name")
+      tag.should_not be_valid
+      tag.should have(1).error
+      tag.errors.on(:name).should == "can't contain periods"
+    end
+  end
+  
+  describe "from test/unit" do
     it "case_sensitive" do
       user = Generate.user!
       tag1 = Generate.tag!(:user => user, :name => "TAG")

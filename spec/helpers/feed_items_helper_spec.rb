@@ -5,9 +5,6 @@
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
-# Need to explicitly require tag for the Tag() method
-require 'tag'
-
 describe FeedItemsHelper do
   before(:each) do
     def helper.current_user

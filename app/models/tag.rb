@@ -25,8 +25,10 @@ class Tag < ActiveRecord::Base
   has_many :comments
   has_many :usages, :class_name => "TagUsage"
   belongs_to :user
-  validates_uniqueness_of :name, :scope => :user_id
+  
   validates_presence_of :name
+  validates_format_of :name, :with => /^[^.]+$/, :allow_blank => true, :message => "can't contain periods"
+  validates_uniqueness_of :name, :scope => :user_id
   
   def positive_count
     read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
