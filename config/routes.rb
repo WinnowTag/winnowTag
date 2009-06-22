@@ -90,7 +90,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :comments, :only => [:create, :edit, :update, :destroy]
 
   map.with_options :controller => "account" do |account_map|
-    account_map.edit_account "account/edit/:id", :action => "edit"
+    account_map.edit_account "account/edit", :action => "edit"
+    account_map.edit_password "account/password", :action => "edit_password"
     account_map.login "account/login/:code", :action => "login", :code => nil, :requirements => { :code => /.*/ } # the requirements seems to get rid of the trailing slash when using login_path
     account_map.signup "account/signup", :action => "signup", :conditions => { :method => :post }
     account_map.signup_invite "account/invite", :action => "invite", :conditions => { :method => :post }

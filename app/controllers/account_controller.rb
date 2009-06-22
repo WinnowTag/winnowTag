@@ -5,11 +5,11 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class AccountController < ApplicationController
   # before_filter :setup_mailer_site_url
-  skip_before_filter :login_required, :except => [:edit]
+  skip_before_filter :login_required, :except => [:edit, :edit_password]
+  skip_before_filter :check_if_user_must_update_password, :only => [:edit_password, :logout]
   
   def edit
     if request.post?
-      params[:current_user].delete(:login)
       if current_user.update_attributes(params[:current_user])
         flash[:notice] = t("winnow.notifications.profile_updated")
         redirect_to :back
@@ -17,6 +17,16 @@ class AccountController < ApplicationController
     end
   end
   
+  def edit_password
+    if request.post?
+      if current_user.update_attributes(params[:current_user].merge(:crypted_password => nil))
+        session[:user_must_update_password] = false
+        flash[:notice] = t("winnow.notifications.profile_updated")
+        redirect_to :back
+      end
+    end
+  end
+
   def login
     if request.post?
       self.current_user = User.authenticate(params[:login], params[:password])
@@ -34,9 +44,10 @@ class AccountController < ApplicationController
     elsif params[:code]
       self.current_user = User.find(:first, :conditions => ["reminder_code = ? AND reminder_expires_at > ?", params[:code], Time.now])
       if current_user
+        session[:user_must_update_password] = true
         current_user.reminder_login!
         flash[:warning] = t("winnow.notifications.update_password")
-        redirect_to edit_account_path
+        redirect_to edit_password_path
       else
         flash[:error] = t("winnow.notifications.reminder_code_invalid")
         redirect_to login_path(:code => nil)

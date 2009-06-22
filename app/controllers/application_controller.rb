@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   helper_method :controller_name, :action_name
   
-  before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time
+  before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time, :check_if_user_must_update_password
 
   DEFAULT_LIMIT = 40 unless defined?(DEFAULT_LIMIT)
   MAX_LIMIT = 100 unless defined?(MAX_LIMIT)
@@ -38,7 +38,14 @@ protected
       current_user.update_attribute(:last_accessed_at, Time.now)
     end
   end
-    
+
+  def check_if_user_must_update_password
+    if session[:user_must_update_password]
+      flash[:warning] = t("winnow.notifications.update_password")
+      redirect_to edit_password_path
+    end
+  end
+
   def conditional_render(last_modified)   
     since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
 

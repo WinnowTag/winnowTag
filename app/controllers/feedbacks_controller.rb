@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class FeedbacksController < ApplicationController
+  skip_before_filter :check_if_user_must_update_password, :only => [:new, :create]
+
   def index
     respond_to do |format|
       format.html

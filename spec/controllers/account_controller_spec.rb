@@ -140,7 +140,7 @@ describe AccountController do
       login_as user
 
       referer "/feed_items"
-      post :edit, :current_user => {:firstname => 'Someone', :lastname => 'Else', :email => 'someone@else.com', :login => 'evil'}
+      post :edit, :current_user => {:firstname => 'Someone', :lastname => 'Else', :email => 'someone@else.com'}
 
       user.reload
       user.firstname.should == "Someone"
