@@ -29,7 +29,7 @@ class AccountController < ApplicationController
         end
         redirect_back_or_default feed_items_path
       else
-        flash[:warning] = t("winnow.notifications.credentials_invalid")
+        flash.now[:warning] = t("winnow.notifications.credentials_invalid")
       end
     elsif params[:code]
       self.current_user = User.find(:first, :conditions => ["reminder_code = ? AND reminder_expires_at > ?", params[:code], Time.now])
