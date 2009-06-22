@@ -37,28 +37,35 @@ class Generate
   def self.comment!(attributes = {})
     returning self.comment(attributes) do |comment|
       comment.save!
-    end 
+    end
   end
 
-  def self.user(attributes = {})
+  def self.user_attributes(attributes = {})
     unique_id = unique_id_for(:user)
-    crypted_password = attributes[:password] ? 
-      BCrypt::Password.create(attributes.delete(:password)) : 
-      "$2a$10$UyBxy/Db9lk/jKKVsBI0dOegH6R/FY9Zx4.kuZU/7HqiMKVmLYpLG" # password
     
-    User.new(attributes.reverse_merge(
+    attributes.reverse_merge(
       :login => "user_#{unique_id}",
       :email => "user_#{unique_id}@example.com",
-      :crypted_password => crypted_password,
+      :password => "password",
+      :password_confirmation => "password",
       :firstname => "John",
       :lastname => "Doe",
       :time_zone => "UTC",
       :activated_at => Time.now
-    ))
+    )
+  end
+
+  def self.user(attributes = {})
+    User.new(user_attributes(attributes))
   end
   
   def self.user!(attributes = {})
     returning self.user(attributes) do |user|
+      user.password = nil
+      user.password_confirmation = nil
+      user.crypted_password = attributes[:password] ?
+        BCrypt::Password.create(attributes.delete(:password)) :
+        "$2a$10$UyBxy/Db9lk/jKKVsBI0dOegH6R/FY9Zx4.kuZU/7HqiMKVmLYpLG" # password
       user.save!
     end
   end

@@ -159,6 +159,7 @@ class User < ActiveRecord::Base
     user = new(attributes)
     user.save!
     user.activate
+
     # Mark all existing message as read
     Message.read_by!(user)
     
@@ -308,7 +309,7 @@ protected
   end
 
   def current_password_matches
-    unless authenticated?(current_password)
+    if crypted_password.present? and not authenticated?(current_password)
       errors.add(:current_password, "is not correct")
     end
   end

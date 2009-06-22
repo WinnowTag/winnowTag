@@ -46,14 +46,14 @@ describe User do
 
     it "creating from a prototype activates the new user" do
       prototype = Generate.user!(:prototype => true)
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should be_active
     end
     
     it "creating from a prototype marks all system messages as read" do
       prototype = Generate.user!(:prototype => true)
       message = Message.create! :body => "some test message"
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       Message.unread(user).for(user).should be_empty
     end
     
@@ -74,7 +74,7 @@ describe User do
       prototype.folders.create!(:name => "Big", :tag_ids => [tag1.id, tag2.id], :feed_ids => [feed1.id, feed2.id, feed3.id])
       prototype.folders.create!(:name => "Small", :tag_ids => [tag1.id], :feed_ids => [feed3.id])
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).folders
       
       user.folders.first.name.should == "Big"
@@ -91,7 +91,7 @@ describe User do
       prototype.feed_subscriptions.create!(:feed_id => 1)
       prototype.feed_subscriptions.create!(:feed_id => 2)
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).feed_subscriptions
       
       user.feed_subscriptions.first.feed_id.should == 1
@@ -103,7 +103,7 @@ describe User do
       prototype.tag_subscriptions.create!(:tag_id => 1)
       prototype.tag_subscriptions.create!(:tag_id => 2)
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).tag_subscriptions
       
       user.tag_subscriptions.first.tag_id.should == 1
@@ -121,7 +121,7 @@ describe User do
       tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :description => "Tag 2 Comment")
       tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => feed_item2.id, :user_id => prototype.id
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).tags
       
       user.tags.first.name.should == "Tag 1"
@@ -288,29 +288,61 @@ describe User do
       User.rspec_reset
     end
     
-    it "should_require_login" do
+    it "required login" do
       user = Generate.user(:login => nil)
       user.should have(1).error_on(:login)
     end
 
-    it "should_require_password" do
-      user = Generate.user(:crypted_password => nil, :password_confirmation => "password")
-      user.should have(2).errors_on(:password)
+    it "requires password" do
+      user = Generate.user(:password => "", :password_confirmation => "password")
+      user.should_not be_valid
+      user.errors.on(:password).should == ["is too short (minimum is 4 characters)", "doesn't match confirmation"]
+    end
+
+    it "requires password confirmation" do
+      user = Generate.user(:password => "password", :password_confirmation => "")
+      user.should_not be_valid
+      user.errors.on(:password).should == "doesn't match confirmation"
+    end
+
+    it "requires matching password confirmation" do
+      user = Generate.user(:password => "password", :password_confirmation => "other password")
+      user.should_not be_valid
+      user.errors.on(:password).should == "doesn't match confirmation"
+    end
+
+    it "does not change the password when the current password is blank" do
+      user = Generate.user!
+      user.update_attributes(:current_password => "", :password => 'new password', :password_confirmation => 'new password')
+      user.should_not be_valid
+      user.errors.on(:current_password).should == "is not correct"
+    end
+
+    it "does not change the password when the current password is wrong" do
+      user = Generate.user!
+      user.update_attributes(:current_password => "wrong password", :password => 'new password', :password_confirmation => 'new password')
+      user.should_not be_valid
+      user.errors.on(:current_password).should == "is not correct"
     end
     
-    it "should_reset_password" do
+    it "changes the password when the current password is correct" do
       user = Generate.user!
-      user.update_attributes(:password => 'new password', :password_confirmation => 'new password')
+      user.update_attributes(:current_password => "password", :password => 'new password', :password_confirmation => 'new password')
       User.authenticate(user.login, 'new password').should == user
     end
 
-    it "should_not_rehash_password" do
+    it "does not change tha password when not give a password" do
       user = Generate.user!
       user.update_attributes(:firstname => "johnny")
       User.authenticate(user.login, 'password').should == user
     end
 
-    it "should_authenticate_user" do
+    it "does not authenticate a user with the wrong password" do
+      user = Generate.user!
+      User.authenticate(user.login, 'wrong password').should be_nil
+    end
+
+    it "authenticates a user with the correct password" do
       user = Generate.user!
       User.authenticate(user.login, 'password').should == user
     end
