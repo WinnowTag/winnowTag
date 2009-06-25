@@ -1948,7 +1948,7 @@ body#info .messages h3 {
   -webkit-border-radius: 0.25em;
 }
 
-body#info .content {
+body#info .messages .content {
   padding: 0 1em;
 }
 

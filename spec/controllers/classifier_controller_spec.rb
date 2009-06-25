@@ -11,14 +11,14 @@ describe ClassifierController do
     login_as @user
     User.stub!(:find_by_id).and_return(@user)
     @user.stub!(:potentially_undertrained_changed_tags).and_return([])
-    @user.stub!(:changed_tags).and_return([mock_model(Tag, :name => 'tag')])
+    @user.stub!(:changed_tags).and_return([mock_model(Tag, :id => 99, :name => 'tag')])
   end  
 
   describe '#classify' do
     it "should create a new job on classify" do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
-      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/tags/99/training.atom").and_return(mock_job)
     
       post "classify"
       response.should be_success
@@ -27,7 +27,7 @@ describe ClassifierController do
     it "should store job id in the session" do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id).and_return("MOCK-JOB-ID")
-      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/tags/99/training.atom").and_return(mock_job)
     
       post "classify"
       session[:classification_job_id].should == ["MOCK-JOB-ID"]
@@ -64,7 +64,7 @@ describe ClassifierController do
       
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
-      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/tags/99/training.atom").and_return(mock_job)
       
       post 'classify', :puct_confirm => '1'
     end
@@ -98,12 +98,12 @@ describe ClassifierController do
     end
     
     it "should start multiple jobs for multiple changed tags" do
-      @user.stub!(:changed_tags).and_return([mock_model(Tag, :name => 'tag1'), mock_model(Tag, :name => 'tag2')])
+      @user.stub!(:changed_tags).and_return([mock_model(Tag, :id => 90, :name => 'tag1'), mock_model(Tag, :id => 91, :name => 'tag2')])
       Remote::ClassifierJob.should_receive(:create).
-                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag1/training.atom").
+                            with(:tag_url => "http://test.host/tags/90/training.atom").
                             and_return(mock_model(Remote::ClassifierJob, :id => 'JOB-1'))
       Remote::ClassifierJob.should_receive(:create).
-                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag2/training.atom").
+                            with(:tag_url => "http://test.host/tags/91/training.atom").
                             and_return(mock_model(Remote::ClassifierJob, :id => 'JOB-2'))
                           
      post "classify"
@@ -115,7 +115,7 @@ describe ClassifierController do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
       Remote::ClassifierJob.should_receive(:create).
-                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").
+                            with(:tag_url => "http://test.host/tags/99/training.atom").
                             and_raise(ActiveResource::TimeoutError.new('classifier-timeout'))
       ExceptionNotifier.should_receive(:deliver_exception_notification)
       post "classify"

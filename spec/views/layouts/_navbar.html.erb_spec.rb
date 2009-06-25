@@ -55,7 +55,7 @@ describe '/layouts/_navbar.html.erb' do
 
     it "contains a link to the my info page" do
       render_it
-      response.should have_tag(".extra a[href=?]", edit_account_path(:id => current_user))
+      response.should have_tag(".extra a[href=?]", edit_account_path)
     end
 
     it "contains a link to logout" do

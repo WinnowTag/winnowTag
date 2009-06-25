@@ -5,7 +5,8 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class AboutController < ApplicationController
   skip_before_filter :login_required
-  
+  skip_before_filter :check_if_user_must_update_password
+
   def index
     # Capistrano now stores the revision in RAILS_ROOT/REVISION
     cap_rev_file = File.join(RAILS_ROOT, 'REVISION')

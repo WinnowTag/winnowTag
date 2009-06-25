@@ -5,8 +5,6 @@
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
-require 'tag'
-
 shared_examples_for "FeedItem update attributes from atom" do
   it "should set the title" do
     @item.title.should == @atom.title

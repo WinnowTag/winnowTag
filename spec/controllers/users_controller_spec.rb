@@ -10,10 +10,10 @@ describe UsersController do
     user = Generate.user!
     
     cannot_access(user, :get, :index)
-    cannot_access(user, :get, :create)
-    cannot_access(user, :get, :login_as, :id => user)
-    cannot_access(user, :get, :update,   :id => user)
-    cannot_access(user, :get, :destroy,  :id => user)
+    cannot_access(user, :get, :new)
+    cannot_access(user, :post, :create)
+    cannot_access(user, :delete, :destroy,  :id => user)
+    cannot_access(user, :post, :login_as, :id => user)
   end
   
   it "index" do

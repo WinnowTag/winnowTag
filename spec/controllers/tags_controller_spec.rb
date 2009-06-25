@@ -41,12 +41,6 @@ shared_examples_for 'tag access controls' do
     response.code.should == "401"
   end
   
-  it "should return 404 for only style URLs when no one is logged in" do
-    login_as(nil)
-    get @action, :id => @tag.id
-    response.code.should == "404"
-  end
-  
   it "should allow the owner to access private tags" do
     @tag.stub!(:public?).and_return(false)
     login_as @user

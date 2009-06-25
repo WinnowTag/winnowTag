@@ -12,10 +12,11 @@
  *  - onFinished
  */
 var Classification = Class.create({
-  initialize: function(classifier_url, has_changed_tags, options) {
+  initialize: function(classify_url, status_url, has_changed_tags, options) {
     Classification.instance = this;
     
-    this.classifier_url = classifier_url;
+    this.classify_url = classify_url;
+    this.status_url = status_url;
     this.has_changed_tags = has_changed_tags;
     
     this.classification_button = $('classification_button');
@@ -98,7 +99,7 @@ var Classification = Class.create({
       parameters = {puct_confirm: 'true'};
     }
       
-    new Ajax.Request(this.classifier_url + '/classify', {
+    new Ajax.Request(this.classify_url, {
       parameters: parameters,
       evalScripts: true,
       onSuccess: function() {
@@ -134,7 +135,7 @@ var Classification = Class.create({
     this.progressUpdater = new PeriodicalExecuter(function(executer) {
       if (!this.loading) {
         this.loading = true;
-        new Ajax.Request(this.classifier_url + '/status', {
+        new Ajax.Request(this.status_url, {
           onComplete: function(transport, json) {          
             this.loading = false;
             if (!json || json.progress >= 100) {

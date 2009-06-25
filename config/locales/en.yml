@@ -321,6 +321,7 @@ en:
         last_trained: "Last Trained"
         number_of_tags: "Number of Tags"
         registered: "Registered"
+        prototype: "Make this user the prototype"
       main:
         login_tooltip: ""
         login_confirm: |-
@@ -383,6 +384,9 @@ en:
       time_zone: "Time Zone"
       password:
         header: "Change your password"
+        current: "Current Password"
+        new: "New Password"
+        new_confirmation: "Confirm New Password"
     login:
       welcome_header: "Welcome to Winnow"
       welcome_text: |-

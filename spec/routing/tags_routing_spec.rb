@@ -40,9 +40,12 @@ describe TagsController do
     end
     
     # some funky tags
-    
     it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'} to /bob/tags/my%20tag" do
       route_for({:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'}).should == '/bob/tags/my%20tag'
+    end
+    
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag?'} to /bob/tags/my%20tag%3F" do
+      route_for({:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag?'}).should == '/bob/tags/my%20tag%3F'
     end
           
     # Maybe also support the old style
@@ -85,9 +88,12 @@ describe TagsController do
     end
     
     # some funky tags
-    
     it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'} to /bob/tags/my%20tag" do
       params_from(:get, '/bob/tags/my%20tag').should == {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag'}
+    end
+    
+    it "should map {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag?'} to /bob/tags/my%20tag%3F" do
+      params_from(:get, '/bob/tags/my%20tag%3F').should == {:controller => 'tags', :action => 'show', :user => 'bob', :tag_name => 'my tag?'}
     end
     
     # Maybe also support the old style

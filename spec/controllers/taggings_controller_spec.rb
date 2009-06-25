@@ -6,24 +6,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TaggingsController do
-  it "create_requires_post" do
-    login_as Generate.user!
-    get :create
-    assert_response 400
-  end
-  
-  it "destroy_requires_post" do
-    login_as Generate.user!
-    get :destroy
-    assert_response 400
-  end
-    
-  it "create_without_parameters_fails" do
-    login_as Generate.user!
-    post :create, {}
-    assert_response 400
-  end
-  
   it "create_without_tag_doesnt_create_tagging" do
     login_as Generate.user!
     assert_no_difference("Tagging.count") do
@@ -74,7 +56,7 @@ describe TaggingsController do
     tagging = feed_item.taggings.create!(:tag => tag, :user => user)
 
     login_as user
-    post :destroy, :format => "json", :tagging => { :feed_item_id => feed_item.id, :tag => tag.name }
+    delete :destroy, :format => "json", :tagging => { :feed_item_id => feed_item.id, :tag => tag.name }
     assert_template 'destroy'
     assert_raise(ActiveRecord::RecordNotFound) { Tagging.find(tagging.id) }
   end
@@ -89,7 +71,7 @@ describe TaggingsController do
     login_as user
 
     assert_equal 2, Tagging.count
-    post :destroy, :format => "json", :tagging => { :feed_item_id => feed_item.id, :tag => tag.name }
+    delete :destroy, :format => "json", :tagging => { :feed_item_id => feed_item.id, :tag => tag.name }
     assert_equal 1, Tagging.count
   end
 end
