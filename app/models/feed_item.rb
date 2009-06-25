@@ -35,7 +35,7 @@ class FeedItem < ActiveRecord::Base
   
   has_many :tags, :through => :taggings  
   
-  def self.find_or_create_from_atom(entry)
+  def self.find_or_create_from_atom(entry, options = {})
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
     unless item = FeedItem.find_by_uri(entry.id)
@@ -43,8 +43,11 @@ class FeedItem < ActiveRecord::Base
       item.uri = entry.id
     end
     
-    item.update_from_atom(entry)
-    item.save!
+    if item.new_record? || options[:update]
+      item.update_from_atom(entry)
+      item.save!
+    end
+    
     item
   end
   

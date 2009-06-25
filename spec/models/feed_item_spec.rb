@@ -252,7 +252,7 @@ describe FeedItem do
     describe "with a complete entry and an existing id" do
       before(:each) do
         @atom.id = @item.uri
-        @item = FeedItem.find_or_create_from_atom(@atom)        
+        @item = FeedItem.find_or_create_from_atom(@atom, :update => true)        
       end
       
       it "should not be a new record" do

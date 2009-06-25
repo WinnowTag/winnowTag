@@ -14,6 +14,7 @@
 # single uses of the tag by the user and the +TagsController+
 # operates on the many +Taggings+ that use a given +Tag+.
 class TagsController < ApplicationController
+  permit "admin", :only => :upload
   helper :bias_slider, :comments
 
   # Setup the HMAC authentication with credentials for the classifier role but don't assign to any actions
@@ -64,6 +65,26 @@ class TagsController < ApplicationController
                            :order => params[:order], :direction => params[:direction], 
                            :limit => limit, :offset => params[:offset])
         @full = @tags.size < limit
+      end
+    end
+  end
+  
+  # Support uploading a tag definition from it's atom document
+  #
+  def upload
+    respond_to do |format|
+      format.html do
+        atom = Atom::Feed.load_feed(params[:atom].read)
+        logger.info("Atom title: " + atom.title)
+
+        tag = current_user.tags.create_from_atom(atom)
+        if tag.errors.empty?
+          flash[:notice] = "Tag #{tag.name} imported"
+          redirect_to tags_path          
+        else
+          flash.now[:error] = tag.errors.full_messages.join("\n")
+          render :action => 'index'
+        end
       end
     end
   end

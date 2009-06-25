@@ -55,7 +55,8 @@ ActionController::Routing::Routes.draw do |map|
                 :collection => { 
                   :public => :get,
                   :auto_complete_for_tag_name => :any,
-                  :auto_complete_for_sidebar => :any
+                  :auto_complete_for_sidebar => :any,
+                  :upload => :post
                 },
                 :member => { 
                   :globally_exclude => :post,

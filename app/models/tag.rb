@@ -181,6 +181,33 @@ class Tag < ActiveRecord::Base
       end
     end
   end
+  
+  def self.create_from_atom(atom)
+    if category = atom.categories.first    
+      tag = self.create(:name => atom.title.to_s, 
+                        :description => "Imported on #{Time.now}", 
+                        :bias => atom[CLASSIFIER_NAMESPACE, 'bias'].first)
+           
+      if tag.valid?           
+        atom.entries.each do |e|
+          ecat = e.categories.first
+        
+          strength = if ecat && category.scheme == ecat.scheme && category.term == ecat.term
+            1.0
+          elsif e.links.detect {|l| l.href == atom.id && l.rel == "#{CLASSIFIER_NAMESPACE}/negative-example"}
+            0.0
+          end
+        
+          unless strength.nil?
+            item = FeedItem.find_or_create_from_atom(e)
+            tag.taggings.create(:feed_item => item, :user => tag.user, :strength => strength)
+          end
+        end
+      end
+      
+      tag
+    end
+  end
 
   named_scope :public, :conditions => { :public => true }
   

@@ -777,4 +777,52 @@ describe Tag do
       assert_equal "old tag description", new_tag.description
     end
   end
+  
+  describe ".create_from_atom" do 
+    before(:each) do
+      @user = Generate.user!
+      @orig_tag = Generate.tag!(:user => @user, :bias => 1.1)
+      @fi1 = Generate.feed_item!
+      @fi2 = Generate.feed_item!
+      @fi3 = Generate.feed_item!
+      
+      @user.taggings.create!(:feed_item => @fi1, :tag => @orig_tag)
+      @user.taggings.create!(:feed_item => @fi2, :tag => @orig_tag)
+      @user.taggings.create!(:feed_item => @fi3, :tag => @orig_tag, :strength => 0)
+      
+      @atom = @orig_tag.to_atom(:training_only => true)
+      
+      @tag = @user.tags.create_from_atom(@atom)
+    end
+    
+    it "should not have any errors" do
+      @tag.errors.should be_empty
+    end
+    
+    it "should create a tag with the same name" do
+      @tag.name.should == @atom.title
+    end
+    
+    it "should set the description of the tag to 'Imported on ...'" do
+      @tag.description.should match(/^Imported on/)
+    end
+    
+    it "should set the bias of the tag" do
+      @tag.bias.should == 1.1
+    end
+    
+    it "should set show_in_sidebar to true" do
+      @tag.show_in_sidebar.should be_true
+    end
+    
+    it "should create three taggings" do
+      @tag.should have(3).taggings
+    end
+    
+    it "should set the strength of the taggings" do
+      @tag.taggings.find_by_feed_item_id(@fi1.id).strength.should == 1
+      @tag.taggings.find_by_feed_item_id(@fi2.id).strength.should == 1
+      @tag.taggings.find_by_feed_item_id(@fi3.id).strength.should == 0
+    end
+  end
 end

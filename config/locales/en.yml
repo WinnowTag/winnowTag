@@ -215,6 +215,10 @@ en:
       header:
         search_placeholder: "Search Tags..."
         search_tooltip: ""
+        upload: "Upload"
+        upload_tooltip: "Upload a tag from a tag training document"
+        upload_description: "Upload a tag from a tag training document that you have downloaded from Winnow"
+        upload_button: "Upload"
       main:
         tag_summary_tooltip: ""
         click_to_edit_name: "Click to edit tag name"
@@ -230,6 +234,8 @@ en:
         destroy_tooltip: "Destroy {{tag}}"
         feed: "Feed"
         feed_tooltip: ""
+        training_feed: "Training Feed"
+        training_feed_tooltip: "Download an Atom with the items used to train this tag. You might need to right click and choose 'Save Target as...'."
         subscribe: "Subscribe"
         subscribe_tooltip: ""
         items_tagged_with: "Show items tagged with {{tag}}"
