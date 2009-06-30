@@ -42,9 +42,7 @@ task :cruise_with_selenium do
   Rake::Task['spec:models'].invoke
   Rake::Task['spec:views'].invoke
   Rake::Task['features'].invoke
-  Rake::Task['selenium:rc:start'].invoke
   at_exit {
-    Rake::Task['selenium:rc:stop'].invoke
     system "mongrel_rails stop"
   }
   Rake::Task['selenium:all'].invoke

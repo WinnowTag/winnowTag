@@ -35,4 +35,3 @@ task 'selenium:all' do
     Rake::Task["selenium"].invoke
   end
 end
-
