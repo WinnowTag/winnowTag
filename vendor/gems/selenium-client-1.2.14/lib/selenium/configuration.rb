@@ -24,8 +24,7 @@ module Selenium
     end
     
     def self.browser(configuration = current_configuration)
-      browser = CONFIG[configuration.to_s]["browser"] || CONFIG["default"]["browser"]
-      "*#{browser}"
+      CONFIG[configuration.to_s]["browser"] || CONFIG["default"]["browser"]
     end
     
     def self.test_host(configuration = current_configuration)
