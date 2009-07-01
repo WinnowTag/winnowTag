@@ -1,4 +1,5 @@
-require 'selenium/rake/tasks'
+require Rails.root.join("vendor/gems/selenium-client-1.2.14/lib/selenium/rake/tasks")
+require Rails.root.join("vendor/gems/selenium-client-1.2.14/lib/selenium/configuration")
 
 Selenium::Rake::RemoteControlStartTask.new do |rc|
   rc.background = true
@@ -28,10 +29,28 @@ Spec::Rake::SpecTask.new('selenium') do |t|
   t.spec_files = FileList['spec/selenium/*_spec.rb']
 end
 
+Selenium::Configuration.each do |configuration|
+  desc "Run acceptance tests for web application on #{configuration} browser defined in config/selenium.yml"
+  Spec::Rake::SpecTask.new("selenium:#{configuration}") do |t|
+    ENV['SELENIUM_CONFIGURATION'] = configuration
+
+    path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
+    file = ENV['SELENIUM_CONFIGURATION'] || "acceptance_tests_report"
+
+    t.spec_opts = [
+      "--colour",
+      "--format=profile",
+      "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/#{file}.html'"
+    ]
+
+    t.spec_files = FileList['spec/selenium/*_spec.rb']
+  end
+end
+
 desc 'Run acceptance tests for web application on all browsers defined in config/selenium.yml'
 task 'selenium:all' do
   Selenium::Configuration.each do |configuration|
     ENV['SELENIUM_CONFIGURATION'] = configuration
-    Rake::Task["selenium"].invoke
+    Rake::Task["selenium:#{configuration}"].invoke
   end
 end
