@@ -23,12 +23,11 @@ require 'spec/rake/spectask'
 desc 'Run acceptance tests for web application on default browser defined in config/selenium.yml'
 Spec::Rake::SpecTask.new('selenium') do |t|
   path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
-  file = ENV['SELENIUM_CONFIGURATION'] || "acceptance_tests_report"
 
   t.spec_opts = [
     "--colour",
     "--format=profile",
-    "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/#{file}.html'"
+    "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/selenium-default.html'"
   ]
 
   t.spec_files = FileList['spec/selenium/*_spec.rb']
@@ -38,12 +37,11 @@ Selenium::Configuration.each do |configuration|
   desc "Run acceptance tests for web application on #{configuration} browser defined in config/selenium.yml"
   Spec::Rake::SpecTask.new("selenium:#{configuration}") do |t|
     path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
-    file = ENV['SELENIUM_CONFIGURATION'] || "acceptance_tests_report"
 
     t.spec_opts = [
       "--colour",
       "--format=profile",
-      "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/#{file}.html'"
+      "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/selenium-#{configuration}.html'"
     ]
 
     t.spec_files = FileList['spec/selenium/*_spec.rb']
