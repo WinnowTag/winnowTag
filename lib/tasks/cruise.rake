@@ -32,9 +32,6 @@ task :cruise_with_selenium do
   Rake::Task['gems:install:dependencies'].invoke
   Rake::Task['gems:build'].invoke
   Rake::Task['db:migrate'].invoke
-  Rake::Task['assets:clean'].invoke
-  # system "touch tmp/restart.txt"
-  system "mongrel_rails start -e test -p 3000 -d"
   
   Rake::Task['spec:code'].invoke
   Rake::Task['spec:controllers'].invoke
@@ -43,6 +40,10 @@ task :cruise_with_selenium do
   Rake::Task['spec:views'].invoke
   # TODO: This needs to be fixed and re-enabled
   # Rake::Task['features'].invoke
+
+  Rake::Task['assets:clean'].invoke
+  # system "touch tmp/restart.txt"
+  system "mongrel_rails start -e test -p 3000 -d"
   at_exit {
     system "mongrel_rails stop"
   }
