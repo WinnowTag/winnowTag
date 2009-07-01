@@ -37,10 +37,6 @@ end
 Selenium::Configuration.each do |configuration|
   desc "Run acceptance tests for web application on #{configuration} browser defined in config/selenium.yml"
   Spec::Rake::SpecTask.new("selenium:#{configuration}") do |t|
-    ENV['SELENIUM_CONFIGURATION'] = configuration
-    
-    puts "SELENIUM_CONFIGURATION: %s" % ENV['SELENIUM_CONFIGURATION']
-
     path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
     file = ENV['SELENIUM_CONFIGURATION'] || "acceptance_tests_report"
 
@@ -57,6 +53,7 @@ end
 desc 'Run acceptance tests for web application on all browsers defined in config/selenium.yml'
 task 'selenium:all' do
   Selenium::Configuration.each do |configuration|
+    ENV['SELENIUM_CONFIGURATION'] = configuration
     Rake::Task["selenium:#{configuration}"].invoke
   end
 end
