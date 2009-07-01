@@ -1,3 +1,8 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivate works.
+# Please visit http://www.peerworks.org/contact for further information.
 require Rails.root.join("vendor/gems/selenium-client-1.2.14/lib/selenium/rake/tasks")
 require Rails.root.join("vendor/gems/selenium-client-1.2.14/lib/selenium/configuration")
 
