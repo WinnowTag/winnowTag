@@ -129,7 +129,7 @@ module ApplicationHelper
   
   def feed_filter_control(feed, options = {})   
     url      = case options[:remove]
-      when :subscription then subscribe_feed_path(feed, :subscribe => false)
+      when :subscription then subscribe_feed_path(feed, :subscribe => "false")
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
     function = case options[:remove]
@@ -162,7 +162,7 @@ module ApplicationHelper
     end
     url      = case options[:remove]
       when :subscription           then unsubscribe_tag_path(tag)
-      when :sidebar                then sidebar_tag_path(tag, :sidebar => false)
+      when :sidebar                then sidebar_tag_path(tag, :sidebar => "false")
       when Folder                  then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
     function = case options[:remove]
