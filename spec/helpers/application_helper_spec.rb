@@ -187,7 +187,7 @@ describe ApplicationHelper do
     
     it "creates a filter control for a feed with the remove link for a subscription" do
       feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
-      feed_filter_control(feed, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_feed_path(feed, :subscribe => false))}.*/)
+      feed_filter_control(feed, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_feed_path(feed, :subscribe => "false"))}.*/)
     end
     
     it "creates a filter control for a feed with the remove link for a subscription" do
@@ -249,13 +249,13 @@ describe ApplicationHelper do
       user = mock_model(User, :login => "mark")
       tag = mock_model(Tag, :name => "Tag 1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
       tag_filter_control(tag, :remove => :sidebar).should have_tag("li[subscribe_url=?]", sidebar_tag_path(tag, :sidebar => true)) do
-        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => false))}.*/)
+        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => "false"))}.*/)
       end
     end
     
     it "creates a filter control for a tag with the remove link for a subscription and current_user" do
       tag = mock_model(Tag, :name => "Tag 1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
-      tag_filter_control(tag, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => false))}.*/)
+      tag_filter_control(tag, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => "false"))}.*/)
     end
     
     it "creates a filter control for a tag with a span for autocomplete" do
