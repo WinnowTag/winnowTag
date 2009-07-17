@@ -5,6 +5,20 @@
  * Please visit http://www.peerworks.org/contact for further information.
  */
 
+/* =environment */
+.environment {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background-color: #F3C4C3;
+  background-color: #E89E9A;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  text-align: center;
+  font-weight: bold;
+}
+
 /*
  * =noscript
  */
