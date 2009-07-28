@@ -38,7 +38,7 @@ class TaggingsController < ApplicationController
   # Accepted Parameters:
   #
   # - +tagging+:
-  #   - +feed_item_id+: The type and id of a +Taggable+ to destroy a +Tagging+ on.
+  #   - +feed_item_id+: The id of a +Taggable+ to destroy a +Tagging+ on.
   #   - +tag+:          The name of the +Tag+ to destroy the +Tagging+ on the +Taggable+.
   def destroy
     @feed_item = FeedItem.find(params[:tagging][:feed_item_id])
