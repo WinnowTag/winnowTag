@@ -155,23 +155,39 @@ module ApplicationHelper
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
+  # Complex method in that it builds HTML, JS, and CSS using strings. At least it is
+  # covered by several examples in application_helper_spec
   def tag_filter_control(tag, options = {})
     if options[:remove] == :subscription && current_user.id == tag.user_id
       options = options.except(:remove)
       options[:remove] = :sidebar
     end
-    url      = case options[:remove]
+    
+    remove_url = case options[:remove]
       when :subscription           then unsubscribe_tag_path(tag)
       when :sidebar                then sidebar_tag_path(tag, :sidebar => "false")
       when Folder                  then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
+    
+    subscribe_url = case options[:remove]
+      when :subscription           then subscribe_tag_path(tag, :subscribe => true)
+      when :sidebar                then sidebar_tag_path(tag, :sidebar => true)
+    end
+    
     function = case options[:remove]
       when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
     end
+    
+    class_names = [dom_id(tag), "clearfix", "tag"]
+    class_names << "public" if tag.user_id != current_user.id
+    class_names << "draggable" if options[:draggable]
 
     html  = ""
-    html << link_to_function("Rename", "var new_tag_name = prompt('Tag Name:', $(this).up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
-    html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
+    if options[:editable] && current_user.id == tag.user_id
+      rename_function = "var new_tag_name = prompt('Tag Name:', $(this).up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }"
+      html << link_to_function("Rename", rename_function, :class => "edit")
+    end
+    html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => remove_url, :method => :put)}", :class => "remove")
     html  = content_tag(:span, html, :class => "actions")
 
     html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"))
@@ -179,14 +195,7 @@ module ApplicationHelper
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
-    class_names = [dom_id(tag), "clearfix", "tag"]
-    class_names << "public" if tag.user_id != current_user.id
-    class_names << "draggable" if options[:draggable]
-    url  =  case options[:remove]
-      when :subscription then subscribe_tag_path(tag, :subscribe => true)
-      when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
-    end
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url, :title => tag_tooltip(tag))
+    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => subscribe_url, :title => tag_tooltip(tag))
     html
   end
   
