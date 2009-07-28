@@ -4,10 +4,10 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# A Tagging represents the relationship between a Tag, a Tagger and
-# a Taggable. It is the core class within Winnow's tagging infra-structure.
-# A Tagging can be thought of as the application of a Tag to a Taggable
-# by a Tagger.
+# A Tagging represents the relationship between a Tag, a +Tagger+ and
+# a +Taggable+. It is the core class within Winnow's tagging infra-structure.
+# A Tagging can be thought of as the application of a Tag to a +Taggable+
+# by a +Tagger+.
 #
 # == Design
 #
@@ -22,18 +22,18 @@
 # link:../tagging_design.png
 # 
 # As you can see, for better or worse, we make use of polymorphic associations
-# to create the abstract Tagger and Taggable classes. This allows any class to be
+# to create the abstract +Tagger+ and +Taggable+ classes. This allows any class to be
 # tagged or to tag something, i.e. be a tagger. The polymorphism is only currently 
-# used for the tagger association since we have BayesClassifier and User both acting
-# as Taggers. While the model does support creating many different types of Taggables,
+# used for the tagger association since we have +BayesClassifier+ and User both acting
+# as +Taggers+. While the model does support creating many different types of +Taggables+,
 # Winnow only currently supports tagging FeedItem instances.
 # 
 # == Immutability and Destruction
 #
 # A Tagging is immutable, i.e. once created it can never be changed.
 #
-# A Tagging is also never really deleted, instead, when it is destroyed it's deleted_at
-# field is set to Time.now. This is necessary since when a Tagging is destroyed, the classifier
+# A Tagging is also never really deleted, instead, when it is destroyed it's +deleted_at+
+# field is set to +Time.now+. This is necessary since when a Tagging is destroyed, the classifier
 # needs to untrain it (which is done in a separate process before the next classification),
 # however it also needs to know the details of the Tagging in order to untrain it.
 #
@@ -42,13 +42,13 @@
 #
 # == Tagging Strength
 #
-# A Tagging has a strength attribute that defines its positivity. The meaning of this attribute
-# is dependant on the Tagger, for example with a User tagger a strength of 1 is a positive tagging
+# A Tagging has a +strength+ attribute that defines its positivity. The meaning of this attribute
+# is dependant on the +Tagger+. For example, with a User tagger a strength of 1 is a positive tagging
 # and a strength of 0 is a negative tagging. With a classifier the strength is the probability that
 # the classifier would assign the tag and a probability over the classifier's positive_cutoff 
 # should be considered positive.
 #
-# See ClassifierExecution and RenameTagging for examples of classes that can be used as tagging metdata.
+# See +ClassifierExecution+ and +RenameTagging+ for examples of classes that can be used as tagging metdata.
 class Tagging < ActiveRecord::Base
   acts_as_immutable
   

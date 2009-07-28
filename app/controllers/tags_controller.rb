@@ -4,15 +4,15 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# The tags controller provides an interface to a users tags.
+# The TagsController provides an interface to a user's tags.
 #
-# The CRUD operations here don't actually work on the tag models
-# instead they apply bulk operations to a users use of the tag,
+# The CRUD operations here don't actually work on the Tag models
+# instead they apply bulk operations to a user's use of the tag,
 # the Tag models themselves never change.
 #
-# You can think of it as the +TaggingsController+ operates on 
-# single uses of the tag by the user and the +TagsController+
-# operates on the many +Taggings+ that use a given +Tag+.
+# You can think of it as the TaggingsController operates on
+# single uses of the Tag by the User and the TagsController
+# operates on the many Taggings that use a given Tag.
 class TagsController < ApplicationController
   permit "admin", :only => :upload
   helper :bias_slider, :comments
@@ -103,7 +103,7 @@ class TagsController < ApplicationController
 
   # Create is actually a copy of an existing tag.
   #
-  # :copy must be the name of a tag to copy
+  # <tt>:copy</tt> must be the name of a tag to copy
   def create
     if params[:copy] && params[:name]
       from = Tag.find_by_id(params[:copy])

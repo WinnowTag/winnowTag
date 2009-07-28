@@ -9,12 +9,12 @@ class FeedItemsController < ApplicationController
   include ActionView::Helpers::TextHelper
   before_filter :login_required
      
-  # The Index action has two modes.  The normal mode which displays
+  # The +index+ action has two modes.  The normal mode which displays
   # positive user and classifier tagged items and the tag inspect mode
   # which display positive and negative user tagged items.  Normal is the
-  # default, tag inspect mode is set by passing mode=tag_inspect on
-  # the url. In tag_inspect mode the @tag_inspect_mode instance variable
-  # is set to true for use in the views.
+  # default, tag inspect mode is set by passing +mode=tag_inspect+ on
+  # the url. In +tag_inspect+ mode the +@tag_inspect_mode+ instance variable
+  # is set to +true+ for use in the views.
   #
   # == Supported Parameters
   #

@@ -8,11 +8,11 @@ module BiasSliderHelper
   #
   # === Parameters
   #
-  # <tt>:tag</tt>:: The tag to show the bias for. Can be nil or :default too.
+  # <tt>tag</tt>:: The Tag to show the bias for. Can be +nil+ or <tt>:default</tt> too.
   #
-  # When tag is nil, a disabled slider is shown with the default
-  # bias. When tag is :default the default bias will be show, but it will be editable.
-  # When tag is a user tag the bias for that tag will be shown and it will be editable.
+  # When +tag+ is +nil+, a disabled slider is shown with the default
+  # bias. When +tag+ is <tt>:default</tt> the default bias will be show, but it will be editable.
+  # When +tag+ is a user Tag the bias for that Tag will be shown and it will be editable.
   def bias_slider_html(tag)
     content_tag 'div', 
       content_tag('div', 

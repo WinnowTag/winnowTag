@@ -5,7 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 
 # This controller doesn't create feeds directly. Instead it forwards
-# feed creation requests on to the collector using Remote::Feed.
+# feed creation requests on to the collector using +Remote::Feed+.
 class FeedsController < ApplicationController
   def index
     respond_to do |format|
