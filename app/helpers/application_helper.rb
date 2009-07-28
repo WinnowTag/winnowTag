@@ -135,6 +135,9 @@ module ApplicationHelper
     function = case options[:remove]
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
     end
+    
+    class_names = [dom_id(feed), "clearfix", "feed"]
+    class_names << "draggable" if options[:draggable]
 
     html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:span, html, :class => "actions")
@@ -144,8 +147,6 @@ module ApplicationHelper
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
 
-    class_names = [dom_id(feed), "clearfix", "feed"]
-    class_names << "draggable" if options[:draggable]
     html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
     html
   end
