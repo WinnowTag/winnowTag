@@ -126,7 +126,7 @@ class Tag < ActiveRecord::Base
   
   # Return an Atom document for this tag.
   #
-  # When :training_only => true all and only training examples will be included
+  # When <tt>:training_only => true</tt> all and only training examples will be included
   # in the document and it will conform to the Training Definition Document.
   def to_atom(options = {})
     Atom::Feed.new do |feed|

@@ -4,20 +4,20 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# Required for the Tag() function.  Rails can sometimes auto-load this and
+# Required for the +Tag()+ function.  Rails can sometimes auto-load this and
 # sometimes it doesn't so lets put it here explicitly so we can always be
-# sure it has been loaded and the Tag and function is available.
+# sure it has been loaded and the +Tag+ and function is available.
 # require 'tag.rb'
 
 # Not explicitly requiring the file because is causes problems with reloading
 # in development mode. Using this contstant allows rails to auto load the 
-# Tag class, and therefore the Tag() function
+# +Tag+ class, and therefore the +Tag()+ function
 Tag
 
 class TaggingsController < ApplicationController
   helper :feed_items
 
-  # Creates a single tagging for a <Taggable, Tagger, Tag>
+  # Creates a single +Tagging+ for a <tt><Taggable, Tagger, Tag></tt>
   def create
     params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
     @tagging = current_user.taggings.create!(params[:tagging])
@@ -27,10 +27,11 @@ class TaggingsController < ApplicationController
   
   # Destroys taggings
   #
-  #  Accepted Parameters:
-  #    - tagging: 
-  #         feed_item_id: The type and id of a taggable to destroy a tagging on.
-  #         tag: The name of the tag to destroy the tagging on the taggable.
+  # Accepted Parameters:
+  #
+  # - +tagging+:
+  #   - +feed_item_id+: The type and id of a +Taggable+ to destroy a +Tagging+ on.
+  #   - +tag+:          The name of the +Tag+ to destroy the +Tagging+ on the +Taggable+.
   def destroy
     @feed_item = FeedItem.find(params[:tagging][:feed_item_id])
     @tag = Tag(current_user, params[:tagging][:tag])
