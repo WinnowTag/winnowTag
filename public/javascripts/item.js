@@ -288,32 +288,33 @@ var Item = Class.create({
       },
       onSuccess: function(response) {
         var data = response.responseJSON;
+        if(data) {
+          // Add the tag's id as a class to newly created controls so they get properly updated if 
+          // the user renames or deletes them before reloading the page
+          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+          tag_control.addClassName(data.id);
+          var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+          training_control.addClassName(data.id);
         
-        // Add the tag's id as a class to newly created controls so they get properly updated if 
-        // the user renames or deletes them before reloading the page
-        var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-        tag_control.addClassName(data.id);
-        var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
-        training_control.addClassName(data.id);
+          // TODO: Move this to itembrowser.js
+          // Add/Update the filter for this tag
+          if(!$('tag_filters').down("#" + data.id)) {
+            $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name);
+            itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
+            itemBrowser.styleFilters();
+          } else {
+            $$(".filter_list ." + data.id).each(function(element) {
+              element.title = data.tooltip;
+            });
+          }
         
-        // TODO: Move this to itembrowser.js
-        // Add/Update the filter for this tag
-        if(!$('tag_filters').down("#" + data.id)) {
-          $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name);
-          itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
-          itemBrowser.styleFilters();
-        } else {
-          $$(".filter_list ." + data.id).each(function(element) {
-            element.title = data.tooltip;
-          });
-        }
-        
-        // TODO: Moved this to classifier.js
-        // Update the classification button's status
-        var classification_button = $('classification_button');
-        if (classification_button) {
-          classification_button.disabled = false;
-          $("progress_title").update(data.classifierProgress);
+          // TODO: Moved this to classifier.js
+          // Update the classification button's status
+          var classification_button = $('classification_button');
+          if (classification_button) {
+            classification_button.disabled = false;
+            $("progress_title").update(data.classifierProgress);
+          }
         }
       }.bind(this)
     });

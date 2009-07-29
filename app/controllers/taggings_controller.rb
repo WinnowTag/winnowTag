@@ -19,10 +19,19 @@ class TaggingsController < ApplicationController
 
   # Creates a single tagging for a <Taggable, Tagger, Tag>
   def create
-    params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
-    @tagging = current_user.taggings.create!(params[:tagging])
-    params[:tagging][:tag].update_attribute(:show_in_sidebar, true) unless params[:tagging][:tag].show_in_sidebar?
-    respond_to :json
+    tag = Tag(current_user, params[:tagging][:tag])
+    @tagging = Tagging.new(params[:tagging].merge(:tag => tag, :user => current_user))
+    if @tagging.save
+      unless tag.show_in_sidebar?
+        tag.update_attribute(:show_in_sidebar, true)
+      end
+      respond_to :json
+    else
+      # Ignore any errors caused by an invalid tagging.
+      # This is currently only meant to ignore duplicate taggings.
+      # We may want to show some errors to the user at some point.
+      render :nothing => true
+    end
   end
   
   # Destroys taggings

@@ -7,16 +7,35 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TaggingsController do
   it "create_without_tag_doesnt_create_tagging" do
+    feed_item = Generate.feed_item!
+    
     login_as Generate.user!
+    
     assert_no_difference("Tagging.count") do
-      post :create, :tagging => {:feed_item_id => '1'} rescue ActiveRecord::RecordInvalid
+      post :create, :tagging => { :feed_item_id => feed_item.id }
     end
   end
   
   it "create_with_blank_tag_doesnt_create_tagging" do
+    feed_item = Generate.feed_item!
+    
     login_as Generate.user!
+    
     assert_no_difference("Tagging.count") do
-      post :create, :tagging => {:feed_item_id => '1', :tag => ''} rescue ActiveRecord::RecordInvalid
+      post :create, :tagging => { :feed_item_id => feed_item.id, :tag => '' }
+    end
+  end
+  
+  it "create_with_duplicate_tag_doesnt_create_tagging" do
+    feed_item = Generate.feed_item!
+
+    login_as Generate.user!
+    
+    assert_difference("Tagging.count") do
+      post :create, :tagging => { :feed_item_id => feed_item.id, :tag => 'one' }
+    end
+    assert_no_difference("Tagging.count") do
+      post :create, :tagging => { :feed_item_id => feed_item.id, :tag => 'one' }
     end
   end
   
