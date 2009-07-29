@@ -95,7 +95,7 @@ module FeedItemsHelper
     feeds = current_user.feeds
     feed_ids = params[:feed_ids].to_s.split(",").map(&:to_i) - feeds.map(&:id)
     feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
-    feeds.sort_by { |feed| feed.title.downcase }
+    feeds.sort_by { |feed| feed.sort_title.downcase }
   end
 
   def render_clues(clues)
