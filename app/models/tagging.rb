@@ -79,7 +79,7 @@ class Tagging < ActiveRecord::Base
   def inspect
     "<Tagging user=#{user.login}, item=#{feed_item.id}, tag=#{tag.name}, classifier=#{classifier_tagging?}>"
   end
-  
+
 private
   def update_tag_timestamp
     tag.update_attribute(:updated_on, Time.now.utc)
@@ -88,7 +88,8 @@ private
   def remove_preexisting_tagging
     # Has this user tagged this item with this tag before?
     # This ensures that taggings are unique by user, taggable, tag and classifier_tagging
-    user.taggings.find_by_feed_item(feed_item, :all, 
-      :conditions => { :tag_id => tag.id, :classifier_tagging => classifier_tagging? }).each(&:destroy)
+    user.taggings.find(:all, 
+      :conditions => { :tag_id => tag.id, :feed_item_id => feed_item.id, :classifier_tagging => classifier_tagging? }
+    ).each(&:destroy)
   end
 end
