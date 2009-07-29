@@ -79,10 +79,6 @@ Spec::Runner.configure do |config|
     @controller.send(:current_user)
   end
   
-  def mock_new_model(model_class, options_and_stubs = {})
-    mock_model(model_class, options_and_stubs.reverse_merge(:id => nil, :to_param => nil, :new_record? => true))
-  end
-  
   def referer(referer)
     @request.env['HTTP_REFERER'] = referer
   end
