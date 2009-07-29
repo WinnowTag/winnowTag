@@ -264,22 +264,6 @@ var Item = Class.create({
 
     var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
 
-    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-    if(tag_control) {
-      tag_control.removeClassName(other_tagging_type);
-      tag_control.addClassName(tagging_type);
-    } else {
-      this.addTagControl(tag_name, tagging_type);
-    }
-    
-    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
-    if(training_control) {
-      training_control.removeClassName(other_tagging_type);
-      training_control.addClassName(tagging_type);
-    } else {
-      this.addTrainingControl(tag_name);
-    }
-      
     new Ajax.Request('/taggings', { method: 'post', requestHeaders: { Accept: 'application/json' },
       parameters: {
         "tagging[feed_item_id]": this.id,
@@ -288,7 +272,25 @@ var Item = Class.create({
       },
       onSuccess: function(response) {
         var data = response.responseJSON;
-        if(data) {
+        if(data.error) {
+          Message.add("error", data.error);
+        } else {
+          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+          if(tag_control) {
+            tag_control.removeClassName(other_tagging_type);
+            tag_control.addClassName(tagging_type);
+          } else {
+            this.addTagControl(tag_name, tagging_type);
+          }
+    
+          var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+          if(training_control) {
+            training_control.removeClassName(other_tagging_type);
+            training_control.addClassName(tagging_type);
+          } else {
+            this.addTrainingControl(tag_name);
+          }
+      
           // Add the tag's id as a class to newly created controls so they get properly updated if 
           // the user renames or deletes them before reloading the page
           var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);

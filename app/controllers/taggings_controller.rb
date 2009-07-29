@@ -27,10 +27,9 @@ class TaggingsController < ApplicationController
       end
       respond_to :json
     else
-      # Ignore any errors caused by an invalid tagging.
-      # This is currently only meant to ignore duplicate taggings.
-      # We may want to show some errors to the user at some point.
-      render :nothing => true
+      respond_to do |format|
+        format.json { render :action => "error.json.erb" }
+      end
     end
   end
   
