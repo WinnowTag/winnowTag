@@ -33,6 +33,7 @@ task :beta do
   set :deploy_to, "/home/peerworks/winnow.deploy"
   set :user, 'peerworks'
   set :branch, "beta" unless exists?(:branch)
+  set :rails_env, "production"
 
   role :web, "winnow01.mindloom.org"
   role :web, "winnow02.mindloom.org"
@@ -46,6 +47,7 @@ task :trunk do
   set :user, 'mindloom'
   set :domain, 'trunk.mindloom.org'
   set :branch, "master" unless exists?(:branch)
+  set :rails_env, "trunk"
 
   role :web, domain
   role :app, domain
@@ -127,7 +129,6 @@ after :deploy, :send_notification
 namespace :gems do
   task :build do  
     rake = fetch(:rake, "rake")
-    rails_env = fetch(:rails_env, "production")
     run "cd #{release_path}; #{rake} RAILS_ENV=#{rails_env} gems:build"
   end
 end
