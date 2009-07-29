@@ -3,6 +3,11 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Represents a comment on a Tag by a User.
+#
+# The ActsAsReadable plugin handles marking comments read/unread.
+# See its README file for details.
 class Comment < ActiveRecord::Base
   acts_as_readable
   
