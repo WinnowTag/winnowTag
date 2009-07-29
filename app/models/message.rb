@@ -3,6 +3,10 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Represents messages that can be displayed to a User. When a User reads
+# a message, it is marked as such via the ActsAsReadable plugin. See its
+# README file for details on readings.
 class Message < ActiveRecord::Base
   acts_as_readable
   
