@@ -7,7 +7,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feedbacks/_form.html.erb' do
   before(:each) do
-    @feedback = mock_new_model(Feedback, :body => nil)
+    @feedback = mock_model(Feedback, :body => nil).as_new_record
   end
   
   def render_it
