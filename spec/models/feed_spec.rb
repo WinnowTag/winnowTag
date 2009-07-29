@@ -213,7 +213,7 @@ describe Feed do
     end
     
     describe "with multi page feed" do
-      
+      it "needs examples"
     end
   end
   
