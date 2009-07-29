@@ -258,12 +258,7 @@ describe User do
   
   describe '#potentially_undertrained_changed_tags' do
     before(:each) do
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
+      6.times { Generate.feed_item! }
 
       @user = Generate.user!
       @changed_tag_with_5 = Generate.tag!(:user => @user, :last_classified_at => Time.now.yesterday.getutc)
