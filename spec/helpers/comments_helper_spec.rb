@@ -16,6 +16,8 @@ describe CommentsHelper do
   
   describe "#can_edit_comment?" do
     
+    # CommentsHelper relies upon this method, which is defined in ApplicationHelper,
+    # into which CommentsHelper is included.
     def is_admin?
       @is_admin
     end
