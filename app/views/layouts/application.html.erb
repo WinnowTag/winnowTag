@@ -20,7 +20,7 @@
   <%= yield(:head) %>
 </head>
 <body id="<%= yield(:body) %>">
-  <% if Rails.env == "trunk" -%>
+  <% if Rails.env.trunk? -%>
     <div class="environment"><%= Rails.env %></div>
   <% end -%>
 
