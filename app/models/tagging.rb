@@ -30,15 +30,9 @@
 # 
 # == Immutability and Destruction
 #
-# A Tagging is immutable, i.e. once created it can never be changed.
+# A Tagging is immutable, i.e., once created it can never be changed.
 #
-# A Tagging is also never really deleted, instead, when it is destroyed it's +deleted_at+
-# field is set to +Time.now+. This is necessary since when a Tagging is destroyed, the classifier
-# needs to untrain it (which is done in a separate process before the next classification),
-# however it also needs to know the details of the Tagging in order to untrain it.
-#
-# At some point we may want to have some method that sweeps the taggings table and clears out
-# old taggings, but we haven't needed that yet.
+# When a Tagging is destroyed, it is captured as a DeletedTagging.
 #
 # == Tagging Strength
 #
