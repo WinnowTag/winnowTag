@@ -13,6 +13,8 @@
 class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
+  
+  before_save :set_sort_title
 
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
 
@@ -25,7 +27,7 @@ class Feed < ActiveRecord::Base
   
   named_scope :by, lambda { |order, direction, excluder|
     orders = {
-      "title"            => "feeds.title",
+      "title"            => "feeds.sort_title",
       "created_on"       => "feeds.created_on",
       "updated_on"       => "feeds.updated_on",
       "feed_items_count" => "feeds.feed_items_count",
@@ -116,6 +118,10 @@ class Feed < ActiveRecord::Base
   end
   
 private
+  def set_sort_title
+    self.sort_title = self.title.to_s.downcase.gsub(/^(a|an|the) /, '')
+  end
+
   def self.parse_id_uri(entry)
     begin
       uri = URI.parse(entry.id)

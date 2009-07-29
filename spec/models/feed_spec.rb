@@ -28,6 +28,15 @@ shared_examples_for "Feed updates attributes from Atom::Entry" do
 end
 
 describe Feed do
+  describe "sort_title" do
+    it "sets the feed's sort_title to be a downcased version of the title with leading articles removed" do
+      Generate.feed!(:title => "Some Feed").sort_title.should == "some feed"
+      Generate.feed!(:title => "A Some Feed").sort_title.should == "some feed"
+      Generate.feed!(:title => "An Some Feed").sort_title.should == "some feed"
+      Generate.feed!(:title => "The Some Feed").sort_title.should == "some feed"
+    end
+  end
+  
   describe "find_or_create_from_atom_entry" do
     before(:each) do
       @original_feed = Generate.feed!
