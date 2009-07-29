@@ -4,7 +4,7 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# Convenience method for finding or creating a +Tag+
+# Convenience method for finding or creating a Tag
 def Tag(user, tag)
   if tag.nil? || tag.is_a?(Tag) 
     tag
