@@ -256,6 +256,46 @@ describe Feed do
     end
   end
   
+  describe "update_from_atom_entry when the feed is a duplicate" do
+    before(:each) do
+      @feed = Generate.feed!
+      @duplicate_feed = Generate.feed!
+
+      @user1 = Generate.user!
+      @user2 = Generate.user!
+      @user3 = Generate.user!
+
+      FeedSubscription.delete_all
+      Generate.feed_subscription!(:feed => @feed, :user => @user1)
+      Generate.feed_subscription!(:feed => @duplicate_feed, :user => @user1)
+      Generate.feed_subscription!(:feed => @feed, :user => @user2)
+      Generate.feed_subscription!(:feed => @duplicate_feed, :user => @user3)
+
+      @atom = Atom::Entry.new do |atom|
+        atom.title = "Feed Title"
+        atom.updated = Time.now
+        atom.published = Time.now.yesterday
+        atom.id = @duplicate_feed.uri
+        atom.links << Atom::Link.new(:rel => 'via', :href => 'http://example.com/feed')
+        atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
+        atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
+        atom.links << Atom::Link.new(:rel => 'http://peerworks.org/duplicateOf', :href => @feed.uri)
+      end
+    end
+
+    it "should update a users feed subscriptions" do
+      @user1.feed_subscriptions.map(&:feed_id).should == [@feed.id, @duplicate_feed.id]
+      @user2.feed_subscriptions.map(&:feed_id).should == [@feed.id]
+      @user3.feed_subscriptions.map(&:feed_id).should == [@duplicate_feed.id]
+
+      @duplicate_feed.update_from_atom(@atom)
+
+      @user1.feed_subscriptions(:reload).map(&:feed_id).should == [@feed.id]
+      @user2.feed_subscriptions(:reload).map(&:feed_id).should == [@feed.id]
+      @user3.feed_subscriptions(:reload).map(&:feed_id).should == [@feed.id]
+    end
+  end
+
   describe 'search' do
     it "should find items by search term" do
       Generate.feed!(:title => "Ruby Lang")
