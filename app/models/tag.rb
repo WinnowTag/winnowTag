@@ -13,6 +13,12 @@ def Tag(user, tag)
   end
 end
 
+# A Tag allows a User to give a name to FeedItem content.
+#
+# A Tag may be public, meaning that it is accessible to other users. A Tag
+# also has a bias.
+#
+# Tagging is the core class within Winnow's tagging infra-structure.
 class Tag < ActiveRecord::Base  
   cattr_accessor :undertrained_threshold
   @@undertrained_threshold = 6
