@@ -3,6 +3,8 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Allows a User to group tags and feeds together.
 class Folder < ActiveRecord::Base
   belongs_to :user
   has_and_belongs_to_many :feeds, :order => :title
