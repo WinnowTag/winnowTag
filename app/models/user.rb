@@ -3,6 +3,10 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Represents a user of the system.
+#
+# Also, handles authentication via the ActsAsAuthenticated plugin.
 class User < ActiveRecord::Base   
   acts_as_authorized_user
   acts_as_authorizable
