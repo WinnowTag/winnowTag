@@ -8,20 +8,8 @@ class FeedItemsController < ApplicationController
   helper :feeds
   include ActionView::Helpers::TextHelper
   before_filter :login_required
-     
-  # The +index+ action has two modes.  The normal mode which displays
-  # positive user and classifier tagged items and the tag inspect mode
-  # which display positive and negative user tagged items.  Normal is the
-  # default, tag inspect mode is set by passing +mode=tag_inspect+ on
-  # the url. In +tag_inspect+ mode the +@tag_inspect_mode+ instance variable
-  # is set to +true+ for use in the views.
-  #
-  # == Supported Parameters
-  #
-  # === The parameters are passed through to +FeedItem.find_with_filters+.
-  #
-  # <tt>limit</tt>:: The number of items to fetch. Default is 40, max is 100.
-  # <tt>offset</tt>:: The offset within the items to fetch from.
+
+  # The +index+ action displays +FeedItem+s based on the passed in filters.
   #
   # See also +FeedItem.find_with_filters+.
   def index

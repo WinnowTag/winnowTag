@@ -5,14 +5,6 @@
 # Please visit http://www.peerworks.org/contact for further information.
 
 # The TagsController provides an interface to a user's tags.
-#
-# The CRUD operations here don't actually work on the Tag models
-# instead they apply bulk operations to a user's use of the tag,
-# the Tag models themselves never change.
-#
-# You can think of it as the TaggingsController operates on
-# single uses of the Tag by the User and the TagsController
-# operates on the many Taggings that use a given Tag.
 class TagsController < ApplicationController
   permit "admin", :only => :upload
   helper :bias_slider, :comments
