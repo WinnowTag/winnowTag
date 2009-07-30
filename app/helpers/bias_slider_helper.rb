@@ -4,15 +4,9 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module BiasSliderHelper
-  # Creates a Bias slider for setting the sensitivity of the classifier
-  #
-  # === Parameters
-  #
-  # <tt>tag</tt>:: The Tag to show the bias for. Can be +nil+ or <tt>:default</tt> too.
-  #
-  # When +tag+ is +nil+, a disabled slider is shown with the default
-  # bias. When +tag+ is <tt>:default</tt> the default bias will be show, but it will be editable.
-  # When +tag+ is a user Tag the bias for that Tag will be shown and it will be editable.
+
+  # Creates a slider for setting the sensitivity of the classifier for a specific tag. 
+  # The slider will be disabled if the tag is not owned by the current user.
   def bias_slider_html(tag)
     content_tag 'div', 
       content_tag('div', 

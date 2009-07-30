@@ -9,17 +9,13 @@
 # This class includes methods for:
 #
 # * Finding items based on taggings and other filters.
-# * Extracting an item from a <tt>FeedTools::Item</tt> object.
-# * Getting and producing the tokens for a feed item.
 #
 # The +FeedItem+ class only stores summary metadata for a feed item, the actual
 # content is stored in the +FeedItemContent+ class. This enables faster database
 # access on the smaller summary records and allows us to use a MyISAM table for
 # the content which can then be index using MySQL's Full Text Indexing.
 #
-# Tokens are stored in a +FeedItemTokensContainer+.
-#
-# See also +FeedItemContent+ and +FeedItemTokensContainer+.
+# See also +FeedItemContent+
 class FeedItem < ActiveRecord::Base
   acts_as_readable
   
@@ -178,14 +174,12 @@ class FeedItem < ActiveRecord::Base
   # +options_for_filters+.
   #
   # When a user is provided in the +filters+ hash this method will also do some prefetching of
-  # the user and classifier taggings for the items loaded. This uses the caching mechanism
-  # provided by the +FindByTagger+ module.  The advantage of this is that you no longer need 
+  # the user and classifier taggings for the items loaded. The advantage of this is that you no longer need 
   # N + 1 queries to get the taggings for each item, instead there are just 3 queries, one 
   # to get the items and one each to get the taggings for the user and user's classifier.
   #
   # Note: The Rails eager loading mechanism can't substitute for this custom solution because
   # of the complexity of the joining in the query produced by +options_with_filters+.
-  #
   def self.find_with_filters(filters = {})    
     user = filters[:user]
     
@@ -312,7 +306,7 @@ class FeedItem < ActiveRecord::Base
     options
   end
   
-  # Add any +text_filter+. This is done using a inner join on +feed_item_contents+ with an
+  # Add any +text_filter+. This is done using a inner join on +feed_item_text_indices+ with an
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
     unless text_filter.blank?
