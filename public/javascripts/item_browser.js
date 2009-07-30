@@ -201,7 +201,11 @@ var ItemBrowser = Class.create({
     this.filters = filters_hash.toQueryString().toQueryParams();
     
     location.hash = "#" + $H(this.filters).toQueryString();
-    Cookie.set(this.name + "_filters", $H(this.filters).toQueryString(), 365);
+
+    // Do not persist the text_filter
+    var filters_to_save = $H(this.filters);
+    filters_to_save.unset("text_filter");
+    Cookie.set(this.name + "_filters", filters_to_save.toQueryString(), 365);
   },
   
   styleModes: function() {
