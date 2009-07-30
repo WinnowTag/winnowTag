@@ -55,12 +55,12 @@ class FeedsController < ApplicationController
   def auto_complete_for_feed_title
     @q = params[:feed][:title]
     
-    conditions = ["LOWER(title) LIKE LOWER(?) OR LOWER(alternate) LIKE LOWER(?)"]
+    conditions = ["(LOWER(title) LIKE LOWER(?) OR LOWER(alternate) LIKE LOWER(?))"]
     values = ["%#{@q}%", "%#{@q}%"]
     
     feed_ids = current_user.subscribed_feeds.map(&:id)
     if !feed_ids.blank?
-      conditions << "id NOT IN (?)"
+      conditions << "feeds.id NOT IN (?)"
       values << feed_ids
     end
     
