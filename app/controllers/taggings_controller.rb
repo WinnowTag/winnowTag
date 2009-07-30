@@ -6,7 +6,7 @@
 
 # Required for the +Tag()+ function.  Rails can sometimes auto-load this and
 # sometimes it doesn't so lets put it here explicitly so we can always be
-# sure it has been loaded and the +Tag+ and function is available.
+# sure it has been loaded and the +Tag()+ function is available.
 # require 'tag.rb'
 
 # Not explicitly requiring the file because is causes problems with reloading
@@ -17,7 +17,7 @@ Tag
 class TaggingsController < ApplicationController
   helper :feed_items
 
-  # Creates a single +Tagging+ for a <tt><Taggable, Tagger, Tag></tt>
+  # Creates a single +Tagging+ for a <tt><FeedItem, User, Tag></tt>
   def create
     params[:tagging][:tag] = Tag(current_user, params[:tagging][:tag])
     @tagging = current_user.taggings.create!(params[:tagging])
@@ -30,8 +30,8 @@ class TaggingsController < ApplicationController
   # Accepted Parameters:
   #
   # - +tagging+:
-  #   - +feed_item_id+: The id of a +Taggable+ to destroy a +Tagging+ on.
-  #   - +tag+:          The name of the +Tag+ to destroy the +Tagging+ on the +Taggable+.
+  #   - +feed_item_id+: The id of a +FeedItem+ to destroy a +Tagging+ on.
+  #   - +tag+:          The name of the +Tag+ to destroy the +Tagging+ on the +FeedItem+.
   def destroy
     @feed_item = FeedItem.find(params[:tagging][:feed_item_id])
     @tag = Tag(current_user, params[:tagging][:tag])

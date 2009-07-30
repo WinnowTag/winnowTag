@@ -5,8 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 
 # Represents a User subscribing to a Tag. In other words, the User wants
-# to see content from this Tag. TagSubscription might be considered the
-# opposite of TagExclusion.
+# to see content from this Tag.
 class TagSubscription < ActiveRecord::Base
   belongs_to :user
   belongs_to :tag

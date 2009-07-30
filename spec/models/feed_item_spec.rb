@@ -168,7 +168,7 @@ describe FeedItem do
       FeedItem.find_with_filters(:user => user, :mode => "all", :order => "id").should == [feed_item1, feed_item2]
     end
     
-    it "filters out read items when there are more than 1 tags included" do
+    it "filters out read items when there is more than 1 tag included" do
       user = Generate.user!
       tag1 = Generate.tag!(:user => user)
       tag2 = Generate.tag!(:user => user)

@@ -6,10 +6,9 @@
 
 # Represents a Feed provided by an RSS/Atom source.
 #
-# A Feed mainly handles collection of new items through the
-# +collect+ and +collect_all+ methods. It also provides a way to
-# get a list of feeds with item counts after applying similar
-# filters to those used by <tt>FeedItem.find_with_filters</tt>.
+# This class includes methods for:
+#
+# * Finding feeds based on filters.
 class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all

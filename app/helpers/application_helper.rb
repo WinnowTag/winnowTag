@@ -156,8 +156,6 @@ module ApplicationHelper
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
-  # Complex method in that it builds HTML, JS, and CSS using strings. At least it is
-  # covered by several examples in application_helper_spec
   def tag_filter_control(tag, options = {})
     if options[:remove] == :subscription && current_user.id == tag.user_id
       options = options.except(:remove)
