@@ -1,3 +1,7 @@
+? put nokogiri back (try out 2.3.3 gem stuff)
+? remove deletedtagging?
+? remove cgi ext?
+
 loading message
 auto test
 zen test
