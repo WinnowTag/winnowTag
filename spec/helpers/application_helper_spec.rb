@@ -166,9 +166,9 @@ describe ApplicationHelper do
   describe "feed filter controls" do
     it "creates a list with an li for each feed" do
       feeds = [
-        mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1)),
-        mock_model(Feed, :title => "Feed 2", :feed_items => stub("feed_items", :size => 2)),
-        mock_model(Feed, :title => "Feed 3", :feed_items => stub("feed_items", :size => 3))
+        mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1)),
+        mock_model(Feed, :title => "Feed 2", :sort_title => "feed 2", :feed_items => stub("feed_items", :size => 2)),
+        mock_model(Feed, :title => "Feed 3", :sort_title => "feed 3", :feed_items => stub("feed_items", :size => 3))
       ]
       feed_filter_controls(feeds, :remove => :subscription).should have_tag("ul") do
         with_tag("li", 3)
@@ -176,7 +176,7 @@ describe ApplicationHelper do
     end
     
     it "creates a filter control for a feed" do
-      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
       feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
         with_tag ".filter" do
           with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({feed_ids: '#{feed.id}'})")}.*/
@@ -186,23 +186,23 @@ describe ApplicationHelper do
     end
     
     it "creates a filter control for a feed with the remove link for a subscription" do
-      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
       feed_filter_control(feed, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_feed_path(feed, :subscribe => "false"))}.*/)
     end
     
     it "creates a filter control for a feed with the remove link for a subscription" do
-      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
       folder = mock_model(Folder)
       feed_filter_control(feed, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(feed)))}.*/)
     end
     
     it "creates a filter control for a feed with a span for autocomplete" do
-      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
       feed_filter_control(feed, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
     end
     
     it "creates a filter control for a feed with draggable controls" do
-      feed = mock_model(Feed, :title => "Feed 1", :feed_items => stub("feed_items", :size => 1))
+      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
       feed_filter_control(feed, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
     end
   end
