@@ -10,7 +10,7 @@ Selenium::Rake::RemoteControlStartTask.new do |rc|
   rc.background = true
   rc.wait_until_up_and_running = true
   # http://nexus.openqa.org/content/repositories/snapshots/org/seleniumhq/selenium/server/selenium-server/1.0-SNAPSHOT/
-  rc.jar_file = File.join(File.dirname(__FILE__), '..', 'selenium-server.jar')
+  rc.jar_file = Rails.root.join("vendor/plugins/mhs_testing/selenium-server.jar")
   rc.additional_args << "-singleWindow"
   rc.additional_args << "> /dev/null"
 end
