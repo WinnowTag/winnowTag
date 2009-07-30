@@ -157,7 +157,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       });
     } else {
       feed.removeClassName('selected');
-      $('feed_filters').insertInOrder('li', '.name', feed, $(feed).down(".name").innerHTML.unescapeHTML());
+      $('feed_filters').insertInOrder('li', '.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
       this.bindFeedFilterEvents(feed);
       new Ajax.Request(feed.getAttribute("subscribe_url"), {method:'put'});
       this.styleFilters();

@@ -139,7 +139,7 @@ module ApplicationHelper
     html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:span, html, :class => "actions")
 
-    html << link_to_function(h(feed.title), "", :class => "name")
+    html << link_to_function(h(feed.title), "", :class => "name", :"data-sort" => feed.sort_title)
     
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]

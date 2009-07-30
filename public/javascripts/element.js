@@ -5,12 +5,23 @@
 // Please visit http://www.peerworks.org/contact for further information.
 Element.addMethods({
   insertInOrder: function(container, sibling_selector, sibling_value_selector, element_html, element_value) {
+    var sibling_value_selector_parts = sibling_value_selector.split("@");
+    sibling_value_selector = sibling_value_selector_parts[0];
+    var sibling_value_selector_attribute = sibling_value_selector_parts[1];
+
     var needToInsert = true;
 
     container.select(sibling_selector).each(function(element) {
       if(needToInsert) {
-        var value_element = element.down(sibling_value_selector);
-        if(value_element && value_element.innerHTML.unescapeHTML().toLowerCase() > element_value.toLowerCase()) {
+        var sibling_value_element = element.down(sibling_value_selector);
+        
+        var sibling_value;
+        if(sibling_value_selector_attribute) {
+          sibling_value = sibling_value_element && sibling_value_element.getAttribute(sibling_value_selector_attribute);
+        } else {
+          sibling_value = sibling_value_element && sibling_value_element.innerHTML.unescapeHTML();
+        }
+        if(sibling_value.toLowerCase() > element_value.toLowerCase()) {
           element.insert({before: element_html})
           needToInsert = false;
         }
