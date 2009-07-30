@@ -6,6 +6,10 @@ Get libxml working on CI
 Trac post-commit hooks
  - http://www.rene.bz/2008/12/07/trac-post-commit-hooks-git
 
+? put nokogiri back (try out 2.3.3 gem stuff)
+? remove deletedtagging?
+? remove cgi ext?
+
 loading message
 auto test
 zen test
