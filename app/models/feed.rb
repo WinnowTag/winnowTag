@@ -6,12 +6,13 @@
 
 # Represents a Feed provided by an RSS/Atom source.
 #
-# This class includes methods for:
-#
-# * Finding feeds based on filters.
+# duplicate
+# via, alternate, title, , collector_link, uri, sort_title
+# update_on, updated
+# feed_items_count
 class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
-  has_many	:feed_items, :dependent => :delete_all
+  has_many	:feed_items, :dependent => :destroy
   
   before_save :set_title
   before_save :set_sort_title
@@ -121,20 +122,4 @@ private
   def set_sort_title
     self.sort_title = title.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end
-
-  def self.parse_id_uri(entry)
-    begin
-      uri = URI.parse(entry.id)
-    
-      if uri.fragment.nil?
-        raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_fragment", :entry_id => entry.id)
-      end
-    
-      uri.fragment.to_i
-    rescue ActiveRecord::RecordNotSaved => e
-      raise e
-    rescue
-      raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.invalid_entry_id", :entry_id => entry.id)
-    end
-  end  
 end
