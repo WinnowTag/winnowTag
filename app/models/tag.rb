@@ -15,10 +15,16 @@ end
 
 # A Tag allows a User to give a name to FeedItem content.
 #
-# A Tag may be public, meaning that it is accessible to other users. A Tag
-# also has a bias.
+# A Tag may be public, meaning that it is accessible to other users
+# or private, meaning that is only accessible by the creator.
+# 
+# Tag creators can choose whether or not their tags show in their
+# sidebar via the +show_in_sidebar+ attribute. This attribute does 
+# not affect users who subscribe the tag.
+# 
+# TODO: Sean, can you document bias?
 #
-# Tagging is the core class within Winnow's tagging infra-structure.
+# See also: Tagging
 class Tag < ActiveRecord::Base  
   cattr_accessor :undertrained_threshold
   @@undertrained_threshold = 6

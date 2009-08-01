@@ -4,6 +4,7 @@ default:
   selenium_host: localhost
   selenium_port: 4444
   browser: Firefox on OS X
+  browser: "*firefox"
   # display: ":0"
 osx_firefox:
   browser: Firefox on OS X
