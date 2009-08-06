@@ -14,6 +14,7 @@ class Feed < ActiveRecord::Base
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :delete_all
   
+  before_save :set_title
   before_save :set_sort_title
 
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
@@ -83,7 +84,7 @@ class Feed < ActiveRecord::Base
       end
       
       self.attributes = {
-        :title      => (entry.title or ''),
+        :title      => entry.title,
         :updated    => entry.updated,
         :alternate  => (entry.alternate and entry.alternate.href),
         :via        => (entry.via and entry.via.href),
@@ -106,20 +107,20 @@ class Feed < ActiveRecord::Base
       self
     end
   end
-  
-  def title
-    if not read_attribute(:title).blank?
-      read_attribute(:title)
-    elsif not alternate.blank?
-      URI.parse(alternate).host
-    elsif not via.blank?
-      URI.parse(via).host
+
+private
+  def set_title
+    return if title.present?
+
+    if alternate.present?
+      self.title = URI.parse(alternate).host
+    elsif via.present?
+      self.title = URI.parse(via).host
     end
   end
-  
-private
+
   def set_sort_title
-    self.sort_title = self.title.to_s.downcase.gsub(/^(a|an|the) /, '')
+    self.sort_title = title.to_s.downcase.gsub(/^(a|an|the) /, '')
   end
 
   def self.parse_id_uri(entry)

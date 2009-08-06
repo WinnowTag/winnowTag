@@ -28,6 +28,16 @@ shared_examples_for "Feed updates attributes from Atom::Entry" do
 end
 
 describe Feed do
+  describe "title" do
+    it "sets the feed's title to be a the alternate link's host if no title was set" do
+      Generate.feed!(:title => nil, :alternate => "http://google.com/feed.atom").sort_title.should == "google.com"
+    end
+    
+    it "sets the feed's title to be a the via link's host if no title or alternate link was set" do
+      Generate.feed!(:title => nil, :alternate => nil, :via => "http://google.com/feed.atom").sort_title.should == "google.com"
+    end
+  end
+
   describe "sort_title" do
     it "sets the feed's sort_title to be a downcased version of the title with leading articles removed" do
       Generate.feed!(:title => "Some Feed").sort_title.should == "some feed"
@@ -95,17 +105,6 @@ describe Feed do
       end
     end
 
-    describe 'with missing title' do
-      before(:each) do
-        @atom.title = nil
-        @feed = Feed.find_or_create_from_atom_entry(@atom)
-      end
-      
-      it "should set the title to ''" do
-        @feed.read_attribute(:title).should == ''        
-      end
-    end
-    
     describe 'with missing via' do
       before(:each) do
         @atom.links.delete(@atom.links.via)
@@ -318,28 +317,6 @@ describe Feed do
       feed = Generate.feed!(:title => "Ruby Lang")
       duplicate = Generate.feed!(:title => "Duplicate", :duplicate => feed)
       Feed.search(:text_filter => 'Duplicate').should be_empty
-    end
-  end
-  
-  describe "title" do
-    it "should return the title if present" do
-      feed = Feed.new :title => "Some Title"
-      feed.title.should == "Some Title"
-    end
-    
-    it "should return the hostname from alternate if no title is present" do
-      feed = Feed.new :alternate => "http://example.com/blog"
-      feed.title.should == "example.com"
-    end
-    
-    it "should return the hostname from via if no title or alternate is present" do
-      feed = Feed.new :via => "http://example.com/blog"
-      feed.title.should == "example.com"
-    end
-    
-    it "should return nil if title, alternate, and via are all blank" do
-      feed = Feed.new 
-      feed.title.should be_nil
     end
   end
 end
