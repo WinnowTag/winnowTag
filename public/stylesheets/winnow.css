@@ -1304,6 +1304,7 @@ body#feeds .feed {
   display: none;
   border: 2px solid #8181DC;
   border-width: 2px 0 0 0;
+  background-color: #D7E0F5;
 }
 
 .feed_item.open .feed_information {
@@ -1315,7 +1316,7 @@ body#feeds .feed {
 }
 
 .feed_item .feed_information .summary {
-  background-color: #D7E0F5;  
+  background-color: #D7E0F5;
 }
 
 .notitle {
