@@ -59,7 +59,7 @@ class Tagging < ActiveRecord::Base
   validates_presence_of :tag, :user, :feed_item
   validates_numericality_of :strength
   validates_inclusion_of :strength, :in => 0..1
-  validates_associated :tag
+  validates_associated :tag, :message => I18n.t("winnow.errors.tagging.tag")
   
   before_create :remove_preexisting_tagging
   after_create :update_tag_timestamp
