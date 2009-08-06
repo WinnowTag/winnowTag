@@ -13,7 +13,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :users, :only => [:index, :new, :create, :destroy],
                 :member => {
-                  :login_as => :post
+                  :login_as => :post,
+                  :prototype => :put
                 }
 
   map.resources :feeds, :only => [:index, :create],

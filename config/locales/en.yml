@@ -31,6 +31,8 @@ en:
       how_do_you_want_to_use: "How/why do you want to use Winnow?"
       no_script_message: "You need to change a setting in your web browser"
       last_updated: "Last Updated"
+      prototype: "{{login}} is the prototype"
+      make_prototype: "Make prototype"
     email:
       subject_prefix: "[WINNOW]"
       deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
@@ -321,7 +323,6 @@ en:
         last_trained: "Last Trained"
         number_of_tags: "Number of Tags"
         registered: "Registered"
-        prototype: "Make this user the prototype"
       main:
         login_tooltip: ""
         login_confirm: |-
@@ -329,6 +330,8 @@ en:
 
           Are you sure you want to continue?
         destroy_confirm: "Really delete {{login}}?"
+        make_prototype_tooltip: ""
+        make_prototype_confirm: "Are you sure you want to make {{login}} the prototype?"
     invites:
       general:
         create_invite: "Create Invite"

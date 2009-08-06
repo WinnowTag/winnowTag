@@ -34,10 +34,15 @@ class UsersController < ApplicationController
       render :action => 'new'
     end
   end
+
+  def prototype
+    @user.update_attribute :prototype, true
+    redirect_to :back
+  end
   
   def login_as
     self.current_user = @user
-    redirect_to('/')
+    redirect_to root_path
   end
 
   def destroy

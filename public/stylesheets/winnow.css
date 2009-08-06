@@ -954,6 +954,14 @@ body#feeds .feed {
   background-position: left center;
 }
 
+.user .controls li.prototype {
+  font-weight: bold;
+}
+
+.user .controls li a.prototype {
+  background-image: url(../images/prototype.png);
+}
+
 .user .controls li a.login {
   background-image: url(../images/login.png);
 }
