@@ -10,13 +10,13 @@
   position: fixed;
   left: 0;
   right: 0;
-  z-index: 9999;
+  z-index: -1;
   background-color: #F3C4C3;
-  background-color: #E89E9A;
-  opacity: 0.5;
-  filter: alpha(opacity=50);
+  opacity: 0.75;
+  filter: alpha(opacity=75);
   text-align: center;
   font-weight: bold;
+  height: 4em;
 }
 
 /*
@@ -375,7 +375,7 @@ body#login .container .form .content #invite_use {
   margin-left: .25em;
   padding-left: 1.75em;
   border: none;
-  background-color: #fff;
+  background-color: transparent;
   background-image: url(../images/help.png);
   background-repeat: no-repeat;
   background-position: center left;
