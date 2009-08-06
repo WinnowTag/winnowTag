@@ -15,7 +15,7 @@ class Invite < ActiveRecord::Base
   end
   
   def activate!
-    self.update_attribute :code, MD5.hexdigest("#{email}--#{Time.now}--#{rand}")
+    self.update_attribute :code, ActiveSupport::SecureRandom.hex(20)
   end
 
   named_scope :matching, lambda { |q|

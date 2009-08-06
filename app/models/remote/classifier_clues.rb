@@ -8,11 +8,6 @@
 module Remote
   class ClassifierClues
     def self.find_by_item_id_and_tag_url(item_id, tag_url)
-      # clues = []
-      # 101.times do |i|
-      #   clues << { 'prob' => rand.round(6), 'clue' => "t:#{MD5.hexdigest(rand.to_s)[0..rand(16)]}" }
-      # end
-      # return clues
       access_id = HMAC_CREDENTIALS['winnow'].keys.first
       secret_key = HMAC_CREDENTIALS['winnow'].values.first
       

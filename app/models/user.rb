@@ -257,7 +257,7 @@ class User < ActiveRecord::Base
   
   def enable_reminder!
     @automated = true
-    self.reminder_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.reminder_code = ActiveSupport::SecureRandom.hex(20)
     self.reminder_expires_at = 1.day.from_now
     save!
   end
@@ -295,7 +295,7 @@ protected
   end
   
   def make_activation_code
-    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.activation_code = ActiveSupport::SecureRandom.hex(20)
   end
   
   def make_owner_of_self
