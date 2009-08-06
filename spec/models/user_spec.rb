@@ -46,8 +46,8 @@ describe User do
 
     it "creating from a prototype activates the new user" do
       prototype = Generate.user!(:prototype => true)
-      user = User.create_from_prototype(Generate.user_attributes)
-      user.should be_active
+      user = User.create_from_prototype(Generate.user_attributes(:activated_at => nil))
+      user.reload.should be_active
     end
     
     it "creating from a prototype marks all system messages as read" do

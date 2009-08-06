@@ -157,7 +157,6 @@ class User < ActiveRecord::Base
   
   def self.create_from_prototype(attributes = {})
     user = new(attributes)
-    user.save!
     user.activate
 
     # Mark all existing message as read
@@ -227,7 +226,7 @@ class User < ActiveRecord::Base
 
   # Activates the user in the database.
   def activate
-    update_attributes(:activated_at => Time.now.utc, :activation_code => nil)
+    update_attributes!(:activated_at => Time.now.utc, :activation_code => nil)
   end
   
   def active?
@@ -295,7 +294,9 @@ protected
   end
   
   def make_activation_code
-    self.activation_code = ActiveSupport::SecureRandom.hex(20)
+    unless active?
+      self.activation_code = ActiveSupport::SecureRandom.hex(20)
+    end
   end
   
   def make_owner_of_self
