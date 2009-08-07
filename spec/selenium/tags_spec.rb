@@ -32,6 +32,7 @@ describe "Tags" do
       page.key_down "css=input.editor_field", '\13' # enter
       page.wait_for :wait_for => :ajax
       page.confirmation
+      page.wait_for :wait_for => :ajax
       page.wait_for :wait_for => :page
       dont_see_element "#name_tag_#{@other.id}"
     end
