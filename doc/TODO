@@ -31,9 +31,6 @@ Todo
  - Code refactoring/ceaning/testing
  - Performance Enhancements
 
-Refactoring
- - restrict tag names to alphanumeric-_
-
 Bug
  - loading next page after marking some read
  - fix folders sortable + dropable
