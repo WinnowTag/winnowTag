@@ -130,6 +130,7 @@ describe "moderation panel" do
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @unused_tag.name
     hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
   end
   
@@ -140,6 +141,7 @@ describe "moderation panel" do
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @classifier_tag.name
     hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
   end
   
@@ -150,6 +152,7 @@ describe "moderation panel" do
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.positive"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @negative_tag.name
     hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.positive"
   end
   
@@ -160,6 +163,7 @@ describe "moderation panel" do
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag .name:contains(new tag)"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "new tag"
     hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .tag .name:contains(new tag)"
   end
 
@@ -210,6 +214,7 @@ describe "moderation panel" do
     page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas"
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.selected"
     hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"    
   end
 end
