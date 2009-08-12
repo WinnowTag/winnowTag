@@ -3,15 +3,18 @@ default:
   test_host: localhost:3000
   selenium_host: localhost
   selenium_port: 4444
-  browser: Firefox on OS X
+  browser: "*firefox"
   # display: ":0"
 osx_firefox:
-  browser: Firefox on OS X
+  browser: "*firefox"
 osx_safari:
-  browser: Safari on OS X
+  browser: "*safari"
 windows_firefox:
-  browser: Firefox on Windows
+  selenium_host: 10.0.76.148
+  browser: "*firefox"
 windows_safari:
-  browser: Safari on Windows
+  selenium_host: 10.0.76.148
+  browser: "*safari"
 windows_ie:
-  browser: IE on Windows
+  selenium_host: 10.0.76.148
+  browser: "*ie"
