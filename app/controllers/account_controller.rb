@@ -12,7 +12,7 @@ class AccountController < ApplicationController
     if request.post?
       if current_user.update_attributes(params[:current_user])
         flash[:notice] = t("winnow.notifications.profile_updated")
-        redirect_to :back
+        redirect_to feed_items_path
       end
     end
   end
