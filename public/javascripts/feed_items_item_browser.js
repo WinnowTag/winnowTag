@@ -156,21 +156,25 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         }.bind(this)
       });
     } else {
-      feed.removeClassName('selected');
-      $('feed_filters').insertInOrder('li', '.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
-      this.bindFeedFilterEvents(feed);
+      if(!$('feed_filters').down("#" + feed.getAttribute("id"))) {
+        feed.removeClassName('selected');
+        $('feed_filters').insertInOrder('li', '.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
+        this.bindFeedFilterEvents(feed);
+        this.styleFilters();
+      }
       new Ajax.Request(feed.getAttribute("subscribe_url"), {method:'put'});
-      this.styleFilters();
     }
   },
   
   updateTagFilters: function(input, tag) {
     input.clear();
-    tag.removeClassName('selected');
-    $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
-    this.bindTagFilterEvents(tag);
+    if(!$('tag_filters').down("#" + tag.getAttribute("id"))) {
+      tag.removeClassName('selected');
+      $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
+      this.bindTagFilterEvents(tag);
+      this.styleFilters();
+    }
     new Ajax.Request(tag.getAttribute("subscribe_url"), {method:'put'});
-    this.styleFilters();
   },
   
   expandFolderParameters: function(parameters) {
