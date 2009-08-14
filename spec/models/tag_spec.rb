@@ -25,7 +25,7 @@ describe Tag do
       @tag.should have_many(:comments)
     end
   end
-  
+
   describe "tagging counts" do
     it "is properly calculated for private tags" do
       u = Generate.user!
@@ -652,6 +652,14 @@ describe Tag do
       tag.should_not be_valid
       tag.should have(1).error
       tag.errors.on(:name).should == "can't contain periods"
+    end
+
+    it "does not allow tags with names longer than 255 characters" do
+      user = Generate.user!
+      tag = Generate.tag(:user => user, :name => "n" * 256)
+      tag.should_not be_valid
+      tag.should have(1).error
+      tag.errors.on(:name).should == "is too long (maximum is 255 characters)"
     end
   end
   

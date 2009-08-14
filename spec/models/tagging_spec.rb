@@ -102,16 +102,20 @@ describe Tagging do
     Tagging.new(:feed_item => @feed_item, :user => Generate.user!).should_not be_valid
   end
   
-  it "cannot_create_tagging_with_invalid_tag" do
+  it "cannot create a tagging with an invalid tag" do
     user = Generate.user!
-    Tagging.new(:feed_item => @feed_item, :user => user, :tag => Generate.tag(:user => user, :name => "")).should_not be_valid
+    tag = Generate.tag(:user => user, :name => "")
+    tagging = Tagging.new(:feed_item => @feed_item, :user => user, :tag => tag)
+    tagging.should_not be_valid
+    tagging.should have(1).error
+    tagging.errors.on(:tag).should == "can't be blank"
   end
   
   it "create_with_tag_user_feed_item_is_valid" do
     user = Generate.user!
     Tagging.new(:user => user, :feed_item => @feed_item, :tag => Generate.tag!(:user => user)).should be_valid
   end
-  
+
   it "should prevent deletion of a feed item with a tagging" do
     user = Generate.user!
     tag = Generate.tag!(:user => user)

@@ -432,8 +432,6 @@ en:
         copy_name_error:   "Can't copy tag to tag of the same name."
         copy_exists_error: "Target tagger already has a {{to}} tag"
         merge_name_error:  "Can't merge tag to tag of the same name."
-      tagging:
-        tag:               "name can't contain periods."
     defaults:
       feed_item:
         title: "Unknown Title"

@@ -27,6 +27,7 @@ class Tag < ActiveRecord::Base
   belongs_to :user
   
   validates_presence_of :name
+  validates_length_of :name, :within => 0...255
   validates_format_of :name, :with => /^[^.]+$/, :allow_blank => true, :message => "can't contain periods"
   validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false
   
