@@ -29,7 +29,7 @@ module Remote
     end  
     
     # Write some of my own attribute getters so they exist when ActiveResource doesnt map write them for us
-    %w[link url updated_on].each do |attribute|
+    %w[link url updated_on duplicate].each do |attribute|
       define_method(attribute) do
         attributes[attribute]
       end
