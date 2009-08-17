@@ -120,7 +120,7 @@ desc "Notify the list of deployment"
 task :send_notification do
   mail_comment = comment rescue mail_comment = "None provided."
   # Run it on the server so we know we have a good email configuration
-  run %Q(cd #{current_path} && script/runner -e production 'Notifier.deliver_deployed("http://#{domain}", "#{repository}", "#{revision}", "#{ENV['USER']}", "#{mail_comment}")')
+  run %Q(cd #{current_path} && script/runner -e #{rails_env} 'Notifier.deliver_deployed("http://#{domain}", "#{repository}", "#{revision}", "#{ENV['USER']}", "#{mail_comment}")')
 end
 
 after 'deploy:update_code', :copy_config
