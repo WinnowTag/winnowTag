@@ -32,7 +32,7 @@
 
   	<p>
   	  <%= f.label :current_password, t("winnow.profile.password.current") %>
-  	  <%= f.password_field :current_password %>
+  	  <%= f.password_field :current_password, :autocomplete => "off" %>
   	</p>
   	<p>
   	  <%= f.label :password, t("winnow.profile.password.new") %>
