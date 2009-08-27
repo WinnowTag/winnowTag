@@ -254,7 +254,11 @@ class TagsController < ApplicationController
         Folder.remove_tag(current_user, @tag.id)
       end
     end
-    respond_to :js
+
+    respond_to do |format|
+      format.html { redirect_to params[:redirect_to] }
+      format.js
+    end
   end
   
   def unsubscribe
@@ -271,14 +275,18 @@ class TagsController < ApplicationController
   def sidebar
     if @tag = current_user.tags.find(params[:id])
       @tag.update_attribute :show_in_sidebar, params[:sidebar]      
-
-      unless @tag.show_in_sidebar?
-        Folder.remove_tag(current_user, @tag.id)
-        respond_to :js
-        return
-      end
     end
-    render :nothing => true
+
+
+    if @tag.show_in_sidebar?
+      respond_to do |format|
+        format.html { redirect_to params[:redirect_to] }
+        format.js { head :ok }
+      end
+    else
+      Folder.remove_tag(current_user, @tag.id)
+      respond_to :js
+    end
   end
   
   def information

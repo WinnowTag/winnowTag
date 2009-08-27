@@ -12,6 +12,8 @@ describe "Tags" do
     @tag2 = Generate.tag! :bias => 1, :public => true
     @user.tag_subscriptions.create!(:tag => @tag2)
     
+    @tag_not_in_sidebar = Generate.tag! :user => @user, :show_in_sidebar => false
+
     login @user
     page.open tags_path
     page.wait_for :wait_for => :ajax
@@ -101,5 +103,27 @@ describe "Tags" do
     page.wait_for :wait_for => :page
     page.wait_for :wait_for => :ajax
     assert !page.is_checked("public_tag_#{@tag1.id}")
+  end
+
+  it "viewing items tagged with a specific tag also subscribes the user to that tag" do
+    @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
+
+    link_text = I18n.t("winnow.tags.main.items_tagged_with", :tag => h(@tag_not_in_sidebar.name))
+    page.click "link=#{link_text}"
+    page.wait_for_page_to_load
+
+    page.location.should =~ /^#{feed_items_url}#.*$/
+    @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
+  end
+
+  it "viewing items trained with a specific tag also subscribes the user to that tag" do
+    @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
+
+    link_text = I18n.t("winnow.tags.main.items_trained_with", :tag => h(@tag_not_in_sidebar.name))
+    page.click "link=#{link_text}"
+    page.wait_for_page_to_load
+
+    page.location.should =~ /^#{feed_items_url}#.*$/
+    @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
 end

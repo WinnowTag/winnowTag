@@ -403,7 +403,7 @@ describe TagsController do
       tag = Generate.tag!(:user => user2, :public => true)
     
       TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => @user.id)
-      put :subscribe, :id => tag.id, :subscribe => "true"
+      put :subscribe, :id => tag.id, :subscribe => "true", :format => "js"
       assert_response :success
     end
     
@@ -416,7 +416,7 @@ describe TagsController do
       tag = Generate.tag!(:user => user2, :public => true)
     
       TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => @user.id)
-      put :subscribe, :id => tag.id, :subscribe => "true"
+      put :subscribe, :id => tag.id, :subscribe => "true", :format => "js"
       assert_response :success
     end
 
@@ -426,7 +426,7 @@ describe TagsController do
       tag = Generate.tag!(:user => user2, :public => false)
 
       assert_no_difference("TagSubscription.count") do
-        put :subscribe, :id => tag, :subscribe => "true"
+        put :subscribe, :id => tag, :subscribe => "true", :format => "js"
       end
     
       assert_response :success 
@@ -439,7 +439,7 @@ describe TagsController do
 
     
       TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => @user.id)
-      put :subscribe, :id => tag, :subscribe => "false"
+      put :subscribe, :id => tag, :subscribe => "false", :format => "js"
       assert_response :success
     end
 
@@ -475,7 +475,7 @@ describe TagsController do
 
       Folder.should_not_receive(:remove_tag)
 
-      put :sidebar, :id => tag, :sidebar => "true"
+      put :sidebar, :id => tag, :sidebar => "true", :format => "js"
       assert_response :success
     end
   end
