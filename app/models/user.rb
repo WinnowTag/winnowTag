@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
   before_save :update_prototype
  
   def feeds
-    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.title.downcase.to_s }
+    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.sort_title }
   end
   
   def feed_ids
