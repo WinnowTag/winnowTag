@@ -305,7 +305,8 @@ protected
   
   def update_prototype
     if prototype?
-      User.update_all(["prototype = ?", false])
+      conditions = id ? ["id != ?", id] : nil
+      User.update_all(["prototype = ?", false], conditions)
     end
   end
 

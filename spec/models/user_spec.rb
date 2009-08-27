@@ -44,6 +44,15 @@ describe User do
       original_prototype.should_not be_prototype
     end
 
+    it "saving the prototype doesn't unmark it as the prototype" do
+      prototype = Generate.user!(:prototype => true)
+      prototype.should be_prototype
+
+      prototype.save
+      prototype.reload
+      prototype.should be_prototype
+    end
+
     it "creating from a prototype activates the new user" do
       prototype = Generate.user!(:prototype => true)
       user = User.create_from_prototype(Generate.user_attributes(:activated_at => nil))
