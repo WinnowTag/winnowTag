@@ -69,7 +69,7 @@ describe FeedItemsHelper do
     it "creates a list item with the proper controls inside it" do
       feed_item = mock_model(FeedItem)
       
-      tag = mock_model(Tag, :name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id)
+      tag = mock_model(Tag, :name => "tag1", :sort_name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id)
       classes = ["positive", "classifier"]
       helper.tag_control_for(feed_item, tag, classes, nil).should have_tag("li.positive.classifier") do
         with_tag ".name", "tag1"
@@ -80,9 +80,9 @@ describe FeedItemsHelper do
   describe "tag controls" do
     it "created list items for each tag" do
       taggings = [
-        [ mock_model(Tag, :name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
-        [ mock_model(Tag, :name => "tag2", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
-        [ mock_model(Tag, :name => "tag3", :user => helper.current_user, :user_id => helper.current_user.id), [] ]
+        [ mock_model(Tag, :name => "tag1", :sort_name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
+        [ mock_model(Tag, :name => "tag2", :sort_name => "tag2", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
+        [ mock_model(Tag, :name => "tag3", :sort_name => "tag3", :user => helper.current_user, :user_id => helper.current_user.id), [] ]
       ]
       feed_item = mock_model(FeedItem, :taggings_to_display => taggings)
     
