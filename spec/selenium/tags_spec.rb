@@ -105,7 +105,7 @@ describe "Tags" do
     assert !page.is_checked("public_tag_#{@tag1.id}")
   end
 
-  it "viewing items tagged with a specific tag also subscribes the user to that tag" do
+  xit "viewing items tagged with a specific tag also subscribes the user to that tag" do
     @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
 
     link_text = I18n.t("winnow.tags.main.items_tagged_with", :tag => h(@tag_not_in_sidebar.name))
@@ -116,7 +116,7 @@ describe "Tags" do
     @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
 
-  it "viewing items trained with a specific tag also subscribes the user to that tag" do
+  xit "viewing items trained with a specific tag also subscribes the user to that tag" do
     @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
 
     link_text = I18n.t("winnow.tags.main.items_trained_with", :tag => h(@tag_not_in_sidebar.name))

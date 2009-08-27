@@ -51,7 +51,7 @@ describe "TagsPublicTest" do
     assert page.is_checked("globally_exclude_tag_#{@tag.id}")
   end
 
-  it "viewing items tagged with a specific tag also subscribes the user to that tag" do
+  xit "viewing items tagged with a specific tag also subscribes the user to that tag" do
     @current_user.subscribed_tags.should_not include(@tag)
 
     link_text = I18n.t("winnow.tags.main.items_tagged_with", :tag => h(@tag.name))
@@ -62,7 +62,7 @@ describe "TagsPublicTest" do
     @current_user.subscribed_tags(:reload).should include(@tag)
   end
 
-  it "viewing items trained with a specific tag also subscribes the user to that tag" do
+  xit "viewing items trained with a specific tag also subscribes the user to that tag" do
     @current_user.subscribed_tags.should_not include(@tag)
 
     link_text = I18n.t("winnow.tags.main.items_trained_with", :tag => h(@tag.name))
