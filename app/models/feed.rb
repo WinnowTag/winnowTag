@@ -120,7 +120,7 @@ private
   end
 
   def set_sort_title
-    self.sort_title = title.to_s.downcase.gsub(/^(a|an|the) /, '')
+    self.sort_title = title.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end
 
   def self.parse_id_uri(entry)

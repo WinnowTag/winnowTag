@@ -30,20 +30,20 @@ end
 describe Feed do
   describe "title" do
     it "sets the feed's title to be a the alternate link's host if no title was set" do
-      Generate.feed!(:title => nil, :alternate => "http://google.com/feed.atom").sort_title.should == "google.com"
+      Generate.feed!(:title => nil, :alternate => "http://google.com/feed.atom").sort_title.should == "googlecom"
     end
     
     it "sets the feed's title to be a the via link's host if no title or alternate link was set" do
-      Generate.feed!(:title => nil, :alternate => nil, :via => "http://google.com/feed.atom").sort_title.should == "google.com"
+      Generate.feed!(:title => nil, :alternate => nil, :via => "http://google.com/feed.atom").sort_title.should == "googlecom"
     end
   end
 
   describe "sort_title" do
-    it "sets the feed's sort_title to be a downcased version of the title with leading articles removed" do
-      Generate.feed!(:title => "Some Feed").sort_title.should == "some feed"
-      Generate.feed!(:title => "A Some Feed").sort_title.should == "some feed"
-      Generate.feed!(:title => "An Some Feed").sort_title.should == "some feed"
-      Generate.feed!(:title => "The Some Feed").sort_title.should == "some feed"
+    it "sets the feed's sort_title to be a downcased version of the title with leading articles and non-word characters removed" do
+      Generate.feed!(:title => "Some-Fe*ed").sort_title.should == "somefeed"
+      Generate.feed!(:title => "A So'me #Feed").sort_title.should == "somefeed"
+      Generate.feed!(:title => "An $Some :Feed").sort_title.should == "somefeed"
+      Generate.feed!(:title => "The So.me Fe_ed").sort_title.should == "somefeed"
     end
   end
   
