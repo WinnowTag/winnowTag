@@ -14,6 +14,7 @@ devel structure
 deploy installs gems
 
 * ie6 & noscript erros - i18n
+* ie7 noscript styling
 
 Spec Cleanup
  * urn:uuid
