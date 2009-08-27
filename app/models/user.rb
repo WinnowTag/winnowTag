@@ -148,7 +148,7 @@ class User < ActiveRecord::Base
                  ].join(","),
       :conditions => ["tags.id IN (?) OR (tags.id IN(?) AND (tags.public = ? OR tags.user_id = ?))", 
                       sidebar_tag_ids + subscribed_tag_ids - excluded_tag_ids, tag_ids.to_s.split(","), true, self],
-      :order => "tags.name"
+      :order => "tags.sort_name"
   end
 
   def full_name

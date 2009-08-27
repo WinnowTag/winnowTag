@@ -64,7 +64,7 @@ module FeedItemsHelper
   # Note: Update item.js when this changes
   def tag_control_for(feed_item, tag, classes, strength)
     classes << "tag_control" << dom_id(tag) << "stop"
-    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
+    content_tag(:li, content_tag(:span, h(tag.name), :class => "name", :"data-sort" => tag.sort_name), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
   end
   
   def tag_control_tooltip(tag, strength)
@@ -95,7 +95,7 @@ module FeedItemsHelper
     feeds = current_user.feeds
     feed_ids = params[:feed_ids].to_s.split(",").map(&:to_i) - feeds.map(&:id)
     feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
-    feeds.sort_by { |feed| feed.sort_title.downcase }
+    feeds.sort_by { |feed| feed.sort_title }
   end
 
   def render_clues(clues)

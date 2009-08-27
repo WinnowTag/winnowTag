@@ -212,7 +212,7 @@ class FeedItem < ActiveRecord::Base
           hash[tagging.tag].unshift(tagging)
         end
         hash
-      end.to_a.sort_by { |tag, _taggings| tag.name.downcase }
+      end.to_a.sort_by { |tag, _taggings| tag.sort_name }
     end
     
     feed_items

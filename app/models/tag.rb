@@ -30,7 +30,9 @@ class Tag < ActiveRecord::Base
   validates_length_of :name, :within => 0...255
   validates_format_of :name, :with => /^[^.]+$/, :allow_blank => true, :message => "can't contain periods"
   validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false
-  
+
+  before_save :set_sort_name
+
   def positive_count
     read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
   end
@@ -60,7 +62,7 @@ class Tag < ActiveRecord::Base
   # Provides the natural ordering of tags and their case-insensitive lexical ordering.
   def <=>(other)
     if other.is_a? Tag
-      self.name.downcase <=> other.name.downcase
+      self.sort_name <=> other.sort_name
     else
       raise ArgumentError, I18n.t("winnow.errors.tag.compare_error", :other => other.class.name)
     end
@@ -235,7 +237,7 @@ class Tag < ActiveRecord::Base
   named_scope :by, lambda { |order, direction|
     orders = {
       "id"               => "tags.id",
-      "name"             => "tags.name",
+      "name"             => "tags.sort_name",
       "public"           => "tags.public",
       "login"            => "users.login",
       "state"            => "state",
@@ -246,7 +248,7 @@ class Tag < ActiveRecord::Base
       "last_trained"     => "last_trained",
       "classifier_count" => "(feed_items_count - positive_count - negative_count)"
     }
-    orders.default = "tags.name"
+    orders.default = "tags.sort_name"
     
     directions = {
       "asc" => "ASC",
@@ -254,7 +256,7 @@ class Tag < ActiveRecord::Base
     }
     directions.default = "ASC"
     
-    { :joins => :user, :order => [orders[order], directions[direction]].join(" ") }
+    { :joins => :user, :order => [orders[order.to_s], directions[direction.to_s]].join(" ") }
   }
 
   def self.search(options = {})
@@ -285,6 +287,10 @@ class Tag < ActiveRecord::Base
   end
 
 private
+  def set_sort_name
+    self.sort_name = name.to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')
+  end
+
   # This needs to be fast so we'll bypass Active Record
   def taggings_from_atom(atom)
     atom.entries.each do |entry|

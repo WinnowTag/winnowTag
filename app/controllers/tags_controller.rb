@@ -220,7 +220,7 @@ class TagsController < ApplicationController
       values << tag_ids
     end
     
-    @tags = Tag.find(:all, :conditions => [conditions.join(" AND "), *values], :order => "tags.name", :limit => 30)
+    @tags = Tag.find(:all, :conditions => [conditions.join(" AND "), *values], :order => "tags.sort_name", :limit => 30)
     render :layout => false
   end
   

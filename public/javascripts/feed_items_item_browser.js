@@ -170,7 +170,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     input.clear();
     if(!$('tag_filters').down("#" + tag.getAttribute("id"))) {
       tag.removeClassName('selected');
-      $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
+      $('tag_filters').insertInOrder('li', '.name@data-sort', tag, $(tag).down(".name").getAttribute("data-sort"));
       this.bindTagFilterEvents(tag);
       this.styleFilters();
     }
