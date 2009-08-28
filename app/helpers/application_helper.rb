@@ -252,4 +252,67 @@ module ApplicationHelper
       link_to(name, options, html_options)
     end
   end
+  
+  def safari?
+    # --- Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_8; en-us) AppleWebKit/531.9 (KHTML, like Gecko) Version/4.0.3 Safari/531.9
+    # --- Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/531.9 (KHTML, like Gecko) Version/4.0.3 Safari/531.9.1
+    request.env["HTTP_USER_AGENT"] =~ /Safari/
+  end
+  
+  def chrome?
+    # --- Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/530.5 (KHTML, like Gecko) Chrome/2.0.172.43 Safari/530.5
+    request.env["HTTP_USER_AGENT"] =~ /Chrome/
+  end
+  
+  def firefox?
+    # --- Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1) Gecko/20090624 Firefox/3.5
+    # --- Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /Firefox/
+  end
+  
+  def opera?
+    # --- Opera/9.64 (Macintosh; Intel Mac OS X; U; en) Presto/2.1.1
+    # --- Opera/9.64 (Windows NT 5.1; U; en) Presto/2.1.1
+    request.env["HTTP_USER_AGENT"] =~ /Opera/
+  end
+  
+  def ie6?
+    # --- Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /MSIE 6/
+  end
+  
+  def ie7?
+    # --- Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /MSIE 7/
+  end
+  
+  def ie8?
+    # --- Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /MSIE 8/
+  end
+
+  def bookmarklet_installation_instructions
+    if chrome? # this comes first, because safari? will return true when the browser is really chrome
+      # drag to bookmarks bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.chrome")
+    elsif safari?
+      # drag to bookmarks bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.safari")
+    elsif firefox?
+      # drag to bookmarks toolbar, right click + Bookmark This Link + Folder - Bookmarks Toolbar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.firefox")
+    elsif opera?
+      # drag to personal bar, right click + "Bookmark Link..." + Details - check Show on Personal Bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.opera")
+    elsif ie6?
+      # right click + "Add to Favorites..." + Yes to Security Alert + Create in - Links
+      t("winnow.feeds.header.bookmarklet_installation_instructions.ie6")
+    elsif ie7?
+      # right click + "Add to Favorites..." + Yes to Security Alert + Create in - Favorites Bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.ie7")
+    elsif ie8?
+      # right click + "Add to Favorites..." + Yes to Security Alert + Create in - Links
+      t("winnow.feeds.header.bookmarklet_installation_instructions.ie8")
+    end
+  end
 end

@@ -74,7 +74,6 @@ en:
     notifications:
       feed_items_search_too_short: "Search requires a word with at least 4 characters"
       server_slow_responding: "The server is taking a while to repond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
-      bookmarklet_error_message: "Drag this button to your bookmarks or right-click and select 'Bookmark This Link' or 'Add to Favorites'."
       credentials_invalid: "Invalid credentials. Please try again."
       profile_updated: "Information Updated"
       reminder_code_invalid: "Invalid reminder code"
@@ -276,7 +275,15 @@ en:
         upload_button: "Upload"
         upload_tooltip: ""
         add_to_winnow_bookmarklet: "Add to Winnow"
-        add_to_winnow_bookmarklet_description: "Drag this button to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
+        bookmarklet_description: "You can add a bookmarklet to you browser to make it quick and easy to add sites to Winnow. Once installed, simply click the bookmarklet to add the site you are currently viewing to Winnow."
+        bookmarklet_installation_instructions:
+          safari:  "To install the bookmarklet, drag this button to your bookmarks bar."
+          chrome:  "To install the bookmarklet, drag this button to your bookmarks bar."
+          firefox: "To install the bookmarklet, drag this button to your bookmarks toolbar, or right click this button, select Bookmark This Link, and choose the Bookmarks Toolbar folder."
+          opera:   "To install the bookmarklet, drag this button to your personal bar, or right click this button, select Bookmark Link..., click Details, and check Show on Personal Bar"
+          ie6:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
+          ie7:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
+          ie8:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Favorites Bar folder."
       feed_item:
         mode_feeds_tags_text_filter: "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
         mode_feeds_tags:             "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}}"

@@ -37,9 +37,10 @@
       </p>
     <% end -%>
     
-    <p><%= t("winnow.feeds.header.add_to_winnow_bookmarklet_description") %></p>
+    <p><%= t("winnow.feeds.header.bookmarklet_description") %></p>
+
+    <p><%= bookmarklet_installation_instructions %></p>
     
-    <%= link_to t("winnow.feeds.header.add_to_winnow_bookmarklet"), bookmarklet_js, :class => "bookmarklet", :title => t("winnow.feeds.header.add_to_winnow_bookmarklet"), 
-                  :onclick => "Message.add('error', #{t("winnow.notifications.bookmarklet_error_message").to_json}); return false;" %>
+    <%= link_to t("winnow.feeds.header.add_to_winnow_bookmarklet"), bookmarklet_js, :class => "bookmarklet", :onclick => "return false;" %>
   </fieldset>
 </div>
