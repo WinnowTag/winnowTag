@@ -654,14 +654,6 @@ describe Tag do
       tag.should have(1).error
       tag.errors.on(:name).should == "can't be blank"
     end
-  
-    it "does not allow tags with periods in the name" do
-      user = Generate.user!
-      tag = Generate.tag(:user => user, :name => "tag.name")
-      tag.should_not be_valid
-      tag.should have(1).error
-      tag.errors.on(:name).should == "can't contain periods"
-    end
 
     it "does not allow tags with names longer than 255 characters" do
       user = Generate.user!
@@ -669,6 +661,28 @@ describe Tag do
       tag.should_not be_valid
       tag.should have(1).error
       tag.errors.on(:name).should == "is too long (maximum is 255 characters)"
+    end
+  
+    it "does not allow tags with periods in the name" do
+      user = Generate.user!
+      tag = Generate.tag(:user => user, :name => "tag.name")
+      tag.should_not be_valid
+      tag.should have(1).error
+      tag.errors.on(:name).should == I18n.t("winnow.errors.tag.invalid_format")
+    end
+
+    it "does not allow tags with non-ascii characters" do
+      user = Generate.user!
+      tag = Generate.tag(:user => user, :name => "50¢")
+      tag.should_not be_valid
+      tag.should have(1).error
+      tag.errors.on(:name).should == I18n.t("winnow.errors.tag.invalid_format")
+    end
+
+    it "allows all ascii characters" do
+      user = Generate.user!
+      tag = Generate.tag(:user => user, :name => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ~!@#$%^&*()_+`-={}|[]\:";\'<>?,/')
+      tag.should be_valid
     end
   end
   

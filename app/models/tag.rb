@@ -11,7 +11,9 @@ def Tag(user, tag)
   end
 end
 
-class Tag < ActiveRecord::Base  
+class Tag < ActiveRecord::Base
+  ASCII_CHARACTERS = %q{0-9a-zA-z ~!@#\$%^&*()_+`\-={}|\[\]\:";'<>?,\/}
+
   cattr_accessor :undertrained_threshold
   @@undertrained_threshold = 6
   
@@ -28,7 +30,7 @@ class Tag < ActiveRecord::Base
   
   validates_presence_of :name
   validates_length_of :name, :within => 0...255
-  validates_format_of :name, :with => /^[^.]+$/, :allow_blank => true, :message => "can't contain periods"
+  validates_format_of :name, :with => /^[#{ASCII_CHARACTERS}]+$/, :allow_blank => true, :message => I18n.t("winnow.errors.tag.invalid_format")
   validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false
 
   before_save :set_sort_name
