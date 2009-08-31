@@ -10,6 +10,9 @@ h2. Collector
 
 In order to be able to add and import feeds, the collector must be running. The collector can also be run with a simple script/server -p 4000, however a port must be specified so that it does not conflict with Winnow's port. Winnow must be told the url of the classifier by creating config/collector.conf which simply has the url (eg. http://localhost:4000).
 
+script/collector -edevelopment
+RAILS_ENV=development script/item_cacher
+
 h2. Classifier
 
 In order to be able to classify items in Winnow, the classifier must be running. The classifier also requires that the tokenizer is running.
