@@ -112,7 +112,7 @@ describe "Tags" do
     page.click "link=#{link_text}"
     page.wait_for_page_to_load
 
-    page.location.should =~ /^#{feed_items_url}#.*$/
+    page.location.should =~ /^#{feed_items_url}#tag_ids=#{@tag_not_in_sidebar.id}$/
     @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
 
@@ -123,7 +123,7 @@ describe "Tags" do
     page.click "link=#{link_text}"
     page.wait_for_page_to_load
 
-    page.location.should =~ /^#{feed_items_url}#.*$/
+    page.location.should =~ /^#{feed_items_url}#tag_ids=#{@tag_not_in_sidebar.id}&mode=trained$/
     @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
 end
