@@ -3,14 +3,20 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-require 'spec/rake/spectask'
 
-desc "Run all examples with RCov"
-Spec::Rake::SpecTask.new('rcov_for_cc') do |t|
-  t.spec_files = FileList['spec/controllers/**/*.rb', 'spec/helpers/*.rb', 'spec/models/*.rb', 'spec/views/*.rb']
-  t.rcov = true
-  t.rcov_opts = ['--exclude', 'spec']
-  t.rcov_dir = (ENV['CC_BUILD_ARTIFACTS'] || ".") + '/coverage'
+# Don't create this task if running rake gems:* since it causes rspec to load before
+# the configured gems are loaded.
+#
+unless ARGV.any? {|a| a =~ /^gems/}
+  require 'spec/rake/spectask'
+
+  desc "Run all examples with RCov"
+  Spec::Rake::SpecTask.new('rcov_for_cc') do |t|
+    t.spec_files = FileList['spec/controllers/**/*.rb', 'spec/helpers/*.rb', 'spec/models/*.rb', 'spec/views/*.rb']
+    t.rcov = true
+    t.rcov_opts = ['--exclude', 'spec']
+    t.rcov_dir = (ENV['CC_BUILD_ARTIFACTS'] || ".") + '/coverage'
+  end
 end
 
 desc "Task for CruiseControl.rb"

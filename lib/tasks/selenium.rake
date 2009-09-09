@@ -18,45 +18,50 @@ end
 Selenium::Rake::RemoteControlStopTask.new do |rc|
 end
 
-require 'spec/rake/spectask'
+# Don't create these tasks if running rake gems:* since it causes rspec to load before
+# the configured gems are loaded.
+#
+unless ARGV.any? {|a| a =~ /^gems/}
+  require 'spec/rake/spectask'
 
-desc 'Run acceptance tests for web application on default browser defined in config/selenium.yml'
-Spec::Rake::SpecTask.new('selenium') do |t|
-  path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
-
-  t.spec_opts = [
-    "--colour",
-    "--format=profile",
-    "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/selenium-default.html'"
-  ]
-
-  t.spec_files = FileList['spec/selenium/*_spec.rb']
-end
-
-Selenium::Configuration.each do |configuration|
-  desc "Run acceptance tests for web application on #{configuration} browser defined in config/selenium.yml"
-  task "selenium:#{configuration}" do
-    ENV['SELENIUM_CONFIGURATION'] = configuration
-    Rake::Task["selenium:#{configuration}:spec"].invoke
-  end
-
-  Spec::Rake::SpecTask.new("selenium:#{configuration}:spec") do |t|
+  desc 'Run acceptance tests for web application on default browser defined in config/selenium.yml'
+  Spec::Rake::SpecTask.new('selenium') do |t|
     path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
 
     t.spec_opts = [
       "--colour",
       "--format=profile",
-      "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/selenium-#{configuration}.html'"
+      "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/selenium-default.html'"
     ]
 
     t.spec_files = FileList['spec/selenium/*_spec.rb']
   end
-end
 
-desc 'Run acceptance tests for web application on all browsers defined in config/selenium.yml'
-task 'selenium:all' do
   Selenium::Configuration.each do |configuration|
-    puts "Running Selenium tests in #{configuration}"
-    Rake::Task["selenium:#{configuration}"].invoke
+    desc "Run acceptance tests for web application on #{configuration} browser defined in config/selenium.yml"
+    task "selenium:#{configuration}" do
+      ENV['SELENIUM_CONFIGURATION'] = configuration
+      Rake::Task["selenium:#{configuration}:spec"].invoke
+    end
+
+    Spec::Rake::SpecTask.new("selenium:#{configuration}:spec") do |t|
+      path = ENV['CC_BUILD_ARTIFACTS'] || "./tmp"
+
+      t.spec_opts = [
+        "--colour",
+        "--format=profile",
+        "--format='Selenium::RSpec::SeleniumTestReportFormatter:#{path}/selenium-#{configuration}.html'"
+      ]
+
+      t.spec_files = FileList['spec/selenium/*_spec.rb']
+    end
+  end
+
+  desc 'Run acceptance tests for web application on all browsers defined in config/selenium.yml'
+  task 'selenium:all' do
+    Selenium::Configuration.each do |configuration|
+      puts "Running Selenium tests in #{configuration}"
+      Rake::Task["selenium:#{configuration}"].invoke
+    end
   end
 end
