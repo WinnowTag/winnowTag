@@ -1,1 +1,0 @@
-Fiveruns::Manage::Plugin.start

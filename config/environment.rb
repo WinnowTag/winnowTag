@@ -26,7 +26,6 @@ Rails::Initializer.run do |config|
   config.gem "auth-hmac"
   config.gem "bcrypt-ruby",    :lib => "bcrypt"
   config.gem "fastercsv"
-  config.gem "fiveruns_manage"
   config.gem "hpricot"
   config.gem "ratom",          :lib => "atom"
   config.gem "RedCloth"
