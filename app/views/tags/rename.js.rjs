@@ -1,4 +1,4 @@
 page.select(".#{dom_id(@tag)}").each do |element|
   element.down(".name").update h(@tag.name)
-  page << "value.up().insertInOrder(value.tagName, '.name', value, #{@tag.name.to_json});"
+  page << "value.up().insertInOrder('.tag.record', '.name', value, #{@tag.name.to_json});"
 end
