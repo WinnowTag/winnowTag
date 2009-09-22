@@ -280,7 +280,7 @@ en:
           safari:  "To install the bookmarklet, drag this button to your bookmarks bar."
           chrome:  "To install the bookmarklet, drag this button to your bookmarks bar."
           firefox: "To install the bookmarklet, drag this button to your bookmarks toolbar, or right click this button, select Bookmark This Link, and choose the Bookmarks Toolbar folder."
-          opera:   "To install the bookmarklet, drag this button to your personal bar, or right click this button, select Bookmark Link..., click Details, and check Show on Personal Bar"
+          opera:   "To install the bookmarklet, right click this button, select Bookmark Link..., click Details, and check Show on Personal Bar"
           ie6:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
           ie7:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
           ie8:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Favorites Bar folder."
