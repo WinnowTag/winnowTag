@@ -60,8 +60,7 @@ class User < ActiveRecord::Base
 
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
-      subscribed_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
-      subscribed_tags.include?(tag_or_feed)
+      subscribed_tags(:reload).include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
       subscribed_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
       subscribed_feeds.include?(tag_or_feed)

@@ -456,6 +456,18 @@ describe TagsController do
       put :unsubscribe, :id => tag
       assert_response :redirect
     end
+    
+    it "subscribing multiple times to the same public tag creates only one subscription" do
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user2, :public => true)
+      
+      lambda {
+        put :subscribe, :id => tag, :subscribe => "true", :format => "js"
+        put :subscribe, :id => tag, :subscribe => "true", :format => "js"
+      }.should change(TagSubscription, :count).by(1)
+      
+      assert_response :success
+    end
   end
   
   describe 'sidebar' do
