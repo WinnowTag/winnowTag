@@ -132,5 +132,63 @@ describe "filter controls" do
       page.click "css=#tags_section .header .name"      
       page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@sql.id}$/
     end
+    
+    it "sets tag filter for all selected tags" do
+      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      
+      page.click "css=#name_tag_#{@tag.id}"
+      page.meta_key_down
+      page.click "css=#name_tag_#{@sql.id}"
+      page.meta_key_up
+      
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}%2C#{@sql.id}$/
+    end
+  end
+  
+  describe "feed filter" do
+    
+    before(:each) do
+      @feed1 = Generate.feed!
+      @feed2 = Generate.feed!
+      Generate.feed_subscription! :feed => @feed1, :user => @user
+      Generate.feed_subscription! :feed => @feed2, :user => @user
+      page.open feed_items_path
+      page.wait_for :wait_for => :ajax
+    end
+    
+    it "sets feed filter for all selected feeds" do
+      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      
+      page.click "css=#name_feed_#{@feed1.id}"
+      page.meta_key_down
+      page.click "css=#name_feed_#{@feed2.id}"
+      page.meta_key_up
+      
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&feed_ids=#{@feed1.id}%2C#{@feed2.id}$/
+    end
+    
+  end
+  
+  describe "filtering on tags and feeds" do
+    
+    before(:each) do
+      @tag = Generate.tag!(:user => @user)
+      @feed = Generate.feed!
+      Generate.feed_subscription! :feed => @feed, :user => @user
+      page.open feed_items_path
+      page.wait_for :wait_for => :ajax
+    end
+    
+    it "sets filter for all selected tags and feeds" do
+      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      
+      page.click "css=#name_feed_#{@feed.id}"
+      page.meta_key_down
+      page.click "css=#name_tag_#{@tag.id}"
+      page.meta_key_up
+      
+      page.location.should =~ /\#order=date&direction=desc&mode=unread&feed_ids=#{@feed.id}&tag_ids=#{@tag.id}$/
+    end
+    
   end
 end
