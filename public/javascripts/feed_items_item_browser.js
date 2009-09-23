@@ -217,16 +217,20 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   addFilters: function($super, parameters) {
     this.expandFolderParameters(parameters);
-  
+
     if(this.filters.tag_ids && parameters.tag_ids) {
       var tag_ids = this.filters.tag_ids.split(",");
       tag_ids.push(parameters.tag_ids.split(","));
-      parameters.tag_ids = tag_ids.flatten().uniq().join(",");
+      parameters = $H(parameters).merge({
+        tag_ids: tag_ids.flatten().uniq().join(",")
+      });
     }
     if(this.filters.feed_ids && parameters.feed_ids) {
       var feed_ids = this.filters.feed_ids.split(",");
       feed_ids.push(parameters.feed_ids.split(","));
-      parameters.feed_ids = feed_ids.flatten().uniq().join(",");
+      parameters = $H(parameters).merge({
+        feeds_ids: feeds_ids.flatten().uniq().join(",")
+      });
     }
     
     $super(parameters);
