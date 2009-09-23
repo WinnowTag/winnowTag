@@ -229,7 +229,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       var feed_ids = this.filters.feed_ids.split(",");
       feed_ids.push(parameters.feed_ids.split(","));
       parameters = $H(parameters).merge({
-        feeds_ids: feeds_ids.flatten().uniq().join(",")
+        feed_ids: feed_ids.flatten().uniq().join(",")
       });
     }
     
