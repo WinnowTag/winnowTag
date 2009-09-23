@@ -249,7 +249,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       if(empty) { return false; }
     }
     
-    if(event && event.metaKey) {
+    if(event && this.multiSelectKey(event)) {
       this.expandFolderParameters(parameters);
       var selected = true;
       if(parameters.feed_ids) {
@@ -271,6 +271,14 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       }
     } else {
       this.setFilters(parameters);
+    }
+  },
+
+  multiSelectKey: function(event) {
+    if (navigator.platform.indexOf("Mac") != -1) {
+      return event.metaKey;
+    } else {
+      return event.altKey;
     }
   },
   
