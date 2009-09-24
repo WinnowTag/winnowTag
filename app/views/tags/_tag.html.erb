@@ -7,7 +7,7 @@
       <div class="block actions clearfix">
         <ul class="controls">
           <li class="first slider_control clearfix">
-            <h4><%= t("winnow.tags.main.apply_to", :tag => tag.name) %>:</h4>
+            <h4 id="<%= dom_id(tag, 'apply') %>"><%= t("winnow.tags.main.apply_to", :tag => tag.name) %>:</h4>
             <span class="fewer"><%= t("winnow.tags.main.fewer_items") %></span> <%= bias_slider_html(tag) %> <span class="more"><%= t("winnow.tags.main.more_items") %></span>
           </li>
           <li class="globally_exclude">
@@ -31,8 +31,8 @@
             <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), subscribe_tag_path(tag, :subscribe => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}")), :method => :put, :class => 'show', :title => t("winnow.tags.main.items_tagged_with_tooltip") %></li>
             <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), subscribe_tag_path(tag, :subscribe => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained", :escape => false)), :method => :put, :class => "show", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
           <% else -%>
-            <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), sidebar_tag_path(tag, :sidebar => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}")), :method => :put, :class => 'show', :title => t("winnow.tags.main.items_tagged_with_tooltip") %></li>
-            <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), sidebar_tag_path(tag, :sidebar => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained", :escape => false)), :method => :put, :class => "show", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
+            <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), sidebar_tag_path(tag, :sidebar => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}")), :method => :put, :id => "#{dom_id(tag, 'tagged_with')}", :class => 'show', :title => t("winnow.tags.main.items_tagged_with_tooltip") %></li>
+            <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), sidebar_tag_path(tag, :sidebar => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained", :escape => false)), :method => :put, :id => "#{dom_id(tag, 'trained_with')}", :class => "show", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
           <% end -%>
           <li><%= link_to t("winnow.tags.main.feed"), url_for(:controller => "tags", :action => "show", :user => tag.user_login, :tag_name => tag.name, :format => "atom"), :class => "feed", :title => t("winnow.tags.main.feed_tooltip") %></li>
           <% if is_admin? -%>
