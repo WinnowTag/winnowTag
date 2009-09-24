@@ -41,10 +41,10 @@ module Spec
           page.delete_all_visible_cookies
           
           # Selenium RC must run in -singleWindow mode for this to work
-          page.get_all_window_names[1..-1].each do |window|
-            page.select_window window
-            page.close
-          end
+          # page.get_all_window_names[1..-1].each do |window|
+          #             page.select_window window
+          #             page.close
+          #           end
           
           page.select_window nil
         end
