@@ -17,7 +17,7 @@ module Spec
         before(:all) do
           @selenium_driver = Selenium::Client::Driver.instance(
             Selenium::Configuration.selenium_host, Selenium::Configuration.selenium_port,
-            Selenium::Configuration.browser, Selenium::Configuration.test_url, 10
+            Selenium::Configuration.browser, Selenium::Configuration.test_url, 30
           )
         end
 
