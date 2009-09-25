@@ -265,12 +265,14 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       
       if(selected) {
         this.removeFilters(parameters);
+        Event.stop(event);
       } else {
         this.addFilters(parameters);
         Event.stop(event);
       }
     } else {
       this.setFilters(parameters);
+      Event.stop(event);
     }
   },
 
@@ -278,7 +280,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     if (navigator.platform.indexOf("Mac") != -1) {
       return event.metaKey;
     } else {
-      return event.altKey;
+      return event.ctrlKey;
     }
   },
   

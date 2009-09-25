@@ -610,6 +610,10 @@ ul.filter_list li .actions {
   margin-left: 0.25em;
 }
 
+ul.filter_list li .name {
+  cursor: pointer;
+}
+
 ul.filter_list li .edit, ul.filter_list li .remove {
   float: left;
   width: 1.5em;

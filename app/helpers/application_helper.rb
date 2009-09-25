@@ -159,7 +159,7 @@ module ApplicationHelper
     html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:span, html, :class => "actions")
 
-    html << link_to_function(h(feed.title), "", :class => "name", :id => dom_id(feed, "name"), :"data-sort" => feed.sort_title)
+    html << content_tag(:span, h(feed.title), :class => "name", :id => dom_id(feed, "name"), :"data-sort" => feed.sort_title)
     
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
@@ -208,7 +208,7 @@ module ApplicationHelper
     html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => remove_url, :method => :put)}", :class => "remove")
     html  = content_tag(:span, html, :class => "actions")
 
-    html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"), :"data-sort" => tag.sort_name)
+    html << content_tag(:span, h(tag.name), :class => "name", :id => dom_id(tag, "name"), :"data-sort" => tag.sort_name)
 
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
