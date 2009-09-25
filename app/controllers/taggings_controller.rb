@@ -22,15 +22,17 @@ class TaggingsController < ApplicationController
   # is not already in the users sidebar, it will be added.
   def create
     tag = Tag(current_user, params[:tagging][:tag])
-    @tagging = Tagging.new(params[:tagging].merge(:tag => tag, :user => current_user))
-    if @tagging.save
-      unless tag.show_in_sidebar?
-        tag.update_attribute(:show_in_sidebar, true)
-      end
-      respond_to :json
-    else
-      respond_to do |format|
-        format.json { render :action => "error.json.erb" }
+    Tagging.transaction do
+      @tagging = Tagging.new(params[:tagging].merge(:tag => tag, :user => current_user))
+      if @tagging.save
+        unless tag.show_in_sidebar?
+          tag.update_attribute(:show_in_sidebar, true)
+        end
+        respond_to :json
+      else
+        respond_to do |format|
+          format.json { render :action => "error.json.erb" }
+        end
       end
     end
   end

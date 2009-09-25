@@ -6,6 +6,18 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TaggingsController do
+  it "starts a transaction" do
+    feed_item = Generate.feed_item!
+    
+    login_as Generate.user!
+    
+    tagging = mock_model(Tagging, :save => true)
+    Tagging.stub!(:new).and_return(tagging)
+    Tagging.should_receive(:transaction).with().and_yield
+    
+    post :create, :tagging => { :feed_item_id => feed_item.id, :tag => 'one' }
+  end
+  
   it "create_without_tag_doesnt_create_tagging" do
     feed_item = Generate.feed_item!
     
