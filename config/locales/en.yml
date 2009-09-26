@@ -184,7 +184,6 @@ en:
         close: "Close"
         close_tooltip: ""
         tag_input_tooltip: ""
-        could_not_load_clues: "Could not load the clues, please try again later."
       footer:
         previous_item: "Previous Item"
         previous_item_tooltip: ""

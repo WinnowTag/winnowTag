@@ -1,5 +1,0 @@
-<% if @clues == :redirect || @clues.nil? -%>
-  <p><%= t("winnow.items.main.could_not_load_clues") %></p>
-<% else @clues -%>
-  <%= render_clues(@clues) %>
-<% end -%>

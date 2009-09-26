@@ -97,36 +97,4 @@ module FeedItemsHelper
     feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
     feeds.sort_by { |feed| feed.sort_title }
   end
-
-  def render_clues(clues)
-    sorted_grouped_clues = clues.sort_by { |clue| clue['prob'] }.reverse.in_groups_of((clues.size.to_f / 3).ceil)
-    content_tag('table') do
-      clue_header +
-      sorted_grouped_clues.shift.zip(*sorted_grouped_clues).map do |clues|
-        render_clue_row(clues)
-      end.join
-    end
-  end
-  
-  def clue_header
-    content_tag('tr', 
-      (content_tag('th', 'Clue', :class => "clue") + content_tag('th', 'Prob', :class => "prob")) * 3
-    )
-  end
-  
-  def render_clue_row(clue_row)
-    content_tag('tr') do
-      clue_row.map do |clue|
-        render_clue(clue)
-      end.join
-    end
-  end
-  
-  def render_clue(clue)
-    if clue
-      content_tag('td', h(clue['clue']), :class => 'clue') + content_tag('td', clue['prob'], :class => 'prob')
-    else
-      content_tag('td', nil, :class => 'clue') + content_tag('td', nil, :class => 'prob')
-    end
-  end
 end

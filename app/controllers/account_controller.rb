@@ -4,7 +4,6 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class AccountController < ApplicationController
-  # before_filter :setup_mailer_site_url
   skip_before_filter :login_required, :except => [:edit, :edit_password]
   skip_before_filter :check_if_user_must_update_password, :only => [:edit_password, :logout]
   
@@ -91,21 +90,6 @@ class AccountController < ApplicationController
     redirect_to login_path
   end
 
-  def activate
-    if params[:activation_code]
-      @user = User.find_by_activation_code(params[:activation_code]) 
-      if @user and @user.activate
-        self.current_user = @user
-        redirect_back_or_default(root_path)
-        flash[:notice] = t("winnow.notifications.account_activated")
-      else
-        flash[:error] = t("winnow.notifications.account_activation_failed")
-      end
-    else
-      flash.clear
-    end
-  end
-  
   def reminder
     if user = User.find_by_login(params[:login])
       user.enable_reminder!
@@ -119,10 +103,4 @@ class AccountController < ApplicationController
       end
     end
   end
-  
-# private
-# 
-#   def setup_mailer_site_url
-#     UserNotifier.site_url = request.host_with_port    
-#   end
 end

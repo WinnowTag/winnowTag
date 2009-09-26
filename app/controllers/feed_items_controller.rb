@@ -54,19 +54,6 @@ class FeedItemsController < ApplicationController
     end
   end
 
-  def clues
-    tries = params[:tries].to_i
-    tag = Tag.find(params[:tag])
-    tag_url = training_tag_url(tag, :format => 'atom')
-    @clues = Remote::ClassifierClues.find_by_item_id_and_tag_url(params[:id], tag_url)
-    
-    if @clues == :redirect && tries < 7
-      redirect_to params.update(:tries => tries + 1)
-    else
-      render :layout => false
-    end
-  end
-  
   def mark_read
     if params[:id]
       FeedItem.find(params[:id]).read_by!(current_user)

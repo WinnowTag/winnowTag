@@ -19,13 +19,6 @@ class UserNotifier < ActionMailer::Base
     body        :url => url, :invite => invite
   end
 
-  # include ActionController::UrlWriter
-  # default_url_options[:host] = 'wizztag.org'
-  # 
-  # def self.site_url=(value)
-  #   default_url_options[:host] = value
-  # end
-  #   
   # def signup_notification(user)
   #   setup_email user, :subject => "Welcome to Winnow, #{user.firstname}"
   #   body        :url => url_for(:controller => 'account', :action => 'activate', :activation_code => user.activation_code)
