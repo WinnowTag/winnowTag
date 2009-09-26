@@ -14,8 +14,12 @@
 # +Tag+ class, and therefore the +Tag()+ function
 Tag
 
+# The +TaggingsController+ is used to manage user taggings on feed items.
 class TaggingsController < ApplicationController
-  # Creates a single +Tagging+ for a <tt><FeedItem, User, Tag></tt>
+  # The +create+ action creates a single +Tagging+ for a 
+  # <tt><FeedItem, User, Tag></tt> combination. Any existing
+  # tagging for that combination will be deletd. If the Tag 
+  # is not already in the users sidebar, it will be added.
   def create
     tag = Tag(current_user, params[:tagging][:tag])
     @tagging = Tagging.new(params[:tagging].merge(:tag => tag, :user => current_user))
@@ -31,7 +35,7 @@ class TaggingsController < ApplicationController
     end
   end
   
-  # Destroys taggings
+  # The +destroy+ action destroys a user tagging on a FeedItem.
   #
   # Accepted Parameters:
   #

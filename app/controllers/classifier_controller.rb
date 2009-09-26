@@ -4,6 +4,7 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
+# TODO: Sean to document
 # Controller for the user's classifier.
 #
 # Each user only has a single classifier so this is a Singleton Resource.

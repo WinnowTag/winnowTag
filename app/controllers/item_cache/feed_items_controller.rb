@@ -3,6 +3,8 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# TODO: Sean to document
 module ItemCache
   class FeedItemsController < ItemCacheController
     def create

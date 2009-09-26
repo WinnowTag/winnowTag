@@ -3,9 +3,15 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# The +InvitesController+ is only accessible by admin users. Admins use
+# this controller create/activate invitations as well as customize the 
+# email subject/body that gets sent to the user when the invitation
+# is activated.
 class InvitesController < ApplicationController
   permit 'admin'
   
+  # See FeedItemsController#index for an explanation of the html/json requests.
   def index
     respond_to do |format|
       format.html
@@ -21,6 +27,8 @@ class InvitesController < ApplicationController
     @invite = Invite.new
   end
   
+  # The +create+ action will send an email the invitee if the 
+  # invitation was activated.
   def create
     @invite = Invite.new(params[:invite])
     if @invite.save
@@ -38,6 +46,8 @@ class InvitesController < ApplicationController
     @invite = Invite.find(params[:id])
   end
   
+  # The +update+ action will send an email the invitee if the 
+  # invitation was activated.
   def update
     @invite = Invite.find(params[:id])
     if @invite.update_attributes(params[:invite])
@@ -51,6 +61,9 @@ class InvitesController < ApplicationController
     end
   end
   
+  # The +activate+ action will send an email the invitee letting them know
+  # their invitation has been accepted and they can now signup for a Winnow
+  # account.
   def activate
     @invite = Invite.find(params[:id])
     @invite.activate!
@@ -64,6 +77,11 @@ class InvitesController < ApplicationController
   end
 
 private
+  # The +activate?+ method returns a boolean denoting whether or not
+  # the admin user checked the "Activate?" checkbox when creating/editing
+  # an invitation. This is used to decide whether or not to activate the
+  # invitation and send them an email letting them know their invitation 
+  # has been accepted and they can now signup for a Winnow account.
   def activate?
     params[:activate] =~ /true/i
   end

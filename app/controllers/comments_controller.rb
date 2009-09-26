@@ -3,6 +3,8 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# The +CommentsController+ is used to support the commenting on tags feature.
 class CommentsController < ApplicationController
   before_filter :find_comment, :only => [:edit, :update, :destroy]
 

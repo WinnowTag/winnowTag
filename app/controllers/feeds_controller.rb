@@ -4,12 +4,14 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# This controller doesn't create feeds directly. Instead it forwards
-# feed creation requests on to the collector using +Remote::Feed+.
+# The +FeedsController+ is used to manage the viewing and creation of feeds.
 class FeedsController < ApplicationController
+  # See FeedItemsController#index for an explanation of the html/json requests.
   def index
     respond_to do |format|
       format.html do
+        # A new feed is instantiated here so it can be used on 
+        # the Add/Import feed form.
         @feed = Remote::Feed.new(params[:feed] || {})
       end
       format.json do
@@ -21,6 +23,8 @@ class FeedsController < ApplicationController
     end
   end
 
+  # The +create+ action is used when a user requests a feed url to be added
+  # to winnow. See FeedManager#create for more details on this creation process.
   def create
     creation = FeedManager.create(current_user, params[:feed][:url], collection_job_results_url(current_user))
 
@@ -41,6 +45,14 @@ class FeedsController < ApplicationController
     end
   end
 
+  # The +import+ action is used to import an OPML file of feed urls.
+  # This is done by communicateing with the Collector via the
+  # +Remote::Feed+ model.
+  # 
+  # A collection request is sent to the Collector for each of the 
+  # imported feeds.
+  # 
+  # A FeedSubscription is created for each Feed and the logged in user.
   def import
     @feeds = Remote::Feed.import_opml(params[:opml].read)
     @feeds.each do |feed|
@@ -51,6 +63,9 @@ class FeedsController < ApplicationController
     redirect_to feeds_url
   end
 
+  # The +auto_complete_for_feed_title+ is used in the feed items sidebar
+  # to add feeds. This will return a list of feeds matching the requested
+  # text as long as they are not already in the users sidebar.
   def auto_complete_for_feed_title
     @q = params[:feed][:title]
     
@@ -67,6 +82,8 @@ class FeedsController < ApplicationController
     render :layout => false
   end
   
+  # The +globally_exclude+ action is used to add/remove a feed from a users
+  # list of feed exlucsions.
   def globally_exclude
     @feed = Feed.find(params[:id])
     if params[:globally_exclude] =~ /true/i
@@ -77,6 +94,10 @@ class FeedsController < ApplicationController
     respond_to :js
   end
 
+  # The +subscribe+ action is used to add/remove a feed from a users list of 
+  # feed subscriptions. When removing a feed subscription, the feed is removed
+  # from any of the user's folders, and any feed exlusion for that same feed is 
+  # also removed. 
   def subscribe
     if feed = Feed.find_by_id(params[:id])
       if params[:subscribe] =~ /true/i

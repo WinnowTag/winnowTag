@@ -4,6 +4,20 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class FeedManager < Manager
+
+  # The +create+ method adds communicates with the Collector via the
+  # +Remote::Feed+ model.
+  # 
+  # If the feed requested to be added does not exist in the Collector,
+  # it is added.
+  # 
+  # A request to collect the feed is sent to the Collector.
+  # 
+  # The Feed is created locally so it is immediately available to the
+  # user who requested it. The Collector will push additional information
+  # to Winnow once it has collected it.
+  # 
+  # A FeedSubscription is created for the Feed and the user who requested it.
   def create(current_user, feed_url, collection_job_results_url)
     remote_feed = Remote::Feed.find_or_create_by_url_and_created_by(feed_url, current_user.login)
 
