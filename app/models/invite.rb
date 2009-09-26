@@ -4,7 +4,7 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# Represents inviting someone to Winnow
+# Represents a user requesting access to Winnow.
 class Invite < ActiveRecord::Base
   belongs_to :user
   
