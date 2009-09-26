@@ -16,12 +16,19 @@ class ApplicationController < ActionController::Base
   
   before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time, :check_if_user_must_update_password
 
-  DEFAULT_LIMIT = 40 unless defined?(DEFAULT_LIMIT)
-  MAX_LIMIT = 100 unless defined?(MAX_LIMIT)
-
 protected
   def check_atom
     render(:text => h(params[:atom_error].message), :status => 400) if params[:atom_error]
+  end
+
+  # The +limit+ method returns the number of records to display
+  # per page. If not limit is requested, it will return the default
+  # limit of 40, and if a limit is request, it will ensure that it 
+  # is more that the maximum limit of 100.
+  def limit
+    default_limit = 40
+    max_limit = 100
+    (params[:limit] ? [params[:limit].to_i, max_limit].min : default_limit)
   end
 
   def set_time_zone

@@ -13,7 +13,6 @@ class FeedsController < ApplicationController
         @feed = Remote::Feed.new(params[:feed] || {})
       end
       format.json do
-        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @feeds = Feed.search(:text_filter => params[:text_filter], :excluder => current_user,
                              :order => params[:order], :direction => params[:direction], 
                              :limit => limit, :offset => params[:offset])

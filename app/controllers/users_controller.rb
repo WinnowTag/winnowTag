@@ -11,7 +11,6 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @users = User.search(:text_filter => params[:text_filter], :order => params[:order], :direction => params[:direction],
                              :limit => limit, :offset => params[:offset])
         @full = @users.size < limit
