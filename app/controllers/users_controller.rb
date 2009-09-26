@@ -17,7 +17,7 @@ class UsersController < ApplicationController
         @full = @users.size < limit
       end
       format.csv do
-        @users = User.search(:text_filter => params[:text_filter], :order => params[:order])
+        @users = User.search(:text_filter => params[:text_filter], :order => params[:order], :direction => params[:direction])
       end
     end
   end
