@@ -4,7 +4,6 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module BiasSliderHelper
-
   # Creates a slider for setting the sensitivity of the classifier for a specific tag. 
   # The slider will be disabled if the tag is not owned by the current user.
   def bias_slider_html(tag)

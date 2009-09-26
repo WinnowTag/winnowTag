@@ -3,19 +3,27 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-module ApplicationHelper  
+module ApplicationHelper
+  # Makes sure the content is valid HTML, textilzes it to transform any 
+  # markup to HTML, and finally sanitizes it to remove dangerous HTML.
   def sth(content)
     sanitize(textilize(Hpricot.parse(content.to_s).to_s))
   end
   
+  # Makes sure the content is valid HTML, and finally sanitizes it to 
+  # remove dangerous HTML.
   def sh(content)
     sanitize(Hpricot.parse(content.to_s).to_s)
   end
   
+  # Returns the class used to style the selected main nagivation tab if the 
+  # current controller/action match.
   def tab_selected(controller, action = nil)
     "selected" if controller_name == controller and (action.nil? or action_name == action)
   end
   
+  # Generates the javascript to display the flash messages in our javascript
+  # messages system.
   def show_flash_messages
     javascript = [:notice, :warning, :error].map do |name|
       "Message.add('#{name}', #{flash[name].to_json});" unless flash[name].blank?
@@ -34,10 +42,12 @@ module ApplicationHelper
     javascript_tag(javascript) unless javascript.blank?
   end
   
+  # Generates the link to control the direction of the sorting.
   def direction_link
     link_to_function "<span class='asc' title='#{t("winnow.sort_direction.ascending_tooltip")}'>#{t("winnow.sort_direction.ascending")}</span><span class='desc' title='#{t("winnow.sort_direction.descending_tooltip")}'>#{t("winnow.sort_direction.descending")}</span>", "", :id => "direction"
   end
   
+  # Helper to check if the current user is an admin.
   def is_admin?
     if @is_admin.nil?
       @is_admin = (current_user.has_role?('admin') == true)
@@ -46,6 +56,8 @@ module ApplicationHelper
     @is_admin
   end
   
+  # Custom version of the +in_place_editor+ helper to expose additional features
+  # from the javascript library.
   def in_place_editor(field_id, options = {})
     function =  "new Ajax.InPlaceEditor("
     function << "'#{field_id}', "
@@ -83,14 +95,17 @@ module ApplicationHelper
     javascript_tag(function)
   end
   
+  # Checks the cookies to determine whether or render a folder as opened or closed.
   def open_folder?(folder)
     cookies[dom_id(folder)] =~ /true/i
   end
   
+  # Checks the cookies to determine whether or render a section as opened or closed.
   def section_open?(id)
     cookies[id] =~ /true/i
   end
   
+  # Generates the control to mark a tag/feed a globally excluded/not globally excluded.
   def globally_exclude_check_box(tag_or_feed)
     url = if tag_or_feed.is_a?(Tag)
       globally_exclude_tag_path(tag_or_feed)
@@ -105,12 +120,14 @@ module ApplicationHelper
       :title => t("winnow.general.globally_exclude_tooltip")
   end
 
+  # Generates the control to mark a tag subscribed/unsbscribed
   def subscribe_check_box(tag)
     check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :id => dom_id(tag, 'subscribe'), 
       :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}"),
       :title => t("winnow.tags.main.subscribe_tooltip")
   end
   
+  # Generates the controls to filter the list of feed items by feeds.
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
     if options[:add]
@@ -125,6 +142,8 @@ module ApplicationHelper
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
+  # Generates an individual control to filter the list of feed items by a feed.
+  # See ApplicationHelper#feed_filter_controls.
   def feed_filter_control(feed, options = {})   
     url      = case options[:remove]
       when :subscription then subscribe_feed_path(feed, :subscribe => "false")
@@ -149,11 +168,14 @@ module ApplicationHelper
     html
   end
   
+  # Generates the controls to filter the list of feed items by feeds.
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
+  # Generates an individual control to filter the list of feed items by a feed.
+  # See ApplicationHelper#feed_filter_controls.
   def tag_filter_control(tag, options = {})
     if options[:remove] == :subscription && current_user.id == tag.user_id
       options = options.except(:remove)
@@ -196,6 +218,8 @@ module ApplicationHelper
     html
   end
   
+  # Generates a tooltip for the tag filters in the feed items sidebar. 
+  # The tooltip contains the training information for the tag.
   def tag_tooltip(tag)
     if tag.user_id == current_user.id 
       t("winnow.items.sidebar.tag_tooltip", :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
@@ -204,6 +228,8 @@ module ApplicationHelper
     end
   end
   
+  # Determines the path to use for the help link based on the current page 
+  # and the help link settings.
   def help_path
     setting = YAML.load(Setting.find_or_initialize_by_name("Help").value.to_s)
     if setting && setting[controller_name] && setting[controller_name][action_name]
@@ -214,6 +240,7 @@ module ApplicationHelper
   rescue ArgumentError # Swallow malformed yaml exceptions
   end
   
+  # Generates the classes that should exist on a tag. These are used to properly style the tag.
   def tag_classes(tag)
     classes = [dom_id(tag)]
     
@@ -227,12 +254,14 @@ module ApplicationHelper
     classes.join(" ")
   end
 
+  # Generates the classes that should exist on a feed. These are used to properly style the feed.
   def feed_classes(feed)
     if current_user.globally_excluded?(feed)
       "globally_excluded"
     end
   end
 
+  # Generates the state text that should be shown for a feed.
   def tag_state(tag)
     if current_user.globally_excluded?(tag)
       t("winnow.tags.general.globally_excluded")
@@ -241,6 +270,7 @@ module ApplicationHelper
     end
   end
 
+  # Generates a rounded button with a javascript action.
   def rounded_button_function(name, function, html_options = {}, &block)
     (html_options[:class] ||= "") << " button"
     if icon = html_options.delete(:icon)
@@ -250,6 +280,7 @@ module ApplicationHelper
     end
   end
 
+  # Generates a rounded button with a link action.
   def rounded_button_link(name, options = {}, html_options = {})
     (html_options[:class] ||= "") << " button"
     if icon = html_options.delete(:icon)
@@ -297,6 +328,8 @@ module ApplicationHelper
     request.env["HTTP_USER_AGENT"] =~ /MSIE 8/
   end
 
+  # Returns the proper bookmarklet installation instructions based on the 
+  # users browser.
   def bookmarklet_installation_instructions
     if chrome? # this comes first, because safari? will return true when the browser is really chrome
       # drag to bookmarks bar
