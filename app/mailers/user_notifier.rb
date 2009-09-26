@@ -19,16 +19,6 @@ class UserNotifier < ActionMailer::Base
     body        :url => url, :invite => invite
   end
 
-  # def signup_notification(user)
-  #   setup_email user, :subject => "Welcome to Winnow, #{user.firstname}"
-  #   body        :url => url_for(:controller => 'account', :action => 'activate', :activation_code => user.activation_code)
-  # end
-  # 
-  # def activation(user)
-  #   setup_email user, :subject => 'Your account has been activated!'
-  #   body        :url => url_for(:controller => '')
-  # end
-
 protected
   def setup_email(email, options = {})
     recipients  email
