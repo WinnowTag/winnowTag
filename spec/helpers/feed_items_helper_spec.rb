@@ -12,30 +12,6 @@ describe FeedItemsHelper do
     end
   end
   
-  describe "link_to_feed" do
-    it "link_to_feed_without_link" do
-      feed = mock_model(Feed, :title => "Feed Title", :alternate => nil)
-      assert_equal "Feed Title", helper.link_to_feed(feed)
-    end
-  
-    it "link_to_feed_with_link" do
-      feed = mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com")
-      assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', helper.link_to_feed(feed)
-    end
-  end
-  
-  describe "link_to_feed_item" do
-    it "link_to_feed_item_without_link" do
-      feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => nil)
-      assert_equal "FeedItem Title", helper.link_to_feed_item(feed_item)
-    end
-  
-    it "link_to_feed_item_with_link" do
-      feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => "http://example.com")
-      assert_equal '<a href="http://example.com" target="_blank">FeedItem Title</a>', helper.link_to_feed_item(feed_item)
-    end
-  end
-  
   describe "classes_for_taggings" do
     it "provides the class classifier when only a classifier tagging exists" do
       taggings = mock_model(Tagging, :positive? => true, :classifier_tagging? => true, :negative? => false)

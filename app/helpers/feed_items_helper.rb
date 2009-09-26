@@ -4,22 +4,6 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module FeedItemsHelper
-  def link_to_feed(feed, options = {})
-    if feed.alternate
-      link_to(h(feed.title), feed.alternate, options.merge(:target => "_blank"))
-    else
-      h(feed.title)
-    end
-  end
-  
-  def link_to_feed_item(feed_item, options = {})
-    if feed_item.link 
-      link_to(feed_item_title(feed_item), feed_item.link, options.merge(:target => "_blank"))
-    else
-      feed_item_title(feed_item)
-    end
-  end
-  
   def feed_item_title(feed_item)
     if feed_item.title.blank?
       content_tag :span, t("winnow.items.main.no_title"), :class => "notitle"
