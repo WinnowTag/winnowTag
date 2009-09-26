@@ -4,9 +4,6 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 class FeedItemsController < ApplicationController
-  include FeedItemsHelper
-  include ActionView::Helpers::TextHelper
-  before_filter :login_required
 
   # The +index+ action displays +FeedItem+s based on the passed in filters.
   #
