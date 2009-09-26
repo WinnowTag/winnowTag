@@ -4,8 +4,6 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module FeedItemsHelper
-  include BiasSliderHelper
-  
   def link_to_feed(feed, options = {})
     if feed.alternate
       link_to(h(feed.title), feed.alternate, options.merge(:target => "_blank"))

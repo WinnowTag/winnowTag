@@ -15,8 +15,6 @@
 Tag
 
 class TaggingsController < ApplicationController
-  helper :feed_items
-
   # Creates a single +Tagging+ for a <tt><FeedItem, User, Tag></tt>
   def create
     tag = Tag(current_user, params[:tagging][:tag])

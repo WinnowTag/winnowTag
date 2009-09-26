@@ -4,8 +4,6 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module ApplicationHelper  
-  include DateHelper
-
   def sth(content)
     sanitize(textilize(Hpricot.parse(content.to_s).to_s))
   end

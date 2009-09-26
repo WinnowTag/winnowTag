@@ -7,7 +7,6 @@
 # The TagsController provides an interface to a user's tags.
 class TagsController < ApplicationController
   permit "admin", :only => :upload
-  helper :bias_slider, :comments
 
   # Setup the HMAC authentication with credentials for the classifier role but don't assign to any actions
   with_auth_hmac(HMAC_CREDENTIALS['classifier'], :only => [])
