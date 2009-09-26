@@ -5,7 +5,7 @@
 # Please visit http://www.peerworks.org/contact for further information.
 class UsersController < ApplicationController
   permit 'admin'
-  before_filter :setup_user, :except => [:create, :new]
+  before_filter :find_user, :except => [:create, :new]
   
   def index
     respond_to do |format|
@@ -51,7 +51,7 @@ class UsersController < ApplicationController
   end
   
 private
-  def setup_user
+  def find_user
     if params[:id] =~ /^[\d]+$/    
       @user = User.find(params[:id]) 
     elsif params[:id]
