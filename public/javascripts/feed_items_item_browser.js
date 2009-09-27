@@ -158,7 +158,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     } else {
       if(!$('feed_filters').down("#" + feed.getAttribute("id"))) {
         feed.removeClassName('selected');
-        $('feed_filters').insertInOrder('li', '.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
+        $('feed_filters').insertInOrder('.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
         this.bindFeedFilterEvents(feed);
         this.styleFilters();
       }
@@ -170,7 +170,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     input.clear();
     if(!$('tag_filters').down("#" + tag.getAttribute("id"))) {
       tag.removeClassName('selected');
-      $('tag_filters').insertInOrder('li', '.name@data-sort', tag, $(tag).down(".name").getAttribute("data-sort"));
+      $('tag_filters').insertInOrder('.name@data-sort', tag, $(tag).down(".name").getAttribute("data-sort"));
       this.bindTagFilterEvents(tag);
       this.styleFilters();
     }
