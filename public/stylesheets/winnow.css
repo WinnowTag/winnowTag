@@ -612,6 +612,12 @@ ul.filter_list li .actions {
 
 ul.filter_list li .name {
   cursor: pointer;
+  color: #069;
+}
+
+ul.filter_list li .name:hover {
+  text-decoration: underline;
+  color: #000;
 }
 
 ul.filter_list li .edit, ul.filter_list li .remove {
