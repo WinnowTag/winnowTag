@@ -265,19 +265,16 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       
       if(selected) {
         this.removeFilters(parameters);
-        Event.stop(event);
       } else {
         this.addFilters(parameters);
-        Event.stop(event);
       }
     } else {
       this.setFilters(parameters);
-      Event.stop(event);
     }
   },
 
   multiSelectKey: function(event) {
-    if (navigator.platform.indexOf("Mac") != -1) {
+    if(navigator.platform.indexOf("Mac") != -1) {
       return event.metaKey;
     } else {
       return event.ctrlKey;
