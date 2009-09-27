@@ -210,7 +210,7 @@ describe ApplicationHelper do
   describe "tag filter controls" do
     
     def mock_tag(stubs = {})
-      user = mock_model(User, :login => "mark")
+      user = stubs[:user] || mock_model(User, :login => "mark")
       sort_name = (stubs[:name] || "Tag 1").to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')
       mock_model(Tag, stubs.reverse_merge(
         :name => "Tag 1", :sort_name => sort_name, :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0
@@ -276,7 +276,7 @@ describe ApplicationHelper do
     end
     
     it "creates a filter control with a tooltip showing the trining and author information" do
-      tag = mock_tag(:positive_count => 1, :negative_count => 2, :classifier_count => 3)
+      tag = mock_tag(:positive_count => 1, :negative_count => 2, :classifier_count => 3, :user => mock_model(User, :login => "craig"))
       tag_filter_control(tag, :remove => :subscription).should have_tag("li[title=?]", "From craig, Positive: 1, Negative: 2, Automatic: 3")
     end
     
