@@ -1,2 +1,2 @@
-page['feed_filters'].insertInOrder 'li', '.name@data-sort', feed_filter_control(@feed, :draggable => true, :remove => :subscription), @feed.sort_title
+page['feed_filters'].insertInOrder '.name@data-sort', feed_filter_control(@feed, :draggable => true, :remove => :subscription), @feed.sort_title
 page << "itemBrowser.bindFeedFilterEvents($('feed_filters').down('##{dom_id(@feed)}'));"

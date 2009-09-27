@@ -1,16 +1,4 @@
 page.select(".#{dom_id(@tag)}").each do |element|
-  element.down(".name").update h(@tag.name)
-  page << "value.up().insertInOrder('.tag.record', '.name', value, #{@tag.name.to_json});"
+  element.select(".name").invoke :update, h(@tag.name)
+  page << "value.up().insertInOrder('.name', value, #{@tag.name.to_json});"
 end
-
-page << "if($(#{dom_id(@tag, 'apply').to_json})) {"
-  page.replace_html("#{dom_id(@tag, 'apply')}", I18n.t("winnow.tags.main.apply_to", :tag => @tag.name))
-page << "}"
-
-page << "if($(#{dom_id(@tag, 'tagged_with').to_json})) {"
-  page.replace_html("#{dom_id(@tag, 'tagged_with')}", I18n.t("winnow.tags.main.items_tagged_with", :tag => @tag.name))
-page << "}"
-
-page << "if($(#{dom_id(@tag, 'trained_with').to_json})) {"
-  page.replace_html("#{dom_id(@tag, 'trained_with')}", I18n.t("winnow.tags.main.items_trained_with", :tag => @tag.name))
-page << "}"

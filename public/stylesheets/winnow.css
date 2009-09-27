@@ -1662,7 +1662,8 @@ body#item_caches .item_cache {
   background-repeat: no-repeat;
 }
 
-.tag ul.controls .show {
+.tag ul.controls .tagged,
+.tag ul.controls .trained {
   background-image: url(../images/show.png);
 }
 

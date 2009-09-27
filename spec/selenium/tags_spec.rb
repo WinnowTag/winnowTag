@@ -63,19 +63,19 @@ describe "Tags" do
     
     it "updates the tag name for the bias slider" do
       rename_tag
-      text = page.get_text("css=#apply_tag_#{@tag1.id}")
+    text = page.get_text("css=#tag_#{@tag.id} .slider_control .name")
       text.should include(@new_name)
     end
     
     it "updates the tag name in the 'show items tagged with' link" do
       rename_tag
-      text = page.get_text("css=#tagged_with_tag_#{@tag1.id}")
+    text = page.get_text("css=#tag_#{@tag.id} .tagged .name")
       text.should include(@new_name)
     end
     
     it "updates the tag name in the 'show items trainded with' link" do
       rename_tag
-      text = page.get_text("css=#trained_with_tag_#{@tag1.id}")
+      text = page.get_text("css=#tag_#{@tag.id} .trained .name")
       text.should include(@new_name)
     end
     

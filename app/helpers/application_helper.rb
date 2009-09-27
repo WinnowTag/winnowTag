@@ -179,7 +179,7 @@ module ApplicationHelper
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
-    class_names = [dom_id(tag), "clearfix", "tag", "record"]
+    class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id
     class_names << "draggable" if options[:draggable]
     url  =  case options[:remove]
