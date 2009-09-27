@@ -20,6 +20,7 @@ class FeedItem < ActiveRecord::Base
   acts_as_readable
   
   attr_readonly :uri
+  # Taggings to display is used in the +find_with_filters+ method
   attr_accessor :taggings_to_display
 
   validates_presence_of :link
@@ -28,9 +29,9 @@ class FeedItem < ActiveRecord::Base
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
   has_many :taggings
-  
   has_many :tags, :through => :taggings  
   
+  # TODO: Sean - Document
   def self.find_or_create_from_atom(entry, options = {})
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
@@ -47,6 +48,7 @@ class FeedItem < ActiveRecord::Base
     item
   end
   
+  # TODO: Sean - Document
   def update_from_atom(entry)
     raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id) if uri != entry.id
     
@@ -64,6 +66,7 @@ class FeedItem < ActiveRecord::Base
     self
   end
   
+  # TODO: Sean - Document
   def to_atom(options = {})
     Atom::Entry.new do |entry|
       entry.title = self.title
@@ -129,6 +132,8 @@ class FeedItem < ActiveRecord::Base
     logger.info("ARCHIVAL: Deleted #{counter} items and #{taggings_deleted} classifier taggings older than #{since}")
   end
   
+  # The +atom_with_filters+ method is used to find all feed items matching the 
+  # filters set by the user, and return them an ATOM feed of those results.
   def self.atom_with_filters(filters = {})
     base_uri = filters.delete(:base_uri)
     self_link = filters.delete(:self_link)
@@ -140,6 +145,8 @@ class FeedItem < ActiveRecord::Base
     text_filter = filters[:text_filter]
     mode = filters[:mode]
 
+    # The title of the ATOM feed is based on the filter criteria. This whole black
+    # is used to determine what that title will be based on what filters are present.
     title = if feeds.present? && tags.present? && text_filter.present?
       I18n.t("winnow.feeds.feed_item.mode_feeds_tags_text_filter", :mode => mode, :feeds => feeds.to_sentence, :tags => tags.to_sentence, :text_filter => text_filter)
     elsif feeds.present? && tags.present?
@@ -191,6 +198,8 @@ class FeedItem < ActiveRecord::Base
     
     feed_items = FeedItem.find(:all, options_for_find)
     
+    # We are going to load the taggings for all the tags the user sees in their sidebar,
+    # plus any tags which are being filtered on.
     selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
     tags_to_display = (user.sidebar_tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
     taggings = Tagging.find(:all, 
@@ -212,6 +221,7 @@ class FeedItem < ActiveRecord::Base
     feed_items
   end
 
+  # Marks feed items as read that match the provided filters.
   def self.read_by!(filters)
     options_for_find = options_for_filters(filters)   
 
@@ -222,6 +232,7 @@ class FeedItem < ActiveRecord::Base
     Reading.connection.execute "INSERT IGNORE INTO readings (user_id, readable_id, readable_type, created_at, updated_at) #{feed_item_ids_sql}"
   end
   
+  # Marks feed items as unread that match the provided filters.
   def self.unread_by!(filters)
     case filters[:mode]
       when nil, "unread" then filters[:mode] = "all"
@@ -250,10 +261,9 @@ class FeedItem < ActiveRecord::Base
   # Also supports <tt>:limit</tt>, <tt>:offset</tt> and <tt>:order</tt> as defined by <tt>ActiveRecord::Base.find</tt>
   #
   # This will return a <tt>Hash</tt> of options suitable for passing to <tt>FeedItem.find</tt>.
-  # 
   def self.options_for_filters(filters) # :doc:
     filters.assert_valid_keys(:limit, :order, :direction, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
-    options = {:limit => filters[:limit], :offset => filters[:offset]}
+    options = { :limit => filters[:limit], :offset => filters[:offset] }
     
     direction = case filters[:direction]
       when "asc", "desc"
@@ -315,6 +325,7 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
+  # Adds the conditions for the selected feeds
   def self.add_feed_filter_conditions!(feed_ids, conditions)
     feeds = Feed.find_all_by_id(feed_ids.to_s.split(','))
     unless feeds.empty?
@@ -322,6 +333,7 @@ class FeedItem < ActiveRecord::Base
     end
   end
 
+  # Adds the conditions for the selected tags
   def self.build_tag_inclusion_filter(tags, mode)
     unless tags.empty?
       manual_taggings_sql = mode =~ /trained/i ? " AND classifier_tagging = 0" : nil
@@ -329,18 +341,21 @@ class FeedItem < ActiveRecord::Base
     end
   end
 
+  # Adds the conditions for the excluded tags
   def self.build_tag_exclusion_filter(tags)
     unless tags.empty?
       "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id)"
     end
   end
   
+  # Adds the conditions for the excluded feeds
   def self.add_globally_exclude_feed_filter_conditions!(feeds, conditions)
     unless feeds.empty?
       conditions << "feed_items.feed_id NOT IN (#{feeds.map(&:id).join(",")})"
     end
   end
   
+  # Adds the conditions dispay only unred items
   def self.add_readings_filter_conditions!(user, conditions)
     conditions << "NOT EXISTS (SELECT 1 FROM readings WHERE readings.user_id = #{user.id} AND readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id)"
   end

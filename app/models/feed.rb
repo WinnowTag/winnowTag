@@ -5,15 +5,13 @@
 # Please visit http://www.peerworks.org/contact for further information.
 
 # Represents a Feed provided by an RSS/Atom source.
-#
-# duplicate
-# via, alternate, title, , collector_link, uri, sort_title
-# update_on, updated
-# feed_items_count
 class Feed < ActiveRecord::Base
+  # If a feed has a duplicate, then THIS feed is the duplicate
+  # that is not being used.
   belongs_to :duplicate, :class_name => 'Feed'
   has_many	:feed_items, :dependent => :destroy
   
+  # See the definition of these methods below to learn about each of these callbacks
   before_save :set_title
   before_save :set_sort_title
 
@@ -51,6 +49,7 @@ class Feed < ActiveRecord::Base
     scope.all(:limit => options[:limit], :offset => options[:offset])
   end
   
+  # TODO: Sean - Document
   def self.find_or_create_from_atom(atom_feed)
     feed = find_or_create_from_atom_entry(atom_feed)
     
@@ -63,6 +62,7 @@ class Feed < ActiveRecord::Base
     feed
   end
   
+  # TODO: Sean - Document
   def self.find_or_create_from_atom_entry(entry)
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
@@ -75,6 +75,7 @@ class Feed < ActiveRecord::Base
     feed
   end
 
+  # TODO: Sean - Document
   def update_from_atom(entry)
     if uri != entry.id
       raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id)
@@ -109,6 +110,8 @@ class Feed < ActiveRecord::Base
   end
 
 private
+  # The title should be set to the host of the alternate of via 
+  # urls if a title does not exist.
   def set_title
     return if title.present?
 
@@ -119,6 +122,8 @@ private
     end
   end
 
+  # The sort_title should remove leading articles, remove non-alphanumeric
+  # characters, and downcase the title.
   def set_sort_title
     self.sort_title = title.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end

@@ -10,6 +10,8 @@
 # by a User.
 #
 # == Design
+# 
+# NOTE: The wiki and image are extremely out of date.
 #
 # For a lengthy description of how the tagging design came to be see 
 # http://trac.winnow.peerworks.org/wiki/WinnowTaggingDesign although
@@ -46,6 +48,9 @@ class Tagging < ActiveRecord::Base
   validates_inclusion_of :strength, :in => 0..1
   validates_associated :tag
 
+  # When creating a tagging, tags are often auto-created as well.
+  # Because of this, we will copy errors from the tag to the tagging
+  # to display them to the user.
   after_validation do |tagging|
     tagging.errors.delete(:tag)
 
@@ -54,12 +59,11 @@ class Tagging < ActiveRecord::Base
     end if tagging.tag
   end
   
-  before_create :remove_preexisting_tagging
-  after_create :update_tag_timestamp
+  # See the definition of these methods below to learn about each of these callbacks
+  before_create  :remove_preexisting_tagging
+  after_create   :update_tag_timestamp
   before_destroy :update_tag_timestamp
-  after_destroy do |tagging|
-    DeletedTagging.create(tagging.attributes.merge(:deleted_at => Time.now.utc))
-  end
+  after_destroy  :create_deleted_tagging
   
   def positive?
     !negative?
@@ -74,15 +78,19 @@ class Tagging < ActiveRecord::Base
   end
 
 private
+  # Has this user tagged this item with this tag before?
+  # This ensures that taggings are unique by user, taggable, tag and classifier_tagging
+  def remove_preexisting_tagging
+    user.taggings.find(:all, 
+      :conditions => { :tag_id => tag.id, :feed_item_id => feed_item.id, :classifier_tagging => classifier_tagging? }
+    ).each(&:destroy)
+  end
+  
   def update_tag_timestamp
     tag.update_attribute(:updated_on, Time.now.utc)
   end
   
-  def remove_preexisting_tagging
-    # Has this user tagged this item with this tag before?
-    # This ensures that taggings are unique by user, taggable, tag and classifier_tagging
-    user.taggings.find(:all, 
-      :conditions => { :tag_id => tag.id, :feed_item_id => feed_item.id, :classifier_tagging => classifier_tagging? }
-    ).each(&:destroy)
+  def create_deleted_tagging
+    DeletedTagging.create(attributes.merge(:deleted_at => Time.now.utc))
   end
 end
