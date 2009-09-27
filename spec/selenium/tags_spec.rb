@@ -38,18 +38,47 @@ describe "Tags" do
       dont_see_element "#name_tag_#{@other.id}"
     end
   end
-
-  it "can change the name of a tag" do
-    new_name = "#{@tag1.name}-renamed"
-    page.click "name_tag_#{@tag1.id}"
+  
+  describe "renaming" do
     
-    see_element("#name_tag_#{@tag1.id}-inplaceeditor")
-    page.type "css=input.editor_field", new_name
-    page.key_down "css=input.editor_field", '\13' # enter
-    page.wait_for :wait_for => :ajax
-    see_element "#name_tag_#{@tag1.id}"
-    @tag1.reload
-    @tag1.name.should == new_name
+    before(:each) do
+      @new_name = "#{@tag1.name}-renamed"
+    end
+    
+    def rename_tag
+      page.click "name_tag_#{@tag1.id}"
+      
+      see_element("#name_tag_#{@tag1.id}-inplaceeditor")
+      page.type "css=input.editor_field", @new_name
+      page.key_down "css=input.editor_field", '\13' # enter
+      page.wait_for :wait_for => :ajax
+      see_element "#name_tag_#{@tag1.id}"
+    end
+    
+    it "changes the name of the tag" do
+      rename_tag
+      @tag1.reload
+      @tag1.name.should == @new_name
+    end
+    
+    it "updates the tag name for the bias slider" do
+      rename_tag
+    text = page.get_text("css=#tag_#{@tag.id} .slider_control .name")
+      text.should include(@new_name)
+    end
+    
+    it "updates the tag name in the 'show items tagged with' link" do
+      rename_tag
+    text = page.get_text("css=#tag_#{@tag.id} .tagged .name")
+      text.should include(@new_name)
+    end
+    
+    it "updates the tag name in the 'show items trainded with' link" do
+      rename_tag
+      text = page.get_text("css=#tag_#{@tag.id} .trained .name")
+      text.should include(@new_name)
+    end
+    
   end
   
   it "cant_change_bias_of_subscribed_tag" do
