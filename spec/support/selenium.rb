@@ -32,4 +32,15 @@ module CustomSeleniumHelpers
     page.key_press(locator, '\13')
     page.key_up(locator, '\13')
   end
+  
+  def multi_select_click(locator)
+    mac? ? page.meta_key_down : page.control_key_down
+    page.click locator
+    mac? ? page.meta_key_up : page.control_key_up
+  end
+  
+  def mac?
+    platform = page.get_eval("navigator.platform;")
+    platform.include?("Mac")
+  end
 end

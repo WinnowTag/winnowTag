@@ -137,9 +137,7 @@ describe "filter controls" do
       page.location.should =~ /\#order=date&direction=desc&mode=unread$/
       
       page.click "css=#name_tag_#{@tag.id}"
-      page.meta_key_down
-      page.click "css=#name_tag_#{@sql.id}"
-      page.meta_key_up
+      multi_select_click "css=#name_tag_#{@sql.id}"
       
       page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
@@ -160,9 +158,7 @@ describe "filter controls" do
       page.location.should =~ /\#order=date&direction=desc&mode=unread$/
       
       page.click "css=#name_feed_#{@feed1.id}"
-      page.meta_key_down
-      page.click "css=#name_feed_#{@feed2.id}"
-      page.meta_key_up
+      multi_select_click "css=#name_feed_#{@feed2.id}"
       
       page.location.should =~ /\#order=date&direction=desc&mode=unread&feed_ids=#{@feed1.id}%2C#{@feed2.id}$/
     end
@@ -183,9 +179,7 @@ describe "filter controls" do
       page.location.should =~ /\#order=date&direction=desc&mode=unread$/
       
       page.click "css=#name_feed_#{@feed.id}"
-      page.meta_key_down
-      page.click "css=#name_tag_#{@tag.id}"
-      page.meta_key_up
+      multi_select_click "css=#name_tag_#{@tag.id}"
       
       page.location.should =~ /\#order=date&direction=desc&mode=unread&feed_ids=#{@feed.id}&tag_ids=#{@tag.id}$/
     end
