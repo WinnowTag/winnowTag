@@ -19,6 +19,8 @@ var Item = Class.create({
     // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
     // this.add_tag_selected  = null;
     
+    this.tagQueues = {};
+    
     this.setupEventListeners();
     
     this.element._item = this;
@@ -243,8 +245,13 @@ var Item = Class.create({
   },
   
   initializeTrainingControl: function(tag) {
-    tag.down(".name").observe("click", function() {
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+    tag.down(".name").observe("click", this.clickTag.bind(this, tag));
+  },
+  
+  clickTag: function(tag) {
+    var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+    
+    var handleTag = function() {
       if(tag.hasClassName("positive")) {
         this.addTagging(tag_name, "negative");
         tag.removeClassName("positive");
@@ -256,7 +263,17 @@ var Item = Class.create({
         this.addTagging(tag_name, "positive");
         tag.addClassName("positive");
       }
-    }.bind(this));
+    }.bind(this);
+    
+    var tagQueue = this.tagQueueFor(tag_name);
+    tagQueue.process(handleTag);
+  },
+  
+  tagQueueFor: function(tagName) {
+    if (!this.tagQueues[tagName]) {
+      this.tagQueues[tagName] = new TagQueue();
+    }
+    return this.tagQueues[tagName];
   },
   
   addTagging: function(tag_name, tagging_type) {
@@ -270,6 +287,9 @@ var Item = Class.create({
         "tagging[tag]": tag_name,
         "tagging[strength]": tagging_type == "positive" ? 1 : 0
       },
+      onComplete: function() {
+        this.tagQueueFor(tag_name).actionCompleted();
+      }.bind(this),
       onSuccess: function(response) {
         var data = response.responseJSON;
         if(data.error) {
@@ -346,6 +366,9 @@ var Item = Class.create({
         "tagging[feed_item_id]": this.id,
         "tagging[tag]": tag_name
       },
+      onComplete: function() {
+        this.tagQueueFor(tag_name).actionCompleted();
+      }.bind(this),
       onSuccess: function(response) {
         var data = response.responseJSON;
 
@@ -402,5 +425,30 @@ var Item = Class.create({
       if(onComplete)        { onComplete();    }
       if(this.isSelected()) { this.scrollTo(); }
     }.bind(this), forceLoad);
+  }
+});
+
+var TagQueue = Class.create({
+  initialize: function() {
+    this.actions = [];
+    this.isProcessing = false;
+  },
+  
+  process: function(action) {
+    if (this.isProcessing) {
+      this.actions.push(action);
+    } else {
+      this.isProcessing = true;
+      action();
+    }
+  },
+  
+  actionCompleted: function() {
+    if (this.actions.any()) {
+      var nextAction = this.actions.shift();
+      nextAction();
+    } else {
+      this.isProcessing = false;
+    }
   }
 });
