@@ -1,4 +1,0 @@
-page.select(".#{dom_id(@tag)}").each do |element|
-  element.select(".name").invoke :update, h(@tag.name)
-  page << "value.up().insertInOrder('.name', value, #{@tag.name.to_json});"
-end

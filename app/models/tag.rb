@@ -316,6 +316,10 @@ class Tag < ActiveRecord::Base
       :group => "tags.id", :limit => options[:limit], :offset => options[:offset]
     )
   end
+  
+  def user_login
+    read_attribute(:user_login) || user.login
+  end
 
   def inspect
     "<Tag name=#{name}, user=#{user.login}>"

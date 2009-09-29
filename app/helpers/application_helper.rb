@@ -203,8 +203,7 @@ module ApplicationHelper
 
     html  = ""
     if options[:editable] && current_user.id == tag.user_id
-      rename_function = "var new_tag_name = prompt('Tag Name:', $(this).up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }"
-      html << link_to_function("Rename", rename_function, :class => "edit")
+      html << link_to("Rename", "#", :class => "edit", "data-update_url" => "#{tag_path(tag)}")
     end
     html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => remove_url, :method => :put)}", :class => "remove")
     html  = content_tag(:span, html, :class => "actions")

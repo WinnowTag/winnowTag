@@ -22,6 +22,30 @@ var TagsItemBrowser = Class.create(ItemBrowser, {
         slider.bias_slider = new BiasSlider(slider);
       }
     }.bind(this));
+    
+    var nameToEdit = tag.down("#name_" + tag.id);
+    if (nameToEdit) {
+      new Ajax.InPlaceEditor(
+        nameToEdit,
+        nameToEdit.getAttribute("data-update_url"),
+        {
+          ajaxOptions: {
+            method: 'put',
+            requestHeaders: { Accept: 'application/json' },
+            onSuccess: function(response) {
+              var data = response.responseJSON;
+              tag.select('.name').invoke('update', data.name);
+              tag.down(".feed_links").update(data.feed_links_content);
+              tag.up().insertInOrder('.name', tag, data.name);
+            }.bind(this)
+          },
+          paramName: 'tag[name]',
+          htmlResponse: false,
+          clickToEditText: I18n.t("winnow.tags.main.click_to_edit_name"),
+          okText: I18n.t("winnow.general.save")
+        }
+      );
+    }
   },
   
   insertItem: function($super, item_id, content) {

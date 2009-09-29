@@ -122,3 +122,35 @@ describe "renaming my own public tags" do
   end
   
 end
+
+describe "Renaming tags as an admin" do
+  
+  before(:each) do
+    user = Generate.admin!
+    @tag = Generate.tag! :user => user, :public => true
+    
+    @new_name = "#{@tag.name}-renamed"
+
+    login user
+    page.open public_tags_path
+    page.wait_for :wait_for => :ajax
+  end
+  
+  def rename_tag
+    page.click "name_tag_#{@tag.id}"
+    
+    see_element("#name_tag_#{@tag.id}-inplaceeditor")
+    page.type "css=input.editor_field", @new_name
+    page.key_down "css=input.editor_field", '\13' # enter
+    page.wait_for :wait_for => :ajax
+    see_element "#name_tag_#{@tag.id}"
+  end
+  
+  it "updates the name in the 'training feed' link" do
+    rename_tag
+    @tag.reload
+    text = page.get_attribute("css=#tag_#{@tag.id} .controls .feed.training@href")
+    text.should == url_for(:controller => "tags", :action => "training", :user => @tag.user_login, :tag_name => @tag.name, :format => "atom", :only_path => true)
+  end
+  
+end

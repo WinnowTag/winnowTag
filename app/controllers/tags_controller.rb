@@ -148,7 +148,9 @@ class TagsController < ApplicationController
         render :action => "merge.js.rjs"
       else
         if @tag.update_attributes(:name => @name)
-          render :action => "rename.js.rjs"
+          respond_to do |format|
+            format.json { render :action => "rename" }
+          end
         else
           @tag.reload
           render :action => "error.js.rjs"
