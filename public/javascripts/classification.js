@@ -8,7 +8,7 @@
  *  - onStarted
  *  - onStartProgressUpdater
  *  - onProgressUpdated
- *  - onCancelled
+ *  - onReset
  *  - onFinished
  */
 var Classification = Class.create({
@@ -56,7 +56,7 @@ var Classification = Class.create({
       
       onFinished: function() {
         this.classification_progress.hide();
-        this.notify("Reset");
+        this.notify("Finished");
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.finish"));
         this.disableClassification();
         if(confirm(I18n.t("winnow.javascript.classifier.progress_bar.reload"))) {
@@ -112,7 +112,7 @@ var Classification = Class.create({
           this.startProgressUpdater();
         } else {
           Message.add('error', transport.responseJSON);
-          this.notify('Cancelled');  
+          this.notify('Reset');
         }
       }.bind(this),
       onTimeout: function() {

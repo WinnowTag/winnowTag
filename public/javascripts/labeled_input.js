@@ -3,6 +3,8 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages the showing/hiding of example text for input controls.
 document.observe('dom:loaded', function() {
   $$("input.example[type=text]").each(function(element) {
     var example_value = element.value;
