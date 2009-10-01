@@ -4,16 +4,16 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# TODO: Sean to document
 # Controller for the user's classifier.
 #
 # Each user only has a single classifier so this is a Singleton Resource.
+#
+# TODO: This could do with some refactoring.
 #
 # == Non-CRUD actions include:
 #
 # <tt>classify</tt>:: Starts a background classification process for the classifier.
 # <tt>status</tt>: Gets JSON object containing the classification progress.
-# <tt>cancel</tt>: Cancels the in progress classification.
 class ClassifierController < ApplicationController
   class ClassificationStartException < StandardError
     attr_reader :code
@@ -23,7 +23,11 @@ class ClassifierController < ApplicationController
       @code = code
     end
   end
-  
+
+  # Starts a classification job for the user.
+  #
+  # Errors are reported via 500 errors with JSON error messages.
+  #
   # puct - Stands for Potentially Undertrained Changed Tags - because who wants to write that more than once?
   def classify
     respond_to do |format|
@@ -45,6 +49,9 @@ class ClassifierController < ApplicationController
     end
   end
   
+  # Gets the status of all the classification jobs running for the user.
+  # This is resturned as a progress value between 0 and 100.
+  #
   def status
     respond_to do |wants|
       status = {:error_message => t("winnow.notifications.classifier.not_running"), :progress => 100}
@@ -80,6 +87,18 @@ class ClassifierController < ApplicationController
   end
   
 private
+  # Starts an actual classification job.
+  #
+  # This starts classification jobs for each of the user's changed tags if 
+  # they don't already have a classification job running. 
+  #
+  # If any of the user's tags are potentially_undertrained a message 
+  # telling them so is presented, asking them if they want to continue 
+  # anyway. If they confirm, this sets puct_confirm to true so next time
+  # we just create the classification jobs.
+  #
+  # Classififation job ids are stored in an array in the session.
+  #
   def start_classification_job
     if job_running?
       raise ClassificationStartException.new(t("winnow.notifications.classifier.already_running"), 500)
@@ -100,6 +119,11 @@ private
     end
   end
   
+  # Checks to see if a job is running.
+  #
+  # Goes through all classification job ids and checks if any of them
+  # are still running.
+  #
   def job_running?
     if session[:classification_job_id] && job_id = session[:classification_job_id].first
       begin

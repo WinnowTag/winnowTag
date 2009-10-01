@@ -22,7 +22,10 @@ end
 # sidebar via the +show_in_sidebar+ attribute. This attribute does 
 # not affect users who subscribe the tag.
 # 
-# TODO: Sean - Document bias
+# The bias attribute is passed to the classifier, it controls how sensitive
+# classification of this tag will be. A bias of 1.0 is neutral, less that 1
+# will err on the side of false negatives and a bias greater that 1 will
+# err on the side of false positives.
 #
 # See also: Tagging
 class Tag < ActiveRecord::Base  
@@ -141,14 +144,14 @@ class Tag < ActiveRecord::Base
     self.positive_taggings.size < Tag.undertrained_threshold
   end
   
-  # TODO: Sean - Document
+  # Create taggings for this tag from an atom document.
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
       taggings_from_atom(atom)
     end
   end
 
-  # TODO: Sean - Document
+  # Replace the taggings in this tag with the taggings in the atom document.
   def replace_taggings_from_atom(atom)
     Tagging.transaction do
       self.delete_classifier_taggings!
@@ -199,7 +202,7 @@ class Tag < ActiveRecord::Base
     end
   end
 
-  # TODO: Sean - Document
+  # Generates the atom version of the tag index for the entire system.
   def self.to_atom(options = {})
     Atom::Feed.new do |feed|
       feed.title = "Winnow tags"
@@ -217,7 +220,9 @@ class Tag < ActiveRecord::Base
     end
   end
   
-  # TODO: Sean - Document
+  # Creates a tag from an atom document. This atom document should be 
+  # a training document that contains all the items that are manually
+  # tagged within this tag.
   def self.create_from_atom(atom)
     if category = atom.categories.first    
       tag = self.create(:name => atom.title.to_s, 
@@ -327,8 +332,15 @@ private
     self.sort_name = name.to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')
   end
 
-  # This needs to be fast so we'll bypass Active Record
-  # TODO: Sean - Document
+  # Adds taggings for this tag from the taggings defined in the atom document.
+  #
+  # Each entry in the atom document defines a tagging from this tag to the
+  # FeedItem identified by the entry's id.  The strength of the tagging
+  # comes from the classifier:strength element in the category that matches
+  # this tag in the entry. With these bits of information we can create a tagging.
+  #
+  # This needs to be fast so we'll bypass Active Record and do it directly in SQL.
+  #
   def taggings_from_atom(atom)
     atom.entries.each do |entry|
       begin

@@ -23,12 +23,18 @@ class ApplicationController < ActionController::Base
   before_filter :login_from_cookie, :login_required, :set_time_zone, :update_access_time, :check_if_user_must_update_password
 
 protected
-  # TODO: Sean to document
+  # This checks if there is an atom error. If there is an atom parse error
+  # in config/initializers/mime_types.rb it will be stored in params[:atom_error].
+  #
   def check_atom
     render(:text => h(params[:atom_error].message), :status => 400) if params[:atom_error]
   end
 
-  # TODO: Sean to document
+  # Helper to handle conditional rendering based on last modified headers.
+  #
+  # This should probably be removed because it is now support in Rails
+  # see http://ryandaigle.com/articles/2008/10/25/what-s-new-in-edge-rails-even-better-conditional-get-support
+  #
   def conditional_render(last_modified)   
     since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
 
