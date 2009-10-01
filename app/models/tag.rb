@@ -252,6 +252,7 @@ class Tag < ActiveRecord::Base
 
   named_scope :public, :conditions => { :public => true }
   
+  # Matches the given value against any of the listed attributes.
   named_scope :matching, lambda { |q|
     conditions = %w[tags.name tags.description users.login].map do |attribute|
       "#{attribute} LIKE :q"
@@ -259,6 +260,8 @@ class Tag < ActiveRecord::Base
     { :joins => :user, :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   
+  # Finds tags to which the user has subscribed or which the user has excluded from the Items view. Used to
+  # scope results in +Tag.search+.
   named_scope :for, lambda { |user|
     joins = [
       "LEFT JOIN tag_subscriptions ON tags.id = tag_subscriptions.tag_id AND tag_subscriptions.user_id = :user_id",
@@ -270,6 +273,8 @@ class Tag < ActiveRecord::Base
     }
   }
   
+  # Orders the results by the given order and direction. If no order is given or one is given but
+  # is not one of the known orders, the default order is used. Likewise for direction.
   named_scope :by, lambda { |order, direction|
     orders = {
       "id"               => "tags.id",

@@ -17,6 +17,7 @@ class Feed < ActiveRecord::Base
 
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
 
+  # Matches the given value against any of the listed attributes.
   named_scope :matching, lambda { |q|
     conditions = %w[feeds.title feeds.via feeds.alternate].map do |attribute|
       "#{attribute} LIKE :q"
@@ -24,6 +25,8 @@ class Feed < ActiveRecord::Base
     { :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   
+  # Orders the results by the given order and direction. If no order is given or one is given but
+  # is not one of the known orders, the default order is used. Likewise for direction.
   named_scope :by, lambda { |order, direction, excluder|
     orders = {
       "title"            => "feeds.sort_title",
