@@ -27,7 +27,7 @@ describe Folder do
     end
   end
   
-  describe "removing ad item from all of a users folders" do
+  describe "removing an item from all of a users folders" do
     it "can remove a tag from all of a users folders" do
       user = Generate.user!
       tag1 = Generate.tag!(:user => user)

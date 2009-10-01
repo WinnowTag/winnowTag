@@ -3,6 +3,8 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Convenience method for finding or creating a Tag by user and tag name
 def Tag(user, tag)
   if tag.nil? || tag.is_a?(Tag) 
     tag
@@ -11,9 +13,26 @@ def Tag(user, tag)
   end
 end
 
-class Tag < ActiveRecord::Base
+# A Tag allows a User to give a name to FeedItem content.
+#
+# A Tag may be public, meaning that it is accessible to other users
+# or private, meaning that is only accessible by the creator.
+# 
+# Tag creators can choose whether or not their tags show in their
+# sidebar via the +show_in_sidebar+ attribute. This attribute does 
+# not affect users who subscribe the tag.
+# 
+# The bias attribute is passed to the classifier, it controls how sensitive
+# classification of this tag will be. A bias of 1.0 is neutral, less that 1
+# will err on the side of false negatives and a bias greater that 1 will
+# err on the side of false positives.
+#
+# See also: Tagging
+class Tag < ActiveRecord::Base  
+  # Tag names can only contain basic ASCII characters, except period
   ASCII_CHARACTERS = %q{0-9a-zA-z ~!@#\$%^&*()_+`\-={}|\[\]\:";'<>?,\/}
 
+  # The number of taggings suggestion before running the classifier
   cattr_accessor :undertrained_threshold
   @@undertrained_threshold = 6
   
@@ -33,16 +52,20 @@ class Tag < ActiveRecord::Base
   validates_format_of :name, :with => /^[#{ASCII_CHARACTERS}]+$/, :allow_blank => true, :message => I18n.t("winnow.errors.tag.invalid_format")
   validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false
 
+  # See the definition of this method below to learn about this callbacks
   before_save :set_sort_name
 
+  # Reads the cached attribute or does a query to find the result. The cached attribute is set in the +search+ finder method.
   def positive_count
     read_attribute(:positive_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 1")
   end
   
+  # Reads the cached attribute or does a query to find the result. The cached attribute is set in the +search+ finder method.
   def negative_count
     read_attribute(:negative_count) || taggings.count(:conditions => "classifier_tagging = 0 AND taggings.strength = 0")
   end
   
+  # Reads the cached attribute or does a query to find the result. The cached attribute is set in the +search+ finder method.
   def feed_items_count
     read_attribute(:feed_items_count) || taggings.count(:select => "DISTINCT(feed_item_id)")
   end
@@ -51,6 +74,7 @@ class Tag < ActiveRecord::Base
     feed_items_count.to_i - positive_count.to_i - negative_count.to_i
   end
   
+  # Reads the cached attribute or does a query to find the result. The cached attribute is set in the +search+ finder method.
   def last_trained
     if last_trained = read_attribute(:last_trained)
       Time.parse(last_trained)
@@ -70,6 +94,8 @@ class Tag < ActiveRecord::Base
     end
   end
   
+  # Copys a tag's bias, description, and taggings to another tag. Does not allow
+  # copying to a tag that already has taggings.
   def copy(to)
     if self == to
       raise ArgumentError, I18n.t("winnow.errors.tag.copy_name_error")
@@ -89,6 +115,7 @@ class Tag < ActiveRecord::Base
     to.save!
   end
   
+  # Merges a tag's manual taggings with another tag's manual taggings.
   def merge(to)
     if self == to 
       raise ArgumentError, I18n.t("winnow.errors.tag.merge_name_error")
@@ -103,11 +130,12 @@ class Tag < ActiveRecord::Base
     destroy
   end
   
+  # Copys a tag to another tag, clearing the other tag's taggings first. See +Tag#copy+.
   def overwrite(to)
     to.taggings.clear
     self.copy(to)
   end
-    
+  
   def delete_classifier_taggings!
     Tagging.delete_all("classifier_tagging = 1 AND tag_id = #{self.id}")
   end
@@ -115,13 +143,15 @@ class Tag < ActiveRecord::Base
   def potentially_undertrained?
     self.positive_taggings.size < Tag.undertrained_threshold
   end
-      
+  
+  # Create taggings for this tag from an atom document.
   def create_taggings_from_atom(atom)
     Tagging.transaction do 
       taggings_from_atom(atom)
     end
   end
-  
+
+  # Replace the taggings in this tag with the taggings in the atom document.
   def replace_taggings_from_atom(atom)
     Tagging.transaction do
       self.delete_classifier_taggings!
@@ -131,7 +161,7 @@ class Tag < ActiveRecord::Base
   
   # Return an Atom document for this tag.
   #
-  # When :training_only => true all and only training examples will be included
+  # When <tt>:training_only => true</tt> all and only training examples will be included
   # in the document and it will conform to the Training Definition Document.
   def to_atom(options = {})
     Atom::Feed.new do |feed|
@@ -171,7 +201,8 @@ class Tag < ActiveRecord::Base
       end
     end
   end
-  
+
+  # Generates the atom version of the tag index for the entire system.
   def self.to_atom(options = {})
     Atom::Feed.new do |feed|
       feed.title = "Winnow tags"
@@ -189,6 +220,9 @@ class Tag < ActiveRecord::Base
     end
   end
   
+  # Creates a tag from an atom document. This atom document should be 
+  # a training document that contains all the items that are manually
+  # tagged within this tag.
   def self.create_from_atom(atom)
     if category = atom.categories.first    
       tag = self.create(:name => atom.title.to_s, 
@@ -261,6 +295,10 @@ class Tag < ActiveRecord::Base
     { :joins => :user, :order => [orders[order.to_s], directions[direction.to_s]].join(" ") }
   }
 
+  # The +search+ method adds a number of custom attributes to the SELECT
+  # statement to avoid a bunch of additional queries. The attributes that
+  # are preloaded are geared to supporting what is needed to render the 
+  # public/private list of tags.
   def self.search(options = {})
     select = ['tags.*', 
               'users.login AS user_login',
@@ -289,11 +327,20 @@ class Tag < ActiveRecord::Base
   end
 
 private
+  # The sort_name should remove non-alphanumeric and downcase the title.
   def set_sort_name
     self.sort_name = name.to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')
   end
 
-  # This needs to be fast so we'll bypass Active Record
+  # Adds taggings for this tag from the taggings defined in the atom document.
+  #
+  # Each entry in the atom document defines a tagging from this tag to the
+  # FeedItem identified by the entry's id.  The strength of the tagging
+  # comes from the classifier:strength element in the category that matches
+  # this tag in the entry. With these bits of information we can create a tagging.
+  #
+  # This needs to be fast so we'll bypass Active Record and do it directly in SQL.
+  #
   def taggings_from_atom(atom)
     atom.entries.each do |entry|
       begin

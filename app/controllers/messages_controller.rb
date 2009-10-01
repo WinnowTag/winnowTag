@@ -3,7 +3,12 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# The +MessagesController+ is only accessible by admin users. Admins use
+# this controller to create global messages that all users will see.
 class MessagesController < ApplicationController
+  permit 'admin'
+  
   def index
     @messages = Message.global
   end

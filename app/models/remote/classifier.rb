@@ -4,6 +4,7 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module Remote
+  # Represents a classifier in the Classifier.
   class Classifier < ClassifierResource
     self.element_name = ""
     def self.get_info

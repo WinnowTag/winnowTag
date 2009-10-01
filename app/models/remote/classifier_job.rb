@@ -4,6 +4,7 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module Remote
+  # Represents a classifier job in the Classifier.
   class ClassifierJob < ClassifierResource
     with_auth_hmac(HMAC_CREDENTIALS['winnow'])
     self.element_name = "job"

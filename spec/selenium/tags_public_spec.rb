@@ -73,3 +73,52 @@ describe "TagsPublicTest" do
     @current_user.subscribed_tags(:reload).should include(@tag)
   end
 end
+
+describe "renaming my own public tags" do
+  
+  before(:each) do
+    @current_user = Generate.user!
+    @tag = Generate.tag! :user => @current_user, :public => true
+    
+    login @current_user
+    page.open public_tags_path
+    page.wait_for :wait_for => :ajax
+    
+    @new_name = "#{@tag.name}-renamed"
+  end
+  
+  def rename_tag
+    page.click "name_tag_#{@tag.id}"
+    
+    see_element("#name_tag_#{@tag.id}-inplaceeditor")
+    page.type "css=input.editor_field", @new_name
+    page.key_down "css=input.editor_field", '\13' # enter
+    page.wait_for :wait_for => :ajax
+    see_element "#name_tag_#{@tag.id}"
+  end
+  
+  it "changes the name of the tag" do
+    rename_tag
+    @tag.reload
+    @tag.name.should == @new_name
+  end
+  
+  it "updates the tag name for the bias slider" do
+    rename_tag
+    text = page.get_text("css=#tag_#{@tag.id} .slider_control .name")
+    text.should include(@new_name)
+  end
+  
+  it "updates the tag name in the 'show items tagged with' link" do
+    rename_tag
+    text = page.get_text("css=#tag_#{@tag.id} .tagged .name")
+    text.should include(@new_name)
+  end
+  
+  it "updates the tag name in the 'show items trainded with' link" do
+    rename_tag
+    text = page.get_text("css=#tag_#{@tag.id} .trained .name")
+    text.should include(@new_name)
+  end
+  
+end

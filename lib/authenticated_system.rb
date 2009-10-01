@@ -1,7 +1,7 @@
 module AuthenticatedSystem
   protected
-    # Returns true or false if the user is logged in.
-    # Preloads @current_user with the user model if they're logged in.
+    # Returns +true+ or +false+ if the user is logged in.
+    # Preloads <tt>@current_user</tt> with the user model if they're logged in.
     def logged_in?
       (@current_user ||= session[:user] ? User.find_by_id(session[:user]) : :false).is_a?(User)
     end

@@ -5,15 +5,13 @@
 # Please visit http://www.peerworks.org/contact for further information.
 
 # Represents a Feed provided by an RSS/Atom source.
-#
-# A Feed mainly handles collection of new items through the
-# collect and collect_all methods. It also provides a way to
-# get a list of feeds with item counts after applying similar
-# filters to those used by FeedItem.find_with_filters.
 class Feed < ActiveRecord::Base
+  # If a feed has a duplicate, then THIS feed is the duplicate
+  # that is not being used.
   belongs_to :duplicate, :class_name => 'Feed'
-  has_many	:feed_items, :dependent => :delete_all
+  has_many	:feed_items, :dependent => :destroy
   
+  # See the definition of these methods below to learn about each of these callbacks
   before_save :set_title
   before_save :set_sort_title
 
@@ -51,6 +49,7 @@ class Feed < ActiveRecord::Base
     scope.all(:limit => options[:limit], :offset => options[:offset])
   end
   
+  # TODO: Not used - remove it
   def self.find_or_create_from_atom(atom_feed)
     feed = find_or_create_from_atom_entry(atom_feed)
     
@@ -63,6 +62,9 @@ class Feed < ActiveRecord::Base
     feed
   end
   
+  # Takes an atom entry containing feed metadata and either
+  # finds the local feed with the matching id and updates it
+  # or creates a new feed with that metadata.
   def self.find_or_create_from_atom_entry(entry)
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
@@ -75,10 +77,12 @@ class Feed < ActiveRecord::Base
     feed
   end
 
+  # Updates self with metadata in the atom entry.
   def update_from_atom(entry)
     if uri != entry.id
       raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id)
     else
+      # Duplicate identification uses the custom link 
       duplicate_id = if duplicate_link = entry.links.detect {|l| l.rel == "http://peerworks.org/duplicateOf"}
         Feed.find_by_uri(duplicate_link.href).id rescue nil
       end
@@ -109,6 +113,8 @@ class Feed < ActiveRecord::Base
   end
 
 private
+  # The title should be set to the host of the alternate of via 
+  # urls if a title does not exist.
   def set_title
     return if title.present?
 
@@ -119,23 +125,9 @@ private
     end
   end
 
+  # The sort_title should remove leading articles, remove non-alphanumeric
+  # characters, and downcase the title.
   def set_sort_title
     self.sort_title = title.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end
-
-  def self.parse_id_uri(entry)
-    begin
-      uri = URI.parse(entry.id)
-    
-      if uri.fragment.nil?
-        raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_fragment", :entry_id => entry.id)
-      end
-    
-      uri.fragment.to_i
-    rescue ActiveRecord::RecordNotSaved => e
-      raise e
-    rescue
-      raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.invalid_entry_id", :entry_id => entry.id)
-    end
-  end  
 end

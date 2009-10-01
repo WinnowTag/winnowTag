@@ -3,10 +3,15 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# The +AboutController+ is publically accessible and does not require any
+# user to be logged in.
 class AboutController < ApplicationController
   skip_before_filter :login_required
   skip_before_filter :check_if_user_must_update_password
 
+  # The +index+ action displays information about the version of Winnow
+  # and the version of the Classifier it is communicating with.
   def index
     # Capistrano now stores the revision in RAILS_ROOT/REVISION
     cap_rev_file = File.join(RAILS_ROOT, 'REVISION')
@@ -24,6 +29,8 @@ class AboutController < ApplicationController
     end
   end
 
+  # The +info+ action is the default landing page for Winnow and its content
+  # can be edited in the admin/info section.
   def info
     @info = Setting.find_or_initialize_by_name("Info")
     @messages = Message.for(current_user).latest(30).pinned_or_since(Message.info_cutoff)

@@ -3,6 +3,11 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Represents messages that can be displayed to a User. Some messages are
+# displayed to all users, while other are only displaed to a single user.
+# When a User reads a message, it is marked as such via the ActsAsReadable 
+# plugin. See its README file for details on readings.
 class Message < ActiveRecord::Base
   acts_as_readable
   
@@ -35,6 +40,8 @@ class Message < ActiveRecord::Base
     Reading.create!(readings_attributes)
   end
   
+  # Defines how old messages can be before they are no longer displayed
+  # on the info page.
   def self.info_cutoff
     60.days.ago
   end

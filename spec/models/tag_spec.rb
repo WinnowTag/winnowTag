@@ -183,12 +183,7 @@ describe Tag do
       @user = Generate.user!
       @tag = Generate.tag!(:user => @user, :name => 'mytag')
 
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
+      6.times { Generate.feed_item! }
     end
     
     it "should return true if positive taggings less than 6" do

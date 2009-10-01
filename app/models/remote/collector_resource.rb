@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module Remote
+  # This is a base class used to define the configuration necessary to 
+  # communicate with the collector.
   class CollectorResource < ActiveResource::Base
     with_auth_hmac(HMAC_CREDENTIALS['winnow'])
     

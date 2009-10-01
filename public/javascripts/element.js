@@ -4,14 +4,14 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 Element.addMethods({
-  insertInOrder: function(container, sibling_selector, sibling_value_selector, element_html, element_value) {
+  insertInOrder: function(container, sibling_value_selector, element_html, element_value) {
     var sibling_value_selector_parts = sibling_value_selector.split("@");
     sibling_value_selector = sibling_value_selector_parts[0];
     var sibling_value_selector_attribute = sibling_value_selector_parts[1];
 
     var needToInsert = true;
 
-    container.select(sibling_selector).each(function(element) {
+    container.childElements().each(function(element) {
       if(needToInsert) {
         var sibling_value_element = element.down(sibling_value_selector);
         
@@ -22,14 +22,14 @@ Element.addMethods({
           sibling_value = sibling_value_element && sibling_value_element.innerHTML.unescapeHTML();
         }
         if(sibling_value.toLowerCase() > element_value.toLowerCase()) {
-          element.insert({before: element_html})
+          element.insert({ before: element_html });
           needToInsert = false;
         }
       }
     });
  
     if(needToInsert) {
-      container.insert({bottom: element_html});
+      container.insert({ bottom: element_html });
     }
   },
   

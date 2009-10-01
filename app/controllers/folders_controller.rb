@@ -3,6 +3,9 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# The +FoldersController+ is used to support the folders feature on the 
+# feed items sidebar.
 class FoldersController < ApplicationController
   def create
     @folder = current_user.folders.create!(params[:folder])
@@ -20,6 +23,7 @@ class FoldersController < ApplicationController
     respond_to :js
   end
   
+  # The +add_item+ action is used to add a tag or feed to the sidebar.
   def add_item
     @folder = current_user.folders.find(params[:id])
     case params[:item_id]
@@ -33,6 +37,7 @@ class FoldersController < ApplicationController
     respond_to :js
   end
   
+  # The +remove_item+ action is used to remove a tag or feed from the sidebar.
   def remove_item
     @folder = current_user.folders.find(params[:id])
     case params[:item_id]
@@ -44,9 +49,10 @@ class FoldersController < ApplicationController
     render :nothing => true
   end
   
+  # The +sort+ action is used to reorder the folder within the sidebar.
   def sort
     params[:folders].each_with_index do |id, index|
-      Folder.find(id).update_attribute(:position, index+1)
+      Folder.find(id).update_attribute(:position, index + 1)
     end
     render :nothing => true    
   end

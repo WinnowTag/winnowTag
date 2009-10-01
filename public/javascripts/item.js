@@ -301,7 +301,7 @@ var Item = Class.create({
           // TODO: Move this to itembrowser.js
           // Add/Update the filter for this tag
           if(!$('tag_filters').down("#" + data.id)) {
-            $('tag_filters').insertInOrder("li", ".name@data-sort", data.filterHtml, data.sort_name);
+            $('tag_filters').insertInOrder(".name@data-sort", data.filterHtml, data.sort_name);
             itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
             itemBrowser.styleFilters();
           } else {
@@ -383,14 +383,14 @@ var Item = Class.create({
     var tag_control = '<li class="tag_control stop ' + tagging_type + '">' + 
       '<span class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</span>' + 
     '</li> ';
-    this.tag_list.insertInOrder("li", ".name@data-sort", tag_control, sort_name);
+    this.tag_list.insertInOrder(".name@data-sort", tag_control, sort_name);
   },
 
   addTrainingControl: function(tag_name, sort_name) {
     var training_control = '<div class="tag positive" style="display:none">' + 
       '<a href="#" onclick="return false;" class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</a>' + 
     '</div> ';
-    this.training_controls.insertInOrder("div", ".name@data-sort", training_control, sort_name);
+    this.training_controls.insertInOrder(".name@data-sort", training_control, sort_name);
   
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
     this.initializeTrainingControl(training_control);

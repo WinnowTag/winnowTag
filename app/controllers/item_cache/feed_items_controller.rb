@@ -3,8 +3,19 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
 module ItemCache
+  
+  # Receives updates to the feed items from the collector.
+  #
+  # Item updates come in the form of atom documents.
+  #
   class FeedItemsController < ItemCacheController
+    # Create an +FeedItem+ from an atom document.
+    #
+    # Items are associated with a +Feed+ using the
+    # feed_id parameter.
+    #
     def create
       respond_to do |wants|
         wants.atom do
@@ -17,6 +28,7 @@ module ItemCache
       end
     end
     
+    # Update an item from an atom document.
     def update
       respond_to do |wants|
         wants.atom do
@@ -31,6 +43,7 @@ module ItemCache
       end
     end
     
+    # Destroy an item
     def destroy
       FeedItem.find_by_uri(params[:id]).destroy
       render :nothing => true

@@ -3,38 +3,26 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# The +UserNotifier+ mailer is used to send emails to Winnow users.
 class UserNotifier < ActionMailer::Base
+  # This email is send when a user makes a forgot password request.
   def reminder(user, url)
     setup_email user.email, :subject => I18n.t("winnow.email.reminder_subject")
     body        :user => user, :url => url
   end
   
+  # This email is send when a user sumits and invitation request.
   def invite_requested(invite)
     setup_email invite.email, :subject => I18n.t("winnow.email.invite_requested_subject")
     body        :invite => invite
   end
-  
+
+  # This email is send when a user's invitation requst is accepted.  
   def invite_accepted(invite, url)
     setup_email invite.email, :subject => invite.subject
     body        :url => url, :invite => invite
   end
-
-  # include ActionController::UrlWriter
-  # default_url_options[:host] = 'wizztag.org'
-  # 
-  # def self.site_url=(value)
-  #   default_url_options[:host] = value
-  # end
-  #   
-  # def signup_notification(user)
-  #   setup_email user, :subject => "Welcome to Winnow, #{user.firstname}"
-  #   body        :url => url_for(:controller => 'account', :action => 'activate', :activation_code => user.activation_code)
-  # end
-  # 
-  # def activation(user)
-  #   setup_email user, :subject => 'Your account has been activated!'
-  #   body        :url => url_for(:controller => '')
-  # end
 
 protected
   def setup_email(email, options = {})

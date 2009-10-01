@@ -4,6 +4,8 @@
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
 module Remote
+  # This is a base class used to define the configuration necessary to 
+  # communicate with the classifier.
   class ClassifierResource < ActiveResource::Base
     self.logger = ActiveRecord::Base.logger
     self.timeout = 5

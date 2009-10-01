@@ -3,7 +3,12 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
-class User < ActiveRecord::Base   
+
+# Represents a user of the system.
+#
+# Handles authentication via the ActsAsAuthenticated plugin and 
+# authorization via the authorization plugin.
+class User < ActiveRecord::Base
   acts_as_authorized_user
   acts_as_authorizable
   
@@ -38,6 +43,7 @@ class User < ActiveRecord::Base
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
   has_many :folders, :dependent => :delete_all, :order => "position"
  
+  # See the definition of this method below to learn about this callbacks
   before_save :update_prototype
  
   def feeds
@@ -50,21 +56,17 @@ class User < ActiveRecord::Base
  
   def globally_excluded?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
-      excluded_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
-      excluded_tags.include?(tag_or_feed)
+      excluded_tags(:load).include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
-      excluded_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
-      excluded_feeds.include?(tag_or_feed)
+      excluded_feeds(:load).include?(tag_or_feed)
     end
   end
 
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
-      subscribed_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
-      subscribed_tags.include?(tag_or_feed)
+      subscribed_tags(:load).include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
-      subscribed_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
-      subscribed_feeds.include?(tag_or_feed)
+      subscribed_feeds(:load).include?(tag_or_feed)
     end
   end
   
@@ -155,6 +157,9 @@ class User < ActiveRecord::Base
     "#{self.firstname} #{self.lastname}"
   end
   
+  # Creating a user from the prototype will copy over the prototype's folders,
+  # feed subscriptions, tag subscriptions, tags, and taggings. This method will 
+  # also activate the user and mark all system messages as read.
   def self.create_from_prototype(attributes = {})
     user = new(attributes)
     user.activate
@@ -303,6 +308,7 @@ protected
     self.has_role('owner', self)
   end
   
+  # If this user is the prototype, make sure to remove the prototype flag from all other users.
   def update_prototype
     if prototype?
       conditions = id ? ["id != ?", id] : nil

@@ -3,6 +3,8 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivate works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Represents a user requesting access to Winnow.
 class Invite < ActiveRecord::Base
   belongs_to :user
   
