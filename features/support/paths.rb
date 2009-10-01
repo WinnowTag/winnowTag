@@ -20,4 +20,7 @@ module NavigationHelpers
   end
 end
 
-World(NavigationHelpers)
+World do |world|
+  world.extend NavigationHelpers
+  world
+end
