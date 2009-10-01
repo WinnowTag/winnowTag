@@ -17,6 +17,7 @@ class Feed < ActiveRecord::Base
 
   named_scope :non_duplicates, :conditions => "feeds.duplicate_id IS NULL"
 
+  # Matches the given value against any of the listed attributes.
   named_scope :matching, lambda { |q|
     conditions = %w[feeds.title feeds.via feeds.alternate].map do |attribute|
       "#{attribute} LIKE :q"
@@ -24,6 +25,8 @@ class Feed < ActiveRecord::Base
     { :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   
+  # Orders the results by the given order and direction. If no order is given or one is given but
+  # is not one of the known orders, the default order is used. Likewise for direction.
   named_scope :by, lambda { |order, direction, excluder|
     orders = {
       "title"            => "feeds.sort_title",
@@ -49,7 +52,7 @@ class Feed < ActiveRecord::Base
     scope.all(:limit => options[:limit], :offset => options[:offset])
   end
   
-  # TODO: Sean - Document
+  # TODO: Not used - remove it
   def self.find_or_create_from_atom(atom_feed)
     feed = find_or_create_from_atom_entry(atom_feed)
     
@@ -62,7 +65,9 @@ class Feed < ActiveRecord::Base
     feed
   end
   
-  # TODO: Sean - Document
+  # Takes an atom entry containing feed metadata and either
+  # finds the local feed with the matching id and updates it
+  # or creates a new feed with that metadata.
   def self.find_or_create_from_atom_entry(entry)
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
@@ -75,11 +80,12 @@ class Feed < ActiveRecord::Base
     feed
   end
 
-  # TODO: Sean - Document
+  # Updates self with metadata in the atom entry.
   def update_from_atom(entry)
     if uri != entry.id
       raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id)
     else
+      # Duplicate identification uses the custom link 
       duplicate_id = if duplicate_link = entry.links.detect {|l| l.rel == "http://peerworks.org/duplicateOf"}
         Feed.find_by_uri(duplicate_link.href).id rescue nil
       end

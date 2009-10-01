@@ -15,7 +15,9 @@ class Message < ActiveRecord::Base
   
   validates_presence_of :body
     
+  # Find messages to be displayed to all users
   named_scope :global, :conditions => { :user_id => nil }
+  
   named_scope :for, lambda { |user|
     if user
       { :conditions => ["messages.user_id IS NULL OR messages.user_id = ?", user.id] }
@@ -28,6 +30,7 @@ class Message < ActiveRecord::Base
     { :limit => limit }
   }
   
+  # Finds pinned messages or ones since the given date. Orders by most recent pinned and then message creation date.
   named_scope :pinned_or_since, lambda { |date| 
     { :conditions => ["messages.pinned = ? OR messages.created_at >= ?", true, date], :order => "messages.pinned DESC, messages.created_at DESC" }
   }

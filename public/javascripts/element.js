@@ -4,7 +4,10 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 Element.addMethods({
+  // Insert an element into the container in alphabetical order by its content or attribute.
   insertInOrder: function(container, sibling_value_selector, element_html, element_value) {
+    
+    // Strip the attribute name (if present) from the selector and store it separately
     var sibling_value_selector_parts = sibling_value_selector.split("@");
     sibling_value_selector = sibling_value_selector_parts[0];
     var sibling_value_selector_attribute = sibling_value_selector_parts[1];
@@ -21,6 +24,7 @@ Element.addMethods({
         } else {
           sibling_value = sibling_value_element && sibling_value_element.innerHTML.unescapeHTML();
         }
+        
         if(sibling_value.toLowerCase() > element_value.toLowerCase()) {
           element.insert({ before: element_html });
           needToInsert = false;

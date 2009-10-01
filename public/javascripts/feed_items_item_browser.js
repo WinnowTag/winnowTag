@@ -3,6 +3,13 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages the list of feed items shown on the Items page. Provides:
+//   * toggling for switching among summary and detail view of each item
+//   * marking items read/unread
+//   * navigation using keyboard shortcuts
+//   * filtering by tag or feed
+
 var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   initialize: function($super, name, container, options) {
     $super(name, container, options);
@@ -365,29 +372,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id});
     link.observe("click", click_event);
 
-    if(tag.hasClassName("draggable")) {
-      Draggables.addObserver({
-        onStart: function(eventName, draggable, event) {
-          if(draggable.element == tag) {
-            link.stopObserving("click", click_event);
-          }
-        },
-        onEnd: function(eventName, draggable, event) {
-          if(draggable.element == tag) {
-            setTimeout(function() {
-              link.observe("click", click_event);
-            }, 1);
-          }
-        }
-      });
-
-      new Draggable(tag, { 
-        ghosting: true, revert: true, scroll: 'sidebar', 
-        reverteffect: function(element, top_offset, left_offset) {
-          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
-        }
-      });
-    }
+    this.makeDraggable(tag, link, click_event);
   },
   
   bindFeedFiltersEvents: function() {
@@ -402,29 +387,37 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var click_event = this.toggleSetFilters.bind(this, {feed_ids: feed_id});
     link.observe("click", click_event);
     
-    if(feed.hasClassName("draggable")) {
+    this.makeDraggable(feed, link, click_event);
+  },
+  
+  makeDraggable: function(tag_or_feed, link, click_event) {
+    if(tag_or_feed.hasClassName("draggable")) {
       Draggables.addObserver({
         onStart: function(eventName, draggable, event) {
-          if(draggable.element == feed) {
+          if(draggable.element == tag_or_feed) {
             link.stopObserving("click", click_event);
           }
         },
         onEnd: function(eventName, draggable, event) {
-          if(draggable.element == feed) {
+          if(draggable.element == tag_or_feed) {
             setTimeout(function() {
               link.observe("click", click_event);
             }, 1);
           }
         }
       });
-    
-      new Draggable(feed, { 
-        ghosting: true, revert: true, scroll: 'sidebar', 
-        reverteffect: function(element, top_offset, left_offset) {
-          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
-        }
-      });
+      
+      this.draggableFor(tag_or_feed);
     }
+  },
+  
+  draggableFor: function(tag_or_feed) {
+    new Draggable(tag_or_feed, {
+      ghosting: true, revert: true, scroll: 'sidebar',
+      reverteffect: function(element, top_offset, left_offset) {
+        new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
+      }
+    });
   },
 
   bindTextFilterEvents: function() {

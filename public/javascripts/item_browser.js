@@ -3,6 +3,10 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Base class for managing a list of items. More items are added to the list
+// as the user scrolls down, eliminating the need for explicit paging. Sorting
+// and filtering are also handled here.
 var ItemBrowser = Class.create({
   initialize: function(name, container, options) {
     this.options = {

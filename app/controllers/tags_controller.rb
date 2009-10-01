@@ -30,7 +30,12 @@ class TagsController < ApplicationController
   before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy, :merge, :publicize]
   
   # The +index+ action is used to view a logged in users tags.
-  # See FeedItemsController#index for an explanation of the html/json requests.
+  # See FeedItemsController#index for an explanation of the html/json requests.  
+  #
+  # The atom view of the tag index renders a list of all
+  # the tags in the system as an atom document. This is
+  # used by the classifier so it knows what tags need
+  # to be automatically classified as it gets new items.
   def index
     respond_to do |format|
       format.html
@@ -39,7 +44,6 @@ class TagsController < ApplicationController
                            :order => params[:order], :direction => params[:direction])
         @full = true
       end
-      # TODO: Sean - Document
       format.atom do        
         conditional_render(Tag.maximum(:created_on)) do
           atom = Tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}")
@@ -63,7 +67,6 @@ class TagsController < ApplicationController
     end
   end
   
-  # TODO: Sean - Document
   # The +upload+ action is only accessible to admin users. This action
   # is used to support uploading a tag definition from it's atom document.
   def upload
@@ -84,7 +87,7 @@ class TagsController < ApplicationController
     end
   end
 
-  # TODO: Sean - Document
+  # Renders an atom feed for a given tag.
   def show
     respond_to do |wants|
       wants.atom do
@@ -186,7 +189,11 @@ class TagsController < ApplicationController
     respond_to :js
   end
   
-  # TODO: Sean - Document
+  # Renders an atom feed for the manually tagged items for this tag.
+  #
+  # This is used by the classifier as training and by the +upload+
+  # action as input.
+  #
   def training
     base_uri = "http://#{request.host}:#{request.port}"
     
@@ -200,7 +207,11 @@ class TagsController < ApplicationController
     end
   end
   
-  # TODO: Sean - Document
+  # Updates the automatically tagged items for this tag.
+  #
+  #  - If the request is a POST we update the set of autotagged items.
+  #  - If the request is a PUT we replace the set autotagged items.
+  #
   def classifier_taggings    
     if params[:atom].nil?
       render :status => :bad_request, :text => "Missing Atom Document"
@@ -347,7 +358,7 @@ private
     end
   end
   
-  # TODO: Sean - Document
+  # Checks that the user is either logged, hmac_authenticated or the tag is public.
   def login_or_hmac_required_unless_tag_is_public
     (@tag && @tag.public?) || logged_in? || hmac_authenticated? || login_required
   end

@@ -1,0 +1,1 @@
+This is just a placeholder to keep spec/lib around so rake stats works. -- SG

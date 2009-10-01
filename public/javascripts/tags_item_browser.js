@@ -3,6 +3,8 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages the list of tags shown on the My Tags and Public Tags pages.
 var TagsItemBrowser = Class.create(ItemBrowser, {
   initializeTag: function(tag) {
     tag = $(tag);
