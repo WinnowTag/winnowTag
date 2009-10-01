@@ -17,7 +17,7 @@ begin
   end
   
   task :features => 'db:test:prepare'
-  task :features_for_ci => ['db:test:prepare', 'clear_cucumber']
+  task :features_for_ci => ['clear_cucumber']
 rescue LoadError
   desc 'Cucumber rake task not available'
   task :features do
