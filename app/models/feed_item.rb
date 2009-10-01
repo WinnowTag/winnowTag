@@ -31,7 +31,8 @@ class FeedItem < ActiveRecord::Base
   has_many :taggings
   has_many :tags, :through => :taggings  
   
-  # TODO: Sean - Document
+  # Takes an atom entry and either finds the FeedItem with the matching id and updates
+  # it or creates a new feed item with the content from the atom entry.
   def self.find_or_create_from_atom(entry, options = {})
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
@@ -48,7 +49,7 @@ class FeedItem < ActiveRecord::Base
     item
   end
   
-  # TODO: Sean - Document
+  # Updates self with the content of the atom entry.
   def update_from_atom(entry)
     raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id) if uri != entry.id
     
@@ -66,7 +67,14 @@ class FeedItem < ActiveRecord::Base
     self
   end
   
-  # TODO: Sean - Document
+  # Converts a +FeedItem+ into an atom entry.
+  #
+  # Supported options are:
+  # 
+  #  - include_tags: If true the tags the item is assigned to are output as categories on the entry.
+  #  - training_only: If this and +include_tags+ is true only manually created tags are output.
+  #  - base_uri: The base uri to use for all urls it produces.
+  #
   def to_atom(options = {})
     Atom::Entry.new do |entry|
       entry.title = self.title
