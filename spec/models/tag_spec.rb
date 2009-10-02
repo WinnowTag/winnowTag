@@ -27,11 +27,11 @@ describe Tag do
   end
 
   describe "sort_name" do
-    it "sets the tag's sort_name to be a downcased version of the name with non-word characters removed" do
+    it "sets the tag's sort_name to be a downcased version of the name with leading articles and non-word characters removed" do
       Generate.tag!(:name => "Some-Fe*ed").sort_name.should == "somefeed"
-      Generate.tag!(:name => "A So'me #Feed").sort_name.should == "asomefeed"
-      Generate.tag!(:name => "An $Some :Feed").sort_name.should == "ansomefeed"
-      Generate.tag!(:name => "The So?me Fe_ed").sort_name.should == "thesomefeed"
+      Generate.tag!(:name => "A So'me #Feed").sort_name.should == "somefeed"
+      Generate.tag!(:name => "An $Some :Feed").sort_name.should == "somefeed"
+      Generate.tag!(:name => "The So?me Fe_ed").sort_name.should == "somefeed"
     end
   end
 

@@ -338,7 +338,7 @@ class Tag < ActiveRecord::Base
 private
   # The sort_name should remove non-alphanumeric and downcase the title.
   def set_sort_name
-    self.sort_name = name.to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')
+    self.sort_name = name.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end
 
   # Adds taggings for this tag from the taggings defined in the atom document.
