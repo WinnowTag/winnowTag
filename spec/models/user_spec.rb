@@ -357,11 +357,6 @@ describe User do
       u = Generate.user!
       assert u.has_role?('owner', u)
     end
-  
-    it "should_require_email" do
-      user = Generate.user(:email => nil)
-      user.should have(1).error_on(:email)
-    end
     
     it "login allows alphanumberic, -, and _" do
       user = Generate.user(:login => "John-J_Doe")
@@ -477,4 +472,65 @@ describe User do
       user.should be_subscribed(feed)
     end
   end
+end
+
+describe "email address validation" do
+  
+  before(:each) do
+    @user = Generate.user
+  end
+  
+  it "requires email" do
+    @user.email = nil
+    @user.should have_at_least(1).error_on(:email)
+  end
+  
+  it "accepts basic address" do
+    @user.email = "jdoe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with underscore" do
+    @user.email = "john_doe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with dot" do
+    @user.email = "john.doe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with plus" do
+    @user.email = "jdoe+wingnut@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with leading digits" do
+    @user.email = "123jdoe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "rejects address with multiple @ symbols" do
+    @user.email = "j@doe@example.com"
+    @user.valid?
+    @user.should have(1).error_on(:email)
+  end
+  
+  it "rejects address with interspersed invalid characters" do
+    @user.email = "%jd#o=&e@example.com"
+    @user.valid?
+    @user.should have(1).error_on(:email)
+  end
+  
+  it "rejects address with name" do
+    @user.email = "John Doe <jdoe@example.com>"
+    @user.valid?
+    @user.should have(1).error_on(:email)
+  end
+  
 end

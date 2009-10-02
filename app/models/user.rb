@@ -42,6 +42,9 @@ class User < ActiveRecord::Base
   has_many :tag_exclusions, :dependent => :delete_all
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
   has_many :folders, :dependent => :delete_all, :order => "position"
+  
+  # for email address regex, see: http://www.regular-expressions.info/email.html
+  validates_format_of :email, :with => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
  
   # See the definition of this method below to learn about this callbacks
   before_save :update_prototype
