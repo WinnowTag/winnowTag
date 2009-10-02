@@ -9,6 +9,7 @@
 class AboutController < ApplicationController
   skip_before_filter :login_required
   skip_before_filter :check_if_user_must_update_password
+  around_filter :no_logging, :only => :info
 
   # The +index+ action displays information about the version of Winnow
   # and the version of the Classifier it is communicating with.
@@ -34,5 +35,13 @@ class AboutController < ApplicationController
   def info
     @info = Setting.find_or_initialize_by_name("Info")
     @messages = Message.for(current_user).latest(30).pinned_or_since(Message.info_cutoff)
+  end
+  
+private
+  
+  def no_logging
+    logger.silence do
+      yield
+    end
   end
 end
