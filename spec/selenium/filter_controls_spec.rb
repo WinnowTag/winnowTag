@@ -41,7 +41,7 @@ describe "filter controls" do
       page.location.should =~ /\#order=date&direction=desc&mode=unread$/
 
       page.type "text_filter", "ruby"
-      hit_enter "text_filter"
+      page.fire_event("text_filter_form", "submit")
 
       page.location.should =~ /\#order=date&direction=desc&mode=unread&text_filter=ruby$/
     end
@@ -52,11 +52,10 @@ describe "filter controls" do
       page.open login_path
       page.open feed_items_path(:anchor => "mode=trained&tag_ids=#{@tag.id}&feed_ids=1")
       page.wait_for :wait_for => :ajax
-
       page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1$/
 
       page.type "text_filter", "ruby"
-      hit_enter "text_filter"
+      page.fire_event("text_filter_form", "submit")
 
       page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
     end
