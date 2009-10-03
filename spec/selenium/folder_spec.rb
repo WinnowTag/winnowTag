@@ -36,7 +36,7 @@ describe "folders" do
     assert_visible "css=#folders_section .add_form"
     
     page.type "folder_name", "new folder"
-    hit_enter "folder_name"
+    page.submit "add_folder_form"
     page.wait_for :wait_for => :ajax
     
     new_folder = Folder.find_by_name("new folder")
