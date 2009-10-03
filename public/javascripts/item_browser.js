@@ -288,10 +288,10 @@ var ItemBrowser = Class.create({
 
     this.filters = { order: this.defaultOrder(), direction: this.defaultDirection(), mode: this.defaultMode() };
     
-    if(location.hash.gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {
+    if(decodeURIComponent(location.hash).gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {
       this.setFilters(Cookie.get(this.name + "_filters").toQueryParams());
     } else {
-      this.setFilters(location.hash.gsub('#', '').toQueryParams());
+      this.setFilters(decodeURIComponent(location.hash).gsub('#', '').toQueryParams());
     }
   },
 
