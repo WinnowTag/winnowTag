@@ -41,6 +41,12 @@ describe "filter controls" do
       page.location.should =~ /\#order=date&direction=desc&mode=unread$/
 
       page.type "text_filter", "ruby"
+      
+      # Need to fire the submit event on the form directly
+      # because Selenium seems to skip handlers attached using
+      # $(element).observe when run under IE. Using fire event
+      # ensures that event handlers get called.
+      #
       page.fire_event("text_filter_form", "submit")
 
       page.location.should =~ /\#order=date&direction=desc&mode=unread&text_filter=ruby$/
