@@ -67,6 +67,12 @@ describe "folders" do
      
     dont_see_element "#feed_#{@example_feed.id}"
      
+    # Need to use type and type_keys here.  In IE
+    # type_keys just fires the keyPress events, it
+    # doesn't set the element value, which is needed
+    # by the Autocomplete handler.
+    #
+    page.type "feed_title", @example_feed.title
     page.type_keys "feed_title", @example_feed.title
     page.wait_for :wait_for => :ajax
     page.wait_for :wait_for => :element, :element => "css=#feed_title_auto_complete #feed_#{@example_feed.id}"
@@ -89,6 +95,7 @@ describe "folders" do
      
     dont_see_element "#tag_#{@private_tag_not_in_sidebar.id}"
      
+    page.type "tag_name", @private_tag_not_in_sidebar.name
     page.type_keys "tag_name", @private_tag_not_in_sidebar.name
     page.wait_for :wait_for => :ajax
     page.wait_for :wait_for => :element, :element => "css=#tag_name_auto_complete #tag_#{@private_tag_not_in_sidebar.id}"
@@ -113,6 +120,7 @@ describe "folders" do
      
     dont_see_element "#tag_#{@public_tag_not_in_sidebar.id}"
      
+    page.type "tag_name", @public_tag_not_in_sidebar.name
     page.type_keys "tag_name", @public_tag_not_in_sidebar.name
     page.wait_for :wait_for => :ajax
     page.wait_for :wait_for => :element, :element => "css=#tag_name_auto_complete #tag_#{@public_tag_not_in_sidebar.id}"
