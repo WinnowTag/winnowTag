@@ -39,7 +39,11 @@ describe "Tags" do
     end
   end
     
-  it "cant_change_bias_of_subscribed_tag" do
+  # These are disabled under IE because selenium sets the wrong button code.
+  #
+  # See http://jira.openqa.org/browse/SEL-714
+  #
+  it_unless_ie "cant_change_bias_of_subscribed_tag" do
     initial_position = page.get_element_position_left "css=#tag_#{@tag2.id} .slider_handle"
     page.mouse_down "css=#tag_#{@tag2.id} .slider_handle"
     page.mouse_move_at "css=#tag_#{@tag2.id} .slider_handle", "30,0"
@@ -51,7 +55,7 @@ describe "Tags" do
     assert_equal initial_position, page.get_element_position_left("css=#tag_#{@tag2.id} .slider_handle")
   end
   
-  it "changing_bias" do
+  it_unless_ie "changing_bias" do
     page.click "css=#tag_#{@tag1.id} .summary"
     initial_position = page.get_element_position_left "css=#tag_#{@tag1.id} .slider_handle"
     page.mouse_down "css=#tag_#{@tag1.id} .slider_handle"
