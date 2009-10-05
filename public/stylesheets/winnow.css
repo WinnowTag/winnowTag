@@ -1312,6 +1312,11 @@ body#feeds .feed {
   border: 2px solid #8181DC;
   border-width: 2px 0 0 0;
   background-color: #D7E0F5;
+  /* This is a work around for a bug in IE 7. Without setting this
+   * the content of the feed information div doesn't appear until
+   * the page is scrolled or resized.
+   */
+  min-width: 0;
 }
 
 .feed_item.open .feed_information {
