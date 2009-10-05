@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
       "email"            => "users.email",
       "logged_in_at"     => "users.logged_in_at",
       "last_accessed_at" => "users.last_accessed_at",
-      "name"             => %w[users.lastname users.firstname],
+      "name"             => %w[users.lastname users.firstname users.login],
       "last_tagging_on"  => "last_tagging_on", # depends on select from search
       "tag_count"        => "tag_count"        # depends on select from search
     }

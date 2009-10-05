@@ -238,6 +238,22 @@ describe User do
       users = User.search :text_filter => "mark", :order => "id"
       users.should == expected_users
     end
+    
+    context "when ordering by name" do
+      
+      it "orders by last name, first name, login" do
+        user2 = Generate.user!(:lastname => "Smith", :firstname => "Jon",  :login => "jonsmith")
+        user1 = Generate.user!(:lastname => "Smith", :firstname => "John", :login => "jsmith")
+        user3 = Generate.user!(:lastname => "Smith", :firstname => "Jon",  :login => "jonsmith2")
+        user5 = Generate.user!(:lastname => nil,     :firstname => nil,    :login => "jroe")
+        user4 = Generate.user!(:lastname => nil,     :firstname => nil,    :login => "jdoe")
+        
+        expected_users = [user4, user5, user1, user2, user3]
+
+        users = User.search :order => "name"
+        users.should == expected_users
+      end
+    end
   end
   
   describe '#changed_tags' do
