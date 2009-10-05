@@ -8,7 +8,7 @@
 class UserNotifier < ActionMailer::Base
   # This email is send when a user makes a forgot password request.
   def reminder(user, url)
-    setup_email user.email, :subject => I18n.t("winnow.email.reminder_subject")
+    setup_email user.email_address_with_name, :subject => I18n.t("winnow.email.reminder_subject")
     body        :user => user, :url => url
   end
   

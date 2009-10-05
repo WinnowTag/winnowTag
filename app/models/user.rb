@@ -163,6 +163,14 @@ class User < ActiveRecord::Base
     "#{self.firstname} #{self.lastname}"
   end
   
+  def email_address_with_name
+    if firstname && lastname
+      "\"#{full_name}\" <#{email}>"
+    else
+      email
+    end
+  end
+  
   # Creating a user from the prototype will copy over the prototype's folders,
   # feed subscriptions, tag subscriptions, tags, and taggings. This method will 
   # also activate the user and mark all system messages as read.

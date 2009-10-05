@@ -534,3 +534,55 @@ describe "email address validation" do
   end
   
 end
+
+describe User, '#email_address_with_name' do
+  
+  context "when first and last name are present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => "John", :lastname => "Doe", :email => "jdoe@example.com"
+    end
+    
+    it "includes name in email address" do
+      @user.email_address_with_name.should == '"John Doe" <jdoe@example.com>'
+    end
+    
+  end
+  
+  context "when only first name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => "John", :lastname => nil, :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
+  context "when only last name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => nil, :lastname => "Doe", :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
+  context "when neither first nor last name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => nil, :lastname => nil, :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
+end
