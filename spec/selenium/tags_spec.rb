@@ -92,25 +92,27 @@ describe "Tags" do
     assert !page.is_checked("public_tag_#{@tag1.id}")
   end
 
-  xit "viewing items tagged with a specific tag also subscribes the user to that tag" do
+  it "viewing items tagged with a specific tag also adds that tag to the user's sidebar" do
     @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
-
-    link_text = I18n.t("winnow.tags.main.items_tagged_with", :tag => h(@tag_not_in_sidebar.name))
-    page.click "link=#{link_text}"
-    page.wait_for_page_to_load
-
-    page.location.should =~ /^#{feed_items_url}#tag_ids=#{@tag_not_in_sidebar.id}$/
+    
+    page.click "css=.tag_#{@tag_not_in_sidebar.id} a.tagged"
+    
+    page.wait_for :wait_for => :page
+    page.wait_for :wait_for => :ajax
+    
+    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=unread&tag_ids=#{@tag_not_in_sidebar.id}$/
     @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
 
-  xit "viewing items trained with a specific tag also subscribes the user to that tag" do
+  it "viewing items trained with a specific tag also adds that tag to the user's sidebar" do
     @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
-
-    link_text = I18n.t("winnow.tags.main.items_trained_with", :tag => h(@tag_not_in_sidebar.name))
-    page.click "link=#{link_text}"
-    page.wait_for_page_to_load
-
-    page.location.should =~ /^#{feed_items_url}#tag_ids=#{@tag_not_in_sidebar.id}&mode=trained$/
+    
+    page.click "css=.tag_#{@tag_not_in_sidebar.id} a.trained"
+    
+    page.wait_for :wait_for => :page
+    page.wait_for :wait_for => :ajax
+    
+    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=trained&tag_ids=#{@tag_not_in_sidebar.id}$/
     @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
 end
