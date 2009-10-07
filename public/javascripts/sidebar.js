@@ -3,6 +3,8 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages the size and visible state of the sidebard on the items page.
 var Sidebar = Class.create({
   initialize: function(url, parameters, onLoad) {
     this.sidebar = $('sidebar');

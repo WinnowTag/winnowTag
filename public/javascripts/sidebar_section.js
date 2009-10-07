@@ -3,6 +3,10 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages a section in the sidebar on the items page. An instance of this
+// class is created for each section. Current sections include tags, feeds,
+// and folders.
 var SidebarSection = Class.create({
   initialize: function(element) {
     this.element = element;

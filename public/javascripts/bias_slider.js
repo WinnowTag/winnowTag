@@ -3,6 +3,11 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Initializes the bias slider and sends updates to it as Ajax requests
+// to the address stored in the 'href' attribute of the slider. The bias
+// slider appears in the tag panel that is shown when the user clicks on
+// a tag "row" on the My Tags or Public Tags page.
 var BiasSlider = Class.create(Control.Slider, {
   initialize: function($super, slider) {
     this.slider = slider;

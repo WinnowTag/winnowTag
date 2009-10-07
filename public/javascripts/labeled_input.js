@@ -4,6 +4,8 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 
+// TODO: determine whether we need this and behavior in placeholder.js
+
 // Manages the showing/hiding of example text for input controls.
 document.observe('dom:loaded', function() {
   $$("input.example[type=text]").each(function(element) {

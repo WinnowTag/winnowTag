@@ -3,7 +3,10 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Enhance Prototype's Element class with some of our own methods
 Element.addMethods({
+  
   // Insert an element into the container in alphabetical order by its content or attribute.
   insertInOrder: function(container, sibling_value_selector, element_html, element_value) {
     
@@ -37,6 +40,9 @@ Element.addMethods({
     }
   },
   
+  // Loads the givn element with content fetched via Ajax from its
+  // 'url' attribute. When the Ajax request comopletes, invokes the
+  // given onComplete callback.
   load: function(element, onComplete, forceLoad) {
     if(!forceLoad && !element.empty()) { return; }
     
@@ -51,6 +57,7 @@ Element.addMethods({
   }
 });
 
+// Creates a new DIV with html as its content
 Element.fromHTML = function(html) {
   return new Element('div').update(html).down();
 };

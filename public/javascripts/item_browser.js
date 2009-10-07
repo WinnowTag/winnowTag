@@ -120,6 +120,7 @@ var ItemBrowser = Class.create({
     indicator.remove();
   },
 
+  // Called at the end of a request to process more items in the update queue, if any.
   updateFromQueue: function() {
     if (this.update_queue.any()) {
       var next_action = this.update_queue.shift();
@@ -127,6 +128,9 @@ var ItemBrowser = Class.create({
     }
   },
   
+  // Clear the list of items and load it. Called when changing sort order or
+  // adding/removing filters. Queues request if it's already in the act of
+  // loading; otherwise it executes request immediately.
   reload: function() {
     var clearAndUpdate = function() {
       this.loading = true;

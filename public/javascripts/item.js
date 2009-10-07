@@ -3,6 +3,11 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Represents a feed item shown on the items page. Provides:
+//   * toggling for hiding/showing the moderation panel used to train tags
+//   * training tags on the feed item
+//   * marking items read/unread
 var Item = Class.create({
   initialize: function(element) {
     this.element           = $(element);
@@ -19,6 +24,8 @@ var Item = Class.create({
     // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
     // this.add_tag_selected  = null;
     
+    // Queues by tag name for tagging requests. See the TagQueue class
+    // for more details.
     this.tagQueues = {};
     
     this.setupEventListeners();
@@ -197,6 +204,7 @@ var Item = Class.create({
       this.addTagFieldChanged(this.add_tag_field, "");
     }.bind(this));
     
+    // hide the moderation panel if the user presses the ESC key
     this.add_tag_field.observe("keydown", function(event) {
       if(event.keyCode == Event.KEY_ESC) { this.hideTrainingControls(); }
     }.bind(this));
@@ -208,6 +216,8 @@ var Item = Class.create({
     }).bind(this).delay(0.3);
   },
   
+  // Called when the user changes the contents of the text field for adding
+  // a new tag. This text field is shown in the moderation panel.
   addTagFieldChanged: function(field, value, event) {
     this.add_tag_selected = null;
     this.training_controls.select(".tag").each(function(tag) {
@@ -248,6 +258,11 @@ var Item = Class.create({
     tag.down(".name").observe("click", this.clickTag.bind(this, tag));
   },
   
+  // Handles a click on a tag name when training feed items. Creates a
+  // handler function that determines training type and calls the
+  // appropriate method to add/remove a tagging. Adds this handler
+  // function to a queue so it will be processed in order. See the TagQueue
+  // class for more details.
   clickTag: function(tag) {
     var tag_name = tag.down(".name").innerHTML.unescapeHTML();
     
@@ -269,6 +284,7 @@ var Item = Class.create({
     tagQueue.process(handleTag);
   },
   
+  // Returns a new or existing TagQueue for the given tag name.
   tagQueueFor: function(tagName) {
     if (!this.tagQueues[tagName]) {
       this.tagQueues[tagName] = new TagQueue();
@@ -428,6 +444,16 @@ var Item = Class.create({
   }
 });
 
+
+// A queue for requests to tag a feed item.
+//
+// When training tags on a feed item, a user can click a tag several times
+// in quick succession to change the training of the tag. For each click,
+// a request is sent to Winnow. We want to process these requests in the
+// order that they're made so that we ultimately honor the final click on
+// the tag. This class facilitates that. Without queueing the requests,
+// they could arrive out of order, causing the tag to be trained differently
+// than the user intended.
 var TagQueue = Class.create({
   initialize: function() {
     this.actions = [];

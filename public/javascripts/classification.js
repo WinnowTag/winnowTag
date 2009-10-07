@@ -4,7 +4,11 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 
-/* Available Callbacks (in lifecycle order)
+/* When a user invokes classification from the items page, this class sends
+ * the request to the classifier. It then keeps the user aware of progress
+ * and any errors that might occur. It does this through its callbacks.
+ * 
+ * Available Callbacks (in lifecycle order)
  *  - onStarted
  *  - onStartProgressUpdater
  *  - onProgressUpdated
