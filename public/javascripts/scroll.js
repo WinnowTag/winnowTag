@@ -3,6 +3,10 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Custome Effect class that will move an item into view if it is partly
+// hidden. Used on the items page when selecting an item, showing an item
+// body, showing other item details, and loading the list of items.
 Effect.ScrollToInDiv = Class.create(Effect.Base, {
   initialize: function(container, element) {
     this.container = $(container);

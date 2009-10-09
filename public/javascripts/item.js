@@ -311,6 +311,7 @@ var Item = Class.create({
         if(data.error) {
           Message.add("error", data.error);
         } else {
+          // Change the small tags that are visible when an item is collapsed.
           var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
           if(tag_control) {
             tag_control.removeClassName(other_tagging_type);
@@ -318,7 +319,8 @@ var Item = Class.create({
           } else {
             this.addTagControl(tag_name, data.sort_name, tagging_type);
           }
-    
+          
+          // Change the tags shown in the moderation panel.
           var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
           if(training_control) {
             training_control.removeClassName(other_tagging_type);
@@ -361,7 +363,8 @@ var Item = Class.create({
   
   removeTagging: function(tag_name) {
     if(tag_name.match(/^\s*$/)) { return; }
-
+    
+    // Remove the small tags that are visible when an item is collapsed.
     var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
     if (tag_control) {
       tag_control.removeClassName('positive');
@@ -370,7 +373,8 @@ var Item = Class.create({
         tag_control.remove()
       }
     }
-
+    
+    // Change the tags shown in the moderation panel.
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
     if(training_control) {
       training_control.removeClassName('positive');

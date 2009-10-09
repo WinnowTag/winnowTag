@@ -213,9 +213,11 @@ var ItemBrowser = Class.create({
     // Do not persist the text_filter
     var filters_to_save = $H(this.filters);
     filters_to_save.unset("text_filter");
+    
     Cookie.set(this.name + "_filters", filters_to_save.toQueryString(), 365);
   },
   
+  // Marks the appropriate mode filter (all, unread, trained) for items as selected.
   styleModes: function() {
     if(this.filters.mode) {
       this.modes().without(this.filters.mode).each(function(mode) {
@@ -238,6 +240,8 @@ var ItemBrowser = Class.create({
     }
   },
   
+  // Selects the appropriate option from the list of possible sort orders and
+  // sets the appropriate class on the Ascending/Descending toggle.
   styleOrders: function() {
     this.direction_control.removeClassName("asc");
     this.direction_control.removeClassName("desc");
