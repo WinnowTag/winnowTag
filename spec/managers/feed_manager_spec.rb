@@ -48,52 +48,39 @@ describe FeedManager, '#create' do
       FeedManager.create(@user, "feed_url", "collection_job_results_url")
     end
     
-    it "starts a transaction" do
-      Feed.should_receive(:transaction).with().and_yield
+    it "tries to find the feed" do
+      Feed.should_receive(:find_by_uri).with(@remote_feed.uri).and_return(@feed)
       FeedManager.create(@user, "feed_url", "collection_job_results_url")
     end
     
-    context "in a transaction" do
-      before(:each) do
-        Feed.stub!(:transaction).and_yield
-        
-        @multiblock = stub("multiblock")
-      end
-      
-      it "tries to find the feed" do
-        Feed.should_receive(:find_by_uri).with(@remote_feed.uri).and_return(@feed)
-        FeedManager.create(@user, "feed_url", "collection_job_results_url")
-      end
-      
-      context "when the feed is found" do
-        it "indicates success" do
-          message = I18n.t("winnow.notifications.feed_existed", :url => h(@feed.via))
-          Multiblock.should_receive(:[]).with(:success, @feed, message).and_return(@multiblock)
-          FeedManager.create(@user, "feed_url", "collection_job_results_url").should == @multiblock
-        end
-      end
-      
-      context "when the feed is not found" do
-        before(:each) do
-          Feed.stub!(:find_by_uri).and_return(nil)
-        end
-        
-        it "creates the feed" do
-          Multiblock.stub!(:[]).and_return(@multiblock)
-          Feed.should_receive(:create!).with(:uri => @remote_feed.uri, :via => @remote_feed.url).and_return(@feed)
-          FeedManager.create(@user, "feed_url", "collection_job_results_url").should == @multiblock
-        end
-        
-        it "indicates success" do
-          Feed.stub!(:create!).and_return(@feed)
-          message = I18n.t("winnow.notifications.feed_added", :url => h(@feed.via))
-          Multiblock.should_receive(:[]).with(:success, @feed, message).and_return(@multiblock)
-          FeedManager.create(@user, "feed_url", "collection_job_results_url").should == @multiblock
-        end
+    context "when the feed is found" do
+      it "indicates success" do
+        message = I18n.t("winnow.notifications.feed_existed", :url => h(@feed.via))
+        Multiblock.should_receive(:[]).with(:success, @feed, message).and_return(@multiblock)
+        FeedManager.create(@user, "feed_url", "collection_job_results_url").should == @multiblock
       end
     end
     
-    it "subscribes the @user to the feed" do
+    context "when the feed is not found" do
+      before(:each) do
+        Feed.stub!(:find_by_uri).and_return(nil)
+      end
+      
+      it "creates the feed" do
+        Multiblock.stub!(:[]).and_return(@multiblock)
+        Feed.should_receive(:create!).with(:uri => @remote_feed.uri, :via => @remote_feed.url).and_return(@feed)
+        FeedManager.create(@user, "feed_url", "collection_job_results_url").should == @multiblock
+      end
+      
+      it "indicates success" do
+        Feed.stub!(:create!).and_return(@feed)
+        message = I18n.t("winnow.notifications.feed_added", :url => h(@feed.via))
+        Multiblock.should_receive(:[]).with(:success, @feed, message).and_return(@multiblock)
+        FeedManager.create(@user, "feed_url", "collection_job_results_url").should == @multiblock
+      end
+    end
+    
+    it "subscribes the user to the feed" do
       FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(@feed.id, @user.id)
       FeedManager.create(@user, "feed_url", "collection_job_results_url")
     end
