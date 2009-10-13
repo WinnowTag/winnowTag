@@ -490,7 +490,7 @@ describe User do
   end
 end
 
-describe "email address validation" do
+describe User, "email address validation" do
   
   before(:each) do
     @user = Generate.user
@@ -543,10 +543,50 @@ describe "email address validation" do
     @user.should have(1).error_on(:email)
   end
   
-  it "rejects address with name" do
-    @user.email = "John Doe <jdoe@example.com>"
-    @user.valid?
-    @user.should have(1).error_on(:email)
+end
+
+describe User, '#email=' do
+  
+  it "strips quoted name from email" do
+    user = User.new :email => '"John Von Doe" <jdoe@example.com>'
+    user.email.should == "jdoe@example.com"
+  end
+  
+  it "strips unquoted name from email" do
+    user = User.new :email => 'John Von Doe <jdoe@example.com>'
+    user.email.should == "jdoe@example.com"
+  end
+  
+  context "when user lacks first or last name" do
+    
+    before(:each) do
+      @user = User.new :email => '"John Von Doe" <jdoe@example.com>'
+    end
+    
+    it "sets first name" do
+      @user.firstname.should == "John"
+    end
+    
+    it "sets last name" do
+      @user.lastname.should == "Von Doe"
+    end
+    
+  end
+  
+  context "when user already has first or last name" do
+    
+    before(:each) do
+      @user = User.new :firstname => "Clark", :lastname => "Kent", :email => '"John Von Doe" <jdoe@example.com>'
+    end
+    
+    it "does not set first name" do
+      @user.firstname.should == "Clark"
+    end
+    
+    it "does not set last name" do
+      @user.lastname.should == "Kent"
+    end
+    
   end
   
 end

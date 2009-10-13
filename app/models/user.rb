@@ -171,6 +171,18 @@ class User < ActiveRecord::Base
     end
   end
   
+  def email=(value)
+    value.gsub!('"', '') if value
+    regex = /(\w+) (.+) <(.+)>/i
+    if value && md = regex.match(value)
+      self[:email] = md[3]
+      self.firstname = md[1] if self.firstname.blank?
+      self.lastname = md[2] if self.lastname.blank?
+    else
+      self[:email] = value
+    end
+  end
+  
   # Creating a user from the prototype will copy over the prototype's folders,
   # feed subscriptions, tag subscriptions, tags, and taggings. This method will 
   # also activate the user and mark all system messages as read.
