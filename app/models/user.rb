@@ -172,9 +172,8 @@ class User < ActiveRecord::Base
   end
   
   def email=(value)
-    value.gsub!('"', '') if value
-    regex = /(\w+) (.+) <(.+)>/i
-    if value && md = regex.match(value)
+    regex = /"?(\w+) ([^"]+)"? <(.+)>/i
+    if md = regex.match(value)
       self[:email] = md[3]
       self.firstname = md[1] if self.firstname.blank?
       self.lastname = md[2] if self.lastname.blank?
