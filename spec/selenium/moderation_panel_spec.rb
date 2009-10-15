@@ -129,7 +129,7 @@ describe "moderation panel" do
     
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @unused_tag.name
-    hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
     page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
   end
@@ -140,7 +140,7 @@ describe "moderation panel" do
     
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @classifier_tag.name
-    hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
     page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
   end
@@ -151,7 +151,7 @@ describe "moderation panel" do
     
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.positive"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @negative_tag.name
-    hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
     page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.positive"
   end
@@ -162,7 +162,7 @@ describe "moderation panel" do
     
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag .name:contains(new tag)"
     page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "new tag"
-    hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
     page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .tag .name:contains(new tag)"
   end
@@ -177,6 +177,13 @@ describe "moderation panel" do
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(unused tag)"
+    
+    # Need to use type and type_keys here.  In IE
+    # type_keys just fires the keyPress events, it
+    # doesn't set the element value, which is needed
+    # by the Autocomplete handler.
+    #
+    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
     page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disbaled .name:contains(positive tag)"
          see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(negative tag)"
@@ -196,6 +203,7 @@ describe "moderation panel" do
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(unused tag)"
+    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
     page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative tag)"
@@ -211,9 +219,10 @@ describe "moderation panel" do
     
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.selected"
+    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas"
     page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas"
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.selected"
-    hit_enter "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]"
+    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
     page.wait_for :wait_for => :ajax
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"    
   end
