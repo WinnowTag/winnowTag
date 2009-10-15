@@ -3,6 +3,10 @@
 // Possession of a copy of this file grants no permission or license
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages showing/hiding messages. Uses a queue to show messages in order.
+// Will hide messages automatically after a timeout, unlesss autohide is
+// explicitly disabled for a message.
 var Message = {
   queue: [],
   running: false,
@@ -70,6 +74,7 @@ var ConfirmationMessage = Class.create({
   }
 });
 
+// A TimeoutMessage is displayed when the server is slow to respond to the user's request.
 var TimeoutMessage = Class.create({
   initialize: function(ajax) {
     this.timeout_id = TimeoutMessage.identifier++;

@@ -269,6 +269,7 @@ en:
         search_tooltip: ""
         add_feed_description: "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
         add_feed_button: "Add Feed"
+        add_feed_button_disabled: "Adding..."
         add_feed_tooltip: ""
         upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
         upload_button: "Upload"

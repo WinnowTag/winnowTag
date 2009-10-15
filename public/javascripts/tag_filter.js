@@ -4,6 +4,8 @@
 // to use, modify, or create derivate works.
 // Please visit http://www.peerworks.org/contact for further information.
 
+// Handles renaming a tag in the tags section of the sidebard on the items page.
+// An instance of this class is created for each tag.
 var TagFilter = Class.create({
   initialize: function(element) {
     this.tag = element;

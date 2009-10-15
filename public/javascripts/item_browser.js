@@ -120,6 +120,7 @@ var ItemBrowser = Class.create({
     indicator.remove();
   },
 
+  // Called at the end of a request to process more items in the update queue, if any.
   updateFromQueue: function() {
     if (this.update_queue.any()) {
       var next_action = this.update_queue.shift();
@@ -127,6 +128,9 @@ var ItemBrowser = Class.create({
     }
   },
   
+  // Clear the list of items and load it. Called when changing sort order or
+  // adding/removing filters. Queues request if it's already in the act of
+  // loading; otherwise it executes request immediately.
   reload: function() {
     var clearAndUpdate = function() {
       this.loading = true;
@@ -209,9 +213,11 @@ var ItemBrowser = Class.create({
     // Do not persist the text_filter
     var filters_to_save = $H(this.filters);
     filters_to_save.unset("text_filter");
+    
     Cookie.set(this.name + "_filters", filters_to_save.toQueryString(), 365);
   },
   
+  // Marks the appropriate mode filter (all, unread, trained) for items as selected.
   styleModes: function() {
     if(this.filters.mode) {
       this.modes().without(this.filters.mode).each(function(mode) {
@@ -234,6 +240,8 @@ var ItemBrowser = Class.create({
     }
   },
   
+  // Selects the appropriate option from the list of possible sort orders and
+  // sets the appropriate class on the Ascending/Descending toggle.
   styleOrders: function() {
     this.direction_control.removeClassName("asc");
     this.direction_control.removeClassName("desc");

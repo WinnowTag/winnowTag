@@ -19,6 +19,7 @@ benchmarks
 classifier.db
 classifier.log
 nbproject
+.idea
 
 *.sql.gz
 perf.log

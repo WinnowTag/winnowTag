@@ -21,11 +21,11 @@
 <div id="add_feed" style="clear:both;<%= flash[:error] || params[:feed] ? '' : 'display:none' %>">
   <fieldset class="full">
     <legend><%= t("winnow.feeds.header.add_import") %></legend>
-    <% form_for :feed, @feed, :url => feeds_path do |f| %>
+    <% form_for :feed, @feed, :url => feeds_path, :html => { :class => "single_submit" } do |f| %>
       <p><%= t("winnow.feeds.header.add_feed_description") %></p>
       <p>
         <%= f.text_field :url, :size => 70, :title => t("winnow.feeds.header.add_feed_tooltip") %>
-        <%= submit_tag t("winnow.feeds.header.add_feed_button") %> 
+        <%= submit_tag t("winnow.feeds.header.add_feed_button"), :"data-disabled_value" => t("winnow.feeds.header.add_feed_button_disabled") %>
       </p>
     <% end %>
 

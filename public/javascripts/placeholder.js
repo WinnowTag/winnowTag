@@ -1,3 +1,4 @@
+// Hides or shows an element's placeholder text on focus or blur, respectively.
 document.observe('dom:loaded', function() {
   $$("input[placeholder]").each(function(element) {
     element.realValue = function() {

@@ -42,6 +42,9 @@ class User < ActiveRecord::Base
   has_many :tag_exclusions, :dependent => :delete_all
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
   has_many :folders, :dependent => :delete_all, :order => "position"
+  
+  # for email address regex, see: http://www.regular-expressions.info/email.html
+  validates_format_of :email, :with => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
  
   # See the definition of this method below to learn about this callbacks
   before_save :update_prototype
@@ -87,7 +90,7 @@ class User < ActiveRecord::Base
       "email"            => "users.email",
       "logged_in_at"     => "users.logged_in_at",
       "last_accessed_at" => "users.last_accessed_at",
-      "name"             => %w[users.lastname users.firstname],
+      "name"             => %w[users.lastname users.firstname users.login],
       "last_tagging_on"  => "last_tagging_on", # depends on select from search
       "tag_count"        => "tag_count"        # depends on select from search
     }
@@ -158,6 +161,25 @@ class User < ActiveRecord::Base
 
   def full_name
     "#{self.firstname} #{self.lastname}"
+  end
+  
+  def email_address_with_name
+    if firstname && lastname
+      "\"#{full_name}\" <#{email}>"
+    else
+      email
+    end
+  end
+  
+  def email=(value)
+    regex = /"?(\w+) ([^"]+)"? <(.+)>/i
+    if md = regex.match(value)
+      self[:email] = md[3]
+      self.firstname = md[1] if self.firstname.blank?
+      self.lastname = md[2] if self.lastname.blank?
+    else
+      self[:email] = value
+    end
   end
   
   # Creating a user from the prototype will copy over the prototype's folders,

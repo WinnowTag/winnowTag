@@ -12,6 +12,8 @@ var TagsItemBrowser = Class.create(ItemBrowser, {
     var summary = tag.down(".summary");
     var extended = tag.down(".extended");
     var comments = extended.down(".comments");
+    
+    // Show tag details, comments, and the tag panel.
     summary.observe("click", function(event) {
       if(["a", "input", "textarea"].include(event.element().tagName.toLowerCase())) { return; }
 
@@ -25,6 +27,7 @@ var TagsItemBrowser = Class.create(ItemBrowser, {
       }
     }.bind(this));
     
+    // Renaming a tag with an in-place editor.
     var nameToEdit = tag.down("#name_" + tag.id);
     if (nameToEdit) {
       new Ajax.InPlaceEditor(

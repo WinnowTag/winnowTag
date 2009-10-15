@@ -20,6 +20,6 @@ module FeedsHelper
   end
   
   def bookmarklet_js
-    "javascript:window.location='#{feeds_url}?feed[url]='+window.location;"
+    "javascript:window.location='#{feeds_url}?feed[url]='+encodeURIComponent(window.location);"
   end
 end
