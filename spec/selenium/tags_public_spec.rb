@@ -152,7 +152,7 @@ describe "Renaming tags as an admin" do
     rename_tag
     @tag.reload
     text = page.get_attribute("css=#tag_#{@tag.id} .controls .feed.training@href")
-    text.should == url_for(:controller => "tags", :action => "training", :user => @tag.user_login, :tag_name => @tag.name, :format => "atom", :only_path => true)
+    text.should =~ /#{url_for(:controller => "tags", :action => "training", :user => @tag.user_login, :tag_name => @tag.name, :format => "atom", :only_path => true)}$/
   end
   
 end
