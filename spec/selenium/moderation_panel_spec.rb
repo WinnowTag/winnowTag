@@ -117,10 +117,10 @@ describe "moderation panel" do
     
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.negative"
     page.click "css=##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)} .name"
+    page.wait_for :wait_for => :ajax
+    page.confirmation.should include(@negative_tag.name)
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.negative"
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}"
-
-   # page.confirmation.should include(@negative_tag.name)
   end
 
   it "can change an unattached tagging to a positive tagging through the text field" do
