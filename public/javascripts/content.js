@@ -45,11 +45,23 @@ var Content = Class.create({
   },
   
   resizeHeight: function() {
-    this.content.style.height = this.contentHeight() + 'px';
+    var newHeight = this.contentHeight();
+    
+    // IE does some stupid things in the middle of resize events,
+    // so this prevents a JS error when the content height is negative.
+    if (newHeight > 0) {
+      this.content.style.height = newHeight + 'px';
+    }
   },
   
   resizeWidth: function() {
-    this.container.style.width = this.contentWidth() + 'px';
+    var newWidth = this.contentWidth();
+    
+    // IE does some stupid things in the middle of resize events,
+    // so this prevents a JS error when the content width is negative.
+    if (newWidth > 0) {
+      this.container.style.width = newWidth + 'px';      
+    }
   },
   
   resizeSidebar: function() {
