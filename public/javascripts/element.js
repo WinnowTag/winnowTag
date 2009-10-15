@@ -57,7 +57,7 @@ Element.addMethods({
   }
 });
 
-// Converts the given string content into content in the DOM and returns it.
+// Creates a new DIV with html as its content
 Element.fromHTML = function(html) {
   return new Element('div').update(html).down();
 };
