@@ -104,6 +104,7 @@ private
       raise ClassificationStartException.new(t("winnow.notifications.classifier.already_running"), 500)
     elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
       tag_names = puct.map { |tag| h(tag.name) }.to_sentence
+      # TODO: i18n
       message = "You are about to classify " + tag_names + " which #{puct.size > 1 ? 'have' : 'has'} less than 6 positive examples. " <<
                 "This might not work as well as you would expect.\nDo you want to proceed anyway?"
       raise ClassificationStartException.new(message, 412)
