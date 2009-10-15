@@ -21,7 +21,15 @@ describe "Tags" do
   
   describe 'merging' do
     before(:each) do
-      @other = Generate.tag!(:user => @user)
+      @other = Generate.tag!(:user => @user, :name => "test")
+      # In IE there seems to be a synching problem,
+      # sometimes loading the tags page happens 
+      # without the @other tag present, I don't know if
+      # this is a case of the follow load being ignored
+      # because the previous one was same or what, but putting
+      # the sleep here always ensures that @other appears in 
+      # the page.
+      sleep(1)
       page.open tags_path
       page.wait_for :wait_for => :ajax
     end
@@ -172,7 +180,7 @@ describe "Renaming tags" do
     rename_tag
     @tag.reload
     text = page.get_attribute("css=#tag_#{@tag.id} .controls .feed@href")
-    text.should == url_for(:controller => "tags", :action => "show", :user => @tag.user_login, :tag_name => @tag.name, :format => "atom", :only_path => true)
+    text.should =~ /#{url_for(:controller => "tags", :action => "show", :user => @tag.user_login, :tag_name => @tag.name, :format => "atom", :only_path => true)}$/
   end
   
 end
@@ -204,7 +212,7 @@ describe "Renaming tags as an admin" do
     rename_tag
     @tag.reload
     text = page.get_attribute("css=#tag_#{@tag.id} .controls .feed.training@href")
-    text.should == url_for(:controller => "tags", :action => "training", :user => @tag.user_login, :tag_name => @tag.name, :format => "atom", :only_path => true)
+    text.should =~ /#{url_for(:controller => "tags", :action => "training", :user => @tag.user_login, :tag_name => @tag.name, :format => "atom", :only_path => true)}$/
   end
   
 end

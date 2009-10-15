@@ -176,9 +176,10 @@ class TagsController < ApplicationController
         @tag.merge(merge_to)
         flash[:notice] = t("winnow.notifications.tag_merged", :from => h(@tag.name), :to => h(merge_to.name))
       end
-      
       format.html { redirect_to tags_path }
-      format.js   { render(:update) { |page| page.redirect_to request.env["HTTP_REFERER"] } }
+      # IE Sends the URI fragment with the referer header, which is wrong.
+      # We need to strip it before redirecting otherwise redirecting does nothing.
+      format.js   { render(:update) { |page| page.redirect_to request.env["HTTP_REFERER"].sub(/#.*$/, "") } }
     end
   end
 
