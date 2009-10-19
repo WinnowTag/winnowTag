@@ -92,10 +92,18 @@ en:
       tag_copied: "{{from}} successfully copied to {{to}}"
       tag_merged: "{{from}} merged with {{to}}"
       classifier:
+        timeout_contacting: "Timeout contacting the classifier. Please try again later."
         could_not_be_started: "The classifier could not be started. Please try again."
         already_running: "The classifier is already running"
         not_running: "No classification process running"
         tags_not_changed: "There are no changes to your tags"
+        confirm_few_positives:
+          one: |-
+            You are about to classify {{tag_names}} which has less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
+          other: |-
+            You are about to classify {{tag_names}} which have less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
       collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
       tags_unsubscribe: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
     taggings:
