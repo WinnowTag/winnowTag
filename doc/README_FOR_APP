@@ -1,4 +1,4 @@
-:title:Winnow Documentation
+# :title:Winnow Documentation
 
 = Winnow Documentation
 
@@ -9,10 +9,197 @@ to use, modify, or create derivate works.
 
 Please visit http://www.peerworks.org/contact for further information.
 
-See these sections for further information:
+== Core Models
 
-FeedItem:: For information on the structure, collection and database storage and retrieval of items from RSS/Atom feeds.
-BayesClassifier:: For information on the way the Bayes classifier is integrated into Winnow.
-Bayes:: For information on the Bayes classifier itself.
-FeedItemTokenizer:: For information on how a FeedItem is broken up into tokens for use by the classifier.
-Tagging:: For information on the tagging model used by Winnow.
+FeedItem and Tagging are the core models with which to familiarize yourself, since they are the ones behind almost all of the user's interaction with feeds and tags.
+
+=== FeedItem
+
+A FeedItem represents an item from an RSS or Atom feed. It can be tagged by one or more users,
+which the system captures as a Tagging.
+
+Note that a FeedItem stores only summary metadata; the actual item content is stored
+in the FeedItemContent class. This enables faster database access on the smaller
+summary records and allows us to use a MyISAM table for the content, which can
+then be indexed using MySQL's Full Text Indexing.
+
+=== Tagging
+
+Tagging is the core class within Winnow's tagging infra-structure.
+It may be thought of as the application of a Tag to a FeedItem by a User.
+
+==== Immutability and Destruction
+
+A Tagging is immutable, i.e., once created it can never be changed.
+
+When a Tagging is destroyed, it is captured as a DeletedTagging.
+
+==== Strength
+
+A Tagging has a +strength+ attribute that defines its positivity. The meaning of this attribute
+is dependent on the +classifier_tagging+ attribute. For example, when +classifier_tagging+ is +false+,
+a strength of 1 is a positive tagging and a strength of 0 is a negative tagging. When +classifier_tagging+
+is +true+, the strength is the probability that the classifier would assign the tag, and a probability
+over the classifier's +positive_cutoff+ should be considered positive.
+
+
+
+== Feeds
+
+These are the models that complement FeedItem to implement feeds in Winnow.
+
+=== Feed
+
+An RSS or Atom feed.
+
+=== FeedItemContent
+
+Stores the content of a FeedItem, which includes the title, author, description and encoded content extracted from the original XML.
+
+=== FeedItemTextIndex
+
+Represents the full-text index of a FeedItem. Before creation, it strips HTML from its content.
+
+=== FeedSubscription
+
+Captures that a User wants content from a Feed.
+
+=== FeedExclusion
+
+Captures that a User does not want content from a Feed.
+
+
+
+== Tags
+
+These are the models that complement Tagging to implement tags in Winnow.
+
+=== Tag
+
+A Tag allows a User to give a name to FeedItem content. This relationship is
+captured in a Tagging.
+
+A Tag may be public, meaning that it is accessible to other users,
+or private, meaning that is accessible only by the creator.
+
+Tag creators can choose whether or not their tags show in their
+sidebar via the +show_in_sidebar+ attribute. This attribute does 
+not affect users who subscribe the tag.
+
+The bias attribute is passed to the classifier, it controls how sensitive
+classification of this tag will be. A bias of 1.0 is neutral, less than 1
+will err on the side of false negatives and a bias greater than 1 will
+err on the side of false positives.
+
+=== TagUsage
+
+Represents each use or request of a Tag by a User.
+
+When a tag is requested by the current user, the usage is linked to
+that user. Otherwise, the IP address of the client is recorded.
+
+=== TagSubscription
+
+Captures that a User wants content from items tagged with a specific Tag.
+
+=== TagExclusion
+
+Captures that a User does not want content from items tagged with a specific Tag.
+
+=== DeletedTagging
+
+NOTE: DeletedTagging is not currently used other than being created when a Tagging
+is destroyed. It is likely that this model can be deleted.
+
+Represents a Tagging that has been deleted.
+
+A Tagging is never really deleted. Instead, when it's destroyed, a DeletedTagging is created
+with the attributes of the Tagging and a +deleted_at+ of <tt>Time.now</tt>.
+
+
+
+== Remotes
+
+Several classes in Winnow are in the +Remote+ namespace. They are used to interact with the Collector and the Classifier. The Collector is responsible for gathering feed items. The Classifier automatically applies tags to feed items based on several heuristics.
+
+=== Remote::Feed
+
+Represents a feed in the Collector.
+
+=== Remote::CollectionJob
+
+Represents a collection job in the Collector.
+
+=== Remote::CollectorResource
+
+This is a base class used to define the configuration necessary to communicate with the Collector.
+
+=== Remote::Classifier
+
+Represents a classifier in the Classifier.
+
+=== Remote::ClassifierJob
+
+Represents a classifier job in the Classifier.
+
+=== Remote::ClassifierResource
+
+This is a base class used to define the configuration necessary to communicate with the classifier.
+
+
+
+== Other Supporting Models
+
+=== Comment
+
+Represents a comment on a Tag by a User. Comments may be read/unread by each user.
+
+=== Folder
+
+Allows a user to group tags and feeds together.
+
+=== Feedback
+
+Represents feedback submitted by a user.
+
+=== User
+
+Represents a user of the system.
+
+Handles authentication via the ActsAsAuthenticated plugin and 
+authorization via the authorization plugin.
+
+=== Role
+
+Defines named roles for users that may be applied to
+objects in a polymorphic fashion. For example, you could create a role
+"moderator" for an instance of a model (i.e., an object), a model class,
+or without any specification at all.
+
+=== Invite
+
+Represents a user requesting access to Winnow.
+
+=== Message
+
+Represents messages that can be displayed to a User. Some messages are
+displayed to all users, while other are only displayed to a single user.
+When a User reads a message, it is marked as such via the ActsAsReadable 
+plugin. See its README file for details on readings.
+
+=== TextIndexingObserver
+
+Observes FeedItem instances in order to keep a full-text index of their content up-to-date.
+
+=== Setting
+
+Represents a configuration option of Winnow.
+
+
+
+== Model Relationships
+
+The following diagram shows the relationships among the models in Winnow. It is based on the
+schema version: <b>20091002202537</b>.
+
+link:../winnow_model_diagram_20091002202537.png
