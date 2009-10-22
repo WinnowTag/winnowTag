@@ -71,6 +71,9 @@ class AccountController < ApplicationController
       end
     elsif params[:invite]
       @invite = Invite.active(params[:invite])
+      if @invite.blank? || @invite.code.blank?
+        flash[:warning] = t("winnow.notifications.invitation_code_invalid")
+      end
     end
   end
 
