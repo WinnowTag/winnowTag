@@ -27,6 +27,7 @@ describe "folders" do
     login @current_user
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
+    page.window_maximize
   end
   
   it "can be created" do
@@ -150,7 +151,7 @@ describe "folders" do
 
     page.click "css=#feeds_section .header .toggle_button"    
     page.click "css=#folders_section .header .toggle_button"    
-
+    
     page.drag_and_drop_to_object "feed_#{@another_example_feed.id}", "folder_#{@existing_folder.id}"
     page.wait_for :wait_for => :ajax
 
