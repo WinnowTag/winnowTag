@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 
 # The +AccountController+ is resposible for all account related actions,
@@ -71,6 +71,9 @@ class AccountController < ApplicationController
       end
     elsif params[:invite]
       @invite = Invite.active(params[:invite])
+      if @invite.blank? || @invite.code.blank?
+        flash[:warning] = t("winnow.notifications.invitation_code_invalid")
+      end
     end
   end
 

@@ -80,6 +80,7 @@ en:
       reminder_sent: "A password reminder has been sent"
       update_password: "Please update your password"
       invitation_request_submitted: "Your invitation request has been submitted"
+      invitation_code_invalid: "Your invitation could not be found or has already been used."
       account_activated: "Your account has been activated"
       account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
       feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
@@ -92,10 +93,18 @@ en:
       tag_copied: "{{from}} successfully copied to {{to}}"
       tag_merged: "{{from}} merged with {{to}}"
       classifier:
+        timeout_contacting: "Timeout contacting the classifier. Please try again later."
         could_not_be_started: "The classifier could not be started. Please try again."
         already_running: "The classifier is already running"
         not_running: "No classification process running"
         tags_not_changed: "There are no changes to your tags"
+        confirm_few_positives:
+          one: |-
+            You are about to classify {{tag_names}} which has less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
+          other: |-
+            You are about to classify {{tag_names}} which have less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
       collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
       tags_unsubscribe: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
     taggings:

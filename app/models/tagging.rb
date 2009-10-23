@@ -1,28 +1,13 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# A Tagging represents the relationship between a Tag, a User and
-# a FeedItem. It is the core class within Winnow's tagging infra-structure.
+# Tagging is the core class within Winnow's tagging infra-structure.
 # A Tagging can be thought of as the application of a Tag to a FeedItem
 # by a User.
 #
-# == Design
-# 
-# NOTE: The wiki and image are extremely out of date.
-#
-# For a lengthy description of how the tagging design came to be see 
-# http://trac.winnow.peerworks.org/wiki/WinnowTaggingDesign although
-# this is possibly a bit out-of-date and as always the code is the most
-# current documentation.
-#
-# This diagram shows the current design from the point of view of relationships
-# between classes.
-#
-# link:../tagging_design.png
-# 
 # == Immutability and Destruction
 #
 # A Tagging is immutable, i.e., once created it can never be changed.
@@ -32,10 +17,10 @@
 # == Tagging Strength
 #
 # A Tagging has a +strength+ attribute that defines its positivity. The meaning of this attribute
-# is dependant on the +classifier_tagging+. For example, when +classifier_tagging+ is +false+
-# a strength of 1 is a positive tagging and a strength of 0 is a negative tagging. 
-# When +classifier_tagging+ is +true+ the strength is the probability that the classifier would 
-# assign the tag and a probability over the classifier's positive_cutoff should be considered positive.
+# is dependent on the +classifier_tagging+ attribute. For example, when +classifier_tagging+ is +false+,
+# a strength of 1 is a positive tagging and a strength of 0 is a negative tagging. When +classifier_tagging+
+# is +true+, the strength is the probability that the classifier would assign the tag, and a probability
+# over the classifier's +positive_cutoff+ should be considered positive.
 class Tagging < ActiveRecord::Base
   acts_as_immutable
   

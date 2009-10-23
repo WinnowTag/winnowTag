@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 
 # Controller for the user's classifier.
@@ -40,7 +40,7 @@ class ClassifierController < ApplicationController
         logger.fatal("Classifier timed out")
         logger.fatal(te.backtrace.join("\n"))
         ExceptionNotifier.deliver_exception_notification(te, self, request, {})
-        format.json { render :json => 'Timeout contacting the classifier. Please try again later.'.to_json, :status => 500 }
+        format.json { render :json => I18n.t("winnow.notifications.classifier.timeout_contacting").to_json, :status => 500 }
       rescue => detail       
         logger.fatal(detail) 
         logger.fatal(detail.backtrace.join("\n"))
@@ -103,10 +103,8 @@ private
     if job_running?
       raise ClassificationStartException.new(t("winnow.notifications.classifier.already_running"), 500)
     elsif params[:puct_confirm].blank? && !(puct = current_user.potentially_undertrained_changed_tags).empty?
-      tag_names = puct.map { |tag| h(tag.name) }.to_sentence
-      message = "You are about to classify " + tag_names + " which #{puct.size > 1 ? 'have' : 'has'} less than 6 positive examples. " <<
-                "This might not work as well as you would expect.\nDo you want to proceed anyway?"
-      raise ClassificationStartException.new(message, 412)
+      tag_names = puct.map { |tag| h(tag.name) }
+      raise ClassificationStartException.new(t("winnow.notifications.classifier.confirm_few_positives", :tag_names => tag_names.to_sentence, :count => tag_names.length), 412)
     elsif current_user.changed_tags.empty?
       raise ClassificationStartException.new(t("winnow.notifications.classifier.tags_not_changed"), 500)
     else
