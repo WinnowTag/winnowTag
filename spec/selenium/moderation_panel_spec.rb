@@ -183,7 +183,7 @@ describe "moderation panel" do
     # doesn't set the element value, which is needed
     # by the Autocomplete handler.
     #
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
+    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos" if ie?
     page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disbaled .name:contains(positive tag)"
          see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(negative tag)"
@@ -203,7 +203,7 @@ describe "moderation panel" do
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(unused tag)"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
+    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos" if ie?
     page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive tag)"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative tag)"
@@ -219,7 +219,7 @@ describe "moderation panel" do
     
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.selected"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas"
+    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas" if ie?
     page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas"
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.selected"
     page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"

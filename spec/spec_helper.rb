@@ -92,8 +92,12 @@ Spec::Runner.configure do |config|
     assert_redirected_to "/account/login"
   end
   
+  def ie?
+    Selenium::Configuration.browser =~ /iexplore/
+  end
+  
   def it_unless_ie(name, &block) 
-    unless Selenium::Configuration.browser =~ /iexplore/
+    unless ie?
       it(name, &block)
     else
       xit("[IE Disabled] #{name}")
