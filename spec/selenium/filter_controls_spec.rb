@@ -72,6 +72,14 @@ describe "filter controls" do
     before(:each) do
       @tag = Generate.tag!(:user => @user)
       @sql = Generate.tag!(:user => @user)
+      # In IE there seems to be a synching problem,
+      # sometimes loading the page happens 
+      # without the @tag and @sql tags present, I don't know if
+      # this is a case of the follow load being ignored
+      # because the previous one was same or what, but putting
+      # the sleep here always ensures that @other appears in 
+      # the page.
+      sleep(1)
       page.open feed_items_path
       page.wait_for :wait_for => :ajax
     end
