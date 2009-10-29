@@ -46,7 +46,7 @@ var Message = {
     Effect.Appear(this.element, { to: this.element.getOpacity(),
       afterFinish: function() {
         // Content.instance.resize();
-        if(autohide === undefined || autohide === true) {
+        if(type !== 'error' && (autohide === undefined || autohide === true)) {
           this.timeout = setTimeout(this.hide.bind(this), 10000);
         }
       }.bind(this)
