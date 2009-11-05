@@ -35,6 +35,7 @@ When(/^I create a feed for "(.*)"$/) do |feed_url|
     request.path    "/feeds.xml"
     request.headers "Authorization" => /^AuthHMAC winnow_id:.*/, 'Date' => /.*/, 'Content-Type' => "application/xml"
     request.body    Remote::Feed.new(:url => feed_url, :created_by => current_user.login).to_xml
+    response['Content-Type'] = "application/xml"
 
     if invalid_url.call(feed_url)
       response.code    422
