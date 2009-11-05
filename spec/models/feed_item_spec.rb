@@ -32,6 +32,12 @@ shared_examples_for "FeedItem update attributes from atom" do
 end
 
 describe FeedItem do
+  it "should update the feed's timestamps when creating a new item" do
+    feed = Generate.feed!()
+    feed.should_receive(:touch)
+    FeedItem.create(:uri => "urn:uuid:blah", :link => "http://example.com", :feed => feed)
+  end
+  
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
       user = Generate.user!

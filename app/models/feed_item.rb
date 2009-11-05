@@ -29,7 +29,8 @@ class FeedItem < ActiveRecord::Base
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
   has_many :taggings
-  has_many :tags, :through => :taggings  
+  has_many :tags, :through => :taggings
+  after_create :touch_feed
   
   # Takes an atom entry and either finds the FeedItem with the matching id and updates
   # it or creates a new feed item with the content from the atom entry.
@@ -119,6 +120,10 @@ class FeedItem < ActiveRecord::Base
         end
       end
     end
+  end
+  
+  def touch_feed
+    self.feed.touch if self.feed
   end
   
   # Destroy feed items older than +since+.
