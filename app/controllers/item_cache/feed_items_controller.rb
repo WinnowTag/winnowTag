@@ -21,7 +21,7 @@ module ItemCache
         wants.atom do
           feed = Feed.find_by_uri(params[:feed_id])
           item = feed.feed_items.find_or_create_from_atom(params[:atom])
-          render :status => 201, 
+          render :status => :created, 
                  :nothing => true,
                  :location => item_cache_feed_item_url(:id => item.uri)
         end
@@ -33,11 +33,15 @@ module ItemCache
       respond_to do |wants|
         wants.atom do
           begin
-            item = FeedItem.find_by_uri(params[:id])
-            item.update_from_atom(params[:atom])
-            render :nothing => true
+            if item = FeedItem.find_by_uri(params[:id])
+              item.update_from_atom(params[:atom])
+              render :nothing => true
+            else
+              render :status => :accepted, :nothing => true
+            end
+            
           rescue ArgumentError
-            render :status => 412, :nothing => true
+            render :status => :precondition_failed, :nothing => true
           end
         end
       end

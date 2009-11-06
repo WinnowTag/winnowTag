@@ -69,7 +69,7 @@ describe ItemCache::FeedItemsController do
       Feed.count.should == @before_count
     end
   end
-  
+    
   describe "PUT to /feed_items/urn:uuid:item1" do
     before(:each) do
       @feed_item = Generate.feed_item!
@@ -119,6 +119,29 @@ describe ItemCache::FeedItemsController do
     
     it "should respond with 412" do
       response.code.should == "412"
+    end
+  end
+  
+  describe "PUT to non-existent item does nothing" do
+    before(:each) do
+      @feed_item = Generate.feed_item!
+
+      @before_count = FeedItem.count
+      @atom = Atom::Entry.new do |e|
+        e.title = "Item Title"
+        e.id = "#{@feed_item.uri}Wrong"
+        e.links << Atom::Link.new(:rel => 'self', :href => 'http://collector.org/1')
+        e.links << Atom::Link.new(:rel => 'alternate', :href => 'http://collector.org/1')
+      end
+      put "update", :id => "urn:uuid:nonexistant", :atom => @atom
+    end
+    
+    it "not add an item" do
+      FeedItem.count.should == @before_count
+    end
+    
+    it "should respond with 202" do
+      response.code.should == "202"
     end
   end
     
