@@ -34,6 +34,13 @@ describe Tag do
       Generate.tag!(:name => "The So?me Fe_ed").sort_name.should == "somefeed"
     end
   end
+  
+  describe "all_ids" do
+    it "should return all the ids of the existing tags" do
+      ids = [Generate.tag!.id, Generate.tag!.id, Generate.tag!.id, Generate.tag!.id]
+      Tag.all_ids.should == ids
+    end
+  end
 
   describe "tagging counts" do
     it "is properly calculated for private tags" do

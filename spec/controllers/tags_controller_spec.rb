@@ -176,16 +176,16 @@ describe TagsController do
       response.body.should match(%r{<feed})
     end
     
-    it "should respond with a 304 if there are no new tags since HTTP_IF_MODIFIED_SINCE" do
-      Tag.should_receive(:maximum).with(:created_on).and_return(Time.now.yesterday)
+    it "should respond with a 304 if there are no new tags" do
+      Tag.should_receive(:all_ids).and_return([1,2,3,4])
       Tag.should_not_receive(:to_atom).with(:base_uri => "http://test.host:80")
-      request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
+      request.env['HTTP_IF_NONE_MATCH'] = %("#{Digest::MD5.hexdigest(ActiveSupport::Cache.expand_cache_key([1,2,3,4]))}")
       get :index, :format => 'atom'
       response.code.should == "304"
     end
     
     it "should responde with a 200 if there are new tags since HTTP_IF_MODIFIED_SINCE" do
-      request.env['HTTP_IF_MODIFIED_SINCE'] = 30.days.ago.httpdate
+      request.env['HTTP_IF_NONE_MATCH'] = %("#{Digest::MD5.hexdigest(ActiveSupport::Cache.expand_cache_key([1]))}")
       get :index, :format => 'atom'
       response.code.should == "200"
     end

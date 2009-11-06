@@ -44,8 +44,8 @@ class TagsController < ApplicationController
                            :order => params[:order], :direction => params[:direction])
         @full = true
       end
-      format.atom do        
-        conditional_render(Tag.maximum(:created_on)) do
+      format.atom do
+        if stale?(:etag => Tag.all_ids) 
           atom = Tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}")
           render :xml => atom.to_xml
         end

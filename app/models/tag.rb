@@ -202,6 +202,11 @@ class Tag < ActiveRecord::Base
     end
   end
 
+  # Gets all the db ids for the tags - used to cheaply generate Etags of the tag index.
+  def self.all_ids
+    self.find(:all, :select => 'id').map(&:id)
+  end
+  
   # Generates the atom version of the tag index for the entire system.
   def self.to_atom(options = {})
     Atom::Feed.new do |feed|
