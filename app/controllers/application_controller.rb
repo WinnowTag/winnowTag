@@ -29,22 +29,6 @@ protected
   def check_atom
     render(:text => h(params[:atom_error].message), :status => 400) if params[:atom_error]
   end
-
-  # Helper to handle conditional rendering based on last modified headers.
-  #
-  # This should probably be removed because it is now support in Rails
-  # see http://ryandaigle.com/articles/2008/10/25/what-s-new-in-edge-rails-even-better-conditional-get-support
-  #
-  def conditional_render(last_modified)   
-    since = Time.rfc2822(request.env['HTTP_IF_MODIFIED_SINCE']) rescue nil
-
-    if since && last_modified && since >= last_modified
-      head :not_modified
-    else
-      response.headers['Last-Modified'] = last_modified.httpdate if last_modified
-      yield(since)
-    end
-  end
   
   # The +limit+ method returns the number of records to display
   # per page. If not limit is requested, it will return the default

@@ -92,8 +92,8 @@ class TagsController < ApplicationController
     respond_to do |wants|
       wants.atom do
         TagUsage.create!(:tag_id => @tag.id, :ip_address => request.remote_ip)
-        conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
-          atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
+        if stale?(:last_modified => [@tag.updated_on,  @tag.last_classified_at].compact.max)
+          atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => request.if_modified_since)
           render :xml => atom.to_xml
         end
       end
@@ -200,7 +200,7 @@ class TagsController < ApplicationController
     
     respond_to do |wants|
       wants.atom do
-        conditional_render(@tag.updated_on) do
+        if stale?(:last_modified => @tag.updated_on)
           atom = @tag.to_atom(:training_only => true, :base_uri => base_uri)
           render :text => atom.to_xml
         end
