@@ -134,7 +134,7 @@ class FeedItem < ActiveRecord::Base
   # You could do this in the one SQL statement, however using ActiveRecord,
   # while taking slightly longer, will break this up into multiple transactions
   # and reduce the chance of getting a deadlock with a long transaction.
-  def self.archive_items(since = 30.days.ago.getutc)
+  def self.archive_items(since = 30.days.ago.getutc, stdout_log = false)
     taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
     conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
     counter = 0
@@ -143,6 +143,7 @@ class FeedItem < ActiveRecord::Base
       counter += 1
     end
     logger.info("ARCHIVAL: Deleted #{counter} items and #{taggings_deleted} classifier taggings older than #{since}")
+    puts("ARCHIVAL: Deleted #{counter} items and #{taggings_deleted} classifier taggings older than #{since}") if stdout_log
   end
   
   # The +atom_with_filters+ method is used to find all feed items matching the 
