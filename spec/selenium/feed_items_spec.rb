@@ -93,7 +93,7 @@ describe "FeedItemsTest" do
   
   it "displays an empty message when there are no feed items" do
     FeedItem.delete_all
-    
+    sleep(1)
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   
