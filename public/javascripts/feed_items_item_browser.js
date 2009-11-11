@@ -372,7 +372,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   bindTagFiltersEvents: function() {
-    $$(".filter_list li.tag").each(function(tag) {
+    $$(".filter_list.tags li.tag").each(function(tag) {
       this.bindTagFilterEvents(tag);
     }.bind(this));
   },
@@ -387,7 +387,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   bindFeedFiltersEvents: function() {
-    $$(".filter_list li.feed").each(function(feed) {
+    $$(".filter_list.feeds li.feed").each(function(feed) {
       this.bindFeedFilterEvents(feed);
     }.bind(this));
   },
@@ -405,6 +405,9 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     Draggables.addObserver({
       onStart: function(eventName, draggable, event) {
         if(draggable.element == tag_or_feed) {
+          if(!draggable.element.match(".selected")) {
+            click_event();
+          }
           link.stopObserving("click", click_event);
         }
       },
@@ -425,6 +428,18 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       ghosting: true, revert: true, scroll: 'sidebar',
       reverteffect: function(element, top_offset, left_offset) {
         new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
+      },
+      onStart: function(draggable, event) {
+        var selected = draggable.element.up(".multidrag").select('.selected').without(draggable._clone);
+        if (selected.length > 1) {
+          var info = new Element('div', { 'class': 'multidragcount' });
+          info.insert(selected.length);
+          draggable.element.insert({top: info});
+        }
+      },
+      onEnd: function(draggable, event) {
+        var info = draggable.element.down('.multidragcount');
+        if(info) { info.remove(); }
       }
     });
   },

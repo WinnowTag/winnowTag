@@ -8,22 +8,29 @@ var Folder = Class.create({
   
   initialize: function(folder) {
     this.folder = folder;
+
     Droppables.add(this.folder, {
-      accept: ['feed', 'tag'],
-      hoverclass: 'hover',
+      accept: ['feed', 'tag'], hoverclass: 'hover',
       onDrop: function(element, folder) {
-        if (folder.down('#' + element.getAttribute('id'))) {
-          return;
-        }
-        folder.addClassName('open');
-        Cookie.set(this.folder.id, true, 365);
-        new Ajax.Request(this.folder.getAttribute('data-add_item_url'), {
-          asynchronous: true,
-          evalScripts: true,
-          method: 'put',
-          parameters: 'item_id=' + encodeURIComponent(element.id)
-        });
+        this.open();
+
+        var selected = element.up(".multidrag").select('.selected');
+        selected.each(this.addItem.bind(this));
       }.bind(this)
+    });
+  },
+  
+  open: function() {
+    this.folder.addClassName('open');
+    Cookie.set(this.folder.id, true, 365);
+  },
+  
+  addItem: function(tag_or_feed) {
+    if(this.folder.down('#' + tag_or_feed.getAttribute('id'))) { return; }
+    
+    new Ajax.Request(this.folder.getAttribute('data-add_item_url'), {
+      method: 'put', evalScripts: true,
+      parameters: 'item_id=' + encodeURIComponent(tag_or_feed.id)
     });
   }
 });

@@ -581,6 +581,7 @@ ul.filter_list {
 }
 
 ul.filter_list li {
+  position: relative;
   display: inline-block;
   display: -moz-inline-stack;
   min-width: 8em;
@@ -656,6 +657,17 @@ ul.filter_list li .auto_complete_name {
 
 .section.edit ul.filter_list li .actions {
   display: block;
+}
+
+ul.filter_list li .multidragcount {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 8px;
+  background-color: #606060;
+  color: #fff;
+  -moz-border-radius: 0.75em;
+  -webkit-border-radius: 0.75em;
 }
 
 /*
