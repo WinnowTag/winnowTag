@@ -402,24 +402,22 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   makeDraggable: function(tag_or_feed, link, click_event) {
-    if(tag_or_feed.hasClassName("draggable")) {
-      Draggables.addObserver({
-        onStart: function(eventName, draggable, event) {
-          if(draggable.element == tag_or_feed) {
-            link.stopObserving("click", click_event);
-          }
-        },
-        onEnd: function(eventName, draggable, event) {
-          if(draggable.element == tag_or_feed) {
-            setTimeout(function() {
-              link.observe("click", click_event);
-            }, 1);
-          }
+    Draggables.addObserver({
+      onStart: function(eventName, draggable, event) {
+        if(draggable.element == tag_or_feed) {
+          link.stopObserving("click", click_event);
         }
-      });
-      
-      this.draggableFor(tag_or_feed);
-    }
+      },
+      onEnd: function(eventName, draggable, event) {
+        if(draggable.element == tag_or_feed) {
+          setTimeout(function() {
+            link.observe("click", click_event);
+          }, 1);
+        }
+      }
+    });
+    
+    this.draggableFor(tag_or_feed);
   },
   
   draggableFor: function(tag_or_feed) {

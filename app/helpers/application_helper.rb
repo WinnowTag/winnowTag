@@ -154,7 +154,6 @@ module ApplicationHelper
     end
     
     class_names = [dom_id(feed), "clearfix", "feed"]
-    class_names << "draggable" if options[:draggable]
 
     html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:span, html, :class => "actions")
@@ -199,7 +198,6 @@ module ApplicationHelper
     
     class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id
-    class_names << "draggable" if options[:draggable]
 
     html  = ""
     if options[:editable] && current_user.id == tag.user_id

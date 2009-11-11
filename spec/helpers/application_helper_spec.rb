@@ -201,10 +201,6 @@ describe ApplicationHelper do
       feed_filter_control(feed, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
     end
     
-    it "creates a filter control for a feed with draggable controls" do
-      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
-      feed_filter_control(feed, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
-    end
   end
   
   describe "tag filter controls" do
@@ -265,10 +261,6 @@ describe ApplicationHelper do
     
     it "creates a filter control for a tag with a span for autocomplete" do
       tag_filter_control(mock_tag, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
-    end
-    
-    it "creates a filter control for a tag with draggable controls" do
-      tag_filter_control(mock_tag, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
     end
     
     it "creates a filter control for a public tag" do
