@@ -1,4 +1,4 @@
-<div class="folder<%= open_folder?(folder) ? " open" : "" %>" id="<%= dom_id(folder) %>">
+<div class="folder<%= open_folder?(folder) ? " open" : "" %>" id="<%= dom_id(folder) %>" data-add_item_url="<%= add_item_folder_path(folder) %>">
   <div class="header clearfix">
     <div class="actions clearfix">
       <%= link_to_function "Rename", "var new_folder_name = prompt('Folder Name:', $(this).up('.folder').down('.name').innerHTML.unescapeHTML()); if(new_folder_name) { #{remote_function(:url => folder_path(folder), :method => :put, :with => "'folder[name]=' + encodeURIComponent(new_folder_name)")} }", :class => "edit" %>  
@@ -12,10 +12,3 @@
     <%= feed_filter_controls(folder.feeds, :remove => folder, :ul_options => { :id => "#{dom_id(folder)}_feed_items", :class => "filter_list feeds" }) %>
   </div>
 </div>
-<%= drop_receiving_element(dom_id(folder), :hoverclass => "hover", :accept => ["feed", "tag"],
-      :onDrop => "function(element, folder) {" <<
-        "if(folder.down('#' + element.getAttribute('id'))) { return; }" <<  
-        "folder.addClassName('open');" <<
-        "Cookie.set('#{dom_id(folder)}', true, 365);" <<
-        remote_function(:url => add_item_folder_path(folder), :method => :put, :with => "'item_id=' + encodeURIComponent(element.id)") <<
-        "}") %>

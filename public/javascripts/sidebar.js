@@ -87,6 +87,7 @@ var Sidebar = Class.create({
       onComplete: function() {
         this.sidebar.removeClassName("loading");
         onComplete();
+        document.fire('sidebar:loaded');
       }.bind(this)
     });
   }
