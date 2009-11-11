@@ -426,20 +426,23 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   draggableFor: function(tag_or_feed) {
     new Draggable(tag_or_feed, {
       ghosting: true, revert: true, scroll: 'sidebar',
+      starteffect: Prototype.emptyFunction,
+      endeffect: Prototype.emptyFunction,
       reverteffect: function(element, top_offset, left_offset) {
         new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
       },
       onStart: function(draggable, event) {
         var selected = draggable.element.up(".multidrag").select('.selected').without(draggable._clone);
         if (selected.length > 1) {
-          var info = new Element('div', { 'class': 'multidragcount' });
-          info.insert(selected.length);
-          draggable.element.insert({top: info});
+          var count = new Element('div', { 'class': 'multidragcount' });
+          var count_message = "Copying " + selected.length + " items...";
+          count.insert(count_message);
+          draggable.element.insert({top: count});
         }
       },
       onEnd: function(draggable, event) {
-        var info = draggable.element.down('.multidragcount');
-        if(info) { info.remove(); }
+        var count = draggable.element.down('.multidragcount');
+        if(count) { count.remove(); }
       }
     });
   },

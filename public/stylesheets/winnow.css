@@ -661,10 +661,12 @@ ul.filter_list li .auto_complete_name {
 
 ul.filter_list li .multidragcount {
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 0 8px;
-  background-color: #606060;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  padding: 1px 8px;
+  background-color: #96a8ca;
   color: #fff;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
