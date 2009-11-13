@@ -241,7 +241,7 @@ describe ApplicationHelper do
       end
     end
     
-    it "creates a filter control for a tag with the remove link for a subscription" do
+    it "creates a filter control for a tag with the remove link for a folder" do
       tag = mock_tag
       folder = mock_model(Folder)
       tag_filter_control(tag, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(tag)))}.*/)

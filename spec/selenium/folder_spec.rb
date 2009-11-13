@@ -146,42 +146,6 @@ describe "folders" do
   it "cannot rename public tags" do
     dont_see_element "#tag_#{@public_tag.id} .edit"
   end
-
-  it "can have a feed moved to a custom folder" do
-    dont_see_element "#folder_#{@existing_folder.id}_feed_items #feed_#{@another_example_feed.id}"
-
-    page.click "css=#feeds_section .header .toggle_button"    
-    page.click "css=#folders_section .header .toggle_button"    
-    
-    page.drag_and_drop_to_object "feed_#{@another_example_feed.id}", "folder_#{@existing_folder.id}"
-    page.wait_for :wait_for => :ajax
-
-    see_element "#folder_#{@existing_folder.id} #feed_#{@another_example_feed.id}"
-  end
-
-  it "can have a private tag moved to a custom folder" do
-    dont_see_element "#folder_#{@existing_folder.id}_tags #tag_#{@private_tag.id}"
-
-    page.click "css=#tags_section .header .toggle_button"    
-    page.click "css=#folders_section .header .toggle_button"    
-
-    page.drag_and_drop_to_object "tag_#{@private_tag.id}", "folder_#{@existing_folder.id}"
-    page.wait_for :wait_for => :ajax
-
-    see_element "#folder_#{@existing_folder.id} #tag_#{@private_tag.id}"
-  end
-  
-  it "can have a public tag moved to a custom folder" do
-    dont_see_element "#folder_#{@existing_folder.id}_tags #tag_#{@public_tag.id}"
-
-    page.click "css=#tags_section .header .toggle_button"    
-    page.click "css=#folders_section .header .toggle_button"    
-
-    page.drag_and_drop_to_object "tag_#{@public_tag.id}", "folder_#{@existing_folder.id}"
-    page.wait_for :wait_for => :ajax
-
-    see_element "#folder_#{@existing_folder.id} #tag_#{@public_tag.id}"
-  end
   
   it "can open tags folder" do
     assert_not_visible "css=#tag_filters"

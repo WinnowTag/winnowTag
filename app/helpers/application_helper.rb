@@ -167,14 +167,14 @@ module ApplicationHelper
     html
   end
   
-  # Generates the controls to filter the list of feed items by feeds.
+  # Generates the controls to filter the list of tags.
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
-  # Generates an individual control to filter the list of feed items by a feed.
-  # See ApplicationHelper#feed_filter_controls.
+  # Generates an individual control to filter the list of tags.
+  # See ApplicationHelper#tag_filter_controls.
   def tag_filter_control(tag, options = {})
     if options[:remove] == :subscription && current_user.id == tag.user_id
       options = options.except(:remove)
