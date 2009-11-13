@@ -9,7 +9,7 @@ class Feed < ActiveRecord::Base
   # If a feed has a duplicate, then THIS feed is the duplicate
   # that is not being used.
   belongs_to :duplicate, :class_name => 'Feed'
-  has_many	:feed_items, :dependent => :destroy
+  has_many	:feed_items
   
   # See the definition of these methods below to learn about each of these callbacks
   before_save :set_title
@@ -114,7 +114,29 @@ class Feed < ActiveRecord::Base
       self
     end
   end
-
+  
+  # Only destroy feeds that have no items.
+  #
+  def before_destroy
+    self.feed_items.count == 0
+  end
+  
+  # Override destroy so we can delete the feed items in a separate transaction.
+  # This allows us to delete feed items without manual taggings, leaving manually
+  # tagged feed items in place. A feed will only be deleted if all it's items
+  # can be deleted, the +before_destroy+ method ensures this.
+  #
+  # See #1072.
+  #
+  def destroy
+    Feed.transaction do
+      Feed.transaction(:requires_new => :true) do
+        self.feed_items.each {|item| item.destroy }
+      end
+      super
+    end
+  end
+  
 private
   # The title should be set to the host of the alternate of via 
   # urls if a title does not exist.

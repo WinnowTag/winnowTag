@@ -29,6 +29,8 @@ class FeedItem < ActiveRecord::Base
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
   has_many :taggings
+  has_many :classifier_taggings, :dependent => :delete_all, :conditions => ["classifier_tagging = ?", true], :class_name => "Tagging"
+  has_many :manual_taggings, :conditions => ["classifier_tagging = ?", false], :class_name => "Tagging"
   has_many :tags, :through => :taggings
   after_create :touch_feed
   
@@ -124,6 +126,10 @@ class FeedItem < ActiveRecord::Base
   
   def touch_feed
     self.feed.touch if self.feed
+  end
+  
+  def before_destroy
+    self.manual_taggings.empty?
   end
   
   # Destroy feed items older than +since+.
