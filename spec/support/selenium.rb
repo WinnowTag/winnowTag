@@ -4,18 +4,6 @@
 # to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 module CustomSeleniumHelpers
-  def ie?
-    Selenium::Configuration.browser =~ /iexplore/
-  end
-  
-  def it_unless_ie(name, &block) 
-    unless ie?
-      it(name, &block)
-    else
-      xit("[IE Disabled] #{name}")
-    end
-  end
-
   def login(user, password = "password")
     page.open login_path
     page.type "css=#login_form input[name=login]", user.login
