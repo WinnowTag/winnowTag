@@ -1,9 +1,14 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
-class User < ActiveRecord::Base   
+
+# Represents a user of the system.
+#
+# Handles authentication via the ActsAsAuthenticated plugin and 
+# authorization via the authorization plugin.
+class User < ActiveRecord::Base
   acts_as_authorized_user
   acts_as_authorizable
   
@@ -37,11 +42,15 @@ class User < ActiveRecord::Base
   has_many :tag_exclusions, :dependent => :delete_all
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
   has_many :folders, :dependent => :delete_all, :order => "position"
+  
+  # for email address regex, see: http://www.regular-expressions.info/email.html
+  validates_format_of :email, :with => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
  
+  # See the definition of this method below to learn about this callbacks
   before_save :update_prototype
  
   def feeds
-    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.title.downcase.to_s }
+    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.sort_title }
   end
   
   def feed_ids
@@ -50,24 +59,21 @@ class User < ActiveRecord::Base
  
   def globally_excluded?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
-      excluded_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
-      excluded_tags.include?(tag_or_feed)
+      excluded_tags(:load).include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
-      excluded_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
-      excluded_feeds.include?(tag_or_feed)
+      excluded_feeds(:load).include?(tag_or_feed)
     end
   end
 
   def subscribed?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
-      subscribed_tags.each { |t| } # force the association to load, so we don't do a separate query for each time this is called
-      subscribed_tags.include?(tag_or_feed)
+      subscribed_tags(:load).include?(tag_or_feed)
     elsif tag_or_feed.is_a?(Feed)
-      subscribed_feeds.each { |f| } # force the association to load, so we don't do a separate query for each time this is called
-      subscribed_feeds.include?(tag_or_feed)
+      subscribed_feeds(:load).include?(tag_or_feed)
     end
   end
   
+  # Matches the given value against any of the listed attributes.
   named_scope :matching, lambda { |q|
     conditions = %w[users.login users.email users.firstname users.lastname].map do |attribute|
       "#{attribute} LIKE :q"
@@ -75,6 +81,8 @@ class User < ActiveRecord::Base
     { :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   
+  # Orders the results by the given order and direction. If no order is given or one is given but
+  # is not one of the known orders, the default order is used. Likewise for direction.
   named_scope :by, lambda { |order, direction|
     orders = {
       "id"               => "users.id",
@@ -82,7 +90,7 @@ class User < ActiveRecord::Base
       "email"            => "users.email",
       "logged_in_at"     => "users.logged_in_at",
       "last_accessed_at" => "users.last_accessed_at",
-      "name"             => %w[users.lastname users.firstname],
+      "name"             => %w[users.lastname users.firstname users.login],
       "last_tagging_on"  => "last_tagging_on", # depends on select from search
       "tag_count"        => "tag_count"        # depends on select from search
     }
@@ -148,17 +156,39 @@ class User < ActiveRecord::Base
                  ].join(","),
       :conditions => ["tags.id IN (?) OR (tags.id IN(?) AND (tags.public = ? OR tags.user_id = ?))", 
                       sidebar_tag_ids + subscribed_tag_ids - excluded_tag_ids, tag_ids.to_s.split(","), true, self],
-      :order => "tags.name"
+      :order => "tags.sort_name"
   end
 
   def full_name
     "#{self.firstname} #{self.lastname}"
   end
   
+  def email_address_with_name
+    if firstname && lastname
+      "\"#{full_name}\" <#{email}>"
+    else
+      email
+    end
+  end
+  
+  def email=(value)
+    regex = /"?(\w+) ([^"]+)"? <(.+)>/i
+    if md = regex.match(value)
+      self[:email] = md[3]
+      self.firstname = md[1] if self.firstname.blank?
+      self.lastname = md[2] if self.lastname.blank?
+    else
+      self[:email] = value
+    end
+  end
+  
+  # Creating a user from the prototype will copy over the prototype's folders,
+  # feed subscriptions, tag subscriptions, tags, and taggings. This method will 
+  # also activate the user and mark all system messages as read.
   def self.create_from_prototype(attributes = {})
     user = new(attributes)
-    user.save!
     user.activate
+
     # Mark all existing message as read
     Message.read_by!(user)
     
@@ -191,13 +221,14 @@ class User < ActiveRecord::Base
 
   # Code Generated by Acts_as_authenticated
   # Virtual attribute for the unencrypted password
-  attr_accessor :password
+  attr_accessor :password, :current_password
 
   validates_format_of :login, :with => /^[a-zA-Z0-9_-]+$/
   validates_presence_of :email, :time_zone
   validates_length_of :password, :within => 4..40, :if => :password_required?
-  validates_confirmation_of :password,                   :if => :password_required?
+  validates_confirmation_of :password,             :if => :password_required?
   validates_uniqueness_of :login, :email, :case_sensitive => false
+  validate :current_password_matches, :if => :password_required?
 
   before_create :make_activation_code
   after_create :make_owner_of_self
@@ -222,10 +253,10 @@ class User < ActiveRecord::Base
   rescue BCrypt::Errors::InvalidHash
     false
   end
-  
+
   # Activates the user in the database.
   def activate
-    update_attributes(:activated_at => Time.now.utc, :activation_code => nil)
+    update_attributes!(:activated_at => Time.now.utc, :activation_code => nil)
   end
   
   def active?
@@ -255,7 +286,7 @@ class User < ActiveRecord::Base
   
   def enable_reminder!
     @automated = true
-    self.reminder_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    self.reminder_code = ActiveSupport::SecureRandom.hex(20)
     self.reminder_expires_at = 1.day.from_now
     save!
   end
@@ -293,16 +324,26 @@ protected
   end
   
   def make_activation_code
-    self.activation_code = Digest::SHA1.hexdigest( Time.now.to_s.split(//).sort_by {rand}.join )
+    unless active?
+      self.activation_code = ActiveSupport::SecureRandom.hex(20)
+    end
   end
   
   def make_owner_of_self
     self.has_role('owner', self)
   end
   
+  # If this user is the prototype, make sure to remove the prototype flag from all other users.
   def update_prototype
     if prototype?
-      User.update_all(["prototype = ?", false])
+      conditions = id ? ["id != ?", id] : nil
+      User.update_all(["prototype = ?", false], conditions)
+    end
+  end
+
+  def current_password_matches
+    if crypted_password.present? and not authenticated?(current_password)
+      errors.add(:current_password, "is not correct")
     end
   end
 end

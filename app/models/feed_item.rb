@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 
 # Provides a representation of an item from an RSS/Atom feed.
@@ -9,33 +9,34 @@
 # This class includes methods for:
 #
 # * Finding items based on taggings and other filters.
-# * Extracting an item from a FeedTools::Item object.
-# * Getting and producing the tokens for a feed item.
 #
-# The FeedItem class only stores summary metadata for a feed item, the actual
-# content is stored in the FeedItemContent class. This enables faster database
+# The +FeedItem+ class only stores summary metadata for a feed item, the actual
+# content is stored in the +FeedItemContent+ class. This enables faster database
 # access on the smaller summary records and allows us to use a MyISAM table for
 # the content which can then be index using MySQL's Full Text Indexing.
 #
-# Tokens are stored in a FeedItemTokensContainer.
-#
-# See also FeedItemContent and FeedItemTokensContainer.
+# See also +FeedItemContent+
 class FeedItem < ActiveRecord::Base
   acts_as_readable
   
   attr_readonly :uri
+  # Taggings to display is used in the +find_with_filters+ method
   attr_accessor :taggings_to_display
 
   validates_presence_of :link
-  validates_uniqueness_of :link
+  validates_uniqueness_of :link, :case_sensitive => false
   belongs_to :feed, :counter_cache => true
   has_one :content, :dependent => :delete, :class_name => 'FeedItemContent'
   has_one :text_index, :dependent => :delete, :class_name => 'FeedItemTextIndex'
   has_many :taggings
+  has_many :classifier_taggings, :dependent => :delete_all, :conditions => ["classifier_tagging = ?", true], :class_name => "Tagging"
+  has_many :manual_taggings, :conditions => ["classifier_tagging = ?", false], :class_name => "Tagging"
+  has_many :tags, :through => :taggings
+  after_create :touch_feed
   
-  has_many :tags, :through => :taggings  
-  
-  def self.find_or_create_from_atom(entry)
+  # Takes an atom entry and either finds the FeedItem with the matching id and updates
+  # it or creates a new feed item with the content from the atom entry.
+  def self.find_or_create_from_atom(entry, options = {})
     raise ActiveRecord::RecordNotSaved, I18n.t("winnow.errors.atom.missing_entry_id") unless entry.id
     
     unless item = FeedItem.find_by_uri(entry.id)
@@ -43,11 +44,15 @@ class FeedItem < ActiveRecord::Base
       item.uri = entry.id
     end
     
-    item.update_from_atom(entry)
-    item.save!
+    if item.new_record? || options[:update]
+      item.update_from_atom(entry)
+      item.save!
+    end
+    
     item
   end
   
+  # Updates self with the content of the atom entry.
   def update_from_atom(entry)
     raise ArgumentError, I18n.t("winnow.errors.atom.wrong_entry_id", :uri => uri, :entry_id => entry.id) if uri != entry.id
     
@@ -65,6 +70,14 @@ class FeedItem < ActiveRecord::Base
     self
   end
   
+  # Converts a +FeedItem+ into an atom entry.
+  #
+  # Supported options are:
+  # 
+  #  - include_tags: If true the tags the item is assigned to are output as categories on the entry.
+  #  - training_only: If this and +include_tags+ is true only manually created tags are output.
+  #  - base_uri: The base uri to use for all urls it produces.
+  #
   def to_atom(options = {})
     Atom::Entry.new do |entry|
       entry.title = self.title
@@ -111,7 +124,15 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
-  # Destroy feed items older that +since+.
+  def touch_feed
+    self.feed.touch if self.feed
+  end
+  
+  def before_destroy
+    self.manual_taggings.empty?
+  end
+  
+  # Destroy feed items older than +since+.
   #
   # This also deletes all classifier taggings that are on items older than +since+,
   # Manual taggings are untouched.
@@ -119,7 +140,7 @@ class FeedItem < ActiveRecord::Base
   # You could do this in the one SQL statement, however using ActiveRecord,
   # while taking slightly longer, will break this up into multiple transactions
   # and reduce the chance of getting a deadlock with a long transaction.
-  def self.archive_items(since = 30.days.ago.getutc)
+  def self.archive_items(since = 30.days.ago.getutc, stdout_log = false)
     taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
     conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
     counter = 0
@@ -128,8 +149,11 @@ class FeedItem < ActiveRecord::Base
       counter += 1
     end
     logger.info("ARCHIVAL: Deleted #{counter} items and #{taggings_deleted} classifier taggings older than #{since}")
+    puts("ARCHIVAL: Deleted #{counter} items and #{taggings_deleted} classifier taggings older than #{since}") if stdout_log
   end
   
+  # The +atom_with_filters+ method is used to find all feed items matching the 
+  # filters set by the user, and return them an ATOM feed of those results.
   def self.atom_with_filters(filters = {})
     base_uri = filters.delete(:base_uri)
     self_link = filters.delete(:self_link)
@@ -141,6 +165,8 @@ class FeedItem < ActiveRecord::Base
     text_filter = filters[:text_filter]
     mode = filters[:mode]
 
+    # The title of the ATOM feed is based on the filter criteria. This whole black
+    # is used to determine what that title will be based on what filters are present.
     title = if feeds.present? && tags.present? && text_filter.present?
       I18n.t("winnow.feeds.feed_item.mode_feeds_tags_text_filter", :mode => mode, :feeds => feeds.to_sentence, :tags => tags.to_sentence, :text_filter => text_filter)
     elsif feeds.present? && tags.present?
@@ -171,18 +197,16 @@ class FeedItem < ActiveRecord::Base
     end
   end  
   
-  # Performs a find(:all) using the options generated by passing the filters argument to 
-  # options_for_filters.
+  # Performs a <tt>find(:all)</tt> using the options generated by passing the +filters+ argument to 
+  # +options_for_filters+.
   #
-  # When a user is provided in the filters hash this method will also do some prefetching of
-  # the user and classifier taggings for the items loaded. This uses the caching mechanism
-  # provided by the FindByTagger module.  The advantage of this is that you no longer need 
+  # When a user is provided in the +filters+ hash this method will also do some prefetching of
+  # the user and classifier taggings for the items loaded. The advantage of this is that you no longer need 
   # N + 1 queries to get the taggings for each item, instead there are just 3 queries, one 
   # to get the items and one each to get the taggings for the user and user's classifier.
   #
   # Note: The Rails eager loading mechanism can't substitute for this custom solution because
-  # of the complexity of the joining in the query produced by options_with_filters.
-  #
+  # of the complexity of the joining in the query produced by +options_with_filters+.
   def self.find_with_filters(filters = {})    
     user = filters[:user]
     
@@ -192,23 +216,10 @@ class FeedItem < ActiveRecord::Base
     ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
     
-    # With feed exclusions MySQL will sometimes decide to use the feed_id index,
-    # however this results in using a filesort to sort the results, which is bad.
-    # So here we tell MySQL to ignore the feed_id index so it uses the index for
-    # sorting.
-    #
-    # My testing without the index hint shows MySQL to be pretty variable in whether
-    # it chooses to use the feed_id index or not.  It seems to be related to table
-    # sizes and whether statistics have been analyzed or not or whether the hint has
-    # been used before.  So having the hint in there takes the variation out of it
-    # and MySQL will always avoid a filesort triggered by using the feed_id index.
-    #
-    # See #842 for more info.
-    #
-    options_for_find[:from] = "`feed_items` IGNORE INDEX (index_feed_items_on_feed_id)"
-
     feed_items = FeedItem.find(:all, options_for_find)
     
+    # We are going to load the taggings for all the tags the user sees in their sidebar,
+    # plus any tags which are being filtered on.
     selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
     tags_to_display = (user.sidebar_tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
     taggings = Tagging.find(:all, 
@@ -224,12 +235,13 @@ class FeedItem < ActiveRecord::Base
           hash[tagging.tag].unshift(tagging)
         end
         hash
-      end.to_a.sort_by { |tag, _taggings| tag.name.downcase }
+      end.to_a.sort_by { |tag, _taggings| tag.sort_name }
     end
     
     feed_items
   end
-  
+
+  # Marks feed items as read that match the provided filters.
   def self.read_by!(filters)
     options_for_find = options_for_filters(filters)   
 
@@ -240,7 +252,22 @@ class FeedItem < ActiveRecord::Base
     Reading.connection.execute "INSERT IGNORE INTO readings (user_id, readable_id, readable_type, created_at, updated_at) #{feed_item_ids_sql}"
   end
   
-  # This builds the SQL to use for the find_with_filters method.
+  # Marks feed items as unread that match the provided filters.
+  def self.unread_by!(filters)
+    case filters[:mode]
+      when nil, "unread" then filters[:mode] = "all"
+    end
+
+    options_for_find = options_for_filters(filters)
+
+    feed_item_ids_sql = "SELECT DISTINCT feed_items.id FROM feed_items"
+    feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
+    feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
+
+    Reading.delete_all(["readings.user_id = ? AND readings.readable_type = 'FeedItem' AND readings.readable_id IN(#{feed_item_ids_sql})", filters[:user]])
+  end
+
+  # This builds the SQL to use for the +find_with_filters+ method.
   #
   # The SQL is pretty complex, I had a go at trying to find a nicer way to generate it, as opposed
   # to building up two big strings, one for join conditions and one for where conditions.  I tried
@@ -251,13 +278,12 @@ class FeedItem < ActiveRecord::Base
   #
   # A Hash with these keys (all optional):
   # 
-  # Also supports <tt>:limit</tt>, <tt>:offset</tt> and <tt>:order</tt> as defined by ActiveRecord::Base.find
+  # Also supports <tt>:limit</tt>, <tt>:offset</tt> and <tt>:order</tt> as defined by <tt>ActiveRecord::Base.find</tt>
   #
-  # This will return a Hash of options suitable for passing to FeedItem.find.
-  # 
+  # This will return a <tt>Hash</tt> of options suitable for passing to <tt>FeedItem.find</tt>.
   def self.options_for_filters(filters) # :doc:
     filters.assert_valid_keys(:limit, :order, :direction, :offset, :mode, :user, :feed_ids, :tag_ids, :text_filter)
-    options = {:limit => filters[:limit], :offset => filters[:offset]}
+    options = { :limit => filters[:limit], :offset => filters[:offset] }
     
     direction = case filters[:direction]
       when "asc", "desc"
@@ -265,13 +291,6 @@ class FeedItem < ActiveRecord::Base
     end
     
     options[:order] = case filters[:order]
-    when "strength"
-      if filters[:tag_ids].blank?
-        tag_ids = (filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags).map(&:id).join(',')
-      else
-        tag_ids = Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]]).map(&:id).join(",")
-      end
-      "(SELECT MAX(taggings.strength) FROM taggings WHERE taggings.tag_id IN (#{tag_ids}) AND taggings.feed_item_id = feed_items.id) #{direction}, feed_items.updated #{direction}"
     when "date"
       "feed_items.updated #{direction}"
     when "id"
@@ -317,7 +336,7 @@ class FeedItem < ActiveRecord::Base
     options
   end
   
-  # Add any text_filter. This is done using a inner join on feed_item_contents with an
+  # Add any +text_filter+. This is done using a inner join on +feed_item_text_indices+ with an
   # additional join condition that applies the text filter using the full text index.
   def self.add_text_filter_joins!(text_filter, joins)
     unless text_filter.blank?
@@ -326,6 +345,7 @@ class FeedItem < ActiveRecord::Base
     end
   end
   
+  # Adds the conditions for the selected feeds
   def self.add_feed_filter_conditions!(feed_ids, conditions)
     feeds = Feed.find_all_by_id(feed_ids.to_s.split(','))
     unless feeds.empty?
@@ -333,6 +353,7 @@ class FeedItem < ActiveRecord::Base
     end
   end
 
+  # Adds the conditions for the selected tags
   def self.build_tag_inclusion_filter(tags, mode)
     unless tags.empty?
       manual_taggings_sql = mode =~ /trained/i ? " AND classifier_tagging = 0" : nil
@@ -340,18 +361,21 @@ class FeedItem < ActiveRecord::Base
     end
   end
 
+  # Adds the conditions for the excluded tags
   def self.build_tag_exclusion_filter(tags)
     unless tags.empty?
       "NOT EXISTS (SELECT 1 FROM taggings WHERE tag_id IN(#{tags.map(&:id).join(",")}) AND feed_item_id = feed_items.id)"
     end
   end
   
+  # Adds the conditions for the excluded feeds
   def self.add_globally_exclude_feed_filter_conditions!(feeds, conditions)
     unless feeds.empty?
       conditions << "feed_items.feed_id NOT IN (#{feeds.map(&:id).join(",")})"
     end
   end
   
+  # Adds the conditions dispay only unred items
   def self.add_readings_filter_conditions!(user, conditions)
     conditions << "NOT EXISTS (SELECT 1 FROM readings WHERE readings.user_id = #{user.id} AND readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id)"
   end

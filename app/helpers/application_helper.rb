@@ -1,23 +1,29 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
-module ApplicationHelper  
-  include DateHelper
-
+module ApplicationHelper
+  # Makes sure the content is valid HTML, textilzes it to transform any 
+  # markup to HTML, and finally sanitizes it to remove dangerous HTML.
   def sth(content)
     sanitize(textilize(Hpricot.parse(content.to_s).to_s))
   end
   
+  # Makes sure the content is valid HTML, and finally sanitizes it to 
+  # remove dangerous HTML.
   def sh(content)
     sanitize(Hpricot.parse(content.to_s).to_s)
   end
   
+  # Returns the class used to style the selected main nagivation tab if the 
+  # current controller/action match.
   def tab_selected(controller, action = nil)
     "selected" if controller_name == controller and (action.nil? or action_name == action)
   end
   
+  # Generates the javascript to display the flash messages in our javascript
+  # messages system.
   def show_flash_messages
     javascript = [:notice, :warning, :error].map do |name|
       "Message.add('#{name}', #{flash[name].to_json});" unless flash[name].blank?
@@ -36,10 +42,12 @@ module ApplicationHelper
     javascript_tag(javascript) unless javascript.blank?
   end
   
+  # Generates the link to control the direction of the sorting.
   def direction_link
     link_to_function "<span class='asc' title='#{t("winnow.sort_direction.ascending_tooltip")}'>#{t("winnow.sort_direction.ascending")}</span><span class='desc' title='#{t("winnow.sort_direction.descending_tooltip")}'>#{t("winnow.sort_direction.descending")}</span>", "", :id => "direction"
   end
   
+  # Helper to check if the current user is an admin.
   def is_admin?
     if @is_admin.nil?
       @is_admin = (current_user.has_role?('admin') == true)
@@ -48,6 +56,8 @@ module ApplicationHelper
     @is_admin
   end
   
+  # Custom version of the +in_place_editor+ helper to expose additional features
+  # from the javascript library.
   def in_place_editor(field_id, options = {})
     function =  "new Ajax.InPlaceEditor("
     function << "'#{field_id}', "
@@ -85,14 +95,17 @@ module ApplicationHelper
     javascript_tag(function)
   end
   
+  # Checks the cookies to determine whether or render a folder as opened or closed.
   def open_folder?(folder)
     cookies[dom_id(folder)] =~ /true/i
   end
   
+  # Checks the cookies to determine whether or render a section as opened or closed.
   def section_open?(id)
     cookies[id] =~ /true/i
   end
   
+  # Generates the control to mark a tag/feed a globally excluded/not globally excluded.
   def globally_exclude_check_box(tag_or_feed)
     url = if tag_or_feed.is_a?(Tag)
       globally_exclude_tag_path(tag_or_feed)
@@ -107,82 +120,105 @@ module ApplicationHelper
       :title => t("winnow.general.globally_exclude_tooltip")
   end
 
+  # Generates the control to mark a tag subscribed/unsbscribed
   def subscribe_check_box(tag)
     check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :id => dom_id(tag, 'subscribe'), 
       :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}"),
       :title => t("winnow.tags.main.subscribe_tooltip")
   end
   
+  # Generates the controls to filter the list of feed items by feeds.
   def feed_filter_controls(feeds, options = {})
     content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(options[:auto_complete])), :id => "add_new_feed", :url => options[:auto_complete]) if options[:add]
+    if options[:add]
+      begin
+        uri = URI.parse(options[:auto_complete])
+        if uri.scheme.present?
+          content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(uri.to_s)), :id => "add_new_feed", :url => uri.to_s)
+        end
+      rescue URI::Error # don't add the "Create Feed" option if the URI is not valid
+      end
+    end
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
+  # Generates an individual control to filter the list of feed items by a feed.
+  # See ApplicationHelper#feed_filter_controls.
   def feed_filter_control(feed, options = {})   
     url      = case options[:remove]
-      when :subscription then subscribe_feed_path(feed, :subscribe => false)
+      when :subscription then subscribe_feed_path(feed, :subscribe => "false")
       when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
     end
     function = case options[:remove]
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
     end
+    
+    class_names = [dom_id(feed), "clearfix", "feed"]
+    class_names << "draggable" if options[:draggable]
 
     html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
     html = content_tag(:span, html, :class => "actions")
 
-    html << link_to_function(h(feed.title), "", :class => "name")
+    html << link_to_function(h(feed.title), "", :class => "name", :"data-sort" => feed.sort_title)
     
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
 
-    class_names = [dom_id(feed), "clearfix", "feed"]
-    class_names << "draggable" if options[:draggable]
     html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
     html
   end
   
+  # Generates the controls to filter the list of feed items by feeds.
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content << content_tag(:li, t("winnow.items.sidebar.create_tag", :tag => h(options[:auto_complete])), :id => "add_new_tag", :name => options[:auto_complete]) if options[:add]
     content_tag :ul, content, options.delete(:ul_options) || {}
   end
   
+  # Generates an individual control to filter the list of feed items by a feed.
+  # See ApplicationHelper#feed_filter_controls.
   def tag_filter_control(tag, options = {})
     if options[:remove] == :subscription && current_user.id == tag.user_id
       options = options.except(:remove)
       options[:remove] = :sidebar
     end
-    url      = case options[:remove]
+    
+    remove_url = case options[:remove]
       when :subscription           then unsubscribe_tag_path(tag)
-      when :sidebar                then sidebar_tag_path(tag, :sidebar => false)
+      when :sidebar                then sidebar_tag_path(tag, :sidebar => "false")
       when Folder                  then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
+    
+    subscribe_url = case options[:remove]
+      when :subscription           then subscribe_tag_path(tag, :subscribe => true)
+      when :sidebar                then sidebar_tag_path(tag, :sidebar => true)
+    end
+    
     function = case options[:remove]
       when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
     end
-
-    html  = ""
-    html << link_to_function("Rename", "var new_tag_name = prompt('Tag Name:', $(this).up('.tag').down('.name').innerHTML.unescapeHTML()); if(new_tag_name) { #{remote_function(:url => tag_path(tag), :method => :put, :with => "'tag[name]=' + new_tag_name")} }", :class => "edit") if options[:editable] && current_user.id == tag.user_id
-    html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html  = content_tag(:span, html, :class => "actions")
-
-    html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"))
-
-    html =  content_tag(:span, html, :class => "filter")
-    html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
     
     class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id
     class_names << "draggable" if options[:draggable]
-    url  =  case options[:remove]
-      when :subscription then subscribe_tag_path(tag, :subscribe => true)
-      when :sidebar      then sidebar_tag_path(tag, :sidebar => true)
+
+    html  = ""
+    if options[:editable] && current_user.id == tag.user_id
+      html << link_to("Rename", "#", :class => "edit", "data-update_url" => "#{tag_path(tag)}")
     end
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => url, :title => tag_tooltip(tag))
+    html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => remove_url, :method => :put)}", :class => "remove")
+    html  = content_tag(:span, html, :class => "actions")
+
+    html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"), :"data-sort" => tag.sort_name)
+
+    html =  content_tag(:span, html, :class => "filter")
+    html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
+    
+    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => subscribe_url, :title => tag_tooltip(tag))
     html
   end
   
+  # Generates a tooltip for the tag filters in the feed items sidebar. 
+  # The tooltip contains the training information for the tag.
   def tag_tooltip(tag)
     if tag.user_id == current_user.id 
       t("winnow.items.sidebar.tag_tooltip", :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
@@ -191,6 +227,8 @@ module ApplicationHelper
     end
   end
   
+  # Determines the path to use for the help link based on the current page 
+  # and the help link settings.
   def help_path
     setting = YAML.load(Setting.find_or_initialize_by_name("Help").value.to_s)
     if setting && setting[controller_name] && setting[controller_name][action_name]
@@ -201,6 +239,7 @@ module ApplicationHelper
   rescue ArgumentError # Swallow malformed yaml exceptions
   end
   
+  # Generates the classes that should exist on a tag. These are used to properly style the tag.
   def tag_classes(tag)
     classes = [dom_id(tag)]
     
@@ -214,12 +253,14 @@ module ApplicationHelper
     classes.join(" ")
   end
 
+  # Generates the classes that should exist on a feed. These are used to properly style the feed.
   def feed_classes(feed)
     if current_user.globally_excluded?(feed)
       "globally_excluded"
     end
   end
 
+  # Generates the state text that should be shown for a feed.
   def tag_state(tag)
     if current_user.globally_excluded?(tag)
       t("winnow.tags.general.globally_excluded")
@@ -228,6 +269,7 @@ module ApplicationHelper
     end
   end
 
+  # Generates a rounded button with a javascript action.
   def rounded_button_function(name, function, html_options = {}, &block)
     (html_options[:class] ||= "") << " button"
     if icon = html_options.delete(:icon)
@@ -237,12 +279,78 @@ module ApplicationHelper
     end
   end
 
+  # Generates a rounded button with a link action.
   def rounded_button_link(name, options = {}, html_options = {})
     (html_options[:class] ||= "") << " button"
     if icon = html_options.delete(:icon)
       link_to(content_tag(:span, name, :class => "icon #{icon}"), options, html_options)
     else
       link_to(name, options, html_options)
+    end
+  end
+  
+  def safari?
+    # --- Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_8; en-us) AppleWebKit/531.9 (KHTML, like Gecko) Version/4.0.3 Safari/531.9
+    # --- Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/531.9 (KHTML, like Gecko) Version/4.0.3 Safari/531.9.1
+    request.env["HTTP_USER_AGENT"] =~ /Safari/
+  end
+  
+  def chrome?
+    # --- Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/530.5 (KHTML, like Gecko) Chrome/2.0.172.43 Safari/530.5
+    request.env["HTTP_USER_AGENT"] =~ /Chrome/
+  end
+  
+  def firefox?
+    # --- Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1) Gecko/20090624 Firefox/3.5
+    # --- Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /Firefox/
+  end
+  
+  def opera?
+    # --- Opera/9.64 (Macintosh; Intel Mac OS X; U; en) Presto/2.1.1
+    # --- Opera/9.64 (Windows NT 5.1; U; en) Presto/2.1.1
+    request.env["HTTP_USER_AGENT"] =~ /Opera/
+  end
+  
+  def ie6?
+    # --- Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /MSIE 6/
+  end
+  
+  def ie7?
+    # --- Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /MSIE 7/
+  end
+  
+  def ie8?
+    # --- Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)
+    request.env["HTTP_USER_AGENT"] =~ /MSIE 8/
+  end
+
+  # Returns the proper bookmarklet installation instructions based on the 
+  # users browser.
+  def bookmarklet_installation_instructions
+    if chrome? # this comes first, because safari? will return true when the browser is really chrome
+      # drag to bookmarks bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.chrome")
+    elsif safari?
+      # drag to bookmarks bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.safari")
+    elsif firefox?
+      # drag to bookmarks toolbar, right click + Bookmark This Link + Folder - Bookmarks Toolbar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.firefox")
+    elsif opera?
+      # drag to personal bar, right click + "Bookmark Link..." + Details - check Show on Personal Bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.opera")
+    elsif ie6?
+      # right click + "Add to Favorites..." + Yes to Security Alert + Create in - Links
+      t("winnow.feeds.header.bookmarklet_installation_instructions.ie6")
+    elsif ie7?
+      # right click + "Add to Favorites..." + Yes to Security Alert + Create in - Favorites Bar
+      t("winnow.feeds.header.bookmarklet_installation_instructions.ie7")
+    elsif ie8?
+      # right click + "Add to Favorites..." + Yes to Security Alert + Create in - Links
+      t("winnow.feeds.header.bookmarklet_installation_instructions.ie8")
     end
   end
 end

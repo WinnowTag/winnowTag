@@ -17,7 +17,7 @@ module Spec
         before(:all) do
           @selenium_driver = Selenium::Client::Driver.instance(
             Selenium::Configuration.selenium_host, Selenium::Configuration.selenium_port,
-            Selenium::Configuration.browser, Selenium::Configuration.test_url, 10
+            Selenium::Configuration.browser, Selenium::Configuration.test_url, 60
           )
         end
 
@@ -40,10 +40,11 @@ module Spec
           # page.close_current_browser_session
           page.delete_all_visible_cookies
           
-          page.get_all_window_names[1..-1].each do |window|
-            page.select_window window
-            page.close
-          end
+          # Selenium RC must run in -singleWindow mode for this to work
+          # page.get_all_window_names[1..-1].each do |window|
+          #             page.select_window window
+          #             page.close
+          #           end
           
           page.select_window nil
         end

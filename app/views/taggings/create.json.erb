@@ -1,5 +1,6 @@
 <%= {
   :id => dom_id(@tagging.tag),
+  :sort_name => @tagging.tag.sort_name,
   :filterHtml => tag_filter_control(@tagging.tag, :editable => true, :remove => :subscription),
   :tooltip => tag_tooltip(@tagging.tag),
   :classifierProgress => t("winnow.taggings.classifier_progress")

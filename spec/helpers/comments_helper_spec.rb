@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -16,6 +16,8 @@ describe CommentsHelper do
   
   describe "#can_edit_comment?" do
     
+    # CommentsHelper relies upon this method, which is defined in ApplicationHelper,
+    # into which CommentsHelper is included.
     def is_admin?
       @is_admin
     end

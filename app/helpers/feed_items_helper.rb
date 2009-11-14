@@ -1,27 +1,11 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 module FeedItemsHelper
-  include BiasSliderHelper
-  
-  def link_to_feed(feed, options = {})
-    if feed.alternate
-      link_to(h(feed.title), feed.alternate, options.merge(:target => "_blank"))
-    else
-      h(feed.title)
-    end
-  end
-  
-  def link_to_feed_item(feed_item, options = {})
-    if feed_item.link 
-      link_to(feed_item_title(feed_item), feed_item.link, options.merge(:target => "_blank"))
-    else
-      feed_item_title(feed_item)
-    end
-  end
-  
+  # The +feed_item_title+ helper prints out the feed items title, or the
+  # default text when no title exists for the feed item.
   def feed_item_title(feed_item)
     if feed_item.title.blank?
       content_tag :span, t("winnow.items.main.no_title"), :class => "notitle"
@@ -30,6 +14,8 @@ module FeedItemsHelper
     end
   end
 
+  # The +tag_controls+ helper generates the list of taggings applied to a feed item.
+  # These are displayed in the collapsed view of a feed item.
   def tag_controls(feed_item)
     html = feed_item.taggings_to_display.map do |tag, taggings|
       if tag.user == current_user
@@ -44,29 +30,16 @@ module FeedItemsHelper
     content_tag(:ul, html, :class => "tag_list")
   end
   
-  def feed_control_for(feed_item)
-    if feed_item.author.blank?
-      t("winnow.items.main.feed_metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
-    else
-      t("winnow.items.main.metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), :author => h(feed_item.author))
-    end
-  end
-  
-  # Format a classifier tagging strength as a percentage.
-  def format_classifier_strength(taggings)
-    taggings = Array(taggings)
-    
-    if classifier_tagging = taggings.detect { |tagging| tagging.classifier_tagging? }
-      "%.2f%" % (classifier_tagging.strength * 100)
-    end
-  end
-  
-  # Note: Update item.js when this changes
+  # Generates an individual tag tag control.
+  # See FeedItemsHelper#tag_control_for.
+  # Note: Update item.js when this changes.
   def tag_control_for(feed_item, tag, classes, strength)
     classes << "tag_control" << dom_id(tag) << "stop"
-    content_tag(:li, content_tag(:span, h(tag.name), :class => "name"), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
+    content_tag(:li, content_tag(:span, h(tag.name), :class => "name", :"data-sort" => tag.sort_name), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
   end
   
+  # Generates the text for the tooltip displayed on the list of tags applied to a feed item.
+  # See FeedItemsHelper#tag_control_for.
   def tag_control_tooltip(tag, strength)
     title = []
     title << "by #{h(tag.user.login)}" if tag.user_id != current_user.id
@@ -74,6 +47,9 @@ module FeedItemsHelper
     title.join(", ") unless title.blank?
   end
   
+  # Generates the classes that should exist on an individual tag control.
+  # These are used to properly style the tagging.
+  # See FeedItemsHelper#tag_control_for.
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
 	  classes  = Array(classes)
@@ -91,42 +67,33 @@ module FeedItemsHelper
     classes.uniq
   end
   
+  # The +feed_control_for+ generates the control to show/hide the feed information on a feed item/
+  # This is displayed in the collapsed view of a feed item.
+  def feed_control_for(feed_item)
+    if feed_item.author.blank?
+      t("winnow.items.main.feed_metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
+    else
+      t("winnow.items.main.metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), :author => h(feed_item.author))
+    end
+  end
+  
+  # Formats a classifier tagging strength as a percentage.
+  def format_classifier_strength(taggings)
+    taggings = Array(taggings)
+    
+    if classifier_tagging = taggings.detect { |tagging| tagging.classifier_tagging? }
+      "%.2f%" % (classifier_tagging.strength * 100)
+    end
+  end
+  
+  # Fetches the list of feeds that should be displayed in the sideabr.
+  # Currently, this is the list of feeds the user is subscribed to, 
+  # excluding any globally excluded feeds, and including any feeds which 
+  # are being specificaly requested right now.
   def feeds_for_sidebar
     feeds = current_user.feeds
     feed_ids = params[:feed_ids].to_s.split(",").map(&:to_i) - feeds.map(&:id)
     feeds += Feed.find_all_by_id(feed_ids) unless feed_ids.empty?
-    feeds.sort_by { |feed| feed.title.downcase }
-  end
-
-  def render_clues(clues)
-    sorted_grouped_clues = clues.sort_by { |clue| clue['prob'] }.reverse.in_groups_of((clues.size.to_f / 3).ceil)
-    content_tag('table') do
-      clue_header +
-      sorted_grouped_clues.shift.zip(*sorted_grouped_clues).map do |clues|
-        render_clue_row(clues)
-      end.join
-    end
-  end
-  
-  def clue_header
-    content_tag('tr', 
-      (content_tag('th', 'Clue', :class => "clue") + content_tag('th', 'Prob', :class => "prob")) * 3
-    )
-  end
-  
-  def render_clue_row(clue_row)
-    content_tag('tr') do
-      clue_row.map do |clue|
-        render_clue(clue)
-      end.join
-    end
-  end
-  
-  def render_clue(clue)
-    if clue
-      content_tag('td', h(clue['clue']), :class => 'clue') + content_tag('td', clue['prob'], :class => 'prob')
-    else
-      content_tag('td', nil, :class => 'clue') + content_tag('td', nil, :class => 'prob')
-    end
+    feeds.sort_by { |feed| feed.sort_title }
   end
 end

@@ -1,0 +1,18 @@
+Activerecord-errors-delete
+==========================
+
+It's annoying how ActiveRecord::AutosaveAssociation forces you to have a horrible default error message when using things like #accepts_nested_attributes_for, and no one to set it, or remove it. 
+
+Until that sun shining day, this plugin adds #delete to ActiveRecord::Errors so you can remove the junk ActiveRecord imposes on you.
+
+
+Example
+=======
+
+your_model.errors.add("foo", "can't be blank")
+your_model.errors.on("foo") => "can't be blank"
+your_model.errors.delete("foo")
+your_model.errors.on("foo") => nil
+
+
+Copyright (c) 2009 Zach Dennis, released under the MIT license

@@ -54,6 +54,7 @@
       var value = this.lookup(key, opts.defaultValue);
       if (typeof value != "string" && value) value = this.pluralize(value, opts.count);
       if (typeof value == "string") value = interpolate(value, opts);
+      if (value == null) value = 'translation missing: ' + [locale()].concat(key).join(", ");
       return value;
     }
   };

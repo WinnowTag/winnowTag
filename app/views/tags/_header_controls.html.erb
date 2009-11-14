@@ -16,3 +16,24 @@
   </select>
   <%= direction_link %>
 </div>
+
+<% if is_admin? -%>
+<div class="toolbar right">
+  <%= rounded_button_function t("winnow.tags.header.upload"), "$('upload_tag').toggle()", :icon => "add", :title => t("winnow.tags.header.upload_tooltip") %>
+</div>
+
+<div id="upload_tag" style="clear:both;<%= flash[:error] ? '' : 'display:none' %>">
+  <fieldset class="full">
+    <legend><%= t("winnow.tags.header.upload") %></legend>
+
+    <% form_tag upload_tags_path, :method => :post, :multipart => true do -%>
+      <p><%= t("winnow.tags.header.upload_description") %></p>
+      <p>
+        <%= file_field_tag 'atom', :size => 60, :title => t("winnow.tags.header.upload_tooltip") %>
+        <%= submit_tag t("winnow.tags.header.upload_button") %> 
+      </p>
+    <% end -%>    
+  </fieldset>
+</div>
+
+<% end -%>

@@ -1,17 +1,17 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FeedbacksController do
-  before(:each) do
-    @current_user = Generate.user!
-    login_as @current_user
-  end
-  
   describe "handling GET /feedbacks" do
+    before(:each) do
+      @current_user = Generate.admin!
+      login_as @current_user
+    end
+  
     def do_get(params = {})
       get :index, params
     end
@@ -53,9 +53,12 @@ describe FeedbacksController do
       end
     end
   end
-  
 
   describe "handling GET /feedbacks/new" do
+    before(:each) do
+      @current_user = Generate.user!
+      login_as @current_user
+    end
 
     before(:each) do
       @feedback = mock_model(Feedback)
@@ -93,7 +96,11 @@ describe FeedbacksController do
   end
 
   describe "handling POST /feedbacks" do
-
+    before(:each) do
+      @current_user = Generate.user!
+      login_as @current_user
+    end
+  
     before(:each) do
       @feedback = mock_model(Feedback, :to_param => "1")
       @feedbacks = stub("feedbacks", :create! => @feedback)

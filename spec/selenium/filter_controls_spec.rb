@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -41,7 +41,13 @@ describe "filter controls" do
       page.location.should =~ /\#order=date&direction=desc&mode=unread$/
 
       page.type "text_filter", "ruby"
-      hit_enter "text_filter"
+      
+      # Need to fire the submit event on the form directly
+      # because Selenium seems to skip handlers attached using
+      # $(element).observe when run under IE. Using fire event
+      # ensures that event handlers get called.
+      #
+      page.fire_event("text_filter_form", "submit")
 
       page.location.should =~ /\#order=date&direction=desc&mode=unread&text_filter=ruby$/
     end
@@ -52,11 +58,10 @@ describe "filter controls" do
       page.open login_path
       page.open feed_items_path(:anchor => "mode=trained&tag_ids=#{@tag.id}&feed_ids=1")
       page.wait_for :wait_for => :ajax
-
       page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1$/
 
       page.type "text_filter", "ruby"
-      hit_enter "text_filter"
+      page.fire_event("text_filter_form", "submit")
 
       page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
     end
@@ -67,6 +72,14 @@ describe "filter controls" do
     before(:each) do
       @tag = Generate.tag!(:user => @user)
       @sql = Generate.tag!(:user => @user)
+      # In IE there seems to be a synching problem,
+      # sometimes loading the page happens 
+      # without the @tag and @sql tags present, I don't know if
+      # this is a case of the follow load being ignored
+      # because the previous one was same or what, but putting
+      # the sleep here always ensures that @other appears in 
+      # the page.
+      sleep(1)
       page.open feed_items_path
       page.wait_for :wait_for => :ajax
     end

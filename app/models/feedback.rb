@@ -1,13 +1,16 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Represents feedback submitted by a User.
 class Feedback < ActiveRecord::Base
   belongs_to :user
   
   validates_presence_of :user_id, :body
   
+  # Matches the given value against any of the listed attributes.
   named_scope :matching, lambda { |q|
     conditions = %w[feedbacks.body users.login].map do |attribute|
       "#{attribute} LIKE :q"
@@ -15,6 +18,8 @@ class Feedback < ActiveRecord::Base
     { :include => :user, :conditions => [conditions, { :q => "%#{q}%" }] }
   }
   
+  # Orders the results by the given order and direction. If no order is given or one is given but
+  # is not one of the known orders, the default order is used. Likewise for direction.
   named_scope :by, lambda { |order, direction|
     orders = {
       "id"         => "feedbacks.id",

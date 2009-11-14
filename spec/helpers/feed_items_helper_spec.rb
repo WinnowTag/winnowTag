@@ -1,41 +1,14 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
-
-# Need to explicitly require tag for the Tag() method
-require 'tag'
 
 describe FeedItemsHelper do
   before(:each) do
     def helper.current_user
       @current_user ||= Generate.user!
-    end
-  end
-  
-  describe "link_to_feed" do
-    it "link_to_feed_without_link" do
-      feed = mock_model(Feed, :title => "Feed Title", :alternate => nil)
-      assert_equal "Feed Title", helper.link_to_feed(feed)
-    end
-  
-    it "link_to_feed_with_link" do
-      feed = mock_model(Feed, :title => "Feed Title", :alternate => "http://example.com")
-      assert_equal '<a href="http://example.com" target="_blank">Feed Title</a>', helper.link_to_feed(feed)
-    end
-  end
-  
-  describe "link_to_feed_item" do
-    it "link_to_feed_item_without_link" do
-      feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => nil)
-      assert_equal "FeedItem Title", helper.link_to_feed_item(feed_item)
-    end
-  
-    it "link_to_feed_item_with_link" do
-      feed_item = mock_model(FeedItem, :title => "FeedItem Title", :link => "http://example.com")
-      assert_equal '<a href="http://example.com" target="_blank">FeedItem Title</a>', helper.link_to_feed_item(feed_item)
     end
   end
   
@@ -72,7 +45,7 @@ describe FeedItemsHelper do
     it "creates a list item with the proper controls inside it" do
       feed_item = mock_model(FeedItem)
       
-      tag = mock_model(Tag, :name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id)
+      tag = mock_model(Tag, :name => "tag1", :sort_name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id)
       classes = ["positive", "classifier"]
       helper.tag_control_for(feed_item, tag, classes, nil).should have_tag("li.positive.classifier") do
         with_tag ".name", "tag1"
@@ -83,9 +56,9 @@ describe FeedItemsHelper do
   describe "tag controls" do
     it "created list items for each tag" do
       taggings = [
-        [ mock_model(Tag, :name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
-        [ mock_model(Tag, :name => "tag2", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
-        [ mock_model(Tag, :name => "tag3", :user => helper.current_user, :user_id => helper.current_user.id), [] ]
+        [ mock_model(Tag, :name => "tag1", :sort_name => "tag1", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
+        [ mock_model(Tag, :name => "tag2", :sort_name => "tag2", :user => helper.current_user, :user_id => helper.current_user.id), [] ],
+        [ mock_model(Tag, :name => "tag3", :sort_name => "tag3", :user => helper.current_user, :user_id => helper.current_user.id), [] ]
       ]
       feed_item = mock_model(FeedItem, :taggings_to_display => taggings)
     

@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../../spec_helper'
 
@@ -55,7 +55,7 @@ describe '/layouts/_navbar.html.erb' do
 
     it "contains a link to the my info page" do
       render_it
-      response.should have_tag(".extra a[href=?]", edit_account_path(:id => current_user))
+      response.should have_tag(".extra a[href=?]", edit_account_path)
     end
 
     it "contains a link to logout" do

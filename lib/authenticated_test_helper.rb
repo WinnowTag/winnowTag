@@ -28,7 +28,7 @@ module AuthenticatedTestHelper #:nodoc:
   #   assert_requires_login(:bob) { |c| c.get :edit, :id => 1 }
   #
   def assert_requires_login(login = nil)
-    yield HttpLoginProxy.new(self, login)
+    yield HttpLoginProxy.new(self, login, login_path)
   end
 
   def reset!(*instance_vars)
@@ -43,9 +43,10 @@ end
 class BaseLoginProxy
   attr_reader :controller
   attr_reader :options
-  def initialize(controller, login)
+  def initialize(controller, login, login_path)
     @controller = controller
     @login      = login
+    @login_path = login_path
   end
 
   private
@@ -72,6 +73,6 @@ class HttpLoginProxy < BaseLoginProxy
     end
     
     def check
-      @controller.assert_redirected_to :controller => 'account', :action => 'login'
+      @controller.assert_redirected_to @login_path
     end
 end

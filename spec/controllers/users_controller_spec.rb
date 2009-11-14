@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -10,10 +10,10 @@ describe UsersController do
     user = Generate.user!
     
     cannot_access(user, :get, :index)
-    cannot_access(user, :get, :create)
-    cannot_access(user, :get, :login_as, :id => user)
-    cannot_access(user, :get, :update,   :id => user)
-    cannot_access(user, :get, :destroy,  :id => user)
+    cannot_access(user, :get, :new)
+    cannot_access(user, :post, :create)
+    cannot_access(user, :delete, :destroy,  :id => user)
+    cannot_access(user, :post, :login_as, :id => user)
   end
   
   it "index" do

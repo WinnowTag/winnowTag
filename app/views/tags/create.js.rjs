@@ -1,2 +1,2 @@
-page['tag_filters'].insertInOrder 'li', '.name', tag_filter_control(@tag, :draggable => true, :editable => true, :remove => :subscription), @tag.name
+page['tag_filters'].insertInOrder '.name@data-sort', tag_filter_control(@tag, :draggable => true, :editable => true, :remove => :subscription), @tag.sort_name
 page << "itemBrowser.bindTagFilterEvents($('tag_filters').down('##{dom_id(@tag)}'));"

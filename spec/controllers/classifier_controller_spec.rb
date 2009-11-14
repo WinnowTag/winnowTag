@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -11,14 +11,14 @@ describe ClassifierController do
     login_as @user
     User.stub!(:find_by_id).and_return(@user)
     @user.stub!(:potentially_undertrained_changed_tags).and_return([])
-    @user.stub!(:changed_tags).and_return([mock_model(Tag, :name => 'tag')])
+    @user.stub!(:changed_tags).and_return([mock_model(Tag, :id => 99, :name => 'tag')])
   end  
 
   describe '#classify' do
     it "should create a new job on classify" do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
-      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/tags/99/training.atom").and_return(mock_job)
     
       post "classify"
       response.should be_success
@@ -27,7 +27,7 @@ describe ClassifierController do
     it "should store job id in the session" do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id).and_return("MOCK-JOB-ID")
-      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/tags/99/training.atom").and_return(mock_job)
     
       post "classify"
       session[:classification_job_id].should == ["MOCK-JOB-ID"]
@@ -64,7 +64,7 @@ describe ClassifierController do
       
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
-      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").and_return(mock_job)
+      Remote::ClassifierJob.should_receive(:create).with(:tag_url => "http://test.host/tags/99/training.atom").and_return(mock_job)
       
       post 'classify', :puct_confirm => '1'
     end
@@ -77,8 +77,19 @@ describe ClassifierController do
       response.should be_success
     end
   
-    it "should start a job when the stored job id is complete" do
+    it "should remove the old job and start a new job when the stored job id is complete" do
       job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::COMPLETE)
+      job.should_receive(:destroy)
+      Remote::ClassifierJob.should_receive(:find).with("EXISTING-JOB-ID").and_return(job)
+      Remote::ClassifierJob.should_receive(:create).and_return(mock_model(Remote::ClassifierJob, :id => "NEWJOB"))
+      session[:classification_job_id] = ["EXISTING-JOB-ID"]
+      post "classify"
+      response.should be_success
+    end
+    
+    it "should remove the old job and start a new job when the stored job id is in error" do
+      job = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::ERROR)
+      job.should_receive(:destroy)
       Remote::ClassifierJob.should_receive(:find).with("EXISTING-JOB-ID").and_return(job)
       Remote::ClassifierJob.should_receive(:create).and_return(mock_model(Remote::ClassifierJob, :id => "NEWJOB"))
       session[:classification_job_id] = ["EXISTING-JOB-ID"]
@@ -87,12 +98,12 @@ describe ClassifierController do
     end
     
     it "should start multiple jobs for multiple changed tags" do
-      @user.stub!(:changed_tags).and_return([mock_model(Tag, :name => 'tag1'), mock_model(Tag, :name => 'tag2')])
+      @user.stub!(:changed_tags).and_return([mock_model(Tag, :id => 90, :name => 'tag1'), mock_model(Tag, :id => 91, :name => 'tag2')])
       Remote::ClassifierJob.should_receive(:create).
-                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag1/training.atom").
+                            with(:tag_url => "http://test.host/tags/90/training.atom").
                             and_return(mock_model(Remote::ClassifierJob, :id => 'JOB-1'))
       Remote::ClassifierJob.should_receive(:create).
-                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag2/training.atom").
+                            with(:tag_url => "http://test.host/tags/91/training.atom").
                             and_return(mock_model(Remote::ClassifierJob, :id => 'JOB-2'))
                           
      post "classify"
@@ -104,7 +115,7 @@ describe ClassifierController do
       mock_job = mock_model(Remote::ClassifierJob)
       mock_job.stub!(:id)
       Remote::ClassifierJob.should_receive(:create).
-                            with(:tag_url => "http://test.host/#{@user.login}/tags/tag/training.atom").
+                            with(:tag_url => "http://test.host/tags/99/training.atom").
                             and_raise(ActiveResource::TimeoutError.new('classifier-timeout'))
       ExceptionNotifier.should_receive(:deliver_exception_notification)
       post "classify"
@@ -120,8 +131,8 @@ describe ClassifierController do
       session[:classification_job_id] = ["JOB-ID"]
       get "status"
       response.should be_success
-      response.headers['X-JSON'].should include('"progress": 0')
-      response.headers['X-JSON'].should include('"status": "Waiting"')
+      response.headers['X-JSON'].should include('"progress":0')
+      response.headers['X-JSON'].should include('"status":"Waiting"')
     end
 
     it "should delete the job when complete" do
@@ -147,7 +158,7 @@ describe ClassifierController do
       session[:classification_job_id] = ["STALE"]
       get "status"
       assert_response 500
-      response.headers['X-JSON'].should include('"error_message": "No classification process running"')
+      response.headers['X-JSON'].should include('"error_message":"No classification process running"')
     end
     
     it "should combine the progress for multiple classification jobs" do
@@ -159,33 +170,7 @@ describe ClassifierController do
       
       get "status"
       response.should be_success
-      response.headers['X-JSON'].should include('"progress": 50.0')      
+      response.headers['X-JSON'].should include('"progress":50.0')
     end
   end
-  
-  describe '#cancel' do
-    it "should cancel a running job" do
-      job = mock_model(Remote::ClassifierJob)
-      job.should_receive(:destroy)
-    
-      Remote::ClassifierJob.should_receive(:find).with("JOB-ID").and_return(job)
-      session[:classification_job_id] = ["JOB-ID"]
-    
-      post "cancel"
-      session[:classification_job_id].should be_nil
-    end
-    
-    it "should cancel all classification jobs" do
-      job1 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 75)
-      job2 = mock_model(Remote::ClassifierJob, :status => Remote::ClassifierJob::Status::WAITING, :progress => 25)
-      job1.should_receive(:destroy)
-      job2.should_receive(:destroy)
-      Remote::ClassifierJob.should_receive(:find).with("JOB-1").and_return(job1)
-      Remote::ClassifierJob.should_receive(:find).with("JOB-2").and_return(job2)
-      session[:classification_job_id] = ["JOB-1", "JOB-2"]      
-      
-      post "cancel"
-      session[:classification_job_id].should be_nil
-    end
-  end  
 end

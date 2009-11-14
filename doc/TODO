@@ -1,3 +1,17 @@
+cleanup tags controller
+
+Get libxml working on CI
+ - # TODO: This needs to be fixed and re-enabled
+ - http://runcoderun.com/mvanholstyn
+ - http://rhnh.net/2009/05/18/selenium-webrat-and-the-firefox-beta
+
+Trac post-commit hooks
+ - http://www.rene.bz/2008/12/07/trac-post-commit-hooks-git
+
+association dependencies
+
+? put nokogiri back (try out 2.3.3 gem stuff)
+
 loading message
 auto test
 zen test
@@ -6,6 +20,7 @@ devel structure
 deploy installs gems
 
 * ie6 & noscript erros - i18n
+* ie7 noscript styling
 
 Spec Cleanup
  * urn:uuid
@@ -22,9 +37,6 @@ Todo
  - Polishing the Winnow/Collector UI, and making it easier to keep the two in sync, including Update Collector UI with improvements from Winnow UI (#973, #993)
  - Code refactoring/ceaning/testing
  - Performance Enhancements
-
-Refactoring
- - restrict tag names to alphanumeric-_
 
 Bug
  - loading next page after marking some read

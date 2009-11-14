@@ -1,14 +1,20 @@
 # Ubuntu: ln -s /usr/lib/firefox-3.0.5/firefox /usr/bin/firefox-bin (replace 3.0.5 with whatever version of firefox you are using)
 default:
-  test_host: test.winnow.local
+  test_host: localhost:3000
   selenium_host: localhost
   selenium_port: 4444
-  browser: firefox
+  browser: "*firefox"
   # display: ":0"
-firefox:
-  browser: firefox
-safari:
-  browser: safari
-# ie7:
-#   browser: ie7
-#   selenium_host: 192.168.1.1
+osx_firefox:
+  browser: "*firefox"
+osx_safari:
+  browser: "*safari"
+windows_firefox:
+  selenium_host: 10.0.76.148
+  browser: "*firefox"
+windows_safari:
+  selenium_host: 10.0.76.148
+  browser: "*safari"
+windows_ie:
+  selenium_host: 10.0.76.148
+  browser: "*iexplore"

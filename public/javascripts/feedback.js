@@ -1,8 +1,12 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// When the user clicks on the link to leave feedback, shows the feedback
+// form on top of the page. Hides it when the user submits or cancels the
+// form.
 var Feedback = Class.create({
   initialize: function(element) {
     this.element = element;

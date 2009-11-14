@@ -1,8 +1,13 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Represents a feed item shown on the items page. Provides:
+//   * toggling for hiding/showing the moderation panel used to train tags
+//   * training tags on the feed item
+//   * marking items read/unread
 var Item = Class.create({
   initialize: function(element) {
     this.element           = $(element);
@@ -18,6 +23,10 @@ var Item = Class.create({
     // this.training_controls = this.moderation_panel.down(".training_controls");
     // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
     // this.add_tag_selected  = null;
+    
+    // Queues by tag name for tagging requests. See the TagQueue class
+    // for more details.
+    this.tagQueues = {};
     
     this.setupEventListeners();
     
@@ -195,6 +204,7 @@ var Item = Class.create({
       this.addTagFieldChanged(this.add_tag_field, "");
     }.bind(this));
     
+    // hide the moderation panel if the user presses the ESC key
     this.add_tag_field.observe("keydown", function(event) {
       if(event.keyCode == Event.KEY_ESC) { this.hideTrainingControls(); }
     }.bind(this));
@@ -206,6 +216,8 @@ var Item = Class.create({
     }).bind(this).delay(0.3);
   },
   
+  // Called when the user changes the contents of the text field for adding
+  // a new tag. This text field is shown in the moderation panel.
   addTagFieldChanged: function(field, value, event) {
     this.add_tag_selected = null;
     this.training_controls.select(".tag").each(function(tag) {
@@ -243,8 +255,18 @@ var Item = Class.create({
   },
   
   initializeTrainingControl: function(tag) {
-    tag.down(".name").observe("click", function() {
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+    tag.down(".name").observe("click", this.clickTag.bind(this, tag));
+  },
+  
+  // Handles a click on a tag name when training feed items. Creates a
+  // handler function that determines training type and calls the
+  // appropriate method to add/remove a tagging. Adds this handler
+  // function to a queue so it will be processed in order. See the TagQueue
+  // class for more details.
+  clickTag: function(tag) {
+    var tag_name = tag.down(".name").innerHTML.unescapeHTML();
+    
+    var handleTag = function() {
       if(tag.hasClassName("positive")) {
         this.addTagging(tag_name, "negative");
         tag.removeClassName("positive");
@@ -256,7 +278,18 @@ var Item = Class.create({
         this.addTagging(tag_name, "positive");
         tag.addClassName("positive");
       }
-    }.bind(this));
+    }.bind(this);
+    
+    var tagQueue = this.tagQueueFor(tag_name);
+    tagQueue.process(handleTag);
+  },
+  
+  // Returns a new or existing TagQueue for the given tag name.
+  tagQueueFor: function(tagName) {
+    if (!this.tagQueues[tagName]) {
+      this.tagQueues[tagName] = new TagQueue();
+    }
+    return this.tagQueues[tagName];
   },
   
   addTagging: function(tag_name, tagging_type) {
@@ -264,56 +297,64 @@ var Item = Class.create({
 
     var other_tagging_type = tagging_type == "positive" ? "negative" : "positive";
 
-    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-    if(tag_control) {
-      tag_control.removeClassName(other_tagging_type);
-      tag_control.addClassName(tagging_type);
-    } else {
-      this.addTagControl(tag_name, tagging_type);
-    }
-    
-    var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
-    if(training_control) {
-      training_control.removeClassName(other_tagging_type);
-      training_control.addClassName(tagging_type);
-    } else {
-      this.addTrainingControl(tag_name);
-    }
-      
-    new Ajax.Request('/taggings/create', { method: 'post', requestHeaders: { Accept: 'application/json' },
+    new Ajax.Request('/taggings', { method: 'post', requestHeaders: { Accept: 'application/json' },
       parameters: {
         "tagging[feed_item_id]": this.id,
         "tagging[tag]": tag_name,
         "tagging[strength]": tagging_type == "positive" ? 1 : 0
       },
+      onComplete: function() {
+        this.tagQueueFor(tag_name).actionCompleted();
+      }.bind(this),
       onSuccess: function(response) {
         var data = response.responseJSON;
-        
-        // Add the tag's id as a class to newly created controls so they get properly updated if 
-        // the user renames or deletes them before reloading the page
-        var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-        tag_control.addClassName(data.id);
-        var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
-        training_control.addClassName(data.id);
-        
-        // TODO: Move this to itembrowser.js
-        // Add/Update the filter for this tag
-        if(!$('tag_filters').down("#" + data.id)) {
-          $('tag_filters').insertInOrder("li", ".name", data.filterHtml, tag_name);
-          itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
-          itemBrowser.styleFilters();
+        if(data.error) {
+          Message.add("error", data.error);
         } else {
-          $$(".filter_list ." + data.id).each(function(element) {
-            element.title = data.tooltip;
-          });
-        }
+          // Change the small tags that are visible when an item is collapsed.
+          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+          if(tag_control) {
+            tag_control.removeClassName(other_tagging_type);
+            tag_control.addClassName(tagging_type);
+          } else {
+            this.addTagControl(tag_name, data.sort_name, tagging_type);
+          }
+          
+          // Change the tags shown in the moderation panel.
+          var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+          if(training_control) {
+            training_control.removeClassName(other_tagging_type);
+            training_control.addClassName(tagging_type);
+          } else {
+            this.addTrainingControl(tag_name, data.sort_name);
+          }
+      
+          // Add the tag's id as a class to newly created controls so they get properly updated if 
+          // the user renames or deletes them before reloading the page
+          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
+          tag_control.addClassName(data.id);
+          var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
+          training_control.addClassName(data.id);
         
-        // TODO: Moved this to classifier.js
-        // Update the classification button's status
-        var classification_button = $('classification_button');
-        if (classification_button) {
-          classification_button.disabled = false;
-          $("progress_title").update(data.classifierProgress);
+          // TODO: Move this to itembrowser.js
+          // Add/Update the filter for this tag
+          if(!$('tag_filters').down("#" + data.id)) {
+            $('tag_filters').insertInOrder(".name@data-sort", data.filterHtml, data.sort_name);
+            itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
+            itemBrowser.styleFilters();
+          } else {
+            $$(".filter_list ." + data.id).each(function(element) {
+              element.title = data.tooltip;
+            });
+          }
+        
+          // TODO: Moved this to classifier.js
+          // Update the classification button's status
+          var classification_button = $('classification_button');
+          if (classification_button) {
+            classification_button.disabled = false;
+            $("progress_title").update(data.classifierProgress);
+          }
         }
       }.bind(this)
     });
@@ -322,7 +363,8 @@ var Item = Class.create({
   
   removeTagging: function(tag_name) {
     if(tag_name.match(/^\s*$/)) { return; }
-
+    
+    // Remove the small tags that are visible when an item is collapsed.
     var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
     if (tag_control) {
       tag_control.removeClassName('positive');
@@ -331,18 +373,22 @@ var Item = Class.create({
         tag_control.remove()
       }
     }
-
+    
+    // Change the tags shown in the moderation panel.
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
     if(training_control) {
       training_control.removeClassName('positive');
       training_control.removeClassName('negative');
     }
 
-    new Ajax.Request('/taggings/destroy', { method: 'post', requestHeaders: { Accept: 'application/json' },
+    new Ajax.Request('/taggings', { method: 'delete', requestHeaders: { Accept: 'application/json' },
       parameters: {
         "tagging[feed_item_id]": this.id,
         "tagging[tag]": tag_name
       },
+      onComplete: function() {
+        this.tagQueueFor(tag_name).actionCompleted();
+      }.bind(this),
       onSuccess: function(response) {
         var data = response.responseJSON;
 
@@ -376,18 +422,18 @@ var Item = Class.create({
     return tag;
   },
 
-  addTagControl: function(tag_name, tagging_type) {
+  addTagControl: function(tag_name, sort_name, tagging_type) {
     var tag_control = '<li class="tag_control stop ' + tagging_type + '">' + 
-      '<span class="name">' + tag_name.escapeHTML() + '</span>' + 
+      '<span class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</span>' + 
     '</li> ';
-    this.tag_list.insertInOrder("li", ".name", tag_control, tag_name);
+    this.tag_list.insertInOrder(".name@data-sort", tag_control, sort_name);
   },
 
-  addTrainingControl: function(tag_name) {
+  addTrainingControl: function(tag_name, sort_name) {
     var training_control = '<div class="tag positive" style="display:none">' + 
-      '<a href="#" onclick="return false;" class="name">' + tag_name.escapeHTML() + '</a>' + 
+      '<a href="#" onclick="return false;" class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</a>' + 
     '</div> ';
-    this.training_controls.insertInOrder("div", ".name", training_control, tag_name);
+    this.training_controls.insertInOrder(".name@data-sort", training_control, sort_name);
   
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
     this.initializeTrainingControl(training_control);
@@ -399,5 +445,40 @@ var Item = Class.create({
       if(onComplete)        { onComplete();    }
       if(this.isSelected()) { this.scrollTo(); }
     }.bind(this), forceLoad);
+  }
+});
+
+
+// A queue for requests to tag a feed item.
+//
+// When training tags on a feed item, a user can click a tag several times
+// in quick succession to change the training of the tag. For each click,
+// a request is sent to Winnow. We want to process these requests in the
+// order that they're made so that we ultimately honor the final click on
+// the tag. This class facilitates that. Without queueing the requests,
+// they could arrive out of order, causing the tag to be trained differently
+// than the user intended.
+var TagQueue = Class.create({
+  initialize: function() {
+    this.actions = [];
+    this.isProcessing = false;
+  },
+  
+  process: function(action) {
+    if (this.isProcessing) {
+      this.actions.push(action);
+    } else {
+      this.isProcessing = true;
+      action();
+    }
+  },
+  
+  actionCompleted: function() {
+    if (this.actions.any()) {
+      var nextAction = this.actions.shift();
+      nextAction();
+    } else {
+      this.isProcessing = false;
+    }
   }
 });

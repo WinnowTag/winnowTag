@@ -1,10 +1,15 @@
 <div id="user_<%= user.id %>" class="user clearfix">
-  <% unless user == current_user -%>
   <ul class="controls">
-    <li><%= link_to t("winnow.general.login"), login_as_user_url(user), :class => :login, :title => t("winnow.users.main.login_tooltip"), :method => :post, :confirm => t("winnow.users.main.login_confirm", :login => user.login) %></li>
-    <li><%= link_to t("winnow.general.destroy"), user_url(user), :class => :destroy, :title => t("winnow.general.destroy_tooltip"), :method => :delete, :confirm => t("winnow.users.main.destroy_confirm", :login => user.login) %></li>
+    <% if user.prototype? %>
+      <li class="prototype"><%= t("winnow.general.prototype", :login => user.login) %></li>
+    <% else -%>
+      <li><%= link_to t("winnow.general.make_prototype"), prototype_user_url(user), :class => "prototype", :title => t("winnow.users.main.make_prototype_tooltip"), :method => :put, :confirm => t("winnow.users.main.make_prototype_confirm", :login => user.login) %></li>
+    <% end -%>
+    <% unless user == current_user -%>
+      <li><%= link_to t("winnow.general.login"), login_as_user_url(user), :class => "login", :title => t("winnow.users.main.login_tooltip"), :method => :post, :confirm => t("winnow.users.main.login_confirm", :login => user.login) %></li>
+      <li><%= link_to t("winnow.general.destroy"), user_url(user), :class => "destroy", :title => t("winnow.general.destroy_tooltip"), :method => :delete, :confirm => t("winnow.users.main.destroy_confirm", :login => user.login) %></li>
+    <% end -%>
   </ul>
-  <% end -%>
 
   <h4><%=h user.login %></h4>
 

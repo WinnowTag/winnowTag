@@ -7,7 +7,7 @@
 			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
 			  modes: ["unread", "all", "trained"],
 			  orders: {
-			    desc:      ["date", "strength"],
+			    desc:      ["date"],
 			    "default": "date"
 			  }
 			});
@@ -20,9 +20,13 @@
         $$("#sidebar .section").each(function(element) {
           new SidebarSection(element);
         });
+        
+        $$('#tag_filters .tag').each(function(element) {
+          new TagFilter(element);
+        });
       });
       
-      new Classification(<%= classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);
+      new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);
 		});
   <% end -%>
 <% end -%>
@@ -36,7 +40,6 @@
     <label><%= t("winnow.general.sort_label") %></label>        
     <select id="order">
       <option value="date"><%= t("winnow.items.header.sort_date_label") %></option>
-      <option value="strength"><%= t("winnow.items.header.sort_strength_label") %></option>
     </select>
     <%= direction_link %>
   </div>
@@ -45,7 +48,7 @@
     <div class="group">
       <label><%= t("winnow.items.header.selected_filters") %></label>
       <%= rounded_button_function t("winnow.items.header.clear_selected_filters"), "", :icon => "clear", :id => "clear_selected_filters", :class => "first", :title => t("winnow.items.header.clear_selected_filters_tooltip") %>
-      <%= rounded_button_link t("winnow.items.header.feed_for_selected_filters"), "", :icon => "feed", :base_url => formatted_feed_items_path(:atom), :id => "feed_with_selected_filters", :title => t("winnow.items.header.feed_for_selected_filters_tooltip") %>
+      <%= rounded_button_link t("winnow.items.header.feed_for_selected_filters"), "", :icon => "feed", :base_url => feed_items_path(:format => :atom), :id => "feed_with_selected_filters", :title => t("winnow.items.header.feed_for_selected_filters_tooltip") %>
     </div>
     
     <div class="group">
@@ -62,11 +65,14 @@
 <% content_for :footer do -%>	
   <div class="toolbar">
     <div class="group">
-      <%= rounded_button_function t("winnow.items.footer.previous_item"), "", :icon => "previous", :title => t("winnow.items.footer.previous_item_tooltip") %>  
-      <%= rounded_button_function t("winnow.items.footer.next_item"),     "", :icon => "next", :title => t("winnow.items.footer.next_item_tooltip") %>
+      <%= rounded_button_function t("winnow.items.footer.previous_item"), "", :icon => "previous", :title => t("winnow.items.footer.previous_item_tooltip") %>
+      <%= rounded_button_function t("winnow.items.footer.next_item"),     "", :icon => "next",     :title => t("winnow.items.footer.next_item_tooltip") %>
     </div>
   
-    <%= rounded_button_function t("winnow.items.footer.mark_all_read"),   "", :icon => "read", :title => t("winnow.items.footer.mark_all_read_tooltip") %>
+    <div class="group">
+      <%= rounded_button_function t("winnow.items.footer.mark_all_read"),   "", :icon => "read",   :title => t("winnow.items.footer.mark_all_read_tooltip") %>
+      <%= rounded_button_function t("winnow.items.footer.mark_all_unread"), "", :icon => "unread", :title => t("winnow.items.footer.mark_all_unread_tooltip") %>
+    </div>
   </div>
 	
 	<%= render :partial => "classification_controls" %>

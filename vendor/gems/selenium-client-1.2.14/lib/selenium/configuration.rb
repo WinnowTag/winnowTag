@@ -24,12 +24,11 @@ module Selenium
     end
     
     def self.browser(configuration = current_configuration)
-      browser = CONFIG[configuration.to_s]["browser"] || CONFIG["default"]["browser"]
-      "*#{browser}"
+      CONFIG[configuration.to_s]["browser"] || CONFIG["default"]["browser"] || "*firefox"
     end
     
     def self.test_host(configuration = current_configuration)
-      CONFIG[configuration.to_s]["test_host"] || CONFIG["default"]["test_host"]
+      CONFIG[configuration.to_s]["test_host"] || CONFIG["default"]["test_host"] || "localhost:3000"
     end
     
     def self.test_url(configuration = current_configuration)

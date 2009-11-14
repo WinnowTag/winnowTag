@@ -1,8 +1,15 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages the list of feed items shown on the Items page. Provides:
+//   * toggling for switching among summary and detail view of each item
+//   * marking items read/unread
+//   * navigation using keyboard shortcuts
+//   * filtering by tag or feed
+
 var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   initialize: function($super, name, container, options) {
     $super(name, container, options);
@@ -123,6 +130,23 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     new Ajax.Request('/' + this.options.controller + '/mark_read' + '?' + $H(this.filters).toQueryString(), {method: 'put'});
   },
   
+  markAllItemsUnread: function() {
+    this.container.select('.feed_item').invoke('removeClassName', 'read');
+
+    this.loading = true;
+    this.clear();
+    this.showLoadingIndicator();
+
+    new Ajax.Request('/' + this.options.controller + '/mark_unread', {
+      parameters: this.filters, method: 'put',
+      onSuccess: function() {
+        this.hideLoadingIndicator();
+        this.loading = false;
+        this.reload();
+      }.bind(this)
+    });
+  },
+
   insertItem: function($super, item_id, content) {
     $super(item_id, content);
     new Item(item_id);
@@ -139,31 +163,25 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         }.bind(this)
       });
     } else {
-      feed.removeClassName('selected');
-      $('feed_filters').insertInOrder('li', '.name', feed, $(feed).down(".name").innerHTML.unescapeHTML());
-      this.bindFeedFilterEvents(feed);
+      if(!$('feed_filters').down("#" + feed.getAttribute("id"))) {
+        feed.removeClassName('selected');
+        $('feed_filters').insertInOrder('.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
+        this.bindFeedFilterEvents(feed);
+        this.styleFilters();
+      }
       new Ajax.Request(feed.getAttribute("subscribe_url"), {method:'put'});
-      this.styleFilters();
     }
   },
   
   updateTagFilters: function(input, tag) {
     input.clear();
-    if(tag.match("#add_new_tag")) {
-      new Ajax.Request("/tags", {
-        parameters: 'name=' + encodeURIComponent(tag.getAttribute("name")), 
-        method: 'post',
-        onComplete: function() {
-          this.styleFilters();  
-        }.bind(this)
-      });
-    } else {
+    if(!$('tag_filters').down("#" + tag.getAttribute("id"))) {
       tag.removeClassName('selected');
-      $('tag_filters').insertInOrder('li', '.name', tag, $(tag).down(".name").innerHTML.unescapeHTML());
+      $('tag_filters').insertInOrder('.name@data-sort', tag, $(tag).down(".name").getAttribute("data-sort"));
       this.bindTagFilterEvents(tag);
-      new Ajax.Request(tag.getAttribute("subscribe_url"), {method:'put'});
       this.styleFilters();
     }
+    new Ajax.Request(tag.getAttribute("subscribe_url"), {method:'put'});
   },
   
   expandFolderParameters: function(parameters) {
@@ -354,29 +372,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id});
     link.observe("click", click_event);
 
-    if(tag.hasClassName("draggable")) {
-      Draggables.addObserver({
-        onStart: function(eventName, draggable, event) {
-          if(draggable.element == tag) {
-            link.stopObserving("click", click_event);
-          }
-        },
-        onEnd: function(eventName, draggable, event) {
-          if(draggable.element == tag) {
-            setTimeout(function() {
-              link.observe("click", click_event);
-            }, 1);
-          }
-        }
-      });
-
-      new Draggable(tag, { 
-        ghosting: true, revert: true, scroll: 'sidebar', 
-        reverteffect: function(element, top_offset, left_offset) {
-          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
-        }
-      });
-    }
+    this.makeDraggable(tag, link, click_event);
   },
   
   bindFeedFiltersEvents: function() {
@@ -391,29 +387,37 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var click_event = this.toggleSetFilters.bind(this, {feed_ids: feed_id});
     link.observe("click", click_event);
     
-    if(feed.hasClassName("draggable")) {
+    this.makeDraggable(feed, link, click_event);
+  },
+  
+  makeDraggable: function(tag_or_feed, link, click_event) {
+    if(tag_or_feed.hasClassName("draggable")) {
       Draggables.addObserver({
         onStart: function(eventName, draggable, event) {
-          if(draggable.element == feed) {
+          if(draggable.element == tag_or_feed) {
             link.stopObserving("click", click_event);
           }
         },
         onEnd: function(eventName, draggable, event) {
-          if(draggable.element == feed) {
+          if(draggable.element == tag_or_feed) {
             setTimeout(function() {
               link.observe("click", click_event);
             }, 1);
           }
         }
       });
-    
-      new Draggable(feed, { 
-        ghosting: true, revert: true, scroll: 'sidebar', 
-        reverteffect: function(element, top_offset, left_offset) {
-          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
-        }
-      });
+      
+      this.draggableFor(tag_or_feed);
     }
+  },
+  
+  draggableFor: function(tag_or_feed) {
+    new Draggable(tag_or_feed, {
+      ghosting: true, revert: true, scroll: 'sidebar',
+      reverteffect: function(element, top_offset, left_offset) {
+        new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
+      }
+    });
   },
 
   bindTextFilterEvents: function() {
@@ -450,6 +454,11 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var mark_all_read_control = $("footer").down("a .read");
     if(mark_all_read_control) {
       mark_all_read_control.up("a").observe("click", this.markAllItemsRead.bind(this));
+    }
+
+    var mark_all_unread_control = $("footer").down("a .unread");
+    if(mark_all_unread_control) {
+      mark_all_unread_control.up("a").observe("click", this.markAllItemsUnread.bind(this));
     }
   },
   

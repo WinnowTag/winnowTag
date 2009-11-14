@@ -1,8 +1,10 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Handles switching between the login and request invite forms on the login page.
 var Login = Class.create({
   initialize: function() {
     this.login_form = $('login_form');

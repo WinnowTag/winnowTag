@@ -1,14 +1,18 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
+
 module ItemCache
+  # Receives updates to the feeds from the collector.
+  #
+  # +Feed+ updates come in the form of atom entry documents 
+  # as they only contain metadata about the feed, not the items
+  # themselves.
+  #
   class FeedsController < ItemCacheController
-    skip_before_filter :login_required
-    with_auth_hmac HMAC_CREDENTIALS['collector']
-    before_filter :check_atom
-    
+    # Create a feed from an atom document.
     def create
       respond_to do |wants|
         wants.atom do
@@ -20,6 +24,7 @@ module ItemCache
       end
     end
     
+    # Update a feed from an atom document.
     def update
       begin
         if feed = Feed.find_by_uri(params[:id])
@@ -34,6 +39,7 @@ module ItemCache
       end
     end
     
+    # Destroy a feed.
     def destroy
       respond_to do |wants|
         wants.atom do

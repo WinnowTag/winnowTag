@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -28,6 +28,25 @@ shared_examples_for "Feed updates attributes from Atom::Entry" do
 end
 
 describe Feed do
+  describe "title" do
+    it "sets the feed's title to be a the alternate link's host if no title was set" do
+      Generate.feed!(:title => nil, :alternate => "http://google.com/feed.atom").sort_title.should == "googlecom"
+    end
+    
+    it "sets the feed's title to be a the via link's host if no title or alternate link was set" do
+      Generate.feed!(:title => nil, :alternate => nil, :via => "http://google.com/feed.atom").sort_title.should == "googlecom"
+    end
+  end
+
+  describe "sort_title" do
+    it "sets the feed's sort_title to be a downcased version of the title with leading articles and non-word characters removed" do
+      Generate.feed!(:title => "Some-Fe*ed").sort_title.should == "somefeed"
+      Generate.feed!(:title => "A So'me #Feed").sort_title.should == "somefeed"
+      Generate.feed!(:title => "An $Some :Feed").sort_title.should == "somefeed"
+      Generate.feed!(:title => "The So.me Fe_ed").sort_title.should == "somefeed"
+    end
+  end
+  
   describe "find_or_create_from_atom_entry" do
     before(:each) do
       @original_feed = Generate.feed!
@@ -86,17 +105,6 @@ describe Feed do
       end
     end
 
-    describe 'with missing title' do
-      before(:each) do
-        @atom.title = nil
-        @feed = Feed.find_or_create_from_atom_entry(@atom)
-      end
-      
-      it "should set the title to ''" do
-        @feed.read_attribute(:title).should == ''        
-      end
-    end
-    
     describe 'with missing via' do
       before(:each) do
         @atom.links.delete(@atom.links.via)
@@ -213,7 +221,7 @@ describe Feed do
     end
     
     describe "with multi page feed" do
-      
+      it "needs examples"
     end
   end
   
@@ -256,6 +264,46 @@ describe Feed do
     end
   end
   
+  describe "update_from_atom_entry when the feed is a duplicate" do
+    before(:each) do
+      @feed = Generate.feed!
+      @duplicate_feed = Generate.feed!
+
+      @user1 = Generate.user!
+      @user2 = Generate.user!
+      @user3 = Generate.user!
+
+      FeedSubscription.delete_all
+      Generate.feed_subscription!(:feed => @feed, :user => @user1)
+      Generate.feed_subscription!(:feed => @duplicate_feed, :user => @user1)
+      Generate.feed_subscription!(:feed => @feed, :user => @user2)
+      Generate.feed_subscription!(:feed => @duplicate_feed, :user => @user3)
+
+      @atom = Atom::Entry.new do |atom|
+        atom.title = "Feed Title"
+        atom.updated = Time.now
+        atom.published = Time.now.yesterday
+        atom.id = @duplicate_feed.uri
+        atom.links << Atom::Link.new(:rel => 'via', :href => 'http://example.com/feed')
+        atom.links << Atom::Link.new(:rel => 'self', :href => 'http://collector/1')
+        atom.links << Atom::Link.new(:rel => 'alternate', :href => 'http://example.com')
+        atom.links << Atom::Link.new(:rel => 'http://peerworks.org/duplicateOf', :href => @feed.uri)
+      end
+    end
+
+    it "should update a users feed subscriptions" do
+      @user1.feed_subscriptions.map(&:feed_id).should == [@feed.id, @duplicate_feed.id]
+      @user2.feed_subscriptions.map(&:feed_id).should == [@feed.id]
+      @user3.feed_subscriptions.map(&:feed_id).should == [@duplicate_feed.id]
+
+      @duplicate_feed.update_from_atom(@atom)
+
+      @user1.feed_subscriptions(:reload).map(&:feed_id).should == [@feed.id]
+      @user2.feed_subscriptions(:reload).map(&:feed_id).should == [@feed.id]
+      @user3.feed_subscriptions(:reload).map(&:feed_id).should == [@feed.id]
+    end
+  end
+
   describe 'search' do
     it "should find items by search term" do
       Generate.feed!(:title => "Ruby Lang")
@@ -272,25 +320,87 @@ describe Feed do
     end
   end
   
-  describe "title" do
-    it "should return the title if present" do
-      feed = Feed.new :title => "Some Title"
-      feed.title.should == "Some Title"
+  describe 'destroy' do 
+    before(:each) do
+      @user = Generate.user!
+      @tag = Generate.tag!(:user => @user)      
+      @feed = Generate.feed!
     end
     
-    it "should return the hostname from alternate if no title is present" do
-      feed = Feed.new :alternate => "http://example.com/blog"
-      feed.title.should == "example.com"
+    it "should destroy a feed with no items" do
+      @feed.destroy
+      lambda { Feed.find(@feed.id) }.should raise_error(ActiveRecord::RecordNotFound)
     end
     
-    it "should return the hostname from via if no title or alternate is present" do
-      feed = Feed.new :via => "http://example.com/blog"
-      feed.title.should == "example.com"
+    describe 'feed with items' do
+      before(:each) do 
+        Generate.feed_item!(:feed => @feed)
+        Generate.feed_item!(:feed => @feed)
+      end
+      
+      it "should destroy a feed with items with no taggings" do
+        @feed.destroy
+        lambda { Feed.find(@feed.id) }.should raise_error(ActiveRecord::RecordNotFound)
+      end
+      
+      it "should destroy all items in the feed with no taggings" do 
+        item_ids = @feed.feed_item_ids
+        @feed.destroy
+        item_ids.each do |item_id|
+          lambda { FeedItem.find(item_id) }.should raise_error(ActiveRecord::RecordNotFound)
+        end  
+      end
     end
     
-    it "should return nil if title, alternate, and via are all blank" do
-      feed = Feed.new 
-      feed.title.should be_nil
+    describe 'feed with items with classifier taggings' do
+      before(:each) do
+        @item_with_only_classifier_taggings = Generate.feed_item!(:feed => @feed)
+        Tagging.create(:user => @user, :tag => @tag, :feed_item => @item_with_only_classifier_taggings, :classifier_tagging => true)
+      end
+      
+      it "should destroy a feed with items with only classifier taggings" do
+        @feed.destroy
+        lambda { Feed.find(@feed.id) }.should raise_error(ActiveRecord::RecordNotFound)
+      end
+    
+      it "should destroy all items with only classifier taggings" do
+        @feed.destroy
+        lambda { FeedItem.find(@item_with_only_classifier_taggings.id) }.should raise_error(ActiveRecord::RecordNotFound)
+      end
+      
+      
+      describe 'and manual taggings' do
+        before(:each) do
+          @item_with_manual_taggings = Generate.feed_item!(:feed => @feed) 
+          @mt = Tagging.create(:user => @user, :tag => @tag, :feed_item => @item_with_manual_taggings, :classifier_tagging => false)
+          @ct = Tagging.create(:user => @user, :tag => @tag, :feed_item => @item_with_manual_taggings, :classifier_tagging => true)
+        end
+
+        it "should not destroy a feed with items with manual taggings" do
+          @feed.destroy
+          lambda { Feed.find(@feed.id) }.should_not raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should delete all items without manual taggings" do
+          @feed.destroy
+          lambda { FeedItem.find(@item_with_only_classifier_taggings.id) }.should raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should not delete any items with manual taggings" do
+          @feed.destroy
+          lambda { FeedItem.find(@item_with_manual_taggings.id) }.should_not raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should delete classifier taggings from items with manual taggings" do
+          @feed.destroy
+          lambda { Tagging.find(@ct.id) }.should raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should not delete manual taggings from items with manual taggings" do
+          @feed.destroy
+          lambda { Tagging.find(@mt.id) }.should_not raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
     end
   end
 end

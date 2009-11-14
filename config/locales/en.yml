@@ -31,6 +31,8 @@ en:
       how_do_you_want_to_use: "How/why do you want to use Winnow?"
       no_script_message: "You need to change a setting in your web browser"
       last_updated: "Last Updated"
+      prototype: "{{login}} is the prototype"
+      make_prototype: "Make prototype"
     email:
       subject_prefix: "[WINNOW]"
       deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
@@ -72,13 +74,13 @@ en:
     notifications:
       feed_items_search_too_short: "Search requires a word with at least 4 characters"
       server_slow_responding: "The server is taking a while to repond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
-      bookmarklet_error_message: "Drag this button to your bookmark or right click and select 'Bookmark This Link'"
       credentials_invalid: "Invalid credentials. Please try again."
       profile_updated: "Information Updated"
       reminder_code_invalid: "Invalid reminder code"
       reminder_sent: "A password reminder has been sent"
       update_password: "Please update your password"
       invitation_request_submitted: "Your invitation request has been submitted"
+      invitation_code_invalid: "Your invitation could not be found or has already been used."
       account_activated: "Your account has been activated"
       account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
       feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
@@ -91,10 +93,18 @@ en:
       tag_copied: "{{from}} successfully copied to {{to}}"
       tag_merged: "{{from}} merged with {{to}}"
       classifier:
+        timeout_contacting: "Timeout contacting the classifier. Please try again later."
         could_not_be_started: "The classifier could not be started. Please try again."
         already_running: "The classifier is already running"
         not_running: "No classification process running"
         tags_not_changed: "There are no changes to your tags"
+        confirm_few_positives:
+          one: |-
+            You are about to classify {{tag_names}} which has less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
+          other: |-
+            You are about to classify {{tag_names}} which have less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
       collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
       tags_unsubscribe: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
     taggings:
@@ -151,7 +161,6 @@ en:
         show_trained_label: "Trained"
         show_trained_tooltip: ""
         sort_date_label: "Date"
-        sort_strength_label: "Strength"
       sidebar:
         expand: "Expand"
         collapse: "Collapse"
@@ -167,7 +176,6 @@ en:
         tag_tooltip: "Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
         public_tag_tooltip: "From {{login}}, Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
         create_feed: "Create Feed: '{{feed}}'"
-        create_tag: "Create Tag: '{{tag}}'"
         merge_confirm: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
         sidebar_confirm: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
       main:
@@ -185,7 +193,6 @@ en:
         close: "Close"
         close_tooltip: ""
         tag_input_tooltip: ""
-        could_not_load_clues: "Could not load the clues, please try again later."
       footer:
         previous_item: "Previous Item"
         previous_item_tooltip: ""
@@ -193,6 +200,8 @@ en:
         next_item_tooltip: ""
         mark_all_read: "Mark All Read"
         mark_all_read_tooltip: ""
+        mark_all_unread: "Mark All Unread"
+        mark_all_unread_tooltip: ""
         start_classifier_button: "Auto-tag"
         start_classifier_tooltip: ""
         stop_classifier_button: "Stop"
@@ -215,6 +224,10 @@ en:
       header:
         search_placeholder: "Search Tags..."
         search_tooltip: ""
+        upload: "Upload"
+        upload_tooltip: "Upload a tag from a tag training document"
+        upload_description: "Upload a tag from a tag training document that you have downloaded from Winnow"
+        upload_button: "Upload"
       main:
         tag_summary_tooltip: ""
         click_to_edit_name: "Click to edit tag name"
@@ -222,7 +235,7 @@ en:
         click_to_edit_description: "Click to edit tag description"
         destroy_confirm: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
         add_a_comment: "Add a comment"
-        apply_to: "Apply <span>{{tag}}</span> to"
+        apply_to: "Apply <span class='name'>{{tag}}</span> to:"
         fewer_items: "Fewer Items"
         more_items: "More Items"
         public: "Public"
@@ -230,11 +243,13 @@ en:
         destroy_tooltip: "Destroy {{tag}}"
         feed: "Feed"
         feed_tooltip: ""
+        training_feed: "Training Feed"
+        training_feed_tooltip: "Download an Atom with the items used to train this tag. You might need to right click and choose 'Save Target as...'."
         subscribe: "Subscribe"
         subscribe_tooltip: ""
-        items_tagged_with: "Show items tagged with {{tag}}"
+        items_tagged_with: "Show items tagged with <span class='name'>{{tag}}</span>"
         items_tagged_with_tooltip: ""
-        items_trained_with: "Show items trained with {{tag}}"
+        items_trained_with: "Show items trained with <span class='name'>{{tag}}</span>"
         items_trained_with_tooltip: ""
         copy: "Copy"
         copy_tooltip: ""
@@ -263,12 +278,21 @@ en:
         search_tooltip: ""
         add_feed_description: "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
         add_feed_button: "Add Feed"
+        add_feed_button_disabled: "Adding..."
         add_feed_tooltip: ""
         upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
         upload_button: "Upload"
         upload_tooltip: ""
         add_to_winnow_bookmarklet: "Add to Winnow"
-        add_to_winnow_bookmarklet_description: "Drag this button to your bookmark bar, then when you find a site you want to add to Winnow, just click the button."
+        bookmarklet_description: "You can add a bookmarklet to you browser to make it quick and easy to add sites to Winnow. Once installed, simply click the bookmarklet to add the site you are currently viewing to Winnow."
+        bookmarklet_installation_instructions:
+          safari:  "To install the bookmarklet, drag this button to your bookmarks bar."
+          chrome:  "To install the bookmarklet, drag this button to your bookmarks bar."
+          firefox: "To install the bookmarklet, drag this button to your bookmarks toolbar, or right click this button, select Bookmark This Link, and choose the Bookmarks Toolbar folder."
+          opera:   "To install the bookmarklet, drag this button to your personal bar, or right click this button, select Bookmark Link..., click Details, and check Show on Personal Bar"
+          ie6:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
+          ie7:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
+          ie8:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Favorites Bar folder."
       feed_item:
         mode_feeds_tags_text_filter: "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
         mode_feeds_tags:             "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}}"
@@ -322,6 +346,8 @@ en:
 
           Are you sure you want to continue?
         destroy_confirm: "Really delete {{login}}?"
+        make_prototype_tooltip: ""
+        make_prototype_confirm: "Are you sure you want to make {{login}} the prototype?"
     invites:
       general:
         create_invite: "Create Invite"
@@ -371,10 +397,15 @@ en:
       main:
         metadata: "{{login}} on {{created_at}}"
     profile:
-      header: "Account Details"
+      header: "Update your information"
       first_name: "First Name"
       last_name: "Last Name"
       time_zone: "Time Zone"
+      password:
+        header: "Change your password"
+        current: "Current Password"
+        new: "New Password"
+        new_confirmation: "Confirm New Password"
     login:
       welcome_header: "Welcome to Winnow"
       welcome_text: |-
@@ -417,6 +448,7 @@ en:
         copy_name_error:   "Can't copy tag to tag of the same name."
         copy_exists_error: "Target tagger already has a {{to}} tag"
         merge_name_error:  "Can't merge tag to tag of the same name."
+        invalid_format:    "can contain only ASCII characters, except period"
     defaults:
       feed_item:
         title: "Unknown Title"

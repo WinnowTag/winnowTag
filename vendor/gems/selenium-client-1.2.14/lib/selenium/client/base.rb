@@ -41,14 +41,14 @@ module Selenium
           @port = options[:port].to_i
           @browser_string = options[:browser]
           @browser_url = options[:url]
-          @default_timeout_in_seconds = (options[:timeout_in_seconds] || 10).to_i
+          @default_timeout_in_seconds = (options[:timeout_in_seconds] || 30).to_i
           @default_javascript_framework = options[:javascript_framework] || :prototype
         else
           @host = args[0]
           @port = args[1].to_i
           @browser_string = args[2]
           @browser_url = args[3]
-          @default_timeout_in_seconds = (args[4] || 10).to_i
+          @default_timeout_in_seconds = (args[4] || 30).to_i
           @default_javascript_framework = :prototype
         end
 
@@ -63,6 +63,11 @@ module Selenium
       def start_new_browser_session
         result = string_command "getNewBrowserSession", [@browser_string, @browser_url, @extension_js]
         @session_id = result
+        
+        if @session_id.nil?
+          raise "Got nil session id"
+        end
+        
         # Consistent timeout on the remote control and driver side.
         # Intuitive and this is what you want 90% of the time
         self.remote_control_timeout_in_seconds = @default_timeout_in_seconds 

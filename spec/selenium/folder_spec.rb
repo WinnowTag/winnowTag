@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -27,6 +27,7 @@ describe "folders" do
     login @current_user
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
+    page.window_maximize
   end
   
   it "can be created" do
@@ -36,7 +37,7 @@ describe "folders" do
     assert_visible "css=#folders_section .add_form"
     
     page.type "folder_name", "new folder"
-    hit_enter "folder_name"
+    page.submit "add_folder_form"
     page.wait_for :wait_for => :ajax
     
     new_folder = Folder.find_by_name("new folder")
@@ -67,6 +68,12 @@ describe "folders" do
      
     dont_see_element "#feed_#{@example_feed.id}"
      
+    # Need to use type and type_keys here.  In IE
+    # type_keys just fires the keyPress events, it
+    # doesn't set the element value, which is needed
+    # by the Autocomplete handler.
+    #
+    page.type "feed_title", @example_feed.title if ie?
     page.type_keys "feed_title", @example_feed.title
     page.wait_for :wait_for => :ajax
     page.wait_for :wait_for => :element, :element => "css=#feed_title_auto_complete #feed_#{@example_feed.id}"
@@ -89,6 +96,7 @@ describe "folders" do
      
     dont_see_element "#tag_#{@private_tag_not_in_sidebar.id}"
      
+    page.type "tag_name", @private_tag_not_in_sidebar.name if ie?
     page.type_keys "tag_name", @private_tag_not_in_sidebar.name
     page.wait_for :wait_for => :ajax
     page.wait_for :wait_for => :element, :element => "css=#tag_name_auto_complete #tag_#{@private_tag_not_in_sidebar.id}"
@@ -113,6 +121,8 @@ describe "folders" do
      
     dont_see_element "#tag_#{@public_tag_not_in_sidebar.id}"
      
+    # type_keys doesn't set the value in IE
+    page.type "tag_name", @public_tag_not_in_sidebar.name if ie?
     page.type_keys "tag_name", @public_tag_not_in_sidebar.name
     page.wait_for :wait_for => :ajax
     page.wait_for :wait_for => :element, :element => "css=#tag_name_auto_complete #tag_#{@public_tag_not_in_sidebar.id}"
@@ -142,7 +152,7 @@ describe "folders" do
 
     page.click "css=#feeds_section .header .toggle_button"    
     page.click "css=#folders_section .header .toggle_button"    
-
+    
     page.drag_and_drop_to_object "feed_#{@another_example_feed.id}", "folder_#{@existing_folder.id}"
     page.wait_for :wait_for => :ajax
 

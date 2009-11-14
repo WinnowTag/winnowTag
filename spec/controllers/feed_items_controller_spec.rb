@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -103,57 +103,6 @@ describe FeedItemsController do
     response.should render_template("body")
   end
   
-  describe "/clues" do
-    before(:each) do
-      user = Generate.user!
-      @tag = Generate.tag!
-
-      login_as user
-      
-      @http_response = mock('response')
-      @http_response.stub!(:code).and_return("200")
-      @http_response.stub!(:body).and_return([{'clue' => 'bar', 'prob' => 0.01}, {'clue' => 'foo', 'prob' => 0.99}].to_json)
-      Remote::ClassifierResource.site = "http://classifier.host/classifier"
-      tag_url = URI.escape("http://test.host/#{user.login}/tags/#{@tag.name}/training.atom")
-      item_url = URI.escape('urn:peerworks.org:entry#1234')
-      url = %Q|#{Remote::ClassifierResource.site}/clues?tag=#{tag_url}&item=#{item_url}|
-      http = mock('http')
-      http.should_receive(:request) do |request|
-        request['Authorization'].should_not be_nil
-        @http_response
-      end
-      Net::HTTP.should_receive(:start).with('classifier.host', 80).and_yield(http)
-    end
-    
-    it "should render the clues" do
-      get :clues, :format => "js", :id => 1234, :tag => @tag.id
-      response.should be_success
-      response.should render_template("clues")
-    end
-    
-    describe "with 424 status code from the classifier" do
-      before(:each) do
-        @http_response.stub!(:code).and_return("424")
-      end
-      
-      it "should result in a redirect with the tries parameter set" do
-        get :clues, :id => 1234, :tag => @tag.id
-        response.should redirect_to("/feed_items/1234/clues?tag=#{@tag.id}&tries=1")
-      end
-      
-      it "should result in a redirect with the tries parameter incremented" do
-        get :clues, :id => 1234, :tag => @tag.id, :tries => 4
-        response.should redirect_to("/feed_items/1234/clues?tag=#{@tag.id}&tries=5")
-      end
-      
-      it "should result in a success when tries is > 7" do
-        get :clues, :id => 1234, :tag => @tag.id, :tries => 8
-        response.should be_success
-        response.should render_template("clues")
-      end
-    end
-  end
-    
   it "sets_last_accessed_time_on_each_request" do
     user = Generate.user!
     login_as user

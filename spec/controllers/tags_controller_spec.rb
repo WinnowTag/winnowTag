@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -39,12 +39,6 @@ shared_examples_for 'tag access controls' do
     login_as(nil)
     get @action, :user => @user.login, :tag_name => @tag.name, :format => "atom"
     response.code.should == "401"
-  end
-  
-  it "should return 404 for only style URLs when no one is logged in" do
-    login_as(nil)
-    get @action, :id => @tag.id
-    response.code.should == "404"
   end
   
   it "should allow the owner to access private tags" do
@@ -182,16 +176,16 @@ describe TagsController do
       response.body.should match(%r{<feed})
     end
     
-    it "should respond with a 304 if there are no new tags since HTTP_IF_MODIFIED_SINCE" do
-      Tag.should_receive(:maximum).with(:created_on).and_return(Time.now.yesterday)
+    it "should respond with a 304 if there are no new tags" do
+      Tag.should_receive(:all_ids).and_return([1,2,3,4])
       Tag.should_not_receive(:to_atom).with(:base_uri => "http://test.host:80")
-      request.env['HTTP_IF_MODIFIED_SINCE'] = Time.now.httpdate
+      request.env['HTTP_IF_NONE_MATCH'] = %("#{Digest::MD5.hexdigest(ActiveSupport::Cache.expand_cache_key([1,2,3,4]))}")
       get :index, :format => 'atom'
       response.code.should == "304"
     end
     
     it "should responde with a 200 if there are new tags since HTTP_IF_MODIFIED_SINCE" do
-      request.env['HTTP_IF_MODIFIED_SINCE'] = 30.days.ago.httpdate
+      request.env['HTTP_IF_NONE_MATCH'] = %("#{Digest::MD5.hexdigest(ActiveSupport::Cache.expand_cache_key([1]))}")
       get :index, :format => 'atom'
       response.code.should == "200"
     end
@@ -409,7 +403,7 @@ describe TagsController do
       tag = Generate.tag!(:user => user2, :public => true)
     
       TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => @user.id)
-      put :subscribe, :id => tag.id, :subscribe => "true"
+      put :subscribe, :id => tag.id, :subscribe => "true", :format => "js"
       assert_response :success
     end
     
@@ -422,7 +416,7 @@ describe TagsController do
       tag = Generate.tag!(:user => user2, :public => true)
     
       TagSubscription.should_receive(:create!).with(:tag_id => tag.id, :user_id => @user.id)
-      put :subscribe, :id => tag.id, :subscribe => "true"
+      put :subscribe, :id => tag.id, :subscribe => "true", :format => "js"
       assert_response :success
     end
 
@@ -432,7 +426,7 @@ describe TagsController do
       tag = Generate.tag!(:user => user2, :public => false)
 
       assert_no_difference("TagSubscription.count") do
-        put :subscribe, :id => tag, :subscribe => "true"
+        put :subscribe, :id => tag, :subscribe => "true", :format => "js"
       end
     
       assert_response :success 
@@ -445,7 +439,7 @@ describe TagsController do
 
     
       TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => @user.id)
-      put :subscribe, :id => tag, :subscribe => "false"
+      put :subscribe, :id => tag, :subscribe => "false", :format => "js"
       assert_response :success
     end
 
@@ -461,6 +455,18 @@ describe TagsController do
 
       put :unsubscribe, :id => tag
       assert_response :redirect
+    end
+    
+    it "subscribing multiple times to the same public tag creates only one subscription" do
+      user2 = Generate.user!
+      tag = Generate.tag!(:user => user2, :public => true)
+      
+      lambda {
+        put :subscribe, :id => tag, :subscribe => "true", :format => "js"
+        put :subscribe, :id => tag, :subscribe => "true", :format => "js"
+      }.should change(TagSubscription, :count).by(1)
+      
+      assert_response :success
     end
   end
   
@@ -481,7 +487,7 @@ describe TagsController do
 
       Folder.should_not_receive(:remove_tag)
 
-      put :sidebar, :id => tag, :sidebar => "true"
+      put :sidebar, :id => tag, :sidebar => "true", :format => "js"
       assert_response :success
     end
   end

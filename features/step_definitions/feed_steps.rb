@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 Given(/^there is not a feed for "(.*)"$/) do |feed_url|
   feed = Feed.find_by_via(feed_url)
@@ -35,6 +35,7 @@ When(/^I create a feed for "(.*)"$/) do |feed_url|
     request.path    "/feeds.xml"
     request.headers "Authorization" => /^AuthHMAC winnow_id:.*/, 'Date' => /.*/, 'Content-Type' => "application/xml"
     request.body    Remote::Feed.new(:url => feed_url, :created_by => current_user.login).to_xml
+    response['Content-Type'] = "application/xml"
 
     if invalid_url.call(feed_url)
       response.code    422
@@ -83,10 +84,6 @@ When(/^I create a feed for "(.*)"$/) do |feed_url|
   visit feeds_path
   fill_in "feed_url", :with => feed_url
   click_button "Add Feed"
-end
-
-Then(/^I am redirected to the feeds page$/) do
-  current_url.should == feeds_url
 end
 
 # TODO: Make these smarter

@@ -1,11 +1,9 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
-
-require 'tag'
 
 shared_examples_for "FeedItem update attributes from atom" do
   it "should set the title" do
@@ -34,6 +32,12 @@ shared_examples_for "FeedItem update attributes from atom" do
 end
 
 describe FeedItem do
+  it "should update the feed's timestamps when creating a new item" do
+    feed = Generate.feed!()
+    feed.should_receive(:touch)
+    FeedItem.create(:uri => "urn:uuid:blah", :link => "http://example.com", :feed => feed)
+  end
+  
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
       user = Generate.user!
@@ -55,22 +59,6 @@ describe FeedItem do
       feed_item2 = Generate.feed_item!(:updated => Date.today - 1)
         
       FeedItem.find_with_filters(:user => user, :order => 'date').should == [feed_item2, feed_item1]
-    end
-    
-    it "properly sorts the feed items by tag strength first" do
-      user = Generate.user!
-      tag1 = Generate.tag!(:user => user)
-      tag2 = Generate.tag!(:user => user)
-      tag3 = Generate.tag!(:user => user)
-      
-      feed_item1 = Generate.feed_item!
-      feed_item2 = Generate.feed_item!
-      
-      user.taggings.create!(:feed_item => feed_item1, :tag => tag1, :strength => 1)
-      user.taggings.create!(:feed_item => feed_item2, :tag => tag2, :strength => 0.5)
-      user.taggings.create!(:feed_item => feed_item2, :tag => tag3, :strength => 0.7)
-      
-      FeedItem.find_with_filters(:user => user, :order => 'strength').should == [feed_item2, feed_item1]
     end
   end
   
@@ -186,7 +174,7 @@ describe FeedItem do
       FeedItem.find_with_filters(:user => user, :mode => "all", :order => "id").should == [feed_item1, feed_item2]
     end
     
-    it "filters out read items when there are more then 1 tags included" do
+    it "filters out read items when there is more than 1 tag included" do
       user = Generate.user!
       tag1 = Generate.tag!(:user => user)
       tag2 = Generate.tag!(:user => user)
@@ -268,7 +256,7 @@ describe FeedItem do
     describe "with a complete entry and an existing id" do
       before(:each) do
         @atom.id = @item.uri
-        @item = FeedItem.find_or_create_from_atom(@atom)        
+        @item = FeedItem.find_or_create_from_atom(@atom, :update => true)        
       end
       
       it "should not be a new record" do

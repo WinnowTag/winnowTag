@@ -1,8 +1,10 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Allows a User to group tags and feeds together.
 class Folder < ActiveRecord::Base
   belongs_to :user
   has_and_belongs_to_many :feeds, :order => :title
@@ -18,7 +20,7 @@ class Folder < ActiveRecord::Base
   end
   
   validates_presence_of :name
-  validates_uniqueness_of :name, :scope => :user_id
+  validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false
   
   def self.remove_tag(user, tag_id)
     folders = user.folders

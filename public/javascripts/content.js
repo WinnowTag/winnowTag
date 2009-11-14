@@ -1,8 +1,16 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// This class manages the area in which various items are shown. It handles
+// resizing the height and width in response to the number of items shown
+// and/or the user hiding/showing various parts of the UI.
+//
+// This class is intended to be a Singleton. Its one instance is created in
+// its setup() function, which is called when the DOM is loaded (currently
+// observed in the main application layout).
 var Content = Class.create({
   initialize: function() {
     this.body            = $(document.body);
@@ -37,11 +45,23 @@ var Content = Class.create({
   },
   
   resizeHeight: function() {
-    this.content.style.height = this.contentHeight() + 'px';
+    var newHeight = this.contentHeight();
+    
+    // IE does some stupid things in the middle of resize events,
+    // so this prevents a JS error when the content height is negative.
+    if (newHeight > 0) {
+      this.content.style.height = newHeight + 'px';
+    }
   },
   
   resizeWidth: function() {
-    this.container.style.width = this.contentWidth() + 'px';
+    var newWidth = this.contentWidth();
+    
+    // IE does some stupid things in the middle of resize events,
+    // so this prevents a JS error when the content width is negative.
+    if (newWidth > 0) {
+      this.container.style.width = newWidth + 'px';      
+    }
   },
   
   resizeSidebar: function() {
@@ -99,6 +119,8 @@ var Content = Class.create({
   }
 });
 
+// Sets up the one instance of this class, through which other functions
+// interact with it.
 Content.setup = function() {
   Content.instance = new Content();
 }

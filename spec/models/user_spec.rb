@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -44,16 +44,25 @@ describe User do
       original_prototype.should_not be_prototype
     end
 
+    it "saving the prototype doesn't unmark it as the prototype" do
+      prototype = Generate.user!(:prototype => true)
+      prototype.should be_prototype
+
+      prototype.save
+      prototype.reload
+      prototype.should be_prototype
+    end
+
     it "creating from a prototype activates the new user" do
       prototype = Generate.user!(:prototype => true)
-      user = User.create_from_prototype(Generate.user.attributes)
-      user.should be_active
+      user = User.create_from_prototype(Generate.user_attributes(:activated_at => nil))
+      user.reload.should be_active
     end
     
     it "creating from a prototype marks all system messages as read" do
       prototype = Generate.user!(:prototype => true)
       message = Message.create! :body => "some test message"
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       Message.unread(user).for(user).should be_empty
     end
     
@@ -74,7 +83,7 @@ describe User do
       prototype.folders.create!(:name => "Big", :tag_ids => [tag1.id, tag2.id], :feed_ids => [feed1.id, feed2.id, feed3.id])
       prototype.folders.create!(:name => "Small", :tag_ids => [tag1.id], :feed_ids => [feed3.id])
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).folders
       
       user.folders.first.name.should == "Big"
@@ -91,7 +100,7 @@ describe User do
       prototype.feed_subscriptions.create!(:feed_id => 1)
       prototype.feed_subscriptions.create!(:feed_id => 2)
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).feed_subscriptions
       
       user.feed_subscriptions.first.feed_id.should == 1
@@ -103,7 +112,7 @@ describe User do
       prototype.tag_subscriptions.create!(:tag_id => 1)
       prototype.tag_subscriptions.create!(:tag_id => 2)
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).tag_subscriptions
       
       user.tag_subscriptions.first.tag_id.should == 1
@@ -121,7 +130,7 @@ describe User do
       tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :description => "Tag 2 Comment")
       tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => feed_item2.id, :user_id => prototype.id
       
-      user = User.create_from_prototype(Generate.user.attributes)
+      user = User.create_from_prototype(Generate.user_attributes)
       user.should have(2).tags
       
       user.tags.first.name.should == "Tag 1"
@@ -229,6 +238,22 @@ describe User do
       users = User.search :text_filter => "mark", :order => "id"
       users.should == expected_users
     end
+    
+    context "when ordering by name" do
+      
+      it "orders by last name, first name, login" do
+        user2 = Generate.user!(:lastname => "Smith", :firstname => "Jon",  :login => "jonsmith")
+        user1 = Generate.user!(:lastname => "Smith", :firstname => "John", :login => "jsmith")
+        user3 = Generate.user!(:lastname => "Smith", :firstname => "Jon",  :login => "jonsmith2")
+        user5 = Generate.user!(:lastname => nil,     :firstname => nil,    :login => "jroe")
+        user4 = Generate.user!(:lastname => nil,     :firstname => nil,    :login => "jdoe")
+        
+        expected_users = [user4, user5, user1, user2, user3]
+
+        users = User.search :order => "name"
+        users.should == expected_users
+      end
+    end
   end
   
   describe '#changed_tags' do
@@ -249,12 +274,7 @@ describe User do
   
   describe '#potentially_undertrained_changed_tags' do
     before(:each) do
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
+      6.times { Generate.feed_item! }
 
       @user = Generate.user!
       @changed_tag_with_5 = Generate.tag!(:user => @user, :last_classified_at => Time.now.yesterday.getutc)
@@ -288,29 +308,61 @@ describe User do
       User.rspec_reset
     end
     
-    it "should_require_login" do
+    it "required login" do
       user = Generate.user(:login => nil)
       user.should have(1).error_on(:login)
     end
 
-    it "should_require_password" do
-      user = Generate.user(:crypted_password => nil, :password_confirmation => "password")
-      user.should have(2).errors_on(:password)
+    it "requires password" do
+      user = Generate.user(:password => "", :password_confirmation => "password")
+      user.should_not be_valid
+      user.errors.on(:password).should == ["is too short (minimum is 4 characters)", "doesn't match confirmation"]
+    end
+
+    it "requires password confirmation" do
+      user = Generate.user(:password => "password", :password_confirmation => "")
+      user.should_not be_valid
+      user.errors.on(:password).should == "doesn't match confirmation"
+    end
+
+    it "requires matching password confirmation" do
+      user = Generate.user(:password => "password", :password_confirmation => "other password")
+      user.should_not be_valid
+      user.errors.on(:password).should == "doesn't match confirmation"
+    end
+
+    it "does not change the password when the current password is blank" do
+      user = Generate.user!
+      user.update_attributes(:current_password => "", :password => 'new password', :password_confirmation => 'new password')
+      user.should_not be_valid
+      user.errors.on(:current_password).should == "is not correct"
+    end
+
+    it "does not change the password when the current password is wrong" do
+      user = Generate.user!
+      user.update_attributes(:current_password => "wrong password", :password => 'new password', :password_confirmation => 'new password')
+      user.should_not be_valid
+      user.errors.on(:current_password).should == "is not correct"
     end
     
-    it "should_reset_password" do
+    it "changes the password when the current password is correct" do
       user = Generate.user!
-      user.update_attributes(:password => 'new password', :password_confirmation => 'new password')
+      user.update_attributes(:current_password => "password", :password => 'new password', :password_confirmation => 'new password')
       User.authenticate(user.login, 'new password').should == user
     end
 
-    it "should_not_rehash_password" do
+    it "does not change tha password when not give a password" do
       user = Generate.user!
       user.update_attributes(:firstname => "johnny")
       User.authenticate(user.login, 'password').should == user
     end
 
-    it "should_authenticate_user" do
+    it "does not authenticate a user with the wrong password" do
+      user = Generate.user!
+      User.authenticate(user.login, 'wrong password').should be_nil
+    end
+
+    it "authenticates a user with the correct password" do
       user = Generate.user!
       User.authenticate(user.login, 'password').should == user
     end
@@ -320,11 +372,6 @@ describe User do
     it "should_be_owner_of_self" do
       u = Generate.user!
       assert u.has_role?('owner', u)
-    end
-  
-    it "should_require_email" do
-      user = Generate.user(:email => nil)
-      user.should have(1).error_on(:email)
     end
     
     it "login allows alphanumberic, -, and _" do
@@ -441,4 +488,157 @@ describe User do
       user.should be_subscribed(feed)
     end
   end
+end
+
+describe User, "email address validation" do
+  
+  before(:each) do
+    @user = Generate.user
+  end
+  
+  it "requires email" do
+    @user.email = nil
+    @user.should have_at_least(1).error_on(:email)
+  end
+  
+  it "accepts basic address" do
+    @user.email = "jdoe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with underscore" do
+    @user.email = "john_doe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with dot" do
+    @user.email = "john.doe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with plus" do
+    @user.email = "jdoe+wingnut@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with leading digits" do
+    @user.email = "123jdoe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "rejects address with multiple @ symbols" do
+    @user.email = "j@doe@example.com"
+    @user.valid?
+    @user.should have(1).error_on(:email)
+  end
+  
+  it "rejects address with interspersed invalid characters" do
+    @user.email = "%jd#o=&e@example.com"
+    @user.valid?
+    @user.should have(1).error_on(:email)
+  end
+  
+end
+
+describe User, '#email=' do
+  
+  it "strips quoted name from email" do
+    user = User.new :email => '"John Von Doe" <jdoe@example.com>'
+    user.email.should == "jdoe@example.com"
+  end
+  
+  it "strips unquoted name from email" do
+    user = User.new :email => 'John Von Doe <jdoe@example.com>'
+    user.email.should == "jdoe@example.com"
+  end
+  
+  context "when user lacks first or last name" do
+    
+    before(:each) do
+      @user = User.new :email => '"John Von Doe" <jdoe@example.com>'
+    end
+    
+    it "sets first name" do
+      @user.firstname.should == "John"
+    end
+    
+    it "sets last name" do
+      @user.lastname.should == "Von Doe"
+    end
+    
+  end
+  
+  context "when user already has first or last name" do
+    
+    before(:each) do
+      @user = User.new :firstname => "Clark", :lastname => "Kent", :email => '"John Von Doe" <jdoe@example.com>'
+    end
+    
+    it "does not set first name" do
+      @user.firstname.should == "Clark"
+    end
+    
+    it "does not set last name" do
+      @user.lastname.should == "Kent"
+    end
+    
+  end
+  
+end
+
+describe User, '#email_address_with_name' do
+  
+  context "when first and last name are present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => "John", :lastname => "Doe", :email => "jdoe@example.com"
+    end
+    
+    it "includes name in email address" do
+      @user.email_address_with_name.should == '"John Doe" <jdoe@example.com>'
+    end
+    
+  end
+  
+  context "when only first name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => "John", :lastname => nil, :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
+  context "when only last name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => nil, :lastname => "Doe", :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
+  context "when neither first nor last name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => nil, :lastname => nil, :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
 end
