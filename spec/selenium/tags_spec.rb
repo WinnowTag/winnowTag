@@ -112,7 +112,7 @@ describe "Tags" do
     page.wait_for :wait_for => :page
     page.wait_for :wait_for => :ajax
     
-    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=unread&tag_ids=#{@tag_not_in_sidebar.id}$/
+    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=all&tag_ids=#{@tag_not_in_sidebar.id}$/
     @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
 

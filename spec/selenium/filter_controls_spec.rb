@@ -38,7 +38,7 @@ describe "filter controls" do
     
   describe "text filter" do    
     it "sets the text filter" do
-      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all$/
 
       page.type "text_filter", "ruby"
       
@@ -49,7 +49,7 @@ describe "filter controls" do
       #
       page.fire_event("text_filter_form", "submit")
 
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&text_filter=ruby$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&text_filter=ruby$/
     end
     
     it "keeps mode and tag/feed filters intact" do
@@ -85,11 +85,11 @@ describe "filter controls" do
     end
     
     it "sets the tag filter" do
-      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all$/
 
       page.click "css=#name_tag_#{@tag.id}"
 
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}$/
     end
     
     it "resets feed/tag filters only" do
@@ -109,28 +109,28 @@ describe "filter controls" do
       page.open feed_items_path(:anchor => "tag_ids=#{@sql.id},#{@tag.id}")
       page.wait_for :wait_for => :ajax
 
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@sql.id}%2C#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@sql.id}%2C#{@tag.id}$/
 
       page.click "css=#name_tag_#{@tag.id}"
       
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}$/
     end
     
     it "sets tag filter for all in folder" do
-      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all$/
 
       page.click "css=#tags_section .header .name"
       
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}%2C#{@sql.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
     
     it "filters by all tags in the folder, even when a tag was just removed" do
-      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all$/
       page.click "css=#tag_#{@tag.id} .filter .remove"
       page.wait_for :wait_for => :ajax
       page.confirmation.should include(@tag.name)
       page.click "css=#tags_section .header .name"      
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@sql.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@sql.id}$/
     end
   end
 end
