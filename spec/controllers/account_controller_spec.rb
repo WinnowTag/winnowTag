@@ -169,13 +169,6 @@ describe AccountController do
     assert_not_nil user.logged_in_at
     assert_not_equal previous_login_time, user.logged_in_at
   end
-  
-  it "should send reminders" do
-    user = Generate.user!
-    post :reminder, :login => user.login
-    
-    ActionMailer::Base.deliveries.size.should == 1
-  end
     
 protected
   def create_user(options = {})

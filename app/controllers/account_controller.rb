@@ -98,7 +98,7 @@ class AccountController < ApplicationController
   def reminder
     if user = User.find_by_login(params[:login])
       user.enable_reminder!
-      UserNotifier.deliver_reminder(user, login_with_code_url(user.reminder_code))
+      UserNotifier.deliver_reminder(user, login_url(user.reminder_code))
       render :update do |page|
         page << "Message.add('notice', #{t('winnow.notifications.reminder_sent').to_json});"
       end
