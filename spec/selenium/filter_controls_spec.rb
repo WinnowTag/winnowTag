@@ -134,12 +134,12 @@ describe "filter controls" do
     end
     
     it "sets tag filter for all selected tags" do
-      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all$/
       
       page.click "css=#name_tag_#{@tag.id}"
       multi_select_click "css=#name_tag_#{@sql.id}"
       
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&tag_ids=#{@tag.id}%2C#{@sql.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}%2C#{@sql.id}$/
     end
   end
   
@@ -155,12 +155,12 @@ describe "filter controls" do
     end
     
     it "sets feed filter for all selected feeds" do
-      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all$/
       
       page.click "css=#name_feed_#{@feed1.id}"
       multi_select_click "css=#name_feed_#{@feed2.id}"
       
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&feed_ids=#{@feed1.id}%2C#{@feed2.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&feed_ids=#{@feed1.id}%2C#{@feed2.id}$/
     end
     
   end
@@ -176,12 +176,12 @@ describe "filter controls" do
     end
     
     it "sets filter for all selected tags and feeds" do
-      page.location.should =~ /\#order=date&direction=desc&mode=unread$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all$/
       
       page.click "css=#name_feed_#{@feed.id}"
       multi_select_click "css=#name_tag_#{@tag.id}"
       
-      page.location.should =~ /\#order=date&direction=desc&mode=unread&feed_ids=#{@feed.id}&tag_ids=#{@tag.id}$/
+      page.location.should =~ /\#order=date&direction=desc&mode=all&feed_ids=#{@feed.id}&tag_ids=#{@tag.id}$/
     end
     
   end
