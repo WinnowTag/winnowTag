@@ -18,34 +18,6 @@ describe "Tags" do
     page.open tags_path
     page.wait_for :wait_for => :ajax
   end
-  
-  describe 'merging' do
-    before(:each) do
-      @other = Generate.tag!(:user => @user, :name => "test")
-      # In IE there seems to be a synching problem,
-      # sometimes loading the tags page happens 
-      # without the @other tag present, I don't know if
-      # this is a case of the follow load being ignored
-      # because the previous one was same or what, but putting
-      # the sleep here always ensures that @other appears in 
-      # the page.
-      sleep(1)
-      page.open tags_path
-      page.wait_for :wait_for => :ajax
-    end
-    
-    it "can merge two tags by changing their names" do
-      page.click "name_tag_#{@other.id}"
-      
-      see_element("#name_tag_#{@other.id}-inplaceeditor")
-      page.type "css=input.editor_field", @tag1.name
-      page.key_down "css=input.editor_field", '\13' # enter
-      page.wait_for :wait_for => :ajax
-      page.confirmation
-      page.wait_for :wait_for => :page
-      dont_see_element "#name_tag_#{@other.id}"
-    end
-  end
     
   # These are disabled under IE because selenium sets the wrong button code.
   #
@@ -126,6 +98,46 @@ describe "Tags" do
     
     page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=trained&tag_ids=#{@tag_not_in_sidebar.id}$/
     @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
+  end
+end
+
+describe 'merging' do
+  before(:each) do
+    @user = Generate.user!
+    @tag1 = Generate.tag! :user => @user, :bias => 0
+    @tag2 = Generate.tag! :bias => 1, :public => true
+    @user.tag_subscriptions.create!(:tag => @tag2)
+    
+    @tag_not_in_sidebar = Generate.tag! :user => @user, :show_in_sidebar => false
+    @other = Generate.tag!(:user => @user, :name => "test")
+    
+    # TODO: determine if this is still needed now that all models are
+    # set up before a page is opened.
+    #
+    # In IE there seems to be a synching problem,
+    # sometimes loading the tags page happens 
+    # without the @other tag present, I don't know if
+    # this is a case of the follow load being ignored
+    # because the previous one was same or what, but putting
+    # the sleep here always ensures that @other appears in 
+    # the page.
+    sleep(1)
+    
+    login @user
+    page.open tags_path
+    page.wait_for :wait_for => :ajax
+  end
+  
+  it "can merge two tags by changing their names" do
+    page.click "name_tag_#{@other.id}"
+    
+    see_element("#name_tag_#{@other.id}-inplaceeditor")
+    page.type "css=input.editor_field", @tag1.name
+    page.key_down "css=input.editor_field", '\13' # enter
+    page.wait_for :wait_for => :ajax
+    page.confirmation
+    page.wait_for :wait_for => :page
+    dont_see_element "#name_tag_#{@other.id}"
   end
 end
 
