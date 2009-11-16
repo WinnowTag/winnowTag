@@ -36,6 +36,7 @@ module CustomSeleniumHelpers
   def multi_select_click(locator)
     mac? ? page.meta_key_down : page.control_key_down
     page.click locator
+  ensure
     mac? ? page.meta_key_up : page.control_key_up
   end
   
