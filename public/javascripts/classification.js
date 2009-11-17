@@ -60,7 +60,7 @@ var Classification = Class.create({
       
       onFinished: function() {
         this.classification_progress.hide();
-        this.notify("Finished");
+        this.notify("Reset");
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.finish"));
         this.disableClassification();
         if(confirm(I18n.t("winnow.javascript.classifier.progress_bar.reload"))) {
