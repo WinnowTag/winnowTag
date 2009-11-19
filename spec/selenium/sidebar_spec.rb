@@ -43,9 +43,6 @@ describe "sidebar" do
     page.wait_for :wait_for => :ajax
     
     assert_not_visible "sidebar"
-    
-    page.click "sidebar_control"
-    assert_visible "sidebar"
   end
 
   it "remembers the sidebar is open when the page is refreshed" do
