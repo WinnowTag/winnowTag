@@ -5,8 +5,6 @@
 # Please visit http://www.peerworks.org/contact for further information.
 
 task :selenium_for_hudson do
-  ENV['RAILS_ENV'] = RAILS_ENV = 'test'
-  
   Rake::Task['assets:clean'].invoke
   # system "touch tmp/restart.txt"
   system "mongrel_rails start -e test -p 3000 -d"
