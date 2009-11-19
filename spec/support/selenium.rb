@@ -34,10 +34,10 @@ module CustomSeleniumHelpers
   end
   
   def multi_select_click(locator)
-    mac? ? page.meta_key_down : page.control_key_down
+    mac? ? page.meta_key_down : page.key_down_native('17')
     page.click locator
   ensure
-    mac? ? page.meta_key_up : page.control_key_up
+    mac? ? page.meta_key_up : page.key_up_native('17')
   end
   
   def mac?

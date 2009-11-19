@@ -425,7 +425,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   draggableFor: function(tag_or_feed) {
     new Draggable(tag_or_feed, {
-      ghosting: true, revert: true, scroll: 'sidebar',
+      ghosting: true, revert: true, scroll: 'sidebar', delay: 100,
       starteffect: Prototype.emptyFunction,
       endeffect: Prototype.emptyFunction,
       reverteffect: function(element, top_offset, left_offset) {
