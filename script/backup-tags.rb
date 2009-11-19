@@ -83,13 +83,19 @@ FileUtils.cd(output) do
                         :hmac_access_id => access_id, 
                         :hmac_secret_key => secret
                       })
-        tag_filename = CGI.escape(Addressable::URI.parse(entry.id).path)
+                      
+        user, _t, tag = Addressable::URI.parse(entry.id).path.sub(/^\//, "").split("/")
+        FileUtils.mkdir_p(CGI.escape(user))
+        tag_filename = File.join(CGI.escape(user), CGI.escape(tag))
+        
         File.open(tag_filename, "w") do |f|
           f << tag_feed.to_xml
         end
+        
         repo.add(tag_filename)
       rescue Exception => e
         errors << "#{e}\n"
+        errors.flush
       end
     end
 
