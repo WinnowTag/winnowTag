@@ -74,6 +74,14 @@ module FolderHelpers
     end
   end
   
+  def wait_for_tag_in_folder(tag, folder)
+    page.wait_for :wait_for => :element, :element => "css=#folder_#{folder.id}_tag_items #tag_#{tag.id}", :timeout_in_seconds => 5
+  end
+  
+  def wait_for_feed_in_folder(feed, folder)
+    page.wait_for :wait_for => :element, :element => "css=#folder_#{folder.id}_feed_items #feed_#{feed.id}", :timeout_in_seconds => 5
+  end
+  
 end
 
 describe "dragging and dropping feeds and tags to folders" do
@@ -115,7 +123,9 @@ describe "dragging and dropping feeds and tags to folders" do
       open_feeds_section
 
       page.drag_and_drop_to_object "feed_#{@feed_1.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_feed_in_folder(@feed_1, @folder_1)
 
       see_feed_in_folder(@feed_1, @folder_1)
     end
@@ -126,7 +136,9 @@ describe "dragging and dropping feeds and tags to folders" do
       open_tags_section
 
       page.drag_and_drop_to_object "tag_#{@tag_1.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_tag_in_folder(@tag_1, @folder_1)
 
       see_tag_in_folder(@tag_1, @folder_1)
     end
@@ -137,7 +149,9 @@ describe "dragging and dropping feeds and tags to folders" do
       open_tags_section
 
       page.drag_and_drop_to_object "tag_#{@public_tag.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_tag_in_folder(@public_tag, @folder_1)
 
       see_tag_in_folder(@public_tag, @folder_1)
     end
@@ -154,7 +168,9 @@ describe "dragging and dropping feeds and tags to folders" do
       select_feed(@feed_2)
 
       page.drag_and_drop_to_object "feed_#{@feed_1.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_feed_in_folder(@feed_1, @folder_1)
 
       see_feed_in_folder(@feed_1, @folder_1)
       dont_see_feed_in_folder(@feed_2, @folder_1)
@@ -168,7 +184,9 @@ describe "dragging and dropping feeds and tags to folders" do
       select_tag(@tag_2)
 
       page.drag_and_drop_to_object "tag_#{@tag_1.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_tag_in_folder(@tag_1, @folder_1)
 
       see_tag_in_folder(@tag_1, @folder_1)
       dont_see_tag_in_folder(@tag_2, @folder_1)
@@ -182,7 +200,9 @@ describe "dragging and dropping feeds and tags to folders" do
       select_tag(@tag_2)
 
       page.drag_and_drop_to_object "tag_#{@public_tag.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_tag_in_folder(@public_tag, @folder_1)
 
       see_tag_in_folder(@public_tag, @folder_1)
       dont_see_tag_in_folder(@tag_2, @folder_1)
@@ -201,7 +221,10 @@ describe "dragging and dropping feeds and tags to folders" do
       select_feeds(@feed_1, @feed_2)
 
       page.drag_and_drop_to_object "feed_#{@feed_2.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_feed_in_folder(@feed_1, @folder_1)
+      wait_for_feed_in_folder(@feed_2, @folder_1)
 
       see_feed_in_folder(@feed_1, @folder_1)
       see_feed_in_folder(@feed_2, @folder_1)
@@ -216,7 +239,10 @@ describe "dragging and dropping feeds and tags to folders" do
       select_tags(@tag_1, @tag_2)
 
       page.drag_and_drop_to_object "tag_#{@tag_2.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_tag_in_folder(@tag_1, @folder_1)
+      wait_for_tag_in_folder(@tag_2, @folder_1)
 
       see_tag_in_folder(@tag_1, @folder_1)
       see_tag_in_folder(@tag_2, @folder_1)
@@ -231,7 +257,10 @@ describe "dragging and dropping feeds and tags to folders" do
       select_tags(@tag_1, @public_tag)
 
       page.drag_and_drop_to_object "tag_#{@public_tag.id}", "folder_#{@folder_1.id}"
+      
       page.wait_for :wait_for => :ajax
+      wait_for_tag_in_folder(@tag_1, @folder_1)
+      wait_for_tag_in_folder(@public_tag, @folder_1)
 
       see_tag_in_folder(@tag_1, @folder_1)
       see_tag_in_folder(@public_tag, @folder_1)
@@ -286,7 +315,12 @@ describe "dragging and dropping many feeds and tags between folders" do
     select_tags_in_folder(@folder_1, @tag_1, @public_tag)
     
     page.drag_and_drop_to_object "css=#folder_#{@folder_1.id}_tag_items #tag_#{@public_tag.id}", "folder_#{@folder_2.id}"
+    
     page.wait_for :wait_for => :ajax
+    wait_for_feed_in_folder(@feed_1, @folder_2)
+    wait_for_feed_in_folder(@feed_2, @folder_2)
+    wait_for_tag_in_folder(@tag_1, @folder_2)
+    wait_for_tag_in_folder(@public_tag, @folder_2)
 
     see_feed_in_folder(@feed_1, @folder_2)
     see_feed_in_folder(@feed_2, @folder_2)
