@@ -136,7 +136,7 @@ describe 'merging' do
     page.key_down "css=input.editor_field", '\13' # enter
     page.wait_for :wait_for => :ajax
     page.confirmation
-    page.wait_for :wait_for => :page
+    page.wait_for :wait_for => :ajax
     dont_see_element "#name_tag_#{@other.id}"
   end
 end
