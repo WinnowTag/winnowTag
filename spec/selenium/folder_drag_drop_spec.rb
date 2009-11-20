@@ -38,6 +38,7 @@ module FolderHelpers
 
   def select_tag(tag)
     page.click "css=#tags_section #name_tag_#{tag.id}"
+    page.wait_for :wait_for => :ajax
   end
 
   def select_tags(*tags)
@@ -56,6 +57,7 @@ module FolderHelpers
 
   def select_feed(feed)
     page.click "css=#feeds_section #name_feed_#{feed.id}"
+    page.wait_for :wait_for => :ajax
   end
 
   def select_feeds(*feeds)
