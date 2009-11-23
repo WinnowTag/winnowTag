@@ -424,8 +424,12 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   draggableFor: function(tag_or_feed) {
+    var delay = 0;
+    if (Prototype.Browser.IE) {
+      delay = 100;
+    }
     new Draggable(tag_or_feed, {
-      ghosting: true, revert: true, scroll: 'sidebar', delay: 100,
+      ghosting: true, revert: true, scroll: 'sidebar', delay: delay,
       starteffect: Prototype.emptyFunction,
       endeffect: Prototype.emptyFunction,
       reverteffect: function(element, top_offset, left_offset) {
