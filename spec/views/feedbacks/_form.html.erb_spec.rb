@@ -1,13 +1,13 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe '/feedbacks/_form.html.erb' do
   before(:each) do
-    @feedback = mock_new_model(Feedback, :body => nil)
+    @feedback = mock_model(Feedback, :body => nil).as_new_record
   end
   
   def render_it

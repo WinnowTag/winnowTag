@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 Given("the feed entry at '$entry'") do |entry|
   @feed_entry = File.read(File.join(RAILS_ROOT, 'spec/fixtures', entry))

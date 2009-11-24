@@ -34,9 +34,7 @@
       
   <% if local_assigns[:editable] %>
     <h4>
-      <span id="<%= dom_id(tag, 'name') %>" class="name"><%=h tag.name %></span>
-      <%= in_place_editor(dom_id(tag, "name"), :url => tag_path(tag), :options => "{method: 'put'}", :param_name => "tag[name]",
-            :click_to_edit_text => t("winnow.tags.main.click_to_edit_name"), :save_text => t("winnow.general.save"), :html_response => false) %>
+      <span id="<%= dom_id(tag, 'name') %>" class="name" data-update_url="<%= tag_path(tag) %>"><%=h tag.name %></span>
     </h4>
 
     <div class="description <%= 'empty' if tag.description.blank? %>">

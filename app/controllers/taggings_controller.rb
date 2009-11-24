@@ -1,27 +1,30 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# Required for the Tag() function.  Rails can sometimes auto-load this and
+# Required for the +Tag()+ function.  Rails can sometimes auto-load this and
 # sometimes it doesn't so lets put it here explicitly so we can always be
-# sure it has been loaded and the Tag and function is available.
+# sure it has been loaded and the +Tag()+ function is available.
 # require 'tag.rb'
 
 # Not explicitly requiring the file because is causes problems with reloading
 # in development mode. Using this contstant allows rails to auto load the 
-# Tag class, and therefore the Tag() function
+# +Tag+ class, and therefore the +Tag()+ function
 Tag
 
+# The +TaggingsController+ is used to manage user taggings on feed items.
 class TaggingsController < ApplicationController
-  helper :feed_items
-
-  # Creates a single tagging for a <Taggable, Tagger, Tag>
+  # The +create+ action creates a single +Tagging+ for a 
+  # <tt><FeedItem, User, Tag></tt> combination. Any existing
+  # tagging for that combination will be deletd. If the Tag 
+  # is not already in the users sidebar, it will be added.
   def create
     tag = Tag(current_user, params[:tagging][:tag])
     @tagging = Tagging.new(params[:tagging].merge(:tag => tag, :user => current_user))
-    if @tagging.save
+    # Save the tagging within a transaction to avoid errors from duplicate taggings
+    if Tagging.transaction { @tagging.save }
       unless tag.show_in_sidebar?
         tag.update_attribute(:show_in_sidebar, true)
       end
@@ -33,12 +36,13 @@ class TaggingsController < ApplicationController
     end
   end
   
-  # Destroys taggings
+  # The +destroy+ action destroys a user tagging on a FeedItem.
   #
-  #  Accepted Parameters:
-  #    - tagging: 
-  #         feed_item_id: The type and id of a taggable to destroy a tagging on.
-  #         tag: The name of the tag to destroy the tagging on the taggable.
+  # Accepted Parameters:
+  #
+  # - +tagging+:
+  #   - +feed_item_id+: The id of a +FeedItem+ to destroy a +Tagging+ on.
+  #   - +tag+:          The name of the +Tag+ to destroy the +Tagging+ on the +FeedItem+.
   def destroy
     @feed_item = FeedItem.find(params[:tagging][:feed_item_id])
     @tag = Tag(current_user, params[:tagging][:tag])

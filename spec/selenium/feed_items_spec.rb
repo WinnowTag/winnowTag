@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -29,8 +29,7 @@ describe "FeedItemsTest" do
     page.click "css=#feed_item_#{@feed_item1.id} .status"
     see_element "#feed_item_#{@feed_item1.id}.read"
     
-    page.refresh
-    page.wait_for :wait_for => :page
+    page.click "css=#mode_unread"
     page.wait_for :wait_for => :ajax
     dont_see_element "#feed_item_#{@feed_item1.id}"
 
@@ -75,8 +74,7 @@ describe "FeedItemsTest" do
     page.click "css=#feed_item_#{@feed_item1.id} .closed"
     see_element "#feed_item_#{@feed_item1.id}.read"
 
-    page.refresh
-    page.wait_for :wait_for => :page
+    page.click "css=#mode_unread"
     page.wait_for :wait_for => :ajax
     dont_see_element "#feed_item_#{@feed_item1.id}"
   end
@@ -85,13 +83,15 @@ describe "FeedItemsTest" do
     windows = page.get_all_window_ids
     feed1 = @feed_item1.feed
     page.click "css=#feed_item_#{@feed_item1.id} .feed_title", :wait_for => :ajax
-    page.click "css=#feed_item_#{@feed_item1.id} #feed_#{feed1.id} a[href=/feed_items#feed_ids=#{feed1.id}]"
-    page.get_all_window_names.should have(windows.size + 1).windows
+    page.click "css=#feed_item_#{@feed_item1.id} #feed_#{feed1.id} a[href$=/feed_items#feed_ids%3D#{feed1.id}]"
+    
+    # TODO - get_all_window_names doesn't work on IE
+    page.get_all_window_names.should have(windows.size + 1).windows unless ie?
   end
   
   it "displays an empty message when there are no feed items" do
     FeedItem.delete_all
-    
+    sleep(1)
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
   

@@ -1,8 +1,12 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Base class for managing a list of items. More items are added to the list
+// as the user scrolls down, eliminating the need for explicit paging. Sorting
+// and filtering are also handled here.
 var ItemBrowser = Class.create({
   initialize: function(name, container, options) {
     this.options = {
@@ -116,6 +120,7 @@ var ItemBrowser = Class.create({
     indicator.remove();
   },
 
+  // Called at the end of a request to process more items in the update queue, if any.
   updateFromQueue: function() {
     if (this.update_queue.any()) {
       var next_action = this.update_queue.shift();
@@ -123,6 +128,9 @@ var ItemBrowser = Class.create({
     }
   },
   
+  // Clear the list of items and load it. Called when changing sort order or
+  // adding/removing filters. Queues request if it's already in the act of
+  // loading; otherwise it executes request immediately.
   reload: function() {
     var clearAndUpdate = function() {
       this.loading = true;
@@ -205,9 +213,11 @@ var ItemBrowser = Class.create({
     // Do not persist the text_filter
     var filters_to_save = $H(this.filters);
     filters_to_save.unset("text_filter");
+    
     Cookie.set(this.name + "_filters", filters_to_save.toQueryString(), 365);
   },
   
+  // Marks the appropriate mode filter (all, unread, trained) for items as selected.
   styleModes: function() {
     if(this.filters.mode) {
       this.modes().without(this.filters.mode).each(function(mode) {
@@ -230,6 +240,8 @@ var ItemBrowser = Class.create({
     }
   },
   
+  // Selects the appropriate option from the list of possible sort orders and
+  // sets the appropriate class on the Ascending/Descending toggle.
   styleOrders: function() {
     this.direction_control.removeClassName("asc");
     this.direction_control.removeClassName("desc");
@@ -284,10 +296,10 @@ var ItemBrowser = Class.create({
 
     this.filters = { order: this.defaultOrder(), direction: this.defaultDirection(), mode: this.defaultMode() };
     
-    if(location.hash.gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {
+    if(decodeURIComponent(location.hash).gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {
       this.setFilters(Cookie.get(this.name + "_filters").toQueryParams());
     } else {
-      this.setFilters(location.hash.gsub('#', '').toQueryParams());
+      this.setFilters(decodeURIComponent(location.hash).gsub('#', '').toQueryParams());
     }
   },
 

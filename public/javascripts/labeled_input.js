@@ -1,8 +1,12 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// TODO: determine whether we need this and behavior in placeholder.js
+
+// Manages the showing/hiding of example text for input controls.
 document.observe('dom:loaded', function() {
   $$("input.example[type=text]").each(function(element) {
     var example_value = element.value;

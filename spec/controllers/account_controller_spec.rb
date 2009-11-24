@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -114,24 +114,6 @@ describe AccountController do
       assert !@controller.send(:logged_in?)
     end
   
-    it "should_activate_user" do
-      user = Generate.user! :activated_at => nil
-      assert_nil User.authenticate(user.login, "password")
-      get :activate, :activation_code => user.activation_code
-      assert_equal user, User.authenticate(user.login, "password")
-    end
-  
-    it "should_not_activate_nil" do
-      get :activate, :activation_code => nil
-      assert_activate_error
-    end
-
-    it "should_not_activate_bad" do
-      get :activate, :activation_code => 'foobar'
-      assert flash.has_key?(:error), "Flash should contain error message." 
-      assert_activate_error
-    end
-
     it "edit_can_only_change_some_values" do
       user = Generate.user!
       original_login = user.login
@@ -193,10 +175,5 @@ protected
 
   def cookie_for(user)
     auth_token user.remember_token
-  end
-
-  def assert_activate_error
-    assert_response :success
-    assert_template "account/activate" 
   end
 end

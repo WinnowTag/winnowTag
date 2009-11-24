@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -27,7 +27,7 @@ describe Folder do
     end
   end
   
-  describe "removing ad item from all of a users folders" do
+  describe "removing an item from all of a users folders" do
     it "can remove a tag from all of a users folders" do
       user = Generate.user!
       tag1 = Generate.tag!(:user => user)

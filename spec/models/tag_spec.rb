@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -27,11 +27,18 @@ describe Tag do
   end
 
   describe "sort_name" do
-    it "sets the tag's sort_name to be a downcased version of the name with non-word characters removed" do
+    it "sets the tag's sort_name to be a downcased version of the name with leading articles and non-word characters removed" do
       Generate.tag!(:name => "Some-Fe*ed").sort_name.should == "somefeed"
-      Generate.tag!(:name => "A So'me #Feed").sort_name.should == "asomefeed"
-      Generate.tag!(:name => "An $Some :Feed").sort_name.should == "ansomefeed"
-      Generate.tag!(:name => "The So?me Fe_ed").sort_name.should == "thesomefeed"
+      Generate.tag!(:name => "A So'me #Feed").sort_name.should == "somefeed"
+      Generate.tag!(:name => "An $Some :Feed").sort_name.should == "somefeed"
+      Generate.tag!(:name => "The So?me Fe_ed").sort_name.should == "somefeed"
+    end
+  end
+  
+  describe "all_ids" do
+    it "should return all the ids of the existing tags" do
+      ids = [Generate.tag!.id, Generate.tag!.id, Generate.tag!.id, Generate.tag!.id]
+      Tag.all_ids.should == ids
     end
   end
 
@@ -183,12 +190,7 @@ describe Tag do
       @user = Generate.user!
       @tag = Generate.tag!(:user => @user, :name => 'mytag')
 
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
+      6.times { Generate.feed_item! }
     end
     
     it "should return true if positive taggings less than 6" do

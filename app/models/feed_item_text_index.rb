@@ -1,8 +1,12 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# Represents the full-text index of a FeedItem.
+#
+# Before creation, it strips HTML from its content.
 class FeedItemTextIndex < ActiveRecord::Base
   set_primary_key "feed_item_id"
 

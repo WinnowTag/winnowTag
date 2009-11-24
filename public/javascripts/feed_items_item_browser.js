@@ -1,8 +1,15 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
+
+// Manages the list of feed items shown on the Items page. Provides:
+//   * toggling for switching among summary and detail view of each item
+//   * marking items read/unread
+//   * navigation using keyboard shortcuts
+//   * filtering by tag or feed
+
 var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   initialize: function($super, name, container, options) {
     $super(name, container, options);
@@ -158,7 +165,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     } else {
       if(!$('feed_filters').down("#" + feed.getAttribute("id"))) {
         feed.removeClassName('selected');
-        $('feed_filters').insertInOrder('li', '.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
+        $('feed_filters').insertInOrder('.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
         this.bindFeedFilterEvents(feed);
         this.styleFilters();
       }
@@ -170,7 +177,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     input.clear();
     if(!$('tag_filters').down("#" + tag.getAttribute("id"))) {
       tag.removeClassName('selected');
-      $('tag_filters').insertInOrder('li', '.name@data-sort', tag, $(tag).down(".name").getAttribute("data-sort"));
+      $('tag_filters').insertInOrder('.name@data-sort', tag, $(tag).down(".name").getAttribute("data-sort"));
       this.bindTagFilterEvents(tag);
       this.styleFilters();
     }
@@ -210,16 +217,20 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   addFilters: function($super, parameters) {
     this.expandFolderParameters(parameters);
-  
+
     if(this.filters.tag_ids && parameters.tag_ids) {
       var tag_ids = this.filters.tag_ids.split(",");
       tag_ids.push(parameters.tag_ids.split(","));
-      parameters.tag_ids = tag_ids.flatten().uniq().join(",");
+      parameters = $H(parameters).merge({
+        tag_ids: tag_ids.flatten().uniq().join(",")
+      });
     }
     if(this.filters.feed_ids && parameters.feed_ids) {
       var feed_ids = this.filters.feed_ids.split(",");
       feed_ids.push(parameters.feed_ids.split(","));
-      parameters.feed_ids = feed_ids.flatten().uniq().join(",");
+      parameters = $H(parameters).merge({
+        feed_ids: feed_ids.flatten().uniq().join(",")
+      });
     }
     
     $super(parameters);
@@ -238,7 +249,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       if(empty) { return false; }
     }
     
-    if(event && event.metaKey) {
+    if(event && this.multiSelectKey(event)) {
       this.expandFolderParameters(parameters);
       var selected = true;
       if(parameters.feed_ids) {
@@ -256,10 +267,17 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         this.removeFilters(parameters);
       } else {
         this.addFilters(parameters);
-        Event.stop(event);
       }
     } else {
       this.setFilters(parameters);
+    }
+  },
+
+  multiSelectKey: function(event) {
+    if(navigator.platform.indexOf("Mac") != -1) {
+      return event.metaKey;
+    } else {
+      return event.ctrlKey;
     }
   },
   
@@ -354,7 +372,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   bindTagFiltersEvents: function() {
-    $$(".filter_list li.tag").each(function(tag) {
+    $$(".filter_list.tags li.tag").each(function(tag) {
       this.bindTagFilterEvents(tag);
     }.bind(this));
   },
@@ -365,33 +383,11 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id});
     link.observe("click", click_event);
 
-    if(tag.hasClassName("draggable")) {
-      Draggables.addObserver({
-        onStart: function(eventName, draggable, event) {
-          if(draggable.element == tag) {
-            link.stopObserving("click", click_event);
-          }
-        },
-        onEnd: function(eventName, draggable, event) {
-          if(draggable.element == tag) {
-            setTimeout(function() {
-              link.observe("click", click_event);
-            }, 1);
-          }
-        }
-      });
-
-      new Draggable(tag, { 
-        ghosting: true, revert: true, scroll: 'sidebar', 
-        reverteffect: function(element, top_offset, left_offset) {
-          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
-        }
-      });
-    }
+    this.makeDraggable(tag, link, click_event);
   },
   
   bindFeedFiltersEvents: function() {
-    $$(".filter_list li.feed").each(function(feed) {
+    $$(".filter_list.feeds li.feed").each(function(feed) {
       this.bindFeedFilterEvents(feed);
     }.bind(this));
   },
@@ -402,29 +398,57 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var click_event = this.toggleSetFilters.bind(this, {feed_ids: feed_id});
     link.observe("click", click_event);
     
-    if(feed.hasClassName("draggable")) {
-      Draggables.addObserver({
-        onStart: function(eventName, draggable, event) {
-          if(draggable.element == feed) {
-            link.stopObserving("click", click_event);
+    this.makeDraggable(feed, link, click_event);
+  },
+  
+  makeDraggable: function(tag_or_feed, link, click_event) {
+    Draggables.addObserver({
+      onStart: function(eventName, draggable, event) {
+        if(draggable.element == tag_or_feed) {
+          if(!draggable.element.match(".selected")) {
+            click_event();
           }
-        },
-        onEnd: function(eventName, draggable, event) {
-          if(draggable.element == feed) {
-            setTimeout(function() {
-              link.observe("click", click_event);
-            }, 1);
-          }
+          link.stopObserving("click", click_event);
         }
-      });
+      },
+      onEnd: function(eventName, draggable, event) {
+        if(draggable.element == tag_or_feed) {
+          setTimeout(function() {
+            link.observe("click", click_event);
+          }, 1);
+        }
+      }
+    });
     
-      new Draggable(feed, { 
-        ghosting: true, revert: true, scroll: 'sidebar', 
-        reverteffect: function(element, top_offset, left_offset) {
-          new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
-        }
-      });
+    this.draggableFor(tag_or_feed);
+  },
+  
+  draggableFor: function(tag_or_feed) {
+    var delay = 0;
+    if (Prototype.Browser.IE) {
+      delay = 100;
     }
+    new Draggable(tag_or_feed, {
+      ghosting: true, revert: true, scroll: 'sidebar', delay: delay,
+      starteffect: Prototype.emptyFunction,
+      endeffect: Prototype.emptyFunction,
+      reverteffect: function(element, top_offset, left_offset) {
+        new Effect.Move(element, { x: -left_offset, y: -top_offset, duration: 0 });
+      },
+      onStart: function(draggable, event) {
+        var selected = draggable.element.up(".multidrag").select('.selected').without(draggable._clone);
+        if (selected.length > 1) {
+          var count = new Element('div', { 'class': 'multidragcount' });
+          var count_message = "Copying " + selected.length + " items...";
+          count.insert(count_message);
+          draggable.element.insert({top: count});
+        }
+      },
+      onEnd: function(draggable, event) {
+        var count = draggable.element.down('.multidragcount');
+        if(count) { count.remove(); }
+      }
+    });
   },
 
   bindTextFilterEvents: function() {

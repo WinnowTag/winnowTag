@@ -1,40 +1,28 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
+
+# The +FeedItemsController+ is used to manage the viewing of feed items.
 class FeedItemsController < ApplicationController
-  include FeedItemsHelper
-  helper :feeds
-  include ActionView::Helpers::TextHelper
-  before_filter :login_required
-     
-  # The Index action has two modes.  The normal mode which displays
-  # positive user and classifier tagged items and the tag inspect mode
-  # which display positive and negative user tagged items.  Normal is the
-  # default, tag inspect mode is set by passing mode=tag_inspect on
-  # the url. In tag_inspect mode the @tag_inspect_mode instance variable
-  # is set to true for use in the views.
-  #
-  # == Supported Parameters
-  #
-  # === The parameters are passed through to +FeedItem.find_with_filters+.
-  #
-  # <tt>limit</tt>:: The number of items to fetch. Default is 40, max is 100.
-  # <tt>offset</tt>:: The offset within the items to fetch from.
-  #
+  # The +index+ action displays +FeedItem+s based on filters provided.
   # See also +FeedItem.find_with_filters+.
   def index
     respond_to do |format|
+      # The html request is used to load the item browser shell only.
+      # No actual feed items will be loaded here.
       format.html
+      
+      # The json request is used to load a page worth of items.
       format.json do
+        # Each time a page of items is loaded, we log a +TagUsag+
+        # for each +Tag+ that is being filtered on.
         params[:tag_ids].to_s.split(",").each do |tag_id|
           if tag = Tag.find_by_id(tag_id)
             TagUsage.create!(:tag => tag, :user => current_user)
           end
         end
-
-        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
 
         filters = { :order => params[:order], :direction => params[:direction],
                     :limit => limit, :offset => params[:offset],
@@ -44,9 +32,16 @@ class FeedItemsController < ApplicationController
                     :user => current_user }
   
         @feed_items = FeedItem.find_with_filters(filters)
+        # The +@full+ flag is sent back to the client side javascript and
+        # is used to determine if there are additional feed items to load.
         @full = @feed_items.size < limit
       end
+      
+      # the atom request is used to request a custom atom feed based on 
+      # the filters to user requested.
       format.atom do
+        # Each time an atom feed of items is loaded, we log a +TagUsag+
+        # for each +Tag+ that is being filtered on.
         params[:tag_ids].to_s.split(",").each do |tag_id|
           TagUsage.create!(:tag_id => tag_id, :user_id => current_user.id)
         end
@@ -66,19 +61,10 @@ class FeedItemsController < ApplicationController
     end
   end
 
-  def clues
-    tries = params[:tries].to_i
-    tag = Tag.find(params[:tag])
-    tag_url = training_tag_url(tag, :format => 'atom')
-    @clues = Remote::ClassifierClues.find_by_item_id_and_tag_url(params[:id], tag_url)
-    
-    if @clues == :redirect && tries < 7
-      redirect_to params.update(:tries => tries + 1)
-    else
-      render :layout => false
-    end
-  end
-  
+  # The +mark_read+ action is used to mark feed items as read for the
+  # logged in user. If an +id+ is provided, that individual feed item
+  # is marked read, otherwise it the tag/feed/text/mode filters will 
+  # be used to mark many feed items as read.
   def mark_read
     if params[:id]
       FeedItem.find(params[:id]).read_by!(current_user)
@@ -93,6 +79,10 @@ class FeedItemsController < ApplicationController
     render :nothing => true
   end
   
+  # The +mark_unread+ action is used to mark feed items as unread for the
+  # logged in user. If an +id+ is provided, that individual feed item
+  # is marked unread, otherwise it the tag/feed/text/mode filters will 
+  # be used to mark many feed items as unread.
   def mark_unread
     if params[:id]
       FeedItem.find(params[:id]).unread_by!(current_user)
@@ -107,21 +97,33 @@ class FeedItemsController < ApplicationController
     render :nothing => true
   end
   
+  # The +body+ action is used to load the main contents of a feed item.
+  # This is lazy-loaded when the user opens a feed item to make the 
+  # loading of the list of feed items faster.
   def body
     @feed_item = FeedItem.find(params[:id])
     render :layout => false
   end
   
+  # The +moderation_panel+ action is used to load the tagging controls
+  # for a feed item.
+  # This is lazy-loaded when the user opens a tagging controls to make the 
+  # loading of the list of feed items faster.
   def moderation_panel 
     @feed_item = FeedItem.find(params[:id]) 
     render :layout => false
   end
   
+  # The +feed_information+ action is used to load the feed information
+  # for a feed item.
+  # This is lazy-loaded when the user opens the feed information panel
+  # for feed item to make the loading of the list of feed items faster.
   def feed_information 
     @feed_item = FeedItem.find(params[:id]) 
     render :layout => false
   end
 
+  # The +sidebar+ actions loads the contents of the feed items sidebar.
   def sidebar
     render :layout => false
   end

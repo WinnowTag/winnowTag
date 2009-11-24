@@ -17,4 +17,4 @@ windows_safari:
   browser: "*safari"
 windows_ie:
   selenium_host: 10.0.76.148
-  browser: "*ie"
+  browser: "*iexplore"

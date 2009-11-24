@@ -80,6 +80,7 @@ en:
       reminder_sent: "A password reminder has been sent"
       update_password: "Please update your password"
       invitation_request_submitted: "Your invitation request has been submitted"
+      invitation_code_invalid: "Your invitation could not be found or has already been used."
       account_activated: "Your account has been activated"
       account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
       feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
@@ -92,10 +93,18 @@ en:
       tag_copied: "{{from}} successfully copied to {{to}}"
       tag_merged: "{{from}} merged with {{to}}"
       classifier:
+        timeout_contacting: "Timeout contacting the classifier. Please try again later."
         could_not_be_started: "The classifier could not be started. Please try again."
         already_running: "The classifier is already running"
         not_running: "No classification process running"
         tags_not_changed: "There are no changes to your tags"
+        confirm_few_positives:
+          one: |-
+            You are about to classify {{tag_names}} which has less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
+          other: |-
+            You are about to classify {{tag_names}} which have less than 6 positive examples. This might not work as well as you would expect.
+            Do you want to proceed anyway?
       collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
       tags_unsubscribe: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
     taggings:
@@ -184,7 +193,6 @@ en:
         close: "Close"
         close_tooltip: ""
         tag_input_tooltip: ""
-        could_not_load_clues: "Could not load the clues, please try again later."
       footer:
         previous_item: "Previous Item"
         previous_item_tooltip: ""
@@ -227,7 +235,7 @@ en:
         click_to_edit_description: "Click to edit tag description"
         destroy_confirm: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
         add_a_comment: "Add a comment"
-        apply_to: "Apply <span>{{tag}}</span> to"
+        apply_to: "Apply <span class='name'>{{tag}}</span> to:"
         fewer_items: "Fewer Items"
         more_items: "More Items"
         public: "Public"
@@ -239,9 +247,9 @@ en:
         training_feed_tooltip: "Download an Atom with the items used to train this tag. You might need to right click and choose 'Save Target as...'."
         subscribe: "Subscribe"
         subscribe_tooltip: ""
-        items_tagged_with: "Show items tagged with {{tag}}"
+        items_tagged_with: "Show items tagged with <span class='name'>{{tag}}</span>"
         items_tagged_with_tooltip: ""
-        items_trained_with: "Show items trained with {{tag}}"
+        items_trained_with: "Show items trained with <span class='name'>{{tag}}</span>"
         items_trained_with_tooltip: ""
         copy: "Copy"
         copy_tooltip: ""
@@ -270,6 +278,7 @@ en:
         search_tooltip: ""
         add_feed_description: "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
         add_feed_button: "Add Feed"
+        add_feed_button_disabled: "Adding..."
         add_feed_tooltip: ""
         upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
         upload_button: "Upload"

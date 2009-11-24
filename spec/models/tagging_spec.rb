@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -116,12 +116,12 @@ describe Tagging do
     Tagging.new(:user => user, :feed_item => @feed_item, :tag => Generate.tag!(:user => user)).should be_valid
   end
 
-  it "should prevent deletion of a feed item with a tagging" do
+  it "should prevent deletion of a feed item with a manual tagging" do
     user = Generate.user!
     tag = Generate.tag!(:user => user)
-    feed_item = @feed_item
-    tagging = Tagging.create!(:user => user, :feed_item => feed_item, :tag => tag)
-    lambda { feed_item.destroy }.should raise_error(ActiveRecord::StatementInvalid)
+    tagging = Tagging.create!(:user => user, :feed_item => @feed_item, :tag => tag, :classifier_tagging => false)
+    @feed_item.destroy.should be_false
+    lambda { FeedItem.find(@feed_item.id) }.should_not raise_error(ActiveRecord::RecordNotFound)
   end
 
   it "deletion_copies_tagging_to_deleted_taggings_table" do

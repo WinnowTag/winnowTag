@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -32,6 +32,12 @@ shared_examples_for "FeedItem update attributes from atom" do
 end
 
 describe FeedItem do
+  it "should update the feed's timestamps when creating a new item" do
+    feed = Generate.feed!()
+    feed.should_receive(:touch)
+    FeedItem.create(:uri => "urn:uuid:blah", :link => "http://example.com", :feed => feed)
+  end
+  
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
       user = Generate.user!
@@ -168,7 +174,7 @@ describe FeedItem do
       FeedItem.find_with_filters(:user => user, :mode => "all", :order => "id").should == [feed_item1, feed_item2]
     end
     
-    it "filters out read items when there are more then 1 tags included" do
+    it "filters out read items when there is more than 1 tag included" do
       user = Generate.user!
       tag1 = Generate.tag!(:user => user)
       tag2 = Generate.tag!(:user => user)

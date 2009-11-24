@@ -5,7 +5,7 @@
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
 			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
-			  modes: ["unread", "all", "trained"],
+			  modes: ["all", "unread", "trained"],
 			  orders: {
 			    desc:      ["date"],
 			    "default": "date"
@@ -19,6 +19,10 @@
         
         $$("#sidebar .section").each(function(element) {
           new SidebarSection(element);
+        });
+        
+        $$('#tag_filters .tag').each(function(element) {
+          new TagFilter(element);
         });
       });
       

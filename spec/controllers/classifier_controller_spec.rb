@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -131,8 +131,8 @@ describe ClassifierController do
       session[:classification_job_id] = ["JOB-ID"]
       get "status"
       response.should be_success
-      response.headers['X-JSON'].should include('"progress": 0')
-      response.headers['X-JSON'].should include('"status": "Waiting"')
+      response.headers['X-JSON'].should include('"progress":0')
+      response.headers['X-JSON'].should include('"status":"Waiting"')
     end
 
     it "should delete the job when complete" do
@@ -158,7 +158,7 @@ describe ClassifierController do
       session[:classification_job_id] = ["STALE"]
       get "status"
       assert_response 500
-      response.headers['X-JSON'].should include('"error_message": "No classification process running"')
+      response.headers['X-JSON'].should include('"error_message":"No classification process running"')
     end
     
     it "should combine the progress for multiple classification jobs" do
@@ -170,7 +170,7 @@ describe ClassifierController do
       
       get "status"
       response.should be_success
-      response.headers['X-JSON'].should include('"progress": 50.0')      
+      response.headers['X-JSON'].should include('"progress":50.0')
     end
   end
 end

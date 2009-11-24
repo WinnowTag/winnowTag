@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -180,7 +180,7 @@ describe ApplicationHelper do
       feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
         with_tag ".filter" do
           with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({feed_ids: '#{feed.id}'})")}.*/
-          with_tag "a.name"
+          with_tag "span.name"
         end
       end
     end
@@ -201,19 +201,23 @@ describe ApplicationHelper do
       feed_filter_control(feed, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
     end
     
-    it "creates a filter control for a feed with draggable controls" do
-      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
-      feed_filter_control(feed, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
-    end
   end
   
   describe "tag filter controls" do
+    
+    def mock_tag(stubs = {})
+      user = stubs[:user] || mock_model(User, :login => "mark")
+      sort_name = (stubs[:name] || "Tag 1").to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')
+      mock_model(Tag, stubs.reverse_merge(
+        :name => "Tag 1", :sort_name => sort_name, :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0
+      ))
+    end
+    
     it "creates a list with an li for each tag" do
-      user = mock_model(User, :login => "mark")
       tags = [
-        mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0),
-        mock_model(Tag, :name => "Tag 2", :sort_name => "tag2", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0),
-        mock_model(Tag, :name => "Tag 3", :sort_name => "tag3", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+        mock_tag(:name => "Tag 1"),
+        mock_tag(:name => "Tag 2"),
+        mock_tag(:name => "Tag 3")
       ]
       tag_filter_controls(tags, :remove => :subscription).should have_tag("ul") do
         with_tag("li", 3)
@@ -221,81 +225,64 @@ describe ApplicationHelper do
     end
 
     it "creates a filter control for a tag" do
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :sort_name => "tag1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag = mock_tag
       tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}") do
         with_tag ".filter" do
           with_tag "a.remove[onclick=?]", /.*#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
-          with_tag "a.name"
+          with_tag "span.name"
         end
       end
     end
     
     it "creates a filter control for a tag with the remove link for a subscription" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag = mock_tag
       tag_filter_control(tag, :remove => :subscription).should have_tag("li[subscribe_url=?]", subscribe_tag_path(tag, :subscribe => true)) do
         with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(unsubscribe_tag_path(tag))}.*/)
       end
     end
     
-    it "creates a filter control for a tag with the remove link for a subscription" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+    it "creates a filter control for a tag with the remove link for a folder" do
+      tag = mock_tag
       folder = mock_model(Folder)
       tag_filter_control(tag, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(tag)))}.*/)
     end
     
     it "creates a filter control for a tag with the remove link for a sidebar" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag = mock_tag
       tag_filter_control(tag, :remove => :sidebar).should have_tag("li[subscribe_url=?]", sidebar_tag_path(tag, :sidebar => true)) do
         with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => "false"))}.*/)
       end
     end
     
     it "creates a filter control for a tag with the remove link for a subscription and current_user" do
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag = mock_tag(:user_id => current_user.id, :user => current_user)
       tag_filter_control(tag, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => "false"))}.*/)
     end
     
     it "creates a filter control for a tag with a span for autocomplete" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
-      tag_filter_control(tag, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
-    end
-    
-    it "creates a filter control for a tag with draggable controls" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
-      tag_filter_control(tag, :remove => :subscription, :draggable => true).should have_tag("li.draggable")
+      tag_filter_control(mock_tag, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
     end
     
     it "creates a filter control for a public tag" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 1, :negative_count => 2, :classifier_count => 3)
-      tag_filter_control(tag, :remove => :subscription).should have_tag("li.public")
+      tag_filter_control(mock_tag, :remove => :subscription).should have_tag("li.public")
     end
     
     it "creates a filter control with a tooltip showing the trining and author information" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 1, :negative_count => 2, :classifier_count => 3)
-      
-      tag_filter_control(tag, :remove => :subscription).should have_tag("li[title=?]", "From mark, Positive: 1, Negative: 2, Automatic: 3")
+      tag = mock_tag(:positive_count => 1, :negative_count => 2, :classifier_count => 3, :user => mock_model(User, :login => "craig"))
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li[title=?]", "From craig, Positive: 1, Negative: 2, Automatic: 3")
     end
     
     it "creates a filter control without an edit control for public tags" do
-      user = mock_model(User, :login => "mark")
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
-      tag_filter_control(tag, :remove => :subscription).should_not have_tag("img.edit")
+      tag_filter_control(mock_tag, :remove => :subscription).should_not have_tag("img.edit")
     end
     
     it "creates a filter control with an edit control for private tags if editable" do
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag = mock_tag(:user_id => current_user.id, :user => current_user)
       tag_filter_control(tag, :editable => true, :remove => :subscription).should have_tag(".edit")
     end
 
     it "creates a filter control without an edit control for private tags if not editable" do
-      tag = mock_model(Tag, :name => "Tag 1", :sort_name => "tag1", :user_id => current_user.id, :user => current_user, :positive_count => 0, :negative_count => 0, :classifier_count => 0)
+      tag = mock_tag(:user_id => current_user.id, :user => current_user)
       tag_filter_control(tag, :editable => false, :remove => :subscription).should_not have_tag(".edit")
     end
   end

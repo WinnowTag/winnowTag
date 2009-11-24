@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require 'rubygems'
 require 'rake/gempackagetask'
@@ -23,7 +23,6 @@ namespace :winnow do
         A Gem for Winnow that includes all the dependencies.
       EOF
       s.add_dependency('hpricot', '0.4.59')
-      s.add_dependency('feedtools', '>= 0.2.26')
       s.add_dependency('rails', '1.1.6')
       s.add_dependency('cached_model', '1.2.1')
       s.add_dependency('uuidtools', '1.0.0')

@@ -1,0 +1,4 @@
+<%= {
+  :name => h(@tag.name),
+  :feed_links_content => render(:partial => 'feed_links.html.erb', :locals => { :tag => @tag })
+}.to_json %>

@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -43,9 +43,6 @@ describe "sidebar" do
     page.wait_for :wait_for => :ajax
     
     assert_not_visible "sidebar"
-    
-    page.click "sidebar_control"
-    assert_visible "sidebar"
   end
 
   it "remembers the sidebar is open when the page is refreshed" do

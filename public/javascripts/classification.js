@@ -1,14 +1,18 @@
 // Copyright (c) 2008 The Kaphan Foundation
 //
 // Possession of a copy of this file grants no permission or license
-// to use, modify, or create derivate works.
+// to use, modify, or create derivative works.
 // Please visit http://www.peerworks.org/contact for further information.
 
-/* Available Callbacks (in lifecycle order)
+/* When a user invokes classification from the items page, this class sends
+ * the request to the classifier. It then keeps the user aware of progress
+ * and any errors that might occur. It does this through its callbacks.
+ * 
+ * Available Callbacks (in lifecycle order)
  *  - onStarted
  *  - onStartProgressUpdater
  *  - onProgressUpdated
- *  - onCancelled
+ *  - onReset
  *  - onFinished
  */
 var Classification = Class.create({
@@ -112,7 +116,7 @@ var Classification = Class.create({
           this.startProgressUpdater();
         } else {
           Message.add('error', transport.responseJSON);
-          this.notify('Cancelled');  
+          this.notify('Reset');
         }
       }.bind(this),
       onTimeout: function() {

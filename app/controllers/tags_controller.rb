@@ -1,21 +1,12 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 
-# The tags controller provides an interface to a users tags.
-#
-# The CRUD operations here don't actually work on the tag models
-# instead they apply bulk operations to a users use of the tag,
-# the Tag models themselves never change.
-#
-# You can think of it as the +TaggingsController+ operates on 
-# single uses of the tag by the user and the +TagsController+
-# operates on the many +Taggings+ that use a given +Tag+.
+# The +TagsController+ is used to manage the viewing of tags.
 class TagsController < ApplicationController
   permit "admin", :only => :upload
-  helper :bias_slider, :comments
 
   # Setup the HMAC authentication with credentials for the classifier role but don't assign to any actions
   with_auth_hmac(HMAC_CREDENTIALS['classifier'], :only => [])
@@ -26,19 +17,25 @@ class TagsController < ApplicationController
   # Require HMAC login for the action the classifier uses for updating a tag, this ensures only the classifier can do this
   before_filter :hmac_login_required, :only => [:classifier_taggings]
 
-  # Now we need to find the tag reference by the URL.
+  # Now we need to find the tag referenced by the URL.
   #
   # This must be done before the login_or_hmac_required_unless_tag_is_public 
   # filter since we need the tag to check that is a public tag.
-  #
   before_filter :find_tag, :only => [:show, :training, :classifier_taggings, :update, :destroy, :merge, :publicize]
   
   # Require normal or HMAC authentication for remaining actions unless the tag is public, in which case allow all access
   before_filter :login_or_hmac_required_unless_tag_is_public, :only => [:show, :index, :training]
 
-  # For operations done by users, make sure it is the own of the tag doing it
+  # For operations done by users, make sure it is the owner of the tag doing it
   before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy, :merge, :publicize]
   
+  # The +index+ action is used to view a logged in users tags.
+  # See FeedItemsController#index for an explanation of the html/json requests.  
+  #
+  # The atom view of the tag index renders a list of all
+  # the tags in the system as an atom document. This is
+  # used by the classifier so it knows what tags need
+  # to be automatically classified as it gets new items.
   def index
     respond_to do |format|
       format.html
@@ -47,8 +44,8 @@ class TagsController < ApplicationController
                            :order => params[:order], :direction => params[:direction])
         @full = true
       end
-      format.atom do        
-        conditional_render(Tag.maximum(:created_on)) do
+      format.atom do
+        if stale?(:etag => Tag.all_ids) 
           atom = Tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}")
           render :xml => atom.to_xml
         end
@@ -56,11 +53,12 @@ class TagsController < ApplicationController
     end
   end
   
+  # The +public+ action is used to view public tags.
+  # See FeedItemsController#index for an explanation of the html/json requests.
   def public
     respond_to do |format|
       format.html
       format.json do
-        limit = (params[:limit] ? [params[:limit].to_i, MAX_LIMIT].min : DEFAULT_LIMIT)
         @tags = Tag.public.search(:user => current_user, :text_filter => params[:text_filter], 
                            :order => params[:order], :direction => params[:direction], 
                            :limit => limit, :offset => params[:offset])
@@ -69,8 +67,8 @@ class TagsController < ApplicationController
     end
   end
   
-  # Support uploading a tag definition from it's atom document
-  #
+  # The +upload+ action is only accessible to admin users. This action
+  # is used to support uploading a tag definition from it's atom document.
   def upload
     respond_to do |format|
       format.html do
@@ -89,21 +87,22 @@ class TagsController < ApplicationController
     end
   end
 
+  # Renders an atom feed for a given tag.
   def show
     respond_to do |wants|
       wants.atom do
         TagUsage.create!(:tag_id => @tag.id, :ip_address => request.remote_ip)
-        conditional_render([@tag.updated_on,  @tag.last_classified_at].compact.max) do |since|
-          atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => since)
+        if stale?(:last_modified => [@tag.updated_on,  @tag.last_classified_at].compact.max)
+          atom = @tag.to_atom(:base_uri => "http://#{request.host}:#{request.port}", :since => request.if_modified_since)
           render :xml => atom.to_xml
         end
       end
     end
   end
 
-  # Create is actually a copy of an existing tag.
-  #
-  # :copy must be the name of a tag to copy
+  # The +create+ action is used to create new tags or copy an existing tag.
+  # If copying a tag, and the destination tag already exists, the user will
+  # prompted to confirm they want to overwrite the destination tag.
   def create
     if params[:copy] && params[:name]
       from = Tag.find_by_id(params[:copy])
@@ -143,14 +142,18 @@ class TagsController < ApplicationController
     end
   end
 
-  # Rename, or change the description on a tag.
+  # The +update+ action is used to change a tag's name, description, or bias.
+  # If renaming a tag and the destination exists, the user is prompted to
+  # merge the two tags together.
   def update
     if @name = params[:tag][:name]
       if current_user.tags.find(:first, :conditions => ['name = ? and id <> ?', @name, @tag.id])
         render :action => "merge.js.rjs"
       else
         if @tag.update_attributes(:name => @name)
-          render :action => "rename.js.rjs"
+          respond_to do |format|
+            format.json { render :action => "rename" }
+          end
         else
           @tag.reload
           render :action => "error.js.rjs"
@@ -165,30 +168,39 @@ class TagsController < ApplicationController
     end
   end
   
+  # The +merge+ action is triggered during a rename conflict and will handle
+  # merging two tags togehter.
   def merge    
     respond_to do |format|
       if merge_to = current_user.tags.find_by_name(params[:tag][:name])
         @tag.merge(merge_to)
         flash[:notice] = t("winnow.notifications.tag_merged", :from => h(@tag.name), :to => h(merge_to.name))
       end
-      
       format.html { redirect_to tags_path }
-      format.js   { render(:update) { |page| page.redirect_to request.env["HTTP_REFERER"] } }
+      # IE Sends the URI fragment with the referer header, which is wrong.
+      # We need to strip it before redirecting otherwise redirecting does nothing.
+      format.js   { render(:update) { |page| page.redirect_to request.env["HTTP_REFERER"].sub(/#.*$/, "") } }
     end
   end
 
+  # The +destroy+ action will destroy a tag as well as all subscriptions to that tag.
   def destroy
     @tag.destroy
     TagSubscription.delete_all(:tag_id => @tag)
     respond_to :js
   end
   
+  # Renders an atom feed for the manually tagged items for this tag.
+  #
+  # This is used by the classifier as training and by the +upload+
+  # action as input.
+  #
   def training
     base_uri = "http://#{request.host}:#{request.port}"
     
     respond_to do |wants|
       wants.atom do
-        conditional_render(@tag.updated_on) do
+        if stale?(:last_modified => @tag.updated_on)
           atom = @tag.to_atom(:training_only => true, :base_uri => base_uri)
           render :text => atom.to_xml
         end
@@ -196,6 +208,11 @@ class TagsController < ApplicationController
     end
   end
   
+  # Updates the automatically tagged items for this tag.
+  #
+  #  - If the request is a POST we update the set of autotagged items.
+  #  - If the request is a PUT we replace the set autotagged items.
+  #
   def classifier_taggings    
     if params[:atom].nil?
       render :status => :bad_request, :text => "Missing Atom Document"
@@ -208,6 +225,9 @@ class TagsController < ApplicationController
     end
   end
 
+  # The +auto_complete_for_sidebar+ is used in the feed items sidebar
+  # to add taqgs. This will return a list of tags matching the requested
+  # text as long as they are not already in the users sidebar.
   def auto_complete_for_sidebar
     @q = params[:tag][:name]
     
@@ -224,6 +244,7 @@ class TagsController < ApplicationController
     render :layout => false
   end
   
+  # The +publicize+ action is used to set a tag a public or private.
   def publicize
     @tag.update_attribute(:public, params[:public])
     unless @tag.public?
@@ -232,25 +253,31 @@ class TagsController < ApplicationController
     respond_to :js
   end
   
+  # The +globally_exclude+ action is used to add/remove a tag from a users
+  # list of tag exlucsions.
   def globally_exclude
     @tag = Tag.find(params[:id])
     if params[:globally_exclude] =~ /true/i
       current_user.tag_exclusions.create! :tag_id => @tag.id
-      # TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      Folder.remove_tag(current_user, @tag.id)
     else
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
     respond_to :js
   end
   
+  # The +subscribe+ action is used to add/remove a tag from a users list of 
+  # tag subscriptions. Only public tags are allowed to be subscribed to.
+  # When removing a tag subscription, the tag is removed from any of the 
+  # user's folders, and any tag exlusion for that same tag is also removed. 
   def subscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       if params[:subscribe] =~ /true/i
-        TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
-        # TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+        if !current_user.subscribed?(@tag)
+          TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
+        end
       else
         TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+        TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
         Folder.remove_tag(current_user, @tag.id)
       end
     end
@@ -261,9 +288,14 @@ class TagsController < ApplicationController
     end
   end
   
+  # The +unsubscribe+ action is used to remove a tag from a users list of 
+  # tag subscriptions. When removing a tag subscription, the tag is removed 
+  # from any of the user's folders, and any tag exlusion for that same tag 
+  # is also removed.
   def unsubscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
       Folder.remove_tag(current_user, @tag.id)
     end
     respond_to do |format|
@@ -272,11 +304,13 @@ class TagsController < ApplicationController
     end
   end
   
+  # The +sidebar+ action is used to add/remove a tag from a users sidebar.
+  # When removing a tag from the users sidebar, it is also removed from 
+  # any of the user's folders.
   def sidebar
     if @tag = current_user.tags.find(params[:id])
       @tag.update_attribute :show_in_sidebar, params[:sidebar]      
     end
-
 
     if @tag.show_in_sidebar?
       respond_to do |format|
@@ -289,11 +323,16 @@ class TagsController < ApplicationController
     end
   end
   
+  # The +information+ action us used to load the training information
+  # for the tooltip on the feed items sidebar.
   def information
     @tag = Tag.find(params[:id])
     render :layout => false
   end
 
+  # The +comments+ action is used to load the comments for a tag.
+  # This is lazy-loaded when the user opens a tag to make the 
+  # loading of the list of tags faster.
   def comments
     @tag = Tag.find(params[:id])
     @tag.comments.each { |comment| comment.read_by!(current_user) }
@@ -301,6 +340,8 @@ class TagsController < ApplicationController
   end
   
 private
+  # The +find_tag+ before_filter will inspect parameters and load the
+  # tag based on the id or the user login/tag name combination.
   def find_tag
     if params[:user] && params[:tag_name]
       @user = User.find_by_login(params[:user])
@@ -318,10 +359,13 @@ private
     end
   end
   
+  # Checks that the user is either logged, hmac_authenticated or the tag is public.
   def login_or_hmac_required_unless_tag_is_public
     (@tag && @tag.public?) || logged_in? || hmac_authenticated? || login_required
   end
   
+  # The +ensure_user_is_tag_owner+ before filter is used to ensure only the
+  # tag owner can be doing the requested action.
   def ensure_user_is_tag_owner
     access_denied if current_user.nil? || current_user.id != @tag.user_id
   end

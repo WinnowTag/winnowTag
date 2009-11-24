@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -221,7 +221,7 @@ describe Feed do
     end
     
     describe "with multi page feed" do
-      
+      it "needs examples"
     end
   end
   
@@ -317,6 +317,90 @@ describe Feed do
       feed = Generate.feed!(:title => "Ruby Lang")
       duplicate = Generate.feed!(:title => "Duplicate", :duplicate => feed)
       Feed.search(:text_filter => 'Duplicate').should be_empty
+    end
+  end
+  
+  describe 'destroy' do 
+    before(:each) do
+      @user = Generate.user!
+      @tag = Generate.tag!(:user => @user)      
+      @feed = Generate.feed!
+    end
+    
+    it "should destroy a feed with no items" do
+      @feed.destroy
+      lambda { Feed.find(@feed.id) }.should raise_error(ActiveRecord::RecordNotFound)
+    end
+    
+    describe 'feed with items' do
+      before(:each) do 
+        Generate.feed_item!(:feed => @feed)
+        Generate.feed_item!(:feed => @feed)
+      end
+      
+      it "should destroy a feed with items with no taggings" do
+        @feed.destroy
+        lambda { Feed.find(@feed.id) }.should raise_error(ActiveRecord::RecordNotFound)
+      end
+      
+      it "should destroy all items in the feed with no taggings" do 
+        item_ids = @feed.feed_item_ids
+        @feed.destroy
+        item_ids.each do |item_id|
+          lambda { FeedItem.find(item_id) }.should raise_error(ActiveRecord::RecordNotFound)
+        end  
+      end
+    end
+    
+    describe 'feed with items with classifier taggings' do
+      before(:each) do
+        @item_with_only_classifier_taggings = Generate.feed_item!(:feed => @feed)
+        Tagging.create(:user => @user, :tag => @tag, :feed_item => @item_with_only_classifier_taggings, :classifier_tagging => true)
+      end
+      
+      it "should destroy a feed with items with only classifier taggings" do
+        @feed.destroy
+        lambda { Feed.find(@feed.id) }.should raise_error(ActiveRecord::RecordNotFound)
+      end
+    
+      it "should destroy all items with only classifier taggings" do
+        @feed.destroy
+        lambda { FeedItem.find(@item_with_only_classifier_taggings.id) }.should raise_error(ActiveRecord::RecordNotFound)
+      end
+      
+      
+      describe 'and manual taggings' do
+        before(:each) do
+          @item_with_manual_taggings = Generate.feed_item!(:feed => @feed) 
+          @mt = Tagging.create(:user => @user, :tag => @tag, :feed_item => @item_with_manual_taggings, :classifier_tagging => false)
+          @ct = Tagging.create(:user => @user, :tag => @tag, :feed_item => @item_with_manual_taggings, :classifier_tagging => true)
+        end
+
+        it "should not destroy a feed with items with manual taggings" do
+          @feed.destroy
+          lambda { Feed.find(@feed.id) }.should_not raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should delete all items without manual taggings" do
+          @feed.destroy
+          lambda { FeedItem.find(@item_with_only_classifier_taggings.id) }.should raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should not delete any items with manual taggings" do
+          @feed.destroy
+          lambda { FeedItem.find(@item_with_manual_taggings.id) }.should_not raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should delete classifier taggings from items with manual taggings" do
+          @feed.destroy
+          lambda { Tagging.find(@ct.id) }.should raise_error(ActiveRecord::RecordNotFound)
+        end
+        
+        it "should not delete manual taggings from items with manual taggings" do
+          @feed.destroy
+          lambda { Tagging.find(@mt.id) }.should_not raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
     end
   end
 end

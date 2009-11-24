@@ -1,17 +1,13 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe "/messages/new.html.erb" do  
   before(:each) do
-    @message = mock_model(Message)
-    @message.stub!(:new_record?).and_return(true)
-    @message.stub!(:body).and_return("MyText")
-    @message.stub!(:pinned).and_return(true)
-    assigns[:message] = @message
+    assigns[:message] = mock_model(Message, :body => "MyText", :pinned => true).as_new_record
   end
 
   it "should render new form" do

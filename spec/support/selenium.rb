@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 module CustomSeleniumHelpers
   def login(user, password = "password")
@@ -31,5 +31,17 @@ module CustomSeleniumHelpers
     page.key_down(locator, '\13')
     page.key_press(locator, '\13')
     page.key_up(locator, '\13')
+  end
+  
+  def multi_select_click(locator)
+    mac? ? page.meta_key_down : page.key_down_native('17')
+    page.click locator
+  ensure
+    mac? ? page.meta_key_up : page.key_up_native('17')
+  end
+  
+  def mac?
+    platform = page.get_eval("navigator.platform;")
+    platform.include?("Mac")
   end
 end

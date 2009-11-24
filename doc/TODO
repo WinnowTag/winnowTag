@@ -1,3 +1,5 @@
+cleanup tags controller
+
 Get libxml working on CI
  - # TODO: This needs to be fixed and re-enabled
  - http://runcoderun.com/mvanholstyn
@@ -5,6 +7,10 @@ Get libxml working on CI
 
 Trac post-commit hooks
  - http://www.rene.bz/2008/12/07/trac-post-commit-hooks-git
+
+association dependencies
+
+? put nokogiri back (try out 2.3.3 gem stuff)
 
 loading message
 auto test

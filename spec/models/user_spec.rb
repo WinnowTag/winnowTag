@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 require File.dirname(__FILE__) + '/../spec_helper'
 
@@ -238,6 +238,22 @@ describe User do
       users = User.search :text_filter => "mark", :order => "id"
       users.should == expected_users
     end
+    
+    context "when ordering by name" do
+      
+      it "orders by last name, first name, login" do
+        user2 = Generate.user!(:lastname => "Smith", :firstname => "Jon",  :login => "jonsmith")
+        user1 = Generate.user!(:lastname => "Smith", :firstname => "John", :login => "jsmith")
+        user3 = Generate.user!(:lastname => "Smith", :firstname => "Jon",  :login => "jonsmith2")
+        user5 = Generate.user!(:lastname => nil,     :firstname => nil,    :login => "jroe")
+        user4 = Generate.user!(:lastname => nil,     :firstname => nil,    :login => "jdoe")
+        
+        expected_users = [user4, user5, user1, user2, user3]
+
+        users = User.search :order => "name"
+        users.should == expected_users
+      end
+    end
   end
   
   describe '#changed_tags' do
@@ -258,12 +274,7 @@ describe User do
   
   describe '#potentially_undertrained_changed_tags' do
     before(:each) do
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
-      Generate.feed_item!
+      6.times { Generate.feed_item! }
 
       @user = Generate.user!
       @changed_tag_with_5 = Generate.tag!(:user => @user, :last_classified_at => Time.now.yesterday.getutc)
@@ -361,11 +372,6 @@ describe User do
     it "should_be_owner_of_self" do
       u = Generate.user!
       assert u.has_role?('owner', u)
-    end
-  
-    it "should_require_email" do
-      user = Generate.user(:email => nil)
-      user.should have(1).error_on(:email)
     end
     
     it "login allows alphanumberic, -, and _" do
@@ -482,4 +488,157 @@ describe User do
       user.should be_subscribed(feed)
     end
   end
+end
+
+describe User, "email address validation" do
+  
+  before(:each) do
+    @user = Generate.user
+  end
+  
+  it "requires email" do
+    @user.email = nil
+    @user.should have_at_least(1).error_on(:email)
+  end
+  
+  it "accepts basic address" do
+    @user.email = "jdoe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with underscore" do
+    @user.email = "john_doe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with dot" do
+    @user.email = "john.doe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with plus" do
+    @user.email = "jdoe+wingnut@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "accepts address with leading digits" do
+    @user.email = "123jdoe@example.com"
+    @user.valid?
+    @user.should have(0).errors_on(:email)
+  end
+  
+  it "rejects address with multiple @ symbols" do
+    @user.email = "j@doe@example.com"
+    @user.valid?
+    @user.should have(1).error_on(:email)
+  end
+  
+  it "rejects address with interspersed invalid characters" do
+    @user.email = "%jd#o=&e@example.com"
+    @user.valid?
+    @user.should have(1).error_on(:email)
+  end
+  
+end
+
+describe User, '#email=' do
+  
+  it "strips quoted name from email" do
+    user = User.new :email => '"John Von Doe" <jdoe@example.com>'
+    user.email.should == "jdoe@example.com"
+  end
+  
+  it "strips unquoted name from email" do
+    user = User.new :email => 'John Von Doe <jdoe@example.com>'
+    user.email.should == "jdoe@example.com"
+  end
+  
+  context "when user lacks first or last name" do
+    
+    before(:each) do
+      @user = User.new :email => '"John Von Doe" <jdoe@example.com>'
+    end
+    
+    it "sets first name" do
+      @user.firstname.should == "John"
+    end
+    
+    it "sets last name" do
+      @user.lastname.should == "Von Doe"
+    end
+    
+  end
+  
+  context "when user already has first or last name" do
+    
+    before(:each) do
+      @user = User.new :firstname => "Clark", :lastname => "Kent", :email => '"John Von Doe" <jdoe@example.com>'
+    end
+    
+    it "does not set first name" do
+      @user.firstname.should == "Clark"
+    end
+    
+    it "does not set last name" do
+      @user.lastname.should == "Kent"
+    end
+    
+  end
+  
+end
+
+describe User, '#email_address_with_name' do
+  
+  context "when first and last name are present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => "John", :lastname => "Doe", :email => "jdoe@example.com"
+    end
+    
+    it "includes name in email address" do
+      @user.email_address_with_name.should == '"John Doe" <jdoe@example.com>'
+    end
+    
+  end
+  
+  context "when only first name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => "John", :lastname => nil, :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
+  context "when only last name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => nil, :lastname => "Doe", :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
+  context "when neither first nor last name is present" do
+    
+    before(:each) do
+      @user = Generate.user! :firstname => nil, :lastname => nil, :email => "jdoe@example.com"
+    end
+    
+    it "excludes name from email address" do
+      @user.email_address_with_name.should == "jdoe@example.com"
+    end
+    
+  end
+  
 end

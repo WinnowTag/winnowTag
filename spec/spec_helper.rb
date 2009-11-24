@@ -1,7 +1,7 @@
 # Copyright (c) 2008 The Kaphan Foundation
 #
 # Possession of a copy of this file grants no permission or license
-# to use, modify, or create derivate works.
+# to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
 
 # This file is copied to ~/spec when you run 'ruby script/generate rspec'
@@ -79,10 +79,6 @@ Spec::Runner.configure do |config|
     @controller.send(:current_user)
   end
   
-  def mock_new_model(model_class, options_and_stubs = {})
-    mock_model(model_class, options_and_stubs.reverse_merge(:id => nil, :to_param => nil, :new_record? => true))
-  end
-  
   def referer(referer)
     @request.env['HTTP_REFERER'] = referer
   end
@@ -94,6 +90,18 @@ Spec::Runner.configure do |config|
     self.send(method, action, args)
     assert_response :redirect
     assert_redirected_to "/account/login"
+  end
+  
+  def ie?
+    Selenium::Configuration.browser =~ /iexplore/
+  end
+  
+  def it_unless_ie(name, &block) 
+    unless ie?
+      it(name, &block)
+    else
+      xit("[IE Disabled] #{name}")
+    end
   end
   
   include AuthenticatedTestHelper

@@ -1,7 +1,7 @@
 /* Copyright (c) 2008 The Kaphan Foundation
  *
  * Possession of a copy of this file grants no permission or license
- * to use, modify, or create derivate works.
+ * to use, modify, or create derivative works.
  * Please visit http://www.peerworks.org/contact for further information.
  */
 
@@ -581,6 +581,7 @@ ul.filter_list {
 }
 
 ul.filter_list li {
+  position: relative;
   display: inline-block;
   display: -moz-inline-stack;
   min-width: 8em;
@@ -608,6 +609,16 @@ ul.filter_list li .actions {
   display: none;
   float: right;
   margin-left: 0.25em;
+}
+
+ul.filter_list li .name {
+  cursor: pointer;
+  color: #069;
+}
+
+ul.filter_list li .name:hover {
+  text-decoration: underline;
+  color: #000;
 }
 
 ul.filter_list li .edit, ul.filter_list li .remove {
@@ -646,6 +657,19 @@ ul.filter_list li .auto_complete_name {
 
 .section.edit ul.filter_list li .actions {
   display: block;
+}
+
+ul.filter_list li .multidragcount {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  padding: 1px 8px;
+  background-color: #96a8ca;
+  color: #fff;
+  -moz-border-radius: 0.75em;
+  -webkit-border-radius: 0.75em;
 }
 
 /*
@@ -1312,6 +1336,11 @@ body#feeds .feed {
   border: 2px solid #8181DC;
   border-width: 2px 0 0 0;
   background-color: #D7E0F5;
+  /* This is a work around for a bug in IE 7. Without setting this
+   * the content of the feed information div doesn't appear until
+   * the page is scrolled or resized.
+   */
+  min-width: 0;
 }
 
 .feed_item.open .feed_information {
@@ -1662,7 +1691,8 @@ body#item_caches .item_cache {
   background-repeat: no-repeat;
 }
 
-.tag ul.controls .show {
+.tag ul.controls .tagged,
+.tag ul.controls .trained {
   background-image: url(../images/show.png);
 }
 
