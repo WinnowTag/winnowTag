@@ -137,6 +137,7 @@ describe 'merging' do
     page.wait_for :wait_for => :ajax
     page.confirmation
     page.wait_for :wait_for => :ajax
+    page.wait_for :wait_for => :element, :element => "css=#name_tag_#{@tag1.id}", :timeout_in_seconds => 5
     dont_see_element "#name_tag_#{@other.id}"
   end
 end
