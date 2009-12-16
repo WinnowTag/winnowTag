@@ -246,10 +246,7 @@ class TagsController < ApplicationController
   
   # The +publicize+ action is used to set a tag a public or private.
   def publicize
-    @tag.update_attribute(:public, params[:public])
-    unless @tag.public?
-      TagSubscription.delete_all(:tag_id => @tag)
-    end
+    @tag.public = params[:public]
     respond_to :js
   end
   

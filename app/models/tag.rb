@@ -54,6 +54,7 @@ class Tag < ActiveRecord::Base
 
   # See the definition of this method below to learn about this callbacks
   before_save :set_sort_name
+  before_save :clear_subscriptions_unless_public
 
   # Reads the cached attribute or does a query to find the result. The cached attribute is set in the +search+ finder method.
   def positive_count
@@ -346,6 +347,10 @@ private
     self.sort_name = name.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end
 
+  def clear_subscriptions_unless_public
+    self.tag_subscriptions.clear unless public?
+  end
+  
   # Adds taggings for this tag from the taggings defined in the atom document.
   #
   # Each entry in the atom document defines a tagging from this tag to the

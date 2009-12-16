@@ -537,6 +537,19 @@ describe TagsController do
       assert @user.tags.find_by_name('new')
     end    
   end
+  
+  describe "publicize" do
+    before(:each) do
+      @tag = mock_model(Tag, :user_id => @user.id)
+      Tag.should_receive(:find).with("111").and_return(@tag)
+    end
+    
+    it "should call the publicize setter on the tag" do
+      @tag.should_receive(:public=).with(true)
+      put :publicize, :id => "111", :public => true
+      response.should be_success
+    end
+  end
 end
 
 describe TagsController, "GET show when not logged in" do
