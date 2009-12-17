@@ -112,6 +112,7 @@ ActionController::Routing::Routes.draw do |map|
     admin_map.admin_help "admin/help", :action => "help"
   end
   
+  map.resources :demo, :only => [:index]
   map.connect 'public/ie6', :controller => "public", :action => "ie6"
   map.root :info
 end

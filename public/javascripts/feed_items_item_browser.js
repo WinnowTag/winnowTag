@@ -13,6 +13,7 @@
 var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   initialize: function($super, name, container, options) {
     $super(name, container, options);
+    
     document.observe('keypress', this.keypress.bindAsEventListener(this));
   },
 
@@ -249,7 +250,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       if(empty) { return false; }
     }
     
-    if(event && this.multiSelectKey(event)) {
+    if(event && this.multiSelectKey(event) && this.name != "demo") {
       this.expandFolderParameters(parameters);
       var selected = true;
       if(parameters.feed_ids) {
@@ -270,6 +271,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       }
     } else {
       this.setFilters(parameters);
+      this.showDemoTagInfo();
     }
   },
 
@@ -369,6 +371,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     if(feed_with_selected_filters) {
       feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + $H(this.filters).toQueryString();
     }
+    
+    this.showDemoTagInfo();
   },
   
   bindTagFiltersEvents: function() {
@@ -381,9 +385,13 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var tag_id = tag.getAttribute('id').match(/\d+/).first();
     var link = tag.down(".name");
     var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id});
-    link.observe("click", click_event);
-
-    this.makeDraggable(tag, link, click_event);
+    
+    if (link) {
+      link.observe("click", click_event);
+      this.makeDraggable(tag, link, click_event);      
+    } else {
+      tag.observe("click", click_event);
+    }
   },
   
   bindFeedFiltersEvents: function() {
@@ -399,6 +407,19 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     link.observe("click", click_event);
     
     this.makeDraggable(feed, link, click_event);
+  },
+  
+  showDemoTagInfo: function() {
+    console.log("show: " + this.filters.tag_ids)
+    var footer_tag_name = $("footer_tag_name");
+    
+    if (footer_tag_name && $A(this.filters.tag_ids.split(",")).first()) {
+      var tagElement = $("tag_" + $A(this.filters.tag_ids.split(",")).first());
+      footer_tag_name.update(tagElement.getAttribute("name"));
+      $("footer_tag_positive_count").update(tagElement.getAttribute("pos_count"));
+      $("footer_tag_negative_count").update(tagElement.getAttribute("neg_count"));
+      $("footer_tag_count").update(tagElement.getAttribute("item_count"));
+    }
   },
   
   makeDraggable: function(tag_or_feed, link, click_event) {
@@ -452,14 +473,16 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
 
   bindTextFilterEvents: function() {
-    $("text_filter_form").observe("submit", function() {
-      var value = $F('text_filter');
-      if(value.length < 4) {
-        Message.add('error', I18n.t("winnow.notifications.feed_items_search_too_short"));
-      } else {
-        this.addFilters({text_filter: value});
-      }
-    }.bind(this));
+    if ($("text_filter_form")) {
+      $("text_filter_form").observe("submit", function() {
+        var value = $F('text_filter');
+        if(value.length < 4) {
+          Message.add('error', I18n.t("winnow.notifications.feed_items_search_too_short"));
+        } else {
+          this.addFilters({text_filter: value});
+        }
+      }.bind(this));
+    }
   },
   
   bindClearFilterEvents: function() {

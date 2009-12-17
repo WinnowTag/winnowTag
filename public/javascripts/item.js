@@ -14,7 +14,7 @@ var Item = Class.create({
     this.id                = this.element.getAttribute('id').match(/\d+/).first();
     this.closed            = this.element.down(".closed");
     this.status            = this.element.down(".status");
-    this.feed_title        = this.element.down(".feed_title");
+    this.feed_title        = this.element.down("a.feed_title");
     this.train             = this.element.down(".train");
     this.tag_list          = this.element.down(".tag_list");
     this.moderation_panel  = this.element.down(".moderation_panel");
@@ -38,19 +38,21 @@ var Item = Class.create({
       this.toggleBody(event);
     }.bind(this));
 
-    this.status.observe("click", this.toggleReadUnread.bind(this));
+    if (this.status) {
+      this.status.observe("click", this.toggleReadUnread.bind(this));
 
-    this.status.observe("mouseover", function() {
-      if(this.element.match(".read")) {
-        this.status.title = I18n.t("winnow.items.main.mark_unread");
-      } else {
-        this.status.title = I18n.t("winnow.items.main.mark_read");
-      }
-    }.bind(this));
-
-    this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
-    this.train.observe("click", this.toggleTrainingControls.bind(this));
-    this.tag_list.select("li").invoke("observe", "click", this.toggleTrainingControls.bind(this));
+      this.status.observe("mouseover", function() {
+        if(this.element.match(".read")) {
+          this.status.title = I18n.t("winnow.items.main.mark_unread");
+        } else {
+          this.status.title = I18n.t("winnow.items.main.mark_read");
+        }
+      }.bind(this));
+    }
+    
+    if (this.feed_title) this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
+    if (this.train) this.train.observe("click", this.toggleTrainingControls.bind(this));
+    if (this.tag_list) this.tag_list.select("li").invoke("observe", "click", this.toggleTrainingControls.bind(this));
   },
   
   isRead: function() {
@@ -58,13 +60,17 @@ var Item = Class.create({
   },
   
   markRead: function() {
-    this.element.addClassName('read');
-    new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
+    if (this.status) {
+      this.element.addClassName('read');
+      new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
+    }
   },
   
   markUnread: function() {
-    this.element.removeClassName('read');    
-    new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });
+    if (this.status) {
+      this.element.removeClassName('read');    
+      new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });
+    }
   },
   
   toggleReadUnread: function() {
@@ -144,8 +150,8 @@ var Item = Class.create({
   },
 
   hideFeedInformation: function() {
-    this.feed_title.removeClassName("selected");
-    this.feed_information.removeClassName("selected");
+    if (this.feed_title) this.feed_title.removeClassName("selected");
+    if (this.feed_information) this.feed_information.removeClassName("selected");
   },
   
   loadFeedInformation: function() {
@@ -171,10 +177,10 @@ var Item = Class.create({
   },
   
   hideTrainingControls: function() {
-    this.tag_list.show();
+    if (this.tag_list) this.tag_list.show();
 
-    this.train.removeClassName("selected");
-    this.moderation_panel.removeClassName("selected");
+    if (this.train) this.train.removeClassName("selected");
+    if (this.moderation_panel) this.moderation_panel.removeClassName("selected");
     if(this.add_tag_field) {
       this.add_tag_field.blur();
     }
@@ -441,10 +447,12 @@ var Item = Class.create({
   },
   
   load: function(target, onComplete, forceLoad) {
-    target.load(function() {
-      if(onComplete)        { onComplete();    }
-      if(this.isSelected()) { this.scrollTo(); }
-    }.bind(this), forceLoad);
+    if (target) {
+      target.load(function() {
+        if(onComplete)        { onComplete();    }
+        if(this.isSelected()) { this.scrollTo(); }
+      }.bind(this), forceLoad);
+    }
   }
 });
 

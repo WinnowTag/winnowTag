@@ -169,7 +169,9 @@ var ItemBrowser = Class.create({
   defaultDirection: function(order) {
     order = order || this.defaultOrder();
     
-    if(this.options.orders.desc.include(order)) {
+    if (this.orders().size() == 0) {
+      return null;
+    } else if(this.options.orders.desc.include(order)) {
       return "desc";
     } else {
       return "asc";
@@ -243,23 +245,27 @@ var ItemBrowser = Class.create({
   // Selects the appropriate option from the list of possible sort orders and
   // sets the appropriate class on the Ascending/Descending toggle.
   styleOrders: function() {
-    this.direction_control.removeClassName("asc");
-    this.direction_control.removeClassName("desc");
+    if (this.direction_control) {
+      this.direction_control.removeClassName("asc");
+      this.direction_control.removeClassName("desc");      
+    }
   
-    if(this.filters.order) {
-      this.order_control.select("option").each(function(option, index) {
-        if(option.value == this.filters.order) {
-          this.order_control.selectedIndex = index;
-        }
-      }.bind(this));
-      this.direction_control.addClassName(this.filters.direction);
-    } else if(this.defaultOrder()) {
-      this.order_control.select("option").each(function(option, index) {
-        if(option.value == this.filters.order) {
-          this.order_control.selectedIndex = index;
-        }
-      }.bind(this));
-      this.direction_control.addClassName(this.defaultDirection());
+    if (this.order_control) {
+      if(this.filters.order) {
+        this.order_control.select("option").each(function(option, index) {
+          if(option.value == this.filters.order) {
+            this.order_control.selectedIndex = index;
+          }
+        }.bind(this));
+        this.direction_control.addClassName(this.filters.direction);
+      } else if(this.defaultOrder()) {
+        this.order_control.select("option").each(function(option, index) {
+          if(option.value == this.filters.order) {
+            this.order_control.selectedIndex = index;
+          }
+        }.bind(this));
+        this.direction_control.addClassName(this.defaultDirection());
+      }
     }
   },
   
@@ -273,11 +279,13 @@ var ItemBrowser = Class.create({
   },
 
   bindOrderFilterEvents: function() {
-    this.order_control.observe("change", function() {
-      this.setOrder(this.order_control.value);
-    }.bind(this));
+    if (this.order_control) {
+      this.order_control.observe("change", function() {
+        this.setOrder(this.order_control.value);
+      }.bind(this));
 
-    this.direction_control.observe("click", this.toggleDirection.bind(this));
+      this.direction_control.observe("click", this.toggleDirection.bind(this));
+    }
   },
 
   bindTextFilterEvents: function() {
@@ -293,7 +301,7 @@ var ItemBrowser = Class.create({
     this.bindModeFiltersEvents();
     this.bindOrderFilterEvents();
     this.bindTextFilterEvents();
-
+    
     this.filters = { order: this.defaultOrder(), direction: this.defaultDirection(), mode: this.defaultMode() };
     
     if(decodeURIComponent(location.hash).gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {
@@ -310,7 +318,6 @@ var ItemBrowser = Class.create({
   addFilters: function(parameters) {
     var new_parameters = $H(this.filters).merge($H(parameters));
     this.filters = new_parameters.toQueryString().toQueryParams();
-    
     this.saveFilters();    
     this.styleFilters();
     this.reload();
