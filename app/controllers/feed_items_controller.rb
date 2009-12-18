@@ -6,6 +6,8 @@
 
 # The +FeedItemsController+ is used to manage the viewing of feed items.
 class FeedItemsController < ApplicationController
+  skip_before_filter :login_required, :only => :body
+  
   # The +index+ action displays +FeedItem+s based on filters provided.
   # See also +FeedItem.find_with_filters+.
   def index
