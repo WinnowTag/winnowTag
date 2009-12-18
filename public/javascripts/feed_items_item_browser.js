@@ -15,6 +15,14 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     $super(name, container, options);
     
     document.observe('keypress', this.keypress.bindAsEventListener(this));
+    
+    if (name == "demo" && !this.filters.tag_ids) {
+      var tag = $$("li.tag:first").first();
+      if (tag) {
+        var tag_id = tag.getAttribute("id").replace("tag_", "");
+        this.toggleSetFilters({tag_ids: tag_id});
+      }
+    }
   },
 
   keypress: function(e){
@@ -410,10 +418,9 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   showDemoTagInfo: function() {
-    console.log("show: " + this.filters.tag_ids)
     var footer_tag_name = $("footer_tag_name");
     
-    if (footer_tag_name && $A(this.filters.tag_ids.split(",")).first()) {
+    if (footer_tag_name && this.filters.tag_ids && $A(this.filters.tag_ids.split(",")).first()) {
       var tagElement = $("tag_" + $A(this.filters.tag_ids.split(",")).first());
       footer_tag_name.update(tagElement.getAttribute("name"));
       $("footer_tag_positive_count").update(tagElement.getAttribute("pos_count"));

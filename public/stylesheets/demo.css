@@ -99,7 +99,6 @@ div.column_headers div {
 }
 
 #content {
-  margin-left: 225px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
