@@ -1,3 +1,9 @@
+# Copyright (c) 2008 The Kaphan Foundation
+#
+# Possession of a copy of this file grants no permission or license
+# to use, modify, or create derivative works.
+# Please visit http://www.peerworks.org/contact for further information.
+
 module DemoHelper
   # The +feed_control_for+ generates the control to show/hide the feed information on a feed item/
   # This is displayed in the collapsed view of a feed item.
