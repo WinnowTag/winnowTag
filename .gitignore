@@ -37,3 +37,4 @@ Makefile
 vendor/gems/libxml-ruby-*/ext/libxml/extconf.h
 vendor/gems/nokogiri-*/ext/nokogiri/conftest.dSYM
 cucumber
+all_demo.*
