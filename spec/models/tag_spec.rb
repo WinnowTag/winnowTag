@@ -899,8 +899,7 @@ describe Tag do
     it "should delete any subscriptions if the tag is not public" do
       TagSubscription.create(:tag => @tag, :user => @other_user)
       @tag.tag_subscriptions.size.should == 1
-      @tag.public = false
-      @tag.save!
+      @tag.update_attribute(:public, false)
       @tag.tag_subscriptions.should be_empty
     end
   end

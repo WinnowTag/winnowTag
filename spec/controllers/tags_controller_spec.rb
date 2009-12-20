@@ -545,8 +545,8 @@ describe TagsController do
     end
     
     it "should call the publicize setter on the tag" do
-      @tag.should_receive(:public=).with(true)
-      put :publicize, :id => "111", :public => true
+      @tag.should_receive(:update_attribute).with(:public, "true")
+      put :publicize, :id => "111", :public => "true"
       response.should be_success
     end
   end
