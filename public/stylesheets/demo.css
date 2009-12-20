@@ -103,6 +103,7 @@ div.column_headers div {
   overflow-x: hidden;
   overflow-y: auto;
   padding-left: 5px;
+  position: relative;
 }
 
 #footer {
@@ -125,6 +126,7 @@ ul.tags li {
   padding: 2px 15px;
   font-family: Verdana,Arial,sans-serif;
   font-weight: bold;
+  display: list-item;
 }
 
 ul.tags li.selected {
