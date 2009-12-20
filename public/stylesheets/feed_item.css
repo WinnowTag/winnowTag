@@ -17,6 +17,7 @@
 
 .feed_item .closed {
   padding: 5px;
+  cursor: pointer;
 }
 
 .feed_item.read .closed {

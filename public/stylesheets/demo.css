@@ -38,14 +38,15 @@ body {
 }
 
 #bottomDemoContent {
-  text-align: center;
+  width: 98%;
+  margin: 5px 5px;
 }
 
 div.demo_content {
   border: 1px solid #D7C0AE;
   padding: 5px;
   background-color: white;
-  color: #936301;
+  color: #372D1C;
   -moz-box-shadow: 3px 3px 3px #D7C0AE;
   margin-bottom: 10px;
 }
@@ -54,20 +55,23 @@ div.demo_content p {
   margin: 0;
 }
 
-.powered_by {
+.followOn {
   float: right;
-  color: #be9e65;
 }
 
 div.column_headers {
   clear: both;
-  color: #936301;
+  color: #372D1C;
   padding-top: 10px;
   margin-left: 10px;
 }
 
+div.column_headers .name {
+  color: black;
+}
+
 div#item_header {
-  margin-left: 25px;
+  margin-left: 15px;
 }
 
 div#feedback {
@@ -83,7 +87,7 @@ div.column_headers div {
 #sidebar {
   background-color: white;
   float: left;
-  width: 225px;
+  width: 255px;
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
