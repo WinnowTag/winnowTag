@@ -29,4 +29,41 @@ describe DemoController do
       response.should be_success
     end
   end
+  
+  describe "GET index.json" do
+    before(:each) do
+      @user = Generate.user
+      User.should_receive(:find_by_login).with("pw_demo").and_return(@user)
+    end
+    
+    it "should be successful" do
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 40, :tag_ids => nil).and_return([])
+      get 'index', :format => 'json'
+      response.should be_success
+    end
+    
+    it "should pass offset through to find" do
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => "40", :limit => 40, :tag_ids => nil).and_return([])
+      get 'index', :format => 'json', :offset => "40"
+      response.should be_success
+    end
+    
+    it "should not pass limit through to find" do
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 40, :tag_ids => nil).and_return([])
+      get 'index', :format => 'json', :limit => "100"
+      response.should be_success
+    end
+    
+    it "should pass tag ids through to find" do
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 40, :tag_ids => "23").and_return([])
+      get 'index', :format => 'json', :tag_ids => "23"
+      response.should be_success  
+    end
+    
+    it "should not pass feed ids through to find" do
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 40, :tag_ids => nil).and_return([])
+      get 'index', :format => 'json', :feed_ids => "23"
+      response.should be_success
+    end
+  end
 end
