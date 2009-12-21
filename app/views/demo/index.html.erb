@@ -4,18 +4,21 @@
 </div>
 
 <div id="topDemoContent" class="demo_content">
-	<%= render :partial => "top_content" %>
+	<%= t("winnow.demo.explanatory_text.top") %>
 </div>
 
 <div class="column_headers">
-	<div id="siidebar_header"><span class="name">winnowTags</span> (click a tag to see items it finds)</div>
-	<div id="item_header"><span class="name">Items</span> (click on an item to open)</div>
-	<div id="feedback"><a href="mailto:demo@peerworks.org?Subject=WinnowTag Demo">feedback & questions</a></div>
+	<div id="siidebar_header"><%= t("winnow.demo.column_headings.sidebar") %></div>
+	<div id="item_header"><%= t("winnow.demo.column_headings.items") %></div>
+	<div id="feedback"><a href="mailto:demo@peerworks.org?Subject=WinnowTag Demo"><%= t("winnow.demo.column_headings.feedback") %></a></div>
 </div>
 
 <div id="container">
 	<div id="sidebar">
-		<%= render :partial => "sidebar"%>
+		<ul id="tags" class="filter_list tags">
+			<li id="tag_0" class="tag" title="See all items"><%= t("winnow.demo.all_items") %></li>
+			<%= demo_tag_controls %>
+		</ul>
 	</div>
 
 	<div id="content">&nbsp;</div>
@@ -23,8 +26,8 @@
 
 <div id="footer">
 	<div id="bottomDemoContent" class="demo_content">
-		<%= render :partial => "bottom_content" %>
+		<%= t("winnow.demo.explanatory_text.bottom", :item_count => FeedItem.count, :feed_count => Feed.count) %>
 	</div>
 
-	<%= render :partial => "footer_bar" %>
+	<%= t("winnow.demo.footer") %>
 </div>

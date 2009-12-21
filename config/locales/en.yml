@@ -464,3 +464,32 @@ en:
           reload:  "Classification has completed. Do you want to reload the items?"
           # NOTE: This is never displayed to the user, it is only user as a check against a json response. Do not change this.
           running: "The classifier is already running."
+    # These the are strings that appear in the demo version of winnowTag
+    demo:
+      all_items: See all items
+      column_headings:
+        sidebar: <span class="name">winnowTags</span> (click a tag to see items it finds)
+        items: <span class="name">Items</span> (click on an item to open)
+        feedback: "feedback & questions"
+      footer: |-
+        <div id="copyright">a mindloom project &copy; 2010 &bull; 
+        	powered by <a href="http://github.com/seangeo/classifier">winnow open source classifier</a> &bull; 
+        	<a href="more">info for media</a>
+        </div>
+      explanatory_text:
+        top: |-
+          <p>Find items in thousands of feeds in real time, using winnowTags trained by examples.</p>
+          <p>Get a login to create and share winnowTags, add feeds... <a href="javascript:alert('link needed')">read more</a>
+          	<span class="followOn">Powered by <a href="http://github.com/seangeo/classifier" target="_blank">winnow open source classifier</a>.</span>
+          </p>
+        bottom: |-
+          <p id="tag_detail_footer">
+          	'<span id="footer_tag_name"></span>' is trained with 
+          	<span id="footer_tag_positive_count"></span> positive and 
+          	<span id="footer_tag_negative_count"></span> negative examples and finds 
+          	<span id="footer_tag_count"></span> relevant items.
+          </p>
+          <p>winnowTag is filtering {{item_count}} items collected from {{feed_count}} feeds.
+          	<span class="followOn">Get a login to create and share winnowTags, add feeds... <a href="more">read more</a></span>
+          </p>
+
