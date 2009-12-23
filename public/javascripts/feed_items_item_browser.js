@@ -227,9 +227,12 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   addFilters: function($super, parameters) {
     this.expandFolderParameters(parameters);
 
-    if(this.filters.tag_ids && parameters.tag_ids) {
-      var tag_ids = this.filters.tag_ids.split(",");
+    if(parameters.tag_ids) {
+      var tag_ids = this.filters.tag_ids == null ? [] : this.filters.tag_ids.split(",");
       tag_ids.push(parameters.tag_ids.split(","));
+      tag_ids = tag_ids.reject(function(tag_id) {
+        return $("tag_" + tag_id) == null;
+      });
       parameters = $H(parameters).merge({
         tag_ids: tag_ids.flatten().uniq().join(",")
       });
