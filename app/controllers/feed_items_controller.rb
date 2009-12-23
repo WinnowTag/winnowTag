@@ -26,8 +26,7 @@ class FeedItemsController < ApplicationController
           end
         end
 
-        filters = { :order => params[:order], :direction => params[:direction],
-                    :limit => limit, :offset => params[:offset],
+        filters = { :limit => limit, :offset => params[:offset],
                     :feed_ids => params[:feed_ids], :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :mode => params[:mode],

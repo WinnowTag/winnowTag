@@ -36,14 +36,6 @@
     <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
   <% end -%>
 
-  <div class="order clearfix">
-    <label><%= t("winnow.general.sort_label") %></label>        
-    <select id="order">
-      <option value="date"><%= t("winnow.items.header.sort_date_label") %></option>
-    </select>
-    <%= direction_link %>
-  </div>
-
   <div class="toolbar right">
     <div class="group">
       <label><%= t("winnow.items.header.selected_filters") %></label>
