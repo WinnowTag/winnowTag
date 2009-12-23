@@ -37,8 +37,6 @@ var Classification = Class.create({
         this.progress_bar.setStyle({width: '0%'});
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.start"));
         this.classification_progress.show();
-
-        Content.instance.resizeHeight();
       }.bind(this),
       
       onStartProgressUpdater: function() {
@@ -54,8 +52,6 @@ var Classification = Class.create({
         this.progress_bar.setStyle({width: '0%'});
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.cancel"));        
         this.classification_button.show();
-
-        Content.instance.resizeHeight();
       }.bind(this),
       
       onFinished: function() {
