@@ -423,7 +423,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     if (footer_tag_name && this.filters.tag_ids && $A(this.filters.tag_ids.split(",")).first()) {
       var tagElement = $("tag_" + $A(this.filters.tag_ids.split(",")).first());
       
-      if (tagElement.getAttribute("name")) {
+      if (tagElement && tagElement.getAttribute("name")) {
         footer_tag_name.update(tagElement.getAttribute("name"));
         $("footer_tag_positive_count").update(tagElement.getAttribute("pos_count"));
         $("footer_tag_negative_count").update(tagElement.getAttribute("neg_count"));
