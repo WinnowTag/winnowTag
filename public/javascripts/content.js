@@ -39,83 +39,22 @@ var Content = Class.create({
   },
   
   resize: function() {
-    this.resizeWidth();
-    this.resizeHeight();
-    this.resizeSidebar();
-  },
-  
-  resizeHeight: function() {
-    var newHeight = this.contentHeight();
+    var newHeight = this.containerHeight();
     
     // IE does some stupid things in the middle of resize events,
     // so this prevents a JS error when the content height is negative.
     if (newHeight > 0) {
-      this.content.style.height = newHeight + 'px';
+      this.container.style.height = newHeight + 'px';
     }
   },
   
-  resizeWidth: function() {
-    var newWidth = this.contentWidth();
-    
-    // IE does some stupid things in the middle of resize events,
-    // so this prevents a JS error when the content width is negative.
-    if (newWidth > 0) {
-      this.container.style.width = newWidth + 'px';      
-    }
-  },
-  
-  resizeSidebar: function() {
-    if(this.sidebar) {
-      this.sidebar.style.height = this.sidebarHeight() + 'px';
-    }
-    if(this.sidebar_control) {
-      this.sidebar_control.style.height = this.sidebarControlHeight() + 'px';
-    }
-  },
-  
-  contentHeight: function() {
+  containerHeight: function() {
     var body_height = this.body.getHeight();
     var top_of_content = this.content.offsetTop;
     var content_padding = parseInt(this.content.getStyle("padding-top")) + parseInt(this.content.getStyle("padding-bottom"));
     var footer_height = this.footer ? this.footer.getHeight() : 0;
 
     return body_height - top_of_content - content_padding - footer_height;
-  },
-  
-  contentWidth: function() {
-    var body_width = this.body.getWidth();
-
-    var sidebar_width = 0;
-    if(this.sidebar && this.sidebar.visible()) {
-      sidebar_width = this.sidebar.getWidth();
-    }
-    
-    var sidebar_control_width = 0;
-    if(this.sidebar_control) {
-      sidebar_control_width = this.sidebar_control.getWidth();
-    }
-    
-    var extra = 0;
-    if(Prototype.Browser.Gecko) {
-      // sometimes firefox is just a little off, this keeps the content visible
-      extra = 0.25;
-    }
-
-    return body_width - sidebar_width - sidebar_control_width - extra;
-  },
-  
-  sidebarHeight: function() {
-    var body_height = this.body.getHeight();
-    var top_of_sidebar = this.sidebar.offsetTop;
-    
-    return body_height - top_of_sidebar;
-  },
-  
-  sidebarControlHeight: function() {
-    var body_height = this.body.getHeight();
-    var top_of_sidebar_control = this.sidebar_control.offsetTop;
-
-    return body_height - top_of_sidebar_control;
   }
 });
 

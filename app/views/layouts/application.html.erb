@@ -34,12 +34,12 @@
     <div id="header_controls" class="clearfix"><%= header_controls %></div>
   <% end -%>
 
-  <% if sidebar_content = yield(:sidebar) -%>
-    <div id="sidebar"><%= sidebar_content %></div>
-    <div id="sidebar_control"></div>  
-  <% end -%>
-
   <div id="container">
+	  <% if sidebar_content = yield(:sidebar) -%>
+	    <div id="sidebar"><%= sidebar_content %></div>
+	    <div id="sidebar_control"></div>  
+	  <% end -%>
+
     <div id="content" class="clearfix">
       <%= yield %>
     </div>

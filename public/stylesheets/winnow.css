@@ -91,6 +91,7 @@ input, select, textarea {
   overflow-x: hidden;
   padding: 0.5em;
   position: relative;
+  height: 100%;
 }
 
 #content > .empty {
@@ -108,10 +109,6 @@ input, select, textarea {
 
 body#feed_items #content {
   padding: 0;
-}
-
-body#feed_items #container {
-  float: right;
 }
 
 /*
@@ -443,8 +440,8 @@ body#login .container .form .content #invite_use {
 #sidebar {
   position: relative;
   float: left;
-  width: 25%;
-  height: auto;
+  width: 225px;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -453,7 +450,7 @@ body#login .container .form .content #invite_use {
   float: left;
   cursor: pointer;
   width: 11px;
-  height: auto;
+  height: 100%;
   background: #d7e0f5 url(../images/right_aarow.png) 3px center no-repeat;
 }
 

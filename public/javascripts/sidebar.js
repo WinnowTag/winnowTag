@@ -13,7 +13,6 @@ var Sidebar = Class.create({
     
     if(Cookie.get("sidebar_width")) {
       this.sidebar.style.width = Cookie.get("sidebar_width") + 'px';
-      Content.instance.resizeWidth();
     }
     
     if(Cookie.get("show_sidebar") != "false") {
@@ -21,7 +20,6 @@ var Sidebar = Class.create({
       this.enableResize();
     } else {
       this.sidebar.hide();
-      Content.instance.resizeWidth();
     }
     
     this.enableToggle();
@@ -48,8 +46,6 @@ var Sidebar = Class.create({
     } else {
       this.disableResize();
     }
-
-    Content.instance.resizeWidth();
   },
   
   enableResize: function() {
@@ -77,7 +73,6 @@ var Sidebar = Class.create({
     this.sidebar_control.style.left = 0;
 
     Cookie.set("sidebar_width", sidebar_width, 365);
-    Content.instance.resizeWidth();
   },
   
   load: function(url, parameters, onComplete) {
