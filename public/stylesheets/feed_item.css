@@ -12,7 +12,7 @@
 }
 
 .feed_item.selected {
-  border: 2px solid #8181dc;
+  border: 2px solid #DECBA3;
 }
 
 .feed_item .closed {
@@ -21,7 +21,7 @@
 }
 
 .feed_item.read .closed {
-  background-color: #f3f3f3;
+  background-color: #eee;
 }
 
 .feed_item.selected .closed {
@@ -53,8 +53,8 @@
 
 .feed_item .closed a.selected {
   color: #333;
-  border: 1px solid #8181DC;
-  background-color: #D7E0F5;
+  border: 1px solid #DECBA3;
+  background-color: #F2F2F2;
   -moz-border-radius: 0.4em;
   -webkit-border-radius: 0.4em;
 }
@@ -102,9 +102,9 @@
 .feed_item .moderation_panel {
   display: none;
   padding: 0.5em 0.75em;
-  border: 2px solid #8181DC;
+  border: 2px solid #DECBA3;
   border-width: 2px 0 0 0;
-  background-color: #D7E0F5;
+  background-color: #F2F2F2;
 }
 
 .feed_item.open .moderation_panel {
@@ -190,9 +190,9 @@
 
 .feed_item .feed_information {
   display: none;
-  border: 2px solid #8181DC;
+  border: 2px solid #DECBA3;
   border-width: 2px 0 0 0;
-  background-color: #D7E0F5;
+  background-color: #F2F2F2;
   /* This is a work around for a bug in IE 7. Without setting this
    * the content of the feed information div doesn't appear until
    * the page is scrolled or resized.
@@ -209,7 +209,7 @@
 }
 
 .feed_item .feed_information .summary {
-  background-color: #D7E0F5;
+  background-color: #F2F2F2;
 }
 
 .notitle {
