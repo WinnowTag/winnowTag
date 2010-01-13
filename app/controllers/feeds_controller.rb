@@ -95,8 +95,7 @@ class FeedsController < ApplicationController
   end
 
   # The +subscribe+ action is used to add/remove a feed from a users list of 
-  # feed subscriptions. When removing a feed subscription, the feed is removed
-  # from any of the user's folders, and any feed exlusion for that same feed is 
+  # feed subscriptions. When removing a feed subscription and any feed exlusion for that same feed is 
   # also removed. 
   def subscribe
     if feed = Feed.find_by_id(params[:id])
@@ -105,7 +104,6 @@ class FeedsController < ApplicationController
       else
         FeedSubscription.delete_all :feed_id => feed.id, :user_id => current_user.id
         FeedExclusion.delete_all :feed_id => feed.id, :user_id => current_user.id
-        Folder.remove_feed(current_user, feed.id)
       end
     end
       

@@ -1,11 +1,8 @@
 <div class="section<%= section_open?(id) ? " open" : "" %>" id="<%= id %>">
   <div class="header clearfix">
     <span class="toggle_button" title="<%= section_open?(id) ? t('winnow.items.sidebar.collapse') : t('winnow.items.sidebar.expand') %>"></span>
-    <% if select -%>
-      <%= link_to_function title, "itemBrowser.toggleSetFilters(#{select}, event);", :class => "name", :title => tooltip %>
-    <% else -%>
-      <%= content_tag :span, title, :class => "name" %>
-    <% end -%>
+ 
+    <%= content_tag :span, title, :class => "name" %>
     
     <div class="actions clearfix">
       <%= link_to_function t("winnow.items.sidebar.add"),  "", :class => "add_link", :title => t("winnow.items.sidebar.add_tooltip") %>

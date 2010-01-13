@@ -8,7 +8,7 @@ Feature: Feed Creation
       And there is not a feed for "http://www.example.com/feed.atom"
     When I create a feed for "http://www.example.com/feed.atom"
     Then I am redirected to the feeds page
-      And I see the notice "Thanks for adding the feed from http://www.example.com/feed.atom. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
+      And I see the notice "Thanks for adding the feed from http://www.example.com/feed.atom. We will fetch the items soon."
       And I see the feed for "http://www.example.com/feed.atom"
 
   Scenario: Creating a new feed subscribes the current user to the new feed
@@ -34,7 +34,7 @@ Feature: Feed Creation
       And there is a feed for "http://www.example.com/feed.atom"
     When I create a feed for "http://www.example.com/feed.atom"
     Then I am redirected to the feeds page
-      And I see the notice "We already have the feed from http://www.example.com/feed.atom, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
+      And I see the notice "We already have the feed from http://www.example.com/feed.atom, however we will update it now."
       And I see the feed for "http://www.example.com/feed.atom"
 
   Scenario: Creating an existing feed subscribes the current user to the new feed

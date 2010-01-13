@@ -76,16 +76,6 @@ ActionController::Routing::Routes.draw do |map|
                }
               
   map.resources :collection_job_results, :path_prefix => '/users/:user_id', :only => :create
-
-  map.resources :folders, :only => [:create, :update, :destroy],
-                :member => {
-                  :add_item => :put,
-                  :remove_item => :put
-                },
-                :collection => {
-                  :sort => :put
-                }
-
   map.resources :messages, :except => :show
   map.resources :feedbacks, :only => [:index, :new, :create]
   map.resources :comments, :only => [:create, :edit, :update, :destroy]

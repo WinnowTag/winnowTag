@@ -451,7 +451,6 @@ describe TagsController do
       referer("/tags")
 
       TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => @user.id)
-      Folder.should_receive(:remove_tag).with(@user, tag.id)
 
       put :unsubscribe, :id => tag
       assert_response :redirect
@@ -474,9 +473,6 @@ describe TagsController do
     # Test unsubscribing as implemented on the "My Tags" page
     it "sidebar - false" do
       tag = Generate.tag!(:user => @user)
-
-      Folder.should_receive(:remove_tag).with(@user, tag.id)
-
       put :sidebar, :id => tag, :sidebar => "false"
       assert_response :success
     end
@@ -484,9 +480,6 @@ describe TagsController do
     # Test unsubscribing as implemented on the "My Tags" page
     it "sidebar - true" do
       tag = Generate.tag!(:user => @user)
-
-      Folder.should_not_receive(:remove_tag)
-
       put :sidebar, :id => tag, :sidebar => "true", :format => "js"
       assert_response :success
     end

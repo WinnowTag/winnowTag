@@ -41,7 +41,6 @@ class User < ActiveRecord::Base
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
   has_many :tag_exclusions, :dependent => :delete_all
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
-  has_many :folders, :dependent => :delete_all, :order => "position"
   
   # for email address regex, see: http://www.regular-expressions.info/email.html
   validates_format_of :email, :with => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
@@ -182,7 +181,7 @@ class User < ActiveRecord::Base
     end
   end
   
-  # Creating a user from the prototype will copy over the prototype's folders,
+  # Creating a user from the prototype will copy over the prototype's
   # feed subscriptions, tag subscriptions, tags, and taggings. This method will 
   # also activate the user and mark all system messages as read.
   def self.create_from_prototype(attributes = {})
@@ -193,10 +192,6 @@ class User < ActiveRecord::Base
     Message.read_by!(user)
     
     if prototype = User.find_by_prototype(true)
-      prototype.folders.each do |folder| 
-        user.folders.create! :name => folder.name, :tag_ids => folder.tag_ids, :feed_ids => folder.feed_ids
-      end
-      
       prototype.feed_subscriptions.each do |feed_subscription| 
         user.feed_subscriptions.create! :feed_id => feed_subscription.feed_id
       end

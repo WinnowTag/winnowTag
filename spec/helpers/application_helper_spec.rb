@@ -119,23 +119,6 @@ describe ApplicationHelper do
     end
   end
   
-  describe "open_folder?" do
-    # Need to fix rspec for this
-    xit "is true when cookies[folder] is set to a truthy value" do
-      folder = mock_model(Folder)
-      cookies[dom_id(folder)] = "true"
-      open_folder?(folder).should be_true
-    end
-    
-    it "is false when cookies[folder] is set to a falsy value" do
-      ["", "false"].each do |falsy_value|
-        folder = mock_model(Folder)
-        cookies[dom_id(folder)] = falsy_value
-        open_folder?(folder).should be_false
-      end
-    end
-  end
-  
   describe "section_open?" do
     # Need to fix rspec for this
     xit "is true when cookies[id] is set to a truthy value" do
@@ -189,13 +172,7 @@ describe ApplicationHelper do
       feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
       feed_filter_control(feed, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_feed_path(feed, :subscribe => "false"))}.*/)
     end
-    
-    it "creates a filter control for a feed with the remove link for a subscription" do
-      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
-      folder = mock_model(Folder)
-      feed_filter_control(feed, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(feed)))}.*/)
-    end
-    
+
     it "creates a filter control for a feed with a span for autocomplete" do
       feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
       feed_filter_control(feed, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
@@ -239,12 +216,6 @@ describe ApplicationHelper do
       tag_filter_control(tag, :remove => :subscription).should have_tag("li[subscribe_url=?]", subscribe_tag_path(tag, :subscribe => true)) do
         with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(unsubscribe_tag_path(tag))}.*/)
       end
-    end
-    
-    it "creates a filter control for a tag with the remove link for a folder" do
-      tag = mock_tag
-      folder = mock_model(Folder)
-      tag_filter_control(tag, :remove => folder).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(remove_item_folder_path(folder, :item_id => dom_id(tag)))}.*/)
     end
     
     it "creates a filter control for a tag with the remove link for a sidebar" do

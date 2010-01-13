@@ -5,8 +5,8 @@
 // Please visit http://www.peerworks.org/contact for further information.
 
 // Manages a section in the sidebar on the items page. An instance of this
-// class is created for each section. Current sections include tags, feeds,
-// and folders.
+// class is created for each section. Current sections include tags, feeds.
+//
 var SidebarSection = Class.create({
   initialize: function(element) {
     this.element = element;

@@ -495,10 +495,6 @@ body#login .container .form .content #invite_use {
   background: transparent url(../images/feed.png) left center no-repeat;
 }
 
-#folders_section > .header .name {
-  background: transparent url(../images/folder.png) left center no-repeat;
-}
-
 .section.empty .header .name {
   color: #000;
   text-decoration: none;
@@ -661,104 +657,6 @@ ul.filter_list li .multidragcount {
   color: #fff;
   -moz-border-radius: 0.75em;
   -webkit-border-radius: 0.75em;
-}
-
-/*
- * =folder
- */
-.folder {
-  margin-bottom: 0.5em;
-}
-
-.folder:last-child {
-  margin-bottom: 0;
-}
-
-.folder.hover {
-  background-color: #FFF094;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-}
-
-.folder.hover .header {
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-}
-
-.folder .header {
-  background-color: inherit;
-  cursor: move;
-  padding-left: 0.5em;
-  margin-bottom: 0.25em;
-}
-
-.folder .header .toggle_button {
-  float: left;
-  width: 1.5em;
-  height: 1.5em;
-  background: transparent url(../images/folder.png) center center no-repeat;
-  cursor: pointer;
-}
-
-.folder.open .header .toggle_button {
-  margin-left: 1px;
-  background: transparent url(../images/folder_open.png) center center no-repeat;
-}
-
-.folder .header .name {
-  display: block;
-  margin-left: 1.75em;
-}
-
-.folder.empty .header .name {
-  color: #000;
-  text-decoration: none;
-  cursor: default;
-}
-
-.folder.selected .header .name {
-  font-weight: bold;
-}
-
-.folder.some_selected .header .name {
-  font-style: italic;
-}
-
-.folder .header .actions {
-  display: none;
-  float: right;
-  margin-left: 0.25em;
-}
-
-.folder .header .actions a {
-  float: left;
-  width: 1.5em;
-  height: 1.5em;
-  background-repeat: no-repeat;
-  background-position: left center;
-  text-indent: -9000px;
-  overflow: hidden;
-}
-
-.folder .header .actions .edit {
-  background-image: url(../images/edit.png);
-}
-
-.folder .header .actions .remove {
-  background-image: url(../images/destroy.png);
-}
-
-.folder .content {
-  display: none;
-  padding-left: 1.75em;
-}
-
-.folder.open .content {
-  display: block;
-}
-
-.section.edit .folder .header .actions {
-  display: block;
 }
 
 /*

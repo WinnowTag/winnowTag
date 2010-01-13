@@ -13,7 +13,7 @@ var Sidebar = Class.create({
     new Ajax.Updater(this.sidebar, url, { method: 'get', evalScripts: true, parameters: parameters,
       onComplete: function() {
         this.sidebar.removeClassName("loading");
-        onComplete();
+        onLoad();
         document.fire('sidebar:loaded');
       }.bind(this)
     });

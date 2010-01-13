@@ -95,11 +95,6 @@ module ApplicationHelper
     javascript_tag(function)
   end
   
-  # Checks the cookies to determine whether or render a folder as opened or closed.
-  def open_folder?(folder)
-    cookies[dom_id(folder)] =~ /true/i
-  end
-  
   # Checks the cookies to determine whether or render a section as opened or closed.
   def section_open?(id)
     cookies[id] =~ /true/i
@@ -147,7 +142,7 @@ module ApplicationHelper
   def feed_filter_control(feed, options = {})   
     url      = case options[:remove]
       when :subscription then subscribe_feed_path(feed, :subscribe => "false")
-      when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
+      else raise ArgumentError, ":remove can only be a subscription"
     end
     function = case options[:remove]
       when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
@@ -184,7 +179,6 @@ module ApplicationHelper
     remove_url = case options[:remove]
       when :subscription           then unsubscribe_tag_path(tag)
       when :sidebar                then sidebar_tag_path(tag, :sidebar => "false")
-      when Folder                  then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
     end
     
     subscribe_url = case options[:remove]

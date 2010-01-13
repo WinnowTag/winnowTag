@@ -264,8 +264,7 @@ class TagsController < ApplicationController
   
   # The +subscribe+ action is used to add/remove a tag from a users list of 
   # tag subscriptions. Only public tags are allowed to be subscribed to.
-  # When removing a tag subscription, the tag is removed from any of the 
-  # user's folders, and any tag exlusion for that same tag is also removed. 
+  # When removing a tag subscription and any tag exlusion for that same tag is also removed. 
   def subscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       if params[:subscribe] =~ /true/i
@@ -275,7 +274,6 @@ class TagsController < ApplicationController
       else
         TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
         TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
-        Folder.remove_tag(current_user, @tag.id)
       end
     end
 
@@ -286,14 +284,12 @@ class TagsController < ApplicationController
   end
   
   # The +unsubscribe+ action is used to remove a tag from a users list of 
-  # tag subscriptions. When removing a tag subscription, the tag is removed 
-  # from any of the user's folders, and any tag exlusion for that same tag 
+  # tag subscriptions. When removing a tag subscription and any tag exlusion for that same tag 
   # is also removed.
   def unsubscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
       TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      Folder.remove_tag(current_user, @tag.id)
     end
     respond_to do |format|
       format.html { redirect_to :back }
@@ -302,8 +298,7 @@ class TagsController < ApplicationController
   end
   
   # The +sidebar+ action is used to add/remove a tag from a users sidebar.
-  # When removing a tag from the users sidebar, it is also removed from 
-  # any of the user's folders.
+  # When removing a tag from the users sidebar.
   def sidebar
     if @tag = current_user.tags.find(params[:id])
       @tag.update_attribute :show_in_sidebar, params[:sidebar]      
@@ -315,7 +310,6 @@ class TagsController < ApplicationController
         format.js { head :ok }
       end
     else
-      Folder.remove_tag(current_user, @tag.id)
       respond_to :js
     end
   end

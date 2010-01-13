@@ -72,29 +72,6 @@ describe User do
       user.should be_new_record
     end
     
-    it "creating from a prototype copies over custom folders" do
-      tag1 = Generate.tag!
-      tag2 = Generate.tag!
-      feed1 = Generate.feed!
-      feed2 = Generate.feed!
-      feed3 = Generate.feed!
-      
-      prototype = Generate.user!(:prototype => true)
-      prototype.folders.create!(:name => "Big", :tag_ids => [tag1.id, tag2.id], :feed_ids => [feed1.id, feed2.id, feed3.id])
-      prototype.folders.create!(:name => "Small", :tag_ids => [tag1.id], :feed_ids => [feed3.id])
-      
-      user = User.create_from_prototype(Generate.user_attributes)
-      user.should have(2).folders
-      
-      user.folders.first.name.should == "Big"
-      user.folders.first.tag_ids.sort.should == [tag1.id, tag2.id]
-      user.folders.first.feed_ids.sort.should == [feed1.id, feed2.id, feed3.id]
-
-      user.folders.last.name.should == "Small"
-      user.folders.last.tag_ids.should == [tag1.id]
-      user.folders.last.feed_ids.should == [feed3.id]
-    end
-    
     it "creating from a prototype copies over feed subscriptions" do
       prototype = Generate.user!(:prototype => true)
       prototype.feed_subscriptions.create!(:feed_id => 1)

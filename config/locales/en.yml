@@ -83,8 +83,8 @@ en:
       invitation_code_invalid: "Your invitation could not be found or has already been used."
       account_activated: "Your account has been activated"
       account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
-      feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
-      feed_existed: "We already have the feed from {{url}}, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
+      feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon."
+      feed_existed: "We already have the feed from {{url}}, however we will update it now."
       feeds_imported:
         one:   "Imported 1 feed from your OPML file"
         other: "Imported {{count}} feeds from your OPML file"
@@ -168,7 +168,6 @@ en:
         tags_header_tooltip: ""
         feeds_header: "Feeds"
         feeds_header_tooltip: ""
-        folders_header: "Folders"
         add: "Add"
         add_tooltip: ""
         done: "Done"
