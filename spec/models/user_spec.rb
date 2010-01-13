@@ -14,11 +14,7 @@ describe User do
     it "has many tag subscriptions" do
       @user.should have_many(:tag_subscriptions)
     end
-    
-    it "has many feed subscriptions" do
-      @user.should have_many(:feed_subscriptions)
-    end
-    
+  
     it "has many messages" do
       @user.should have_many(:messages)
     end
@@ -70,18 +66,6 @@ describe User do
       prototype = Generate.user!(:prototype => true)
       user = User.create_from_prototype
       user.should be_new_record
-    end
-    
-    it "creating from a prototype copies over feed subscriptions" do
-      prototype = Generate.user!(:prototype => true)
-      prototype.feed_subscriptions.create!(:feed_id => 1)
-      prototype.feed_subscriptions.create!(:feed_id => 2)
-      
-      user = User.create_from_prototype(Generate.user_attributes)
-      user.should have(2).feed_subscriptions
-      
-      user.feed_subscriptions.first.feed_id.should == 1
-      user.feed_subscriptions.last.feed_id.should == 2
     end
     
     it "creating from a prototype copies over tag subscriptions" do
@@ -395,21 +379,6 @@ describe User do
       user.subscribed?(tag).should be_true
     end
   
-    it "knows_that_given_user_is_not_subscribed_to_a_feed" do
-      user = Generate.user!
-      feed = Generate.feed!
-
-      user.subscribed?(feed).should be_false
-    end
-  
-    it "knows_that_given_user_is_subscribed_to_a_feed" do
-      user = Generate.user!
-      feed = Generate.feed!
-      FeedSubscription.create!(:feed => feed, :user => user)
-    
-      user.subscribed?(feed).should be_true
-    end
-  
     it "knows_feed_is_globally_excluded" do
       user = Generate.user!
       feed = Generate.feed!
@@ -438,31 +407,6 @@ describe User do
       tag = Generate.tag!(:user => user)
     
       user.globally_excluded?(tag).should be_false
-    end
-  
-    it "update_feed_state_moves_feed_subscriptions_when_feed_is_a_duplicate" do
-      user = Generate.user!
-      feed = Generate.feed!
-      duplicate = Generate.feed!(:duplicate => feed)
-      user.feed_subscriptions.create!(:feed => duplicate)
-    
-      user.should be_subscribed(duplicate)
-      user.should_not be_subscribed(feed)
-
-      user.update_feed_state(duplicate)
-    
-      user.should_not be_subscribed(duplicate)
-      user.should be_subscribed(feed)
-    end
-  
-    it "update_feed_state_does_nothing_with_feed_is_not_a_duplicate" do
-      user = Generate.user!
-      feed = Generate.feed!
-      user.feed_subscriptions.create!(:feed => feed)
-    
-      user.update_feed_state(feed)
-    
-      user.should be_subscribed(feed)
     end
   end
 end

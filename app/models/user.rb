@@ -35,8 +35,6 @@ class User < ActiveRecord::Base
   has_many :deleted_taggings, :dependent => :delete_all
   has_many :tag_subscriptions, :dependent => :delete_all
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
-  has_many :feed_subscriptions, :dependent => :delete_all
-  has_many :subscribed_feeds, :through => :feed_subscriptions, :source => :feed
   has_many :feed_exclusions, :dependent => :delete_all
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
   has_many :tag_exclusions, :dependent => :delete_all
@@ -48,14 +46,6 @@ class User < ActiveRecord::Base
   # See the definition of this method below to learn about this callbacks
   before_save :update_prototype
  
-  def feeds
-    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.sort_title }
-  end
-  
-  def feed_ids
-    subscribed_feed_ids - excluded_feed_ids
-  end
- 
   def globally_excluded?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
       excluded_tags(:load).include?(tag_or_feed)
@@ -64,11 +54,11 @@ class User < ActiveRecord::Base
     end
   end
 
-  def subscribed?(tag_or_feed)
-    if tag_or_feed.is_a?(Tag)
-      subscribed_tags(:load).include?(tag_or_feed)
-    elsif tag_or_feed.is_a?(Feed)
-      subscribed_feeds(:load).include?(tag_or_feed)
+  def subscribed?(tag)
+    if tag.is_a?(Tag)
+      subscribed_tags(:load).include?(tag)
+    else
+      raise ArgumentError, "subscribed only takes a tag"
     end
   end
   
@@ -127,17 +117,6 @@ class User < ActiveRecord::Base
     Time.parse(read_attribute(:last_tagging_on).to_s)
   end
   
-  # Updates any feed state between this feed and the user.
-  #
-  # Only makes changes if the feed is a duplicate
-  def update_feed_state(feed)
-    if feed.duplicate_id
-      if feed_subscriptions.update_all(["feed_id = ?", feed.duplicate_id], ["feed_id = ?", feed.id]) > 0
-        subscribed_feeds.reload
-      end
-    end
-  end
-  
   def changed_tags
     self.tags.find(:all, :conditions => ['updated_on > last_classified_at or last_classified_at is NULL'])
   end
@@ -192,10 +171,6 @@ class User < ActiveRecord::Base
     Message.read_by!(user)
     
     if prototype = User.find_by_prototype(true)
-      prototype.feed_subscriptions.each do |feed_subscription| 
-        user.feed_subscriptions.create! :feed_id => feed_subscription.feed_id
-      end
-      
       prototype.tag_subscriptions.each do |tag_subscription| 
         user.tag_subscriptions.create! :tag_id => tag_subscription.tag_id
       end

@@ -100,16 +100,6 @@ class Feed < ActiveRecord::Base
       }
 
       self.save!
-      
-      if duplicate_id
-        FeedSubscription.find_each(:conditions => { :feed_id => self.id }) do |feed_subscription|
-          if FeedSubscription.send(:with_exclusive_scope) { FeedSubscription.exists?(:feed_id => duplicate_id, :user_id => feed_subscription.user_id) }
-            feed_subscription.destroy
-          else
-            feed_subscription.update_attribute(:feed_id, duplicate_id)
-          end
-        end
-      end
     
       self
     end

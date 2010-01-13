@@ -92,12 +92,5 @@ describe FeedManager, '#create' do
         FeedManager.create(@user, "feed_url", "collection_job_results_url").should == @multiblock
       end
     end
-    
-    it "subscribes the user to the feed" do
-      FeedSubscription.should_receive(:find_or_create_by_feed_id_and_user_id).with(@feed.id, @user.id)
-      FeedManager.create(@user, "feed_url", "collection_job_results_url")
-    end
-    
   end
-  
 end

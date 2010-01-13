@@ -129,11 +129,4 @@ class Generate
       :content => "Example Content"
     ))
   end
-
-  def self.feed_subscription!(attributes = {})
-    FeedSubscription.create!(attributes.reverse_merge(
-      :feed => Generate.feed!,
-      :user => Generate.user!
-    ))
-  end
 end

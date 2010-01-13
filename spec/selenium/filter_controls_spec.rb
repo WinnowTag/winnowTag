@@ -30,18 +30,18 @@ describe "text filter" do
     page.location.should =~ /\#order=date&direction=desc&mode=all&text_filter=ruby$/
   end
   
-  it "keeps mode and tag/feed filters intact" do
+  it "keeps mode and tag filters intact" do
     @tag = Generate.tag!
     
     page.open login_path
-    page.open feed_items_path(:anchor => "mode=trained&tag_ids=#{@tag.id}&feed_ids=1")
+    page.open feed_items_path(:anchor => "mode=trained&tag_ids=#{@tag.id}")
     page.wait_for :wait_for => :ajax
-    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1$/
+    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}$/
 
     page.type "text_filter", "ruby"
     page.fire_event("text_filter_form", "submit")
 
-    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
+    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
   end
 end
   
@@ -110,51 +110,4 @@ describe "tag filter" do
     
     page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}%2C#{@sql.id}$/
   end
-end
-  
-describe "feed filter" do
-  before(:each) do
-    @user = Generate.user!
-    @feed1 = Generate.feed!
-    @feed2 = Generate.feed!
-    Generate.feed_subscription! :feed => @feed1, :user => @user
-    Generate.feed_subscription! :feed => @feed2, :user => @user
-    
-    login @user
-    page.open feed_items_path
-    page.wait_for :wait_for => :ajax
-  end
-  
-  it "sets feed filter for all selected feeds" do
-    page.location.should =~ /\#order=date&direction=desc&mode=all$/
-    
-    page.click "css=#name_feed_#{@feed1.id}"
-    multi_select_click "css=#name_feed_#{@feed2.id}"
-    
-    page.location.should =~ /\#order=date&direction=desc&mode=all&feed_ids=#{@feed1.id}%2C#{@feed2.id}$/
-  end
-  
-end
-
-describe "filtering on tags and feeds" do
-  before(:each) do
-    @user = Generate.user!
-    @tag = Generate.tag!(:user => @user)
-    @feed = Generate.feed!
-    Generate.feed_subscription! :feed => @feed, :user => @user
-    
-    login @user
-    page.open feed_items_path
-    page.wait_for :wait_for => :ajax
-  end
-  
-  it "sets filter for all selected tags and feeds" do
-    page.location.should =~ /\#order=date&direction=desc&mode=all$/
-    
-    page.click "css=#name_feed_#{@feed.id}"
-    multi_select_click "css=#name_tag_#{@tag.id}"
-    
-    page.location.should =~ /\#order=date&direction=desc&mode=all&feed_ids=#{@feed.id}&tag_ids=#{@tag.id}$/
-  end
-  
 end

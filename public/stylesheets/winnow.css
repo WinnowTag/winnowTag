@@ -588,10 +588,6 @@ ul.filter_list.tags li.public {
   background-image: url(../images/public_small.png);
 }
 
-ul.filter_list.feeds li {
-  background-image: url(../images/feed_small.png);
-}
-
 ul.filter_list li .actions {
   display: none;
   float: right;

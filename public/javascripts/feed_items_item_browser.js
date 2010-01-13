@@ -161,27 +161,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     new Item(item_id);
   },
   
-  updateFeedFilters: function(element, feed) {
-    element.clear();
-    if(feed.match("#add_new_feed")) {
-      new Ajax.Request("/feeds", {
-        parameters: 'feed[url]=' + encodeURIComponent(feed.getAttribute("url")),
-        method: 'post',
-        onComplete: function() {
-          this.styleFilters();  
-        }.bind(this)
-      });
-    } else {
-      if(!$('feed_filters').down("#" + feed.getAttribute("id"))) {
-        feed.removeClassName('selected');
-        $('feed_filters').insertInOrder('.name@data-sort', feed, $(feed).down(".name").getAttribute("data-sort"));
-        this.bindFeedFilterEvents(feed);
-        this.styleFilters();
-      }
-      new Ajax.Request(feed.getAttribute("subscribe_url"), {method:'put'});
-    }
-  },
-  
   updateTagFilters: function(input, tag) {
     input.clear();
     if(!$('tag_filters').down("#" + tag.getAttribute("id"))) {
@@ -207,24 +186,13 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         tag_ids: tag_ids.flatten().uniq().join(",")
       });
     }
-    if(this.filters.feed_ids && parameters.feed_ids) {
-      var feed_ids = this.filters.feed_ids.split(",");
-      feed_ids.push(parameters.feed_ids.split(","));
-      parameters = $H(parameters).merge({
-        feed_ids: feed_ids.flatten().uniq().join(",")
-      });
-    }
     $super(parameters);
   },
 
   toggleSetFilters: function(parameters, event) {
     if(event && this.multiSelectKey(event) && this.name != "demo") {
       var selected = true;
-      if(parameters.feed_ids) {
-        parameters.feed_ids.split(",").each(function(feed_id) {
-          selected = selected && $("feed_" + feed_id).hasClassName("selected");
-        });
-      }
+     
       if(parameters.tag_ids) {
         parameters.tag_ids.split(",").each(function(tag_id) {
           selected = selected && $("tag_" + tag_id).hasClassName("selected");
@@ -252,11 +220,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   removeFilters: function(parameters) {
     var new_parameters = Object.clone(this.filters);
-    if(parameters.feed_ids) {
-      new_parameters.feed_ids = (new_parameters.feed_ids || "").split(",").reject(function(feed_id) {
-        return parameters.feed_ids.split(",").include(feed_id);
-      }).join(",");
-    }
+    
     if(parameters.tag_ids) {
       new_parameters.tag_ids = (new_parameters.tag_ids || "").split(",").reject(function(tag_id) {
         return parameters.tag_ids.split(",").include(tag_id);
@@ -274,16 +238,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
 
   styleFilters: function($super) {
     $super();
-    
-    var feed_ids = this.filters.feed_ids ? this.filters.feed_ids.split(",") : [];
-    $$(".feeds li").each(function(element) {
-      var feed_id = element.getAttribute("id").gsub("feed_", "");
-      if(feed_ids.include(feed_id)) {
-        element.addClassName("selected");
-      } else {
-        element.removeClassName("selected");
-      }
-    });
     
     var tag_ids = this.filters.tag_ids ? this.filters.tag_ids.split(",") : [];
     $$(".tags li").each(function(element) {
@@ -328,19 +282,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     } else {
       tag.observe("click", click_event);
     }
-  },
-  
-  bindFeedFiltersEvents: function() {
-    $$(".filter_list.feeds li.feed").each(function(feed) {
-      this.bindFeedFilterEvents(feed);
-    }.bind(this));
-  },
-  
-  bindFeedFilterEvents: function(feed) {
-    var feed_id = feed.getAttribute('id').match(/\d+/).first();
-    var link = feed.down(".name");
-    var click_event = this.toggleSetFilters.bind(this, {feed_ids: feed_id});
-    link.observe("click", click_event);
   },
   
   showDemoTagInfo: function() {
@@ -408,7 +349,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   initializeFilters: function($super) {
     $super();
     this.bindTagFiltersEvents();
-    this.bindFeedFiltersEvents();
     this.bindClearFilterEvents();
     this.bindNextPreviousEvents();
     this.bindMarkAllReadEvents();

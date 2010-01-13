@@ -35,8 +35,6 @@ class FeedManager < Manager
         message = t("winnow.notifications.feed_added", :url => h(feed.via))
       end
       
-      FeedSubscription.find_or_create_by_feed_id_and_user_id(feed.id, current_user.id)
-      
       Multiblock[:success, feed, message]
     else
       Multiblock[:failed, remote_feed, remote_feed.errors.full_messages.to_sentence]

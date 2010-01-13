@@ -146,42 +146,7 @@ describe ApplicationHelper do
     end
   end
 
-  describe "feed filter controls" do
-    it "creates a list with an li for each feed" do
-      feeds = [
-        mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1)),
-        mock_model(Feed, :title => "Feed 2", :sort_title => "feed 2", :feed_items => stub("feed_items", :size => 2)),
-        mock_model(Feed, :title => "Feed 3", :sort_title => "feed 3", :feed_items => stub("feed_items", :size => 3))
-      ]
-      feed_filter_controls(feeds, :remove => :subscription).should have_tag("ul") do
-        with_tag("li", 3)
-      end
-    end
-    
-    it "creates a filter control for a feed" do
-      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
-      feed_filter_control(feed, :remove => :subscription).should have_tag("li##{dom_id(feed)}[subscribe_url=?]", subscribe_feed_path(feed, :subscribe => true)) do
-        with_tag ".filter" do
-          with_tag "a.remove[onclick=?]", /#{Regexp.escape("itemBrowser.removeFilters({feed_ids: '#{feed.id}'})")}.*/
-          with_tag "span.name"
-        end
-      end
-    end
-    
-    it "creates a filter control for a feed with the remove link for a subscription" do
-      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
-      feed_filter_control(feed, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(subscribe_feed_path(feed, :subscribe => "false"))}.*/)
-    end
-
-    it "creates a filter control for a feed with a span for autocomplete" do
-      feed = mock_model(Feed, :title => "Feed 1", :sort_title => "feed 1", :feed_items => stub("feed_items", :size => 1))
-      feed_filter_control(feed, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
-    end
-    
-  end
-  
-  describe "tag filter controls" do
-    
+  describe "tag filter controls" do    
     def mock_tag(stubs = {})
       user = stubs[:user] || mock_model(User, :login => "mark")
       sort_name = (stubs[:name] || "Tag 1").to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')

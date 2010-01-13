@@ -122,46 +122,6 @@ module ApplicationHelper
       :title => t("winnow.tags.main.subscribe_tooltip")
   end
   
-  # Generates the controls to filter the list of feed items by feeds.
-  def feed_filter_controls(feeds, options = {})
-    content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    if options[:add]
-      begin
-        uri = URI.parse(options[:auto_complete])
-        if uri.scheme.present?
-          content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(uri.to_s)), :id => "add_new_feed", :url => uri.to_s)
-        end
-      rescue URI::Error # don't add the "Create Feed" option if the URI is not valid
-      end
-    end
-    content_tag :ul, content, options.delete(:ul_options) || {}
-  end
-  
-  # Generates an individual control to filter the list of feed items by a feed.
-  # See ApplicationHelper#feed_filter_controls.
-  def feed_filter_control(feed, options = {})   
-    url      = case options[:remove]
-      when :subscription then subscribe_feed_path(feed, :subscribe => "false")
-      else raise ArgumentError, ":remove can only be a subscription"
-    end
-    function = case options[:remove]
-      when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
-    end
-    
-    class_names = [dom_id(feed), "clearfix", "feed"]
-
-    html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html = content_tag(:span, html, :class => "actions")
-
-    html << content_tag(:span, h(feed.title), :class => "name", :id => dom_id(feed, "name"), :"data-sort" => feed.sort_title)
-    
-    html =  content_tag(:span, html, :class => "filter")
-    html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
-
-    html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-    html
-  end
-  
   # Generates the controls to filter the list of tags.
   def tag_filter_controls(tags, options = {})
     content =  tags.map { |tag| tag_filter_control(tag, options) }.join
