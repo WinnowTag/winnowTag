@@ -15,14 +15,6 @@
       new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
         itemBrowser.styleFilters();
         itemBrowser.bindTagFiltersEvents();
-        
-        $$("#sidebar .section").each(function(element) {
-          new SidebarSection(element);
-        });
-        
-        $$('#tag_filters .tag').each(function(element) {
-          new TagFilter(element);
-        });
       });
       
       new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);

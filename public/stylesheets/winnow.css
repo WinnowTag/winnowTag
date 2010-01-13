@@ -482,19 +482,6 @@ body#login .container .form .content #invite_use {
   background: transparent url(../images/minus.gif) center center no-repeat;
 }
 
-.section > .header .name {
-  float: left;
-  padding-left: 1.75em;
-}
-
-#tags_section .header .name {
-  background: transparent url(../images/tag.png) left center no-repeat;
-}
-
-#feeds_section .header .name {
-  background: transparent url(../images/feed.png) left center no-repeat;
-}
-
 .section.empty .header .name {
   color: #000;
   text-decoration: none;
@@ -551,11 +538,6 @@ body#login .container .form .content #invite_use {
 
 .section > .content {
   padding: 0.25em;
-  display: none;
-}
-
-.section.open > .content {
-  display: block;
 }
 
 /*

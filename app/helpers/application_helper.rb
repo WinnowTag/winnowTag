@@ -95,11 +95,6 @@ module ApplicationHelper
     javascript_tag(function)
   end
   
-  # Checks the cookies to determine whether or render a section as opened or closed.
-  def section_open?(id)
-    cookies[id] =~ /true/i
-  end
-  
   # Generates the control to mark a tag/feed a globally excluded/not globally excluded.
   def globally_exclude_check_box(tag_or_feed)
     url = if tag_or_feed.is_a?(Tag)
@@ -153,14 +148,7 @@ module ApplicationHelper
     class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id
 
-    html  = ""
-    if options[:editable] && current_user.id == tag.user_id
-      html << link_to("Rename", "#", :class => "edit", "data-update_url" => "#{tag_path(tag)}")
-    end
-    html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => remove_url, :method => :put)}", :class => "remove")
-    html  = content_tag(:span, html, :class => "actions")
-
-    html << content_tag(:span, h(tag.name), :class => "name", :id => dom_id(tag, "name"), :"data-sort" => tag.sort_name)
+    html = content_tag(:span, h(tag.name), :class => "name", :id => dom_id(tag, "name"), :"data-sort" => tag.sort_name)
 
     html =  content_tag(:span, html, :class => "filter")
     html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]

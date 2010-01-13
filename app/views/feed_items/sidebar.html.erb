@@ -1,2 +1,10 @@
-<%= render :partial => "filter_controls" %>
-
+<div class="section" id="tags_section">
+  <div class="content clearfix">
+    <%= tag_filter_controls(current_user.tags_for_sidebar(params[:tag_ids]), 
+							:ul_options => { 
+												:id => "tag_filters", 
+												:class => "filter_list clearfix tags multidrag" 
+											}) 
+		%>
+  </div>
+</div>

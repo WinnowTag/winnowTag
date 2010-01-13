@@ -119,21 +119,6 @@ describe ApplicationHelper do
     end
   end
   
-  describe "section_open?" do
-    # Need to fix rspec for this
-    xit "is true when cookies[id] is set to a truthy value" do
-      cookies["tags"] = "true"
-      section_open?("tags").should be_true
-    end
-    
-    xit "is false when cookies[id] is set to a falsy value" do
-      ["", "false"].each do |falsy_value|
-        cookies["tags"] = falsy_value
-        section_open?("tags").should be_false
-      end
-    end
-  end
-  
   describe "is_admin?" do
     it "returns true when the current user has the admin role" do
       current_user.should_receive(:has_role?).with('admin').and_return(true)
@@ -170,33 +155,9 @@ describe ApplicationHelper do
       tag = mock_tag
       tag_filter_control(tag, :remove => :subscription).should have_tag("li##{dom_id(tag)}") do
         with_tag ".filter" do
-          with_tag "a.remove[onclick=?]", /.*#{Regexp.escape("itemBrowser.removeFilters({tag_ids: '#{tag.id}'})")}.*/
           with_tag "span.name"
         end
       end
-    end
-    
-    it "creates a filter control for a tag with the remove link for a subscription" do
-      tag = mock_tag
-      tag_filter_control(tag, :remove => :subscription).should have_tag("li[subscribe_url=?]", subscribe_tag_path(tag, :subscribe => true)) do
-        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(unsubscribe_tag_path(tag))}.*/)
-      end
-    end
-    
-    it "creates a filter control for a tag with the remove link for a sidebar" do
-      tag = mock_tag
-      tag_filter_control(tag, :remove => :sidebar).should have_tag("li[subscribe_url=?]", sidebar_tag_path(tag, :sidebar => true)) do
-        with_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => "false"))}.*/)
-      end
-    end
-    
-    it "creates a filter control for a tag with the remove link for a subscription and current_user" do
-      tag = mock_tag(:user_id => current_user.id, :user => current_user)
-      tag_filter_control(tag, :remove => :subscription).should have_tag("a.remove[onclick=?]", /.*#{Regexp.escape(sidebar_tag_path(tag, :sidebar => "false"))}.*/)
-    end
-    
-    it "creates a filter control for a tag with a span for autocomplete" do
-      tag_filter_control(mock_tag, :remove => :subscription, :auto_complete => "ed").should have_tag("span.auto_complete_name")
     end
     
     it "creates a filter control for a public tag" do
@@ -206,20 +167,6 @@ describe ApplicationHelper do
     it "creates a filter control with a tooltip showing the trining and author information" do
       tag = mock_tag(:positive_count => 1, :negative_count => 2, :classifier_count => 3, :user => mock_model(User, :login => "craig"))
       tag_filter_control(tag, :remove => :subscription).should have_tag("li[title=?]", "From craig, Positive: 1, Negative: 2, Automatic: 3")
-    end
-    
-    it "creates a filter control without an edit control for public tags" do
-      tag_filter_control(mock_tag, :remove => :subscription).should_not have_tag("img.edit")
-    end
-    
-    it "creates a filter control with an edit control for private tags if editable" do
-      tag = mock_tag(:user_id => current_user.id, :user => current_user)
-      tag_filter_control(tag, :editable => true, :remove => :subscription).should have_tag(".edit")
-    end
-
-    it "creates a filter control without an edit control for private tags if not editable" do
-      tag = mock_tag(:user_id => current_user.id, :user => current_user)
-      tag_filter_control(tag, :editable => false, :remove => :subscription).should_not have_tag(".edit")
     end
   end
 end

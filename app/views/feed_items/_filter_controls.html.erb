@@ -1,5 +1,0 @@
-<%= render :partial => "sidebar_section", :locals => { 
-  :id => "tags_section", :title => t("winnow.items.sidebar.tags_header"), :tooltip => t("winnow.items.sidebar.tags_header_tooltip"),
-  :add_form => text_field_with_auto_complete(:tag, :name, { :class => "filter_search" }, :skip_style => true, :param_name => 'tag[name]', :url => auto_complete_for_sidebar_tags_path, :after_update_element => "function(e, v) { itemBrowser.updateTagFilters(e,v); $('tags_section').removeClassName('add'); }", :on_hide => "clear_auto_complete"),
-  :content => tag_filter_controls(current_user.tags_for_sidebar(params[:tag_ids]), :editable => true, :remove => :subscription, :ul_options => { :id => "tag_filters", :class => "filter_list clearfix tags multidrag" })
-} %>
