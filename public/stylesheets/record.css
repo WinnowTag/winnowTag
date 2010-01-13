@@ -8,16 +8,23 @@
 .record {
   position: relative;
   margin: 0 0 .5em 0;
+  
 }
 
 .record .summary {
   padding: 0.5em;
-  border: 1px solid #e5e5e5;
-  background: #f3f3f3;
+  border: 1px solid #DECBA3;
+  background: #FAFAFA;
 }
 
 .record .summary:hover {
-  background-color: #dfdfdf;
+  background-color: #E1D2C7;
+}
+
+.record .extended {
+  border-left: 1px solid #DECBA3;
+  border-right: 1px solid #DECBA3;
+  border-bottom: 1px solid #DECBA3;
 }
 
 .record h4 {

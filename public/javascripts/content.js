@@ -19,7 +19,6 @@ var Content = Class.create({
     this.footer          = $("footer");
     this.messages        = $("messages");
     this.sidebar         = $("sidebar");
-    this.sidebar_control = $("sidebar_control");
     
     Event.observe(window, 'resize', this.resize.bind(this));
     setInterval(this.checkFontSize.bind(this), 500);
