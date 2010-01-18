@@ -5,11 +5,7 @@
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
 			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
-			  modes: ["all", "unread", "trained"],
-			  orders: {
-			    desc:      ["date"],
-			    "default": "date"
-			  }
+			  modes: ["all", "unread", "trained"]
 			});
 
       new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
