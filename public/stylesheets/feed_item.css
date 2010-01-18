@@ -28,20 +28,6 @@
   padding: 3px 3px 4px;
 }
 
-.feed_item .closed > .status {
-  float: left;
-  height: 1.5em;
-  width: 1.5em;
-  margin-right: 0.25em;
-  background-image: url(../images/unread.png);
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
-.feed_item.read .closed > .status {
-  background-image: url(../images/read.png);
-}
-
 .feed_item .closed .title {
   font-weight: bold;
   color: #000;
