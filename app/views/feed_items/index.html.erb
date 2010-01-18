@@ -5,7 +5,7 @@
 		var itemBrowser;
 		document.observe('dom:loaded', function() {
 			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
-			  modes: ["all", "unread", "trained"]
+			  modes: ["all", "trained"]
 			});
 
       new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
@@ -33,7 +33,6 @@
     <div class="group">
       <label><%= t("winnow.items.header.show_label") %></label>        
       <%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first", :title => t("winnow.items.header.show_all_tooltip") %>
-      <%= rounded_button_function t("winnow.items.header.show_unread_label"),  "", :icon => "unread",  :id => "mode_unread", :title => t("winnow.items.header.show_unread_tooltip") %>
       <%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained", :title => t("winnow.items.header.show_trained_tooltip") %>
     </div>
   </div>

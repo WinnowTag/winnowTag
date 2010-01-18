@@ -16,7 +16,7 @@ describe "text filter" do
   end
 
   it "sets the text filter" do
-    page.location.should =~ /\#order=date&direction=desc&mode=all$/
+    page.location.should =~ /\#mode=all$/
 
     page.type "text_filter", "ruby"
     
@@ -27,7 +27,7 @@ describe "text filter" do
     #
     page.fire_event("text_filter_form", "submit")
 
-    page.location.should =~ /\#order=date&direction=desc&mode=all&text_filter=ruby$/
+    page.location.should =~ /\#mode=all&text_filter=ruby$/
   end
   
   it "keeps mode and tag filters intact" do
@@ -36,12 +36,12 @@ describe "text filter" do
     page.open login_path
     page.open feed_items_path(:anchor => "mode=trained&tag_ids=#{@tag.id}")
     page.wait_for :wait_for => :ajax
-    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}$/
+    page.location.should =~ /\#mode=trained&tag_ids=#{@tag.id}$/
 
     page.type "text_filter", "ruby"
     page.fire_event("text_filter_form", "submit")
 
-    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
+    page.location.should =~ /\#mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
   end
 end
   
@@ -71,11 +71,11 @@ describe "tag filter" do
   end
   
   it "sets the tag filter" do
-    page.location.should =~ /\#order=date&direction=desc&mode=all$/
+    page.location.should =~ /\#mode=all$/
 
     page.click "css=#name_tag_#{@tag.id}"
 
-    page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}$/
+    page.location.should =~ /\#mode=all&tag_ids=#{@tag.id}$/
   end
   
   it "resets feed/tag filters only" do
@@ -83,11 +83,11 @@ describe "tag filter" do
     page.open feed_items_path(:anchor => "mode=trained&text_filter=ruby&feed_ids=1&tag_ids=#{@tag.id}")
     page.wait_for :wait_for => :ajax
 
-    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
+    page.location.should =~ /\#mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
 
     page.click "css=#name_tag_#{@tag.id}"
     
-    page.location.should =~ /\#order=date&direction=desc&mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
+    page.location.should =~ /\#mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
   end
   
   it "turns off a tag filter" do
@@ -95,19 +95,19 @@ describe "tag filter" do
     page.open feed_items_path(:anchor => "tag_ids=#{@sql.id},#{@tag.id}")
     page.wait_for :wait_for => :ajax
 
-    page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@sql.id}%2C#{@tag.id}$/
+    page.location.should =~ /\#mode=all&tag_ids=#{@sql.id}%2C#{@tag.id}$/
 
     page.click "css=#name_tag_#{@tag.id}"
     
-    page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}$/
+    page.location.should =~ /\#mode=all&tag_ids=#{@tag.id}$/
   end
   
   it "sets tag filter for all selected tags" do
-    page.location.should =~ /\#order=date&direction=desc&mode=all$/
+    page.location.should =~ /\#mode=all$/
     
     page.click "css=#name_tag_#{@tag.id}"
     multi_select_click "css=#name_tag_#{@sql.id}"
     
-    page.location.should =~ /\#order=date&direction=desc&mode=all&tag_ids=#{@tag.id}%2C#{@sql.id}$/
+    page.location.should =~ /\#mode=all&tag_ids=#{@tag.id}%2C#{@sql.id}$/
   end
 end

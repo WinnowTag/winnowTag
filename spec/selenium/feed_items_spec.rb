@@ -28,10 +28,6 @@ describe "FeedItemsTest" do
 
     page.click "css=#feed_item_#{@feed_item1.id} .status"
     see_element "#feed_item_#{@feed_item1.id}.read"
-    
-    page.click "css=#mode_unread"
-    page.wait_for :wait_for => :ajax
-    dont_see_element "#feed_item_#{@feed_item1.id}"
 
     # TODO: Make this work with mode=all
     # click "css=#feed_item_#{@feed_item1.id} .status a"
@@ -73,10 +69,6 @@ describe "FeedItemsTest" do
 
     page.click "css=#feed_item_#{@feed_item1.id} .closed"
     see_element "#feed_item_#{@feed_item1.id}.read"
-
-    page.click "css=#mode_unread"
-    page.wait_for :wait_for => :ajax
-    dont_see_element "#feed_item_#{@feed_item1.id}"
   end
   
   it "click_feed_title_takes_you_to_feed_page" do

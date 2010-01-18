@@ -156,7 +156,6 @@ en:
         show_label: "Show"
         show_all_label: "All"
         show_all_tooltip: ""
-        show_unread_label: "Unread"
         show_unread_tooltip: ""
         show_trained_label: "Trained"
         show_trained_tooltip: ""
