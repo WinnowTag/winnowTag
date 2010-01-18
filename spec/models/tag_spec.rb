@@ -874,10 +874,6 @@ describe Tag do
       @tag.bias.should == 1.1
     end
     
-    it "should set show_in_sidebar to true" do
-      @tag.show_in_sidebar.should be_true
-    end
-    
     it "should create three taggings" do
       @tag.should have(3).taggings
     end

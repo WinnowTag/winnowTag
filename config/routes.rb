@@ -50,15 +50,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :tags, :only => [:index, :show, :create, :update, :destroy],
                 :collection => { 
                   :public => :get,
-                  :auto_complete_for_sidebar => :any,
                   :upload => :post
                 },
                 :member => { 
                   :globally_exclude => :post,
                   :publicize => :put, 
                   :subscribe => :put,
-                  :unsubscribe => :put, 
-                  :sidebar => :put,
+                  :unsubscribe => :put,
                   :training => :get,
                   :information => :get,
                   :classifier_taggings => [:post, :put],

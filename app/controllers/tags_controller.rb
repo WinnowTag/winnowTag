@@ -224,25 +224,6 @@ class TagsController < ApplicationController
       render :status => :no_content, :nothing => true
     end
   end
-
-  # The +auto_complete_for_sidebar+ is used in the feed items sidebar
-  # to add taqgs. This will return a list of tags matching the requested
-  # text as long as they are not already in the users sidebar.
-  def auto_complete_for_sidebar
-    @q = params[:tag][:name]
-    
-    conditions = ["LOWER(name) LIKE LOWER(?) AND ((public = ? AND user_id != ?) OR (user_id = ? AND show_in_sidebar = ?))"]
-    values = ["%#{@q}%", true, current_user.id, current_user.id, false]
-    
-    tag_ids = current_user.subscribed_tags.map(&:id)
-    if !tag_ids.blank?
-      conditions << "id NOT IN (?)"
-      values << tag_ids
-    end
-    
-    @tags = Tag.find(:all, :conditions => [conditions.join(" AND "), *values], :order => "tags.sort_name", :limit => 30)
-    render :layout => false
-  end
   
   # The +publicize+ action is used to set a tag a public or private.
   def publicize
@@ -294,23 +275,6 @@ class TagsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to :back }
       format.js
-    end
-  end
-  
-  # The +sidebar+ action is used to add/remove a tag from a users sidebar.
-  # When removing a tag from the users sidebar.
-  def sidebar
-    if @tag = current_user.tags.find(params[:id])
-      @tag.update_attribute :show_in_sidebar, params[:sidebar]      
-    end
-
-    if @tag.show_in_sidebar?
-      respond_to do |format|
-        format.html { redirect_to params[:redirect_to] }
-        format.js { head :ok }
-      end
-    else
-      respond_to :js
     end
   end
   

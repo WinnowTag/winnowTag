@@ -66,23 +66,10 @@ describe TaggingsController do
     
     Tagging.first(:conditions => { :user_id => user.id, :feed_item_id => feed_item.id, :tag_id => tag.id, :strength => 0 }).should_not be_nil
   end
-  
-  it "create updates the tag to show in sidebar" do
-    user = Generate.user!
-    tag = Generate.tag!(:user => user, :show_in_sidebar => false)
-    feed_item = Generate.feed_item!
-
-    login_as user
-
-    post :create, :format => "json", :tagging => { :strength => 1, :feed_item_id => feed_item.id, :tag => tag.name }
-
-    tag.reload
-    tag.show_in_sidebar?.should be_true
-  end
       
   it "destroy_tagging_specified_by_taggable_and_tag_name_with_ajax" do
     user = Generate.user!
-    tag = Generate.tag!(:user => user, :show_in_sidebar => false)
+    tag = Generate.tag!(:user => user)
     feed_item = Generate.feed_item!
     tagging = feed_item.taggings.create!(:tag => tag, :user => user)
 
@@ -94,7 +81,7 @@ describe TaggingsController do
   
   it "destroy_does_not_destroy_classifier_taggings" do
     user = Generate.user!
-    tag = Generate.tag!(:user => user, :show_in_sidebar => false)
+    tag = Generate.tag!(:user => user)
     feed_item = Generate.feed_item!
     tagging = feed_item.taggings.create!(:tag => tag, :user => user)
     tagging = feed_item.taggings.create!(:tag => tag, :user => user, :classifier_tagging => true)

@@ -126,35 +126,21 @@ module ApplicationHelper
   # Generates an individual control to filter the list of tags.
   # See ApplicationHelper#tag_filter_controls.
   def tag_filter_control(tag, options = {})
-    if options[:remove] == :subscription && current_user.id == tag.user_id
-      options = options.except(:remove)
-      options[:remove] = :sidebar
-    end
-    
-    remove_url = case options[:remove]
-      when :subscription           then unsubscribe_tag_path(tag)
-      when :sidebar                then sidebar_tag_path(tag, :sidebar => "false")
-    end
-    
-    subscribe_url = case options[:remove]
-      when :subscription           then subscribe_tag_path(tag, :subscribe => true)
-      when :sidebar                then sidebar_tag_path(tag, :sidebar => true)
-    end
-    
-    function = case options[:remove]
-      when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
-    end
-    
     class_names = [dom_id(tag), "clearfix", "tag"]
     class_names << "public" if tag.user_id != current_user.id
 
-    html = content_tag(:span, h(tag.name), :class => "name", :id => dom_id(tag, "name"), :"data-sort" => tag.sort_name)
-
-    html =  content_tag(:span, html, :class => "filter")
-    html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
+    content_tag(:li, 
+                content_tag(:span, 
+                            content_tag(:span, 
+                                        h(tag.name), 
+                                        :class => "name", 
+                                        :id => dom_id(tag, "name"), 
+                                        :"data-sort" => tag.sort_name), 
+                            :class => "filter"), 
+                :id => dom_id(tag), 
+                :class => class_names.join(" "), 
+                :title => tag_tooltip(tag))
     
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => subscribe_url, :title => tag_tooltip(tag))
-    html
   end
   
   # Generates a tooltip for the tag filters in the feed items sidebar. 

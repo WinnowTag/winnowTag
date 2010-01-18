@@ -11,8 +11,6 @@ describe "Tags" do
     @tag1 = Generate.tag! :user => @user, :bias => 0
     @tag2 = Generate.tag! :bias => 1, :public => true
     @user.tag_subscriptions.create!(:tag => @tag2)
-    
-    @tag_not_in_sidebar = Generate.tag! :user => @user, :show_in_sidebar => false
 
     login @user
     page.open tags_path
@@ -75,30 +73,6 @@ describe "Tags" do
     page.wait_for :wait_for => :ajax
     assert !page.is_checked("public_tag_#{@tag1.id}")
   end
-
-  it "viewing items tagged with a specific tag also adds that tag to the user's sidebar" do
-    @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
-    
-    page.click "css=.tag_#{@tag_not_in_sidebar.id} a.tagged"
-    
-    page.wait_for :wait_for => :page
-    page.wait_for :wait_for => :ajax
-    
-    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=all&tag_ids=#{@tag_not_in_sidebar.id}$/
-    @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
-  end
-
-  it "viewing items trained with a specific tag also adds that tag to the user's sidebar" do
-    @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
-    
-    page.click "css=.tag_#{@tag_not_in_sidebar.id} a.trained"
-    
-    page.wait_for :wait_for => :page
-    page.wait_for :wait_for => :ajax
-    
-    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=trained&tag_ids=#{@tag_not_in_sidebar.id}$/
-    @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
-  end
 end
 
 describe 'merging' do
@@ -108,7 +82,6 @@ describe 'merging' do
     @tag2 = Generate.tag! :bias => 1, :public => true
     @user.tag_subscriptions.create!(:tag => @tag2)
     
-    @tag_not_in_sidebar = Generate.tag! :user => @user, :show_in_sidebar => false
     @other = Generate.tag!(:user => @user, :name => "test")
     
     # TODO: determine if this is still needed now that all models are

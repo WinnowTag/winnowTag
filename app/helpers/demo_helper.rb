@@ -16,7 +16,7 @@ module DemoHelper
   end
   
   def demo_tag_controls 
-    @user.tags_for_sidebar([]).map do |tag|
+    @user.tags_for_sidebar.map do |tag|
       content_tag("li", tag.name, :id => dom_id(tag), 
                                   :class => "tag", 
                                   :title => tag.description, 

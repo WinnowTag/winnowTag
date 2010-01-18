@@ -469,22 +469,6 @@ describe TagsController do
     end
   end
   
-  describe 'sidebar' do
-    # Test unsubscribing as implemented on the "My Tags" page
-    it "sidebar - false" do
-      tag = Generate.tag!(:user => @user)
-      put :sidebar, :id => tag, :sidebar => "false"
-      assert_response :success
-    end
-
-    # Test unsubscribing as implemented on the "My Tags" page
-    it "sidebar - true" do
-      tag = Generate.tag!(:user => @user)
-      put :sidebar, :id => tag, :sidebar => "true", :format => "js"
-      assert_response :success
-    end
-  end
-  
   describe 'merge' do
     it "tag_merging" do
       tag1 = Generate.tag!(:user => @user)

@@ -16,7 +16,6 @@ class User < ActiveRecord::Base
   has_many :feedbacks
   has_many :comments
   has_many :tags, :dependent => :delete_all
-  has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
   has_many :taggings, :dependent => :delete_all do
     def find_by_feed_item(feed_item, type = :all, options = {})
       with_scope(:find => {:conditions => ['taggings.feed_item_id = ?', feed_item.id]}) do
@@ -125,7 +124,7 @@ class User < ActiveRecord::Base
     self.changed_tags.select {|t| t.potentially_undertrained? }
   end
 
-  def tags_for_sidebar(tag_ids)
+  def tags_for_sidebar
     Tag.find :all, 
       :select => ['tags.*',
                   '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
@@ -133,7 +132,7 @@ class User < ActiveRecord::Base
                   '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count'
                  ].join(","),
       :conditions => ["tags.id IN (?) OR (tags.id IN(?) AND (tags.public = ? OR tags.user_id = ?))", 
-                      sidebar_tag_ids + subscribed_tag_ids - excluded_tag_ids, tag_ids.to_s.split(","), true, self],
+                     tag_ids + subscribed_tag_ids - excluded_tag_ids, tag_ids.to_s.split(","), true, self],
       :order => "tags.sort_name"
   end
 
@@ -176,7 +175,7 @@ class User < ActiveRecord::Base
       end
       
       prototype.tags.each do |tag|
-        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :show_in_sidebar => tag.show_in_sidebar, :description => tag.description
+        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :description => tag.description
 
         tag.taggings.each do |tagging|
           user.taggings.create! :classifier_tagging => tagging.classifier_tagging, :strength => tagging.strength, :feed_item_id => tagging.feed_item_id, :tag_id => new_tag.id

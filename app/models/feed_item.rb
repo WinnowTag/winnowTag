@@ -221,7 +221,7 @@ class FeedItem < ActiveRecord::Base
     # We are going to load the taggings for all the tags the user sees in their sidebar,
     # plus any tags which are being filtered on.
     selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
-    tags_to_display = (user.sidebar_tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
+    tags_to_display = (user.tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
     taggings = Tagging.find(:all, 
       :include => :tag,
       :conditions => ['feed_item_id IN (?) AND tag_id IN (?)', feed_items, tags_to_display]).group_by(&:feed_item_id)
