@@ -241,32 +241,6 @@ class FeedItem < ActiveRecord::Base
     feed_items
   end
 
-  # Marks feed items as read that match the provided filters.
-  def self.read_by!(filters)
-    options_for_find = options_for_filters(filters)   
-
-    feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, 'FeedItem', UTC_TIMESTAMP(), UTC_TIMESTAMP() FROM feed_items"
-    feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
-    feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
-
-    Reading.connection.execute "INSERT IGNORE INTO readings (user_id, readable_id, readable_type, created_at, updated_at) #{feed_item_ids_sql}"
-  end
-  
-  # Marks feed items as unread that match the provided filters.
-  def self.unread_by!(filters)
-    case filters[:mode]
-      when nil, "unread" then filters[:mode] = "all"
-    end
-
-    options_for_find = options_for_filters(filters)
-
-    feed_item_ids_sql = "SELECT DISTINCT feed_items.id FROM feed_items"
-    feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
-    feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
-
-    Reading.delete_all(["readings.user_id = ? AND readings.readable_type = 'FeedItem' AND readings.readable_id IN(#{feed_item_ids_sql})", filters[:user]])
-  end
-
   # This builds the SQL to use for the +find_with_filters+ method.
   #
   # The SQL is pretty complex, I had a go at trying to find a nicer way to generate it, as opposed

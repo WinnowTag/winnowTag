@@ -26,7 +26,8 @@ describe "FeedItemsTest" do
   it "mark_read_unread" do
     dont_see_element "#feed_item_#{@feed_item1.id}.read"
 
-    page.click "css=#feed_item_#{@feed_item1.id} .status"
+    page.click "css=#feed_item_#{@feed_item1.id} div.closed"
+    page.wait_for :wait_for => :ajax
     see_element "#feed_item_#{@feed_item1.id}.read"
 
     # TODO: Make this work with mode=all

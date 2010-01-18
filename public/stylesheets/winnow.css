@@ -1590,21 +1590,6 @@ body#info .messages ul li.sidebar_message .date {
 }
 
 /* =buttons */
-.button .icon.clear {
-  background-image: url(../images/clear.png);
-}
-
-.button.disabled .icon.clear {
-  background-image: url(../images/clear_disabled.png);
-}
-
-.button .icon.unread {
-  background-image: url(../images/unread_large.png);
-}
-
-.button .icon.read {
-  background-image: url(../images/read_large.png);
-}
 
 .button .icon.previous {
   background-image: url(../images/bullet_arrow_up.png);

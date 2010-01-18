@@ -60,17 +60,13 @@ var Item = Class.create({
   },
   
   markRead: function() {
-    if (this.status) {
-      this.element.addClassName('read');
-      new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
-    }
+    this.element.addClassName('read');
+    new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
   },
   
   markUnread: function() {
-    if (this.status) {
-      this.element.removeClassName('read');    
-      new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });
-    }
+    this.element.removeClassName('read');    
+    new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });
   },
   
   toggleReadUnread: function() {
