@@ -119,8 +119,7 @@ module ApplicationHelper
   
   # Generates the controls to filter the list of tags.
   def tag_filter_controls(tags, options = {})
-    content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content_tag :ul, content, options.delete(:ul_options) || {}
+    tags.map { |tag| tag_filter_control(tag, options) }.join
   end
   
   # Generates an individual control to filter the list of tags.

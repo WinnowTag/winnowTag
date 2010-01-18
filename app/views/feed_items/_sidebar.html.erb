@@ -1,0 +1,12 @@
+<div class="section" id="tags_section">
+  <div class="content clearfix">
+	  <ul id ="tag_filters" class="filter_list clearfix tags">
+			<li id="tag_0" class="tag_0 tag all_tags" title="See all items">
+				<span class="filter">
+					<span id="name_tag_0" class="name"><%= t("winnow.demo.all_items") %></span>
+				</span>
+			</li>
+    	<%= tag_filter_controls(current_user.tags_for_sidebar) %>
+		</ul>
+  </div>
+</div>

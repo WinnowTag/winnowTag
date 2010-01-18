@@ -122,9 +122,4 @@ class FeedItemsController < ApplicationController
     @feed_item = FeedItem.find(params[:id]) 
     render :layout => false
   end
-
-  # The +sidebar+ actions loads the contents of the feed items sidebar.
-  def sidebar
-    render :layout => false
-  end
 end

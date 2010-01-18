@@ -146,9 +146,7 @@ describe ApplicationHelper do
         mock_tag(:name => "Tag 2"),
         mock_tag(:name => "Tag 3")
       ]
-      tag_filter_controls(tags, :remove => :subscription).should have_tag("ul") do
-        with_tag("li", 3)
-      end
+      tag_filter_controls(tags, :remove => :subscription).should have_tag("li", 3)
     end
 
     it "creates a filter control for a tag" do

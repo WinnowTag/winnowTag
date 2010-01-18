@@ -18,7 +18,6 @@ var Content = Class.create({
     this.content         = $("content");
     this.footer          = $("footer");
     this.messages        = $("messages");
-    this.sidebar         = $("sidebar");
     
     Event.observe(window, 'resize', this.resize.bind(this));
     setInterval(this.checkFontSize.bind(this), 500);
@@ -39,7 +38,6 @@ var Content = Class.create({
   
   resize: function() {
     var newHeight = this.containerHeight();
-    
     // IE does some stupid things in the middle of resize events,
     // so this prevents a JS error when the content height is negative.
     if (newHeight > 0) {
@@ -52,7 +50,6 @@ var Content = Class.create({
     var top_of_content = this.content.offsetTop;
     var content_padding = parseInt(this.content.getStyle("padding-top")) + parseInt(this.content.getStyle("padding-bottom"));
     var footer_height = this.footer ? this.footer.getHeight() : 0;
-
     return body_height - top_of_content - content_padding - footer_height;
   }
 });

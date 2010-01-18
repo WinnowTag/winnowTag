@@ -43,10 +43,12 @@
       <%= yield %>
     </div>
 
-    <% if footer_content = yield(:footer) -%>
+  
+  </div>
+
+	  <% if footer_content = yield(:footer) -%>
       <div id="footer" class="clearfix"><%= footer_content %></div>
     <% end -%>
-  </div>
 
   <div id="messages" style="display:none">
     <a href="#" class="close">close</a>

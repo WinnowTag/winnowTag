@@ -8,10 +8,7 @@
 			  modes: ["all", "trained"]
 			});
 
-      new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
-        itemBrowser.styleFilters();
-        itemBrowser.bindTagFiltersEvents();
-      });
+      itemBrowser.styleFilters();
       
       new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);
 		});
@@ -25,12 +22,6 @@
 
   <div class="toolbar right">
     <div class="group">
-      <label><%= t("winnow.items.header.selected_filters") %></label>
-      <%= rounded_button_function t("winnow.items.header.clear_selected_filters"), "", :icon => "clear", :id => "clear_selected_filters", :class => "first", :title => t("winnow.items.header.clear_selected_filters_tooltip") %>
-      <%= rounded_button_link t("winnow.items.header.feed_for_selected_filters"), "", :icon => "feed", :base_url => feed_items_path(:format => :atom), :id => "feed_with_selected_filters", :title => t("winnow.items.header.feed_for_selected_filters_tooltip") %>
-    </div>
-    
-    <div class="group">
       <label><%= t("winnow.items.header.show_label") %></label>        
       <%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first", :title => t("winnow.items.header.show_all_tooltip") %>
       <%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained", :title => t("winnow.items.header.show_trained_tooltip") %>
@@ -38,7 +29,9 @@
   </div>
 <% end -%>
 
-<% content_for :sidebar, "" %>
+<% content_for :sidebar do -%>
+	<%= render :partial => "sidebar" %>
+<% end %>
 
 <% content_for :footer do -%>	
   <div class="toolbar">

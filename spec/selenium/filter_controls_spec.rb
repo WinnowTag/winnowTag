@@ -16,7 +16,7 @@ describe "text filter" do
   end
 
   it "sets the text filter" do
-    page.location.should =~ /\#mode=all$/
+    page.location.should =~ /\#mode=all&tag_ids=0$/
 
     page.type "text_filter", "ruby"
     
@@ -27,7 +27,7 @@ describe "text filter" do
     #
     page.fire_event("text_filter_form", "submit")
 
-    page.location.should =~ /\#mode=all&text_filter=ruby$/
+    page.location.should =~ /\#mode=all&tag_ids=0&text_filter=ruby$/
   end
   
   it "keeps mode and tag filters intact" do
@@ -71,7 +71,7 @@ describe "tag filter" do
   end
   
   it "sets the tag filter" do
-    page.location.should =~ /\#mode=all$/
+    page.location.should =~ /\#mode=all&tag_ids=0$/
 
     page.click "css=#name_tag_#{@tag.id}"
 
@@ -100,14 +100,5 @@ describe "tag filter" do
     page.click "css=#name_tag_#{@tag.id}"
     
     page.location.should =~ /\#mode=all&tag_ids=#{@tag.id}$/
-  end
-  
-  it "sets tag filter for all selected tags" do
-    page.location.should =~ /\#mode=all$/
-    
-    page.click "css=#name_tag_#{@tag.id}"
-    multi_select_click "css=#name_tag_#{@sql.id}"
-    
-    page.location.should =~ /\#mode=all&tag_ids=#{@tag.id}%2C#{@sql.id}$/
   end
 end

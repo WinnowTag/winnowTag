@@ -16,7 +16,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     
     document.observe('keypress', this.keypress.bindAsEventListener(this));
     
-    if (name == "demo" && !this.filters.tag_ids) {
+    if (!this.filters.tag_ids) {
       var tag = $$("li.tag:first").first();
       if (tag) {
         var tag_id = tag.getAttribute("id").replace("tag_", "");
@@ -190,32 +190,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
 
   toggleSetFilters: function(parameters, event) {
-    if(event && this.multiSelectKey(event) && this.name != "demo") {
-      var selected = true;
-     
-      if(parameters.tag_ids) {
-        parameters.tag_ids.split(",").each(function(tag_id) {
-          selected = selected && $("tag_" + tag_id).hasClassName("selected");
-        });
-      }
-      
-      if(selected) {
-        this.removeFilters(parameters);
-      } else {
-        this.addFilters(parameters);
-      }
-    } else {
-      this.setFilters(parameters);
-      this.showDemoTagInfo();
-    }
-  },
-
-  multiSelectKey: function(event) {
-    if(navigator.platform.indexOf("Mac") != -1) {
-      return event.metaKey;
-    } else {
-      return event.ctrlKey;
-    }
+    this.setFilters(parameters);
+    this.showDemoTagInfo();
   },
   
   removeFilters: function(parameters) {
@@ -227,13 +203,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       }).join(",");
     }
     this.setFilters(new_parameters);
-  },
-  
-  clearFilters: function(parameters) {
-    var clear_selected_filters = $("clear_selected_filters");  
-    if(!clear_selected_filters.hasClassName("disabled")) {
-      this.setFilters({text_filter: ""});
-    }
   },
 
   styleFilters: function($super) {
@@ -256,11 +225,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       } else {
         clear_selected_filters.addClassName("disabled");
       }
-    }
-    
-    var feed_with_selected_filters = $("feed_with_selected_filters");
-    if(feed_with_selected_filters) {
-      feed_with_selected_filters.href = feed_with_selected_filters.getAttribute("base_url") + '?' + $H(this.filters).toQueryString();
     }
     
     this.showDemoTagInfo();

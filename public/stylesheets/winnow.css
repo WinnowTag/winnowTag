@@ -586,6 +586,13 @@ ul.filter_list li .name:hover {
   color: #000;
 }
 
+ul.filter_list li.all_tags {
+  border-bottom: 1px solid #DECBA3;
+  width: 92%;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
 ul.filter_list li .edit, ul.filter_list li .remove {
   float: left;
   width: 1.5em;
@@ -720,9 +727,10 @@ input.placeholder {
  * =footer
  */
 #footer {
-  padding: 0.5em;
+  padding: 3px;
   background-color: #F2F2F2;
   border-top: 1px solid #E1D2C7;
+  height: 36px;
 }
 
 #footer #classification_section {
@@ -803,7 +811,7 @@ body#feeds .feed {
 
 #footer .total {
   float: right;
-  padding: 0.5em 1em;
+  padding:  1em;
 }
 
 /*
@@ -1588,10 +1596,6 @@ body#info .messages ul li.sidebar_message .date {
 
 .button.disabled .icon.clear {
   background-image: url(../images/clear_disabled.png);
-}
-
-.button .icon.feed {
-  background-image: url(../images/feed.png);
 }
 
 .button .icon.unread {

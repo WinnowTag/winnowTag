@@ -148,11 +148,6 @@ en:
       header:
         feed_items_search_placeholder: "Search Feed Items..."
         feed_items_search_tooltip: ""
-        selected_filters: "Selected Filters"
-        clear_selected_filters: "Clear"
-        clear_selected_filters_tooltip: ""
-        feed_for_selected_filters: "Feed"
-        feed_for_selected_filters_tooltip: ""
         show_label: "Show"
         show_all_label: "All"
         show_all_tooltip: ""
