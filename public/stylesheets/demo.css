@@ -143,3 +143,18 @@ ul.tags li.selected {
 .feed_item.selected {
   border: 2px solid #DECBA3 !important;
 }
+
+#content > .indicator {
+  position: absolute;
+  background: url(../images/indicator_medium.gif) 1em center no-repeat;
+  font-size: 2em;
+  padding: 1em 1em 1em 2.5em;
+}
+
+.loading {
+  background-image: url(../images/indicator_medium.gif);
+  background-position: center center;
+  background-repeat: no-repeat;
+  min-height: 32px;
+  min-width: 32px;
+}
