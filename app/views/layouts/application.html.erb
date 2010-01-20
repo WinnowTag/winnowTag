@@ -52,7 +52,10 @@
   </div>
 
 	  <% if footer_content = yield(:footer) -%>
-      <div id="footer" class="clearfix"><%= footer_content %></div>
+      <div id="footer" class="clearfix">
+				<%= footer_content %>
+				<%= t("winnow.general.footer") %>
+			</div>
     <% end -%>
 
   <div id="messages" style="display:none">

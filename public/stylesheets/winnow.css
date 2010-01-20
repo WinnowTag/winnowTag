@@ -749,6 +749,11 @@ input.placeholder {
   height: 28px;
 }
 
+#footer_text {
+  text-align: center;
+  margin-top: 5px;
+}
+
 #footer #classification_section {
   float: right;
 }
@@ -783,9 +788,6 @@ input.placeholder {
   background-color: #558BCE;
 }
 
-#footer .toolbar {
-  margin-left: 255px;
-}
 
 /*
  * =feeds
