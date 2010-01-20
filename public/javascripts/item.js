@@ -20,9 +20,7 @@ var Item = Class.create({
     this.moderation_panel  = this.element.down(".moderation_panel");
     this.feed_information  = this.element.down(".feed_information");
     this.body              = this.element.down(".body");
-    // this.training_controls = this.moderation_panel.down(".training_controls");
-    // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
-    // this.add_tag_selected  = null;
+    this.isDemo              = window.location.pathname == "/demo";
     
     // Queues by tag name for tagging requests. See the TagQueue class
     // for more details.
@@ -61,12 +59,16 @@ var Item = Class.create({
   
   markRead: function() {
     this.element.addClassName('read');
-    new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
+    if (!this.isDemo) {
+      new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
+    }
   },
   
   markUnread: function() {
     this.element.removeClassName('read');    
-    new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });
+    if (!this.isDemo) {
+      new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });      
+    }
   },
   
   toggleReadUnread: function() {
