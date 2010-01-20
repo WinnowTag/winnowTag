@@ -273,8 +273,6 @@ class FeedItem < ActiveRecord::Base
       "feed_items.updated DESC"
     end
 
-    filters[:mode] ||= "unread"
-
     joins = []
     add_text_filter_joins!(filters[:text_filter], joins)
 
