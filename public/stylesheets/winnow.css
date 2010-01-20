@@ -551,15 +551,14 @@ ul.filter_list {
 
 ul.filter_list li {
   position: relative;
-  display: inline-block;
-  display: -moz-inline-stack;
   min-width: 8em;
-  margin: 0 0.5em 0.25em 0;
+  margin: 0 0 0.25em 0;
   padding: 0 0 0 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
   background-position: 0.5em 0.3em;
   font-weight: bold;
+  
 }
 
 ul.filter_list.tags li.public {
@@ -584,9 +583,7 @@ ul.filter_list li .name:hover {
 
 ul.filter_list li.all_tags {
   border-bottom: 1px solid #DECBA3;
-  width: 92%;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding: 2px 0 2px 0;
 }
 
 ul.filter_list li .edit, ul.filter_list li .remove {
@@ -608,10 +605,7 @@ ul.filter_list li .remove {
 }
 
 ul.filter_list li.selected {
-  background-color: #FFFFCC;
-  border: 1px solid #FFF094;
-  -moz-border-radius: 0.75em;
-  -webkit-border-radius: 0.75em;
+  background-color: #FEF3BB;
 }
 
 .section.edit ul.filter_list li {
