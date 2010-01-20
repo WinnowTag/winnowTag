@@ -18,7 +18,7 @@ var Demo = Class.create({
   },
   
   resize: function() {
-     var height = this.viewportHeight() - this.footerHeight() - this.headerHeight() - 12 /* minus padding and border size */;
+     var height = this.viewportHeight() - this.footerHeight() - this.headerHeight() - 2 /* minus padding and border size */;
      this.container.style.height = "" + height + "px";
   },
   

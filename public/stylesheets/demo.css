@@ -97,7 +97,6 @@ div.column_headers div {
 #container {
   float: right;
   width: 100%;
-  padding: 5px 0px;
   border-top: 1px solid #DECBA3;
   border-bottom: 1px solid #DECBA3;
 }
@@ -106,8 +105,8 @@ div.column_headers div {
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  padding-left: 5px;
   position: relative;
+  border-left: 5px solid #E1D2C7;
 }
 
 #footer {
