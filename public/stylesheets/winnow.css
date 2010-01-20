@@ -783,6 +783,10 @@ input.placeholder {
   background-color: #558BCE;
 }
 
+#footer .toolbar {
+  margin-left: 255px;
+}
+
 /*
  * =feeds
  */
