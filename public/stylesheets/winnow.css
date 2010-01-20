@@ -562,10 +562,6 @@ ul.filter_list li {
   font-weight: bold;
 }
 
-ul.filter_list.tags li {
-  background-image: url(../images/tag_small.png);
-}
-
 ul.filter_list.tags li.public {
   background-image: url(../images/public_small.png);
 }
