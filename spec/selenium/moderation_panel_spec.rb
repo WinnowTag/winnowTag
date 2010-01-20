@@ -51,18 +51,6 @@ describe "moderation panel" do
     page.click "css=##{dom_id(@feed_item)} .train"
     assert_not_visible "css=##{dom_id(@feed_item)} .body"
   end
-
-  it "can be shown by clicking a tag in the tag list" do
-    assert_not_visible "css=##{dom_id(@feed_item)} .moderation_panel"
-    page.click "css=##{dom_id(@feed_item)} .tag_list .tag_control"
-    assert_visible "css=##{dom_id(@feed_item)} .moderation_panel"
-  end
-
-  it "does not open body when clicking a tag in the tag list" do
-    assert_not_visible "css=##{dom_id(@feed_item)} .body"
-    page.click "css=##{dom_id(@feed_item)} .tag_list .tag_control"
-    assert_not_visible "css=##{dom_id(@feed_item)} .body"
-  end
   
   it "can be hidden by clicking the close link" do
     page.click "css=##{dom_id(@feed_item)} .train"

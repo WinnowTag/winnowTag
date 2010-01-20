@@ -216,29 +216,7 @@ class FeedItem < ActiveRecord::Base
     ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
     
-    feed_items = FeedItem.find(:all, options_for_find)
-    
-    # We are going to load the taggings for all the tags the user sees in their sidebar,
-    # plus any tags which are being filtered on.
-    selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
-    tags_to_display = (user.tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
-    taggings = Tagging.find(:all, 
-      :include => :tag,
-      :conditions => ['feed_item_id IN (?) AND tag_id IN (?)', feed_items, tags_to_display]).group_by(&:feed_item_id)
-
-    feed_items.each do |feed_item|
-      feed_item.taggings_to_display = (taggings[feed_item.id] || []).inject({}) do |hash, tagging|
-        hash[tagging.tag] ||= []
-        if tagging.classifier_tagging?
-          hash[tagging.tag] << tagging
-        else
-          hash[tagging.tag].unshift(tagging)
-        end
-        hash
-      end.to_a.sort_by { |tag, _taggings| tag.sort_name }
-    end
-    
-    feed_items
+    FeedItem.find(:all, options_for_find)
   end
 
   # This builds the SQL to use for the +find_with_filters+ method.

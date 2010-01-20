@@ -16,7 +16,6 @@ var Item = Class.create({
     this.status            = this.element.down(".status");
     this.feed_title        = this.element.down("a.feed_title");
     this.train             = this.element.down(".train");
-    this.tag_list          = this.element.down(".tag_list");
     this.moderation_panel  = this.element.down(".moderation_panel");
     this.feed_information  = this.element.down(".feed_information");
     this.body              = this.element.down(".body");
@@ -50,7 +49,6 @@ var Item = Class.create({
     
     if (this.feed_title) this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
     if (this.train) this.train.observe("click", this.toggleTrainingControls.bind(this));
-    if (this.tag_list) this.tag_list.select("li").invoke("observe", "click", this.toggleTrainingControls.bind(this));
   },
   
   isRead: function() {
@@ -167,16 +165,12 @@ var Item = Class.create({
   showTrainingControls: function() {
     this.select();
 
-    this.tag_list.hide();
-
     this.train.addClassName("selected");
     this.moderation_panel.addClassName("selected");
     this.loadTrainingControls();
   },
   
   hideTrainingControls: function() {
-    if (this.tag_list) this.tag_list.show();
-
     if (this.train) this.train.removeClassName("selected");
     if (this.moderation_panel) this.moderation_panel.removeClassName("selected");
     if(this.add_tag_field) {
@@ -315,15 +309,6 @@ var Item = Class.create({
         if(data.error) {
           Message.add("error", data.error);
         } else {
-          // Change the small tags that are visible when an item is collapsed.
-          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-          if(tag_control) {
-            tag_control.removeClassName(other_tagging_type);
-            tag_control.addClassName(tagging_type);
-          } else {
-            this.addTagControl(tag_name, data.sort_name, tagging_type);
-          }
-          
           // Change the tags shown in the moderation panel.
           var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
           if(training_control) {
@@ -335,8 +320,6 @@ var Item = Class.create({
       
           // Add the tag's id as a class to newly created controls so they get properly updated if 
           // the user renames or deletes them before reloading the page
-          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-          tag_control.addClassName(data.id);
           var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
           training_control.addClassName(data.id);
         
@@ -367,16 +350,6 @@ var Item = Class.create({
   
   removeTagging: function(tag_name) {
     if(tag_name.match(/^\s*$/)) { return; }
-    
-    // Remove the small tags that are visible when an item is collapsed.
-    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-    if (tag_control) {
-      tag_control.removeClassName('positive');
-      tag_control.removeClassName('negative');
-      if(!tag_control.match('.classifier')) {
-        tag_control.remove()
-      }
-    }
     
     // Change the tags shown in the moderation panel.
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
@@ -424,13 +397,6 @@ var Item = Class.create({
       return element.down(".name").innerHTML.unescapeHTML() == tag_name;
     });
     return tag;
-  },
-
-  addTagControl: function(tag_name, sort_name, tagging_type) {
-    var tag_control = '<li class="tag_control stop ' + tagging_type + '">' + 
-      '<span class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</span>' + 
-    '</li> ';
-    this.tag_list.insertInOrder(".name@data-sort", tag_control, sort_name);
   },
 
   addTrainingControl: function(tag_name, sort_name) {
