@@ -219,11 +219,11 @@ var ItemBrowser = Class.create({
     Cookie.set(this.name + "_filters", filters_to_save.toQueryString(), 365);
   },
   
-  // Marks the appropriate mode filter (all, unread, trained) for items as selected.
+  // Marks the appropriate mode filter (all, trained) for items as selected.
   styleModes: function() {
     if(this.filters.mode) {
       this.modes().without(this.filters.mode).each(function(mode) {
-        $("mode_" + mode).removeClassName("selected")
+        $$("#mode_" + mode).invoke("removeClassName","selected");
       });
     
       var mode_control = $("mode_" + this.filters.mode);

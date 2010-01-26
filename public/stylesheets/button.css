@@ -117,3 +117,7 @@
   margin-left: 0.5em;
   margin-right: 0;
 }
+
+.toolbar.item_buttons {
+  margin-left: 255px;
+}

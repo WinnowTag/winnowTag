@@ -188,10 +188,6 @@ en:
         close_tooltip: ""
         tag_input_tooltip: ""
       footer:
-        previous_item: "Previous Item"
-        previous_item_tooltip: ""
-        next_item: "Next Item"
-        next_item_tooltip: ""
         mark_all_read: "Mark All Read"
         mark_all_read_tooltip: ""
         mark_all_unread: "Mark All Unread"
@@ -201,6 +197,10 @@ en:
         stop_classifier_button: "Stop"
         stop_classifier_tooltip: ""
         classifier_progress: "Classify changed tags"
+      previous_item: "Previous Unread"
+      previous_item_tooltip: "Go to the previous unread item."
+      next_item: "Next Unread"
+      next_item_tooltip: "Go to the next unread item."
     tags:
       general:
         no_comments: "There are no comments for this tag."

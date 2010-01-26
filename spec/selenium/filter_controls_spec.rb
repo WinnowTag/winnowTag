@@ -15,7 +15,7 @@ describe "text filter" do
     page.wait_for :wait_for => :ajax
   end
 
-  it "sets the text filter" do
+  xit "sets the text filter" do
     page.location.should =~ /\#mode=all&tag_ids=0$/
 
     page.type "text_filter", "ruby"
@@ -30,7 +30,7 @@ describe "text filter" do
     page.location.should =~ /\#mode=all&tag_ids=0&text_filter=ruby$/
   end
   
-  it "keeps mode and tag filters intact" do
+  xit "keeps mode and tag filters intact" do
     @tag = Generate.tag!
     
     page.open login_path

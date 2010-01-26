@@ -57,6 +57,9 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     } else if(character == "m") {
       this.toggleReadUnreadSelectedItem();
       Event.stop(e);
+    } else if(character == " ") {
+      this.openNextUnreadItem();
+      Event.stop(e);
     }
   },
 
@@ -64,22 +67,67 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     return $$(".feed_item.selected").first();
   },
 
+  nextUnreadItem: function() {
+    if(this.selectedItem()) {
+      return this.selectedItem().next(".feed_item:not(.read)");
+    } else {
+      return this.container.down(".feed_item:not(.read)");
+    }
+  },
+  
   nextItem: function() {
     if(this.selectedItem()) {
-      return this.selectedItem().nextSiblings().first();
+      return this.selectedItem().next(".feed_item");
     } else {
-      return this.container.descendants().first();
+      return this.container.down(".feed_item");
+    }
+  },
+  
+  previousUnreadItem: function() {
+    if(this.selectedItem()) {
+      return this.selectedItem().previous(".feed_item:not(.read)");  
     }
   },
   
   previousItem: function() {
     if(this.selectedItem()) {
-      return this.selectedItem().previousSiblings().first();  
+      return this.selectedItem().previous(".feed_item");  
+    }
+  },
+  
+  openNextItem: function() {
+    var item = this.nextItem();
+    
+    if (item) {
+      item._item.toggleBody();
     }
   },
 
-  openNextItem: function() {
-    var item = this.nextItem();
+  openNextUnreadItem: function() {
+    var item = this.nextUnreadItem();
+    
+    if (!item) {
+      this.container.childElements().last()._item.scrollTo();
+      var that = this;
+      var fun = function() {
+        if (that.loading) {
+          window.setTimeout(fun);
+        } else {
+          item = that.nextUnreadItem();
+          if (item) {
+            item._item.toggleBody();
+          }
+        }
+      };
+      
+      window.setTimeout(fun, 500);
+    } else if(item && item.hasClassName("feed_item")) {
+      item._item.toggleBody();
+    }
+  },
+  
+  openPreviousUnreadItem: function() {
+    var item = this.previousUnreadItem();
     if(item && item.hasClassName("feed_item")) {
       item._item.toggleBody();
     }
@@ -287,15 +335,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   bindNextPreviousEvents: function() {
-    var previous_control = $("footer").down("a .previous");
-    if(previous_control) {
-      previous_control.up("a").observe("click", this.openPreviousItem.bind(this));
-    }
-
-    var next_control = $("footer").down("a .next");
-    if(next_control) {
-      next_control.up("a").observe("click", this.openNextItem.bind(this));
-    }
+    $$("#next_unread").invoke("observe", "click", this.openNextUnreadItem.bind(this));
+    $$("#previous_unread").invoke("observe", "click", this.openPreviousUnreadItem.bind(this));
   },
   
   bindMarkAllReadEvents: function() {

@@ -3,29 +3,41 @@
 <% content_for :head do -%>
 	<% javascript_tag do -%>
 		var itemBrowser;
-		document.observe('dom:loaded', function() {
-			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
-			  modes: ["all", "trained"]
-			});
-      itemBrowser.styleFilters();
-      
-      new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);
+		Event.observe(window, 'load', function() {
+			try {
+				itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
+				  modes: ["all", "trained"]
+				});
+	      itemBrowser.styleFilters();
+
+	      new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);
+			} catch (e) {
+				if (console) console.log(e);
+				throw e;
+			}
 		});
   <% end -%>
 <% end -%>
 
 <% content_for :header_controls do -%>
-  <% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
-    <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
-  <% end -%>
+  <%# form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
+    <%# text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
+  <%# end -%>
 
-  <div class="toolbar right">
+  <div class="toolbar item_buttons">
+    <div class="group">
+      <%#= rounded_button_function t("winnow.items.previous_item"), "", :icon => "previous", :title => t("winnow.items.previous_item_tooltip"), :id => "previous_unread" %>
+      <%= rounded_button_function t("winnow.items.next_item"),     "", :icon => "next",     :title => t("winnow.items.next_item_tooltip"), :id => "next_unread"%>
+    </div>
+  </div>
+
+  <!--div class="toolbar right">
     <div class="group">
       <label><%= t("winnow.items.header.show_label") %></label>        
       <%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first", :title => t("winnow.items.header.show_all_tooltip") %>
       <%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained", :title => t("winnow.items.header.show_trained_tooltip") %>
     </div>
-  </div>
+  </div-->
 <% end -%>
 
 <% content_for :sidebar do -%>
@@ -33,12 +45,5 @@
 <% end %>
 
 <% content_for :footer do -%>	
-  <div class="toolbar">
-    <div class="group">
-      <%= rounded_button_function t("winnow.items.footer.previous_item"), "", :icon => "previous", :title => t("winnow.items.footer.previous_item_tooltip") %>
-      <%= rounded_button_function t("winnow.items.footer.next_item"),     "", :icon => "next",     :title => t("winnow.items.footer.next_item_tooltip") %>
-    </div>
-  </div>
-	
 	<%= render :partial => "classification_controls" %>
 <% end -%>
