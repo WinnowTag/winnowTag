@@ -74,7 +74,6 @@ ActionController::Routing::Routes.draw do |map|
               
   map.resources :collection_job_results, :path_prefix => '/users/:user_id', :only => :create
   map.resources :messages, :except => :show
-  map.resources :feedbacks, :only => [:index, :new, :create]
   map.resources :comments, :only => [:create, :edit, :update, :destroy]
 
   map.with_options :controller => "account" do |account_map|

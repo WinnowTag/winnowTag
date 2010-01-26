@@ -13,7 +13,6 @@ class User < ActiveRecord::Base
   acts_as_authorizable
   
   has_many :messages, :order => "created_at DESC"
-  has_many :feedbacks
   has_many :comments
   has_many :tags, :dependent => :delete_all
   has_many :taggings, :dependent => :delete_all do

@@ -19,10 +19,6 @@ describe User do
       @user.should have_many(:messages)
     end
     
-    it "has many feedbacks" do
-      @user.should have_many(:feedbacks)
-    end
-    
     it "has many comments" do
       @user.should have_many(:comments)
     end

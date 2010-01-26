@@ -432,44 +432,6 @@ body#login .container .form .content #invite_use {
 }
 
 /*
- * =feedback
- */
-.feedback {
-  position: relative;
-  border: 1px solid #e5e5e5;
-  background: #f3f3f3;
-  padding: .5em;
-  margin: 0 0 .5em 0;
-}
-
-.feedback .metadata {
-  float: right;
-  color: #666;
-}
-
-#feedback {
-  position: relative;
-  border: none;
-  z-index: 1000;
-}
-
-#feedback form {
-  position: absolute;
-  top: 1.5em;
-  right: 0;
-  width: 22em;
-  padding: 1em;
-  background-color: #fff;
-  border: 1px solid #666;
-}
-
-#feedback form textarea {
-  width: 97%;
-  height: 5em;
-  margin-bottom: 0.5em;
-}
-
-/*
  * =sidebar
  */
 #sidebar {
