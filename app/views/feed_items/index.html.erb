@@ -7,7 +7,6 @@
 			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
 			  modes: ["all", "trained"]
 			});
-
       itemBrowser.styleFilters();
       
       new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);

@@ -125,7 +125,7 @@ module ApplicationHelper
   # Generates an individual control to filter the list of tags.
   # See ApplicationHelper#tag_filter_controls.
   def tag_filter_control(tag, options = {})
-    class_names = [dom_id(tag), "clearfix", "tag"]
+    class_names = [dom_id(tag), "tag"]
     class_names << "public" if tag.user_id != current_user.id
 
     content_tag(:li, 

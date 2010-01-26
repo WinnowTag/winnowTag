@@ -438,116 +438,50 @@ body#login .container .form .content #invite_use {
   float: left;
   width: 255px;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   background-color: white;
 }
 
-/*
- * =section
- */
-.section {
-  margin: 0.5em;
-}
-
-.section > .header {
-  padding: 0.25em;
-  background-color: #F2F2F2;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-}
-
-.section > .header .toggle_button {
-  float: left;
-  width: 1.5em;
-  height: 1.5em;
-  background: transparent url(../images/plus.gif) center center no-repeat;
-  cursor: pointer;
-}
-
-.section.open > .header .toggle_button {
-  background: transparent url(../images/minus.gif) center center no-repeat;
-}
-
-.section.empty .header .name {
-  color: #000;
-  text-decoration: none;
-  cursor: default;
-}
-
-.section.selected .header .name {
-  font-weight: bold;
-}
-
-.section.some_selected .header .name {
-  font-style: italic;
-}
-
-.section > .header .actions {
-  float: right;
-  margin-right: 0.5em;
-}
-
-.section .header .actions .add_link {
-  border-right: 1px solid #069;
-  padding-right: 0.25em;
-}
-
-.section.add .header .actions .add_link, .section.add .header .actions .edit_link {
-  display: none;
-}
-
-.section.edit .header .actions .add_link, .section.edit .header .actions .edit_link {
-  display: none;
-}
-
-.section .header .actions .cancel_link {
-  display: none;
-}
-
-.section.add .header .actions .cancel_link, .section.edit .header .actions .cancel_link {
-  display: inline;
-}
-
-.section .add_form {
-  display: none;
-  padding: 0.5em 0.75em 0.5em 0.25em;
-}
-
-.section.add .add_form {
-  display: block;
-}
-
-.section .add_form input {
-  /* TODO: Make this sized properly */
-  width: 100%;
-}
-
-.section > .content {
-  padding: 0.25em;
-}
 
 /*
  * =filters
  */
-ul.filter_list {
+ul#tag_filters {
   list-style: none;
-  margin: 0;
   padding: 0;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 5px;
+  right: 0px;
+  margin: 0px;
 }
 
 ul.filter_list li {
   position: relative;
   min-width: 8em;
-  margin: 0 0 0.25em 0;
-  padding: 0 0 0 1.5em;
+  margin: 0;
+  padding: 0.25em 0 0.25em 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
-  background-position: 0.5em 0.3em;
+  background-position: 0.5em 0.5em;
   font-weight: bold;
   
 }
 
+ul.filter_list li.tags {
+  overflow-y: auto;
+  position: absolute;
+  top: 31px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding: 0px;
+}
+
+ul.filter_list li.tags ul.tags {
+  margin: 0px;
+}
 ul.filter_list.tags li.public {
   background-image: url(../images/public_small.png);
 }
@@ -570,7 +504,7 @@ ul.filter_list li .name:hover {
 
 ul.filter_list li.all_tags {
   border-bottom: 1px solid #DECBA3;
-  padding: 2px 0 2px 0;
+  padding: 5px 0 5px 2px;
 }
 
 ul.filter_list li .edit, ul.filter_list li .remove {

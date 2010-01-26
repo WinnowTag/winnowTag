@@ -209,7 +209,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     $super();
     
     var tag_ids = this.filters.tag_ids ? this.filters.tag_ids.split(",") : [];
-    $$(".tags li").each(function(element) {
+    $$(".tags li.tag").each(function(element) {
       var tag_id = element.getAttribute("id").gsub("tag_", "");
       if(tag_ids.include(tag_id)) {
         element.addClassName("selected");
