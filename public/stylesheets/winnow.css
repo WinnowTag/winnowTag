@@ -529,15 +529,6 @@ ul.filter_list li.selected {
   background-color: #FEF3BB;
 }
 
-.section.edit ul.filter_list li {
-  display: block;
-  margin-right: 0;
-}
-
-.section.edit ul.filter_list li .actions {
-  display: block;
-}
-
 ul.filter_list li .multidragcount {
   position: absolute;
   top: -1px;
