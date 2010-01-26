@@ -34,10 +34,10 @@ en:
       prototype: "{{login}} is the prototype"
       make_prototype: "Make prototype"
       footer: |-
-        <div id="footer_text"><a href="http://blog.peerworks.org">blog</a> &bull; 
-          a mindloom project &copy; 2010 &bull; 
-        	powered by <a href="http://github.com/seangeo/classifier">winnow open source classifier</a> &bull; 
-        	<a href="javascript:alert('complete me')">site use agreement</a>
+        <div id="footer_text">
+          a mindloom project &copy; 2010
+        	powered by <a href="http://github.com/seangeo/classifier">winnow open source classifier</a> &bull;
+        	<a href="http://blog.peerworks.org">blog</a>
         </div>
     email:
       subject_prefix: "[WINNOW]"
