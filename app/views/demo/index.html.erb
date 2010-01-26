@@ -10,7 +10,7 @@
 <div class="column_headers">
 	<div id="siidebar_header"><%= t("winnow.demo.column_headings.sidebar") %></div>
 	<div id="item_header"><%= t("winnow.demo.column_headings.items") %></div>
-	<div id="feedback"><a href="mailto:demo@peerworks.org?Subject=WinnowTag Demo"><%= t("winnow.demo.column_headings.feedback") %></a></div>
+	<div id="feedback"><%= mail_to CONTACT_EMAIL, t("winnow.demo.column_headings.feedback"), :encode => :javascript %></div>
 </div>
 
 <div id="container">

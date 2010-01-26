@@ -7,7 +7,7 @@
 			<% if help_path -%>
       	<li><%= link_to(t("winnow.navigation.help"), help_path, :target => "_blank", :class => "help", :title => t("winnow.navigation.help_tooltip")) %></li>
 			<% end -%>
-      <li id="feedback"><%= link_to(t("winnow.navigation.leave_feedback"), new_feedback_path, :title => t("winnow.navigation.leave_feedback_tooltip")) %></li>
+      <li id="feedback"><%= mail_to(CONTACT_EMAIL, t("winnow.navigation.leave_feedback"), :subject => CONTACT_SUBJECT, :encode => :javascript) %></li>
     </ul>
 
   	<ul class="main clearfix">
