@@ -31,6 +31,7 @@
 .feed_item .closed .title {
   font-weight: bold;
   color: #000;
+  text-decoration: none;
 }
 
 .feed_item.read .closed .title {
