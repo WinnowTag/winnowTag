@@ -23,6 +23,12 @@
   <%# form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
     <%# text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
   <%# end -%>
+  <div class="toolbar sidebar_buttons">
+		<div class="group">
+			<h4>Tags</h4>
+			<%= rounded_button_function "Edit", "", :icon => "edit", :title => "Click to edit tags", :class => "first" %>
+		</div>
+	</div>
 
   <div class="toolbar item_buttons">
     <div class="group">
@@ -43,7 +49,3 @@
 <% content_for :sidebar do -%>
 	<%= render :partial => "sidebar" %>
 <% end %>
-
-<% content_for :footer do -%>	
-	<%= render :partial => "classification_controls" %>
-<% end -%>

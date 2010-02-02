@@ -51,12 +51,12 @@
   
   </div>
 
+    <div id="footer" class="clearfix">
 	  <% if footer_content = yield(:footer) -%>
-      <div id="footer" class="clearfix">
 				<%= footer_content %>
-				<%= t("winnow.general.footer") %>
-			</div>
     <% end -%>
+				<%= t("winnow.general.footer") %>
+		</div>
 
   <div id="messages" style="display:none">
     <a href="#" class="close">close</a>
