@@ -448,6 +448,42 @@ body#login .container .form .content #invite_use {
 }
 
 #sidebar_edit {
+  background-color: #F2F2F2;
+  border-bottom: 1px solid #DECBA3;
+}
+
+#sidebar_edit_content {
+  padding: 10px;
+}
+
+#sidebar .button {
+  float: left;
+}
+
+#sidebar .toolbar .group {
+  margin-top: 10px;
+  width: 100%;
+}
+
+#sidebar .toolbar .group label {
+  margin-left: 0px;
+}
+
+#sidebar .toolbar .group .buttongroup {
+  float: right;
+}
+
+#sidebar #classification_section {
+  margin-top: 10px;
+}
+
+#sidebar .classification_controls label {
+  padding: 0.45em 0;
+  float: left;
+}
+
+#sidebar .classification_controls .button {
+  float: right;
 }
 
 /*
@@ -565,14 +601,12 @@ input.placeholder {
   background-color: #F2F2F2;
 }
 
-#header_controls #text_filter_form {
-  float: left;
-  width: 25%;
-/*  padding: 0.35em 0;*/
+#text_filter_form {
+  width: 100%;
 }
 
-#header_controls #text_filter_form #text_filter {
-  width: 100%;
+#text_filter_form #text_filter {
+  width: 90%;
   padding: 0.15em 0.15em 0.15em 1.45em;
   background-image: url(../images/search_small.png);
   background-repeat: no-repeat;

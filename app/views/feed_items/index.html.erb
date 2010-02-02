@@ -21,9 +21,7 @@
 <% end -%>
 
 <% content_for :header_controls do -%>
-  <%# form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
-    <%# text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
-  <%# end -%>
+  
   <div class="toolbar sidebar_buttons">
 		<div class="group">
 			<h4>Tags</h4>
@@ -38,13 +36,7 @@
     </div>
   </div>
 
-  <!--div class="toolbar right">
-    <div class="group">
-      <label><%= t("winnow.items.header.show_label") %></label>        
-      <%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first", :title => t("winnow.items.header.show_all_tooltip") %>
-      <%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained", :title => t("winnow.items.header.show_trained_tooltip") %>
-    </div>
-  </div-->
+  
 <% end -%>
 
 <% content_for :sidebar do -%>

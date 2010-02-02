@@ -1,6 +1,21 @@
 <div id="sidebar_edit" style="display: none">
-	editing!!<br/>
-	editing
+	<div id="sidebar_edit_content">
+		<% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
+	    <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
+	  <% end -%>
+	
+		<div class="toolbar">
+			<div class="group">
+	      <label><%= t("winnow.items.header.show_label") %></label>       
+	 			<div class="buttongroup">
+	      	<%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first", :title => t("winnow.items.header.show_all_tooltip") %>
+	      	<%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained", :title => t("winnow.items.header.show_trained_tooltip") %>
+				</div>
+	    </div>
+		</div>
+	  <div class="clearfix"></div>
+		<%= render :partial => "classification_controls" %>
+	</div>
 </div>
 <div id="sidebar_normal">
 	<ul id ="tag_filters" class="filter_list clearfix tags">

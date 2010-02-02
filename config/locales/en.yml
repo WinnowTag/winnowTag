@@ -192,7 +192,7 @@ en:
         mark_all_read_tooltip: ""
         mark_all_unread: "Mark All Unread"
         mark_all_unread_tooltip: ""
-        start_classifier_button: "Auto-tag"
+        start_classifier_button: "Go"
         start_classifier_tooltip: ""
         stop_classifier_button: "Stop"
         stop_classifier_tooltip: ""
