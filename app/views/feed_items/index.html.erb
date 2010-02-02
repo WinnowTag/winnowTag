@@ -5,6 +5,7 @@
 		var itemBrowser;
 		Event.observe(window, 'load', function() {
 			try {
+				sidebar = new Sidebar();
 				itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
 				  modes: ["all", "trained"]
 				});
@@ -26,7 +27,7 @@
   <div class="toolbar sidebar_buttons">
 		<div class="group">
 			<h4>Tags</h4>
-			<%= rounded_button_function "Edit", "", :icon => "edit", :title => "Click to edit tags", :class => "first" %>
+			<%= rounded_button_function "Edit", "sidebar.toggleEdit();", :icon => "edit", :title => "Click to edit tags", :class => "first", :id => "sidebarEditToggle" %>
 		</div>
 	</div>
 

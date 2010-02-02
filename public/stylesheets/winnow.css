@@ -442,6 +442,13 @@ body#login .container .form .content #invite_use {
   background-color: white;
 }
 
+#sidebar_normal {
+  position: relative;
+  height: 100%;
+}
+
+#sidebar_edit {
+}
 
 /*
  * =filters

@@ -6,16 +6,34 @@
 
 // Manages the size and visible state of the sidebard on the items page.
 var Sidebar = Class.create({
-  initialize: function(url, parameters, onLoad) {
+  initialize: function() {
     this.sidebar = $('sidebar');
-    this.sidebar.addClassName("loading");
-
-    new Ajax.Updater(this.sidebar, url, { method: 'get', evalScripts: true, parameters: parameters,
-      onComplete: function() {
-        this.sidebar.removeClassName("loading");
-        onLoad();
-        document.fire('sidebar:loaded');
-      }.bind(this)
+    this.sidebar_normal = $('sidebar_normal');
+  },
+  
+  toggleEdit: function() {
+    this.toggleControl();
+    Effect.toggle("sidebar_edit", "blind", {
+      afterUpdate: function(effect) {
+        var height = $(effect.element).getHeight();
+        var sidebarHeight = this.sidebar.getHeight();
+        this.sidebar_normal.style.height = "" + (sidebarHeight - height) + "px";
+      }.bind(this),
+      duration: 0.3
+    });
+  },
+  
+  toggleControl: function() {
+    $$("#sidebarEditToggle span.icon").each(function(e) {
+      if (e.hasClassName("edit")) {
+        e.update("Done");
+        e.removeClassName("edit");
+        e.addClassName("done");
+      } else {
+        e.update("Edit");
+        e.removeClassName("done");
+        e.addClassName("edit");
+      }
     });
   }
 });
