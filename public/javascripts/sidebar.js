@@ -13,7 +13,7 @@ var Sidebar = Class.create({
   
   toggleEdit: function() {
     this.toggleControl();
-    this.cancelTrainingMode();
+    this.clearFields();
     Effect.toggle("sidebar_edit", "blind", {
       afterUpdate: function(effect) {
         var height = $(effect.element).getHeight();
@@ -38,8 +38,10 @@ var Sidebar = Class.create({
     });
   },
   
-  cancelTrainingMode: function() {
-    itemBrowser.addFilters({mode: "all"});
+  clearFields: function() {
+    itemBrowser.addFilters({mode: "all", text_filter: ""});
+    $("text_filter").clear();
+    $("text_filter").showPlaceholder();
   },
   
   isEditing: function() {

@@ -43,4 +43,14 @@ describe "Training mode" do
     page.wait_for :wait_for => :ajax
     page.location.should match(/mode=all/)
   end
+  
+  it "should reset the text filter when the edit panel is hidden" do 
+    page.click("sidebarEditToggle")
+    page.type "text_filter", "ruby"
+    page.fire_event("text_filter_form", "submit")
+    page.location.should match(/text_filter=ruby/)
+    page.wait_for :wait_for => :ajax
+    page.click("sidebarEditToggle")
+    page.location.should_not match(/text_filter/)
+  end
 end
