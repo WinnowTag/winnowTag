@@ -13,6 +13,7 @@ var Sidebar = Class.create({
   
   toggleEdit: function() {
     this.toggleControl();
+    this.cancelTrainingMode();
     Effect.toggle("sidebar_edit", "blind", {
       afterUpdate: function(effect) {
         var height = $(effect.element).getHeight();
@@ -35,5 +36,13 @@ var Sidebar = Class.create({
         e.addClassName("edit");
       }
     });
+  },
+  
+  cancelTrainingMode: function() {
+    itemBrowser.addFilters({mode: "all"});
+  },
+  
+  isEditing: function() {
+    return $("sidebar_edit").visible();
   }
 });
