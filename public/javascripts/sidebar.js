@@ -20,6 +20,11 @@ var Sidebar = Class.create({
         var sidebarHeight = this.sidebar.getHeight();
         this.sidebar_normal.style.height = "" + (sidebarHeight - height) + "px";
       }.bind(this),
+      afterFinish: function(e) {
+        if (!this.isEditing()) {
+          this.sidebar_normal.style.height = "100%";
+        }
+      }.bind(this),
       duration: 0.3
     });
   },
