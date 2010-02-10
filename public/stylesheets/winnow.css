@@ -495,7 +495,7 @@ ul#tag_filters {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: 5px;
+  left: 0;
   right: 0px;
   margin: 0px;
 }
