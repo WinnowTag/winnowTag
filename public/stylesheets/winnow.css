@@ -449,7 +449,7 @@ body#login .container .form .content #invite_use {
 
 #sidebar_edit {
   background-color: #F2F2F2;
-  border-bottom: 1px solid #DECBA3;
+  border-bottom: 2px solid #DECBA3;
 }
 
 #sidebar_edit_content {
@@ -601,12 +601,19 @@ input.placeholder {
   background-color: #F2F2F2;
 }
 
-#text_filter_form {
+#feed_items #text_filter_form {
   width: 100%;
 }
 
-#text_filter_form #text_filter {
+#text_filter_form {
+  float: left;
+}
+
+#feed_items #text_filter_form #text_filter {
   width: 90%;
+}
+
+#text_filter_form #text_filter {
   padding: 0.15em 0.15em 0.15em 1.45em;
   background-image: url(../images/search_small.png);
   background-repeat: no-repeat;

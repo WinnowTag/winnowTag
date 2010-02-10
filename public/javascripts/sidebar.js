@@ -30,15 +30,13 @@ var Sidebar = Class.create({
   },
   
   toggleControl: function() {
-    $$("#sidebarEditToggle span.icon").each(function(e) {
-      if (e.hasClassName("edit")) {
-        e.update("Done");
-        e.removeClassName("edit");
-        e.addClassName("done");
-      } else {
+    $$("#sidebarEditToggle").each(function(e) {
+      if (e.hasClassName("done")) {
         e.update("Edit");
         e.removeClassName("done");
-        e.addClassName("edit");
+      } else {
+        e.update("Done");
+        e.addClassName("done");
       }
     });
   },

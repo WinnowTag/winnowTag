@@ -1,4 +1,10 @@
 /* =button */
+
+#sidebarEditToggle {
+  width: 2.5em;
+  text-align: center;
+}
+
 .button {
   outline: none;
   display: block;
@@ -8,8 +14,8 @@
   background-position: left bottom;
   background-repeat: repeat-x;
   border: 2px solid #bbb;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
   color: #666;
   font-weight: bold;
   text-decoration: none;
@@ -17,8 +23,8 @@
 
 .button.small {
   padding: 0.2em 0.75em;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
   font-weight: bold;
   font-size: 0.9em;
   margin: 0;
@@ -103,18 +109,18 @@
 
 .toolbar .group .button:first-child, .toolbar .group .button.first {
   border-left-width: 2px;
-  -moz-border-radius-topleft: 1em;
-  -moz-border-radius-bottomleft: 1em;
-  -webkit-border-top-left-radius: 1em;
-  -webkit-border-bottom-left-radius: 1em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-bottomleft: 0.5em;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-bottom-left-radius: 0.5em;
 }
 
 .toolbar .group .button:last-child, .toolbar .group .button.last {
   border-right-width: 2px;
-  -moz-border-radius-topright: 1em;
-  -moz-border-radius-bottomright: 1em;
-  -webkit-border-top-right-radius: 1em;
-  -webkit-border-bottom-right-radius: 1em;
+  -moz-border-radius-topright: 0.5em;
+  -moz-border-radius-bottomright: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -webkit-border-bottom-right-radius: 0.5em;
 }
 
 .toolbar .right {
