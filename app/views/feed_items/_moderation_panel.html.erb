@@ -1,5 +1,3 @@
-<%= link_to_function t("winnow.items.main.close"), "", :class => "close", :title => t("winnow.items.main.close_tooltip") %>
-
 <div class="training_controls clearfix">
   <% current_user.tags.by(:name, :asc).each do |tag| -%>
     <% taggings = @feed_item.taggings.select { |t| t.user == current_user && t.tag == tag } %>

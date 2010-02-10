@@ -49,22 +49,6 @@ describe "FeedItemsTest" do
     assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
   end
 
-  it "open_close_moderation_panel " do
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
- 
-    page.click "css=#feed_item_#{@feed_item1.id} .train" 
-    assert_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
- 
-    page.click "css=#feed_item_#{@feed_item1.id} .train" 
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
-  end 
-  
-  it "open_close_moderation_panel_does_not_open_close_item" do
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
-    page.click "css=#feed_item_#{@feed_item1.id} .train" 
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
-  end
-  
   it "opening_item_marks_it_read" do
     dont_see_element "#feed_item_#{@feed_item1.id}.read"
 

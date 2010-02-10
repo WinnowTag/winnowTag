@@ -89,13 +89,7 @@
 .feed_item .moderation_panel {
   display: none;
   padding: 0.5em 0.75em;
-  border: 2px solid #DECBA3;
-  border-width: 2px 0 0 0;
   background-color: #F2F2F2;
-}
-
-.feed_item.open .moderation_panel {
-  border-width: 2px 0;
 }
 
 .feed_item .moderation_panel.selected {

@@ -15,7 +15,6 @@ var Item = Class.create({
     this.closed            = this.element.down(".closed");
     this.status            = this.element.down(".status");
     this.feed_title        = this.element.down("a.feed_title");
-    this.train             = this.element.down(".train");
     this.moderation_panel  = this.element.down(".moderation_panel");
     this.feed_information  = this.element.down(".feed_information");
     this.body              = this.element.down(".body");
@@ -48,7 +47,6 @@ var Item = Class.create({
     }
     
     if (this.feed_title) this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
-    if (this.train) this.train.observe("click", this.toggleTrainingControls.bind(this));
   },
   
   isRead: function() {
@@ -94,8 +92,12 @@ var Item = Class.create({
     
     if(this.isOpen()) {
       this.hideBody();
+      this.hideTrainingControls();
     } else {
       this.showBody();
+      if (sidebar && sidebar.isEditing()) {
+        this.showTrainingControls();
+      }
     }
   },
   
@@ -164,14 +166,11 @@ var Item = Class.create({
   
   showTrainingControls: function() {
     this.select();
-
-    this.train.addClassName("selected");
     this.moderation_panel.addClassName("selected");
     this.loadTrainingControls();
   },
   
   hideTrainingControls: function() {
-    if (this.train) this.train.removeClassName("selected");
     if (this.moderation_panel) this.moderation_panel.removeClassName("selected");
     if(this.add_tag_field) {
       this.add_tag_field.blur();
@@ -184,11 +183,8 @@ var Item = Class.create({
   
   initializeTrainingControls: function() {
     this.training_controls = this.moderation_panel.down(".training_controls");
-    this.close             = this.moderation_panel.down(".close");
     this.add_tag_form      = this.moderation_panel.down("form");
     this.add_tag_field     = this.add_tag_form.down("input[type=text]");
-
-    this.close.observe("click", this.toggleTrainingControls.bind(this));
 
     this.training_controls.select(".tag").each(function(tag) {
       this.initializeTrainingControl(tag);

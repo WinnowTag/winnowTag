@@ -9,19 +9,17 @@ describe "Training mode" do
   before(:each) do
      @user = Generate.user!
 
+     Generate.tag!(:user => @user, :name => "tag")
+     
      @feed_item1 = Generate.feed_item!
      @feed_item2 = Generate.feed_item!
      @feed_item3 = Generate.feed_item!
      @feed_item4 = Generate.feed_item!
 
-     Reading.create! :user_id => @user, :readable_type => "FeedItem", :readable => @feed_item2
-     Reading.create! :user_id => @user, :readable_type => "FeedItem", :readable => @feed_item3
-     Reading.create! :user_id => @user, :readable_type => "FeedItem", :readable => @feed_item4
-
      login @user
      page.open feed_items_path
      page.wait_for :wait_for => :ajax
-   end
+  end
    
   it "should be off by default" do
     page.get_eval("window.sidebar.isEditing()").should == "false"
@@ -52,5 +50,14 @@ describe "Training mode" do
     page.wait_for :wait_for => :ajax
     page.click("sidebarEditToggle")
     page.location.should_not match(/text_filter/)
+  end
+  
+  it "should open an items moderation panel when training mode is active" do
+    page.click("sidebarEditToggle")
+    page.wait_for :wait_for => :ajax
+    page.click "css=#feed_item_#{@feed_item1.id} .closed"
+    page.wait_for :wait_for => :ajax
+    assert_visible "css=#feed_item_#{@feed_item1.id} .body"
+    assert_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
   end
 end
