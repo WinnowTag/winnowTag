@@ -20,6 +20,10 @@
   <% end -%>
 <% end -%>
 
+<% content_for :context_menu do -%>
+	<%= render :partial => "tag_context_menu" %>
+<% end -%>
+
 <% content_for :header_controls do -%>
   
   <div class="toolbar sidebar_buttons">
@@ -36,7 +40,6 @@
     </div>
   </div>
 
-  
 <% end -%>
 
 <% content_for :sidebar do -%>

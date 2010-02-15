@@ -9,7 +9,7 @@ ActionView::Helpers::AssetTagHelper.register_javascript_expansion :demo => [
 ]
 
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :winnow => [
-  "defaults", "button", "tables", "slider", "scaffold", "record", "feed_item", "winnow"
+  "defaults", "button", "tables", "slider", "scaffold", "record", "feed_item", "winnow", "context_menu"
 ]
 
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :demo => [

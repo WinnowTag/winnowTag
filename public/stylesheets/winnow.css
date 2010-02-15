@@ -568,7 +568,11 @@ ul.filter_list li .remove {
   background-image: url(../images/destroy.png);
 }
 
-ul.filter_list li.selected {
+ul.filter_list li.selected, ul.filter_list li.tag.selected:hover {
+  background-color: #E1D2C7;
+}
+
+ul.filter_list li.tag:hover {
   background-color: #FEF3BB;
 }
 

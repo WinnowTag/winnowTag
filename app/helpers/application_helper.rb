@@ -129,13 +129,14 @@ module ApplicationHelper
     class_names << "public" if tag.user_id != current_user.id
 
     content_tag(:li, 
+                content_tag(:div, "", :class => "context_menu_button") +
                 content_tag(:span, 
                             content_tag(:span, 
                                         h(tag.name), 
                                         :class => "name", 
                                         :id => dom_id(tag, "name"), 
                                         :"data-sort" => tag.sort_name), 
-                            :class => "filter"), 
+                            :class => "filter"),
                 :id => dom_id(tag), 
                 :class => class_names.join(" "), 
                 :title => tag_tooltip(tag))

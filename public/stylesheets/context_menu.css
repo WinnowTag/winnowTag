@@ -1,0 +1,40 @@
+div.context_menu {
+  border: 0px none;
+  position: absolute;
+  top: 150px;
+  left: 200px;
+  height: 100px;
+  width: 150px;
+  z-index: 255;
+  background-color: white;
+  -moz-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+div.context_menu ul {
+  list-style: none;
+}
+
+div.context_menu_button {
+  border: 1px solid #aaa;
+  width: 12px;
+  height: 12px;
+  float: right;
+  margin-top: 2px;
+  margin-right: 2px;
+  -moz-border-radius: 4px;
+  background-image: url(../images/bullet_arrow_down.png);
+  background-position: -2px -2px;
+  background-color: white;
+  -moz-user-select: none;
+  cursor: pointer;
+  display: none;
+}
+
+li.tag:hover div.context_menu_button {
+  display: block;
+}
+
+div.context_menu_button:hover {
+  background-color: #D9C9C0;
+}

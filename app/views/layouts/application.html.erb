@@ -20,6 +20,10 @@
   <%= yield(:head) %>
 </head>
 <body id="<%= yield(:body) %>">
+	<% if context_menu = yield(:context_menu) %>
+		<%= context_menu %>
+	<% end -%>
+	
   <% if Rails.env.trunk? -%>
     <div class="environment"><%= Rails.env %></div>
   <% end -%>
