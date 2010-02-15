@@ -2,13 +2,12 @@ div.context_menu {
   border: 0px none;
   position: absolute;
   top: 150px;
-  left: 200px;
+  left: 222px;
   height: 100px;
   width: 150px;
   z-index: 255;
   background-color: white;
   -moz-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
-  display: none;
 }
 
 div.context_menu ul {
@@ -31,7 +30,7 @@ div.context_menu_button {
   display: none;
 }
 
-li.tag:hover div.context_menu_button {
+li.tag:hover div.context_menu_button, li.tag.menu-up div.context_menu_button {
   display: block;
 }
 

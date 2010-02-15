@@ -129,7 +129,7 @@ module ApplicationHelper
     class_names << "public" if tag.user_id != current_user.id
 
     content_tag(:li, 
-                content_tag(:div, "", :class => "context_menu_button") +
+                content_tag(:div, "", :class => "context_menu_button", :'tag-id' => tag.id) +
                 content_tag(:span, 
                             content_tag(:span, 
                                         h(tag.name), 

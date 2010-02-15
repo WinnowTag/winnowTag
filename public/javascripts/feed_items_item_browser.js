@@ -351,11 +351,23 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
   },
   
+  bindTagContextMenus: function() {
+    $$("li.tag div.context_menu_button").each(function(button) {
+      button.observe("click", this.showTagContextMenu.bindAsEventListener(this, button));
+    }.bind(this));
+  },
+  
+  showTagContextMenu: function(event, button) {
+    new TagContextMenu(button, button.getAttribute("tag-id"));
+    event.stop();
+  },
+  
   initializeFilters: function($super) {
     $super();
     this.bindTagFiltersEvents();
     this.bindClearFilterEvents();
     this.bindNextPreviousEvents();
     this.bindMarkAllReadEvents();
+    this.bindTagContextMenus();
   }
 });
