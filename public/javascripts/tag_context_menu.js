@@ -8,6 +8,12 @@ var activeMenu = null;
 
 var TagContextMenu = Class.create({
   initialize: function(button, tag_id) {
+    if (activeMenu && activeMenu.tag_id == tag_id) {
+      activeMenu.destroy();
+      activeMenu = null;
+      return;
+    } 
+    
     if (activeMenu) {
       activeMenu.destroy();
     }
@@ -17,14 +23,14 @@ var TagContextMenu = Class.create({
     this.menu = $("tag_context_menu");
     this.tag_id = this.button.getAttribute("tag-id");
     this.path = "/tags/" + this.tag_id;
-    
+
     if (this.isSubscribedPublicTag()) {
       this.menu.addClassName("public");
     }
-    
+
     this.tag_li = $("tag_" + tag_id);
     this.tag_li.addClassName("menu-up");
-    
+
     this.positionMenu();
     this.registerHandlers();
     this.menu.show();
@@ -48,6 +54,8 @@ var TagContextMenu = Class.create({
     } else {
       this.menu.style.top = topPosition + "px";
     }
+    
+    this.menu.style.left = this.button.cumulativeOffset()[0] + "px";
   },
   
   registerHandlers: function() {
@@ -101,7 +109,27 @@ var TagContextMenu = Class.create({
   },
   
   delete: function() {
-    
+    if (this.isSubscribedPublicTag()) {
+      if (confirm("Do you really want to unsubscribe from this tag?")) {
+        itemBrowser.removeFilters({tag_ids: this.tag_id});
+        itemBrowser.styleFilters();
+        new Ajax.Request('/tags/' + this.tag_id + '/unsubscribe', {
+              asynchronous:true, 
+              evalScripts:true, 
+              method:'put'
+            });
+      }
+    } else {
+      if (confirm(I18n.t("winnow.tags.main.destroy_confirm", {tag: this.getName()}))) {
+        itemBrowser.removeFilters({tag_ids: this.tag_id});
+        itemBrowser.styleFilters();
+        new Ajax.Request('/tags/' + this.tag_id, {
+              asynchronous:true, 
+              evalScripts:true, 
+              method:'delete'
+            });
+      }
+    }
   },
   
   destroy: function() {

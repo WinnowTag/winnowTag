@@ -3,7 +3,6 @@ div.context_menu {
   position: absolute;
   top: 150px;
   left: 222px;
-  height: 100px;
   width: 150px;
   z-index: 255;
   background-color: white;
