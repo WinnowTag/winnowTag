@@ -12,6 +12,30 @@ div.context_menu {
 
 div.context_menu ul {
   list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+div.context_menu ul li span.menu_label {
+  margin-left: 1.5em;
+}
+
+div.context_menu ul li {
+  padding: 2px 0px;
+  cursor: pointer;
+}
+
+div.context_menu ul li:hover {
+  background-color: #FEF3BB;
+}
+
+div.context_menu.public li.onlymine {
+  color: #ccc;
+  cursor: default;
+}
+
+div.context_menu.public li.onlymine:hover {
+  background-color: white;
 }
 
 div.context_menu_button {
