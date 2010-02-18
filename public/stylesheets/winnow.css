@@ -626,6 +626,16 @@ input.placeholder {
   -webkit-border-radius: 0.75em;
 }
 
+#search_clear {
+  background-image: url(../images/close.gif);
+  width: 11px;
+  height: 11px;
+  display: inline-block;
+  margin-left: -20px;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+
 #header_controls .order {
   float: right;
   margin: 0.25em 0 0.25em 1em;

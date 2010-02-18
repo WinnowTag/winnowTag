@@ -289,16 +289,31 @@ var ItemBrowser = Class.create({
   },
 
   bindTextFilterEvents: function() {
-    var text_filter_form = $("text_filter_form");
-    if(text_filter_form) {
-      text_filter_form.observe("submit", function() {
-        this.addFilters({text_filter: $F('text_filter')});
-      }.bind(this));
+     if ($("text_filter_form")) {
+       $("text_filter_form").observe("submit", function() {
+         var value = $F('text_filter');
+         if(value.length > 0 && value.length < 4) {
+           Message.add('error', I18n.t("winnow.notifications.feed_items_search_too_short"));
+         } else {
+           this.addFilters({text_filter: value});
+         }
+       }.bind(this));
+     }
+    
+    var search_clear = $('search_clear');
+    if (search_clear) {
+      search_clear.observe("click", this.clearTextFilter.bind(this));
     }
   },
   
+  clearTextFilter:  function() {
+    $('text_filter').showPlaceholder();
+    $('search_clear').hide();
+    this.addFilters({text_filter: null});
+  },
+  
   initializeFilters: function() {
-    this.bindModeFiltersEvents();
+    this.bindModeFiltersEvents(); 
     this.bindOrderFilterEvents();
     this.bindTextFilterEvents();
     

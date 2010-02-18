@@ -1,7 +1,10 @@
 <div id="sidebar_edit" style="display: none">
 	<div id="sidebar_edit_content">
 		<% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
-	    <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
+	    <%= text_field_tag "text_filter", params[:text_filter], 
+								:placeholder => t("winnow.items.header.feed_items_search_placeholder"), 
+								:title => t("winnow.items.header.feed_items_search_tooltip") %>
+			<span id="search_clear" style="display: none"></span>
 	  <% end -%>
 	
 		<div class="toolbar">

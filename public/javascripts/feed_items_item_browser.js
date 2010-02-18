@@ -313,19 +313,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       }
     }
   },
-
-  bindTextFilterEvents: function() {
-    if ($("text_filter_form")) {
-      $("text_filter_form").observe("submit", function() {
-        var value = $F('text_filter');
-        if(value.length > 0 && value.length < 4) {
-          Message.add('error', I18n.t("winnow.notifications.feed_items_search_too_short"));
-        } else {
-          this.addFilters({text_filter: value});
-        }
-      }.bind(this));
-    }
-  },
   
   bindClearFilterEvents: function() {
     var clear_selected_filters = $("clear_selected_filters");
