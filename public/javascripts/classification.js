@@ -23,6 +23,7 @@ var Classification = Class.create({
     this.status_url = status_url;
     this.has_changed_tags = has_changed_tags;
     
+    this.classification_controls = $('classification_controls');
     this.classification_button = $('classification_button');
     this.classification_progress = $('classification_progress');
     this.progress_bar = $('progress_bar');
@@ -32,7 +33,7 @@ var Classification = Class.create({
     
     this.options = {
       onStarted: function(c) {     
-        this.classification_button.hide();
+        this.classification_controls.hide();
 
         this.progress_bar.setStyle({width: '0%'});
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.start"));
@@ -51,7 +52,7 @@ var Classification = Class.create({
         this.classification_progress.hide();
         this.progress_bar.setStyle({width: '0%'});
         this.progress_title.update(I18n.t("winnow.javascript.classifier.progress_bar.cancel"));        
-        this.classification_button.show();
+        this.classification_controls.show();
       }.bind(this),
       
       onFinished: function() {

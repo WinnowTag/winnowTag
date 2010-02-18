@@ -477,12 +477,12 @@ body#login .container .form .content #invite_use {
   margin-top: 10px;
 }
 
-#sidebar .classification_controls label {
+#sidebar #classification_controls label {
   padding: 0.45em 0;
   float: left;
 }
 
-#sidebar .classification_controls .button {
+#sidebar #classification_controls .button {
   float: right;
 }
 
@@ -692,26 +692,14 @@ input.placeholder {
   margin-top: 5px;
 }
 
-#footer #classification_section {
-  float: right;
-}
-
-#footer #classification_section .classification_controls {
-  float: right;
-  margin-left: 0.5em;
-}
-
-#footer #classification_section .progress_bar_container {
+#classification_section .progress_bar_container {
   position: relative;
-  float: right;
-  margin: 1px 0 0 0;
-  width: 20em;
   height: 2em;
   border: 1px solid gray;
   overflow: hidden;
 }
 
-#footer #classification_section .progress_bar_container #progress_title {
+#classification_section .progress_bar_container #progress_title {
   position: absolute;
   width: 100%;
   line-height: 2;
@@ -720,10 +708,10 @@ input.placeholder {
   text-align: center;
 }
 
-#footer #classification_section .progress_bar_container .progress_bar {
+#classification_section .progress_bar_container .progress_bar {
   height: 2em;
   width: 0;
-  background-color: #558BCE;
+  background-color: #B59350;
 }
 
 
