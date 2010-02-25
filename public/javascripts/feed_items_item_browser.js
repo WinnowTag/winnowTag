@@ -233,7 +233,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       parameters = $H(parameters).merge({
         tag_ids: tag_ids.flatten().uniq().join(",")
       });
-    } else {
+    } else if (this.filters.tag_ids == null){
       parameters.tag_ids = "0"
     }
     $super(parameters);
