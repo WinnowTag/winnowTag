@@ -108,7 +108,7 @@ var TagContextMenu = Class.create({
     }
   },
   
-  delete: function() {
+  'delete': function() {
     if (this.isSubscribedPublicTag()) {
       if (confirm("Do you really want to unsubscribe from this tag?")) {
         itemBrowser.removeFilters({tag_ids: this.tag_id});
