@@ -170,6 +170,7 @@ var TagContextMenu = Class.create({
     this.menu.hide();
     this.tag_li.removeClassName("menu-up");
     this.menu.removeClassName("subscribed");
+    this.menu.removeClassName("public");
     
     Event.stopObserving(document, "click", this.destroyHandler);
     

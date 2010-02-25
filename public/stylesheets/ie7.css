@@ -7,3 +7,7 @@
 body#info #content {
   padding: 12px 12px 18px 12px;
 }
+
+div.context_menu {
+  border: 1px solid #888 !important;
+}
