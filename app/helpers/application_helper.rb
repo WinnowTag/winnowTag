@@ -126,7 +126,8 @@ module ApplicationHelper
   # See ApplicationHelper#tag_filter_controls.
   def tag_filter_control(tag, options = {})
     class_names = [dom_id(tag), "tag"]
-    class_names << "public" if tag.user_id != current_user.id
+    class_names << "subscribed" if tag.user_id != current_user.id
+    class_names << "public" if tag.public? && tag.user_id == current_user.id
 
     content_tag(:li, 
                 content_tag(:div, "", :class => "context_menu_button", :'tag-id' => tag.id) +

@@ -260,7 +260,7 @@ class FeedItem < ActiveRecord::Base
     tags = if filters[:tag_ids]
       Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]])
     elsif filters[:mode] =~ /trained/i # limit the search to tagged items
-      filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
+      filters[:user].subscribed_tags - filters[:user].excluded_tags
     else
       tags = []
     end

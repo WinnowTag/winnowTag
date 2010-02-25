@@ -25,6 +25,10 @@ var TagContextMenu = Class.create({
     this.path = "/tags/" + this.tag_id;
 
     if (this.isSubscribedPublicTag()) {
+      this.menu.addClassName("subscribed");
+    }
+    
+    if (this.isPublic()) {
       this.menu.addClassName("public");
     }
 
@@ -37,6 +41,10 @@ var TagContextMenu = Class.create({
   },
   
   isSubscribedPublicTag: function() {
+    return $$("li#tag_" + this.tag_id + ".tag.subscribed").length != 0;
+  },
+  
+  isPublic: function() {
     return $$("li#tag_" + this.tag_id + ".tag.public").length != 0;
   },
   
@@ -80,13 +88,13 @@ var TagContextMenu = Class.create({
     }
     
     if (this[action]) {
-      this[action]();
+      this[action](event);
     } else {
       alert(action + " not implemented!!");
     }
   },
   
-  rename: function() {
+  rename: function(event) {
     if (!this.isSubscribedPublicTag()) {
       var newName = prompt("Please enter a new name for the tag:", this.getName());
       if (newName && newName != this.getName()) {
@@ -105,6 +113,8 @@ var TagContextMenu = Class.create({
               }.bind(this)
             });
       }
+    } else {
+      Event.stop(event);
     }
   },
   
@@ -129,6 +139,30 @@ var TagContextMenu = Class.create({
               method:'delete'
             });
       }
+    }
+  },
+  
+  public: function(event) {
+    if (!this.isSubscribedPublicTag()) {
+      Event.stop(event);
+    
+      if (this.isPublic()) {
+        this.menu.removeClassName('public');
+      } else {
+        this.menu.addClassName('public');
+      }
+    
+      new Ajax.Request('/tags/' + this.tag_id + '/publicize', {
+        parameters: {'public': !this.isPublic()},
+        asynchronous:true,
+        evalScripts: true,
+        method: 'put',
+        onComplete: function() {
+          this.destroy();
+        }.bind(this)
+      });
+    } else {
+      Event.stop(event);
     }
   },
   

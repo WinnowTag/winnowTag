@@ -525,7 +525,7 @@ ul.filter_list li.tags {
 ul.filter_list li.tags ul.tags {
   margin: 0px;
 }
-ul.filter_list.tags li.public {
+ul.filter_list.tags li.subscribed {
   background-image: url(../images/public_small.png);
 }
 

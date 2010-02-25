@@ -14,6 +14,7 @@ div.context_menu {
   z-index: 255;
   background-color: white;
   -moz-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 div.context_menu ul {
@@ -35,12 +36,28 @@ div.context_menu ul li:hover {
   background-color: #FEF3BB;
 }
 
-div.context_menu.public li.onlymine {
+div.context_menu.subscribed li.onlymine {
   color: #ccc;
   cursor: default;
 }
 
-div.context_menu.public li.onlymine:hover {
+li span.tick {
+  margin-left: 5px;
+}
+
+span.menu_label.tickable {
+  margin-left: 1px !important;
+}
+
+div.context_menu.public span.tick {
+  visibility: visible;
+}
+
+div.context_menu span.tick {
+  visibility: hidden;
+}
+
+div.context_menu.subscribed li.onlymine:hover {
   background-color: white;
 }
 
