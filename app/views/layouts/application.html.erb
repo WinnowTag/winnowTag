@@ -3,7 +3,6 @@
 <head>
   <title>winnowTag</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
   <%= stylesheet_link_tag :winnow, :cache => true %>
   <!--[if IE 7]>
     <%= stylesheet_link_tag "ie7" %>
@@ -29,7 +28,7 @@
   <% end -%>
 
   <noscript>
-    <%= render :partial => "layouts/javascript_is_required" %>
+    <div><%= render :partial => "layouts/javascript_is_required" %></div>
   </noscript>
 
   <div id="title">

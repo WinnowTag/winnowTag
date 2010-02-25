@@ -22,7 +22,7 @@
 /*
  * =noscript
  */
-noscript {
+noscript div {
   position: absolute;
   top: 0;
   left: 0;
