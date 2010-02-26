@@ -15,7 +15,7 @@ module FeedsHelper
                         content_tag('span', '', :class => 'blank')
 
     feed_page_link = if params[:controller] == "feed_items"
-      link_to_function(h(feed.title), "itemBrowser.addFilters({feed_ids: '#{feed.id}', feed_title: '#{feed.title}'})")
+      link_to_function(h(feed.title), "itemBrowser.addFilters({feed_ids: '#{feed.id}', feed_title: '#{feed.title}'})", :class => 'feed_filter_link')
     else
       link_to(h(feed.title), feed_items_path(:anchor => "feed_ids=#{feed.id}"))
     end
