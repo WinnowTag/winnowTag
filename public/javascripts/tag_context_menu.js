@@ -108,7 +108,11 @@ var TagContextMenu = Class.create({
                   e.down('.name').update(data.name);
                   e.up().insertInOrder('.name', e, data.name);
                   new Effect.ScrollToInDiv($("tag_container"), e, 12);
-                  new Effect.Highlight(e, {queue: 'end', endcolor: "#FEF3BB"});
+                  new Effect.Highlight(e, {
+                        queue: 'end', 
+                        endcolor: "#FEF3BB",
+                        restorecolor: null
+                        });
                 });
               }.bind(this)
             });
