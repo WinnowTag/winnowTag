@@ -42,7 +42,23 @@ var Sidebar = Class.create({
   },
   
   clearFields: function() {
-    itemBrowser.addFilters({mode: "all", text_filter: ""});
+    var clearedFilters = {};
+    var needToClear = false;
+    
+    if (itemBrowser.filters.mode != "all") {
+      clearedFilters.mode = "all";
+      needToClear = true;
+    }
+    
+    if (itemBrowser.filters.text_filter) {
+      clearedFilters.text_filter = "";
+      needToClear = true;
+    }
+    
+    if (needToClear) {
+      itemBrowser.addFilters({mode: "all", text_filter: ""});      
+    }
+    
     $("text_filter").clear();
     $("text_filter").showPlaceholder();
   },
