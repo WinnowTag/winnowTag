@@ -32,7 +32,7 @@ var Sidebar = Class.create({
   toggleControl: function() {
     $$("#sidebarEditToggle").each(function(e) {
       if (e.hasClassName("done")) {
-        e.update("Edit");
+        e.update("Train");
         e.removeClassName("done");
       } else {
         e.update("Done");
