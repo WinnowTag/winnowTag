@@ -236,6 +236,24 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     } else if (this.filters.tag_ids == null){
       parameters.tag_ids = "0"
     }
+    
+    if (parameters.feed_ids) {
+      parameters.tag_ids = "0";
+      parameters.text_filter = "";
+      
+      var feedTitle = parameters.feed_title;
+      delete parameters.feed_title;
+      if (!feedTitle) feedTitle = "Unnamed Feed";
+      
+      if ($("selectedFeed")) {
+        $("selectedFeed").show();
+        $("filteredFeedTitle").update(feedTitle);
+      }
+    } else {
+      if ($("selectedFeed")) $("selectedFeed").hide();
+      parameters.feed_ids = null;
+    }
+    
     $super(parameters);
   },
 

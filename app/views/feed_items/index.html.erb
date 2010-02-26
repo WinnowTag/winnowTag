@@ -39,6 +39,11 @@
       <%#= rounded_button_function t("winnow.items.previous_item"), "", :icon => "previous", :title => t("winnow.items.previous_item_tooltip"), :id => "previous_unread" %>
       <%= rounded_button_function t("winnow.items.next_item"),     "", :title => t("winnow.items.next_item_tooltip"), :id => "next_unread"%>
     </div>
+		<div id="selectedFeed" style="display: none">
+			<div class="text"><%= image_tag "info.png", :size => "16x16" %> Viewing only items from '<span id="filteredFeedTitle">My Feed Title</span>'</div>
+			<%= rounded_button_function "Cancel", "itemBrowser.setFilters({feed_filter: null});", :class => 'first small'%>
+			<div class="clearfix"></div>
+		</div>
   </div>
 
 <% end -%>

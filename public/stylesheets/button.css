@@ -81,7 +81,6 @@
 
 .toolbar .group {
   float: left;
-  margin-right: 0.5em;
 }
 
 .toolbar .button:last-child, .toolbar .group:last-child, .toolbar .button.last, .toolbar .group.last {
@@ -142,3 +141,31 @@
   float: right;
 }
 
+/* Selected feed */
+#selectedFeed {
+  border: 2px solid #DECBA3;
+  padding: 0px 0px 0px 3px;
+  background-color: #E1D2C7;
+  margin-left: 100px;
+}
+
+#selectedFeed div.text {
+  float: left;
+  margin-top: 3px;
+  font-weight: bold;
+}
+
+#selectedFeed div.clearfix {
+  height: 0px;
+  clear: right;
+  margin: 0px;
+}
+
+#selectedFeed div img {
+  vertical-align: top;
+  margin-right: 5px;
+}
+
+#selectedFeed a.button {
+  float: right;
+}
