@@ -136,11 +136,11 @@ module ApplicationHelper
                                         h(tag.name), 
                                         :class => "name", 
                                         :id => dom_id(tag, "name"), 
-                                        :"data-sort" => tag.sort_name), 
+                                        :"data-sort" => tag.sort_name, 
+                                        :title => tag_tooltip(tag)), 
                             :class => "filter"),
                 :id => dom_id(tag), 
-                :class => class_names.join(" "), 
-                :title => tag_tooltip(tag))
+                :class => class_names.join(" "))
     
   end
   
