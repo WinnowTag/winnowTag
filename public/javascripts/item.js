@@ -165,9 +165,11 @@ var Item = Class.create({
   },
   
   showTrainingControls: function() {
-    this.select();
-    this.moderation_panel.addClassName("selected");
-    this.loadTrainingControls();
+    if (!this.moderation_panel.hasClassName("selected")) {
+      this.select();
+      this.moderation_panel.addClassName("selected");
+      this.loadTrainingControls();
+    }
   },
   
   hideTrainingControls: function() {
