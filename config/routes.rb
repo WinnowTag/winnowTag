@@ -100,5 +100,5 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :demo, :only => [:index]
   map.connect 'public/ie6', :controller => "public", :action => "ie6"
-  map.root :info
+  map.root :controller => "demo"
 end

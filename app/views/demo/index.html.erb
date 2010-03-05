@@ -10,7 +10,14 @@
 <div class="column_headers">
 	<div id="siidebar_header"><%= t("winnow.demo.column_headings.sidebar") %></div>
 	<div id="item_header"><%= t("winnow.demo.column_headings.items") %></div>
-	<div id="feedback"><%= mail_to CONTACT_EMAIL, t("winnow.demo.column_headings.feedback"), :encode => :javascript %></div>
+	<div id="feedback">
+		<% if session[:user] %>
+			<%= link_to "main site", feed_items_path %>
+		<% else %>
+			<%= link_to "log in or signup", login_path %> 
+		<% end %> |
+		<%= mail_to CONTACT_EMAIL, t("winnow.demo.column_headings.feedback"), :encode => :javascript %>
+	</div>
 </div>
 
 <div id="container">

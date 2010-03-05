@@ -8,6 +8,25 @@ Given(/^I am logged in$/) do
   post login_path, :login => @current_user.login, :password => "password"
 end
 
+Given "There is a demo user" do
+  Generate.user!(:login => "pw_demo")
+end
+
+When "I log in" do
+  @current_user = Generate.user!
+  request_page(login_path, :post, :login => @current_user.login, :password => "password")
+end
+
+When "I log out" do
+  get logout_path
+  puts response.location
+end
+
+When "I log in with the wrong password" do
+  @current_user = Generate.user!
+  request_page(login_path, :post, :login => @current_user.login, :password => "wrongpassword")
+end
+
 When "I visit $path" do |path|
   visit path
 end

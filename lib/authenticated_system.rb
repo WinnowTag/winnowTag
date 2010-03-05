@@ -65,7 +65,7 @@ module AuthenticatedSystem
       respond_to do |accepts|
         accepts.html do
           store_location
-          redirect_to login_path
+          redirect_to root_path
         end
         accepts.xml do
           headers["Status"]           = "Unauthorized"
@@ -79,7 +79,7 @@ module AuthenticatedSystem
         end
         accepts.js do
           render :update do |page|
-            page.redirect_to login_path
+            page.redirect_to root_path
           end
         end
       end

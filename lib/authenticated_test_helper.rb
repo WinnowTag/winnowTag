@@ -28,7 +28,7 @@ module AuthenticatedTestHelper #:nodoc:
   #   assert_requires_login(:bob) { |c| c.get :edit, :id => 1 }
   #
   def assert_requires_login(login = nil)
-    yield HttpLoginProxy.new(self, login, login_path)
+    yield HttpLoginProxy.new(self, login, root_path)
   end
 
   def reset!(*instance_vars)
