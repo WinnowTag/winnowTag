@@ -36,7 +36,7 @@ var Sidebar = Class.create({
         e.update("Train");
         e.removeClassName("done");
       } else {
-        e.update("Done");
+        e.update("Close");
         e.addClassName("done");
       }
     });
