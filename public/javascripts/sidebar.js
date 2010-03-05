@@ -24,6 +24,7 @@ var Sidebar = Class.create({
         if (!this.isEditing()) {
           this.sidebar_normal.style.height = "100%";
         }
+        this.toggleOpenItemTraining();
       }.bind(this),
       duration: 0.3
     });
@@ -65,5 +66,16 @@ var Sidebar = Class.create({
   
   isEditing: function() {
     return $("sidebar_edit").visible();
+  },
+  
+  toggleOpenItemTraining: function() {
+    var selectedItem = itemBrowser.selectedItem();
+    if (selectedItem && selectedItem._item.isOpen()) {
+      if (this.isEditing()) {
+        selectedItem._item.showTrainingControls();
+      } else {
+        selectedItem._item.hideTrainingControls();
+      }
+    }
   }
 });
