@@ -9,11 +9,23 @@ var Sidebar = Class.create({
   initialize: function() {
     this.sidebar = $('sidebar');
     this.sidebar_normal = $('sidebar_normal');
+    
+    if (Cookie.get("training_mode") == "on") {
+      this.togglePanel();
+      this.toggleControl();
+    }
   },
   
   toggleEdit: function() {
     this.toggleControl();
     this.clearFields();
+    this.togglePanel(function() {
+      this.toggleOpenItemTraining();
+      this.toggleCookies();
+    }.bind(this));
+  },
+  
+  togglePanel: function(afterFinish) {
     Effect.toggle("sidebar_edit", "blind", {
       afterUpdate: function(effect) {
         var height = $(effect.element).getHeight();
@@ -24,10 +36,17 @@ var Sidebar = Class.create({
         if (!this.isEditing()) {
           this.sidebar_normal.style.height = "100%";
         }
-        this.toggleOpenItemTraining();
+        
+        if (afterFinish) {
+          afterFinish();
+        }
       }.bind(this),
       duration: 0.3
     });
+  },
+  
+  toggleCookies: function() {
+    Cookie.set("training_mode", this.isEditing() ? "on" : "off");
   },
   
   toggleControl: function() {
