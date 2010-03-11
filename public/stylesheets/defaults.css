@@ -54,3 +54,8 @@ hr.space {background:#fff;color:#fff;}
 label {font-weight:bold;}
 fieldset {padding:1.4em;margin:0 0 1.5em 0;border:1px solid #ccc;}
 legend {font-weight:bold;font-size:1.2em;}
+
+#add_feed div.fieldWithErrors {
+  display: inline-block;
+  margin-bottom: 20px;
+}
