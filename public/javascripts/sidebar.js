@@ -17,7 +17,6 @@ var Sidebar = Class.create({
   },
   
   toggleEdit: function() {
-    this.toggleControl();
     this.clearFields();
     this.togglePanel(function() {
       this.toggleOpenItemTraining();
@@ -33,6 +32,7 @@ var Sidebar = Class.create({
         this.sidebar_normal.style.height = "" + (sidebarHeight - height) + "px";
       }.bind(this),
       afterFinish: function(e) {
+        this.toggleControl();
         if (!this.isEditing()) {
           this.sidebar_normal.style.height = "100%";
         }
@@ -41,7 +41,12 @@ var Sidebar = Class.create({
           afterFinish();
         }
       }.bind(this),
-      duration: 0.3
+      duration: 0.3,
+      queue: {
+        position: 'end',
+        scope: 'sidebarToggle',
+        limit: 1
+      }
     });
   },
   
