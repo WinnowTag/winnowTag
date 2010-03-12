@@ -10,6 +10,8 @@
 //   * navigation using keyboard shortcuts
 //   * filtering by tag or feed
 
+var SEE_ALL_TAGS_ID = "0";
+
 var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   initialize: function($super, name, container, options) {
     $super(name, container, options);
@@ -227,18 +229,12 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   addFilters: function($super, parameters) {
-    if(parameters.tag_ids) {
-      var tag_ids = this.filters.tag_ids == null ? [] : this.filters.tag_ids.split(",");
-      tag_ids.push(parameters.tag_ids.split(","));
-      parameters = $H(parameters).merge({
-        tag_ids: tag_ids.flatten().uniq().join(",")
-      });
-    } else if (this.filters.tag_ids == null){
-      parameters.tag_ids = "0"
+    if (!parameters.tag_ids && this.filters.tag_ids == null){
+      parameters.tag_ids = SEE_ALL_TAGS_ID;
     }
     
     if (parameters.feed_ids) {
-      parameters.tag_ids = "0";
+      parameters.tag_ids = SEE_ALL_TAGS_ID;
       parameters.text_filter = "";
       
       var feedTitle = parameters.feed_title;
@@ -252,6 +248,11 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     } else {
       if ($("selectedFeed")) $("selectedFeed").hide();
       parameters.feed_ids = null;
+    }
+    
+    /* Reset the mode to "all" if we are switching to 'See all tags' */
+    if (parameters.tag_ids == SEE_ALL_TAGS_ID) {
+      parameters.mode = "all";
     }
     
     $super(parameters);
@@ -293,6 +294,12 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       } else {
         clear_selected_filters.addClassName("disabled");
       }
+    }
+    
+    if (this.filters.tag_ids == SEE_ALL_TAGS_ID) {
+      $("mode_trained").addClassName("disabled");
+    } else {
+      $("mode_trained").removeClassName("disabled");
     }
     
     this.showDemoTagInfo();

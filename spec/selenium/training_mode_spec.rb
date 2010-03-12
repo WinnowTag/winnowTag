@@ -9,7 +9,7 @@ describe "Training mode" do
   before(:each) do
      @user = Generate.user!
 
-     Generate.tag!(:user => @user, :name => "tag")
+     @tag = Generate.tag!(:user => @user, :name => "tag")
      
      @feed_item1 = Generate.feed_item!
      @feed_item2 = Generate.feed_item!
@@ -34,6 +34,8 @@ describe "Training mode" do
   
   it "should reset the mode when the edit panel is hidden" do
     page.click("sidebarEditToggle")
+    page.click("name_tag_#{@tag.id}")
+    page.wait_for :wait_for => :ajax
     page.click("mode_trained")
     page.wait_for :wait_for => :ajax
     page.location.should match(/mode=trained/)
@@ -59,5 +61,37 @@ describe "Training mode" do
     page.wait_for :wait_for => :ajax
     assert_visible "css=#feed_item_#{@feed_item1.id} .body"
     assert_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
+  end
+  
+  it "should disable 'show trained' if 'see all items' is selected" do 
+    page.click("sidebarEditToggle")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#name_tag_0")
+    assert_visible "css=#mode_trained.disabled"
+    
+    page.click("css=#mode_trained")
+    page.element?("css=#mode_trained.selected").should be_false
+  end
+  
+  it "should unset 'show trained' if 'see all items' is selected" do
+    page.click("sidebarEditToggle")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#name_tag_#{@tag.id}")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#mode_trained")
+    page.click("css=#name_tag_0")
+    page.wait_for :wait_for => :ajax
+    assert_visible("css=#mode_all.selected")
+    page.element?("css=#mode_trained.selected").should be_false
+  end
+  
+  it "should enable 'show trained' if a tag is selected" do
+    page.click("sidebarEditToggle")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#name_tag_0")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#name_tag_#{@tag.id}")
+    page.wait_for :wait_for => :ajax
+    page.element?("css=#mode_trained.disabled").should be_false
   end
 end
