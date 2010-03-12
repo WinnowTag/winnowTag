@@ -21,6 +21,10 @@
   text-decoration: none;
 }
 
+a.button {
+  text-decoration: none;
+}
+
 .button.small {
   padding: 0.2em 0.75em;
   -moz-border-radius: 0.5em;
@@ -32,8 +36,8 @@
   border: 1px solid #bbb;  
 }
 
-.button.disabled {
-  color: #ccc;
+a.button.disabled {
+  color: #bbb;
   cursor: default;  
 }
 
@@ -48,12 +52,8 @@
   color: #666;
 }
 
-.button:hover {
-  text-decoration: none;
-}
-
-.button.disabled:hover {
-  text-decoration: none;
+a.button:hover {
+  text-decoration: none !important;
 }
 
 .button.disabled:active {

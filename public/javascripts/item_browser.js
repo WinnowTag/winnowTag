@@ -273,7 +273,11 @@ var ItemBrowser = Class.create({
     this.modes().each(function(mode) {
       var mode_control = $("mode_" + mode);
       if(mode_control) {
-        mode_control.observe("click", this.addFilters.bind(this, {mode: mode}));
+        mode_control.observe("click", function() {
+          if (!mode_control.hasClassName("disabled") && mode != this.filters.mode) {
+            this.addFilters({mode: mode});
+          }
+        }.bind(this));
       }
     }.bind(this));
   },
