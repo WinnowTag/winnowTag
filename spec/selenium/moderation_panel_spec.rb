@@ -37,7 +37,6 @@ describe "moderation panel" do
   end
   
   it "can change an unattached tagging to a positive tagging" do
-    
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
     page.click "css=##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)} .name"
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
@@ -71,88 +70,5 @@ describe "moderation panel" do
     page.confirmation.should include(@negative_tag.name)
     dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.negative"
     see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}"
-  end
-
-  it "can change an unattached tagging to a positive tagging through the text field" do
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @unused_tag.name
-    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
-    page.wait_for :wait_for => :ajax
-    see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@unused_tag)}.positive"
-  end
-  
-  it "can change a classifer tagging to a positive tagging through the text field" do
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @classifier_tag.name
-    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
-    page.wait_for :wait_for => :ajax
-    see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
-  end
-  
-  it "can change a negative tagging to a positive tagging through the text field" do
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.positive"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", @negative_tag.name
-    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
-    page.wait_for :wait_for => :ajax
-    see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@negative_tag)}.positive"
-  end
-  
-  it "can create a new tag and add a positive tagging through the text field" do
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag .name:contains(new tag)"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "new tag"
-    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
-    page.wait_for :wait_for => :ajax
-    see_element "##{dom_id(@feed_item)} .moderation_panel .tag .name:contains(new tag)"
-  end
-
-  it "disables unmatched tags when typing" do
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(positive tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(negative tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(^classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(unused tag)"
-    
-    # Need to use type and type_keys here.  In IE
-    # type_keys just fires the keyPress events, it
-    # doesn't set the element value, which is needed
-    # by the Autocomplete handler.
-    #
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos" if ie?
-    page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disbaled .name:contains(positive tag)"
-         see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(negative tag)"
-         see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(^classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(positive and classifier tag)"
-         see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(negative and classifier tag)"
-         see_element "##{dom_id(@feed_item)} .moderation_panel .tag.disabled .name:contains(unused tag)"
-  end
-  
-  it "selects the first matched tag when typing" do
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(^classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(unused tag)"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos" if ie?
-    page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "pos"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(^classifier tag)"
-         see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(positive and classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(negative and classifier tag)"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .tag.selected .name:contains(unused tag)"
-  end
-  
-  it "uses the selected tag when submitting the form" do
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"
-    dont_see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.selected"
-    page.type "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas" if ie?
-    page.type_keys "css=##{dom_id(@feed_item)} .moderation_panel input[type=text]", "clas"
-    see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.selected"
-    page.click "css=##{dom_id(@feed_item)} .moderation_panel input[type=submit]"
-    page.wait_for :wait_for => :ajax
-    see_element "##{dom_id(@feed_item)} .moderation_panel .#{dom_id(@classifier_tag)}.positive"    
   end
 end

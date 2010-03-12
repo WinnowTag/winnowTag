@@ -7,8 +7,3 @@
     </div>
   <% end -%>
 </div>
-
-<% form_tag "", :onsubmit => "return false;" do -%>
-  <%= text_field_tag 'tag', nil, :title => t("winnow.items.main.tag_input_tooltip") %>
-  <%= submit_tag t("winnow.items.main.add_tag"), :title => t("winnow.items.main.add_tag_tooltip") %>
-<% end -%>

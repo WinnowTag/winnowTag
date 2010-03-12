@@ -12,7 +12,6 @@ var Sidebar = Class.create({
     
     if (Cookie.get("training_mode") == "on") {
       this.togglePanel();
-      this.toggleControl();
     }
   },
   

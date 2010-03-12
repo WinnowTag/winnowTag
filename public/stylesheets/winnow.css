@@ -449,11 +449,11 @@ body#login .container .form .content #invite_use {
 
 #sidebar_edit {
   background-color: #F2F2F2;
-  border-bottom: 2px solid #DECBA3;
+  border-bottom: 2px solid #ccc;
 }
 
 #sidebar_edit_content {
-  padding: 10px;
+  padding: 10px 10px 0px 10px;
 }
 
 #sidebar .button {
@@ -461,31 +461,36 @@ body#login .container .form .content #invite_use {
 }
 
 #sidebar .toolbar .group {
-  margin-top: 10px;
-  width: 100%;
-}
-
-#sidebar .toolbar .group label {
-  margin-left: 0px;
+  float: none;
 }
 
 #sidebar .toolbar .group .buttongroup {
-  float: right;
+  width: 139px;
+  margin-left: auto;
+  margin-right: auto;
+  
 }
 
-#sidebar #classification_section {
-  margin-top: 10px;
+#sidebar #classification_controls {
+  margin-left: auto;
+  margin-right: auto;
+  width: 135px;
 }
 
-#sidebar #classification_controls label {
-  padding: 0.45em 0;
-  float: left;
+
+#sidebar_edit fieldset {
+  margin: 0 0 0 0;
+  padding: 10px 0px 15px 0px;
 }
 
-#sidebar #classification_controls .button {
-  float: right;
+#sidebar_edit fieldset:last {
+  margin: 0 0 0 0;
+  padding: 10px 0px 5px 0px;
 }
 
+#sidebar_edit fieldset legend {
+  font-size: 13px;
+}
 
 /*
  * =filters
@@ -606,12 +611,18 @@ input.placeholder {
   background-color: #F2F2F2;
 }
 
-#feed_items #text_filter_form {
+#feed_items #text_filter_form, #new_tag_form {
   width: 100%;
 }
 
 #text_filter_form {
   float: left;
+}
+
+#new_tag_form #name {
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 0.75em;
+  width: 168px;
 }
 
 #feed_items #text_filter_form #text_filter {

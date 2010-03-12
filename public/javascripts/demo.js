@@ -57,7 +57,6 @@ Demo.setup = function() {
 
 Ajax.Responders.register({
   onException: function(r, e) {
-    console.log(e)
     throw e;
   }
 });

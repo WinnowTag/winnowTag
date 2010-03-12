@@ -185,69 +185,14 @@ var Item = Class.create({
   
   initializeTrainingControls: function() {
     this.training_controls = this.moderation_panel.down(".training_controls");
-    this.add_tag_form      = this.moderation_panel.down("form");
-    this.add_tag_field     = this.add_tag_form.down("input[type=text]");
 
     this.training_controls.select(".tag").each(function(tag) {
       this.initializeTrainingControl(tag);
     }.bind(this));
     
-    new Form.Element.EventObserver(this.add_tag_field, this.addTagFieldChanged.bind(this), 'keyup');
-
-    this.add_tag_form.observe("submit", function() {
-      this.addTagging(this.add_tag_selected || this.add_tag_field.value, "positive");
-      this.add_tag_field.clear();
-      this.addTagFieldChanged(this.add_tag_field, "");
-    }.bind(this));
-    
-    // hide the moderation panel if the user presses the ESC key
-    this.add_tag_field.observe("keydown", function(event) {
-      if(event.keyCode == Event.KEY_ESC) { this.hideTrainingControls(); }
-    }.bind(this));
-    
-    this.add_tag_field.focus();
-    
     (function() {
       this.scrollTo();
     }).bind(this).delay(0.3);
-  },
-  
-  // Called when the user changes the contents of the text field for adding
-  // a new tag. This text field is shown in the moderation panel.
-  addTagFieldChanged: function(field, value, event) {
-    this.add_tag_selected = null;
-    this.training_controls.select(".tag").each(function(tag) {
-      tag.removeClassName("selected");
-      tag.removeClassName("disabled");
-      
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      
-      if(value.blank()) {
-        // Don't do anything
-      } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
-        tag.addClassName("disabled")
-      } else if(!this.add_tag_selected) {
-        this.add_tag_selected = tag_name;
-        tag.addClassName("selected");
-        
-        // http://www.webreference.com/programming/javascript/ncz/3.html
-        // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
-        //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
-        //   console.log("nope");
-        //   // Don't do anything
-        // } else {
-        //   field.value = tag_name;
-        //   if(field.createTextRange) {
-        //     var textSelection = field.createTextRange();
-        //     textSelection.moveStart("character", 0);
-        //     textSelection.moveEnd("character", value.length - field.value.length);
-        //     textSelection.select();
-        //   } else if (field.setSelectionRange) {
-        //     field.setSelectionRange(value.length, field.value.length);
-        //   }
-        // }
-      }
-    }.bind(this));
   },
   
   initializeTrainingControl: function(tag) {
@@ -398,7 +343,7 @@ var Item = Class.create({
   },
 
   addTrainingControl: function(tag_name, sort_name) {
-    var training_control = '<div class="tag positive" style="display:none">' + 
+    var training_control = '<div class="tag" style="display:none">' + 
       '<a href="#" onclick="return false;" class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</a>' + 
     '</div> ';
     this.training_controls.insertInOrder(".name@data-sort", training_control, sort_name);
@@ -450,5 +395,11 @@ var TagQueue = Class.create({
     } else {
       this.isProcessing = false;
     }
+  }
+});
+
+Ajax.Responders.register({
+  onException: function(r, e) {
+    throw e;
   }
 });

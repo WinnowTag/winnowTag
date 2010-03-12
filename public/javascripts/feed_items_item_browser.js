@@ -297,9 +297,9 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
     
     if (this.filters.tag_ids == SEE_ALL_TAGS_ID) {
-      $("mode_trained").addClassName("disabled");
+      if ($("mode_trained")) $("mode_trained").addClassName("disabled");
     } else {
-      $("mode_trained").removeClassName("disabled");
+      if ($("mode_trained")) $("mode_trained").removeClassName("disabled");
     }
     
     this.showDemoTagInfo();
@@ -367,6 +367,12 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   bindTagContextMenus: function() {
     $$("li.tag div.context_menu_button").each(function(button) {
+      button.observe("click", this.showTagContextMenu.bindAsEventListener(this, button));
+    }.bind(this));
+  },
+  
+  bindTagContextMenu: function(tag) {
+    $$("#" + tag + " div.context_menu_button").each(function(button) {
       button.observe("click", this.showTagContextMenu.bindAsEventListener(this, button));
     }.bind(this));
   },

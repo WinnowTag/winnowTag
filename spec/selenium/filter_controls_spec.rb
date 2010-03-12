@@ -80,10 +80,10 @@ describe "tag filter" do
   
   it "resets feed/tag filters only" do
     page.open login_path
-    page.open feed_items_path(:anchor => "mode=trained&text_filter=ruby&feed_ids=1&tag_ids=#{@tag.id}")
+    page.open feed_items_path(:anchor => "mode=trained&text_filter=ruby&tag_ids=#{@tag.id}")
     page.wait_for :wait_for => :ajax
 
-    page.location.should =~ /\#mode=trained&tag_ids=#{@tag.id}&feed_ids=1&text_filter=ruby$/
+    page.location.should =~ /\#mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
 
     page.click "css=#name_tag_#{@tag.id}"
     
