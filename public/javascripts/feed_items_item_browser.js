@@ -250,11 +250,6 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       parameters.feed_ids = null;
     }
     
-    /* Reset the mode to "all" if we are switching to 'See all tags' */
-    if (parameters.tag_ids == SEE_ALL_TAGS_ID) {
-      parameters.mode = "all";
-    }
-    
     $super(parameters);
   },
 
@@ -314,7 +309,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   bindTagFilterEvents: function(tag) {
     var tag_id = tag.getAttribute('id').match(/\d+/).first();
     var link = tag.down(".name");
-    var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id});
+    var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id, mode: 'all'});
     
     if (link) {
       link.observe("click", click_event);    

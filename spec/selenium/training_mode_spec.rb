@@ -10,6 +10,7 @@ describe "Training mode" do
      @user = Generate.user!
 
      @tag = Generate.tag!(:user => @user, :name => "tag")
+     @tag2 = Generate.tag!(:user => @user, :name => "tag2")
      
      @feed_item1 = Generate.feed_item!
      @feed_item2 = Generate.feed_item!
@@ -80,6 +81,19 @@ describe "Training mode" do
     page.wait_for :wait_for => :ajax
     page.click("css=#mode_trained")
     page.click("css=#name_tag_0")
+    page.wait_for :wait_for => :ajax
+    assert_visible("css=#mode_all.selected")
+    page.element?("css=#mode_trained.selected").should be_false
+  end
+  
+  it "should unset 'show trained' if any tag is selected" do
+    page.click("sidebarEditToggle")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#name_tag_#{@tag2.id}")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#mode_trained")
+    page.wait_for :wait_for => :ajax
+    page.click("css=#name_tag_#{@tag.id}")
     page.wait_for :wait_for => :ajax
     assert_visible("css=#mode_all.selected")
     page.element?("css=#mode_trained.selected").should be_false
