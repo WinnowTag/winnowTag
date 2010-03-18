@@ -82,5 +82,5 @@ li.tag:hover div.context_menu_button, li.tag.menu-up div.context_menu_button {
 }
 
 div.context_menu_button:hover {
-  background-color: #D9C9C0;
+  background-color: white;
 }
