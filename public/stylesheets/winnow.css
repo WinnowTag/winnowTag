@@ -513,15 +513,13 @@ ul.filter_list li {
   padding: 0.25em 0 0.25em 1.5em;
   border: 1px solid transparent;
   background-repeat: no-repeat;
-  background-position: 0.5em 0.5em;
-  font-weight: bold;
-  
+  background-position: 0.5em 0.5em;  
 }
 
 ul.filter_list li.tags {
   overflow-y: auto;
   position: absolute;
-  top: 31px;
+  top: 25px;
   left: 0px;
   right: 0px;
   bottom: 0px;
@@ -541,8 +539,8 @@ ul.filter_list li .actions {
   margin-left: 0.25em;
 }
 
-ul.filter_list li .name {
-  cursor: pointer;
+ul.filter_list li {
+  cursor: pointer !important;
   color: black;
 }
 
@@ -553,7 +551,7 @@ ul.filter_list li .name:hover {
 
 ul.filter_list li.all_tags {
   border-bottom: 1px solid #DECBA3;
-  padding: 5px 0 5px 2px;
+  padding: 3px 0 3px 1.5em;
 }
 
 ul.filter_list li .edit, ul.filter_list li .remove {
@@ -574,10 +572,7 @@ ul.filter_list li .remove {
   background-image: url(../images/destroy.png);
 }
 
-ul.filter_list li.selected, ul.filter_list li.tag.selected:hover {
-  background-color: #E1D2C7;
-}
-
+ul.filter_list li.selected, ul.filter_list li.tag.selected:hover,
 ul.filter_list li.tag:hover, ul.filter_list li.tag.menu-up {
   background-color: #FEF3BB;
 }

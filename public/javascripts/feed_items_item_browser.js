@@ -308,14 +308,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
 
   bindTagFilterEvents: function(tag) {
     var tag_id = tag.getAttribute('id').match(/\d+/).first();
-    var link = tag.down(".name");
     var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id, mode: 'all'});
-    
-    if (link) {
-      link.observe("click", click_event);    
-    } else {
-      tag.observe("click", click_event);
-    }
+    tag.observe("click", click_event);
   },
   
   showDemoTagInfo: function() {

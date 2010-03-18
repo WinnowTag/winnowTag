@@ -87,7 +87,7 @@ describe "tag filter" do
 
     page.click "css=#name_tag_#{@tag.id}"
     
-    page.location.should =~ /\#mode=trained&tag_ids=#{@tag.id}&text_filter=ruby$/
+    page.location.should =~ /\#mode=all&tag_ids=#{@tag.id}&text_filter=ruby$/
   end
   
   it "turns off a tag filter" do

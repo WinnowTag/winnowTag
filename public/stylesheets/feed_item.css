@@ -12,7 +12,7 @@
 }
 
 .feed_item.selected {
-  border: 2px solid #DECBA3;
+  border: 3px solid #FEF3BB;
 }
 
 .feed_item .closed {
