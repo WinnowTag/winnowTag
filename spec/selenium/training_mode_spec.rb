@@ -29,6 +29,7 @@ describe "Training mode" do
   
   it "should be on when turned on" do
     page.click("sidebar_edit_toggle")
+    page.wait_for :wait_for => :ajax
     page.get_eval("window.sidebar.isEditing()").should == "true"
     page.is_visible("sidebar_edit").should be_true
   end

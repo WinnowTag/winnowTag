@@ -30,7 +30,7 @@ describe "moderation panel" do
     login user
     page.open feed_items_path
     page.wait_for :wait_for => :ajax
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click "css=#feed_item_#{@feed_item.id} .closed"
     page.wait_for :wait_for => :ajax

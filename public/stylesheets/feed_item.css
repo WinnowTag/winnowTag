@@ -12,12 +12,13 @@
 }
 
 .feed_item.selected {
-  border: 3px solid #FEF3BB;
+  border: 2px solid #936301;
 }
 
 .feed_item .closed {
-  padding: 5px;
+  padding: 2px;
   cursor: pointer;
+  padding: 5px 5px 4px 5px;
 }
 
 .feed_item.read .closed {
@@ -25,7 +26,7 @@
 }
 
 .feed_item.selected .closed {
-  padding: 3px 3px 4px;
+  padding: 3px 3px 3px 3px;
 }
 
 .feed_item .closed .title {
@@ -53,7 +54,6 @@
 }
 
 .feed_item .feed_title.selected {
-  padding: 2px 3px;
 }
 
 .feed_item .closed .date {
@@ -112,61 +112,24 @@
   float: left;
   margin: 0 0.5em 0.25em 0;
   padding: 0 0.5em;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
-  -moz-border-radius: 0.75em;
-  -webkit-border-radius: 0.75em;
   white-space: nowrap;
 }
 
 .training_controls .tag .name {
-  color: #52718B;
-}
-
-.training_controls .tag.classifier {
-  background-color: #efefef;
-  border-color: #ccc;
+  color: #797979;
+  font-weight: bold;
 }
 
 .training_controls .tag.classifier .name {
-  color: #000;
-}
-
-.training_controls .tag.positive {
-  background-color: #B4D08D;
-  border-color: #9BA988;
+  color: black;
 }
 
 .training_controls .tag.positive .name {
-  color: #000;
-}
-
-.training_controls .tag.negative {
-  background-color: #EF6465;
-  border-color: #C48181;
+  color: #32BC32 !important;
 }
 
 .training_controls .tag.negative .name {
-  color: #000;
-}
-
-.training_controls .tag.selected {
-  background-color: #52718B;
-  border-color: transparent;
-}
-
-.training_controls .tag.selected .name {
-  color: #fff;
-}
-
-.training_controls .tag.disabled {
-  background-color: transparent;
-  border-color: transparent;
-}
-
-.training_controls .tag.disabled .name {
-  color: #ccc;
+  color: red !important;
 }
 
 .feed_item .feed_information {
