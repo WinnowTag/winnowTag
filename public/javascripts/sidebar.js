@@ -26,16 +26,16 @@ var Sidebar = Class.create({
   },
   
   togglePanel: function(afterFinish) {
-    Effect.toggle("sidebar_edit", "blind", {
+    Effect.toggle("sidebar_edit", "slide", {
       afterUpdate: function(effect) {
         var height = $(effect.element).getHeight();
-        var sidebarHeight = this.sidebar.getHeight();
-        this.sidebar_normal.style.height = "" + (sidebarHeight - height) + "px";
+        this.sidebar_normal.style.top = (25 + height) + "px";
       }.bind(this),
       afterFinish: function(e) {
         this.toggleControl();
+        
         if (!this.isEditing()) {
-          this.sidebar_normal.style.height = "100%";
+          this.sidebar_normal.style.top = "25px";
         }
         
         if (afterFinish) {

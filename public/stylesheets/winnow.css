@@ -443,8 +443,10 @@ body#login .container .form .content #invite_use {
 }
 
 #sidebar_normal {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  width: 100%;
+  top: 25px;
+  bottom: 0px;
 }
 
 #sidebar_edit {
