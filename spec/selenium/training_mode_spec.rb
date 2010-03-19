@@ -28,35 +28,35 @@ describe "Training mode" do
   end
   
   it "should be on when turned on" do
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.get_eval("window.sidebar.isEditing()").should == "true"
     page.is_visible("sidebar_edit").should be_true
   end
   
   it "should reset the mode when the edit panel is hidden" do
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.click("name_tag_#{@tag.id}")
     page.wait_for :wait_for => :ajax
     page.click("mode_trained")
     page.wait_for :wait_for => :ajax
     page.location.should match(/mode=trained/)
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.location.should match(/mode=all/)
   end
   
   it "should reset the text filter when the edit panel is hidden" do 
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.type "text_filter", "ruby"
     page.fire_event("text_filter_form", "submit")
     page.location.should match(/text_filter=ruby/)
     page.wait_for :wait_for => :ajax
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.location.should_not match(/text_filter/)
   end
   
   it "should open an items moderation panel when training mode is active" do
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click "css=#feed_item_#{@feed_item1.id} .closed"
     page.wait_for :wait_for => :ajax
@@ -65,7 +65,7 @@ describe "Training mode" do
   end
   
   it "should disable 'show trained' if 'see all items' is selected" do 
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_0")
     assert_visible "css=#mode_trained.disabled"
@@ -75,7 +75,7 @@ describe "Training mode" do
   end
   
   it "should unset 'show trained' if 'see all items' is selected" do
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_#{@tag.id}")
     page.wait_for :wait_for => :ajax
@@ -87,7 +87,7 @@ describe "Training mode" do
   end
   
   it "should unset 'show trained' if any tag is selected" do
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_#{@tag2.id}")
     page.wait_for :wait_for => :ajax
@@ -100,7 +100,7 @@ describe "Training mode" do
   end
   
   it "should enable 'show trained' if a tag is selected" do
-    page.click("sidebarEditToggle")
+    page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_0")
     page.wait_for :wait_for => :ajax

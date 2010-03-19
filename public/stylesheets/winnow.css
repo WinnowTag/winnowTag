@@ -471,6 +471,54 @@ body#login .container .form .content #invite_use {
   
 }
 
+#sidebar #sidebar_edit_heading {
+  padding: 3px;
+  border-bottom: 1px solid #DECBA3;
+  height: 18px;
+  background-color: #F2F2F2;
+}
+
+#sidebar #sidebar_edit_heading h3 {
+  font-size: 100%;
+  margin: 0px;
+  display: inline;
+}
+
+#sidebar #sidebar_edit_toggle {
+  -moz-border-radius-bottomleft:4px;
+  -moz-border-radius-bottomright:4px;
+  -moz-border-radius-topleft:4px;
+  -moz-border-radius-topright:4px;
+  -moz-user-select:none;
+  background-color:white;
+  border:1px solid #AAAAAA;
+  width: 13px;
+  height: 13px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+}
+
+#sidebar #sidebar_edit_toggle.closed span.open {
+  display: none;
+}
+
+#sidebar #sidebar_edit_toggle.open span.closed {
+  display: none;
+}
+
+#sidebar #sidebar_edit_toggle span {
+  font-weight: bold;
+  display: block;
+  position: relative;
+  width: 13px;
+  height: 13px;
+  font-size: 12px;
+  top: -2px;
+  left: 3px;
+}
+
 #sidebar #classification_controls {
   margin-left: auto;
   margin-right: auto;
@@ -489,7 +537,8 @@ body#login .container .form .content #invite_use {
 }
 
 #sidebar_edit fieldset legend {
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: normal;
 }
 
 /*

@@ -1,10 +1,5 @@
 /* =button */
 
-#sidebarEditToggle {
-  width: 2.5em;
-  text-align: center;
-}
-
 .button {
   outline: none;
   display: block;

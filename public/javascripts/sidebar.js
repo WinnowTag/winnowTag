@@ -13,6 +13,8 @@ var Sidebar = Class.create({
     if (Cookie.get("training_mode") == "on") {
       this.togglePanel();
     }
+    
+    $("sidebar_edit_toggle").observe("click", this.toggleEdit.bind(this));
   },
   
   toggleEdit: function() {
@@ -54,15 +56,15 @@ var Sidebar = Class.create({
   },
   
   toggleControl: function() {
-    $$("#sidebarEditToggle").each(function(e) {
-      if (e.hasClassName("done")) {
-        e.update("Train");
-        e.removeClassName("done");
+    $$("#sidebar_edit_toggle").each(function(e) {
+      if (this.isEditing()) {
+        e.addClassName("open");
+        e.removeClassName("closed");
       } else {
-        e.update("Close");
-        e.addClassName("done");
+        e.addClassName("closed");
+        e.removeClassName("open");
       }
-    });
+    }.bind(this));
   },
   
   clearFields: function() {
