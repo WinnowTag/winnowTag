@@ -27,7 +27,7 @@ describe FeedsHelper do
     end
     
     it "contains a link to filter by this feed" do
-      feed_link(@feed).should have_tag("a[href=?]", feed_items_path(:anchor => "feed_ids=#{@feed.id}"), "Feed Title")
+      feed_link(@feed).should have_tag("a[href=?]", feed_items_path(:anchor => "feed_ids=#{@feed.id}&feed_title=#{@feed.title}"), "Feed Title")
     end
   end
 end
