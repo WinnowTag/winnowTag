@@ -3,77 +3,50 @@
 <% content_for :head do -%>
 	<% javascript_tag do -%>
 		var itemBrowser;
-		document.observe('dom:loaded', function() {
-			itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
-			  modes: ["all", "unread", "trained"],
-			  orders: {
-			    desc:      ["date"],
-			    "default": "date"
-			  }
-			});
+		var sidebar;
+		Event.observe(window, 'load', function() {
+			try {
+				sidebar = new Sidebar();
+				itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 
+				  modes: ["all", "trained"]
+				});
+	      itemBrowser.styleFilters();
 
-      new Sidebar(<%= sidebar_feed_items_path.to_json %>, itemBrowser.filters, function() {
-        itemBrowser.styleFilters();
-        itemBrowser.bindTagFiltersEvents();
-        itemBrowser.bindFeedFiltersEvents();
-        
-        $$("#sidebar .section").each(function(element) {
-          new SidebarSection(element);
-        });
-        
-        $$('#tag_filters .tag').each(function(element) {
-          new TagFilter(element);
-        });
-      });
-      
-      new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);
+	      new Classification(<%= classify_classifier_path.to_json %>, <%= status_classifier_path.to_json %>, <%= current_user.changed_tags.any?.to_json %>);
+			} catch (e) {
+				if (console) console.log(e);
+				throw e;
+			}
 		});
   <% end -%>
 <% end -%>
 
+<% content_for :context_menu do -%>
+	<%= render :partial => "tag_context_menu" %>
+<% end -%>
+
 <% content_for :header_controls do -%>
-  <% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
-    <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.items.header.feed_items_search_placeholder"), :title => t("winnow.items.header.feed_items_search_tooltip") %>
-  <% end -%>
-
-  <div class="order clearfix">
-    <label><%= t("winnow.general.sort_label") %></label>        
-    <select id="order">
-      <option value="date"><%= t("winnow.items.header.sort_date_label") %></option>
-    </select>
-    <%= direction_link %>
-  </div>
-
-  <div class="toolbar right">
-    <div class="group">
-      <label><%= t("winnow.items.header.selected_filters") %></label>
-      <%= rounded_button_function t("winnow.items.header.clear_selected_filters"), "", :icon => "clear", :id => "clear_selected_filters", :class => "first", :title => t("winnow.items.header.clear_selected_filters_tooltip") %>
-      <%= rounded_button_link t("winnow.items.header.feed_for_selected_filters"), "", :icon => "feed", :base_url => feed_items_path(:format => :atom), :id => "feed_with_selected_filters", :title => t("winnow.items.header.feed_for_selected_filters_tooltip") %>
-    </div>
-    
-    <div class="group">
-      <label><%= t("winnow.items.header.show_label") %></label>        
-      <%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first", :title => t("winnow.items.header.show_all_tooltip") %>
-      <%= rounded_button_function t("winnow.items.header.show_unread_label"),  "", :icon => "unread",  :id => "mode_unread", :title => t("winnow.items.header.show_unread_tooltip") %>
-      <%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained", :title => t("winnow.items.header.show_trained_tooltip") %>
-    </div>
-  </div>
-<% end -%>
-
-<% content_for :sidebar, "" %>
-
-<% content_for :footer do -%>	
-  <div class="toolbar">
-    <div class="group">
-      <%= rounded_button_function t("winnow.items.footer.previous_item"), "", :icon => "previous", :title => t("winnow.items.footer.previous_item_tooltip") %>
-      <%= rounded_button_function t("winnow.items.footer.next_item"),     "", :icon => "next",     :title => t("winnow.items.footer.next_item_tooltip") %>
-    </div>
   
+  <div class="toolbar sidebar_buttons">
+		<div class="group">
+			<h4>Tags</h4>
+		</div>
+	</div>
+
+  <div class="toolbar item_buttons">
     <div class="group">
-      <%= rounded_button_function t("winnow.items.footer.mark_all_read"),   "", :icon => "read",   :title => t("winnow.items.footer.mark_all_read_tooltip") %>
-      <%= rounded_button_function t("winnow.items.footer.mark_all_unread"), "", :icon => "unread", :title => t("winnow.items.footer.mark_all_unread_tooltip") %>
+      <%#= rounded_button_function t("winnow.items.previous_item"), "", :icon => "previous", :title => t("winnow.items.previous_item_tooltip"), :id => "previous_unread" %>
+      <%= rounded_button_function t("winnow.items.next_item"),     "", :title => t("winnow.items.next_item_tooltip"), :id => "next_unread"%>
     </div>
+		<div id="selectedFeed" style="display: none">
+			<div class="text"><%= image_tag "info.png", :size => "16x16" %> Viewing only items from '<span id="filteredFeedTitle">My Feed Title</span>'</div>
+			<%= rounded_button_function "Cancel", "itemBrowser.setFilters({feed_filter: null});", :class => 'first small'%>
+			<div class="clearfix"></div>
+		</div>
   </div>
-	
-	<%= render :partial => "classification_controls" %>
+
 <% end -%>
+
+<% content_for :sidebar do -%>
+	<%= render :partial => "sidebar" %>
+<% end %>

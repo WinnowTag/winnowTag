@@ -39,7 +39,7 @@ describe "keyboard shortcuts" do
     dont_see_element "#feed_item_#{@feed_item2.id}.selected"
     assert_not_visible "css=#feed_item_#{@feed_item2.id} .body"
 
-    page.key_press "css=body", "k"
+    page.key_press "css=body", " "
     see_element "#feed_item_#{@feed_item1.id}.selected"
     assert_visible "css=#feed_item_#{@feed_item1.id} .body"
     dont_see_element "#feed_item_#{@feed_item2.id}.selected"

@@ -43,16 +43,6 @@ describe '/layouts/_navbar.html.erb' do
   end
   
   describe "extra navigation" do
-    it "contains a link to leave feedback" do
-      render_it
-      response.should have_tag(".extra #feedback a[href=?]", new_feedback_path)
-    end
-
-    it "contains a link to the about page" do
-      render_it
-      response.should have_tag(".extra a[href=?]", about_path)
-    end
-
     it "contains a link to the my info page" do
       render_it
       response.should have_tag(".extra a[href=?]", edit_account_path)

@@ -95,16 +95,6 @@ module ApplicationHelper
     javascript_tag(function)
   end
   
-  # Checks the cookies to determine whether or render a folder as opened or closed.
-  def open_folder?(folder)
-    cookies[dom_id(folder)] =~ /true/i
-  end
-  
-  # Checks the cookies to determine whether or render a section as opened or closed.
-  def section_open?(id)
-    cookies[id] =~ /true/i
-  end
-  
   # Generates the control to mark a tag/feed a globally excluded/not globally excluded.
   def globally_exclude_check_box(tag_or_feed)
     url = if tag_or_feed.is_a?(Tag)
@@ -127,94 +117,31 @@ module ApplicationHelper
       :title => t("winnow.tags.main.subscribe_tooltip")
   end
   
-  # Generates the controls to filter the list of feed items by feeds.
-  def feed_filter_controls(feeds, options = {})
-    content =  feeds.map { |feed| feed_filter_control(feed, options) }.join
-    if options[:add]
-      begin
-        uri = URI.parse(options[:auto_complete])
-        if uri.scheme.present?
-          content << content_tag(:li, t("winnow.items.sidebar.create_feed", :feed => h(uri.to_s)), :id => "add_new_feed", :url => uri.to_s)
-        end
-      rescue URI::Error # don't add the "Create Feed" option if the URI is not valid
-      end
-    end
-    content_tag :ul, content, options.delete(:ul_options) || {}
-  end
-  
-  # Generates an individual control to filter the list of feed items by a feed.
-  # See ApplicationHelper#feed_filter_controls.
-  def feed_filter_control(feed, options = {})   
-    url      = case options[:remove]
-      when :subscription then subscribe_feed_path(feed, :subscribe => "false")
-      when Folder        then remove_item_folder_path(options[:remove], :item_id => dom_id(feed))
-    end
-    function = case options[:remove]
-      when :subscription then "itemBrowser.removeFilters({feed_ids: '#{feed.id}'});"
-    end
-    
-    class_names = [dom_id(feed), "clearfix", "feed"]
-    class_names << "draggable" if options[:draggable]
-
-    html = link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => url, :method => :put)}", :class => "remove")
-    html = content_tag(:span, html, :class => "actions")
-
-    html << link_to_function(h(feed.title), "", :class => "name", :"data-sort" => feed.sort_title)
-    
-    html =  content_tag(:span, html, :class => "filter")
-    html << content_tag(:span, highlight(h(feed.title), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
-
-    html =  content_tag(:li, html, :id => dom_id(feed), :class => class_names.join(" "), :subscribe_url => subscribe_feed_path(feed, :subscribe => true))
-    html
-  end
-  
-  # Generates the controls to filter the list of feed items by feeds.
+  # Generates the controls to filter the list of tags.
   def tag_filter_controls(tags, options = {})
-    content =  tags.map { |tag| tag_filter_control(tag, options) }.join
-    content_tag :ul, content, options.delete(:ul_options) || {}
+    tags.map { |tag| tag_filter_control(tag, options) }.join
   end
   
-  # Generates an individual control to filter the list of feed items by a feed.
-  # See ApplicationHelper#feed_filter_controls.
+  # Generates an individual control to filter the list of tags.
+  # See ApplicationHelper#tag_filter_controls.
   def tag_filter_control(tag, options = {})
-    if options[:remove] == :subscription && current_user.id == tag.user_id
-      options = options.except(:remove)
-      options[:remove] = :sidebar
-    end
-    
-    remove_url = case options[:remove]
-      when :subscription           then unsubscribe_tag_path(tag)
-      when :sidebar                then sidebar_tag_path(tag, :sidebar => "false")
-      when Folder                  then remove_item_folder_path(options[:remove], :item_id => dom_id(tag))
-    end
-    
-    subscribe_url = case options[:remove]
-      when :subscription           then subscribe_tag_path(tag, :subscribe => true)
-      when :sidebar                then sidebar_tag_path(tag, :sidebar => true)
-    end
-    
-    function = case options[:remove]
-      when :subscription, :sidebar then "itemBrowser.removeFilters({tag_ids: '#{tag.id}'});"
-    end
-    
-    class_names = [dom_id(tag), "clearfix", "tag"]
-    class_names << "public" if tag.user_id != current_user.id
-    class_names << "draggable" if options[:draggable]
+    class_names = [dom_id(tag), "tag"]
+    class_names << "subscribed" if tag.user_id != current_user.id
+    class_names << "public" if tag.public? && tag.user_id == current_user.id
 
-    html  = ""
-    if options[:editable] && current_user.id == tag.user_id
-      html << link_to("Rename", "#", :class => "edit", "data-update_url" => "#{tag_path(tag)}")
-    end
-    html << link_to_function("Remove", "#{function}$(this).up('li').remove();itemBrowser.styleFilters();#{remote_function(:url => remove_url, :method => :put)}", :class => "remove")
-    html  = content_tag(:span, html, :class => "actions")
-
-    html << link_to_function(h(tag.name), "", :class => "name", :id => dom_id(tag, "name"), :"data-sort" => tag.sort_name)
-
-    html =  content_tag(:span, html, :class => "filter")
-    html << content_tag(:span, highlight(h(tag.name), h(options[:auto_complete]), '<span class="highlight">\1</span>'), :class => "auto_complete_name") if options[:auto_complete]
+    content_tag(:li, 
+                content_tag(:div, "", :class => "context_menu_button", :'tag-id' => tag.id) +
+                content_tag(:span, 
+                            content_tag(:span, 
+                                        h(tag.name), 
+                                        :class => "name", 
+                                        :id => dom_id(tag, "name"), 
+                                        :"data-sort" => tag.sort_name, 
+                                        :title => tag_tooltip(tag)), 
+                            :class => "filter"),
+                :id => dom_id(tag), 
+                :class => class_names.join(" "))
     
-    html =  content_tag(:li, html, :id => dom_id(tag), :class => class_names.join(" "), :subscribe_url => subscribe_url, :title => tag_tooltip(tag))
-    html
   end
   
   # Generates a tooltip for the tag filters in the feed items sidebar. 

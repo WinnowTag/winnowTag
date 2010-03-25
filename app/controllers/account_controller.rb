@@ -114,7 +114,7 @@ class AccountController < ApplicationController
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
     reset_session
-    redirect_to login_path
+    redirect_to root_path
   end
 
   # The +reminder+ action is used to request a password reminder

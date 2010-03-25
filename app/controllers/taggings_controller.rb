@@ -18,16 +18,12 @@ Tag
 class TaggingsController < ApplicationController
   # The +create+ action creates a single +Tagging+ for a 
   # <tt><FeedItem, User, Tag></tt> combination. Any existing
-  # tagging for that combination will be deletd. If the Tag 
-  # is not already in the users sidebar, it will be added.
+  # tagging for that combination will be deletd.
   def create
     tag = Tag(current_user, params[:tagging][:tag])
     @tagging = Tagging.new(params[:tagging].merge(:tag => tag, :user => current_user))
     # Save the tagging within a transaction to avoid errors from duplicate taggings
     if Tagging.transaction { @tagging.save }
-      unless tag.show_in_sidebar?
-        tag.update_attribute(:show_in_sidebar, true)
-      end
       respond_to :json
     else
       respond_to do |format|

@@ -11,40 +11,10 @@ describe "Tags" do
     @tag1 = Generate.tag! :user => @user, :bias => 0
     @tag2 = Generate.tag! :bias => 1, :public => true
     @user.tag_subscriptions.create!(:tag => @tag2)
-    
-    @tag_not_in_sidebar = Generate.tag! :user => @user, :show_in_sidebar => false
 
     login @user
     page.open tags_path
     page.wait_for :wait_for => :ajax
-  end
-  
-  describe 'merging' do
-    before(:each) do
-      @other = Generate.tag!(:user => @user, :name => "test")
-      # In IE there seems to be a synching problem,
-      # sometimes loading the tags page happens 
-      # without the @other tag present, I don't know if
-      # this is a case of the follow load being ignored
-      # because the previous one was same or what, but putting
-      # the sleep here always ensures that @other appears in 
-      # the page.
-      sleep(1)
-      page.open tags_path
-      page.wait_for :wait_for => :ajax
-    end
-    
-    it "can merge two tags by changing their names" do
-      page.click "name_tag_#{@other.id}"
-      
-      see_element("#name_tag_#{@other.id}-inplaceeditor")
-      page.type "css=input.editor_field", @tag1.name
-      page.key_down "css=input.editor_field", '\13' # enter
-      page.wait_for :wait_for => :ajax
-      page.confirmation
-      page.wait_for :wait_for => :page
-      dont_see_element "#name_tag_#{@other.id}"
-    end
   end
     
   # These are disabled under IE because selenium sets the wrong button code.
@@ -103,29 +73,45 @@ describe "Tags" do
     page.wait_for :wait_for => :ajax
     assert !page.is_checked("public_tag_#{@tag1.id}")
   end
+end
 
-  it "viewing items tagged with a specific tag also adds that tag to the user's sidebar" do
-    @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
+describe 'merging' do
+  before(:each) do
+    @user = Generate.user!
+    @tag1 = Generate.tag! :user => @user, :bias => 0
+    @tag2 = Generate.tag! :bias => 1, :public => true
+    @user.tag_subscriptions.create!(:tag => @tag2)
     
-    page.click "css=.tag_#{@tag_not_in_sidebar.id} a.tagged"
+    @other = Generate.tag!(:user => @user, :name => "test")
     
-    page.wait_for :wait_for => :page
+    # TODO: determine if this is still needed now that all models are
+    # set up before a page is opened.
+    #
+    # In IE there seems to be a synching problem,
+    # sometimes loading the tags page happens 
+    # without the @other tag present, I don't know if
+    # this is a case of the follow load being ignored
+    # because the previous one was same or what, but putting
+    # the sleep here always ensures that @other appears in 
+    # the page.
+    sleep(1)
+    
+    login @user
+    page.open tags_path
     page.wait_for :wait_for => :ajax
-    
-    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=all&tag_ids=#{@tag_not_in_sidebar.id}$/
-    @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
   end
-
-  it "viewing items trained with a specific tag also adds that tag to the user's sidebar" do
-    @user.sidebar_tags.should_not include(@tag_not_in_sidebar)
+  
+  it "can merge two tags by changing their names" do
+    page.click "name_tag_#{@other.id}"
     
-    page.click "css=.tag_#{@tag_not_in_sidebar.id} a.trained"
-    
-    page.wait_for :wait_for => :page
+    see_element("#name_tag_#{@other.id}-inplaceeditor")
+    page.type "css=input.editor_field", @tag1.name
+    page.key_down "css=input.editor_field", '\13' # enter
     page.wait_for :wait_for => :ajax
-    
-    page.location.should =~ /^#{feed_items_url}#order=date&direction=desc&mode=trained&tag_ids=#{@tag_not_in_sidebar.id}$/
-    @user.sidebar_tags(:reload).should include(@tag_not_in_sidebar)
+    page.confirmation
+    page.wait_for :wait_for => :ajax
+    page.wait_for :wait_for => :element, :element => "css=#name_tag_#{@tag1.id}", :timeout_in_seconds => 5
+    dont_see_element "#name_tag_#{@other.id}"
   end
 end
 

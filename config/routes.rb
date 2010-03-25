@@ -23,7 +23,6 @@ ActionController::Routing::Routes.draw do |map|
                   :subscribe => :put
                 },
                 :collection => {
-                  :auto_complete_for_feed_title => :any,
                   :import => :any
                 }
 
@@ -50,15 +49,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :tags, :only => [:index, :show, :create, :update, :destroy],
                 :collection => { 
                   :public => :get,
-                  :auto_complete_for_sidebar => :any,
                   :upload => :post
                 },
                 :member => { 
                   :globally_exclude => :post,
                   :publicize => :put, 
                   :subscribe => :put,
-                  :unsubscribe => :put, 
-                  :sidebar => :put,
+                  :unsubscribe => :put,
                   :training => :get,
                   :information => :get,
                   :classifier_taggings => [:post, :put],
@@ -76,18 +73,7 @@ ActionController::Routing::Routes.draw do |map|
                }
               
   map.resources :collection_job_results, :path_prefix => '/users/:user_id', :only => :create
-
-  map.resources :folders, :only => [:create, :update, :destroy],
-                :member => {
-                  :add_item => :put,
-                  :remove_item => :put
-                },
-                :collection => {
-                  :sort => :put
-                }
-
   map.resources :messages, :except => :show
-  map.resources :feedbacks, :only => [:index, :new, :create]
   map.resources :comments, :only => [:create, :edit, :update, :destroy]
 
   map.with_options :controller => "account" do |account_map|
@@ -112,6 +98,7 @@ ActionController::Routing::Routes.draw do |map|
     admin_map.admin_help "admin/help", :action => "help"
   end
   
+  map.resources :demo, :only => [:index]
   map.connect 'public/ie6', :controller => "public", :action => "ie6"
-  map.root :info
+  map.root :controller => "demo"
 end

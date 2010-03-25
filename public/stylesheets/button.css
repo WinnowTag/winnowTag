@@ -1,4 +1,5 @@
 /* =button */
+
 .button {
   outline: none;
   display: block;
@@ -8,17 +9,21 @@
   background-position: left bottom;
   background-repeat: repeat-x;
   border: 2px solid #bbb;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
   color: #666;
   font-weight: bold;
   text-decoration: none;
 }
 
+a.button {
+  text-decoration: none;
+}
+
 .button.small {
   padding: 0.2em 0.75em;
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 1em;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
   font-weight: bold;
   font-size: 0.9em;
   margin: 0;
@@ -26,8 +31,8 @@
   border: 1px solid #bbb;  
 }
 
-.button.disabled {
-  color: #ccc;
+a.button.disabled {
+  color: #bbb;
   cursor: default;  
 }
 
@@ -42,12 +47,8 @@
   color: #666;
 }
 
-.button:hover {
-  text-decoration: none;
-}
-
-.button.disabled:hover {
-  text-decoration: none;
+a.button:hover {
+  text-decoration: none !important;
 }
 
 .button.disabled:active {
@@ -75,11 +76,15 @@
 
 .toolbar .group {
   float: left;
-  margin-right: 0.5em;
 }
 
 .toolbar .button:last-child, .toolbar .group:last-child, .toolbar .button.last, .toolbar .group.last {
   margin-right: 0;
+}
+
+.toolbar .group h4 {
+  margin: 5px 0 5px 0;
+  float: left;
 }
 
 .toolbar .group label {
@@ -98,22 +103,64 @@
 
 .toolbar .group .button:first-child, .toolbar .group .button.first {
   border-left-width: 2px;
-  -moz-border-radius-topleft: 1em;
-  -moz-border-radius-bottomleft: 1em;
-  -webkit-border-top-left-radius: 1em;
-  -webkit-border-bottom-left-radius: 1em;
+  -moz-border-radius-topleft: 0.5em;
+  -moz-border-radius-bottomleft: 0.5em;
+  -webkit-border-top-left-radius: 0.5em;
+  -webkit-border-bottom-left-radius: 0.5em;
 }
 
 .toolbar .group .button:last-child, .toolbar .group .button.last {
   border-right-width: 2px;
-  -moz-border-radius-topright: 1em;
-  -moz-border-radius-bottomright: 1em;
-  -webkit-border-top-right-radius: 1em;
-  -webkit-border-bottom-right-radius: 1em;
+  -moz-border-radius-topright: 0.5em;
+  -moz-border-radius-bottomright: 0.5em;
+  -webkit-border-top-right-radius: 0.5em;
+  -webkit-border-bottom-right-radius: 0.5em;
 }
 
 .toolbar .right {
   float: right;
   margin-left: 0.5em;
   margin-right: 0;
+}
+
+.toolbar.item_buttons {
+  margin-left: 255px;
+}
+
+.toolbar.sidebar_buttons .group {
+  width: 248px;
+  padding-right: 3px;
+}
+
+.toolbar.sidebar_buttons .group a {
+  float: right;
+}
+
+/* Selected feed */
+#selectedFeed {
+  border: 2px solid #DECBA3;
+  padding: 0px 0px 0px 3px;
+  background-color: #E1D2C7;
+  margin-left: 100px;
+}
+
+#selectedFeed div.text {
+  float: left;
+  margin-top: 3px;
+  font-weight: bold;
+}
+
+#selectedFeed div.clearfix {
+  height: 0px;
+  clear: right;
+  margin: 0px;
+}
+
+#selectedFeed div img {
+  vertical-align: top;
+  margin-right: 5px;
+}
+
+#selectedFeed a.button {
+  float: right;
 }

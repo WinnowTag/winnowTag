@@ -6,7 +6,3 @@
 
 // This is needed for the sidebar drag/drop
 Position.includeScrollOffsets = true;
-
-function clear_auto_complete(element, list) {
-  list.update('');
-}

@@ -34,13 +34,6 @@ describe CollectionJobResultsController do
     do_post("Couldn't contact server")
   end
   
-  it "updates user's feed state if the feed is a duplicate" do
-    @feed.stub!(:duplicate).and_return(mock_model(Feed))
-
-    @user.should_receive(:update_feed_state).with(@feed)
-    do_post
-  end
-  
   it "reponds with 401 if hmac is not authenticated" do
     @controller.should_receive(:hmac_authenticated?).and_return(false)
     do_post

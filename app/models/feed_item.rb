@@ -215,55 +215,7 @@ class FeedItem < ActiveRecord::Base
     ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
     
-    feed_items = FeedItem.find(:all, options_for_find)
-    
-    # We are going to load the taggings for all the tags the user sees in their sidebar,
-    # plus any tags which are being filtered on.
-    selected_tags = filters[:tag_ids].blank? ? [] : Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, user])
-    tags_to_display = (user.sidebar_tags + user.subscribed_tags - user.excluded_tags + selected_tags).uniq
-    taggings = Tagging.find(:all, 
-      :include => :tag,
-      :conditions => ['feed_item_id IN (?) AND tag_id IN (?)', feed_items, tags_to_display]).group_by(&:feed_item_id)
-
-    feed_items.each do |feed_item|
-      feed_item.taggings_to_display = (taggings[feed_item.id] || []).inject({}) do |hash, tagging|
-        hash[tagging.tag] ||= []
-        if tagging.classifier_tagging?
-          hash[tagging.tag] << tagging
-        else
-          hash[tagging.tag].unshift(tagging)
-        end
-        hash
-      end.to_a.sort_by { |tag, _taggings| tag.sort_name }
-    end
-    
-    feed_items
-  end
-
-  # Marks feed items as read that match the provided filters.
-  def self.read_by!(filters)
-    options_for_find = options_for_filters(filters)   
-
-    feed_item_ids_sql = "SELECT DISTINCT #{filters[:user].id}, feed_items.id, 'FeedItem', UTC_TIMESTAMP(), UTC_TIMESTAMP() FROM feed_items"
-    feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
-    feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
-
-    Reading.connection.execute "INSERT IGNORE INTO readings (user_id, readable_id, readable_type, created_at, updated_at) #{feed_item_ids_sql}"
-  end
-  
-  # Marks feed items as unread that match the provided filters.
-  def self.unread_by!(filters)
-    case filters[:mode]
-      when nil, "unread" then filters[:mode] = "all"
-    end
-
-    options_for_find = options_for_filters(filters)
-
-    feed_item_ids_sql = "SELECT DISTINCT feed_items.id FROM feed_items"
-    feed_item_ids_sql << " #{options_for_find[:joins]}" unless options_for_find[:joins].blank?
-    feed_item_ids_sql << " WHERE #{options_for_find[:conditions]}" unless options_for_find[:conditions].blank?
-
-    Reading.delete_all(["readings.user_id = ? AND readings.readable_type = 'FeedItem' AND readings.readable_id IN(#{feed_item_ids_sql})", filters[:user]])
+    FeedItem.find(:all, options_for_find)
   end
 
   # This builds the SQL to use for the +find_with_filters+ method.
@@ -298,8 +250,6 @@ class FeedItem < ActiveRecord::Base
       "feed_items.updated DESC"
     end
 
-    filters[:mode] ||= "unread"
-
     joins = []
     add_text_filter_joins!(filters[:text_filter], joins)
 
@@ -309,7 +259,7 @@ class FeedItem < ActiveRecord::Base
     tags = if filters[:tag_ids]
       Tag.find(:all, :conditions => ["tags.id IN(?) AND (public = ? OR user_id = ?)", filters[:tag_ids].to_s.split(","), true, filters[:user]])
     elsif filters[:mode] =~ /trained/i # limit the search to tagged items
-      filters[:user].sidebar_tags + filters[:user].subscribed_tags - filters[:user].excluded_tags
+      filters[:user].subscribed_tags - filters[:user].excluded_tags
     else
       tags = []
     end

@@ -1,0 +1,69 @@
+/* Copyright (c) 2008 The Kaphan Foundation
+ *
+ * Possession of a copy of this file grants no permission or license
+ * to use, modify, or create derivative works.
+ * Please visit http://www.peerworks.org/contact for further information.
+ */
+ 
+.record {
+  position: relative;
+  margin: 0 0 .5em 0;
+  
+}
+
+.record .summary {
+  padding: 0.5em;
+  border: 1px solid #DECBA3;
+  background: #FAFAFA;
+}
+
+.record .summary:hover {
+  background-color: #FEF3BB;
+}
+
+.record .extended {
+  border-left: 1px solid #DECBA3;
+  border-right: 1px solid #DECBA3;
+  border-bottom: 1px solid #DECBA3;
+}
+
+.record h4 {
+  font-size: 1em;  
+  display: inline;
+}
+
+.record .description {
+  color: #777;
+}
+
+.record .summary .info {
+  float: right;
+  margin-left: 1.5em;
+  color: #626051;
+}
+
+.record .summary .info div {
+  float: left;
+  padding: 0.25em 0.5em;
+  border-left: 1px solid #ccc;
+}
+
+.record .summary .info strong {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.record .summary .info .details {
+  border: none;
+  text-align: right;
+  margin-right: 0.25em;
+  width: 12em;
+}
+
+.record .summary .info p {
+  font-size: .75em;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0 0 0.1em 0;
+  color: #888;
+}

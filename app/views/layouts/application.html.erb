@@ -1,11 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-  <title>Winnow</title>
+  <title>winnowTag</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
   <%= stylesheet_link_tag :winnow, :cache => true %>
-  <!--[if IE 7]>
+  <!--[if gte IE 7]>
     <%= stylesheet_link_tag "ie7" %>
   <![endif]-->
 
@@ -20,34 +19,47 @@
   <%= yield(:head) %>
 </head>
 <body id="<%= yield(:body) %>">
+	<% if context_menu = yield(:context_menu) %>
+		<%= context_menu %>
+	<% end -%>
+	
   <% if Rails.env.trunk? -%>
     <div class="environment"><%= Rails.env %></div>
   <% end -%>
 
   <noscript>
-    <%= render :partial => "layouts/javascript_is_required" %>
+    <div><%= render :partial => "layouts/javascript_is_required" %></div>
   </noscript>
-  
+
+  <div id="title">
+		<h1 id="header">winnowTag</h1>
+		<h2 id="subheader">alpha</h2>
+	</div>
+	
   <%= render :partial => 'layouts/navbar' %>
 
   <% if header_controls = yield(:header_controls) -%>
     <div id="header_controls" class="clearfix"><%= header_controls %></div>
   <% end -%>
 
-  <% if sidebar_content = yield(:sidebar) -%>
-    <div id="sidebar"><%= sidebar_content %></div>
-    <div id="sidebar_control"></div>  
-  <% end -%>
-
   <div id="container">
+	  <% if sidebar_content = yield(:sidebar) -%>
+	    <div id="sidebar"><%= sidebar_content %></div>
+	  <% end -%>
+
     <div id="content" class="clearfix">
       <%= yield %>
     </div>
 
-    <% if footer_content = yield(:footer) -%>
-      <div id="footer" class="clearfix"><%= footer_content %></div>
-    <% end -%>
+  
   </div>
+
+    <div id="footer" class="clearfix">
+	  <% if footer_content = yield(:footer) -%>
+				<%= footer_content %>
+    <% end -%>
+				<%= t("winnow.general.footer") %>
+		</div>
 
   <div id="messages" style="display:none">
     <a href="#" class="close">close</a>

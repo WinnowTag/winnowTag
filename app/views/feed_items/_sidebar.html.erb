@@ -1,0 +1,52 @@
+<div id="sidebar_edit_heading">
+	<h3>Training Controls</h3>
+	<div id="sidebar_edit_toggle" class="closed"><span class="closed">+</span><span class="open">&ndash;</span></div>
+</div>
+<div id="sidebar_edit" style="display: none">
+	<div id="sidebar_edit_content">
+		<fieldset>
+			<legend>Search for Items</legend>
+			<% form_tag feed_items_path, :id => "text_filter_form", :onsubmit => "return false;" do -%>
+		    <%= text_field_tag "text_filter", params[:text_filter], 
+									:placeholder => t("winnow.items.header.feed_items_search_placeholder"), 
+									:title => t("winnow.items.header.feed_items_search_tooltip") %>
+				<span id="search_clear" style="display: none"></span>
+		  <% end -%>
+		</fieldset>
+	
+		<fieldset>
+			<legend>Tagging Type to Show</legend>
+			<div class="toolbar">
+				<div class="group">   
+		 			<div class="buttongroup">
+		      	<%= rounded_button_function t("winnow.items.header.show_all_label"),     "", :icon => "all",     :id => "mode_all", :class => "first", :title => t("winnow.items.header.show_all_tooltip") %>
+		      	<%= rounded_button_function t("winnow.items.header.show_trained_label"), "", :icon => "trained", :id => "mode_trained", :title => t("winnow.items.header.show_trained_tooltip") %>
+					</div>
+		    </div>
+			</div>
+		</fieldset>
+		
+	  <div class="clearfix"></div>
+		<%= render :partial => "classification_controls" %>
+		
+		<fieldset id="new_tag_fieldset">
+			<legend>Create a New Tag</legend>
+			<% form_remote_tag :url => tags_path, :html => { :id => "new_tag_form" } do -%>
+			  <%= text_field_tag 'name', nil, :title => t("winnow.items.main.tag_input_tooltip") %>
+			  <%= submit_tag t("winnow.items.main.add_tag"), :title => t("winnow.items.main.add_tag_tooltip") %>
+			<% end -%>
+		</fieldset>
+	</div>
+</div>
+<div id="sidebar_normal">
+	<ul id ="tag_filters" class="filter_list clearfix tags">
+		<li id="tag_0" class="tag_0 tag all_tags" title="See all items">
+			<span class="filter">
+				<span id="name_tag_0" class="name"><%= t("winnow.demo.all_items") %></span>
+			</span>
+		</li>
+		<li id="tag_container" class="tags">
+			<ul id="user_tag_filters" class="filter_list tags"><%= tag_filter_controls(current_user.tags_for_sidebar) %></ul>
+		</li>
+	</ul>
+</div>

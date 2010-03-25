@@ -9,11 +9,11 @@ begin
   end
 
   Cucumber::Rake::Task.new(:features_for_ci) do |t|
-    t.cucumber_opts = "--format html > cucumber/features.html"
+    t.cucumber_opts = "--format html > cucumber/features.html --no-diff"
   end
 
   Cucumber::Rake::Task.new(:features) do |t|
-    t.cucumber_opts = "--format pretty"
+    t.cucumber_opts = "--format pretty --no-diff"
   end
   
   task :features => 'db:test:prepare'

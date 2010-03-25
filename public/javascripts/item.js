@@ -14,15 +14,11 @@ var Item = Class.create({
     this.id                = this.element.getAttribute('id').match(/\d+/).first();
     this.closed            = this.element.down(".closed");
     this.status            = this.element.down(".status");
-    this.feed_title        = this.element.down(".feed_title");
-    this.train             = this.element.down(".train");
-    this.tag_list          = this.element.down(".tag_list");
+    this.feed_title        = this.element.down("a.feed_title");
     this.moderation_panel  = this.element.down(".moderation_panel");
     this.feed_information  = this.element.down(".feed_information");
     this.body              = this.element.down(".body");
-    // this.training_controls = this.moderation_panel.down(".training_controls");
-    // this.add_tag_field     = this.moderation_panel.down("input[type=text]");
-    // this.add_tag_selected  = null;
+    this.isDemo              = window.location.pathname == "/demo";
     
     // Queues by tag name for tagging requests. See the TagQueue class
     // for more details.
@@ -38,19 +34,19 @@ var Item = Class.create({
       this.toggleBody(event);
     }.bind(this));
 
-    this.status.observe("click", this.toggleReadUnread.bind(this));
+    if (this.status) {
+      this.status.observe("click", this.toggleReadUnread.bind(this));
 
-    this.status.observe("mouseover", function() {
-      if(this.element.match(".read")) {
-        this.status.title = I18n.t("winnow.items.main.mark_unread");
-      } else {
-        this.status.title = I18n.t("winnow.items.main.mark_read");
-      }
-    }.bind(this));
-
-    this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
-    this.train.observe("click", this.toggleTrainingControls.bind(this));
-    this.tag_list.select("li").invoke("observe", "click", this.toggleTrainingControls.bind(this));
+      this.status.observe("mouseover", function() {
+        if(this.element.match(".read")) {
+          this.status.title = I18n.t("winnow.items.main.mark_unread");
+        } else {
+          this.status.title = I18n.t("winnow.items.main.mark_read");
+        }
+      }.bind(this));
+    }
+    
+    if (this.feed_title) this.feed_title.observe("click", this.toggleFeedInformation.bind(this));
   },
   
   isRead: function() {
@@ -59,12 +55,16 @@ var Item = Class.create({
   
   markRead: function() {
     this.element.addClassName('read');
-    new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
+    if (!this.isDemo) {
+      new Ajax.Request('/feed_items/' + this.id + '/mark_read', { method: 'put' });
+    }
   },
   
   markUnread: function() {
     this.element.removeClassName('read');    
-    new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });
+    if (!this.isDemo) {
+      new Ajax.Request('/feed_items/' + this.id + '/mark_unread', { method: 'put' });      
+    }
   },
   
   toggleReadUnread: function() {
@@ -92,8 +92,12 @@ var Item = Class.create({
     
     if(this.isOpen()) {
       this.hideBody();
+      this.hideTrainingControls();
     } else {
       this.showBody();
+      if (sidebar && sidebar.isEditing()) {
+        this.showTrainingControls();
+      }
     }
   },
   
@@ -144,8 +148,8 @@ var Item = Class.create({
   },
 
   hideFeedInformation: function() {
-    this.feed_title.removeClassName("selected");
-    this.feed_information.removeClassName("selected");
+    if (this.feed_title) this.feed_title.removeClassName("selected");
+    if (this.feed_information) this.feed_information.removeClassName("selected");
   },
   
   loadFeedInformation: function() {
@@ -161,20 +165,15 @@ var Item = Class.create({
   },
   
   showTrainingControls: function() {
-    this.select();
-
-    this.tag_list.hide();
-
-    this.train.addClassName("selected");
-    this.moderation_panel.addClassName("selected");
-    this.loadTrainingControls();
+    if (!this.moderation_panel.hasClassName("selected")) {
+      this.select();
+      this.moderation_panel.addClassName("selected");
+      this.loadTrainingControls();
+    }
   },
   
   hideTrainingControls: function() {
-    this.tag_list.show();
-
-    this.train.removeClassName("selected");
-    this.moderation_panel.removeClassName("selected");
+    if (this.moderation_panel) this.moderation_panel.removeClassName("selected");
     if(this.add_tag_field) {
       this.add_tag_field.blur();
     }
@@ -186,72 +185,14 @@ var Item = Class.create({
   
   initializeTrainingControls: function() {
     this.training_controls = this.moderation_panel.down(".training_controls");
-    this.close             = this.moderation_panel.down(".close");
-    this.add_tag_form      = this.moderation_panel.down("form");
-    this.add_tag_field     = this.add_tag_form.down("input[type=text]");
-
-    this.close.observe("click", this.toggleTrainingControls.bind(this));
 
     this.training_controls.select(".tag").each(function(tag) {
       this.initializeTrainingControl(tag);
     }.bind(this));
     
-    new Form.Element.EventObserver(this.add_tag_field, this.addTagFieldChanged.bind(this), 'keyup');
-
-    this.add_tag_form.observe("submit", function() {
-      this.addTagging(this.add_tag_selected || this.add_tag_field.value, "positive");
-      this.add_tag_field.clear();
-      this.addTagFieldChanged(this.add_tag_field, "");
-    }.bind(this));
-    
-    // hide the moderation panel if the user presses the ESC key
-    this.add_tag_field.observe("keydown", function(event) {
-      if(event.keyCode == Event.KEY_ESC) { this.hideTrainingControls(); }
-    }.bind(this));
-    
-    this.add_tag_field.focus();
-    
     (function() {
       this.scrollTo();
     }).bind(this).delay(0.3);
-  },
-  
-  // Called when the user changes the contents of the text field for adding
-  // a new tag. This text field is shown in the moderation panel.
-  addTagFieldChanged: function(field, value, event) {
-    this.add_tag_selected = null;
-    this.training_controls.select(".tag").each(function(tag) {
-      tag.removeClassName("selected");
-      tag.removeClassName("disabled");
-      
-      var tag_name = tag.down(".name").innerHTML.unescapeHTML();
-      
-      if(value.blank()) {
-        // Don't do anything
-      } else if(!tag_name.toLowerCase().startsWith(value.toLowerCase())) {
-        tag.addClassName("disabled")
-      } else if(!this.add_tag_selected) {
-        this.add_tag_selected = tag_name;
-        tag.addClassName("selected");
-        
-        // http://www.webreference.com/programming/javascript/ncz/3.html
-        // if(event.metaKey || event.altKey || event.ctrlKey || event.keyCode < 32 || 
-        //   (event.keyCode >= 33 && event.keyCode <= 46) || (event.keyCode >= 112 && event.keyCode <= 123)) {
-        //   console.log("nope");
-        //   // Don't do anything
-        // } else {
-        //   field.value = tag_name;
-        //   if(field.createTextRange) {
-        //     var textSelection = field.createTextRange();
-        //     textSelection.moveStart("character", 0);
-        //     textSelection.moveEnd("character", value.length - field.value.length);
-        //     textSelection.select();
-        //   } else if (field.setSelectionRange) {
-        //     field.setSelectionRange(value.length, field.value.length);
-        //   }
-        // }
-      }
-    }.bind(this));
   },
   
   initializeTrainingControl: function(tag) {
@@ -311,15 +252,6 @@ var Item = Class.create({
         if(data.error) {
           Message.add("error", data.error);
         } else {
-          // Change the small tags that are visible when an item is collapsed.
-          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-          if(tag_control) {
-            tag_control.removeClassName(other_tagging_type);
-            tag_control.addClassName(tagging_type);
-          } else {
-            this.addTagControl(tag_name, data.sort_name, tagging_type);
-          }
-          
           // Change the tags shown in the moderation panel.
           var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
           if(training_control) {
@@ -331,8 +263,6 @@ var Item = Class.create({
       
           // Add the tag's id as a class to newly created controls so they get properly updated if 
           // the user renames or deletes them before reloading the page
-          var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-          tag_control.addClassName(data.id);
           var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
           training_control.addClassName(data.id);
         
@@ -363,16 +293,6 @@ var Item = Class.create({
   
   removeTagging: function(tag_name) {
     if(tag_name.match(/^\s*$/)) { return; }
-    
-    // Remove the small tags that are visible when an item is collapsed.
-    var tag_control = this.findTagElement(this.tag_list, ".tag_control", tag_name);
-    if (tag_control) {
-      tag_control.removeClassName('positive');
-      tag_control.removeClassName('negative');
-      if(!tag_control.match('.classifier')) {
-        tag_control.remove()
-      }
-    }
     
     // Change the tags shown in the moderation panel.
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
@@ -422,15 +342,8 @@ var Item = Class.create({
     return tag;
   },
 
-  addTagControl: function(tag_name, sort_name, tagging_type) {
-    var tag_control = '<li class="tag_control stop ' + tagging_type + '">' + 
-      '<span class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</span>' + 
-    '</li> ';
-    this.tag_list.insertInOrder(".name@data-sort", tag_control, sort_name);
-  },
-
   addTrainingControl: function(tag_name, sort_name) {
-    var training_control = '<div class="tag positive" style="display:none">' + 
+    var training_control = '<div class="tag" style="display:none">' + 
       '<a href="#" onclick="return false;" class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</a>' + 
     '</div> ';
     this.training_controls.insertInOrder(".name@data-sort", training_control, sort_name);
@@ -441,10 +354,12 @@ var Item = Class.create({
   },
   
   load: function(target, onComplete, forceLoad) {
-    target.load(function() {
-      if(onComplete)        { onComplete();    }
-      if(this.isSelected()) { this.scrollTo(); }
-    }.bind(this), forceLoad);
+    if (target) {
+      target.load(function() {
+        if(onComplete)        { onComplete();    }
+        if(this.isSelected()) { this.scrollTo(); }
+      }.bind(this), forceLoad);
+    }
   }
 });
 
@@ -480,5 +395,11 @@ var TagQueue = Class.create({
     } else {
       this.isProcessing = false;
     }
+  }
+});
+
+Ajax.Responders.register({
+  onException: function(r, e) {
+    throw e;
   }
 });

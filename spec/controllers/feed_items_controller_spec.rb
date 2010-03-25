@@ -136,22 +136,6 @@ describe FeedItemsController do
     end
   end
   
-  it "mark_many_read" do
-    feed_item1 = Generate.feed_item!
-    feed_item2 = Generate.feed_item!
-    feed_item3 = Generate.feed_item!
-    feed_item4 = Generate.feed_item!
-    
-    user = Generate.user!
-    user.readings.create!(:readable_type => "FeedItem", :readable_id => feed_item1.id)
-    user.readings.create!(:readable_type => "FeedItem", :readable_id => feed_item2.id)
-    assert_difference("Reading.count", 2) do
-      login_as user
-      put :mark_read, :format => "js"
-      assert_response :success
-    end
-  end
-  
   it "mark_unread" do
     feed_item = Generate.feed_item!
 

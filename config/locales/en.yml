@@ -33,6 +33,12 @@ en:
       last_updated: "Last Updated"
       prototype: "{{login}} is the prototype"
       make_prototype: "Make prototype"
+      footer: |-
+        <div id="footer_text">
+          a mindloom project &copy; 2010
+        	powered by <a href="http://github.com/seangeo/classifier">winnow open source classifier</a> &bull;
+        	<a href="http://blog.peerworks.org">blog</a>
+        </div>
     email:
       subject_prefix: "[WINNOW]"
       deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
@@ -83,8 +89,8 @@ en:
       invitation_code_invalid: "Your invitation could not be found or has already been used."
       account_activated: "Your account has been activated"
       account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
-      feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon. The feed has also been added to your feeds folder in the sidebar."
-      feed_existed: "We already have the feed from {{url}}, however we will update it now. The feed has also been added to your feeds folder in the sidebar."
+      feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon."
+      feed_existed: "We already have the feed from {{url}}, however we will update it now."
       feeds_imported:
         one:   "Imported 1 feed from your OPML file"
         other: "Imported {{count}} feeds from your OPML file"
@@ -141,41 +147,29 @@ en:
       admin_tooltip: ""
       help: "Help"
       help_tooltip: ""
-      leave_feedback: "Leave Feedback"
+      leave_feedback: "Feedback"
       leave_feedback_tooltip: ""
       leave_feedback_textbox_tooltip: ""
     items:
       header:
         feed_items_search_placeholder: "Search Feed Items..."
         feed_items_search_tooltip: ""
-        selected_filters: "Selected Filters"
-        clear_selected_filters: "Clear"
-        clear_selected_filters_tooltip: ""
-        feed_for_selected_filters: "Feed"
-        feed_for_selected_filters_tooltip: ""
         show_label: "Show"
         show_all_label: "All"
         show_all_tooltip: ""
-        show_unread_label: "Unread"
         show_unread_tooltip: ""
         show_trained_label: "Trained"
         show_trained_tooltip: ""
         sort_date_label: "Date"
       sidebar:
-        expand: "Expand"
-        collapse: "Collapse"
         tags_header: "Tags"
         tags_header_tooltip: ""
-        feeds_header: "Feeds"
-        feeds_header_tooltip: ""
-        folders_header: "Folders"
         add: "Add"
         add_tooltip: ""
         done: "Done"
         done_tooltip: ""
         tag_tooltip: "Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
         public_tag_tooltip: "From {{login}}, Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
-        create_feed: "Create Feed: '{{feed}}'"
         merge_confirm: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
         sidebar_confirm: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
       main:
@@ -188,25 +182,25 @@ en:
         no_title: "(no title)"
         feed_metadata: "from {{feed_title}}"
         metadata: "from {{feed_title}} by {{author}}"
-        add_tag: "Add Tag"
+        add_tag: "Create"
         add_tag_tooltip: ""
         close: "Close"
         close_tooltip: ""
         tag_input_tooltip: ""
       footer:
-        previous_item: "Previous Item"
-        previous_item_tooltip: ""
-        next_item: "Next Item"
-        next_item_tooltip: ""
         mark_all_read: "Mark All Read"
         mark_all_read_tooltip: ""
         mark_all_unread: "Mark All Unread"
         mark_all_unread_tooltip: ""
-        start_classifier_button: "Auto-tag"
+        start_classifier_button: "Run AutoTagger"
         start_classifier_tooltip: ""
         stop_classifier_button: "Stop"
         stop_classifier_tooltip: ""
         classifier_progress: "Classify changed tags"
+      previous_item: "Previous Unread"
+      previous_item_tooltip: "Go to the previous unread item."
+      next_item: "Next Unread"
+      next_item_tooltip: "Go to the next unread item."
     tags:
       general:
         no_comments: "There are no comments for this tag."
@@ -289,7 +283,7 @@ en:
           safari:  "To install the bookmarklet, drag this button to your bookmarks bar."
           chrome:  "To install the bookmarklet, drag this button to your bookmarks bar."
           firefox: "To install the bookmarklet, drag this button to your bookmarks toolbar, or right click this button, select Bookmark This Link, and choose the Bookmarks Toolbar folder."
-          opera:   "To install the bookmarklet, drag this button to your personal bar, or right click this button, select Bookmark Link..., click Details, and check Show on Personal Bar"
+          opera:   "To install the bookmarklet, right click this button, select Bookmark Link..., click Details, and check Show on Personal Bar"
           ie6:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
           ie7:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
           ie8:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Favorites Bar folder."
@@ -464,3 +458,32 @@ en:
           reload:  "Classification has completed. Do you want to reload the items?"
           # NOTE: This is never displayed to the user, it is only user as a check against a json response. Do not change this.
           running: "The classifier is already running."
+    # These the are strings that appear in the demo version of winnowTag
+    demo:
+      all_items: See all items
+      column_headings:
+        sidebar: <span class="name">winnowTags</span> (click a tag to see items it finds)
+        items: <span class="name">Items</span> (click on an item to open)
+        feedback: "feedback & questions"
+      footer: |-
+        <div id="copyright">a mindloom project &copy; 2010 &bull; 
+        	powered by <a href="http://github.com/seangeo/classifier">winnow open source classifier</a> &bull; 
+        	<a href="more">info for media</a>
+        </div>
+      explanatory_text:
+        top: |-
+          <p>Find items in thousands of feeds in real time, using winnowTags trained by examples.</p>
+          <p>Get a login to create and share winnowTags, add feeds... <a href="javascript:alert('link needed')">read more</a>
+          	<span class="followOn">Powered by <a href="http://github.com/seangeo/classifier" target="_blank">winnow open source classifier</a>.</span>
+          </p>
+        bottom: |-
+          <p id="tag_detail_footer">
+          	'<span id="footer_tag_name"></span>' is trained with 
+          	<span id="footer_tag_positive_count"></span> positive and 
+          	<span id="footer_tag_negative_count"></span> negative examples and finds 
+          	<span id="footer_tag_count"></span> relevant items.
+          </p>
+          <p>winnowTag is filtering {{item_count}} items collected from {{feed_count}} feeds.
+          	<span class="followOn">Get a login to create and share winnowTags, add feeds... <a href="more">read more</a></span>
+          </p>
+

@@ -26,12 +26,9 @@ describe "FeedItemsTest" do
   it "mark_read_unread" do
     dont_see_element "#feed_item_#{@feed_item1.id}.read"
 
-    page.click "css=#feed_item_#{@feed_item1.id} .status"
-    see_element "#feed_item_#{@feed_item1.id}.read"
-    
-    page.click "css=#mode_unread"
+    page.click "css=#feed_item_#{@feed_item1.id} div.closed"
     page.wait_for :wait_for => :ajax
-    dont_see_element "#feed_item_#{@feed_item1.id}"
+    see_element "#feed_item_#{@feed_item1.id}.read"
 
     # TODO: Make this work with mode=all
     # click "css=#feed_item_#{@feed_item1.id} .status a"
@@ -52,41 +49,11 @@ describe "FeedItemsTest" do
     assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
   end
 
-  it "open_close_moderation_panel " do
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
- 
-    page.click "css=#feed_item_#{@feed_item1.id} .train" 
-    assert_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
- 
-    page.click "css=#feed_item_#{@feed_item1.id} .train" 
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
-  end 
-  
-  it "open_close_moderation_panel_does_not_open_close_item" do
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
-    page.click "css=#feed_item_#{@feed_item1.id} .train" 
-    assert_not_visible "css=#feed_item_#{@feed_item1.id} .body"
-  end
-  
   it "opening_item_marks_it_read" do
     dont_see_element "#feed_item_#{@feed_item1.id}.read"
 
     page.click "css=#feed_item_#{@feed_item1.id} .closed"
     see_element "#feed_item_#{@feed_item1.id}.read"
-
-    page.click "css=#mode_unread"
-    page.wait_for :wait_for => :ajax
-    dont_see_element "#feed_item_#{@feed_item1.id}"
-  end
-  
-  it "click_feed_title_takes_you_to_feed_page" do
-    windows = page.get_all_window_ids
-    feed1 = @feed_item1.feed
-    page.click "css=#feed_item_#{@feed_item1.id} .feed_title", :wait_for => :ajax
-    page.click "css=#feed_item_#{@feed_item1.id} #feed_#{feed1.id} a[href$=/feed_items#feed_ids%3D#{feed1.id}]"
-    
-    # TODO - get_all_window_names doesn't work on IE
-    page.get_all_window_names.should have(windows.size + 1).windows unless ie?
   end
   
   it "displays an empty message when there are no feed items" do

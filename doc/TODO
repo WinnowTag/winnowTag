@@ -29,7 +29,6 @@ Spec Cleanup
  * mock_model
 
 * fix sidebar tag filter width issues when tag name is longer and actions are shown
-* dragging folder - causes open/close
 * cleanup tagging indexes
 * selenium grid
 
@@ -40,7 +39,6 @@ Todo
 
 Bug
  - loading next page after marking some read
- - fix folders sortable + dropable
 
 winnow:
  * use schema.rb or squash migrations so they are consistent with the production db
@@ -68,9 +66,6 @@ refactoring:
  * remove rjs files
    * app/views/feeds/create.js.rjs
    * app/views/feeds/globally_exclude.js.rjs
-   * app/views/folders/add_item.js.rjs
-   * app/views/folders/create.js.rjs
-   * app/views/folders/destroy.js.rjs
    * app/views/tags/create.js.rjs
    * app/views/tags/destroy.js.rjs # TODO: Fade and remove
    * app/views/tags/error.js.rjs

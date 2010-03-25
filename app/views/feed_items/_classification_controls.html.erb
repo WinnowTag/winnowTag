@@ -1,9 +1,12 @@
-<div id="classification_section" class="clearfix">
-  <div class="classification_controls">
-  	<%= rounded_button_function t("winnow.items.footer.start_classifier_button"), "", :icon => "start", :id => "classification_button", :title => t("winnow.items.footer.start_classifier_tooltip") %>
-  </div>
-  <div class="progress_bar_container" id="classification_progress" style="display:none">
-  	<div id="progress_title"><%= t("winnow.items.footer.classifier_progress") %></div>
-  	<div id="progress_bar" class="progress_bar" style="width:0%;"></div>
-  </div>
-</div>
+<fieldset>
+	<legend>Auto Tagging</legend>
+	<div id="classification_section" class="clearfix">
+	  <div id="classification_controls">
+	  	<%= rounded_button_function t("winnow.items.footer.start_classifier_button"), "", :icon => "start", :id => "classification_button", :title => t("winnow.items.footer.start_classifier_tooltip") %>
+	  </div>
+	  <div class="progress_bar_container" id="classification_progress" style="display:none">
+	  	<div id="progress_title"><%= t("winnow.items.footer.classifier_progress") %></div>
+	  	<div id="progress_bar" class="progress_bar" style="width:0%;"></div>
+	  </div>
+	</div>
+</fieldset>

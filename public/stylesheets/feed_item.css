@@ -1,0 +1,163 @@
+/* Copyright (c) 2008 The Kaphan Foundation
+ *
+ * Possession of a copy of this file grants no permission or license
+ * to use, modify, or create derivative works.
+ * Please visit http://www.peerworks.org/contact for further information.
+ */
+ 
+.feed_item {
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+}
+
+.feed_item.selected {
+  border: 2px solid #936301;
+}
+
+.feed_item .closed {
+  padding: 2px;
+  cursor: pointer;
+  padding: 5px 5px 4px 5px;
+}
+
+.feed_item.read .closed {
+  background-color: #eee;
+}
+
+.feed_item.selected .closed {
+  padding: 3px 3px 3px 3px;
+}
+
+.feed_item .closed .title {
+  font-weight: bold;
+  color: #000;
+  text-decoration: none;
+}
+
+.feed_item.read .closed .title {
+  color: #666;
+}
+
+.feed_item .closed a.selected {
+  color: #333;
+  border: 1px solid #DECBA3;
+  background-color: #F2F2F2;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
+}
+
+.feed_item .closed .feed_title {
+  padding: 3px 4px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.feed_item .feed_title.selected {
+}
+
+.feed_item .closed .date {
+  float: right;
+  width: 6em;
+  text-align: right;
+  color: #666;
+}
+
+.feed_item .closed .train {
+  float: right;
+  margin: 0 0 0 1em;
+}
+
+.feed_item .closed .train.selected {
+  padding: 0 3px;
+  margin: -1px -4px -1px 0;
+}
+
+.feed_item .body {
+  display: none;
+  padding: 8px 8px 8px 25px;
+}
+
+.feed_item.open .body {
+  display: block;
+}
+
+.feed_item.selected .body {
+  padding: 8px 6px 7px 23px;
+}
+
+.feed_item .moderation_panel {
+  display: none;
+  padding: 0.5em 0.75em;
+  background-color: #F2F2F2;
+}
+
+.feed_item .moderation_panel.selected {
+  display: block;
+}
+
+.feed_item .moderation_panel .close {
+  float: right;
+}
+
+.feed_item .moderation_panel form {
+  float: right;
+}
+
+.training_controls {
+  margin-right: 3em;
+}
+
+.training_controls .tag {
+  float: left;
+  margin: 0 0.5em 0.25em 0;
+  padding: 0 0.5em;
+  white-space: nowrap;
+}
+
+.training_controls .tag .name {
+  color: #797979;
+  font-weight: bold;
+}
+
+.training_controls .tag.classifier .name {
+  color: black;
+}
+
+.training_controls .tag.positive .name {
+  color: #32BC32 !important;
+}
+
+.training_controls .tag.negative .name {
+  color: red !important;
+}
+
+.feed_item .feed_information {
+  display: none;
+  border: 2px solid #DECBA3;
+  border-width: 2px 0 0 0;
+  background-color: #F2F2F2;
+  /* This is a work around for a bug in IE 7. Without setting this
+   * the content of the feed information div doesn't appear until
+   * the page is scrolled or resized.
+   */
+  min-width: 0;
+}
+
+.feed_item.open .feed_information {
+  border-width: 2px 0;
+}
+
+.feed_item .feed_information.selected {
+  display: block;
+}
+
+.feed_item .feed_information .summary {
+  background-color: #F2F2F2;
+}
+
+.notitle {
+  font-style: italic;
+  font-weight: normal;
+  color: #666;
+}

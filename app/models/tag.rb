@@ -18,10 +18,6 @@ end
 # A Tag may be public, meaning that it is accessible to other users
 # or private, meaning that is only accessible by the creator.
 # 
-# Tag creators can choose whether or not their tags show in their
-# sidebar via the +show_in_sidebar+ attribute. This attribute does 
-# not affect users who subscribe the tag.
-# 
 # The bias attribute is passed to the classifier, it controls how sensitive
 # classification of this tag will be. A bias of 1.0 is neutral, less that 1
 # will err on the side of false negatives and a bias greater that 1 will
@@ -54,6 +50,7 @@ class Tag < ActiveRecord::Base
 
   # See the definition of this method below to learn about this callbacks
   before_save :set_sort_name
+  before_save :clear_subscriptions_unless_public
 
   # Reads the cached attribute or does a query to find the result. The cached attribute is set in the +search+ finder method.
   def positive_count
@@ -346,6 +343,10 @@ private
     self.sort_name = name.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end
 
+  def clear_subscriptions_unless_public
+    self.tag_subscriptions.clear unless public?
+  end
+  
   # Adds taggings for this tag from the taggings defined in the atom document.
   #
   # Each entry in the atom document defines a tagging from this tag to the

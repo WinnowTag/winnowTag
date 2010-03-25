@@ -6,13 +6,18 @@
 module NavigationHelpers
   def path_to(page_name)
     case page_name
-    
+    when /the feed items page/
+      feed_items_path
     when /the homepage/
       root_path
     when /the login page/
       login_path
+    when /logout/
+      logout_path
     when /the feeds page/
       feeds_path
+    when /the default page/
+      root_path
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in features/support/paths.rb"

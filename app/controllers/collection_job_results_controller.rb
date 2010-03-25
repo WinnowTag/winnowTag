@@ -15,10 +15,6 @@ class CollectionJobResultsController < ApplicationController
     user = User.find_by_login(params[:user_id]) || User.find(params[:user_id])
     feed = Feed.find_by_id(params[:collection_job_result][:feed_id]) || Remote::Feed.find(params[:collection_job_result][:feed_id])
     
-    if feed and feed.duplicate
-      user.update_feed_state(feed)
-    end
-    
     if params[:collection_job_result][:failed].to_s =~ /true/i
       user.messages.create!(:body => t("winnow.notifications.collection_failed", :title => feed.title, :message => params[:collection_job_result][:message]))
     end

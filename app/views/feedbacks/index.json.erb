@@ -1,6 +1,0 @@
-<%= {
-  :full => @full,
-  :items => @feedbacks.map do |feedback|
-    { :id => dom_id(feedback), :content => render(:partial => 'feedback.html.erb', :object => feedback) }
-  end
-}.to_json %>

@@ -24,6 +24,20 @@ document.observe('dom:loaded', function() {
       if(element.value == "") { element.showPlaceholder(); }
     });
 
+    element.observe("keypress", function() {
+      window.setTimeout(function() {
+        if ($('search_clear')) {
+          if (element.blank()) { 
+            $('search_clear').hide(); 
+          } else { 
+            $('search_clear').show(); 
+          }
+        }
+      }, 100);
+    });
+    
     if(element.value == "") { element.showPlaceholder(); }
   });
 });
+
+

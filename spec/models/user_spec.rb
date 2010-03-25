@@ -14,17 +14,9 @@ describe User do
     it "has many tag subscriptions" do
       @user.should have_many(:tag_subscriptions)
     end
-    
-    it "has many feed subscriptions" do
-      @user.should have_many(:feed_subscriptions)
-    end
-    
+  
     it "has many messages" do
       @user.should have_many(:messages)
-    end
-    
-    it "has many feedbacks" do
-      @user.should have_many(:feedbacks)
     end
     
     it "has many comments" do
@@ -72,41 +64,6 @@ describe User do
       user.should be_new_record
     end
     
-    it "creating from a prototype copies over custom folders" do
-      tag1 = Generate.tag!
-      tag2 = Generate.tag!
-      feed1 = Generate.feed!
-      feed2 = Generate.feed!
-      feed3 = Generate.feed!
-      
-      prototype = Generate.user!(:prototype => true)
-      prototype.folders.create!(:name => "Big", :tag_ids => [tag1.id, tag2.id], :feed_ids => [feed1.id, feed2.id, feed3.id])
-      prototype.folders.create!(:name => "Small", :tag_ids => [tag1.id], :feed_ids => [feed3.id])
-      
-      user = User.create_from_prototype(Generate.user_attributes)
-      user.should have(2).folders
-      
-      user.folders.first.name.should == "Big"
-      user.folders.first.tag_ids.sort.should == [tag1.id, tag2.id]
-      user.folders.first.feed_ids.sort.should == [feed1.id, feed2.id, feed3.id]
-
-      user.folders.last.name.should == "Small"
-      user.folders.last.tag_ids.should == [tag1.id]
-      user.folders.last.feed_ids.should == [feed3.id]
-    end
-    
-    it "creating from a prototype copies over feed subscriptions" do
-      prototype = Generate.user!(:prototype => true)
-      prototype.feed_subscriptions.create!(:feed_id => 1)
-      prototype.feed_subscriptions.create!(:feed_id => 2)
-      
-      user = User.create_from_prototype(Generate.user_attributes)
-      user.should have(2).feed_subscriptions
-      
-      user.feed_subscriptions.first.feed_id.should == 1
-      user.feed_subscriptions.last.feed_id.should == 2
-    end
-    
     it "creating from a prototype copies over tag subscriptions" do
       prototype = Generate.user!(:prototype => true)
       prototype.tag_subscriptions.create!(:tag_id => 1)
@@ -125,9 +82,9 @@ describe User do
       
       prototype = Generate.user!(:prototype => true)
                   
-      tag1 = prototype.tags.create!(:name => "Tag 1", :public => false, :bias => 1.2, :show_in_sidebar => true, :description => "Tag 1 Comment")
+      tag1 = prototype.tags.create!(:name => "Tag 1", :public => false, :bias => 1.2, :description => "Tag 1 Comment")
       tag1.taggings.create! :classifier_tagging => true, :strength => 1, :feed_item_id => feed_item1.id, :user_id => prototype.id
-      tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :show_in_sidebar => false, :description => "Tag 2 Comment")
+      tag2 = prototype.tags.create!(:name => "Tag 2", :public => true, :bias => 1.5, :description => "Tag 2 Comment")
       tag2.taggings.create! :classifier_tagging => false, :strength => 0, :feed_item_id => feed_item2.id, :user_id => prototype.id
       
       user = User.create_from_prototype(Generate.user_attributes)
@@ -136,7 +93,6 @@ describe User do
       user.tags.first.name.should == "Tag 1"
       user.tags.first.public.should == false
       user.tags.first.bias.should == 1.2
-      user.tags.first.show_in_sidebar.should == true
       user.tags.first.description.should == "Tag 1 Comment"
 
       user.tags.first.should have(1).taggings   
@@ -149,7 +105,6 @@ describe User do
       user.tags.last.name.should == "Tag 2"
       user.tags.last.public.should == true
       user.tags.last.bias.should == 1.5
-      user.tags.last.show_in_sidebar.should == false
       user.tags.last.description.should == "Tag 2 Comment"
 
       user.tags.last.should have(1).taggings
@@ -418,21 +373,6 @@ describe User do
       user.subscribed?(tag).should be_true
     end
   
-    it "knows_that_given_user_is_not_subscribed_to_a_feed" do
-      user = Generate.user!
-      feed = Generate.feed!
-
-      user.subscribed?(feed).should be_false
-    end
-  
-    it "knows_that_given_user_is_subscribed_to_a_feed" do
-      user = Generate.user!
-      feed = Generate.feed!
-      FeedSubscription.create!(:feed => feed, :user => user)
-    
-      user.subscribed?(feed).should be_true
-    end
-  
     it "knows_feed_is_globally_excluded" do
       user = Generate.user!
       feed = Generate.feed!
@@ -461,31 +401,6 @@ describe User do
       tag = Generate.tag!(:user => user)
     
       user.globally_excluded?(tag).should be_false
-    end
-  
-    it "update_feed_state_moves_feed_subscriptions_when_feed_is_a_duplicate" do
-      user = Generate.user!
-      feed = Generate.feed!
-      duplicate = Generate.feed!(:duplicate => feed)
-      user.feed_subscriptions.create!(:feed => duplicate)
-    
-      user.should be_subscribed(duplicate)
-      user.should_not be_subscribed(feed)
-
-      user.update_feed_state(duplicate)
-    
-      user.should_not be_subscribed(duplicate)
-      user.should be_subscribed(feed)
-    end
-  
-    it "update_feed_state_does_nothing_with_feed_is_not_a_duplicate" do
-      user = Generate.user!
-      feed = Generate.feed!
-      user.feed_subscriptions.create!(:feed => feed)
-    
-      user.update_feed_state(feed)
-    
-      user.should be_subscribed(feed)
     end
   end
 end

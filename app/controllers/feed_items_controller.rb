@@ -6,6 +6,8 @@
 
 # The +FeedItemsController+ is used to manage the viewing of feed items.
 class FeedItemsController < ApplicationController
+  skip_before_filter :login_required, :only => :body
+  
   # The +index+ action displays +FeedItem+s based on filters provided.
   # See also +FeedItem.find_with_filters+.
   def index
@@ -24,8 +26,7 @@ class FeedItemsController < ApplicationController
           end
         end
 
-        filters = { :order => params[:order], :direction => params[:direction],
-                    :limit => limit, :offset => params[:offset],
+        filters = { :limit => limit, :offset => params[:offset],
                     :feed_ids => params[:feed_ids], :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :mode => params[:mode],
@@ -47,7 +48,6 @@ class FeedItemsController < ApplicationController
         end
 
         filters = { :limit => 20,
-                    :order => params[:order], :direction => params[:direction],
                     :feed_ids => params[:feed_ids], :tag_ids => params[:tag_ids],
                     :text_filter => params[:text_filter],
                     :mode => params[:mode],
@@ -62,37 +62,19 @@ class FeedItemsController < ApplicationController
   end
 
   # The +mark_read+ action is used to mark feed items as read for the
-  # logged in user. If an +id+ is provided, that individual feed item
-  # is marked read, otherwise it the tag/feed/text/mode filters will 
-  # be used to mark many feed items as read.
+  # logged in user. 
   def mark_read
     if params[:id]
       FeedItem.find(params[:id]).read_by!(current_user)
-    else
-      filters = { :feed_ids => params[:feed_ids],
-                  :tag_ids => params[:tag_ids],
-                  :text_filter => params[:text_filter],
-                  :mode => params[:mode],
-                  :user => current_user }
-      FeedItem.read_by!(filters)
     end
     render :nothing => true
   end
   
   # The +mark_unread+ action is used to mark feed items as unread for the
-  # logged in user. If an +id+ is provided, that individual feed item
-  # is marked unread, otherwise it the tag/feed/text/mode filters will 
-  # be used to mark many feed items as unread.
+  # logged in user.
   def mark_unread
     if params[:id]
       FeedItem.find(params[:id]).unread_by!(current_user)
-    else
-      filters = { :feed_ids => params[:feed_ids],
-                  :tag_ids => params[:tag_ids],
-                  :text_filter => params[:text_filter],
-                  :mode => params[:mode],
-                  :user => current_user }
-      FeedItem.unread_by!(filters)
     end
     render :nothing => true
   end
@@ -120,11 +102,6 @@ class FeedItemsController < ApplicationController
   # for feed item to make the loading of the list of feed items faster.
   def feed_information 
     @feed_item = FeedItem.find(params[:id]) 
-    render :layout => false
-  end
-
-  # The +sidebar+ actions loads the contents of the feed items sidebar.
-  def sidebar
     render :layout => false
   end
 end

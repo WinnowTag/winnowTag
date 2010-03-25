@@ -1,0 +1,40 @@
+<div id="demo_title">
+	<h1 id="demo_header">winnowTag</h1>
+	<h2 id="demo_subheader">demo</h2>
+</div>
+
+<div id="topDemoContent" class="demo_content">
+	<%= t("winnow.demo.explanatory_text.top") %>
+</div>
+
+<div class="column_headers">
+	<div id="siidebar_header"><%= t("winnow.demo.column_headings.sidebar") %></div>
+	<div id="item_header"><%= t("winnow.demo.column_headings.items") %></div>
+	<div id="feedback">
+		<% if session[:user] %>
+			<%= link_to "main site", feed_items_path %>
+		<% else %>
+			<%= link_to "log in or signup", login_path %> 
+		<% end %> |
+		<%= mail_to CONTACT_EMAIL, t("winnow.demo.column_headings.feedback"), :encode => :javascript %>
+	</div>
+</div>
+
+<div id="container">
+	<div id="sidebar">
+		<ul id="tags" class="filter_list tags">
+			<li id="tag_0" class="tag" title="See all items"><%= t("winnow.demo.all_items") %></li>
+			<%= demo_tag_controls %>
+		</ul>
+	</div>
+
+	<div id="content">&nbsp;</div>
+</div>
+
+<div id="footer">
+	<div id="bottomDemoContent" class="demo_content">
+		<%= t("winnow.demo.explanatory_text.bottom", :item_count => FeedItem.count, :feed_count => Feed.count) %>
+	</div>
+
+	<%= t("winnow.demo.footer") %>
+</div>

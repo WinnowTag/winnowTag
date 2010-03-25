@@ -13,10 +13,8 @@ class User < ActiveRecord::Base
   acts_as_authorizable
   
   has_many :messages, :order => "created_at DESC"
-  has_many :feedbacks
   has_many :comments
   has_many :tags, :dependent => :delete_all
-  has_many :sidebar_tags, :class_name => "Tag", :conditions => "show_in_sidebar = true"
   has_many :taggings, :dependent => :delete_all do
     def find_by_feed_item(feed_item, type = :all, options = {})
       with_scope(:find => {:conditions => ['taggings.feed_item_id = ?', feed_item.id]}) do
@@ -35,27 +33,16 @@ class User < ActiveRecord::Base
   has_many :deleted_taggings, :dependent => :delete_all
   has_many :tag_subscriptions, :dependent => :delete_all
   has_many :subscribed_tags, :through => :tag_subscriptions, :source => :tag
-  has_many :feed_subscriptions, :dependent => :delete_all
-  has_many :subscribed_feeds, :through => :feed_subscriptions, :source => :feed
   has_many :feed_exclusions, :dependent => :delete_all
   has_many :excluded_feeds, :through => :feed_exclusions, :source => :feed
   has_many :tag_exclusions, :dependent => :delete_all
   has_many :excluded_tags, :through => :tag_exclusions, :source => :tag
-  has_many :folders, :dependent => :delete_all, :order => "position"
   
   # for email address regex, see: http://www.regular-expressions.info/email.html
   validates_format_of :email, :with => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
  
   # See the definition of this method below to learn about this callbacks
   before_save :update_prototype
- 
-  def feeds
-    (subscribed_feeds - excluded_feeds).sort_by { |feed| feed.sort_title }
-  end
-  
-  def feed_ids
-    subscribed_feed_ids - excluded_feed_ids
-  end
  
   def globally_excluded?(tag_or_feed)
     if tag_or_feed.is_a?(Tag)
@@ -65,11 +52,11 @@ class User < ActiveRecord::Base
     end
   end
 
-  def subscribed?(tag_or_feed)
-    if tag_or_feed.is_a?(Tag)
-      subscribed_tags(:load).include?(tag_or_feed)
-    elsif tag_or_feed.is_a?(Feed)
-      subscribed_feeds(:load).include?(tag_or_feed)
+  def subscribed?(tag)
+    if tag.is_a?(Tag)
+      subscribed_tags(:load).include?(tag)
+    else
+      raise ArgumentError, "subscribed only takes a tag"
     end
   end
   
@@ -128,17 +115,6 @@ class User < ActiveRecord::Base
     Time.parse(read_attribute(:last_tagging_on).to_s)
   end
   
-  # Updates any feed state between this feed and the user.
-  #
-  # Only makes changes if the feed is a duplicate
-  def update_feed_state(feed)
-    if feed.duplicate_id
-      if feed_subscriptions.update_all(["feed_id = ?", feed.duplicate_id], ["feed_id = ?", feed.id]) > 0
-        subscribed_feeds.reload
-      end
-    end
-  end
-  
   def changed_tags
     self.tags.find(:all, :conditions => ['updated_on > last_classified_at or last_classified_at is NULL'])
   end
@@ -147,7 +123,7 @@ class User < ActiveRecord::Base
     self.changed_tags.select {|t| t.potentially_undertrained? }
   end
 
-  def tags_for_sidebar(tag_ids)
+  def tags_for_sidebar
     Tag.find :all, 
       :select => ['tags.*',
                   '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 1) AS positive_count',
@@ -155,7 +131,7 @@ class User < ActiveRecord::Base
                   '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count'
                  ].join(","),
       :conditions => ["tags.id IN (?) OR (tags.id IN(?) AND (tags.public = ? OR tags.user_id = ?))", 
-                      sidebar_tag_ids + subscribed_tag_ids - excluded_tag_ids, tag_ids.to_s.split(","), true, self],
+                     tag_ids + subscribed_tag_ids - excluded_tag_ids, tag_ids.to_s.split(","), true, self],
       :order => "tags.sort_name"
   end
 
@@ -182,7 +158,7 @@ class User < ActiveRecord::Base
     end
   end
   
-  # Creating a user from the prototype will copy over the prototype's folders,
+  # Creating a user from the prototype will copy over the prototype's
   # feed subscriptions, tag subscriptions, tags, and taggings. This method will 
   # also activate the user and mark all system messages as read.
   def self.create_from_prototype(attributes = {})
@@ -193,20 +169,12 @@ class User < ActiveRecord::Base
     Message.read_by!(user)
     
     if prototype = User.find_by_prototype(true)
-      prototype.folders.each do |folder| 
-        user.folders.create! :name => folder.name, :tag_ids => folder.tag_ids, :feed_ids => folder.feed_ids
-      end
-      
-      prototype.feed_subscriptions.each do |feed_subscription| 
-        user.feed_subscriptions.create! :feed_id => feed_subscription.feed_id
-      end
-      
       prototype.tag_subscriptions.each do |tag_subscription| 
         user.tag_subscriptions.create! :tag_id => tag_subscription.tag_id
       end
       
       prototype.tags.each do |tag|
-        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :show_in_sidebar => tag.show_in_sidebar, :description => tag.description
+        new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :description => tag.description
 
         tag.taggings.each do |tagging|
           user.taggings.create! :classifier_tagging => tagging.classifier_tagging, :strength => tagging.strength, :feed_item_id => tagging.feed_item_id, :tag_id => new_tag.id

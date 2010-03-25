@@ -1,0 +1,86 @@
+/* Copyright (c) 2008 The Kaphan Foundation
+ *
+ * Possession of a copy of this file grants no permission or license
+ * to use, modify, or create derivative works.
+ * Please visit http://www.peerworks.org/contact for further information.
+ */
+
+div.context_menu {
+  border: 0px none;
+  position: absolute;
+  top: 150px;
+  left: 222px;
+  width: 150px;
+  z-index: 255;
+  background-color: white;
+  -moz-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+div.context_menu ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+div.context_menu ul li span.menu_label {
+  margin-left: 1.5em;
+}
+
+div.context_menu ul li {
+  padding: 2px 0px;
+  cursor: pointer;
+}
+
+div.context_menu ul li:hover {
+  background-color: #FEF3BB;
+}
+
+div.context_menu.subscribed li.onlymine {
+  color: #ccc;
+  cursor: default;
+}
+
+li span.tick {
+  margin-left: 5px;
+}
+
+span.menu_label.tickable {
+  margin-left: 1px !important;
+}
+
+div.context_menu.public span.tick {
+  visibility: visible;
+}
+
+div.context_menu span.tick {
+  visibility: hidden;
+}
+
+div.context_menu.subscribed li.onlymine:hover {
+  background-color: white;
+}
+
+div.context_menu_button {
+  border: 1px solid #aaa;
+  width: 12px;
+  height: 12px;
+  float: right;
+  margin-top: 2px;
+  margin-right: 2px;
+  -moz-border-radius: 4px;
+  background-image: url(../images/bullet_arrow_down.png);
+  background-position: -2px -2px;
+  background-color: white;
+  -moz-user-select: none;
+  cursor: pointer;
+  display: none;
+}
+
+li.tag:hover div.context_menu_button, li.tag.menu-up div.context_menu_button {
+  display: block;
+}
+
+div.context_menu_button:hover {
+  background-color: white;
+}

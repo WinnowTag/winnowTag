@@ -1,2 +1,7 @@
-page['tag_filters'].insertInOrder '.name@data-sort', tag_filter_control(@tag, :draggable => true, :editable => true, :remove => :subscription), @tag.sort_name
+page['user_tag_filters'].insertInOrder '.name@data-sort', tag_filter_control(@tag), @tag.sort_name
 page << "itemBrowser.bindTagFilterEvents($('tag_filters').down('##{dom_id(@tag)}'));"
+page << "itemBrowser.bindTagContextMenu('#{dom_id(@tag)}');"
+page << "new Effect.ScrollToInDiv('tag_container', '#{dom_id(@tag)}');"
+page << "new Effect.Highlight('#{dom_id(@tag)}', {queue: 'end', endcolor: '#FEF3BB', restorecolor: null});"
+page << "$('name').value = '';"
+page << "if (itemBrowser.selectedItem() && itemBrowser.selectedItem()._item.isOpen()) { itemBrowser.selectedItem()._item.addTrainingControl('#{@tag.name}', '#{@tag.sort_name}');}"

@@ -451,7 +451,6 @@ describe TagsController do
       referer("/tags")
 
       TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => @user.id)
-      Folder.should_receive(:remove_tag).with(@user, tag.id)
 
       put :unsubscribe, :id => tag
       assert_response :redirect
@@ -466,28 +465,6 @@ describe TagsController do
         put :subscribe, :id => tag, :subscribe => "true", :format => "js"
       }.should change(TagSubscription, :count).by(1)
       
-      assert_response :success
-    end
-  end
-  
-  describe 'sidebar' do
-    # Test unsubscribing as implemented on the "My Tags" page
-    it "sidebar - false" do
-      tag = Generate.tag!(:user => @user)
-
-      Folder.should_receive(:remove_tag).with(@user, tag.id)
-
-      put :sidebar, :id => tag, :sidebar => "false"
-      assert_response :success
-    end
-
-    # Test unsubscribing as implemented on the "My Tags" page
-    it "sidebar - true" do
-      tag = Generate.tag!(:user => @user)
-
-      Folder.should_not_receive(:remove_tag)
-
-      put :sidebar, :id => tag, :sidebar => "true", :format => "js"
       assert_response :success
     end
   end
@@ -536,6 +513,19 @@ describe TagsController do
       response.should be_success
       assert @user.tags.find_by_name('new')
     end    
+  end
+  
+  describe "publicize" do
+    before(:each) do
+      @tag = mock_model(Tag, :user_id => @user.id)
+      Tag.should_receive(:find).with("111").and_return(@tag)
+    end
+    
+    it "should call the publicize setter on the tag" do
+      @tag.should_receive(:update_attribute).with(:public, "true")
+      put :publicize, :id => "111", :public => "true"
+      response.should be_success
+    end
   end
 end
 

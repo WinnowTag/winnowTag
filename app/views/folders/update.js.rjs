@@ -1,1 +1,0 @@
-page[dom_id(@folder)].down(".name").update h(@folder.name)
