@@ -1,6 +1,10 @@
 --- !ruby/object:Gem::Specification 
 name: webrat
 version: !ruby/object:Gem::Version 
+  segments: 
+  - 0
+  - 4
+  - 4
   version: 0.4.4
 platform: ruby
 authors: 
@@ -9,19 +13,24 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-04-06 00:00:00 -04:00
+date: 2009-04-06 13:30:00 +09:30
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
   name: nokogiri
-  type: :runtime
-  version_requirement: 
-  version_requirements: !ruby/object:Gem::Requirement 
+  requirement: &id001 !ruby/object:Gem::Requirement 
     requirements: 
     - - ">="
       - !ruby/object:Gem::Version 
+        segments: 
+        - 1
+        - 2
+        - 0
         version: 1.2.0
     version: 
+  type: :runtime
+  version_requirement: 
+  version_requirements: *id001
 description: Webrat. Ruby Acceptance Testing for Web applications
 email: bryan@brynary.com
 executables: []
@@ -119,6 +128,7 @@ files:
 - vendor/selenium-server.jar
 has_rdoc: true
 homepage: http://github.com/brynary/webrat
+licenses: 
 post_install_message: 
 rdoc_options: []
 
@@ -128,18 +138,22 @@ required_ruby_version: !ruby/object:Gem::Requirement
   requirements: 
   - - ">="
     - !ruby/object:Gem::Version 
+      segments: 
+      - 0
       version: "0"
   version: 
 required_rubygems_version: !ruby/object:Gem::Requirement 
   requirements: 
   - - ">="
     - !ruby/object:Gem::Version 
+      segments: 
+      - 0
       version: "0"
   version: 
 requirements: []
 
 rubyforge_project: webrat
-rubygems_version: 1.3.1
+rubygems_version: 1.3.6
 signing_key: 
 specification_version: 2
 summary: Webrat. Ruby Acceptance Testing for Web applications

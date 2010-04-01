@@ -1,6 +1,10 @@
 --- !ruby/object:Gem::Specification 
 name: hpricot
 version: !ruby/object:Gem::Version 
+  segments: 
+  - 0
+  - 8
+  - 1
   version: 0.8.1
 platform: ruby
 authors: 
@@ -9,7 +13,7 @@ autorequire:
 bindir: bin
 cert_chain: []
 
-date: 2009-04-03 00:00:00 -04:00
+date: 2009-04-03 14:30:00 +10:30
 default_executable: 
 dependencies: []
 
@@ -77,6 +81,7 @@ files:
 - ext/hpricot_scan/hpricot_common.rl
 has_rdoc: true
 homepage: http://code.whytheluckystiff.net/hpricot/
+licenses: 
 post_install_message: 
 rdoc_options: 
 - --quiet
@@ -86,23 +91,28 @@ rdoc_options:
 - README
 - --inline-source
 require_paths: 
+- bin
 - lib
 required_ruby_version: !ruby/object:Gem::Requirement 
   requirements: 
   - - ">="
     - !ruby/object:Gem::Version 
+      segments: 
+      - 0
       version: "0"
   version: 
 required_rubygems_version: !ruby/object:Gem::Requirement 
   requirements: 
   - - ">="
     - !ruby/object:Gem::Version 
+      segments: 
+      - 0
       version: "0"
   version: 
 requirements: []
 
 rubyforge_project: hobix
-rubygems_version: 1.3.1
+rubygems_version: 1.3.6
 signing_key: 
 specification_version: 2
 summary: a swift, liberal HTML parser with a fantastic library
