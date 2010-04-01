@@ -30,3 +30,9 @@ Feature: Logging In
 		Given I am logged in
 		When I go to logout
 		Then I should be on the default page
+
+  Scenario: Accessing the default page when logged in should take you to the main app
+		Given There is a demo user
+		Given I am logged in
+		When I am on the default page
+		Then I am redirected to the feed items page

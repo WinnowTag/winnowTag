@@ -5,7 +5,9 @@
 # Please visit http://www.peerworks.org/contact for further information.
 
 class DemoController < ActionController::Base
+  include AuthenticatedSystem
   helper :date, :feed_items, :feeds
+  before_filter :redirect_logged_in_user
   
   def index
     @user = User.find_by_login("pw_demo")
@@ -19,5 +21,10 @@ class DemoController < ActionController::Base
                               :tag_ids => params[:tag_ids])
       end
     end
+  end
+  
+  private
+  def redirect_logged_in_user
+    redirect_to feed_items_path if logged_in?
   end
 end
