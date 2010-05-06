@@ -25,7 +25,7 @@ set :use_sudo, false
 default_run_options[:pty] = true
 set :scm, 'git'
 set :scm_verbose, true
-set :repository, 'git@github.com:seangeo/winnow.git'
+set :repository, 'git@github.com:WinnowTag/winnowTag.git'
 set :deploy_via, :remote_cache
 set :group, "mongrels"
 
