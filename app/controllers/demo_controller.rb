@@ -7,7 +7,7 @@
 class DemoController < ActionController::Base
   include AuthenticatedSystem
   helper :date, :feed_items, :feeds
-  before_filter :redirect_logged_in_user
+  before_filter :login_from_cookie, :redirect_logged_in_user
   
   def index
     @user = User.find_by_login("pw_demo")
