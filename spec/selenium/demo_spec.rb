@@ -14,7 +14,7 @@ describe "Demo" do
     
     @tag.taggings.create!(:feed_item => @items.first, :user => @user)
     
-    page.open demo_index_path
+    page.open "/"
     page.wait_for :wait_for => :page
     page.wait_for :wait_for => :ajax
   end

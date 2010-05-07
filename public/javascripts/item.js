@@ -18,7 +18,7 @@ var Item = Class.create({
     this.moderation_panel  = this.element.down(".moderation_panel");
     this.feed_information  = this.element.down(".feed_information");
     this.body              = this.element.down(".body");
-    this.isDemo              = window.location.pathname == "/demo";
+    this.isDemo            = $("demo") != null;
     
     // Queues by tag name for tagging requests. See the TagQueue class
     // for more details.
@@ -95,7 +95,7 @@ var Item = Class.create({
       this.hideTrainingControls();
     } else {
       this.showBody();
-      if (sidebar && sidebar.isEditing()) {
+      if (sidebar && sidebar.isEditing && sidebar.isEditing()) {
         this.showTrainingControls();
       }
     }
