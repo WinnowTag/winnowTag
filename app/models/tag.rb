@@ -192,7 +192,8 @@ class Tag < ActiveRecord::Base
         condition_values << options[:since].getutc
       end
       
-      self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], :limit => (options[:limit] or 100),
+      self.taggings.find(:all, :conditions => [conditions.join(" and "), *condition_values], 
+                               :limit => (options[:training_mode] ? nil : (options[:limit] or 100)),
                                :order => 'feed_items.updated DESC', :include => [{:feed_item, :content}]).each do |tagging|
         feed.entries << tagging.feed_item.to_atom(options.merge({:include_tags => self, :training_only => options[:training_only]}))
       end
