@@ -13,6 +13,18 @@ module FeedItemsHelper
       h(feed_item.title)
     end
   end
+  
+  def current_tag_training(feed_item)
+    if feed_item.tagged_type.nil?
+      ""
+    elsif feed_item.tagged_type.to_i == 1
+      "positive"
+    elsif feed_item.tagged_type.to_i == 0
+      "negative"
+    else
+      ""
+    end
+  end
 
   # The +tag_controls+ helper generates the list of taggings applied to a feed item.
   # These are displayed in the collapsed view of a feed item.

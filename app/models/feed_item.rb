@@ -211,6 +211,7 @@ class FeedItem < ActiveRecord::Base
     
     options_for_find = options_for_filters(filters).merge(:select => [
       'feed_items.*', 'feeds.title AS feed_title', 
+      "(select strength from taggings where taggings.feed_item_id = feed_items.id AND taggings.tag_id IN (#{filters[:tag_ids] or 0}) and taggings.classifier_tagging = 0) as tagged_type",
       "EXISTS (SELECT 1 FROM readings WHERE readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id AND readings.user_id = #{user.id}) AS read_by_current_user"
     ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"

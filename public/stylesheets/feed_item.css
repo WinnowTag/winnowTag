@@ -25,6 +25,15 @@
   background-color: #eee;
 }
 
+.feed_item.positive .closed {
+  background-color: #D7F3A9;
+}
+
+.feed_item.negative .closed {
+  background-color: pink;
+}
+
+
 .feed_item.selected .closed {
   padding: 3px 3px 3px 3px;
 }
