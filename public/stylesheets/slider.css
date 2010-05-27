@@ -48,15 +48,15 @@ div.bias_marker.zero_point_nine {
 }
 
 div.bias_marker.one_point_zero {
-	width: 3px;
 	height: 9px;
 	top: 4px;
-	margin-left: 2px;
 }
 
 div.bias_marker.one_point_one {
+	width: 3px;
 	height: 11px;
 	top: 3px;
+	margin-left: 2px;
 }
 
 div.bias_marker.one_point_two {
