@@ -69,7 +69,7 @@ var Classification = Class.create({
             new Ajax.Request("/tags/" + tagIDNumber + "/information", { method: 'get',
                 onComplete: function(response) {
                 if (response.status == 200)
-                    tag.title = response.responseText;
+                    tag.down(".name").title = response.responseText;
                 }
             });
           }
