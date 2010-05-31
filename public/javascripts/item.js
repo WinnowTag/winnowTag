@@ -214,14 +214,14 @@ var Item = Class.create({
 
       if(tag.hasClassName("positive")) {
         this.addTagging(tag_name, "negative");
-        tag.removeClassName("positive"); if (currentTagInSidebarID) itemBrowser.selectedItem().removeClassName("positive");
-        tag.addClassName("negative"); if (currentTagInSidebarID) itemBrowser.selectedItem().addClassName("negative");
+        tag.removeClassName("positive"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().removeClassName("positive");
+        tag.addClassName("negative"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().addClassName("negative");
       } else if(tag.hasClassName("negative")) {
         this.removeTagging(tag_name);
-        tag.removeClassName("negative"); if (currentTagInSidebarID) itemBrowser.selectedItem().removeClassName("negative");
+        tag.removeClassName("negative"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().removeClassName("negative");
       } else {
         this.addTagging(tag_name, "positive");
-        tag.addClassName("positive"); if (currentTagInSidebarID) itemBrowser.selectedItem().addClassName("positive");
+        tag.addClassName("positive"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().addClassName("positive");
       }
     }.bind(this);
     
