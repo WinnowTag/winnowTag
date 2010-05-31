@@ -2,7 +2,7 @@
   <% current_user.tags.by(:name, :asc).each do |tag| -%>
     <% taggings = @feed_item.taggings.select { |t| t.user == current_user && t.tag == tag } %>
     <%# Note: Update item.js when this changes %>
-    <div class="tag <%= dom_id(tag) %> <%= classes_for_taggings(taggings).join(' ') %>" title="<%= tag_control_tooltip(tag, format_classifier_strength(taggings)) %>">
+    <div id="<%= dom_id(tag) %>" class="tag <%= dom_id(tag) %> <%= classes_for_taggings(taggings).join(' ') %>" title="<%= tag_control_tooltip(tag, format_classifier_strength(taggings)) %>">
       <%= link_to_function h(tag.name), "", :class => "name", :"data-sort" => tag.sort_name, :title => t("winnow.items.main.tag_name_tooltip") %>
     </div>
   <% end -%>

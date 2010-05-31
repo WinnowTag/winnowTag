@@ -208,16 +208,20 @@ var Item = Class.create({
     var tag_name = tag.down(".name").innerHTML.unescapeHTML();
     
     var handleTag = function() {
+      var clickedTagID = tag.getAttribute("id").gsub("tag_", "");
+      var currentTagInSidebarID = $A(itemBrowser.filters.tag_ids.split(",")).first();
+      var clickedTagIsCurrentTagInSidebar = clickedTagID == currentTagInSidebarID;
+
       if(tag.hasClassName("positive")) {
         this.addTagging(tag_name, "negative");
-        tag.removeClassName("positive");
-        tag.addClassName("negative");
+        tag.removeClassName("positive"); if (currentTagInSidebarID) itemBrowser.selectedItem().removeClassName("positive");
+        tag.addClassName("negative"); if (currentTagInSidebarID) itemBrowser.selectedItem().addClassName("negative");
       } else if(tag.hasClassName("negative")) {
         this.removeTagging(tag_name);
-        tag.removeClassName("negative");
+        tag.removeClassName("negative"); if (currentTagInSidebarID) itemBrowser.selectedItem().removeClassName("negative");
       } else {
         this.addTagging(tag_name, "positive");
-        tag.addClassName("positive");
+        tag.addClassName("positive"); if (currentTagInSidebarID) itemBrowser.selectedItem().addClassName("positive");
       }
     }.bind(this);
     
