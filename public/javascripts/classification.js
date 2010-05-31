@@ -64,11 +64,15 @@ var Classification = Class.create({
           itemBrowser.reload();
         }
         $$(".filter_list .tag").each(function(tag) {
-          new Ajax.Request("/tags/" + tag.getAttribute('id').match(/\d+/).first() + "/information", { method: 'get',
-            onComplete: function(response) {
-              tag.title = response.responseText;
-            }
-          });
+          var tagIDNumber = tag.getAttribute("id").gsub("tag_", "");
+          if (tagIDNumber != 0) { // Skip the request for tag list control "See All Tags"
+            new Ajax.Request("/tags/" + tagIDNumber + "/information", { method: 'get',
+                onComplete: function(response) {
+                if (response.status == 200)
+                    tag.title = response.responseText;
+                }
+            });
+          }
         });
       }.bind(this)
     }
