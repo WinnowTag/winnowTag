@@ -133,6 +133,9 @@ var Item = Class.create({
   toggleFeedInformation: function() {
     if(this.feed_title.hasClassName("selected")) {
       this.hideFeedInformation();
+      if (this.isOpen() && sidebar && sidebar.isEditing && sidebar.isEditing()) {
+        this.showTrainingControls();
+      }
     } else {
       this.showFeedInformation();
     }
