@@ -290,11 +290,21 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         clear_selected_filters.addClassName("disabled");
       }
     }
-    
+
+    var trained_checkbox = $("trained_checkbox");
     if (this.filters.tag_ids == SEE_ALL_TAGS_ID) {
-      if ($("mode_trained")) $("mode_trained").addClassName("disabled");
+      if (trained_checkbox) {
+          trained_checkbox.disabled = true;
+          $("trained_checkbox_label").title = I18n.t("winnow.items.sidebar.trained_checkbox_disabled_tooltip");
+      }
+
     } else {
-      if ($("mode_trained")) $("mode_trained").removeClassName("disabled");
+      if (trained_checkbox && trained_checkbox.disabled) {
+           // We don't want to set the tooltip unless the checkbox was disabled,
+           // as this function does get called unnecessarily.
+          trained_checkbox.disabled = false;
+          $("trained_checkbox_label").title = I18n.t("winnow.items.sidebar.trained_checkbox_unchecked_tooltip");
+      }
     }
     
     this.showDemoTagInfo();
@@ -334,6 +344,39 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var clear_selected_filters = $("clear_selected_filters");
     if(clear_selected_filters) {
       clear_selected_filters.observe("click", this.clearFilters.bind(this));
+    }
+  },
+
+  bindModeFiltersEvents: function($super) {
+    $super();
+
+    var trained_checkbox = $("trained_checkbox");
+    if (trained_checkbox) trained_checkbox.observe("click", function() {
+      if (!trained_checkbox.disabled && (this.filters.mode != "trained"))
+        this.addFilters({mode: "trained"});
+      else
+        this.addFilters({mode: "all"});
+    }.bind(this));
+  },
+
+  styleModes: function($super) {
+    $super();
+
+    if(this.filters.mode) {
+      var trained_checkbox = $("trained_checkbox");
+      if (trained_checkbox) {
+        if (trained_checkbox && this.filters.mode == "trained") {
+          trained_checkbox.checked = true;
+          Sidebar.instance.ensurePanelOpen();
+          $("trained_checkbox_label").title = I18n.t("winnow.items.sidebar.trained_checkbox_checked_tooltip");
+        } else {
+          if (trained_checkbox.checked) {
+            new Effect.Highlight("trained_checkbox_label", { startcolor: '#FFFF00', endcolor: '#ffffff', restorecolor: '#ffffff' });
+            trained_checkbox.checked = false;
+          }
+          $("trained_checkbox_label").title = I18n.t("winnow.items.sidebar.trained_checkbox_unchecked_tooltip");
+        }
+      }
     }
   },
   

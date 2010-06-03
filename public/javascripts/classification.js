@@ -84,10 +84,13 @@ var Classification = Class.create({
   
   disableClassification: function() {
     this.classification_button.addClassName("disabled");
+    this.classification_button.title = I18n.t('winnow.items.footer.start_classifier_disabled_tooltip')
+
   },
   
   enableClassification: function() {
     this.classification_button.removeClassName("disabled");
+    this.classification_button.title = I18n.t('winnow.items.footer.start_classifier_tooltip')
   },
   
   clickStart: function() {
@@ -112,10 +115,11 @@ var Classification = Class.create({
         this.startProgressUpdater();  
       }.bind(this),
       onFailure: function(transport) {
-        if(transport.responseJSON == I18n.t("winnow.javascript.classifier.progress_bar.running")) {
+        if(transport.responseJSON == I18n.t("winnow.javascript.classifier.progress_bar.runningHARDCODED")) {
           this.notify("Started");
           this.startProgressUpdater();
         } else {
+          // TODO: Don't use response.JSON in messages to user, they have outdated terminology and are not in I18n.'
           Message.add('error', transport.responseJSON);
           this.notify('Reset');
         }

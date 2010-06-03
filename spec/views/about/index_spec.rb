@@ -24,6 +24,6 @@ describe '/about' do
   it "should display classifier error when classifier_info is nil" do
     assigns[:classifier_info] = nil    
     render "/about/index"
-    response.should have_tag("p.classifier_error", "The classifer could not be contacted.")
+    response.should have_tag("p.classifier_error", "Winnow could not be contacted.")
   end
 end

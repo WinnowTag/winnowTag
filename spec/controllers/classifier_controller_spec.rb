@@ -56,7 +56,7 @@ describe ClassifierController do
       Remote::ClassifierJob.should_not_receive(:create)
       post 'classify'
       response.code.should == "412"
-      response.body.should == "You are about to classify #{tag.name} which has less than 6 positive examples. This might not work as well as you would expect.\nDo you want to proceed anyway?".to_json
+      response.body.should == "Tag '#{tag.name}' has less than 6 positive examples. It may be best to tag more positive examples first.\nDo you want to 'Run winnowTagger' anyway?".to_json
     end
     
     it "should start a job when changed tags are potentially undertrained and the user has confirmed" do
@@ -120,7 +120,7 @@ describe ClassifierController do
       ExceptionNotifier.should_receive(:deliver_exception_notification)
       post "classify"
       response.code.should == "500"
-      response.body.should == '"Timeout contacting the classifier. Please try again later."'
+      response.body.should == '"Communication with winnowTagger failed. It\'s OK to click \'Run winnowTagger\' again at any time."'
     end
   end
   
@@ -158,7 +158,7 @@ describe ClassifierController do
       session[:classification_job_id] = ["STALE"]
       get "status"
       assert_response 500
-      response.headers['X-JSON'].should include('"error_message":"No classification process running"')
+      response.headers['X-JSON'].should include('"winnowTagger is not running."')
     end
     
     it "should combine the progress for multiple classification jobs" do

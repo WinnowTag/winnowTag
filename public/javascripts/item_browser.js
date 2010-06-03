@@ -304,15 +304,10 @@ var ItemBrowser = Class.create({
        }.bind(this));
      }
     
-    var search_clear = $('search_clear');
-    if (search_clear) {
-      search_clear.observe("click", this.clearTextFilter.bind(this));
-    }
   },
   
   clearTextFilter:  function() {
     $('text_filter').showPlaceholder();
-    $('search_clear').hide();
     this.addFilters({text_filter: null});
   },
   

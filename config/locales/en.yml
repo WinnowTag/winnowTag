@@ -11,7 +11,7 @@ en:
       or: "or"
       submit: "Submit"
       create: "Create"
-      created: "Created"
+      created: "Added"
       save: "Save"
       destroy: "Destroy"
       destroy_tooltip: 
@@ -27,23 +27,23 @@ en:
       login: "Login"
       password: "Password"
       password_confirmation: "Password Confirmation"
-      how_did_you_hear: "How did you hear about Winnow?"
-      how_do_you_want_to_use: "How/why do you want to use Winnow?"
+      how_did_you_hear: "How did you hear about winnowTag?"
+      how_do_you_want_to_use: "How/why do you want to use winnowTag?"
       no_script_message: "You need to change a setting in your web browser"
-      last_updated: "Last Updated"
+      last_updated: "Updated"
       prototype: "{{login}} is the prototype"
       make_prototype: "Make prototype"
       footer: |-
         <div id="footer_text">
-          a mindloom project &copy; 2010
-        	powered by <a href="http://github.com/seangeo/classifier">winnow open source classifier</a> &bull;
-        	<a href="http://blog.peerworks.org">blog</a>
+        	powered by <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> &bull;
+          Mindloom &copy; 2010 &bull;
+        	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
         </div>
     email:
-      subject_prefix: "[WINNOW]"
+      subject_prefix: "[winnowTag]"
       deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
       deployed_body: |-
-        Hello Peerworks folk,
+        Hello Mindloom folk,
 
         Revision {{revision}} of {{repository}} has just been deployed to {{host}} by {{deployer}}.
 
@@ -51,26 +51,26 @@ en:
 
         Regards,
 
-        Winnow Deployment Notifier
+        winnowTag Deployment Notifier
       invite_requested_subject: "Invite Requested"
       invite_requested_body: |-
         {{email}} has submitted an invitation request.
 
-        How did you hear about Winnow?
+        How did you hear about winnowTag?
         {{hear}}
 
-        How/why do you want to use Winnow?
+        How/why do you want to use winnowTag?
         {{use}}
-      invite_request_submitted_body: "Your request for an invitation to Winnow has been submitted. You will be notified at {{email}} when your invitation is accepted."
+      invite_request_submitted_body: "Your request for an invitation to winnowTag has been submitted. You will be notified at {{email}} when your invitation is accepted."
       invite_accepted_body: |-
         {{invite}}
 
         Please visit {{url}} to signup for your account.
-      account_activation_body: "{{user}}, your account has been activated.  You may now visit winnow at: {{url}}"
+      account_activation_body: "{{user}}, your account has been activated.  You may now visit winnowTag at: {{url}}"
       reminder_subject: "Password Reminder"
       reminder_body: "To update your password, visit {{url}}"
       signup_notification_body: |-
-        Welcome to Winnow, {{user}}.
+        Welcome to winnowTag, {{user}}.
 
         Please click on the following link to confirm your registration:
 
@@ -79,7 +79,7 @@ en:
         {{winnow_url}}
     notifications:
       feed_items_search_too_short: "Search requires a word with at least 4 characters"
-      server_slow_responding: "The server is taking a while to repond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
+      server_slow_responding: "The server is taking a while to respond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
       credentials_invalid: "Invalid credentials. Please try again."
       profile_updated: "Information Updated"
       reminder_code_invalid: "Invalid reminder code"
@@ -99,25 +99,25 @@ en:
       tag_copied: "{{from}} successfully copied to {{to}}"
       tag_merged: "{{from}} merged with {{to}}"
       classifier:
-        timeout_contacting: "Timeout contacting the classifier. Please try again later."
-        could_not_be_started: "The classifier could not be started. Please try again."
-        already_running: "The classifier is already running"
-        not_running: "No classification process running"
-        tags_not_changed: "There are no changes to your tags"
+        timeout_contacting: "Communication with winnowTagger failed. It's OK to click 'Run winnowTagger' again at any time."
+        could_not_be_started: "winnowTagger could not be started. It's OK to click 'Run winnowTagger' again at any time."
+        already_running: "winnowTagger is already running. You can keep using winnowTag — it will let you know when winnowTagger is finished."
+        not_running: "winnowTagger is not running."
+        tags_not_changed: "There are no changes to your tags."
         confirm_few_positives:
           one: |-
-            You are about to classify {{tag_names}} which has less than 6 positive examples. This might not work as well as you would expect.
-            Do you want to proceed anyway?
+            Tag '{{tag_names}}' has less than 6 positive examples. It may be best to tag more positive examples first.
+            Do you want to 'Run winnowTagger' anyway?
           other: |-
-            You are about to classify {{tag_names}} which have less than 6 positive examples. This might not work as well as you would expect.
-            Do you want to proceed anyway?
+            Tags '{{tag_names}}' have less than 6 positive examples. It may be best to tag more positive examples first.
+            Do you want to 'Run winnowTagger' anyway?
       collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
-      tags_unsubscribe: "You have been unsubscribed from the public {{tag}}. You can subscribe on the Public Tags page."
+      tags_unsubscribe: "You have been unsubscribed from the public tag '{{tag}}'. You can subscribe on the Public Tags page."
     taggings:
       bad_method: "Bad Request. Should be POST. Please report this bug. Make sure you have Javascript enabled too!"
       bad_params: "Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!"
-      destroy_message: "You have removed the last example of tag {{tag}}, do you want to remove it from your tags page?"
-      classifier_progress: "Classify changed tags"
+      destroy_message: "You have removed all examples for tag '{{tag}}'. Do you want to delete '{{tag}}'?"
+      classifier_progress: "Running winnowTagger"
     sort_direction:
       ascending: "Ascending"
       ascending_tooltip: ""
@@ -152,18 +152,40 @@ en:
       leave_feedback_textbox_tooltip: ""
     items:
       header:
-        feed_items_search_placeholder: "Search Feed Items..."
-        feed_items_search_tooltip: ""
+        tags_header: "Tags"
+        tags_header_tooltip: ""
+        items_header: "Items"
+        items_header_tooltip: ""
+        feed_items_search_placeholder: "Any of these keywords..."
+        feed_items_search_tooltip: "Show items containing one or more of the keywords you enter. Item titles, contents and all URLs are searched."
         show_label: "Show"
         show_all_label: "All"
         show_all_tooltip: ""
         show_unread_tooltip: ""
-        show_trained_label: "Trained"
+        show_trained_label: "winnowTagged"
         show_trained_tooltip: ""
         sort_date_label: "Date"
+        viewing_only_feed_items: "Viewing only items from"
       sidebar:
-        tags_header: "Tags"
-        tags_header_tooltip: ""
+        training_controls_label: "Create Tags"
+        training_controls_label_tooltip: ""
+        training_controls_toggle_open_tooltip: "Hide Create Tags"
+        training_controls_toggle_closed_tooltip: "Create or change your own tags"
+        training_help_link: "http://doc.winnowtag.org/help/items-page/creating-tags"
+        training_help_link_tooltip: "Help for creating your own tags"
+        search_legend: "Search for items with:"
+        search_legend_tooltip: ""
+        create_tag_legend: "Create a new tag"
+        create_tag_legend_tooltip: ""
+        update_winnowtags_legend: "Update winnowTags"
+        update_winnowtags_legend_tooltip: ""
+        show_only_items_with_legend: "For the tag selected below:"
+        show_only_items_with_legend_tooltip: ""
+        trained_checkbox_label: "Show only examples"
+        trained_checkbox_unchecked_tooltip: "Check this checkbox to see only positive and negative examples for the tag currently selected in the sidebar"
+        trained_checkbox_checked_tooltip: "Clear this checkbox to see all items found by the tag currently selected in the sidebar"
+        trained_checkbox_disabled_tooltip: "Click a tag in the sidebar, then check this checkbox to see the examples for that tag"
+        see_all_items_tooltip: "See ALL items in winnowTag — no matter how they are tagged"
         add: "Add"
         add_tooltip: ""
         done: "Done"
@@ -171,10 +193,8 @@ en:
         tag_tooltip: "Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
         public_tag_tooltip: "From {{login}}, Positive: {{positive}}, Negative: {{negative}}, Automatic: {{automatic}}"
         merge_confirm: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
-        sidebar_confirm: "You have removed the tag {{tag}} from your sidebar, do you want to remove it from your tags page?"
+        sidebar_confirm: "You have removed the tag '{{tag}}' from your sidebar. Do you want to remove it from your My Tags page?"
       main:
-        train: "Train"
-        train_tooltip: ""
         tag_name_tooltip: ""
         open_original_feed_item: "Go to original item"
         mark_unread: "Click to mark as unread"
@@ -186,21 +206,22 @@ en:
         add_tag_tooltip: ""
         close: "Close"
         close_tooltip: ""
-        tag_input_tooltip: ""
+        tag_input_tooltip: "Enter a name for a new tag and click Create. Click the new tag inside open items to give it positive (green) and negative (red) examples."
       footer:
         mark_all_read: "Mark All Read"
         mark_all_read_tooltip: ""
         mark_all_unread: "Mark All Unread"
         mark_all_unread_tooltip: ""
-        start_classifier_button: "Run AutoTagger"
-        start_classifier_tooltip: ""
+        start_classifier_button: "Run winnowTagger"
+        start_classifier_tooltip: "Update winnowTaggings of all items, using current positive and negative examples"
+        start_classifier_disabled_tooltip: "Once you create a tag, and click that tag in six or more open items, click this button to 'Run winnowTagger'"
         stop_classifier_button: "Stop"
         stop_classifier_tooltip: ""
-        classifier_progress: "Classify changed tags"
+        classifier_progress: "Updating winnowTags"
       previous_item: "Previous Unread"
-      previous_item_tooltip: "Go to the previous unread item."
+      previous_item_tooltip: "Go to the previous unread item"
       next_item: "Next Unread"
-      next_item_tooltip: "Go to the next unread item."
+      next_item_tooltip: "Go to the next unread item"
     tags:
       general:
         no_comments: "There are no comments for this tag."
@@ -213,37 +234,37 @@ en:
         positive: "Positive"
         negative: "Negative"
         automatic: "Automatic"
-        last_classified: "Last Classified"
-        last_trained: "Last Trained"
+        last_classified: "winnowTagged"
+        last_trained: "Changed"
       header:
         search_placeholder: "Search Tags..."
         search_tooltip: ""
         upload: "Upload"
-        upload_tooltip: "Upload a tag from a tag training document"
-        upload_description: "Upload a tag from a tag training document that you have downloaded from Winnow"
+        upload_tooltip: "Upload a tag from an Atom file that you downloaded from winnowTag"
+        upload_description: "Upload a tag from an Atom file that you downloaded from winnowTag"
         upload_button: "Upload"
       main:
         tag_summary_tooltip: ""
         click_to_edit_name: "Click to edit tag name"
         blank_description: "add a description"
         click_to_edit_description: "Click to edit tag description"
-        destroy_confirm: "Do you really want to delete {{tag}}?\n\nThis can't be undone."
+        destroy_confirm: "Do you really want to delete tag '{{tag}}'?\n\nThis can't be undone."
         add_a_comment: "Add a comment"
-        apply_to: "Apply <span class='name'>{{tag}}</span> to:"
+        apply_to: "Apply <span class='name'>'{{tag}}'</span> to:"
         fewer_items: "Fewer Items"
         more_items: "More Items"
         public: "Public"
         public_tooltip: ""
-        destroy_tooltip: "Destroy {{tag}}"
-        feed: "Feed"
+        destroy_tooltip: "Destroy '{{tag}}'"
+        feed: "Feed of items found by this tag"
         feed_tooltip: ""
-        training_feed: "Training Feed"
-        training_feed_tooltip: "Download an Atom with the items used to train this tag. You might need to right click and choose 'Save Target as...'."
+        training_feed: "Download tag as Atom file"
+        training_feed_tooltip: "Download an Atom file defining this tag and its positive and negative examples. You may need to right click and choose 'Save Target as...'."
         subscribe: "Subscribe"
         subscribe_tooltip: ""
-        items_tagged_with: "Show items tagged with <span class='name'>{{tag}}</span>"
+        items_tagged_with: "Show items tagged with <span class='name'>'{{tag}}'</span>"
         items_tagged_with_tooltip: ""
-        items_trained_with: "Show items trained with <span class='name'>{{tag}}</span>"
+        items_trained_with: "Show example items for <span class='name'>'{{tag}}'</span>"
         items_trained_with_tooltip: ""
         copy: "Copy"
         copy_tooltip: ""
@@ -251,7 +272,7 @@ en:
         subscribers: "Subscribers"
         usage: "Usage"
         slider_tooltips:
-          handle: "Drag to set the sensitivity of the classifier."
+          handle: "Drag to set the sensitivity of the tag."
           first_marker: "Very Negative"
           second_marker: "Neutral"
           third_marker: "Slightly Positive"
@@ -266,19 +287,19 @@ en:
         add_import_tooltip: ""
         title: "Title"
         items: "Items"
-        created: "Created"
-        last_updated: "Last Updated"
+        created: "Added"
+        last_updated: "Updated"
         search_placeholder: "Search Feeds..."
         search_tooltip: ""
-        add_feed_description: "Enter the url of a feed or web page to add to Winnow. Only items with enough text for the classifier to use will be collected from the feed."
+        add_feed_description: "Enter the URL of a feed or web page to add to winnowTag. Only items with enough text for winnowTagging to work will be collected from the feed."
         add_feed_button: "Add Feed"
         add_feed_button_disabled: "Adding..."
         add_feed_tooltip: ""
-        upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to Winnow."
+        upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to winnowTag."
         upload_button: "Upload"
         upload_tooltip: ""
-        add_to_winnow_bookmarklet: "Add to Winnow"
-        bookmarklet_description: "You can add a bookmarklet to you browser to make it quick and easy to add sites to Winnow. Once installed, simply click the bookmarklet to add the site you are currently viewing to Winnow."
+        add_to_winnow_bookmarklet: "Add to winnowTag"
+        bookmarklet_description: "You can add a bookmarklet to you browser to make it quick and easy to add sites to winnowTag. Once installed, simply click the bookmarklet to add the site you are currently viewing to winnowTag."
         bookmarklet_installation_instructions:
           safari:  "To install the bookmarklet, drag this button to your bookmarks bar."
           chrome:  "To install the bookmarklet, drag this button to your bookmarks bar."
@@ -288,20 +309,20 @@ en:
           ie7:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Links folder."
           ie8:      "To install the bookmarklet, right click this button, select Add to Favorites..., click Yes to Security Alert, and choose to create in the Favorites Bar folder."
       feed_item:
-        mode_feeds_tags_text_filter: "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
-        mode_feeds_tags:             "Winnow feed for {{mode}} items from {{feeds}} tagged by {{tags}}"
-        mode_feeds_text_filter:      "Winnow feed for {{mode}} items from {{feeds}} including text '{{text_filter}}'"
-        mode_tags_text_filter:       "Winnow feed for {{mode}} items tagged by {{tags}} including text '{{text_filter}}'"
-        mode_feeds:                  "Winnow feed for {{mode}} items from {{feeds}}"
-        mode_tags:                   "Winnow feed for {{mode}} items tagged by {{tags}}"
-        mode_text_filter:            "Winnow feed for {{mode}} items including text '{{text_filter}}'"
-        mode:                        "Winnow feed for {{mode}} items"
+        mode_feeds_tags_text_filter: "winnowTag feed for {{mode}} items from {{feeds}} tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds_tags:             "winnowTag feed for {{mode}} items from {{feeds}} tagged by {{tags}}"
+        mode_feeds_text_filter:      "winnowTag feed for {{mode}} items from {{feeds}} including text '{{text_filter}}'"
+        mode_tags_text_filter:       "winnowTag feed for {{mode}} items tagged by {{tags}} including text '{{text_filter}}'"
+        mode_feeds:                  "winnowTag feed for {{mode}} items from {{feeds}}"
+        mode_tags:                   "winnowTag feed for {{mode}} items tagged by {{tags}}"
+        mode_text_filter:            "winnowTag feed for {{mode}} items including text '{{text_filter}}'"
+        mode:                        "winnowTag feed for {{mode}} items"
       footer:
         total_feeds: "Total Feeds:"
     admin:
       users_link: "User Management"
       users_tooltip: ""
-      users_description: "View and manage users of winnow."
+      users_description: "View and manage users of winnowTag."
       invites_link: "Invites"
       invites_tooltip: ""
       invites_description: "View and manage invites."
@@ -310,13 +331,13 @@ en:
       messages_description: "View and manage messages."
       info_link: "Winnow Info"
       info_tooltip: ""
-      info_description: "View and manage the winnow info content."
+      info_description: "View and manage the Winnow Info content."
       help_link: "Help Links"
       help_tooltip: ""
-      help_description: "View and manage the help links in winnow."
+      help_description: "View and manage winnowTag help links."
       feedback_link: "Feedback"
       feedback_tooltip: ""
-      feedback_description: "View feedback left by the users of winnow."
+      feedback_description: "View feedback left by the users of winnowTag."
     users:
       header:
         create_user: "Create User"
@@ -328,9 +349,9 @@ en:
       attributes:  
         login: "Login"
         name: "Name"
-        last_logged_in: "Last Logged In"
-        last_accessed: "Last Accessed"
-        last_trained: "Last Trained"
+        last_logged_in: "Logged In"
+        last_accessed: "Accessed"
+        last_trained: "winnowTagged"
         number_of_tags: "Number of Tags"
         registered: "Registered"
       main:
@@ -368,7 +389,7 @@ en:
         create: "Create"
         update: "Update"
         default_accepted_subject: "Invite Accepted"
-        default_accepted_body: "You request for an invitation to Winnow has been accepted!"
+        default_accepted_body: "You request for an invitation to winnowTag has been accepted!"
     messages:
       general:
         pinned: "Pin this message?"
@@ -401,14 +422,10 @@ en:
         new: "New Password"
         new_confirmation: "Confirm New Password"
     login:
-      welcome_header: "Welcome to Winnow"
+      welcome_header: "Welcome to winnowTag"
       welcome_text: |-
         <p>
-          Winnow is the demonstration environment for the auto-tagging classifier built by <a href="http://www.peerworks.org">Peerworks</a>.
-        </p>
-        <p>
-          This version of Winnow is only tested in the  <a href="http://www.getfirefox.com" target="_blank">Firefox</a> Web Browser, 
-          as such things may not work correctly in other browsers.
+          winnowTag demonstrates the <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> content recommendation engine built by Mindloom.
         </p>
       request_invitation: "Request Invitation"
       request_invitation_tooltip: ""
@@ -425,9 +442,9 @@ en:
       back_tooltip: ""
       signup_submit: "Signup"
     about:
-      build: "This is build {{build}} of Winnow."
-      classifier_info: "Using classifier version {{version}} at build {{build}}."
-      classifier_info_not_found: "The classifer could not be contacted."
+      build: "This is build {{build}} of winnowTag."
+      classifier_info: "Using Winnow {{version}} at build {{build}}."
+      classifier_info_not_found: "Winnow could not be contacted."
     activation:
       activation_code: "Activation Code"
       activate: "Activate"
@@ -449,15 +466,15 @@ en:
     javascript:
       errors:
         classifier:
-          timeout: "Timed out trying to start the classifier. Perhaps the server or network are down. You can try again if you like."
+          timeout: "Timed out communicating with winnowTagger. Usually you can ignore this."
       classifier:
         progress_bar:
-          start:   "Starting Classifier"
-          cancel:  "Classify changed tags"
-          finish:  "Classification Complete"
-          reload:  "Classification has completed. Do you want to reload the items?"
-          # NOTE: This is never displayed to the user, it is only user as a check against a json response. Do not change this.
-          running: "The classifier is already running."
+          start:   "Running winnowTagger"
+          cancel:  "winnowTagging changed tags"
+          finish:  "winnowTagging is finished"
+          reload:  "winnowTagging is finished. Do you want to reload the items?"
+          # Until that is done, do not change this. It is used as a check against a JSON response in classification.js.
+          runningHARDCODED: "The classifier is already running."
     # These the are strings that appear in the demo version of winnowTag
     demo:
       all_items: See all items
@@ -466,19 +483,20 @@ en:
         items: <span class="name">Items</span> (click on an item to open)
         feedback: "feedback & questions"
       footer: |-
-        <div id="copyright">a mindloom project &copy; 2010 &bull; 
-        	powered by <a href="http://github.com/seangeo/classifier">winnow open source classifier</a> &bull; 
-        	<a href="more">info for media</a>
+        <div id="copyright">
+        	powered by <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> &bull;
+          Mindloom &copy; 2010 &bull;
+        	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
         </div>
       explanatory_text:
         top: |-
           <p>Find items in thousands of feeds in real time, using winnowTags trained by examples.</p>
           <p>Get a login to create and share winnowTags, add feeds... <a href="javascript:alert('link needed')">read more</a>
-          	<span class="followOn">Powered by <a href="http://github.com/seangeo/classifier" target="_blank">winnow open source classifier</a>.</span>
+          	<span class="followOn">Powered by <a href="http://doc.winnowtag.org/open-source" target="_blank">open source Winnow</a>.</span>
           </p>
         bottom: |-
           <p id="tag_detail_footer">
-          	'<span id="footer_tag_name"></span>' is trained with 
+          	'<span id="footer_tag_name"></span>' has
           	<span id="footer_tag_positive_count"></span> positive and 
           	<span id="footer_tag_negative_count"></span> negative examples and finds 
           	<span id="footer_tag_count"></span> relevant items.

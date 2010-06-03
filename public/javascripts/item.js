@@ -290,6 +290,7 @@ var Item = Class.create({
           var classification_button = $('classification_button');
           if (classification_button) {
             classification_button.disabled = false;
+            classification_button.title = I18n.t('winnow.items.footer.start_classifier_tooltip')
             $("progress_title").update(data.classifierProgress);
           }
         }
@@ -335,6 +336,7 @@ var Item = Class.create({
         var classification_button = $('classification_button');
         if (classification_button) {
           classification_button.disabled = false;
+          classification_button.title = I18n.t('winnow.items.footer.start_classifier_tooltip')
           $("progress_title").update(data.classifierProgress);
         }
       }

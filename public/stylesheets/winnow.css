@@ -263,7 +263,7 @@ body#login .container .form .title {
 body#login .container .form .title span {
   background-color: #fff;
   padding: 0.33em 0.5em 0.5em;
-  border: 1px solid #D7C0AE;
+  border: 1px solid gray;
 }
 
 body#login .container #login_form .title .invitation {
@@ -433,6 +433,7 @@ body#login .container .form .content #invite_use {
 /*
  * =sidebar
  */
+
 #sidebar {
   position: relative;
   float: left;
@@ -450,27 +451,23 @@ body#login .container .form .content #invite_use {
 }
 
 #sidebar_edit {
-  background-color: #F2F2F2;
+  background-color: #FBFBFB;
   border-bottom: 2px solid #ccc;
 }
 
 #sidebar_edit_content {
   padding: 10px 10px 0px 10px;
+  position: relative;
 }
 
 #sidebar .button {
   float: left;
 }
 
-#sidebar .toolbar .group {
-  float: none;
-}
-
-#sidebar .toolbar .group .buttongroup {
-  width: 139px;
-  margin-left: auto;
-  margin-right: auto;
-  
+#sidebar #training_help_link {
+    position: absolute;
+    top: 0;
+    right: 5px;
 }
 
 #sidebar #sidebar_edit_heading {
@@ -486,12 +483,16 @@ body#login .container .form .content #invite_use {
   display: inline;
 }
 
+#sidebar #sidebar_edit_toggle_label {
+  position: absolute;
+  right: 25px;
+  top: 3px;
+}
+
 #sidebar #sidebar_edit_toggle {
-  -moz-border-radius-bottomleft:4px;
-  -moz-border-radius-bottomright:4px;
-  -moz-border-radius-topleft:4px;
-  -moz-border-radius-topright:4px;
-  -moz-user-select:none;
+  -webkit-border-radius: .25em;
+  -moz-border-radius: .25em;
+  -moz-user-select: none;
   background-color:white;
   border:1px solid #AAAAAA;
   width: 13px;
@@ -521,21 +522,19 @@ body#login .container .form .content #invite_use {
   left: 3px;
 }
 
+#trained_checkbox_label {
+  font-weight: normal;
+}
+
 #sidebar #classification_controls {
   margin-left: auto;
   margin-right: auto;
-  width: 135px;
+  width: 160px;
 }
-
 
 #sidebar_edit fieldset {
-  margin: 0 0 0 0;
-  padding: 10px 0px 15px 0px;
-}
-
-#sidebar_edit fieldset:last {
-  margin: 0 0 0 0;
-  padding: 10px 0px 5px 0px;
+  padding: .3em 0 0 0;
+  margin-bottom: 1.5em;
 }
 
 #sidebar_edit fieldset legend {
@@ -665,10 +664,12 @@ input.placeholder {
   float: left;
 }
 
+#sidebar #text_filter_form {
+  margin: 0 0 0 0;
+}
+
 #new_tag_form #name {
-  -moz-border-radius: 1em;
-  -webkit-border-radius: 0.75em;
-  width: 168px;
+  width: 164px;
 }
 
 #feed_items #text_filter_form #text_filter {
@@ -682,16 +683,6 @@ input.placeholder {
   background-position: 0.25em center;
   -moz-border-radius: 1em;
   -webkit-border-radius: 0.75em;
-}
-
-#search_clear {
-  background-image: url(../images/close.gif);
-  width: 11px;
-  height: 11px;
-  display: inline-block;
-  margin-left: -20px;
-  margin-bottom: -1px;
-  cursor: pointer;
 }
 
 #header_controls .order {
@@ -763,16 +754,17 @@ input.placeholder {
 #classification_section .progress_bar_container {
   position: relative;
   height: 2em;
-  border: 1px solid gray;
+  border: 1px solid #D3BE96;
   overflow: hidden;
+  background-color: #F2F2F2;
 }
 
 #classification_section .progress_bar_container #progress_title {
   position: absolute;
   width: 100%;
   line-height: 2;
-  font-size: .95em;
-  font-weight: bold;
+  font-size: 1em;
+  font-weight: normal;
   text-align: center;
 }
 

@@ -25,7 +25,7 @@ describe UserNotifier, "#reminder" do
   end
   
   it "sets the subject" do
-    @email.subject.should == "[WINNOW] Password Reminder"
+    @email.subject.should == "[winnowTag] Password Reminder"
   end
   
   it "includes the url in the body" do
@@ -50,7 +50,7 @@ describe UserNotifier, "#invite_requested" do
   end
   
   it "sets the subject" do
-    @email.subject.should == "[WINNOW] Invite Requested"
+    @email.subject.should == "[winnowTag] Invite Requested"
   end
   
   it "includes the email in the body" do
@@ -76,7 +76,7 @@ describe UserNotifier, "#invite_accepted" do
   end
   
   it "sets the subject" do
-    @email.subject.should == "[WINNOW] Invitation Accepted"
+    @email.subject.should == "[winnowTag] Invitation Accepted"
   end
   
   it "includes the invite body in the body" do

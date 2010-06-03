@@ -32,7 +32,7 @@
             <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), subscribe_tag_path(tag, :subscribe => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained", :escape => false)), :method => :put, :class => "trained", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
           <% else -%>
             <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}"), :class => 'tagged', :title => t("winnow.tags.main.items_tagged_with_tooltip") %></li>
-            <li><%= link_to_function t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), "itemBrowser.toHREFWithTrainingOpen(\'" + feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained", :escape => false) + "')", :class => "trained", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
+           <li><%= link_to t("winnow.tags.main.items_trained_with", :tag => h(tag.name)), feed_items_path(:anchor => "tag_ids=#{tag.id}&mode=trained", :escape => false), :class => "trained", :title => t("winnow.tags.main.items_trained_with_tooltip") %></li>
           <% end -%>
           <div class="feed_links">
             <%= render :partial => "feed_links.html.erb", :locals => { :tag => tag } %>

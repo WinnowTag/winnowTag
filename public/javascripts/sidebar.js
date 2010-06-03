@@ -7,6 +7,11 @@
 // Manages the size and visible state of the sidebard on the items page.
 var Sidebar = Class.create({
   initialize: function() {
+    // Only one sidebar is open. We need to find it from feedItemsBrowser so
+    // that the training panel can be opened and the cookie set properly,
+    // if necessary when arriving from another page.
+    Sidebar.instance = this;
+
     this.sidebar = $('sidebar');
     this.sidebar_normal = $('sidebar_normal');
     
@@ -15,6 +20,16 @@ var Sidebar = Class.create({
     }
     
     $("sidebar_edit_toggle").observe("click", this.toggleEdit.bind(this));
+  },
+
+  // Depends upon cookie state being correctly sync'd with open/closed state of
+  // training panel.
+  ensurePanelOpen: function() {
+
+    if (Cookie.get("training_mode") != "on") {
+      this.togglePanel();
+      Cookie.set("training_mode", "on", 365);
+    }
   },
   
   toggleEdit: function() {
@@ -52,15 +67,17 @@ var Sidebar = Class.create({
   },
   
   toggleCookies: function() {
-    Cookie.set("training_mode", this.isEditing() ? "on" : "off");
+    Cookie.set("training_mode", this.isEditing() ? "on" : "off", 365);
   },
   
   toggleControl: function() {
     $$("#sidebar_edit_toggle").each(function(e) {
       if (this.isEditing()) {
+        e.title = I18n.t('winnow.items.sidebar.training_controls_toggle_open_tooltip');
         e.addClassName("open");
         e.removeClassName("closed");
       } else {
+        e.title = I18n.t('winnow.items.sidebar.training_controls_toggle_closed_tooltip');
         e.addClassName("closed");
         e.removeClassName("open");
       }
