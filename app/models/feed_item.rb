@@ -291,7 +291,7 @@ class FeedItem < ActiveRecord::Base
   def self.add_text_filter_joins!(text_filter, joins)
     unless text_filter.blank?
       joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
-               " AND MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+               " AND MATCH(content) AGAINST(#{connection.quote(text_filter)})"
     end
   end
   
