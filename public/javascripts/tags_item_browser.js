@@ -52,6 +52,12 @@ var TagsItemBrowser = Class.create(ItemBrowser, {
       );
     }
   },
+
+  toHREFWithTrainingOpen: function(aHREF) {
+    Cookie.set('training_mode', 'on');
+    window.location = aHREF;
+  },
+
   
   insertItem: function($super, item_id, content) {
     $super(item_id, content);
