@@ -70,7 +70,6 @@ describe "Training mode" do
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_0")
     page.wait_for :wait_for => :ajax
-    page.element?("css=#trained_checkbox.disabled").should be_true
     page.click("css=#trained_checkbox")
     page.element?("css=#trained_checkbox.selected").should be_false
   end
@@ -83,7 +82,6 @@ describe "Training mode" do
     page.click("css=#trained_checkbox")
     page.click("css=#name_tag_0")
     page.wait_for :wait_for => :ajax
-    page.element?("css=#trained_checkbox.disabled").should be_true
     page.element?("css=#trained_checkbox.selected").should be_false
   end
   
