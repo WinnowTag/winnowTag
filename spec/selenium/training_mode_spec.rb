@@ -65,17 +65,17 @@ describe "Training mode" do
     assert_visible "css=#feed_item_#{@feed_item1.id} .moderation_panel"
   end
   
-  it "should disable 'Show only trained items' if 'see all items' is selected" do
+  it "should disable 'Show only examples' if 'see all items' is selected" do
     page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_0")
     page.wait_for :wait_for => :ajax
-    assert_visible "css=#trained_checkbox.disabled"
+    page.element?("css=#trained_checkbox.disabled").should be_true
     page.click("css=#trained_checkbox")
     page.element?("css=#trained_checkbox.selected").should be_false
   end
   
-  it "should unset 'Show only trained items' if 'see all items' is selected" do
+  it "should unset 'Show only examples' if 'see all items' is selected" do
     page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_#{@tag.id}")
@@ -83,11 +83,11 @@ describe "Training mode" do
     page.click("css=#trained_checkbox")
     page.click("css=#name_tag_0")
     page.wait_for :wait_for => :ajax
-    assert_visible("css=#trained_checkbox.disabled")
+    page.element?("css=#trained_checkbox.disabled").should be_true
     page.element?("css=#trained_checkbox.selected").should be_false
   end
   
-  it "should unset 'Show only trained items' if any tag is selected" do
+  it "should unset 'Show only examples' if any tag is selected" do
     page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_#{@tag2.id}")
@@ -99,7 +99,7 @@ describe "Training mode" do
     page.element?("css=#trained_checkbox.selected").should be_false
   end
   
-  it "should enable 'Show only trained items' if a tag is selected" do
+  it "should enable 'Show only examples' if a tag is selected" do
     page.click("sidebar_edit_toggle")
     page.wait_for :wait_for => :ajax
     page.click("css=#name_tag_0")
