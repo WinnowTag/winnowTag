@@ -139,9 +139,12 @@ class FeedItem < ActiveRecord::Base
   # You could do this in the one SQL statement, however using ActiveRecord,
   # while taking slightly longer, will break this up into multiple transactions
   # and reduce the chance of getting a deadlock with a long transaction.
-  def self.archive_items(since = 30.days.ago.getutc, stdout_log = false)
+  def self.archive_items(since = 30.days.ago.getutc, feed_min = 200, stdout_log = false)
     taggings_deleted = Tagging.delete_all(['classifier_tagging = ? and feed_item_id IN (select id from feed_items where updated < ?)', true, since])
-    conditions = ['updated < ? and NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id)', since]
+    conditions = ['updated < ? and ' +
+                  'NOT EXISTS (select feed_item_id from taggings where feed_item_id = feed_items.id) and ' +
+                  '(select count(*) from feed_items fi where fi.feed_id = feed_items.feed_id group by feed_id) > ?', 
+                  since, feed_min]
     counter = 0
     FeedItem.find_each(:conditions => conditions) do |item|
       item.destroy

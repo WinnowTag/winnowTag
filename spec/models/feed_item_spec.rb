@@ -450,7 +450,7 @@ describe FeedItem do
     
     it "should delete items older than the parameter" do
       item = Generate.feed_item!(:updated => 10.days.ago.getutc)
-      FeedItem.archive_items(9.days.ago)
+      FeedItem.archive_items(9.days.ago, 0)
       lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
       FeedItem.count.should == @before_count
     end
@@ -458,7 +458,7 @@ describe FeedItem do
     it "should delete items older than 30 days by default" do
       older = Generate.feed_item!(:updated => 31.days.ago.getutc, :content => FeedItemContent.new(:content => 'this is content'))
       newer = Generate.feed_item!(:updated => 30.days.ago.getutc)
-      FeedItem.archive_items
+      FeedItem.archive_items(30.days.ago, 0)
       lambda { older.reload }.should raise_error(ActiveRecord::RecordNotFound)
       lambda { newer.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
       FeedItem.count.should == (@before_count + 1)
@@ -470,7 +470,7 @@ describe FeedItem do
       tag = Tag.create!(:user => user, :name => 'newtag')
       Tagging.create!(:tag => tag, :feed_item => item, :user => user)
       
-      FeedItem.archive_items
+      FeedItem.archive_items(30.days.ago, 0)
       lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
       FeedItem.count.should == (@before_count + 1)
     end
@@ -481,7 +481,7 @@ describe FeedItem do
       tag = Tag.create!(:user => user, :name => 'newtag')
       tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true, :created_on => 31.days.ago.getutc)
       
-      FeedItem.archive_items
+      FeedItem.archive_items(30.days.ago, 0)
       lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
     end
     
@@ -491,7 +491,7 @@ describe FeedItem do
       tag = Tag.create!(:user => user, :name => 'newtag')
       tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true)
       
-      FeedItem.archive_items
+      FeedItem.archive_items(30.days.ago, 0)
       lambda { item.reload }.should raise_error(ActiveRecord::RecordNotFound)
     end
     
@@ -501,7 +501,7 @@ describe FeedItem do
       tag = Tag.create!(:user => user, :name => 'newtag')
       tagging = user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => false)
       
-      FeedItem.archive_items
+      FeedItem.archive_items(30.days.ago, 0)
       lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
     end
       
@@ -512,7 +512,7 @@ describe FeedItem do
       user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => true, :created_on => 31.days.ago.getutc)
       user.taggings.create!(:tag => tag, :feed_item => item, :classifier_tagging => false, :created_on => 31.days.ago.getutc)
 
-      FeedItem.archive_items
+      FeedItem.archive_items(30.days.ago, 0)
       lambda { item.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
     end
   end
