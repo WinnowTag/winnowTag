@@ -38,6 +38,28 @@ describe FeedItem do
     FeedItem.create(:uri => "urn:uuid:blah", :link => "http://example.com", :feed => feed)
   end
   
+  describe "text filter preprocessing" do
+    it "should add + to single word" do
+      FeedItem.parse_text_filter("foo").should == "+foo"
+    end
+    
+    it "should add + to multiple words" do
+      FeedItem.parse_text_filter("foo bar").should == "+foo +bar"
+    end
+    
+    it "should not split quoted words" do
+      FeedItem.parse_text_filter('"foo bar"').should == '+"foo bar"'
+    end
+    
+    it "should add + to quoted words" do
+      FeedItem.parse_text_filter('"foo bar" baz').should == '+"foo bar" +baz'
+    end
+    
+    it "should not add + to words with -" do
+      FeedItem.parse_text_filter("-foo").should == "-foo"
+    end
+  end
+  
   describe "sorting" do
     it "properly sorts the feed items by newest first" do
       user = Generate.user!

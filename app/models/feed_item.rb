@@ -291,7 +291,7 @@ class FeedItem < ActiveRecord::Base
   def self.add_text_filter_joins!(text_filter, joins)
     unless text_filter.blank?
       joins << "INNER JOIN feed_item_text_indices ON feed_items.id = feed_item_text_indices.feed_item_id" +
-               " AND MATCH(content) AGAINST(#{connection.quote(text_filter)} IN BOOLEAN MODE)"
+               " AND MATCH(content) AGAINST(#{connection.quote(parse_text_filter(text_filter))} IN BOOLEAN MODE)"
     end
   end
   
@@ -328,5 +328,15 @@ class FeedItem < ActiveRecord::Base
   # Adds the conditions dispay only unred items
   def self.add_readings_filter_conditions!(user, conditions)
     conditions << "NOT EXISTS (SELECT 1 FROM readings WHERE readings.user_id = #{user.id} AND readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id)"
+  end
+  
+  def self.parse_text_filter(text)
+    text.scan(/(".*?"|\S+)/).map do |t|
+      if t.to_s.match(/^-/)
+        t
+      else
+        "+#{t.to_s}"
+      end
+    end.join(' ')
   end
 end
