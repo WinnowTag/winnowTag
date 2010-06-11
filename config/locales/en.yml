@@ -156,7 +156,7 @@ en:
         tags_header_tooltip: ""
         items_header: "Items"
         items_header_tooltip: ""
-        feed_items_search_placeholder: "Any of these keywords..."
+        feed_items_search_placeholder: "All of these keywords..."
         feed_items_search_tooltip: "Show items containing one or more of the keywords you enter. Item titles, contents and all URLs are searched."
         show_label: "Show"
         show_all_label: "All"

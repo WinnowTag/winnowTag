@@ -24,7 +24,7 @@ document.observe('dom:loaded', function() {
       if(element.value == "") { element.showPlaceholder(); }
     });
     
-    if(element.value == "") { element.showPlaceholder(); }
+    // if(element.value == "") { element.showPlaceholder(); }
   });
 });
 
