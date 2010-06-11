@@ -343,13 +343,65 @@ class FeedItem < ActiveRecord::Base
     conditions << "NOT EXISTS (SELECT 1 FROM readings WHERE readings.user_id = #{user.id} AND readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id)"
   end
   
-  def self.parse_text_filter(text)
-    text.scan(/(".*?"|\S+)/).map do |t|
-      if t.to_s.match(/^-/)
-        t
+  # Convert simple Google-like syntax:
+  #
+  #   phrases quoted with single or double quotes
+  #   implied AND
+  #   explicit OR (as in Google, operator can be "OR" or "|")
+  #   "-" negation
+  #
+  # ...to MySQL binary mode full text search syntax.
+  #
+
+  OR_OP = 'OR'
+
+  def self.parse_text_filter (text)
+    def self.remove_extra_ors(t)
+      prev = OR_OP
+      u = []
+      t.each_index { |i|
+        u << prev = t[i] unless t[i] == OR_OP && prev == OR_OP
+      }
+      u.pop if u.last == OR_OP
+      return u
+    end
+
+    # Remove parens & scan reserving both double and single quoted phrases.
+    # Preserve leading "-" in both keywords and quoted phrases but drop
+    # leading "+".
+    t = text.gsub(/[()]/, ' ').scan(/-*?'.*?'|-*?".*?"|\S+/) #.reject { |token| token =~ /^\s+$/ }
+
+    # Handle OR of any case and also | (as Google)
+    t.map! { |e| (e.upcase == OR_OP || e == '|') ? OR_OP : e }
+
+    # Discard multiple sequential OR operators, and trailing or leading OR
+    # operators (which do not have both operands). This may not be strictly
+    # necessary but it's nice to avoid thinking about meaningless edge cases,
+    # at the least.
+    t = remove_extra_ors(t)
+
+    o = []
+    i = 0
+    prev = OR_OP
+    while i < t.size do
+      prev = t[i]
+      i += 1
+      if t[i] == OR_OP
+        o << "+(" << prev
+        while i < t.size && t[i] == OR_OP && (i + 1) < t.size do
+          i += 1
+          o << t[i]
+          i += 1
+        end
+        o << ")"
       else
-        "+#{t.to_s}"
+        if prev.match(/^-/)
+          o << prev
+        else
+          o << "+" + prev
+        end
       end
-    end.join(' ')
+    end
+    return o.join(' ')
   end
 end

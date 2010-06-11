@@ -54,9 +54,18 @@ describe FeedItem do
     it "should add + to quoted words" do
       FeedItem.parse_text_filter('"foo bar" baz').should == '+"foo bar" +baz'
     end
-    
-    it "should not add + to words with -" do
-      FeedItem.parse_text_filter("-foo").should == "-foo"
+
+    it "should not add + to words or quoted phrases with -" do
+      FeedItem.parse_text_filter("-foo -'b a r' -\"z o o\"").should == "-foo -'b a r' -\"z o o\""
+    end
+
+    it "should work by taking no action on empty string" do
+      FeedItem.parse_text_filter("").should == ""
+    end
+
+    it "should convert all variants of OR to clean +() syntax" do
+      FeedItem.parse_text_filter("or   |\t \t\t   (one ) +two Or | three or \"four -four.b\" \"\" '' -'five five.b' 'six six.b' or seven -\"eight nine\" or Or oR").should \
+        == %Q(+one +( +two three "four -four.b" ) +"" +'' -'five five.b' +( 'six six.b' seven ) -"eight nine")
     end
   end
   
