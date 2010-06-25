@@ -300,6 +300,12 @@ var ItemBrowser = Class.create({
            Message.add('error', I18n.t("winnow.notifications.feed_items_search_too_short"));
          } else {
            this.addFilters({text_filter: value});
+           // This blur() prevents an editable placeholder when hitting return
+           // on an empty search string, and also prevents the misleading
+           // feedback of the cursor still being present even though the search
+           // has occurred. TODO: This might not be necessary if the
+           // implementation of placeholder.js & etc. were cleaner.
+           $("text_filter").blur();
          }
        }.bind(this));
      }
