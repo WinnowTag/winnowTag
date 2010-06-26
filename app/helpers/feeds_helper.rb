@@ -9,13 +9,13 @@ module FeedsHelper
   # for that feed in Winnow. The homepage icon/link may be blank if no homepage
   # link is know if the feed.
   def feed_link(feed)
-    feed_link = link_to("Feed", feed.via, :target => "_blank", :class => "feed")
+    feed_link = link_to("Feed", feed.via, :target => "_blank", :title => t("winnow.items.main.feed_info_feed_tooltip"), :class => "feed")
     feed_home_link = feed.alternate ? 
-                        link_to("Feed Home", feed.alternate, :target => "_blank", :class => "home") : 
+                        link_to("Feed Home", feed.alternate, :target => "_blank", :title => t("winnow.items.main.feed_info_home_tooltip"), :class => "home") :
                         content_tag('span', '', :class => 'blank')
 
     feed_page_link = if params[:controller] == "feed_items"
-      link_to_function(h(feed.title), "itemBrowser.addFilters({feed_ids: '#{feed.id}', feed_title: '#{feed.title}'})", :class => 'feed_filter_link')
+      link_to_function(h(feed.title), "itemBrowser.addFilters({feed_ids: '#{feed.id}', feed_title: '#{feed.title}'})", :title => t("winnow.items.main.feed_info_only_items_tooltip"), :class => 'feed_filter_link')
     else
       link_to(h(feed.title), feed_items_path(:anchor => "feed_ids=#{feed.id}&feed_title=#{feed.title}"))
     end

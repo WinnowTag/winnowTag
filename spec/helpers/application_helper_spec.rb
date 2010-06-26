@@ -21,29 +21,29 @@ describe ApplicationHelper do
     
     it "should handle Tag" do
       tag = mock_model(Tag)
-      globally_exclude_check_box(tag).should have_tag("input[type=checkbox][onclick=?]", /.*\/tags\/#{tag.id}.*/)
+      globally_exclude_tag_check_box(tag).should have_tag("input[type=checkbox][onclick=?]", /.*\/tags\/#{tag.id}.*/)
     end
     
     it "should handle Feed" do
       feed = mock_model(Feed)
-      globally_exclude_check_box(feed).should have_tag("input[type=checkbox][onclick=?]", /.*\/feeds\/#{feed.id}.*/)
+      globally_exclude_feed_check_box(feed).should have_tag("input[type=checkbox][onclick=?]", /.*\/feeds\/#{feed.id}.*/)
     end
     
     it "should handle Remote::Feed" do
       feed = mock_model(Remote::Feed)
-      globally_exclude_check_box(feed).should have_tag("input[type=checkbox][onclick=?]", /.*\/feeds\/#{feed.id}.*/)
+      globally_exclude_feed_check_box(feed).should have_tag("input[type=checkbox][onclick=?]", /.*\/feeds\/#{feed.id}.*/)
     end
     
     it "is sets the checked status to true when already globally excluded" do
       current_user.stub!(:globally_excluded?).and_return(true)
       tag = mock_model(Tag)
-      globally_exclude_check_box(tag).should have_tag("input[checked=checked]")
+      globally_exclude_tag_check_box(tag).should have_tag("input[checked=checked]")
     end
     
     it "is sets the checked status to false when not already globally excluded" do
       current_user.stub!(:globally_excluded?).and_return(false)
       tag = mock_model(Tag)
-      globally_exclude_check_box(tag).should_not have_tag("input[checked=checked]")
+      globally_exclude_tag_check_box(tag).should_not have_tag("input[checked=checked]")
     end
   end
     
@@ -164,7 +164,7 @@ describe ApplicationHelper do
     
     it "creates a filter control with a tooltip showing the trining and author information" do
       tag = mock_tag(:positive_count => 1, :negative_count => 2, :classifier_count => 3, :user => mock_model(User, :login => "craig", :public? => false))
-      tag_filter_control(tag, :remove => :subscription).should have_tag("span.name[title=?]", "From craig, Positive: 1, Negative: 2, Automatic: 3")
+      tag_filter_control(tag, :remove => :subscription).should have_tag("span.name[title=?]", "Public winnowTag from craig: 1 positive examples, 2 negative examples, 3 items found")
     end
   end
 end

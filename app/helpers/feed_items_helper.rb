@@ -26,42 +26,24 @@ module FeedItemsHelper
     end
   end
 
-  # The +tag_controls+ helper generates the list of taggings applied to a feed item.
-  # These are displayed in the collapsed view of a feed item.
-  def tag_controls(feed_item)
-    html = feed_item.taggings_to_display.map do |tag, taggings|
-      if tag.user == current_user
-        tag_control_for(feed_item, tag, classes_for_taggings(taggings), format_classifier_strength(taggings))
-      else
-        if tagging = Array(taggings).first
-          tag_control_for(feed_item, tag, classes_for_taggings(tagging, [:public]), format_classifier_strength(tagging))
-        end
-      end
-    end.compact.join(" ")
-    
-    content_tag(:ul, html, :class => "tag_list")
-  end
-  
-  # Generates an individual tag tag control.
-  # See FeedItemsHelper#tag_control_for.
-  # Note: Update item.js when this changes.
-  def tag_control_for(feed_item, tag, classes, strength)
-    classes << "tag_control" << dom_id(tag) << "stop"
-    content_tag(:li, content_tag(:span, h(tag.name), :class => "name", :"data-sort" => tag.sort_name), :class => classes.join(" "), :title => tag_control_tooltip(tag, strength))
-  end
-  
   # Generates the text for the tooltip displayed on the list of tags applied to a feed item.
-  # See FeedItemsHelper#tag_control_for.
-  def tag_control_tooltip(tag, strength)
+  def tag_control_tooltip(tag, strength, taggings_classes)
     title = []
     title << "by #{h(tag.user.login)}" if tag.user_id != current_user.id
-    title << "#{strength}" if strength
+    if strength
+      title << t("winnow.items.main.moderation_panel_classifier_tag_tooltip", :strength => strength, :tag_name => tag.name)
+    elsif taggings_classes.include?("positive")
+      title << t("winnow.items.main.moderation_panel_positive_tag_tooltip", :tag_name => tag.name)
+    elsif taggings_classes.include?("negative")
+      title << t("winnow.items.main.moderation_panel_negative_tag_tooltip", :tag_name => tag.name)
+    else
+      title << t("winnow.items.main.moderation_panel_no_tag_tooltip", :tag_name => tag.name)
+    end
     title.join(", ") unless title.blank?
   end
   
   # Generates the classes that should exist on an individual tag control.
   # These are used to properly style the tagging.
-  # See FeedItemsHelper#tag_control_for.
 	def classes_for_taggings(taggings, classes = [])
 	  taggings = Array(taggings)
 	  classes  = Array(classes)
@@ -75,7 +57,7 @@ module FeedItemsHelper
     if taggings.detect { |t| t.classifier_tagging? }
       classes << "classifier"
     end
-    
+
     classes.uniq
   end
   
@@ -83,9 +65,9 @@ module FeedItemsHelper
   # This is displayed in the collapsed view of a feed item.
   def feed_control_for(feed_item)
     if feed_item.author.blank?
-      t("winnow.items.main.feed_metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"))
+      t("winnow.items.main.feed_metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :title => t("winnow.items.main.feed_info_control_tooltip"), :class => "feed_title stop"))
     else
-      t("winnow.items.main.metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :class => "feed_title stop"), :author => h(feed_item.author))
+      t("winnow.items.main.metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :title => t("winnow.items.main.feed_info_control_tooltip"), :class => "feed_title stop"), :author => h(feed_item.author))
     end
   end
   

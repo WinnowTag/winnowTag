@@ -219,12 +219,21 @@ var Item = Class.create({
         this.addTagging(tag_name, "negative");
         tag.removeClassName("positive"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().removeClassName("positive");
         tag.addClassName("negative"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().addClassName("negative");
+        tag.title = I18n.t('winnow.items.main.moderation_panel_negative_tag_tooltip', {tag_name: tag_name});
       } else if(tag.hasClassName("negative")) {
         this.removeTagging(tag_name);
         tag.removeClassName("negative"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().removeClassName("negative");
+
+        var tagStrength = tag.getAttribute("strength");
+        if (tagStrength) {
+          tag.title = I18n.t('winnow.items.main.moderation_panel_classifier_tag_tooltip', {strength:tagStrength, tag_name:tag_name});
+        } else {
+          tag.title = I18n.t('winnow.items.main.moderation_panel_no_tag_tooltip', {tag_name: tag_name});
+        }
       } else {
         this.addTagging(tag_name, "positive");
         tag.addClassName("positive"); if (clickedTagIsCurrentTagInSidebar) itemBrowser.selectedItem().addClassName("positive");
+        tag.title = I18n.t('winnow.items.main.moderation_panel_positive_tag_tooltip', {tag_name: tag_name});
       }
     }.bind(this);
     

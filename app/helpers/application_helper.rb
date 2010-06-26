@@ -95,19 +95,26 @@ module ApplicationHelper
     javascript_tag(function)
   end
   
-  # Generates the control to mark a tag/feed a globally excluded/not globally excluded.
-  def globally_exclude_check_box(tag_or_feed)
-    url = if tag_or_feed.is_a?(Tag)
-      globally_exclude_tag_path(tag_or_feed)
-    elsif tag_or_feed.is_a?(Feed)
-      globally_exclude_feed_path(tag_or_feed)
-    elsif tag_or_feed.is_a?(Remote::Feed)
-      globally_exclude_feed_path(:id => tag_or_feed.id)
-    end
+  # Generates the control to mark a tag a globally excluded/not globally excluded.
+  def globally_exclude_tag_check_box(tag)
+    url = globally_exclude_tag_path(tag)
     
-    check_box_tag dom_id(tag_or_feed, "globally_exclude"), "1", current_user.globally_excluded?(tag_or_feed),
-      :id => dom_id(tag_or_feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}"),
-      :title => t("winnow.general.globally_exclude_tooltip")
+    check_box_tag dom_id(tag, "globally_exclude"), "1", current_user.globally_excluded?(tag),
+      :id => dom_id(tag, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}"),
+      :title => t("winnow.general.globally_exclude_tag_tooltip")
+  end
+
+  # Generates the control to mark a feed a globally excluded/not globally excluded.
+  def globally_exclude_feed_check_box(feed)
+    url = if feed.is_a?(Feed)
+      globally_exclude_feed_path(feed)
+    elsif feed.is_a?(Remote::Feed)
+      globally_exclude_feed_path(:id => feed.id)
+    end
+
+    check_box_tag dom_id(feed, "globally_exclude"), "1", current_user.globally_excluded?(feed),
+      :id => dom_id(feed, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}"),
+      :title => t("winnow.general.globally_exclude_feed_tooltip")
   end
 
   # Generates the control to mark a tag subscribed/unsbscribed

@@ -3,17 +3,17 @@
     <div class="info">
       <div class="details">
         <p>&nbsp;</p>
-        <strong><%= globally_exclude_check_box(feed) %> <%= t("winnow.general.globally_exclude") %></strong>
+        <%= globally_exclude_feed_check_box(feed) %> <%= t("winnow.general.globally_exclude") %>
       </div>
-      <div class="count">
+      <div class="count" title="<%= t('winnow.items.main.feed_info_item_count_tooltip') %>">
         <p>Items</p>
         <strong><%= feed.feed_items_count %></strong>
       </div>
-      <div class="date">
+      <div class="date" title="<%= t('winnow.items.main.feed_info_added_date_tooltip') %>">
          <p><%= t("winnow.general.created") %></p> 
          <strong><%= format_date(feed.created_on) %></strong>
       </div>
-      <div class="date">
+      <div class="date" title="<%= t('winnow.items.main.feed_info_updated_date_tooltip') %>">
          <p><%= t("winnow.general.last_updated") %></p> 
          <strong><%= format_date(feed.updated_on) %></strong>
       </div>
