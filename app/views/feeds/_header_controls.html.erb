@@ -3,10 +3,10 @@
 <% end -%>
 
 <div class="order clearfix">
-  <label><%= t("winnow.general.sort_label") %></label>        
+  <label title="<%= t('winnow.feeds.header.feed_sort_label_tooltip') %>"><%= t("winnow.general.sort_label") %></label>
   <select id="order">
     <option value="title"><%= t("winnow.feeds.header.title") %></option>
-    <option value="globally_exclude"><%= t("winnow.general.globally_exclude") %></option>
+    <option value="globally_exclude"><%= t("winnow.general.globally_excluded") %></option>
     <option value="feed_items_count"><%= t("winnow.feeds.header.items") %></option>
     <option value="created_on"><%= t("winnow.feeds.header.created") %></option>
     <option value="updated_on"><%= t("winnow.general.last_updated") %></option>
@@ -33,7 +33,7 @@
       <p><%= t("winnow.feeds.header.upload_opml_description") %></p>
       <p>
         <%= file_field_tag 'opml', :size => 60, :title => t("winnow.feeds.header.upload_tooltip") %>
-        <%= submit_tag t("winnow.feeds.header.upload_button") %> 
+        <%= submit_tag t("winnow.feeds.header.upload_button"), :title => t("winnow.feeds.header.upload_tooltip") %>
       </p>
     <% end -%>
     
@@ -41,6 +41,6 @@
 
     <p><%= bookmarklet_installation_instructions %></p>
     
-    <%= link_to t("winnow.feeds.header.add_to_winnow_bookmarklet"), bookmarklet_js, :class => "bookmarklet", :onclick => "return false;" %>
+    <div title="<%= t('winnow.feeds.header.bookmarklet_tooltip') %>"><%= link_to t("winnow.feeds.header.add_to_winnow_bookmarklet"), bookmarklet_js, :class => "bookmarklet", :onclick => "return false;" %></div>
   </fieldset>
 </div>

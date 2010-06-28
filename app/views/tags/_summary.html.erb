@@ -1,32 +1,32 @@
 <div class="summary clearfix" title="<%= t('winnow.tags.main.tag_summary_tooltip') %>">
   <div class="info">      
     <div class="details">
-      <p><%=h tag.user_login %></p>
-      <strong class="state"><%= tag_state(tag) %></strong>
+      <p title="<%= t('winnow.tags.attributes.user_name_tooltip', :user_name => tag.user_login) %>"><%=h tag.user_login %></p>
+      <strong class="state" title="<%= tag_state_tooltip(tag) %>"><%= tag_state(tag) %></strong>
     </div>
-    <div class="comments">
+    <div class="comments" title="<%= t('winnow.tags.attributes.comments_tooltip') %>">
       <p><%= t("winnow.tags.attributes.comments") %></p>  
       <strong>
         <span class="unread_comments"><%= tag.comments.unread(current_user).count %></span> / <span class="total_comments"><%= tag.comments_count %></span>
       </strong>
     </div>
-    <div class="positive">
+    <div class="positive" title="<%= t('winnow.tags.attributes.positive_tooltip') %>">
       <p><%= t("winnow.tags.attributes.positive") %></p>
       <strong><%= tag.positive_count %></strong>
     </div>
-    <div class="negative">
+    <div class="negative" title="<%= t('winnow.tags.attributes.negative_tooltip') %>">
       <p><%= t("winnow.tags.attributes.negative") %></p>
       <strong><%= tag.negative_count %></strong>
     </div>
-    <div class="automatic">
+    <div class="automatic" title="<%= t('winnow.tags.attributes.automatic_tooltip') %>">
       <p><%= t("winnow.tags.attributes.automatic") %></p>
       <strong><%= tag.classifier_count %></strong>
     </div>
-    <div class="date">
+    <div class="date" title="<%= t('winnow.tags.attributes.last_classified_tooltip') %>">
        <p><%= t("winnow.tags.attributes.last_classified") %></p> 
        <strong><%= format_date(tag.last_classified_at) %></strong>
     </div>
-    <div class="date">
+    <div class="date" title="<%= t('winnow.tags.attributes.last_trained_tooltip') %>">
        <p><%= t("winnow.tags.attributes.last_trained") %></p> 
        <strong><%= format_date(tag.last_trained) %></strong>
     </div>
@@ -43,7 +43,7 @@
             :click_to_edit_text => t("winnow.tags.main.click_to_edit_description"), :save_text => t("winnow.general.save"), :rows => 5, :cols => 50) %>
     </div>
   <% else %>
-    <h4 class="name"><%=h tag.name %></h4>
+    <h4 class="name" title="<%= t('winnow.tags.attributes.subscribed_name_tooltip') %>"><%=h tag.name %></h4>
 
     <div class="description">
       <%=h tag.description %>

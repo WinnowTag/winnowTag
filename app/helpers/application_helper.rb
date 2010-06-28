@@ -194,12 +194,21 @@ module ApplicationHelper
     end
   end
 
-  # Generates the state text that should be shown for a feed.
+  # Generates the state text that should be shown for a tag.
   def tag_state(tag)
     if current_user.globally_excluded?(tag)
       t("winnow.tags.general.globally_excluded")
     elsif current_user.subscribed?(tag)
       t("winnow.tags.general.subscribed")
+    end
+  end
+
+  # Generates the tag state tooltip that should exist on the state label (subscribed/blocked/blank) of a tag.
+  def tag_state_tooltip(tag)
+    if current_user.globally_excluded?(tag)
+      t("winnow.tags.general.globally_excluded_tooltip")
+    elsif current_user.subscribed?(tag)
+      t("winnow.tags.general.subscribed_tooltip")
     end
   end
 

@@ -3,7 +3,7 @@
     <div class="info">
       <div class="details">
         <p>&nbsp;</p>
-        <%= globally_exclude_feed_check_box(feed) %> <%= t("winnow.general.globally_exclude") %>
+        <label title="<%= t('winnow.general.globally_exclude_feed_tooltip') %>"><%= globally_exclude_feed_check_box(feed) %> <%= t("winnow.general.globally_exclude") %></label>
       </div>
       <div class="count" title="<%= t('winnow.items.main.feed_info_item_count_tooltip') %>">
         <p>Items</p>

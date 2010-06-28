@@ -33,9 +33,9 @@ div.slider_handle {
 
 div.bias_marker {
 	z-index: 5;
-	width: 1px;
+	width: 3px;
 	height: 15px;
-	background-color: #555;
+	background-color: #777;
 	position: absolute;
 	top: 1px;
 	cursor: pointer;
@@ -53,7 +53,7 @@ div.bias_marker.one_point_zero {
 }
 
 div.bias_marker.one_point_one {
-	width: 3px;
+        background-color: #333;
 	height: 11px;
 	top: 3px;
 	margin-left: 2px;

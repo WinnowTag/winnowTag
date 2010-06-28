@@ -8,10 +8,7 @@
         <ul class="controls">
           <li class="first slider_control clearfix">
             <h4><%= t("winnow.tags.main.apply_to", :tag => tag.name) %></h4>
-            <span class="fewer"><%= t("winnow.tags.main.fewer_items") %></span> <%= bias_slider_html(tag) %> <span class="more"><%= t("winnow.tags.main.more_items") %></span>
-          </li>
-          <li class="globally_exclude">
-            <%= globally_exclude_tag_check_box(tag) %> <label title="<%= t('winnow.general.globally_exclude_tag_tooltip') %>" for="<%= dom_id(tag, 'globally_exclude') %>"><%= t("winnow.general.globally_exclude") %></label>
+            <span class="fewer" title="<%= t('winnow.tags.main.fewer_items_tooltip') %>"><%= t("winnow.tags.main.fewer_items") %></span> <%= bias_slider_html(tag) %> <span class="more" title="<%= t('winnow.tags.main.more_items_tooltip') %>"><%= t("winnow.tags.main.more_items") %></span>
           </li>
           <% if tag.user_id != current_user.id -%>
             <li class="subscribe">
@@ -37,6 +34,9 @@
           <div class="feed_links">
             <%= render :partial => "feed_links.html.erb", :locals => { :tag => tag } %>
           </div>
+          <li class="globally_exclude">
+            <label title="<%= t('winnow.general.globally_exclude_tag_tooltip') %>" for="<%= dom_id(tag, 'globally_exclude') %>"><%= globally_exclude_tag_check_box(tag) %> <%= t("winnow.general.globally_exclude") %></label>
+          </li>
         </ul>
       </div>
       

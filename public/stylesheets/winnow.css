@@ -1317,9 +1317,15 @@ body#item_caches .item_cache {
   background-image: url(../images/destroy.png);
 }
 
+.tag ul.controls .slider_control {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 1.5em;
+  margin-bottom: .5em;
+}
+
 .tag ul.controls .slider_control h4 {
   display: block;
-  margin-bottom: 0.5em;
+  margin-bottom: 1.25em;
   font-weight: normal;
 }
 
