@@ -3,14 +3,17 @@
 # Possession of a copy of this file grants no permission or license
 # to use, modify, or create derivative works.
 # Please visit http://www.peerworks.org/contact for further information.
-require File.dirname(__FILE__) + '/../spec_helper'
-
-describe Setting do
-  before(:each) do
-    @setting = Setting.new :name => "info", :value => "welcome to winnow"
+class RemoveSettings < ActiveRecord::Migration
+  def self.up
+    drop_table :settings
   end
 
-  it "should be valid" do
-    @setting.should be_valid
+  def self.down
+    create_table :settings do |t|
+      t.string :name
+      t.text :value
+
+      t.timestamps
+    end
   end
 end

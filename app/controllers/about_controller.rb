@@ -30,13 +30,6 @@ class AboutController < ApplicationController
     end
   end
 
-  # The +info+ action is the default landing page for Winnow and its content
-  # can be edited in the admin/info section.
-  def info
-    @info = Setting.find_or_initialize_by_name("Info")
-    @messages = Message.for(current_user).latest(30).pinned_or_since(Message.info_cutoff)
-  end
-  
 private
   
   def no_logging

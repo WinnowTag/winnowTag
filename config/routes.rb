@@ -89,13 +89,10 @@ ActionController::Routing::Routes.draw do |map|
   
   map.with_options :controller => "about" do |about_map|
     about_map.about "about"
-    about_map.info "info", :action => "info"
   end
   
   map.with_options :controller => "admin" do |admin_map|
     admin_map.admin "admin"
-    admin_map.admin_info "admin/info", :action => "info"
-    admin_map.admin_help "admin/help", :action => "help"
   end
   
   map.resources :demo, :only => [:index]

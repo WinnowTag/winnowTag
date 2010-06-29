@@ -15,26 +15,4 @@ class AdminController < ApplicationController
   # pages.
   def index
   end
-  
-  # The +info+ action is used to edit the content on the info page.
-  def info
-    @info = Setting.find_or_initialize_by_name("Info")
-    if request.post?
-      @info.value = params[:value]
-      @info.save!
-      redirect_to info_path
-    end
-  end
-  
-  # The +help+ action is used to edit the help links displayed 
-  # thoroughout winnow. A default help link can be set, as well
-  # as per-page help links.
-  def help
-    @help = Setting.find_or_initialize_by_name("Help")
-    if request.post?
-      @help.value = params[:value]
-      @help.save!
-      redirect_to admin_path
-    end
-  end
 end

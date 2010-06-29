@@ -11,7 +11,6 @@
     </ul>
 
   	<ul class="main clearfix">
-      <li><%= link_to(t("winnow.navigation.winnow_info"), info_path, :class => tab_selected('about', "info"), :title => t("winnow.navigation.winnow_info_tooltip")) %></li>
       <li><%= link_to(t("winnow.navigation.items"), feed_items_path, :class => tab_selected('feed_items'), :title => t("winnow.navigation.items_tooltip")) %></li>
   	  <li><%= link_to(t("winnow.navigation.my_tags"), tags_path, :class => tab_selected('tags', 'index'), :title => t("winnow.navigation.my_tags_tooltip")) %></li>
   	  <li><%= link_to(t("winnow.navigation.public_tags"), public_tags_path, :class => tab_selected('tags', 'public'), :title => t("winnow.navigation.public_tags_tooltip")) %></li>
@@ -27,9 +26,5 @@
       <li><%= link_to(t("winnow.navigation.login"), login_path, :title => t("winnow.navigation.loging_tooltip")) %></li>
       <li><%= link_to(t("winnow.navigation.about"), about_path, :title => t("winnow.navigation.about_tooltip")) %></li>
     </ul>
-
-  	<ul class="main clearfix">
-      <li><%= link_to(t("winnow.navigation.winnow_info"), info_path, :class => tab_selected('about', "info"), :title => t("winnow.navigation.winnow_info_tooltip")) %></li>
-  	</ul>
-	</div>
+  </div>
 <% end -%>

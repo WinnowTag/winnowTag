@@ -161,18 +161,15 @@ module ApplicationHelper
     end
   end
   
-  # Determines the path to use for the help link based on the current page 
-  # and the help link settings.
+  # Provide the path to use for the help link on the current page
   def help_path
-    setting = YAML.load(Setting.find_or_initialize_by_name("Help").value.to_s)
-    if setting && setting[controller_name] && setting[controller_name][action_name]
-      setting[controller_name][action_name]
-    elsif setting && setting["default"]
-      setting['default']
+    if controller_name && action_name
+      t("winnow.help_links." + controller_name + "." + action_name)
+    else
+      t("winnow.help_links.default")
     end
-  rescue ArgumentError # Swallow malformed yaml exceptions
   end
-  
+
   # Generates the classes that should exist on a tag. These are used to properly style the tag.
   def tag_classes(tag)
     classes = [dom_id(tag)]

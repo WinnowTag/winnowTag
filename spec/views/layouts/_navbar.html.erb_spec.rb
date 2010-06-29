@@ -13,11 +13,6 @@ describe '/layouts/_navbar.html.erb' do
   end
   
   describe "tabbed navigation" do
-    it "contains a link to the winnow info page" do
-      render_it
-      response.should have_tag(".main a[href=?]", info_path)
-    end
-    
     it "contains a link to the feed items page" do
       render_it
       response.should have_tag(".main a[href=?]", feed_items_path)
@@ -43,11 +38,6 @@ describe '/layouts/_navbar.html.erb' do
   end
   
   describe "extra navigation" do
-    it "contains a link to the my info page" do
-      render_it
-      response.should have_tag(".extra a[href=?]", edit_account_path)
-    end
-
     it "contains a link to logout" do
       render_it
       response.should have_tag(".extra a[href=?]", logout_path)

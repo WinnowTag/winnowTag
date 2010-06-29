@@ -86,7 +86,7 @@ class AccountController < ApplicationController
       unless @user.new_record?
         @invite.update_attribute :user_id, @user.id
         self.current_user = @user
-        redirect_back_or_default info_path
+        redirect_back_or_default feed_items_path
       else
         render :action => 'login'
       end

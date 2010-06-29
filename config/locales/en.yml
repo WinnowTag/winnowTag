@@ -41,6 +41,21 @@ en:
           Mindloom &copy; 2010 &bull;
         	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
         </div>
+    help_links:
+      default: "http://doc.winnowtag.org/help"
+      about:
+        index: "http://doc.winnowtag.org/help"
+      feed_items:
+        index: "http://doc.winnowtag.org/help/items-page"
+      tags:
+        index: "http://doc.winnowtag.org/help/my-tags-page"
+        public: "http://doc.winnowtag.org/help/public-tags-page"
+        create_tags: "http://doc.winnowtag.org/help/items-page/creating-tags"
+        create_tags_tooltip: "Help for creating your own tags"
+      feeds:
+        index: "http://doc.winnowtag.org/help/feeds-page"
+      admin:
+        index: "http://doc.winnowtag.org/help"
     email:
       subject_prefix: "[winnowTag]"
       deployed_subject: "[DEPLOYMENT] r{{revision}} deployed"
@@ -135,8 +150,6 @@ en:
       logout_tooltip: ""
       login: "Login"
       login_tooltip: ""
-      winnow_info: "Winnow Info"
-      winnow_info_tooltip: ""
       items: "Items"
       items_tooltip: " Items page shows all items and selected views of items in winnowTag"
       my_tags: "My Tags"
@@ -173,8 +186,6 @@ en:
         training_controls_label_tooltip: "Create your own winnowTags on any topic"
         training_controls_toggle_open_tooltip: "Close Create Tags and tagging panels on items"
         training_controls_toggle_closed_tooltip: "Create or change your own tags"
-        training_help_link: "http://doc.winnowtag.org/help/items-page/creating-tags"
-        training_help_link_tooltip: "Help for creating your own tags"
         search_legend: "Search for items with:"
         search_legend_tooltip: ""
         create_tag_legend: "Create a new tag"
@@ -357,12 +368,6 @@ en:
       messages_link: "Messages"
       messages_tooltip: ""
       messages_description: "View and manage messages."
-      info_link: "Winnow Info"
-      info_tooltip: ""
-      info_description: "View and manage the Winnow Info content."
-      help_link: "Help Links"
-      help_tooltip: ""
-      help_description: "View and manage winnowTag help links."
       feedback_link: "Feedback"
       feedback_tooltip: ""
       feedback_description: "View feedback left by the users of winnowTag."
@@ -440,7 +445,7 @@ en:
       main:
         metadata: "{{login}} on {{created_at}}"
     profile:
-      header: "Update your information"
+      header: "Update your account information"
       first_name: "First Name"
       last_name: "Last Name"
       time_zone: "Time Zone"

@@ -32,11 +32,11 @@ describe AccountController do
       assert_response :success
     end
 
-    it "should_allow_signup_and_redirect_to_info_path" do
+    it "should_allow_signup_and_redirect_to_feed_items_path" do
       assert_difference "User.count" do
         create_user
         assert session[:user]
-        response.should redirect_to(info_path)
+        response.should redirect_to(feed_items_path)
       end
     end
 

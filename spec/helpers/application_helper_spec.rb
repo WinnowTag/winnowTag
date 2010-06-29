@@ -47,42 +47,6 @@ describe ApplicationHelper do
     end
   end
     
-  describe "#help_path" do
-    def controller_name; @controller_name; end
-    def action_name; @action_name; end
-    
-    before(:each) do
-      @setting = Setting.create! :name => "Help", :value => {
-        "default" => "http://docs.mindloom.org/wiki/WinnowHelp",
-        "feed_items" => {
-          "index" => "http://docs.mindloom.org/wiki/WinnowHelp:Items_page"
-        }
-      }.to_yaml
-    end
-
-    it "maps a controller + action to a specific wiki page" do
-      @controller_name = "feed_items"
-      @action_name = "index"
-      help_path.should == "http://docs.mindloom.org/wiki/WinnowHelp:Items_page"
-    end
-    
-    it "maps a controller + action to the default wiki page" do
-      @controller_name = "feeds"
-      @action_name = "fake"
-      help_path.should == "http://docs.mindloom.org/wiki/WinnowHelp"
-    end
-    
-    it "handless nil yaml" do
-      @setting.update_attribute :value, nil
-      help_path.should be_nil
-    end
-    
-    it "handless malformed yaml" do
-      @setting.update_attribute :value, "items:\nthings:"
-      help_path.should be_nil
-    end
-  end
-  
   describe "tab selected" do
     def controller_name; @controller_name; end
     def action_name; @action_name; end
