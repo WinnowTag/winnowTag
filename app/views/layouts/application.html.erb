@@ -23,7 +23,7 @@
 		<%= context_menu %>
 	<% end -%>
 	
-  <% if Rails.env.trunk? -%>
+  <% if Rails.env.trunk? || Rails.env.development? -%>
     <div class="environment"><%= Rails.env %></div>
   <% end -%>
 
