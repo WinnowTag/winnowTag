@@ -323,19 +323,19 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   },
   
   showDemoTagInfo: function() {
-    var footer_tag_name = $("footer_tag_name");
+    var updating_tag_name = $("updating_tag_name");
     
-    if (footer_tag_name && this.filters.tag_ids && $A(this.filters.tag_ids.split(",")).first()) {
+    if (updating_tag_name && this.filters.tag_ids && $A(this.filters.tag_ids.split(",")).first()) {
       var tagElement = $("tag_" + $A(this.filters.tag_ids.split(",")).first());
       
       if (tagElement && tagElement.getAttribute("name")) {
-        footer_tag_name.update(tagElement.getAttribute("name"));
-        $("footer_tag_positive_count").update(tagElement.getAttribute("pos_count"));
-        $("footer_tag_negative_count").update(tagElement.getAttribute("neg_count"));
-        $("footer_tag_count").update(tagElement.getAttribute("item_count"));
-        $("tag_detail_footer").setStyle({"visibility": "visible"});
+        updating_tag_name.update(tagElement.getAttribute("name"));
+        $("updating_tag_count").update(tagElement.getAttribute("item_count"));
+        $("tag_detail_updating").setStyle({"visibility": "visible", "position": "static"});
+        $("no_tag_detail_updating").setStyle({"visibility": "hidden", "position": "absolute"})
       } else {
-        $("tag_detail_footer").setStyle({"visibility": "hidden"});
+        $("tag_detail_updating").setStyle({"visibility": "hidden", "position": "absolute"});
+        $("no_tag_detail_updating").setStyle({"visibility": "visible", "position": "static"})
       }
     }
   },

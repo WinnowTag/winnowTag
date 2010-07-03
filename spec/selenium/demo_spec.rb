@@ -25,7 +25,7 @@ describe "Demo" do
   end
   
   it "should hide the tag detail footer when show all items is set" do
-    page.is_visible("css=#tag_detail_footer").should be_false
+    page.is_visible("css=#tag_detail_updating").should be_false
   end
   
   it "should show the tag" do
@@ -45,15 +45,15 @@ describe "Demo" do
   
   it "should show the tag_detail footer when a tag is selected" do
     page.click("css=#tag_#{@tag.id}")
-    page.is_visible("css=#tag_detail_footer").should be_true
+    page.is_visible("css=#tag_detail_updating").should be_true
   end
   
   it "should set the tag details when a tag is selected" do
     page.click("css=#tag_#{@tag.id}")
-    page.get_text("css=#footer_tag_name").should == "test"
-    page.get_text("css=#footer_tag_positive_count").should == "1"
-    page.get_text("css=#footer_tag_negative_count").should == "0"
-    page.get_text("css=#footer_tag_count").should == "1"
+    page.get_text("css=#updating_tag_name").should == "test"
+    page.get_text("css=#updating_tag_positive_count").should == "1"
+    page.get_text("css=#updating_tag_negative_count").should == "0"
+    page.get_text("css=#updating_tag_count").should == "1"
   end
   
   it "should only show tagged items when the tag is selected" do 

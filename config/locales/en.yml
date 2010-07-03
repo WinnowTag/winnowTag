@@ -42,7 +42,7 @@ en:
         	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
         </div>
     help_links:
-      default: "http://doc.winnowtag.org/help"
+      default: "http://doc.winnowtag.org"
       about:
         index: "http://doc.winnowtag.org/help"
       feed_items:
@@ -320,7 +320,7 @@ en:
         id_not_found: "Tag with id {{tag_id}} not found"
     feeds:
       header:
-        add_import: "Add Feed"
+        add_import: "Add Feeds"
         add_import_tooltip: "Add a blog or website feed or import multiple feeds"
         feed_sort_label_tooltip: "Reorder the list of feeds"
         title: "Title"
@@ -510,11 +510,13 @@ en:
           runningHARDCODED: "The classifier is already running."
     # These the are strings that appear in the demo version of winnowTag
     demo:
+      powered_by: powered by <a href="http://doc.winnowtag.org/open-source" target="_blank">open source Winnow</a>
       all_items: See all items
       column_headings:
-        sidebar: <span class="name">winnowTags</span> (click a tag to see items it finds)
-        items: <span class="name">Items</span> (click on an item to open)
-        feedback: "feedback & questions"
+        sidebar: Click a tag to see items it finds, then click items to read.
+        items: ""
+        what_is_winnowTag: "What is winnowTag?"
+        feedback: "Feedback"
       footer: |-
         <div id="copyright">
         	powered by <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> &bull;
@@ -522,19 +524,24 @@ en:
         	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
         </div>
       explanatory_text:
-        top: |-
-          <p>Find items in thousands of feeds in real time, using winnowTags trained by examples.</p>
-          <p>Get a login to create and share winnowTags, add feeds... <a href="javascript:alert('link needed')">read more</a>
-          	<span class="followOn">Powered by <a href="http://doc.winnowtag.org/open-source" target="_blank">open source Winnow</a>.</span>
-          </p>
-        bottom: |-
-          <p id="tag_detail_footer">
-          	'<span id="footer_tag_name"></span>' has
-          	<span id="footer_tag_positive_count"></span> positive and 
-          	<span id="footer_tag_negative_count"></span> negative examples and finds 
-          	<span id="footer_tag_count"></span> relevant items.
-          </p>
-          <p>winnowTag is filtering {{item_count}} items collected from {{feed_count}} feeds.
-          	<span class="followOn">Get a login to create and share winnowTags, add feeds... <a href="more">read more</a></span>
-          </p>
-
+        top_describe: "Click a winnowTag (at left) to find items on that topic."
+        top_invite: |-
+          to make tags find your own stuff + many cool features
+        updating: |-
+          <span id="no_tag_detail_updating">
+            Click a tag to find items, click items to read
+          </span>
+          <span id="tag_detail_updating">
+          	<span id="updating_tag_name"></span> finds <span id="updating_tag_count"></span>
+            of {{item_count}} items from {{feed_count}} feeds
+          </span>
+        old_detailed_updating: |-
+          <span id="no_tag_detail_updating">
+            Click a tag to find items, then click items to read.
+          </span>
+          <span id="tag_detail_updating">
+          	'<span id="updating_tag_name"></span>' finds <span id="updating_tag_count"></span> items using
+          	<span id="updating_tag_positive_count"></span> positive and
+          	<span id="updating_tag_negative_count"></span> negative examples.
+          </span>
+          winnowTag is filtering {{item_count}} items from {{feed_count}} feeds.

@@ -5,8 +5,23 @@
  * Please visit http://www.peerworks.org/contact for further information.
  */
 
+/* =environment */
+.environment {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background-color: #FFEDED;
+  opacity: 0.75;
+  filter: alpha(opacity=75);
+  text-align: center;
+  font-weight: bold;
+  font-size: large;
+  color: #aaa;
+  height: 1.5em;
+}
+
 body {
-  background-color: #F2F2F2;
 }
 
 #demo_title {
@@ -24,46 +39,58 @@ body {
 #demo_subheader {
   font-family: Verdana,Arial,sans-serif;
   color: #B59350;
-  margin: 0px 0px 0px 20px;
+  margin: 0px 0px 0px 25px;
   line-height: 1em;
-  text-transform: uppercase;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: .8em;
+}
+
+#demo_login_sign_up {
+  float:right;
+  margin: 0 15px 0 0;
+  font-size: 1.2em;
+  color: #666;
+}
+
+#sign_up {
+  text-decoration: underline;
 }
 
 #topDemoContent {
-  width: 70%;
   float: right;
-  margin: 5px 20px 5px 0px;
-}
-
-#bottomDemoContent {
-  width: 98%;
-  margin: 5px 5px;
+  margin-top: 1em;
+  margin-right: 1em;
+  font-size: 1.2em;
 }
 
 div.demo_content {
   border: 1px solid #D7C0AE;
-  padding: 5px;
+  padding: .3em .7em .3em .7em;
   background-color: white;
   color: #372D1C;
-  -moz-box-shadow: 3px 3px 3px #D7C0AE;
-  margin-bottom: 10px;
+  -moz-box-shadow: 2px 2px 2px #ccc;
+  -webkit-box-shadow: 2px 2px 2px #ccc;
 }
 
 div.demo_content p {
   margin: 0;
 }
 
-.followOn {
-  float: right;
+#updating_tag_name {
+  color: #111;
 }
 
 div.column_headers {
   clear: both;
-  color: #372D1C;
-  padding-top: 10px;
-  margin-left: 10px;
+  padding-top: 1.5em;
+  font-size: 1.1em;
+}
+
+#sidebar_header {
+  color: #666;
+  background-color: #F2F2F2;
+  padding-left: 15px;
+  width: 100%;
+  border-top: 1px solid #ddd;
 }
 
 div.column_headers .name {
@@ -128,7 +155,6 @@ ul.tags li {
   cursor: pointer;
   padding: 2px 15px;
   font-family: Verdana,Arial,sans-serif;
-  font-weight: bold;
   display: list-item;
 }
 
