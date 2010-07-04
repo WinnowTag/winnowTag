@@ -100,7 +100,7 @@ describe ApplicationHelper do
       user = stubs[:user] || mock_model(User, :login => "mark")
       sort_name = (stubs[:name] || "Tag 1").to_s.downcase.gsub(/[^a-zA-Z0-9]/, '')
       mock_model(Tag, stubs.reverse_merge(
-        :name => "Tag 1", :sort_name => sort_name, :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :classifier_count => 0, :public? => false
+        :name => "Tag 1", :sort_name => sort_name, :user_id => user.id, :user => user, :positive_count => 0, :negative_count => 0, :feed_items_count => 0, :classifier_count => 0, :public? => false
       ))
     end
     
