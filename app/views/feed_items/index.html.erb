@@ -26,23 +26,16 @@
 <% end -%>
 
 <% content_for :header_controls do -%>
-  
-  <div class="toolbar sidebar_buttons">
-		<div class="group">
-			<h4>Tags</h4>
-		</div>
-	</div>
-
+  <div id="sidebar_header">
+    <%= t("winnow.demo.explanatory_text.updating", :item_count => FeedItem.count, :feed_count => Feed.count) %>
+  </div>
+  <div id="selectedFeed" style="display: none; float: left">
+    <div class="text"><%= image_tag "info.png", :size => "16x16" %> Viewing only items from '<span id="filteredFeedTitle">My Feed Title</span>'</div>
+    <%= rounded_button_function "Cancel", "itemBrowser.setFilters({feed_filter: null});", :class => 'first'%>
+    <div class="clearfix"></div>
+  </div>
   <div class="toolbar item_buttons">
-    <div class="group">
-      <%#= rounded_button_function t("winnow.items.previous_item"), "", :icon => "previous", :title => t("winnow.items.previous_item_tooltip"), :id => "previous_unread" %>
       <%= rounded_button_function t("winnow.items.next_item"),     "", :title => t("winnow.items.next_item_tooltip"), :id => "next_unread"%>
-    </div>
-		<div id="selectedFeed" style="display: none">
-			<div class="text"><%= image_tag "info.png", :size => "16x16" %> Viewing only items from '<span id="filteredFeedTitle">My Feed Title</span>'</div>
-			<%= rounded_button_function "Cancel", "itemBrowser.setFilters({feed_filter: null});", :class => 'first small'%>
-			<div class="clearfix"></div>
-		</div>
   </div>
 
 <% end -%>

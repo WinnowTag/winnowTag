@@ -128,7 +128,7 @@ module ApplicationHelper
   def tag_filter_controls(tags, options = {})
     tags.map { |tag| tag_filter_control(tag, options) }.join
   end
-  
+
   # Generates an individual control to filter the list of tags.
   # See ApplicationHelper#tag_filter_controls.
   def tag_filter_control(tag, options = {})
@@ -147,7 +147,11 @@ module ApplicationHelper
                                         :title => tag_tooltip(tag)), 
                             :class => "filter"),
                 :id => dom_id(tag), 
-                :class => class_names.join(" "))
+                :class => class_names.join(" "),
+                :name => tag.name,
+                :pos_count => tag.positive_count,
+                :neg_count => tag.negative_count,
+                :item_count => tag.feed_items_count)
     
   end
   

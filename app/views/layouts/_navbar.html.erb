@@ -2,8 +2,8 @@
   <div id="navigation" class="navigation clearfix">
   	<ul class="extra">
       <li><%= t("winnow.navigation.logged_in_as") %> 
-					<%= link_to(current_user.login, edit_account_path, :title => t("winnow.navigation.profile_tooltip")) %>
-          (<%= link_to(t("winnow.navigation.logout"), logout_path, :title => t("winnow.navigation.logout_tooltip")) %>)</li>
+					<%= link_to(current_user.login, edit_account_path, :title => t("winnow.navigation.profile_tooltip")) %></li>
+      <li><%= link_to(t("winnow.navigation.logout"), logout_path, :title => t("winnow.navigation.logout_tooltip")) %></li>
 			<% if help_path -%>
       	<li><%= link_to(t("winnow.navigation.help"), help_path, :target => "_blank", :class => "help", :title => t("winnow.navigation.help_tooltip")) %></li>
 			<% end -%>

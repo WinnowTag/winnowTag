@@ -89,7 +89,7 @@ body {
 
 #header {
   color: #936301;
-  margin: 5px 0px 0px 20px;
+  margin: 10px 0px 0px 20px;
   font-size: 30px;
   font-weight: bold;
   font-family: Verdana,Arial,sans-serif;
@@ -98,11 +98,10 @@ body {
 #subheader {
   font-family: Verdana,Arial,sans-serif;
   color: #B59350;
-  margin: 0px 0px 0px 20px;
+  margin: 0px 0px 15px 25px;
   line-height: 1em;
-  text-transform: uppercase;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: .8em;
+  font-weight: normal;
 }
 
 input, select, textarea {
@@ -111,7 +110,7 @@ input, select, textarea {
 }
 
 #container {
-  border-top: 1px solid #DECBA3;
+  border-top: 1px solid #ccc;
 }
 
 #content {
@@ -187,6 +186,26 @@ textarea.content {
   width: 100%;
   height: 40em;
 }
+
+/*
+ * Corresponding to demo.css
+ */
+#sidebar_header {
+  color: #666;
+/*  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding-left: 15px; */
+  padding-top: 1px;
+  float: left;
+  font-size: 1.1em;
+  font-style: italic;
+}
+
+#updating_tag_name {
+  color: #111;
+}
+
 
 /*
  * =messages
@@ -361,15 +380,15 @@ body#login .container .form .content #invite_use {
  * =navigation
  */
 .navigation {
-  padding: 1em 1em 0 1em;
-  border-bottom: 1px solid #E1D2C7;
+  padding: 0px 15px 0 15px;
+  border-bottom: 1px solid #ccc;
 }
 
 .navigation .main {
   clear: right;
   float: right;
   padding: 0;
-  margin: 5px 0 0 0;
+  margin: 15px 0 0 0;
   list-style: none;
   margin-bottom: 0px;
 }
@@ -386,17 +405,19 @@ body#login .container .form .content #invite_use {
 
 .navigation .main li a {
   display: block;
-  padding: 0.5em;
-  border: 1px solid #D7C0AE;
+  padding: .4em .8em .4em .8em;
+  border: 1px solid #ccc;
   border-width: 1px 1px 0 1px;
   background: #F2F2F2;
+  font-family: Verdana,Arial,sans-serif;
   font-weight: bold;
   text-decoration: none;
-  color: black;
+  color: #777;
 }
 
 .navigation .main li a.selected {
-  background-color: #E1D2C7;
+  background-color: #d8d8d8;
+  color: #555;
 }
 
 .navigation .main li a:hover {
@@ -416,7 +437,7 @@ body#login .container .form .content #invite_use {
 .navigation .extra {
   float: right;
   padding: 0;
-  margin: 0;
+  margin: 0 0 5px 0;
   list-style: none;
 }
 
@@ -425,6 +446,8 @@ body#login .container .form .content #invite_use {
   padding: 0 .5em;
   margin: 0;
   border-right: 1px solid #ccc;
+  font-size: 1.2em;
+  color: #444;
 }
 
 .navigation .extra li:last-child {
@@ -531,7 +554,7 @@ body#login .container .form .content #invite_use {
 #sidebar #classification_controls {
   margin-left: auto;
   margin-right: auto;
-  width: 160px;
+  width: 150px;
 }
 
 #sidebar_edit fieldset {
@@ -654,8 +677,10 @@ input.placeholder {
  */
 #header_controls {
   margin: 0 0 0 0;
-  padding: 0.5em;
-  background-color: #F2F2F2;
+  padding: 3px 15px 0 15px;
+  background-color: #d8d8d8;
+  position: relative;
+  min-height: 26px;
 }
 
 #feed_items #text_filter_form, #new_tag_form {
@@ -689,7 +714,11 @@ input.placeholder {
 
 #header_controls .order {
   float: right;
-  margin: 0.25em 0 0.25em 1em;
+  margin-left: 2em;
+}
+
+#order {
+  margin-top: 2px;  /* Fixes Firefox, doesn't disturb webkit; TODO: check IE, etc. */
 }
 
 #header_controls .order label,
@@ -698,7 +727,7 @@ input.placeholder {
 }
 
 #header_controls .order label {
-  margin-right: 0.5em;
+  margin-right: 0.3em;
 }
 
 #header_controls .order select {

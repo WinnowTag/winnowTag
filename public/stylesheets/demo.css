@@ -30,7 +30,7 @@ body {
 
 #demo_header {
   color: #936301;
-  margin: 5px 0px 0px 20px;
+  margin: 10px 0px 0px 20px;
   font-size: 30px;
   font-weight: bold;
   font-family: Verdana,Arial,sans-serif;
@@ -44,7 +44,7 @@ body {
   font-size: .8em;
 }
 
-#demo_login_sign_up {
+#demo_login {
   float:right;
   margin: 0 15px 0 0;
   font-size: 1.2em;
@@ -83,18 +83,20 @@ div.column_headers {
   clear: both;
   padding-top: 1.5em;
   font-size: 1.1em;
+  font-style: italic;
+}
+
+div.column_headers div {
+  float: left;
 }
 
 #sidebar_header {
   color: #666;
-  background-color: #F2F2F2;
-  padding-left: 15px;
+  background-color: #d8d8d8;
+  padding: 2px 0 0 15px;
   width: 100%;
+  min-height: 23px;
   border-top: 1px solid #ddd;
-}
-
-div.column_headers .name {
-  color: black;
 }
 
 div#item_header {
@@ -104,10 +106,6 @@ div#item_header {
 div#feedback {
   float: right;
   margin-right: 20px;
-}
-
-div.column_headers div {
-  float: left;
 }
 
 

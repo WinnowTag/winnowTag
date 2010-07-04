@@ -3,21 +3,20 @@
 <% end -%>
 
 <div id="demo_title">
-	<h1 id="demo_header">winnowTag</h1>
-	<h2 id="demo_subheader"><%= t("winnow.demo.powered_by") %></h2>
+	<h1 id="demo_header"><%= t("winnow.general.app_name") %></h1>
+	<h2 id="demo_subheader"><%= t("winnow.general.powered_by") %></h2>
 </div>
 
-<div id="demo_login_sign_up">
-  <a href="<%= t('winnow.help_links.default')%>" target="_blank"><%= t("winnow.demo.column_headings.what_is_winnowTag") %></a> | <%= link_to "Log In", login_path %>
+<div id="demo_login">
+  <a href="<%= t('winnow.help_links.default')%>" target="_blank"><%= t("winnow.demo.column_headings.what_is_winnowTag") %></a> | <%= link_to "Log in", login_path %>
 </div>
 
 <div id="topDemoContent" class="demo_content">
-  <p><%= link_to "Sign Up", login_path, :id => "sign_up" %> <%= t("winnow.demo.explanatory_text.top_invite") %></p>
+  <p><%= link_to "Sign up", login_path, :id => "sign_up" %> <%= t("winnow.demo.explanatory_text.top_invite") %></p>
 </div>
 
 <div class="column_headers">
 	<div id="sidebar_header">
-          <%# t("winnow.demo.column_headings.sidebar") %>
           <%= t("winnow.demo.explanatory_text.updating", :item_count => FeedItem.count, :feed_count => Feed.count) %>
         </div>
 	<div id="item_header"><%= t("winnow.demo.column_headings.items") %></div>

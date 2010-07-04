@@ -244,10 +244,12 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       if ($("selectedFeed")) {
         $("selectedFeed").show();
         $("filteredFeedTitle").update(feedTitle);
+        $("no_tag_detail_updating").hide();
       }
     } else {
       if ($("selectedFeed")) $("selectedFeed").hide();
       parameters.feed_ids = null;
+      $("no_tag_detail_updating").show();
     }
     
     $super(parameters);
@@ -331,11 +333,11 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       if (tagElement && tagElement.getAttribute("name")) {
         updating_tag_name.update(tagElement.getAttribute("name"));
         $("updating_tag_count").update(tagElement.getAttribute("item_count"));
-        $("tag_detail_updating").setStyle({"visibility": "visible", "position": "static"});
+        $("tag_detail_updating").setStyle({"visibility": "visible", "position": "relative"});
         $("no_tag_detail_updating").setStyle({"visibility": "hidden", "position": "absolute"})
       } else {
         $("tag_detail_updating").setStyle({"visibility": "hidden", "position": "absolute"});
-        $("no_tag_detail_updating").setStyle({"visibility": "visible", "position": "static"})
+        $("no_tag_detail_updating").setStyle({"visibility": "visible", "position": "relative"})
       }
     }
   },

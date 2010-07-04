@@ -3,16 +3,24 @@
 .button {
   outline: none;
   display: block;
-  padding: 0.25em 0.75em;
+  padding: 0.1em 0.7em;
   background-color: #fff;
   background-image: url(../images/button_bg.png);
   background-position: left bottom;
   background-repeat: repeat-x;
-  border: 2px solid #bbb;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-  color: #666;
-  font-weight: bold;
+  border: 1px solid #555;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  color: #333;
+  text-decoration: none;
+}
+
+.button.winnowTagger {
+  padding: 0.3em 0.75em;
+  border: 1px solid #555;
+  -moz-border-radius: .5em;
+  -webkit-border-radius: .5em;
+  color: #333;
   text-decoration: none;
 }
 
@@ -21,14 +29,13 @@ a.button {
 }
 
 .button.small {
-  padding: 0.2em 0.75em;
-  -moz-border-radius: 0.5em;
-  -webkit-border-radius: 0.5em;
-  font-weight: bold;
+  padding: 0.1em 0.7em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
   font-size: 0.9em;
   margin: 0;
   line-height: 1.5;  
-  border: 1px solid #bbb;  
+  border: 1px solid #555;
 }
 
 a.button.disabled {
@@ -41,10 +48,6 @@ a.button.disabled {
   color: #333;
   background-image: url(../images/button_bg_active.png);
   background-position: left top;
-}
-
-.button:visited {
-  color: #666;
 }
 
 a.button:hover {
@@ -98,23 +101,23 @@ a.button:hover {
   margin-right: 0;
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
-  border-width: 2px 1px 2px 0;
+  border-width: 1px 1px 1px 0;
 }
 
 .toolbar .group .button:first-child, .toolbar .group .button.first {
-  border-left-width: 2px;
-  -moz-border-radius-topleft: 0.5em;
-  -moz-border-radius-bottomleft: 0.5em;
-  -webkit-border-top-left-radius: 0.5em;
-  -webkit-border-bottom-left-radius: 0.5em;
+  border-left-width: 1px;
+  -moz-border-radius-topleft: 1em;
+  -moz-border-radius-bottomleft: 1em;
+  -webkit-border-top-left-radius: 1em;
+  -webkit-border-bottom-left-radius: 1em;
 }
 
 .toolbar .group .button:last-child, .toolbar .group .button.last {
-  border-right-width: 2px;
-  -moz-border-radius-topright: 0.5em;
-  -moz-border-radius-bottomright: 0.5em;
-  -webkit-border-top-right-radius: 0.5em;
-  -webkit-border-bottom-right-radius: 0.5em;
+  border-right-width: 1px;
+  -moz-border-radius-topright: 1em;
+  -moz-border-radius-bottomright: 1em;
+  -webkit-border-top-right-radius: 1em;
+  -webkit-border-bottom-right-radius: 1em;
 }
 
 .toolbar .right {
@@ -125,6 +128,8 @@ a.button:hover {
 
 .toolbar.item_buttons {
   margin-left: 255px;
+  float: right;
+  padding-bottom: 2px;
 }
 
 .toolbar.sidebar_buttons .group {
@@ -138,16 +143,11 @@ a.button:hover {
 
 /* Selected feed */
 #selectedFeed {
-  border: 2px solid #DECBA3;
-  padding: 0px 0px 0px 3px;
-  background-color: #E1D2C7;
-  margin-left: 100px;
 }
 
 #selectedFeed div.text {
   float: left;
-  margin-top: 3px;
-  font-weight: bold;
+  margin: 2px .5em 0 0;
 }
 
 #selectedFeed div.clearfix {
@@ -158,7 +158,7 @@ a.button:hover {
 
 #selectedFeed div img {
   vertical-align: top;
-  margin-right: 5px;
+  margin-right: .3em;
 }
 
 #selectedFeed a.button {
