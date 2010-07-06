@@ -162,5 +162,5 @@ a.button:hover {
 }
 
 #selectedFeed a.button {
-  float: right;
+  float: left;
 }

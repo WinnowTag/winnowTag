@@ -478,7 +478,7 @@ en:
       back_tooltip: ""
       signup_submit: "Sign up"
     about:
-      build: "This is build {{build}} of winnowTag. TEST"
+      build: "This is build {{build}} of winnowTag."
       classifier_info: "Using Winnow {{version}} at build {{build}}."
       classifier_info_not_found: "Winnow could not be contacted."
     activation:
@@ -534,16 +534,6 @@ en:
             Click a tag to find items — click items to read
           </span>
           <span id="tag_detail_updating">
-          	<span id="updating_tag_name"></span> finds <span id="updating_tag_count"></span>
-            of {{item_count}} items from {{feed_count}} feeds
+          	<span id="updating_tag_name">tag</span> finds <span id="updating_tag_count">0</span> of
+            {{item_count}} items from {{feed_count}} feeds
           </span>
-        old_detailed_updating: |-
-          <span id="no_tag_detail_updating">
-            Click a tag to find items, then click items to read.
-          </span>
-          <span id="tag_detail_updating">
-          	'<span id="updating_tag_name"></span>' finds <span id="updating_tag_count"></span> items using
-          	<span id="updating_tag_positive_count"></span> positive and
-          	<span id="updating_tag_negative_count"></span> negative examples.
-          </span>
-          winnowTag is filtering {{item_count}} items from {{feed_count}} feeds.

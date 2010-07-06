@@ -32,7 +32,6 @@
   <div id="selectedFeed" style="display: none; float: left">
     <div class="text"><%= image_tag "info.png", :size => "16x16" %> Viewing only items from '<span id="filteredFeedTitle">My Feed Title</span>'</div>
     <%= rounded_button_function "Cancel", "itemBrowser.setFilters({feed_filter: null});", :class => 'first'%>
-    <div class="clearfix"></div>
   </div>
   <div class="toolbar item_buttons">
       <%= rounded_button_function t("winnow.items.next_item"),     "", :title => t("winnow.items.next_item_tooltip"), :id => "next_unread"%>

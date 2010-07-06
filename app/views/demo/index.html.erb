@@ -2,6 +2,7 @@
   <div class="environment"><%= Rails.env %></div>
 <% end -%>
 
+  <div id="navigation">
 <div id="demo_title">
 	<h1 id="demo_header"><%= t("winnow.general.app_name") %></h1>
 	<h2 id="demo_subheader"><%= t("winnow.general.powered_by") %></h2>
@@ -14,6 +15,7 @@
 <div id="topDemoContent" class="demo_content">
   <p><%= link_to "Sign up", login_path, :id => "sign_up" %> <%= t("winnow.demo.explanatory_text.top_invite") %></p>
 </div>
+  </div>
 
 <div class="column_headers">
 	<div id="sidebar_header">

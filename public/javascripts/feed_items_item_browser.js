@@ -244,12 +244,15 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       if ($("selectedFeed")) {
         $("selectedFeed").show();
         $("filteredFeedTitle").update(feedTitle);
+        $("tag_detail_updating").hide();
         $("no_tag_detail_updating").hide();
       }
     } else {
-      if ($("selectedFeed")) $("selectedFeed").hide();
+      if ($("selectedFeed")) {
+        $("selectedFeed").hide();
+        $("no_tag_detail_updating").show();
+      }
       parameters.feed_ids = null;
-      $("no_tag_detail_updating").show();
     }
     
     $super(parameters);
@@ -333,11 +336,12 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       if (tagElement && tagElement.getAttribute("name")) {
         updating_tag_name.update(tagElement.getAttribute("name"));
         $("updating_tag_count").update(tagElement.getAttribute("item_count"));
-        $("tag_detail_updating").setStyle({"visibility": "visible", "position": "relative"});
-        $("no_tag_detail_updating").setStyle({"visibility": "hidden", "position": "absolute"})
+        $("tag_detail_updating").show();
+        $("no_tag_detail_updating").hide();
       } else {
-        $("tag_detail_updating").setStyle({"visibility": "hidden", "position": "absolute"});
-        $("no_tag_detail_updating").setStyle({"visibility": "visible", "position": "relative"})
+        $("tag_detail_updating").hide();
+        if (!($("selectedFeed") && $("selectedFeed").visible()))
+          $("no_tag_detail_updating").show();
       }
     }
   },

@@ -24,8 +24,13 @@
 body {
 }
 
+#navigation {
+  min-height: 68px;
+}
+
 #demo_title {
   float: left;
+  position: absolute;
 }
 
 #demo_header {
@@ -37,9 +42,9 @@ body {
 }
 
 #demo_subheader {
-  font-family: Verdana,Arial,sans-serif;
+  font-family: Arial,Verdana,sans-serif;
   color: #B59350;
-  margin: 0px 0px 0px 25px;
+  margin: 0px 0px 0px 30px;
   line-height: 1em;
   font-size: .8em;
 }
@@ -81,7 +86,6 @@ div.demo_content p {
 
 div.column_headers {
   clear: both;
-  padding-top: 1.5em;
   font-size: 1.1em;
   font-style: italic;
 }
@@ -93,14 +97,14 @@ div.column_headers div {
 #sidebar_header {
   color: #666;
   background-color: #d8d8d8;
-  padding: 2px 0 0 15px;
+  padding-top: 2px;
   width: 100%;
   min-height: 23px;
   border-top: 1px solid #ddd;
 }
 
-div#item_header {
-  margin-left: 15px;
+#tag_detail_updating, #no_tag_detail_updating {
+  padding-left: 15px;
 }
 
 div#feedback {
