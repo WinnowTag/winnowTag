@@ -74,7 +74,7 @@ en:
         Regards,
 
         winnowTag Deployment Notifier
-      invite_requested_subject: "Invite Requested"
+      invite_requested_subject: "'Sign up' link requested"
       invite_requested_body: |-
         {{email}} has requested a 'Sign up' link.
 

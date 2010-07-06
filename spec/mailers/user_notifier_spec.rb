@@ -50,7 +50,7 @@ describe UserNotifier, "#invite_requested" do
   end
   
   it "sets the subject" do
-    @email.subject.should == "[winnowTag] Invite Requested"
+    @email.subject.should == "[winnowTag] 'Sign up' link requested"
   end
   
   it "includes the email in the body" do
