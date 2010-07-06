@@ -14,6 +14,6 @@ describe "Login" do
   it "unsuccessful_login" do
     login Generate.user!, "wrong"
     page.location.should == login_url
-    page.text_content("css=.warning .content").should == "Invalid credentials. Please try again."
+    page.text_content("css=.warning .content").should == "Invalid login or password. Please try again."
   end
 end
