@@ -61,10 +61,5 @@ describe Notifier do
     it "contains the invite email in the email body" do
       @email.body.should =~ /user@example.com/
     end
-    
-    it "contains the questions in the email body" do
-      @email.body.should =~ /found in google/
-      @email.body.should =~ /feed reader/
-    end
   end
 end

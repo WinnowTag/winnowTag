@@ -1,8 +1,7 @@
 <div id="signup_form" class="form">
 <% form_for :user, :url => signup_path do |f| -%>
   <div class="title">
-    <span class="signup">Signup</span>
-    <span class="login"><%= link_to t("winnow.general.login"), login_path %></span>              
+    <span class="signup"><%= t("winnow.login.create_my_account") %></span>
   </div>
 
   <div class="content">
@@ -35,6 +34,7 @@
     
     <div class="submit">
       <%= submit_tag t("winnow.login.signup_submit") %>
+      <%= link_to t("winnow.general.cancel"), logout_path %>
     </div>
   </div>
 <% end -%>

@@ -6,9 +6,9 @@ I want to sign up with my invitation and create my account
 
   Scenario: Unknown invitation code
     When I use an unknown invitation code
-    Then I should see "Your invitation could not be found or has already been used."
+    Then I should see "Your 'Sign up' link could not be found or was already used."
     
   Scenario: Signing up only once
     Given an invitation that has already been used
     When I signup with the invitation
-    Then I should see "Your invitation could not be found or has already been used."
+    Then I should see "Your 'Sign up' link could not be found or was already used."

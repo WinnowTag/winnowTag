@@ -318,7 +318,12 @@ body#login .container .form .content .description {
   margin: 0.5em 0 0;
 }
 
-body#login .container .form .content .forgot_password_link {
+body#login .container .form .content .email_promise {
+  float: inherit;
+  margin: 0.5em 0 .5em 0;
+}
+
+body#login .container .form .content .login_form_link {
   margin-left: 1.5em;                 
 }                                     
                                       
@@ -340,11 +345,10 @@ body#login .container .form  .content .email {
 }                                     
                                       
 body#login .container .form .content .remember {
-  float: left;                        
+  margin-top: 1em;
 }                                     
                                       
 body#login .container .form .content .submit {
-  margin-left: 22em;                  
 }                                     
                                       
 body#login .container .form .content label {

@@ -33,6 +33,9 @@ en:
       password_confirmation: "Password Confirmation"
       how_did_you_hear: "How did you hear about winnowTag?"
       how_do_you_want_to_use: "How/why do you want to use winnowTag?"
+      account_request_intro: "We'll send you a 'Sign up' link so you can create an account."
+      password_reset_intro: "Enter your login ID and we'll email you a link for changing your password."
+      email_address_promise: "We won't give out your email address."
       no_script_message: "You need to change a setting in your web browser"
       last_updated: "Updated"
       prototype: "{{login}} is the prototype"
@@ -73,21 +76,14 @@ en:
         winnowTag Deployment Notifier
       invite_requested_subject: "Invite Requested"
       invite_requested_body: |-
-        {{email}} has submitted an invitation request.
+        {{email}} has requested a 'Sign up' link.
 
-        How did you hear about winnowTag?
-        {{hear}}
-
-        How/why do you want to use winnowTag?
-        {{use}}
-      invite_request_submitted_body: "Your request for an invitation to winnowTag has been submitted. You will be notified at {{email}} when your invitation is accepted."
+      invite_request_submitted_body: "We've received your request for an invitation to winnowTag. We'll notify you at {{email}} when your invitation is accepted."
       invite_accepted_body: |-
-        {{invite}}
-
-        Please visit {{url}} to signup for your account.
-      account_activation_body: "{{user}}, your account has been activated.  You may now visit winnowTag at: {{url}}"
-      reminder_subject: "Password Reminder"
-      reminder_body: "To update your password, visit {{url}}"
+        {{invite}}To create your winnowTag account, click this link: {{url}}
+      account_activation_body: "{{user}}, we've activated your account.  Please click {{url}} to use winnowTag."
+      reminder_subject: "Password Reset"
+      reminder_body: "To change your password, visit {{url}}"
       signup_notification_body: |-
         Welcome to winnowTag, {{user}}.
 
@@ -99,14 +95,14 @@ en:
     notifications:
       feed_items_search_too_short: "Search requires a word with at least 4 characters"
       server_slow_responding: "The server is taking a while to respond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
-      credentials_invalid: "Invalid credentials. Please try again."
+      credentials_invalid: "Invalid login or password. Please try again."
       profile_updated: "Information Updated"
-      reminder_code_invalid: "Invalid reminder code"
-      reminder_sent: "A password reminder has been sent"
+      reminder_code_invalid: "That password reset link was already used or has expired"
+      reminder_sent: "We've emailed you a password reset link"
       update_password: "Please update your password"
-      invitation_request_submitted: "Your invitation request has been submitted"
-      invitation_code_invalid: "Your invitation could not be found or has already been used."
-      account_activated: "Your account has been activated"
+      sign_up_link_sent: "We've emailed you a 'Sign up' link"
+      invitation_code_invalid: "Your 'Sign up' link could not be found or was already used."
+      account_activated: "We've activated your account"
       account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
       feed_added: "Thanks for adding the feed from {{url}}. We will fetch the items soon."
       feed_existed: "We already have the feed from {{url}}, however we will update it now."
@@ -423,8 +419,8 @@ en:
         activate: "Activate?"
         create: "Create"
         update: "Update"
-        default_accepted_subject: "Invite Accepted"
-        default_accepted_body: "You request for an invitation to winnowTag has been accepted!"
+        default_accepted_subject: "Here's your 'Sign up' link for winnowTag"
+        default_accepted_body: ""
     messages:
       general:
         pinned: "Pin this message?"
@@ -463,20 +459,24 @@ en:
           winnowTag demonstrates the <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> content recommendation engine built by Mindloom.
         </p>
       login: "Log in"
-      request_invitation: "Request invitation"
-      request_invitation_tooltip: ""
+      sign_up: "Sign up"
+      sign_up_tooltip: ""
+      create_my_account: "Create my account"
+      request_account_button: "Send me a 'Sign up' link"
       remember_me: "Remember Me"
       remember_me_tooltip: ""
-      forgot_password: "Forgot your password?"
+      forgot_password: "I forgot my password"
       forgot_password_tooltip: ""
+      need_login: "I need a login"
+      need_login_tooltip: ""
       login_tooltip: ""
       email_tooltip: ""
       questions_description: "optional, answers may encourage a response"
       questions_header: "Questions"
-      reminder_header: "Password Reminder"
+      reminder_header: "Password Reset"
       back: "Back to login"
       back_tooltip: ""
-      signup_submit: "Sign up"
+      signup_submit: "Create my account"
     about:
       build: "This is build {{build}} of winnowTag."
       classifier_info: "Using Winnow {{version}} at build {{build}}."

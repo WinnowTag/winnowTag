@@ -25,7 +25,7 @@ describe UserNotifier, "#reminder" do
   end
   
   it "sets the subject" do
-    @email.subject.should == "[winnowTag] Password Reminder"
+    @email.subject.should == "[winnowTag] Password Reset"
   end
   
   it "includes the url in the body" do

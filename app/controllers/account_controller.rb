@@ -35,6 +35,17 @@ class AccountController < ApplicationController
     end
   end
   
+  # The +get_signup_link+ action is used to edit the logged in users password.
+  # def get_signup_link
+  #   if request.post?
+  #     if current_user.update_attributes(params[:current_user].merge(:crypted_password => nil))
+  #       session[:user_must_update_password] = false
+  #       flash[:notice] = t("winnow.notifications.profile_updated")
+  #       redirect_to :back
+  #     end
+  #   end
+  # end
+
   # The +login+ action handles logging in from a number of routes.
   # 1. POST request containing a login/password. This method will 
   #    also set a remember me cookie if request by the user.
@@ -67,7 +78,7 @@ class AccountController < ApplicationController
         redirect_to edit_password_path
       else
         flash[:error] = t("winnow.notifications.reminder_code_invalid")
-        redirect_to login_path(:code => nil)
+        redirect_to feed_items_path(:code => nil)
       end
     elsif params[:invite]
       @invite = Invite.active(params[:invite])
@@ -91,7 +102,7 @@ class AccountController < ApplicationController
         render :action => 'login'
       end
     else
-      redirect_to login_path
+      redirect_to feed_items_path
     end
   end
   
@@ -99,9 +110,11 @@ class AccountController < ApplicationController
   def invite
     @invite = Invite.new(params[:invite])
     if @invite.save
-      UserNotifier.deliver_invite_requested(@invite)
+      # UserNotifier.deliver_invite_requested(@invite)
       Notifier.deliver_invite_requested(@invite)
-      flash[:notice] = t("winnow.notifications.invitation_request_submitted")
+      flash[:notice] = t("winnow.notifications.sign_up_link_sent")
+      @invite.activate!
+      UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
       redirect_to login_path
     else
       render :action => "login"

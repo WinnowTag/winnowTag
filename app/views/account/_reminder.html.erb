@@ -6,6 +6,7 @@
     </div>
 
     <div class="content">
+    <p><%= t("winnow.general.password_reset_intro") %></p>
     	<div class="login clearfix">
     	  <label for="login"><%= t("winnow.general.login") %></label>
     	  <%= text_field_tag :login %>
@@ -14,7 +15,7 @@
     	<div class="submit">
     	  <label>&nbsp;</label>
     	  <%= submit_tag t("winnow.general.submit") %>
-    	  <%= link_to_function t("winnow.login.back"), "", :class => "forgot_password_link", :title => t("winnow.login.back_tooltip") %>        	  
+    	  <%= link_to_function t("winnow.general.cancel"), "", :class => "forgot_password_link", :title => t("winnow.login.back_tooltip") %>
     	</div>
     </div>
   <% end -%>
