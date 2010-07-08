@@ -30,7 +30,7 @@
     <%= t("winnow.demo.explanatory_text.updating", :item_count => FeedItem.count, :feed_count => Feed.count) %>
   </div>
   <div id="selectedFeed" style="display: none; float: left">
-    <div class="text"><%= image_tag "info.png", :size => "16x16" %> Viewing only items from '<span id="filteredFeedTitle">My Feed Title</span>'</div>
+    <div class="text"><%= image_tag "info.png", :size => "16x16" %> <%= t("winnow.items.header.viewing_only_feed_items") %> '<span id="filteredFeedTitle">My Feed Title</span>'</div>
     <%= rounded_button_function "Cancel", "itemBrowser.setFilters({feed_filter: null});", :class => 'first'%>
   </div>
   <div class="toolbar item_buttons">

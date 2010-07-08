@@ -131,7 +131,7 @@ en:
     taggings:
       bad_method: "Bad Request. Should be POST. Please report this bug. Make sure you have Javascript enabled too!"
       bad_params: "Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!"
-      destroy_message: "You have removed all examples for tag '{{tag}}'. Do you want to delete '{{tag}}'?"
+      destroy_message: "You have removed all examples for tag '{{tag}}'. Do you want to permanently delete '{{tag}}'?"
       classifier_progress: "Running winnowTagger"
     sort_direction:
       ascending: "Ascending"
@@ -178,7 +178,7 @@ en:
         show_trained_label: "winnowTagged"
         show_trained_tooltip: ""
         sort_date_label: "Date"
-        viewing_only_feed_items: "Viewing only items from"
+        viewing_only_feed_items: "Viewing only items from feed"
       sidebar:
         training_controls_label: "Create Tags"
         training_controls_label_tooltip: "Create your own winnowTags on any topic"
@@ -281,7 +281,7 @@ en:
         click_to_edit_name: "Change the name of this tag. (Renaming a tag won't affect how the tag works.)"
         blank_description: "add a description"
         click_to_edit_description: "Add or edit a description of this tag"
-        destroy_confirm: "Do you really want to delete tag '{{tag}}'?\n\nThis can't be undone."
+        destroy_confirm: "Do you really want to permanently delete tag '{{tag}}'?\n\nThis can't be undone."
         add_a_comment: "Add a comment"
         apply_to: "Adjust number of items <span class='name'>'{{tag}}'</span> will find:"
         fewer_items: "Fewer Items"
@@ -530,10 +530,17 @@ en:
         top_invite: |-
           to make your own tags + many cool features
         updating: |-
-          <span id="no_tag_detail_updating">
-            Click a tag to find items — click items to read
+          <span id="no_search_updating">
+            <span id="no_tag_detail_updating">
+              Click a tag to find items — click items to read
+            </span>
+            <span id="tag_detail_updating">
+            	<span id="updating_tag_name">tag</span> finds <span id="updating_tag_count">0</span> of
+              {{item_count}} items from {{feed_count}} feeds
+            </span>
           </span>
-          <span id="tag_detail_updating">
-          	<span id="updating_tag_name">tag</span> finds <span id="updating_tag_count">0</span> of
-            {{item_count}} items from {{feed_count}} feeds
+          <span id="search_updating">
+            Viewing items
+            <span id="updating_search_tag_detail"> found by&nbsp;<span id="updating_search_tag_name"></span>&nbsp;and </span>
+            matching search&nbsp;<span id="search_detail_updating"></span>&nbsp;
           </span>

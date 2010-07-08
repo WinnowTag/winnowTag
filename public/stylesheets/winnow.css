@@ -203,8 +203,8 @@ textarea.content {
   font-style: italic;
 }
 
-#updating_tag_name {
-  color: #111;
+#updating_tag_name, #updating_search_tag_name, #search_detail_updating {
+  color: black;
 }
 
 

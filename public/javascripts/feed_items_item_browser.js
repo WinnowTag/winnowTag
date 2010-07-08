@@ -246,11 +246,13 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         $("filteredFeedTitle").update(feedTitle);
         $("tag_detail_updating").hide();
         $("no_tag_detail_updating").hide();
+        $("search_detail_updating").hide();
       }
     } else {
       if ($("selectedFeed")) {
         $("selectedFeed").hide();
         $("no_tag_detail_updating").show();
+        $("search_detail_updating").show();
       }
       parameters.feed_ids = null;
     }
@@ -276,7 +278,30 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
 
   styleFilters: function($super) {
     $super();
+
+    // Update information bar per value of search string
+    var search_updating = $("search_updating");
+    var no_search_updating = $("no_search_updating");
+    var search_detail_updating = $("search_detail_updating");
+    var updating_search_tag_name = $("updating_search_tag_name");
+    var updating_search_tag_detail = $("updating_search_tag_detail");
     
+    if(search_detail_updating) {
+      if(this.filters.text_filter) {
+        search_detail_updating.update(this.filters.text_filter);
+        search_updating.show();
+        if (updating_search_tag_name.textContent != "")
+          updating_search_tag_detail.show();
+        else
+          updating_search_tag_detail.hide();
+        no_search_updating.hide();
+      } else {
+        search_detail_updating.update("");
+        search_updating.hide();
+        no_search_updating.show();
+      }
+    }
+
     var tag_ids = this.filters.tag_ids ? this.filters.tag_ids.split(",") : [];
     $$(".tags li.tag").each(function(element) {
       var tag_id = element.getAttribute("id").gsub("tag_", "");
@@ -329,12 +354,16 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
   
   showDemoTagInfo: function() {
     var updating_tag_name = $("updating_tag_name");
+    var updating_search_tag_name = $("updating_search_tag_name");
+    var updating_search_tag_detail = $("updating_search_tag_detail")
     
     if (updating_tag_name && this.filters.tag_ids && $A(this.filters.tag_ids.split(",")).first()) {
       var tagElement = $("tag_" + $A(this.filters.tag_ids.split(",")).first());
       
       if (tagElement && tagElement.getAttribute("name")) {
         updating_tag_name.update(tagElement.getAttribute("name"));
+        updating_search_tag_name.update(tagElement.getAttribute("name"));
+        updating_search_tag_detail.show();
         $("updating_tag_count").update(tagElement.getAttribute("item_count"));
         $("tag_detail_updating").show();
         $("no_tag_detail_updating").hide();
@@ -342,6 +371,8 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         $("tag_detail_updating").hide();
         if (!($("selectedFeed") && $("selectedFeed").visible()))
           $("no_tag_detail_updating").show();
+        updating_search_tag_name.update("");
+        updating_search_tag_detail.hide();
       }
     }
   },
