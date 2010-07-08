@@ -530,7 +530,7 @@ en:
         top_invite: |-
           to make your own tags + many cool features
         updating: |-
-          <span id="no_search_updating">
+          <span id="no_search_updating" style="display:none">
             <span id="no_tag_detail_updating">
               Click a tag to find items — click items to read
             </span>
@@ -539,7 +539,7 @@ en:
               {{item_count}} items from {{feed_count}} feeds
             </span>
           </span>
-          <span id="search_updating">
+          <span id="search_updating" style="display:none">
             Viewing items
             <span id="updating_search_tag_detail"> found by&nbsp;<span id="updating_search_tag_name"></span>&nbsp;and </span>
             matching search&nbsp;<span id="search_detail_updating"></span>&nbsp;
