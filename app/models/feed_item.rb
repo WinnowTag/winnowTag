@@ -212,17 +212,11 @@ class FeedItem < ActiveRecord::Base
   def self.find_with_filters(filters = {})    
     user = filters[:user]
     
-    selects = [
+    options_for_find = options_for_filters(filters).merge(:select => [
       'feed_items.*', 'feeds.title AS feed_title', 
       "(select strength from taggings where taggings.feed_item_id = feed_items.id AND taggings.tag_id IN (#{filters[:tag_ids] or 0}) and taggings.classifier_tagging = 0) as tagged_type",
       "EXISTS (SELECT 1 FROM readings WHERE readings.readable_type = 'FeedItem' AND readings.readable_id = feed_items.id AND readings.user_id = #{user.id}) AS read_by_current_user"
-    ]
-    
-    if filters[:text_filter]
-      selects << "MATCH(content) AGAINST(#{connection.quote(filters[:text_filter])}) as rel"
-    end
-    
-    options_for_find = options_for_filters(filters).merge(:select => selects.join(","))
+    ].join(","))
     options_for_find[:joins] << " LEFT JOIN feeds ON feed_items.feed_id = feeds.id"
     
     FeedItem.find(:all, options_for_find)
@@ -251,18 +245,14 @@ class FeedItem < ActiveRecord::Base
         filters[:direction].upcase
     end
     
-    options[:order] = if filters[:text_filter]
-      "rel desc"
+    options[:order] = case filters[:order]
+    when "date"
+      "feed_items.updated #{direction}"
+    when "id"
+      "feed_items.id #{direction}"
     else
-      case filters[:order]
-      when "date"
-        "feed_items.updated #{direction}"
-      when "id"
-        "feed_items.id #{direction}"
-      else
-        "feed_items.updated DESC"
-      end
-    end
+      "feed_items.updated DESC"
+    end unless filters[:text_filter]
 
     joins = []
     add_text_filter_joins!(filters[:text_filter], joins)
