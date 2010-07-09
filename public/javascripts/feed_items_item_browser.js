@@ -389,10 +389,15 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
 
     var trained_checkbox = $("trained_checkbox");
     if (trained_checkbox) trained_checkbox.observe("click", function() {
-      if (!trained_checkbox.disabled && (this.filters.mode != "trained"))
+      if (!trained_checkbox.disabled && (this.filters.mode != "trained")) {
         this.addFilters({mode: "trained"});
-      else
+          $("no_showing_only_examples").hide();
+          $("showing_only_examples").show();
+      } else {
         this.addFilters({mode: "all"});
+          $("no_showing_only_examples").show();
+          $("showing_only_examples").hide();
+      }
     }.bind(this));
   },
 
@@ -406,10 +411,14 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
           trained_checkbox.checked = true;
           Sidebar.instance.ensurePanelOpen();
           $("trained_checkbox_label").title = I18n.t("winnow.items.sidebar.trained_checkbox_checked_tooltip");
+          $("no_showing_only_examples").hide();
+          $("showing_only_examples").show();
         } else {
           if (trained_checkbox.checked) {
             new Effect.Highlight("trained_checkbox_label", { startcolor: '#FFFF00', endcolor: '#ffffff', restorecolor: '#ffffff' });
             trained_checkbox.checked = false;
+            $("no_showing_only_examples").show();
+            $("showing_only_examples").hide();
           }
           $("trained_checkbox_label").title = I18n.t("winnow.items.sidebar.trained_checkbox_unchecked_tooltip");
         }
