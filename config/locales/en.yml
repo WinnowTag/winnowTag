@@ -541,9 +541,8 @@ en:
             </span>
           </span>
           <span id="search_updating" style="display:none">
-            Showing items
-            <span id="updating_search_tag_detail"> found by&nbsp;<span id="updating_search_tag_name"></span>&nbsp;and </span>
-            matching search&nbsp;<span id="search_detail_updating"></span>&nbsp;
+            Showing items<span id="updating_search_tag_detail"> found by <span id="updating_search_tag_name">search</span></span>
+            that match search&nbsp;<span id="search_detail_updating"></span>&nbsp;
           </span>
           </span>
           <span id="showing_only_examples" style="display:none">
