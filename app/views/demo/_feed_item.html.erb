@@ -1,5 +1,5 @@
 <div id="<%= dom_id(feed_item) %>" class="record feed_item">
-  <div class="closed">
+  <div class="closed clearfix">
     <div class="date"><%= format_date(feed_item.updated) %></div>
   	<%= link_to_function feed_item_title(feed_item), "", :class => "title" %>
     <%= link_to(image_tag("external.gif"), feed_item.link, :target => "_blank", :title => t("winnow.items.main.open_original_feed_item"), :class => "stop") %>
