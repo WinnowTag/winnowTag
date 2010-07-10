@@ -7,7 +7,7 @@
 			<% if help_path -%>
       	<li><%= link_to(t("winnow.navigation.help"), help_path, :target => "_blank", :class => "help", :title => t("winnow.navigation.help_tooltip")) %></li>
 			<% end -%>
-      <li id="feedback"><%= mail_to(CONTACT_EMAIL, t("winnow.navigation.leave_feedback"), :subject => CONTACT_SUBJECT, :encode => :javascript) %></li>
+      <li id="feedback" class="last-child"><%= mail_to(CONTACT_EMAIL, t("winnow.navigation.leave_feedback"), :subject => CONTACT_SUBJECT, :encode => :javascript) %></li>
     </ul>
 
   	<ul class="main clearfix">
@@ -22,9 +22,5 @@
 	</div>
 <% else -%>
   <div id="navigation" class="navigation clearfix">
-  	<ul class="extra">
-      <li><%= link_to(t("winnow.navigation.login"), login_path, :title => t("winnow.navigation.login_tooltip")) %></li>
-      <li><%= link_to(t("winnow.navigation.about"), about_path, :title => t("winnow.navigation.about_tooltip")) %></li>
-    </ul>
   </div>
 <% end -%>

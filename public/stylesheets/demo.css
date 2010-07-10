@@ -6,12 +6,11 @@
  */
 
 /* =environment */
-.environment {
+#environment {
   position: fixed;
   left: 0;
   right: 0;
-  z-index: -1;
-  background-color: #FFEDED;
+  z-index: -101;
   opacity: 0.75;
   filter: alpha(opacity=75);
   text-align: center;
@@ -21,16 +20,47 @@
   height: 1.5em;
 }
 
+#environment.development {
+  background-color: #FFFFBB;
+}
+
+#environment.trunk {
+  background-color: #FFEDED;
+}
+
 body {
 }
 
 #navigation {
   min-height: 68px;
+  padding: 0 15px;
+}
+
+.navigation .extra {
+  float: right;
+  padding: 0;
+  margin: 0 0 5px 0;
+  list-style: none;
+}
+
+.navigation .extra li {
+  float: left;
+  padding: 0 .5em;
+  margin: 0;
+  border-right: 1px solid #ccc;
+  font-size: 1.2em;
+  color: #444;
+}
+
+.navigation .extra li.last-child {
+  padding-right: 0;
+  border: 0;
 }
 
 #demo_title {
   float: left;
   position: absolute;
+  z-index: -100;
 }
 
 #demo_header {

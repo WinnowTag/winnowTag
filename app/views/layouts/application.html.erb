@@ -24,7 +24,7 @@
 	<% end -%>
 	
   <% if Rails.env.trunk? || Rails.env.development? -%>
-    <div class="environment"><%= Rails.env %></div>
+    <div id="environment" class="<%= Rails.env %>"><%= Rails.env %></div>
   <% end -%>
 
   <noscript>

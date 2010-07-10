@@ -1,16 +1,18 @@
 <% if Rails.env.trunk? || Rails.env.development? -%>
-  <div class="environment"><%= Rails.env %></div>
+  <div id="environment" class="<%= Rails.env %>"><%= Rails.env %></div>
 <% end -%>
 
-  <div id="navigation">
 <div id="demo_title">
 	<h1 id="demo_header"><%= t("winnow.general.app_name") %></h1>
 	<h2 id="demo_subheader"><%= t("winnow.general.powered_by") %></h2>
 </div>
 
-<div id="demo_login">
-  <a href="<%= t('winnow.help_links.default')%>" target="_blank"><%= t("winnow.demo.column_headings.what_is_winnowTag") %></a> | <%= link_to "Log in", login_path %>
-</div>
+  <div id="navigation" class="navigation">
+
+<ul class="extra">
+  <li><a href="<%= t('winnow.help_links.default')%>" target="_blank"><%= t("winnow.demo.column_headings.what_is_winnowTag") %></a></li>
+  <li class="last-child"><%= link_to "Log in", login_path %></li>
+</ul>
 
 <div id="topDemoContent" class="demo_content">
   <p><%= link_to "Sign up", get_signup_link_path, :id => "sign_up" %> <%= t("winnow.demo.explanatory_text.top_invite") %></p>

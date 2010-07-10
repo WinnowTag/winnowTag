@@ -6,12 +6,11 @@
  */
 
 /* =environment */
-.environment {
+#environment {
   position: fixed;
   left: 0;
   right: 0;
-  z-index: -1;
-  background-color: #FFEDED;
+  z-index: -101;
   opacity: 0.75;
   filter: alpha(opacity=75);
   text-align: center;
@@ -19,6 +18,14 @@
   font-size: large;
   color: #aaa;
   height: 1.5em;
+}
+
+#environment.development {
+  background-color: #FFFFBB;
+}
+
+#environment.trunk {
+  background-color: #FFEDED;
 }
 
 /*
@@ -86,6 +93,7 @@ body {
 #title {
   float: left;
   position: absolute;
+  z-index: -100;
 }
 
 #header {
@@ -456,7 +464,8 @@ body#login .container .form .content #invite_use {
   color: #444;
 }
 
-.navigation .extra li:last-child {
+/* Don't use :last-child here, IE7 doesn't support it so an extra "pipe" would show at right. */
+.navigation .extra li.last-child {
   padding-right: 0;
   border: 0;
 }
