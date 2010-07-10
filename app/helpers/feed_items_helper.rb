@@ -30,12 +30,12 @@ module FeedItemsHelper
   def tag_control_tooltip(tag, strength, taggings_classes)
     title = []
     title << "by #{h(tag.user.login)}" if tag.user_id != current_user.id
-    if strength
-      title << t("winnow.items.main.moderation_panel_classifier_tag_tooltip", :strength => strength, :tag_name => tag.name)
-    elsif taggings_classes.include?("positive")
+    if taggings_classes.include?("positive")
       title << t("winnow.items.main.moderation_panel_positive_tag_tooltip", :tag_name => tag.name)
     elsif taggings_classes.include?("negative")
       title << t("winnow.items.main.moderation_panel_negative_tag_tooltip", :tag_name => tag.name)
+    elsif strength
+      title << t("winnow.items.main.moderation_panel_classifier_tag_tooltip", :strength => strength, :tag_name => tag.name)
     else
       title << t("winnow.items.main.moderation_panel_no_tag_tooltip", :tag_name => tag.name)
     end
