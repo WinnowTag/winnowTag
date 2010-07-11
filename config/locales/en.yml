@@ -283,7 +283,7 @@ en:
         click_to_edit_description: "Add or edit a description of this tag"
         destroy_confirm: "Do you really want to permanently delete tag '{{tag}}'?\n\nThis can't be undone."
         add_a_comment: "Add a comment"
-        apply_to: "Adjust number of items <span class='name'>'{{tag}}'</span> will find:"
+        apply_to: "Adjust # of items <span class='name'>{{tag}}</span> will find:"
         fewer_items: "Fewer Items"
         fewer_items_tooltip: "Set the slider to this end for the fewest number of items found by this tag"
         more_items: "More Items"

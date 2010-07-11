@@ -2,9 +2,9 @@
   <%= render :partial => "summary.html.erb", :locals => { :tag => tag, :editable => tag.user_id == current_user.id } %>
   
   <div class="extended clearfix" style="display:none">
-    <div class="comments clearfix" url="<%= comments_tag_path(tag) %>"></div>
-    <div class="sidebar">      
-      <div class="block actions clearfix">
+    <div class="comments" url="<%= comments_tag_path(tag) %>"></div>
+    <div class="sidebar">
+      <div class="block actions">
         <ul class="controls">
           <li class="first slider_control clearfix">
             <h4><%= t("winnow.tags.main.apply_to", :tag => tag.name) %></h4>
@@ -42,6 +42,5 @@
       
       <%= render :partial => "stats.html.erb", :locals => { :tag => tag } %>
     </div>
-    <div class="clearfix"></div>
   </div>
 </div>
