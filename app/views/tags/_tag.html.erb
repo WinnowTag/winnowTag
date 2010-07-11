@@ -1,7 +1,7 @@
 <div id="<%= dom_id(tag) %>" class="tag record clearfix <%= tag_classes(tag) %>">
   <%= render :partial => "summary.html.erb", :locals => { :tag => tag, :editable => tag.user_id == current_user.id } %>
   
-  <div class="extended" style="display:none">  
+  <div class="extended clearfix" style="display:none">
     <div class="comments clearfix" url="<%= comments_tag_path(tag) %>"></div>
     <div class="sidebar">      
       <div class="block actions clearfix">
