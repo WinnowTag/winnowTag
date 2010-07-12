@@ -157,7 +157,6 @@ div#feedback {
   float: right;
   width: 100%;
   border-top: 1px solid #DECBA3;
-  border-bottom: 1px solid #DECBA3;
 }
 
 #content {
@@ -169,12 +168,16 @@ div#feedback {
 }
 
 #footer {
-  clear: both;
-  padding: 10px;
+  background-color: #F2F2F2;
+  border-top: 1px solid #DECBA3;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
-#footer #copyright {
+#footer #footer_text {
   text-align: center;
+  line-height: 2em;
 }
 
 ul.tags {

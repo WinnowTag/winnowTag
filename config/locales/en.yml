@@ -520,7 +520,7 @@ en:
         what_is_winnowTag: "What is winnowTag?"
         feedback: "Feedback"
       footer: |-
-        <div id="copyright">
+        <div id="footer_text">
         	powered by <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> &bull;
           Mindloom &copy; 2010 &bull;
         	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>

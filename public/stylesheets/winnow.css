@@ -601,7 +601,6 @@ ul.filter_list li {
   min-width: 8em;
   margin: 0;
   padding: 0.25em 0 0.25em 1.5em;
-  border: 1px solid transparent;
   background-repeat: no-repeat;
   background-position: 0.5em 0.5em;  
 }
@@ -786,15 +785,16 @@ input.placeholder {
  * =footer
  */
 #footer {
-  padding: 3px;
   background-color: #F2F2F2;
-  border-top: 1px solid #E1D2C7;
-  height: 28px;
+  border-top: 1px solid #DECBA3;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 #footer_text {
   text-align: center;
-  margin-top: 5px;
+  line-height: 2em;
 }
 
 #classification_section .progress_bar_container {
@@ -864,8 +864,10 @@ body#feeds .feed {
 }
 
 #footer .total {
-  float: right;
-  padding:  1em;
+  position: absolute;
+  right: 0;
+  padding-right: 15px;
+  line-height: 2em;
 }
 
 /*
