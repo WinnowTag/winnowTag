@@ -309,7 +309,10 @@ var ItemBrowser = Class.create({
          }
        }.bind(this));
      }
-    
+     var search_clear = $('search_clear');
+     if (search_clear) {
+       search_clear.observe("click", this.clearTextFilter.bind(this));
+     }
   },
   
   clearTextFilter:  function() {

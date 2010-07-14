@@ -12,10 +12,16 @@ document.observe('dom:loaded', function() {
     element.showPlaceholder = function() {
       element.value = element.getAttribute("placeholder");
       element.addClassName("placeholder");
+      
+      var search_clear = $('search_clear');
+      if (search_clear) search_clear.hide();
     };
     element.hidePlaceholder = function() {
       element.value = "";
       element.removeClassName("placeholder");
+
+      var search_clear = $('search_clear');
+      if (search_clear) search_clear.show();
     };
     element.observe("focus", function() {
       if(element.value == element.getAttribute("placeholder")) { element.hidePlaceholder(); }
@@ -24,6 +30,18 @@ document.observe('dom:loaded', function() {
       if(element.value == "") { element.showPlaceholder(); }
     });
     
+    element.observe("keypress", function() {
+      window.setTimeout(function() {
+        if ($('search_clear')) {
+          if (element.blank()) {
+            $('search_clear').hide();
+          } else {
+            $('search_clear').show();
+          }
+        }
+      }, 100);
+    });
+
     // if(element.value == "") { element.showPlaceholder(); }
   });
 });

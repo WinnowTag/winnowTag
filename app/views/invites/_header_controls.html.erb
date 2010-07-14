@@ -1,5 +1,6 @@
 <% form_tag invites_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
   <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.invites.header.search_placeholder"), :title => t("winnow.invites.header.search_tooltip") %>
+  <span id="search_clear" style="display: none"></span>
 <% end -%>
 
 <div class="order clearfix">
