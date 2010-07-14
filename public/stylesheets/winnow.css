@@ -717,11 +717,11 @@ input.placeholder {
 }
 
 #feed_items #text_filter_form #text_filter {
-  width: 210px;
+  width: 205px;
 }
 
 #header_controls #text_filter_form #text_filter {
-  width: 210px;
+  width: 205px;
 }
 
 #header_controls #text_filter_form {
@@ -743,8 +743,9 @@ input.placeholder {
   height: 11px;
   display: inline-block;
   margin-left: -20px;
-  margin-bottom: -1px;
+  margin-top: 6px;
   cursor: pointer;
+  vertical-align: top;
 }
 
 #header_controls .order {
