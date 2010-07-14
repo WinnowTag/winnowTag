@@ -40,6 +40,7 @@ en:
       last_updated: "Updated"
       prototype: "{{login}} is the prototype"
       make_prototype: "Make prototype"
+      search_clear_icon_tooltip: "Clear any existing search"
       footer: |-
         <div id="footer_text">
         	powered by <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> &bull;
@@ -170,7 +171,7 @@ en:
         items_header: "Items"
         items_header_tooltip: ""
         feed_items_search_placeholder: "All of these keywords..."
-        feed_items_search_tooltip: "Show items containing one or more of the keywords you enter. Item titles, contents and all URLs are searched."
+        feed_items_search_tooltip: "Type one or more keywords and hit your Return/Enter key. Searches item titles, contents and all URLs."
         show_label: "Show"
         show_all_label: "All"
         show_all_tooltip: ""
@@ -271,7 +272,7 @@ en:
         last_trained_tooltip: "Date when examples for this tag were last changed"
       header:
         search_placeholder: "Search Tags..."
-        search_tooltip: "Show tags containing one or more of the keywords you enter. Searches tag names, descriptions and user names."
+        search_tooltip: "Type one or more keywords and hit your Return/Enter key. Searches tag names, descriptions and user names."
         tag_sort_label_tooltip: "Reorder the list of tags"
         upload: "Upload Tag"
         upload_tooltip: "Upload a tag from an Atom file that you downloaded from winnowTag"
@@ -327,7 +328,7 @@ en:
         created: "Added"
         last_updated: "Updated"
         search_placeholder: "Search Feeds..."
-        search_tooltip: "Show feeds containing one or more of the keywords you enter. Searches feed names and URLs."
+        search_tooltip: "Type one or more keywords and hit your Return/Enter key. Searches feed names and URLs."
         add_feed_description: "Enter the URL of a feed or web page to add to winnowTag. Only items with enough text for winnowTagging to work will be collected from the feed."
         add_feed_button: "Add Feed"
         add_feed_button_disabled: "Adding..."

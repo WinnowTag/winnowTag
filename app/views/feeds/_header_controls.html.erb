@@ -1,6 +1,6 @@
 <% form_tag feeds_path, :id => "text_filter_form", :onsubmit => "return false" do -%>
   <%= text_field_tag "text_filter", params[:text_filter], :placeholder => t("winnow.feeds.header.search_placeholder"), :title => t("winnow.feeds.header.search_tooltip") %>
-  <span id="search_clear" style="display: none"></span>
+  <span id="search_clear" style="display: none" title="<%= t('winnow.general.search_clear_icon_tooltip') %>"></span>
 <% end -%>
 
 <div class="order clearfix">
