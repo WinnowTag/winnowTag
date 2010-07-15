@@ -203,8 +203,9 @@ en:
         add_tooltip: ""
         done: "Done"
         done_tooltip: ""
-        tag_tooltip: "{{positive}} positive examples, {{negative}} negative examples, {{automatic}} items found"
-        public_tag_tooltip: "Public winnowTag from {{login}}: {{positive}} positive examples, {{negative}} negative examples, {{automatic}} items found"
+        tag_tooltip: "'{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
+        subscribed_tag_tooltip: "You're subscribed to '{{name}}' by {{login}}. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
+        published_tag_tooltip: "You made '{{name}}' public so others can subscribe to it. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         merge_confirm: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
         sidebar_confirm: "You have removed the tag '{{tag}}' from your sidebar. Do you want to remove it from your My Tags page?"
       main:
@@ -253,6 +254,8 @@ en:
         globally_excluded_tooltip: "You have blocked from view all items found by this tag"
         subscribed: "Subscribed"
         subscribed_tooltip: "You are subscribed to this public tag"
+        public: "Public"
+        public_tooltip: "You made this tag public so that others can subscribe to it"
       attributes:
         name: "Name"
         subscribed_name_tooltip: "You are subscribed to this public tag"

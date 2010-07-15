@@ -585,6 +585,10 @@ body#login .container .form .content #invite_use {
   font-weight: normal;
 }
 
+.tag_name_uniqued {
+  color: #aaa;
+}
+
 /*
  * =filters
  */
@@ -621,8 +625,13 @@ ul.filter_list li.tags {
 ul.filter_list li.tags ul.tags {
   margin: 0px;
 }
-ul.filter_list.tags li.subscribed {
+
+ul.filter_list.tags li.public {
   background-image: url(../images/public_small.png);
+}
+
+ul.filter_list.tags li.subscribed {
+  background-image: url(../images/subscribed_small.png);
 }
 
 ul.filter_list li .actions {
@@ -1090,7 +1099,7 @@ ul.tag_list li.public .name {
 }
 
 .feed.globally_excluded .summary:hover, .feed.inactive .summary:hover {
-  background-color: #F6d0d0;
+  background-color: #FEF3BB; /* background-color: #F6d0d0; */
 }
 
 .feed .summary .info .details input {
@@ -1157,17 +1166,27 @@ body#item_caches .item_cache {
 }
 
 .tag.public .summary {
-  background-image: url(../images/public.png);
+  background-image: url(../images/subscribed.png);
   background-position: 0.5em 0.6em;
 }
 
+.tag.published .summary {
+  background-image: url(../images/public.png);
+  background-color: #CCDDFF;
+}
+
+.tag.published .summary:hover {
+  background-color: #FEF3BB; /* #ccf28f; */
+}
+
 .tag.subscribed .summary {
+  background-image: url(../images/subscribed.png);
   border-color: #9DC482;
-  background-color: #D7F3A9;
+  background-color: #EBFBFF; /* #D7F3A9; */
 }
 
 .tag.subscribed .summary:hover {
-  background-color: #ccf28f;
+  background-color: #FEF3BB; /* #ccf28f; */
 }
 
 .tag .summary .description.empty span {
@@ -1185,11 +1204,11 @@ body#item_caches .item_cache {
 }
 
 .tag.globally_excluded .summary:hover {
-  background-color: #F6d0d0;
+  background-color: #FEF3BB; /* background-color: #F6d0d0; */
 }
 
 .tag.subscribed .summary .state {
-  color: #537713;
+  color: #555; /* #537713; */
 }
 
 .tag.globally_excluded .summary .state {

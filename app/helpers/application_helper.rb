@@ -94,7 +94,7 @@ module ApplicationHelper
 
     javascript_tag(function)
   end
-  
+
   # Generates the control to mark a tag a globally excluded/not globally excluded.
   def globally_exclude_tag_check_box(tag)
     url = globally_exclude_tag_path(tag)
@@ -123,10 +123,36 @@ module ApplicationHelper
       :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}"),
       :title => t("winnow.tags.main.subscribe_tooltip")
   end
-  
+
   # Generates the controls to filter the list of tags.
-  def tag_filter_controls(tags, options = {})
+  def tag_filter_controls(tags, subscribed_tags, options = {})
+    # TODO: This should be elsewhere, and a method extending a class, and have its own test
+    def duplicates(a)
+      a.inject({}) {|h,v| h[v]=h[v].to_i+1; h}.reject{|k,v| v==1}.keys
+    end
+
+    duplicate_names = duplicates(subscribed_tags.collect() { |t| t.name });
+    options.merge!(:duplicate_names => duplicate_names) if (!duplicate_names.empty?);
+
     tags.map { |tag| tag_filter_control(tag, options) }.join
+  end
+
+  # Generates the HTML displaying a tag name with an appended span containing the user name if the tag name is not unique.
+  # The user "staff" is never displayed.
+  def tag_name_uniqued(tag, options = {})
+    if (options[:duplicate_names])
+      duplicate_names = options[:duplicate_names]
+    else
+      duplicate_names = {}
+    end
+
+    if ((tag.user_id != current_user.id) && duplicate_names.include?(tag.name))
+      return(h(tag.name) + '<span class="tag_name_uniqued">:' + User.find_by_id(tag.user_id).login) + "</span>"
+    else
+      return(tag.name)
+    end
+
+    # (User.find_by_login("lelan").tag_subscriptions.collect() { |a| Tag.find_by_id(a.tag_id) } + User.find_by_login("lelan").tags).collect() { |a| a.name == "maps" ? a : nil }.compact
   end
 
   # Generates an individual control to filter the list of tags.
@@ -140,7 +166,7 @@ module ApplicationHelper
                 content_tag(:div, "", :class => "context_menu_button", :'tag-id' => tag.id) +
                 content_tag(:span, 
                             content_tag(:span, 
-                                        h(tag.name), 
+                                        tag_name_uniqued(tag, options),
                                         :class => "name", 
                                         :id => dom_id(tag, "name"), 
                                         :"data-sort" => tag.sort_name, 
@@ -158,10 +184,14 @@ module ApplicationHelper
   # Generates a tooltip for the tag filters in the feed items sidebar. 
   # The tooltip contains the training information for the tag.
   def tag_tooltip(tag)
-    if tag.user_id == current_user.id 
-      t("winnow.items.sidebar.tag_tooltip", :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+    if tag.user_id == current_user.id
+      if tag.public
+        t("winnow.items.sidebar.published_tag_tooltip", :name => h(tag.name), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      else
+        t("winnow.items.sidebar.tag_tooltip", :name => h(tag.name), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      end
     else
-      t("winnow.items.sidebar.public_tag_tooltip", :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      t("winnow.items.sidebar.subscribed_tag_tooltip", :name => h(tag.name), :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
     end
   end
   
@@ -184,6 +214,8 @@ module ApplicationHelper
       classes << "globally_excluded"
     elsif current_user.subscribed?(tag)
       classes << "subscribed"
+    elsif (current_user.id == tag.user_id) && tag.public
+      classes << "published"
     end
     classes.join(" ")
   end
@@ -201,6 +233,8 @@ module ApplicationHelper
       t("winnow.tags.general.globally_excluded")
     elsif current_user.subscribed?(tag)
       t("winnow.tags.general.subscribed")
+    elsif (current_user.id == tag.user_id) && tag.public
+      t("winnow.tags.general.public")
     end
   end
 
@@ -210,6 +244,8 @@ module ApplicationHelper
       t("winnow.tags.general.globally_excluded_tooltip")
     elsif current_user.subscribed?(tag)
       t("winnow.tags.general.subscribed_tooltip")
+    elsif (current_user.id == tag.user_id) && tag.public
+      t("winnow.tags.general.public_tooltip")
     end
   end
 

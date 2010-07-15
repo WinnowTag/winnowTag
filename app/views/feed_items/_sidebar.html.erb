@@ -44,7 +44,7 @@
 			</span>
 		</li>
 		<li id="tag_container" class="tags">
-			<ul id="user_tag_filters" class="filter_list tags"><%= tag_filter_controls(current_user.tags_for_sidebar) %></ul>
+			<ul id="user_tag_filters" class="filter_list tags"><%= tag_filter_controls(current_user.tags_for_sidebar, current_user.subscribed_tags) %></ul>
 		</li>
 	</ul>
 </div>

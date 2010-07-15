@@ -1,5 +1,11 @@
 if @tag.public?
+  page[@tag].add_class_name "published"
   page[@tag].add_class_name "public"
 else
+  page[@tag].remove_class_name "published"
   page[@tag].remove_class_name "public"
 end
+page << "if($(#{dom_id(@tag).to_json}).down('.summary .state')) {"
+  page[@tag].down('.summary .state').update tag_state(@tag)
+  page[@tag].down('.summary .state')[:title] = tag_state_tooltip(@tag)
+page << "}"

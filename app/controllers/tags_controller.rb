@@ -254,7 +254,6 @@ class TagsController < ApplicationController
         end
       else
         TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-        TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
       end
     end
 
@@ -270,7 +269,6 @@ class TagsController < ApplicationController
   def unsubscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
     respond_to do |format|
       format.html { redirect_to :back }
