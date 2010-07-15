@@ -33,5 +33,5 @@ Then("the body is parseable by ratom") do
 end
 
 Then("the response should be only that tagging information") do
-  response.body.should == "Public winnowTag from #{@user.login}: 0 positive examples, 0 negative examples, 0 items found"
+  response.body.should == "You're subscribed to '#{@tag.name}' by #{@user.login}. '#{@tag.name}' finds 0 items using 0 positive examples and 0 negative examples."
 end
