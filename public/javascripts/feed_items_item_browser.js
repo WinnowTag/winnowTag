@@ -351,7 +351,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     var click_event = this.toggleSetFilters.bind(this, {tag_ids: tag_id, mode: 'all'});
     tag.observe("click", click_event);
   },
-  
+
   showDemoTagInfo: function() {
     var updating_tag_name = $("updating_tag_name");
     var updating_search_tag_name = $("updating_search_tag_name");
@@ -364,7 +364,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         updating_tag_name.update(tagElement.getAttribute("name"));
         updating_search_tag_name.update(tagElement.getAttribute("name"));
         updating_search_tag_detail.show();
-        $("updating_tag_count").update(tagElement.getAttribute("item_count"));
+        $("updating_tag_count").update(tagElement.getAttribute("item_count") - tagElement.getAttribute("pos_count") - tagElement.getAttribute("neg_count"));
         $("tag_detail_updating").show();
         $("no_tag_detail_updating").hide();
       } else {

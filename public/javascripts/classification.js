@@ -70,6 +70,9 @@ var Classification = Class.create({
                 onComplete: function(response) {
                 if (response.status == 200)
                     tag.down(".name").title = response.responseText;
+
+                    if (tagIDNumber == $A(itemBrowser.filters.tag_ids.split(",")).first())
+                      itemBrowser.showDemoTagInfo();
                 }
             });
           }
