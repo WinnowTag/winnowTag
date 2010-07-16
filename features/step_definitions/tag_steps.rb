@@ -33,5 +33,5 @@ Then("the body is parseable by ratom") do
 end
 
 Then("the response should be only that tagging information") do
-  response.body.should == "You're subscribed to '#{@tag.name}' by #{@user.login}. '#{@tag.name}' finds 0 items using 0 positive examples and 0 negative examples."
+  response.body.should == "{\"negative_count\":0,\"tooltip\":\"You're subscribed to 'Tag 2' by user_23. 'Tag 2' finds 0 items using 0 positive examples and 0 negative examples.\",\"item_count\":0,\"positive_count\":0}"
 end

@@ -66,10 +66,13 @@ var Classification = Class.create({
         $$(".filter_list .tag").each(function(tag) {
           var tagIDNumber = tag.getAttribute("id").gsub("tag_", "");
           if (tagIDNumber != 0) { // Skip the request for tag list control "See All Tags"
-            new Ajax.Request("/tags/" + tagIDNumber + "/information", { method: 'get',
+            new Ajax.Request("/tags/" + tagIDNumber + "/information.json", { method: 'get',
                 onComplete: function(response) {
                 if (response.status == 200)
-                    tag.down(".name").title = response.responseText;
+                    tag.down(".name").title = response.responseJSON.tooltip;
+                    tag.setAttribute("item_count", response.responseJSON.item_count)
+                    tag.setAttribute("pos_count", response.responseJSON.positive_count)
+                    tag.setAttribute("neg_count", response.responseJSON.negative_count)
 
                     if (tagIDNumber == $A(itemBrowser.filters.tag_ids.split(",")).first())
                       itemBrowser.showDemoTagInfo();

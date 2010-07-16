@@ -279,8 +279,18 @@ class TagsController < ApplicationController
   # The +information+ action us used to load the training information
   # for the tooltip on the feed items sidebar.
   def information
+  # Generates a tooltip for the tag filters in the feed items sidebar.
+  # The tooltip contains the training information for the tag.
     @tag = Tag.find(params[:id])
-    render :layout => false
+  
+    respond_to do |format|
+      format.json { render :json => {
+        :item_count => @tag.feed_items_count,
+        :positive_count => @tag.positive_count,
+        :negative_count => @tag.negative_count,
+        :tooltip => @template.tag_tooltip(@tag)
+      } }
+    end
   end
 
   # The +comments+ action is used to load the comments for a tag.
