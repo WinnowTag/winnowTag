@@ -128,7 +128,7 @@ describe ApplicationHelper do
     
     it "creates a filter control with a tooltip showing the trining and author information" do
       tag = mock_tag(:name => "aviation", :positive_count => 1, :negative_count => 2, :classifier_count => 3, :user => mock_model(User, :login => "craig", :public? => false))
-      tag_filter_control(tag, :remove => :subscription).should have_tag("span.name[title=?]", "You're subscribed to 'aviation' by craig. 'aviation' finds 3 items using 1 positive examples and 2 negative examples.")
+      tag_filter_control(tag, :remove => :subscription).should have_tag("li[title=?]", "You're subscribed to 'aviation' by craig. 'aviation' finds 3 items using 1 positive examples and 2 negative examples.")
     end
   end
 end

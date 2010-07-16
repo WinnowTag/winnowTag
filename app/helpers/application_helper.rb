@@ -169,15 +169,15 @@ module ApplicationHelper
                                         tag_name_uniqued(tag, options),
                                         :class => "name", 
                                         :id => dom_id(tag, "name"), 
-                                        :"data-sort" => tag.sort_name, 
-                                        :title => tag_tooltip(tag)), 
+                                        :"data-sort" => tag.sort_name),
                             :class => "filter"),
                 :id => dom_id(tag), 
                 :class => class_names.join(" "),
                 :name => tag.name,
                 :pos_count => tag.positive_count,
                 :neg_count => tag.negative_count,
-                :item_count => tag.feed_items_count)
+                :item_count => tag.feed_items_count,
+                :title => tag_tooltip(tag))
     
   end
   

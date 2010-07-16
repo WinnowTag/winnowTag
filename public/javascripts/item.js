@@ -288,10 +288,6 @@ var Item = Class.create({
             $('tag_filters').insertInOrder(".name@data-sort", data.filterHtml, data.sort_name);
             itemBrowser.bindTagFilterEvents($('tag_filters').down("#" + data.id));
             itemBrowser.styleFilters();
-          } else {
-            $$(".filter_list ." + data.id).each(function(element) {
-              element.title = data.tooltip;
-            });
           }
         
           // TODO: Moved this to classifier.js
@@ -335,11 +331,6 @@ var Item = Class.create({
           });
         }
 
-        // Update the filter for this tag
-        $$(".filter_list ." + data.id).each(function(element) {
-          element.title = data.tooltip;
-        });
-        
         // TODO: Moved this to classifier.js
         // Update the classification button's status
         var classification_button = $('classification_button');
