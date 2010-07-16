@@ -20,4 +20,3 @@ Feature: Tag Feeds
     Given I am logged in
       And a public tag in the system
     When I access that tag's tagging information
-    Then the response should be only that tagging information
