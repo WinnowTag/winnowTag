@@ -51,7 +51,7 @@ describe "Demo" do
   it "should set the tag details when a tag is selected" do
     page.click("css=#tag_#{@tag.id}")
     page.get_text("css=#updating_tag_name").should == "test"
-    page.get_text("css=#updating_tag_count").should == "1"
+    page.get_text("css=#updating_tag_count").should == "0"
   end
   
   it "should only show tagged items when the tag is selected" do 
