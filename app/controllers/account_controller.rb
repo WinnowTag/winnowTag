@@ -109,15 +109,15 @@ class AccountController < ApplicationController
   # The +invite+ action is to request an invitation to Winnow.
   def invite
     @invite = Invite.new(params[:invite])
-    if @invite.save
+    if verify_recaptcha(:model => @invite, :message => t("winnow.general.recaptcha_failed")) and @invite.save
       # UserNotifier.deliver_invite_requested(@invite)
       Notifier.deliver_invite_requested(@invite)
       flash[:notice] = t("winnow.notifications.sign_up_link_sent")
       @invite.activate!
       UserNotifier.deliver_invite_accepted(@invite, login_url(:invite => @invite.code))
-      redirect_to login_path
+      redirect_to sent_signup_link_path
     else
-      render :action => "login"
+      render :action => 'get_signup_link'
     end
   end
   

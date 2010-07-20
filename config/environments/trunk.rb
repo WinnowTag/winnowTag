@@ -26,3 +26,7 @@ config.action_view.cache_template_loading            = true
 
 # Enable threaded mode
 # config.threadsafe!
+
+# This is a key pair obtained for 'trunk.mindloom.org' but set to be global so it will work for development.
+ENV['RECAPTCHA_PUBLIC_KEY'] = '6Lcmm7sSAAAAAPo5dZt5oyrPHZaxh6dvW32mo91s'
+ENV['RECAPTCHA_PRIVATE_KEY'] = '6Lcmm7sSAAAAAFhrlLZqav4deap86NpIXJzk7COT'

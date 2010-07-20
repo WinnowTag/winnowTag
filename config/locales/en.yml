@@ -33,7 +33,9 @@ en:
       password_confirmation: "Password Confirmation"
       how_did_you_hear: "How did you hear about winnowTag?"
       how_do_you_want_to_use: "How/why do you want to use winnowTag?"
-      account_request_intro: "We'll send you a 'Sign up' link so you can create an account."
+      account_request_intro: "We'll email you a 'Sign up' link so you can create an account."
+      return_to_winnowtag_home: "Go back to winnowTag.org"
+      recaptcha_failed: "The words you typed did not match"
       password_reset_intro: "Enter your login ID and we'll email you a link for changing your password."
       email_address_promise: "We won't give out your email address."
       no_script_message: "You need to change a setting in your web browser"
@@ -99,9 +101,9 @@ en:
       credentials_invalid: "Invalid login or password. Please try again."
       profile_updated: "Information Updated"
       reminder_code_invalid: "That password reset link was already used or has expired"
-      reminder_sent: "We've emailed you a password reset link"
+      reminder_sent: "We emailed you a password reset link"
       update_password: "Please update your password"
-      sign_up_link_sent: "We've emailed you a 'Sign up' link"
+      sign_up_link_sent: "We emailed you a 'Sign up' link"
       invitation_code_invalid: "Your 'Sign up' link could not be found or was already used."
       account_activated: "We've activated your account"
       account_activation_failed: "Unable to activate the account. Did you provide the correct information?"
@@ -457,6 +459,9 @@ en:
         current: "Current Password"
         new: "New Password"
         new_confirmation: "Confirm New Password"
+    sent_signup:
+        check_your_email: "Please check your email for your 'Sign up' link."
+        not_found: "If you can't find it, check your Junk Mail folder. It's also OK to try again: "
     login:
       welcome_header: "Welcome to winnowTag"
       welcome_text: |-

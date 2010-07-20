@@ -1,0 +1,14 @@
+<% content_for :body, "login" %>
+
+<div class="container">
+  <div class="form">
+  <div class="content">
+    <h2><%= t("winnow.notifications.sign_up_link_sent") %></h2>
+    <p><%= t("winnow.sent_signup.check_your_email") %></p>
+    <p>
+      <%= t("winnow.sent_signup.not_found") %> <%= link_to t("winnow.login.sign_up"), get_signup_link_path %>
+    </p>
+    <%= link_to t("winnow.general.return_to_winnowtag_home"), logout_path %>
+  </div>
+  </div>
+</div>

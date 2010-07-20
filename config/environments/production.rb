@@ -26,3 +26,8 @@ config.action_view.cache_template_loading            = true
 
 # Enable threaded mode
 # config.threadsafe!
+
+# This is a key pair obtained for 'winnowtag.org' that is not global so it'll not work with any other URL.
+ENV['RECAPTCHA_PUBLIC_KEY'] = '6LfRm7sSAAAAAOCT7-WpEnkbPhm8Q4JJjt0ro7WA'
+ENV['RECAPTCHA_PRIVATE_KEY'] = '6LfRm7sSAAAAANfLbnSxlCKqECmUuwlcPUN1yPEt'
+
