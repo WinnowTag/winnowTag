@@ -83,7 +83,9 @@ en:
 
       invite_request_submitted_body: "We've received your request for an invitation to winnowTag. We'll notify you at {{email}} when your invitation is accepted."
       invite_accepted_body: |-
-        {{invite}}To create your winnowTag account, click this link: {{url}}
+        {{invite}}To create your winnowTag account, click this link:
+
+        {{url}}
       account_activation_body: "{{user}}, we've activated your account.  Please click {{url}} to use winnowTag."
       reminder_subject: "Password Reset"
       reminder_body: "To change your password, visit {{url}}"
