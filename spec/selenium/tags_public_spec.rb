@@ -17,20 +17,22 @@ describe "TagsPublicTest" do
   
   it "subscribes to a public tag" do    
     dont_see_element "#tag_#{@tag.id}.subscribed"
-    assert !page.is_checked("subscribe_tag_#{@tag.id}")
     page.click "subscribe_tag_#{@tag.id}"
     
     page.wait_for :wait_for => :ajax 
   
     see_element "#tag_#{@tag.id}.subscribed"
-    assert page.is_checked("subscribe_tag_#{@tag.id}")
     
     page.refresh
     page.wait_for :wait_for => :page
     page.wait_for :wait_for => :ajax
     
     see_element "#tag_#{@tag.id}.subscribed"
-    assert page.is_checked("subscribe_tag_#{@tag.id}")
+    page.click "unsubscribe_tag_#{@tag.id}"
+
+    page.wait_for :wait_for => :ajax
+
+    dont_see_element "#tag_#{@tag.id}.subscribed"
   end
   
   it "globally excludes a public tag" do
