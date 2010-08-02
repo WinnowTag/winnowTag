@@ -1,7 +1,7 @@
 <div class="summary clearfix" title="<%= t('winnow.tags.main.tag_summary_tooltip') %>">
   <div class="info">      
     <div class="details">
-      <p title="<%= t('winnow.tags.attributes.user_name_tooltip', :user_name => tag.user_login) %>"><%=h tag.user_login %></p>
+      <p title="<%= tag.user_login == "archive" ? t('winnow.tags.attributes.archive_user_tooltip') : t('winnow.tags.attributes.user_name_tooltip', :user_name => tag.user_login) %>"><%=h tag.user_login %></p>
       <strong class="state" title="<%= tag_state_tooltip(tag) %>"><%= tag_state(tag) %></strong>
     </div>
     <div class="comments" title="<%= t('winnow.tags.attributes.comments_tooltip') %>">

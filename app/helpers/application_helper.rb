@@ -25,8 +25,10 @@ module ApplicationHelper
   # Generates the javascript to display the flash messages in our javascript
   # messages system.
   def show_flash_messages
-    javascript = [:notice, :warning, :error].map do |name|
-      "Message.add('#{name}', #{flash[name].to_json});" unless flash[name].blank?
+    javascript = [:notice, :stay_notice, :warning, :error].map do |name|
+      unless flash[name].blank?
+        "Message.add('#{name}', #{flash[name].to_json}," + ((name == :stay_notice || name == :error) ? "false" : "true") + ");"
+      end
     end.join
     
     javascript << Message.unread(current_user).for(current_user).map do |message|
@@ -117,11 +119,31 @@ module ApplicationHelper
       :title => t("winnow.general.globally_exclude_feed_tooltip")
   end
 
-  # Generates the control to mark a tag subscribed/unsbscribed
-  def subscribe_check_box(tag)
-    check_box_tag dom_id(tag, "subscribe"), "1", current_user.subscribed?(tag), :id => dom_id(tag, 'subscribe'), 
-      :onclick => remote_function(:url => subscribe_tag_path(tag), :method => :put, :with => "{subscribe: this.checked}"),
-      :title => t("winnow.tags.main.subscribe_tooltip")
+  # Generates the control to subscribe to a tag
+  def subscribe_link(tag)
+    whether_hidden = current_user.subscribed?(tag) ? " hidden" : "";
+    link_to_remote t("winnow.tags.main.subscribe"),
+      :url => subscribe_tag_path(tag),
+      :method => 'put',
+      :html => {
+        :title => t("winnow.tags.main.subscribe_tooltip", :tag => tag.name),
+        :class => "subscribe" + whether_hidden,
+        :id => dom_id(tag, 'subscribe')
+      }
+  end
+
+  # Generates the control to unsubscribe from a tag
+  def unsubscribe_link(tag)
+    whether_hidden = !current_user.subscribed?(tag) ? " hidden" : "";
+    link_to_remote t("winnow.tags.main.unsubscribe"),
+      :url => unsubscribe_tag_path(tag),
+      :method => 'put',
+      :confirm => t(tag.public? ? "winnow.tags.main.unsubscribe_confirm" : "winnow.tags.main.unsubscribe_not_public_tag_confirm", :tag => tag.name),
+      :html => {
+        :title => t("winnow.tags.main.unsubscribe_tooltip", :tag => tag.name),
+        :class => "unsubscribe" + whether_hidden,
+        :id => dom_id(tag, 'unsubscribe')
+      }
   end
 
   # Generates the controls to filter the list of tags.
@@ -160,7 +182,10 @@ module ApplicationHelper
   def tag_filter_control(tag, options = {})
     class_names = [dom_id(tag), "tag"]
     class_names << "subscribed" if tag.user_id != current_user.id
-    class_names << "public" if tag.public? && tag.user_id == current_user.id
+    class_names << "has_subscriptions" if !tag.tag_subscriptions.empty?
+    class_names << "public" if tag.public? # && tag.user_id == current_user.id
+    class_names << "archived" if !tag.tag_subscriptions.empty? && tag.user == User.find_by_login("archive")
+    class_names << "archive_account" if current_user.login == "archive"
 
     content_tag(:li, 
                 content_tag(:div, "", :class => "context_menu_button", :'tag-id' => tag.id) +
@@ -191,7 +216,11 @@ module ApplicationHelper
         t("winnow.items.sidebar.tag_tooltip", :name => h(tag.name), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
       end
     else
-      t("winnow.items.sidebar.subscribed_tag_tooltip", :name => h(tag.name), :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      if tag.user.login == "archive"
+        t("winnow.items.sidebar.archived_tag_tooltip", :name => h(tag.name), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      else
+        t("winnow.items.sidebar.subscribed_tag_tooltip", :name => h(tag.name), :login => h(tag.user.login), :positive => tag.positive_count, :negative => tag.negative_count, :automatic => tag.classifier_count)
+      end
     end
   end
   

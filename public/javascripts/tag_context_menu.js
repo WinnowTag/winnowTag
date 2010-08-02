@@ -24,12 +24,16 @@ var TagContextMenu = Class.create({
     this.tag_id = this.button.getAttribute("tag-id");
     this.path = "/tags/" + this.tag_id;
 
-    if (this.isSubscribedPublicTag()) {
+    if (this.isSubscribedTag()) {
       this.menu.addClassName("subscribed");
     }
+
+    if (this.isArchivedTagWithSubscribers() && this.isArchiveAccount()) {
+      this.menu.addClassName("archived_tag_in_archive_account");
+    }
     
-    if (this.isPublic()) {
-      this.menu.addClassName("public");
+    if (this.isPublicTag() && !this.isSubscribedTag()) {
+      this.menu.addClassName("public"); /* This user's public tag */
     }
 
     this.tag_li = $("tag_" + tag_id);
@@ -40,12 +44,24 @@ var TagContextMenu = Class.create({
     this.menu.show();
   },
   
-  isSubscribedPublicTag: function() {
+  isSubscribedTag: function() {
     return $$("li#tag_" + this.tag_id + ".tag.subscribed").length != 0;
   },
   
-  isPublic: function() {
+  isTagWithSubscriptions: function() {
+    return $$("li#tag_" + this.tag_id + ".tag.has_subscriptions").length != 0;
+  },
+
+  isPublicTag: function() {
     return $$("li#tag_" + this.tag_id + ".tag.public").length != 0;
+  },
+
+  isArchivedTagWithSubscribers: function() {
+    return $$("li#tag_" + this.tag_id + ".tag.archived").length != 0;
+  },
+
+  isArchiveAccount: function () {
+    return $$("li#tag_" + this.tag_id + ".tag.archive_account").length != 0;
   },
   
   getName: function() {
@@ -95,8 +111,8 @@ var TagContextMenu = Class.create({
   },
   
   rename: function(event) {
-    if (!this.isSubscribedPublicTag()) {
-      var newName = prompt("Please enter a new name for the tag:", this.getName());
+    if (!this.isSubscribedTag()) {
+      var newName = prompt(I18n.t("winnow.items.sidebar.context_menu_rename"), this.getName());
       if (newName && newName != this.getName()) {
         new Ajax.Request(this.path, {
               parameters: { 'tag[name]': newName },
@@ -123,8 +139,14 @@ var TagContextMenu = Class.create({
   },
   
   'delete': function() {
-    if (this.isSubscribedPublicTag()) {
-      if (confirm("Do you really want to unsubscribe from this tag?")) {
+    var confirm_message;
+    if (this.isArchivedTagWithSubscribers() && this.isArchiveAccount()) {
+      alert(I18n.t("winnow.archive.no_deleting_tags_with_subscribers"))
+    } else if (this.isSubscribedTag()) {
+      confirm_message = I18n.t("winnow.items.sidebar.context_menu_unsubscribe");
+      if (this.isArchivedTagWithSubscribers() || (this.isSubscribedTag() && !this.isPublicTag()))
+        confirm_message = I18n.t("winnow.items.sidebar.context_menu_unsubscribe_not_public_tag") + '\n\n' + confirm_message;
+      if (confirm(confirm_message)) {
         itemBrowser.removeFilters({tag_ids: this.tag_id});
         itemBrowser.styleFilters();
         new Ajax.Request('/tags/' + this.tag_id + '/unsubscribe', {
@@ -134,7 +156,11 @@ var TagContextMenu = Class.create({
             });
       }
     } else {
-      if (confirm(I18n.t("winnow.tags.main.destroy_confirm", {tag: this.getName()}))) {
+      if (this.isTagWithSubscriptions())
+        confirm_message = I18n.t("winnow.tags.main.tag_with_subscriptions_destroy_confirm", {tag: this.getName()});
+      else
+        confirm_message = I18n.t("winnow.tags.main.destroy_confirm", {tag: this.getName()});
+      if (confirm(confirm_message)) {
         itemBrowser.removeFilters({tag_ids: this.tag_id});
         itemBrowser.styleFilters();
         new Ajax.Request('/tags/' + this.tag_id, {
@@ -146,18 +172,18 @@ var TagContextMenu = Class.create({
     }
   },
   
-  public: function(event) {
-    if (!this.isSubscribedPublicTag()) {
+  'public': function(event) {
+    if (!this.isSubscribedTag()) {
       Event.stop(event);
     
-      if (this.isPublic()) {
+      if (this.isPublicTag()) {
         this.menu.removeClassName('public');
       } else {
         this.menu.addClassName('public');
       }
     
       new Ajax.Request('/tags/' + this.tag_id + '/publicize', {
-        parameters: {'public': !this.isPublic()},
+        parameters: {'public': !this.isPublicTag()},
         asynchronous:true,
         evalScripts: true,
         method: 'put',
@@ -175,6 +201,7 @@ var TagContextMenu = Class.create({
     this.tag_li.removeClassName("menu-up");
     this.menu.removeClassName("subscribed");
     this.menu.removeClassName("public");
+    this.menu.removeClassName("archived_tag_in_archive_account");
     
     Event.stopObserving(document, "click", this.destroyHandler);
     

@@ -28,6 +28,8 @@ class TagsController < ApplicationController
 
   # For operations done by users, make sure it is the owner of the tag doing it
   before_filter :ensure_user_is_tag_owner, :only => [:update, :destroy, :merge, :publicize]
+
+  before_filter :notify_of_tag_subscription_changes, :only => [:index]
   
   # The +index+ action is used to view a logged in users tags.
   # See FeedItemsController#index for an explanation of the html/json requests.  
@@ -183,11 +185,17 @@ class TagsController < ApplicationController
     end
   end
 
-  # The +destroy+ action will destroy a tag as well as all subscriptions to that tag.
+  # The +destroy+ action will destroy a tag as well as all subscriptions to that tag,
+  # unless it is a tag in the archive account that has subscriptions.
   def destroy
-    @tag.destroy
-    TagSubscription.delete_all(:tag_id => @tag)
-    respond_to :js
+    if !@tag.tag_subscriptions.empty? && @tag.user.login == "archive"
+        render :nothing => true
+    else
+      @tag.copy_to_archive unless @tag.tag_subscriptions.empty?
+      @tag.destroy
+      TagSubscription.delete_all(:tag_id => @tag)
+      respond_to :js
+    end
   end
   
   # Renders an atom feed for the manually tagged items for this tag.
@@ -243,20 +251,13 @@ class TagsController < ApplicationController
     respond_to :js
   end
   
-  # The +subscribe+ action is used to add/remove a tag from a users list of 
-  # tag subscriptions. Only public tags are allowed to be subscribed to.
-  # When removing a tag subscription and any tag exlusion for that same tag is also removed. 
+  # The +subscribe+ action is used to add a tag to a users list of
+  # tag subscriptions.
   def subscribe
     if @tag = Tag.find_by_id_and_public(params[:id], true)
-      if params[:subscribe] =~ /true/i
-        if !current_user.subscribed?(@tag)
-          TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id
-        end
-      else
-        TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
-      end
+      TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id unless current_user.subscribed?(@tag)
     end
-
+    
     respond_to do |format|
       format.html { redirect_to params[:redirect_to] }
       format.js
@@ -264,10 +265,9 @@ class TagsController < ApplicationController
   end
   
   # The +unsubscribe+ action is used to remove a tag from a users list of 
-  # tag subscriptions. When removing a tag subscription and any tag exlusion for that same tag 
-  # is also removed.
+  # tag subscriptions.
   def unsubscribe
-    if @tag = Tag.find_by_id_and_public(params[:id], true)
+    if @tag = Tag.find_by_id(params[:id])
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
     end
     respond_to do |format|
@@ -276,11 +276,9 @@ class TagsController < ApplicationController
     end
   end
   
-  # The +information+ action us used to load the training information
-  # for the tooltip on the feed items sidebar.
+  # The +information+ action is used to to make information about a tag
+  # available to the client.
   def information
-  # Generates a tooltip for the tag filters in the feed items sidebar.
-  # The tooltip contains the training information for the tag.
     @tag = Tag.find(params[:id])
   
     respond_to do |format|
@@ -288,7 +286,8 @@ class TagsController < ApplicationController
         :item_count => @tag.feed_items_count,
         :positive_count => @tag.positive_count,
         :negative_count => @tag.negative_count,
-        :tooltip => @template.tag_tooltip(@tag)
+        :tooltip => @template.tag_tooltip(@tag),
+        :tag_subscriptions_count => @tag.tag_subscriptions.count
       } }
     end
   end

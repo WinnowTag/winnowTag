@@ -70,4 +70,20 @@ protected
       redirect_to edit_password_path
     end
   end
+
+  def notify_of_tag_subscription_changes
+    if current_user && request.format.html?
+      flash.now[:stay_notice] = "" unless flash.now[:stay_notice];
+      current_user.tag_subscriptions.each { |tag_subscription|
+        if tag_subscription.original_creator
+          flash.now[:stay_notice] = flash.now[:stay_notice] + t("winnow.general.tag_archive_notice", :original_creator => tag_subscription.original_creator, :tag_name => tag_subscription.tag.name)
+          tag_subscription.clear_original_creator;
+        end
+        if tag_subscription.original_name
+          flash.now[:stay_notice] = flash.now[:stay_notice] + t("winnow.general.tag_rename_notice", :user => tag_subscription.tag.user.login, :original_name => tag_subscription.original_name, :new_name => tag_subscription.tag.name)
+          tag_subscription.clear_original_name;
+        end
+      }
+    end
+  end
 end

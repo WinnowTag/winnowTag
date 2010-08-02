@@ -41,6 +41,11 @@ div.context_menu.subscribed li.onlymine {
   cursor: default;
 }
 
+div.context_menu.archived_tag_in_archive_account #delete_menu_item {
+  color: #ccc;
+  cursor: default;
+}
+
 li span.tick {
   margin-left: 5px;
 }
@@ -58,6 +63,10 @@ div.context_menu span.tick {
 }
 
 div.context_menu.subscribed li.onlymine:hover {
+  background-color: white;
+}
+
+div.context_menu.archived_tag_in_archive_account #delete_menu_item:hover {
   background-color: white;
 }
 

@@ -884,19 +884,4 @@ describe Tag do
       @tag.taggings.find_by_feed_item_id(@fi3.id).strength.should == 0
     end
   end
-  
-  describe "#public=" do
-    before(:each) do
-      @user = Generate.user!
-      @tag = Generate.tag!(:user => @user, :public => true)
-      @other_user = Generate.user!
-    end
-    
-    it "should delete any subscriptions if the tag is not public" do
-      TagSubscription.create(:tag => @tag, :user => @other_user)
-      @tag.tag_subscriptions.size.should == 1
-      @tag.update_attribute(:public, false)
-      @tag.tag_subscriptions.should be_empty
-    end
-  end
 end

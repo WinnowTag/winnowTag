@@ -68,14 +68,15 @@ var Classification = Class.create({
           if (tagIDNumber != 0) { // Skip the request for tag list control "See All Tags"
             new Ajax.Request("/tags/" + tagIDNumber + "/information.json", { method: 'get',
                 onComplete: function(response) {
-                if (response.status == 200)
+                  if (response.status == 200) {
                     tag.title = response.responseJSON.tooltip;
-                    tag.setAttribute("item_count", response.responseJSON.item_count)
-                    tag.setAttribute("pos_count", response.responseJSON.positive_count)
-                    tag.setAttribute("neg_count", response.responseJSON.negative_count)
+                    tag.setAttribute("item_count", response.responseJSON.item_count);
+                    tag.setAttribute("pos_count", response.responseJSON.positive_count);
+                    tag.setAttribute("neg_count", response.responseJSON.negative_count);
 
                     if (tagIDNumber == $A(itemBrowser.filters.tag_ids.split(",")).first())
                       itemBrowser.showDemoTagInfo();
+                  }
                 }
             });
           }

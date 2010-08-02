@@ -49,6 +49,10 @@ en:
           Mindloom &copy; 2010 &bull;
         	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
         </div>
+      tag_rename_notice: "{{user}}, the creator of tag <span class='name'>{{original_name}}</span>, renamed it <span class='name'>{{new_name}}</span>.<br>"
+      tag_archive_notice: "Tag <span class='name'>{{tag_name}}</span> was deleted by its original creator ({{original_creator}}) so your subscription has been moved to an archived copy.<br>"
+    archive:
+      no_deleting_tags_with_subscribers: "This tag has subscribers, so it can't be deleted from the archive account."
     help_links:
       default: "http://doc.winnowtag.org"
       about:
@@ -116,8 +120,8 @@ en:
         other: "Imported {{count}} feeds from your OPML file"
       message_created: "Message was successfully created"
       message_updated: "Message was successfully updated"
-      tag_copied: "{{from}} successfully copied to {{to}}"
-      tag_merged: "{{from}} merged with {{to}}"
+      tag_copied: "<span class='name'>{{from}}</span> successfully copied to <span class='name'>{{to}}</span>"
+      tag_merged: "<span class='name'>{{from}}</span> successfully merged with <span class='name'>{{to}}</span>"
       classifier:
         timeout_contacting: "Communication with winnowTagger failed. It's OK to click 'Run winnowTagger' again at any time."
         could_not_be_started: "winnowTagger could not be started. It's OK to click 'Run winnowTagger' again at any time."
@@ -132,7 +136,8 @@ en:
             Tags '{{tag_names}}' have less than 6 positive examples. It may be best to tag more positive examples first.
             Do you want to 'Run winnowTagger' anyway?
       collection_failed: "Collection Job for {{title}} failed with result: {{message}}"
-      tags_unsubscribe: "You have been unsubscribed from the public tag '{{tag}}'. You can subscribe on the Public Tags page."
+      tags_subscribe: "You have subscribed to tag <span class='name'>{{tag}}</span>."
+      tags_unsubscribe: "You have unsubscribed from tag <span class='name'>{{tag}}</span>."
     taggings:
       bad_method: "Bad Request. Should be POST. Please report this bug. Make sure you have Javascript enabled too!"
       bad_params: "Bad Request. Missing Parameters. Please report this bug. Make sure you have Javascript enabled too!"
@@ -188,7 +193,7 @@ en:
       sidebar:
         training_controls_label: "Create Tags"
         training_controls_label_tooltip: "Create your own winnowTags on any topic"
-        training_controls_toggle_open_tooltip: "Close Create Tags and tagging panels on items"
+        training_controls_toggle_open_tooltip: "Close Create Tags and tagging panels on items, and clear any current search"
         training_controls_toggle_closed_tooltip: "Create or change your own tags"
         search_legend: "Search for items with:"
         search_legend_tooltip: ""
@@ -209,9 +214,13 @@ en:
         done_tooltip: ""
         tag_tooltip: "'{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         subscribed_tag_tooltip: "You're subscribed to '{{name}}' by {{login}}. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
+        archived_tag_tooltip: "You're subscribed to '{{name}}'. The original creator of this tag deleted it, so your subscription was moved to this archived copy. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         published_tag_tooltip: "You made '{{name}}' public so others can subscribe to it. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         merge_confirm: "This will merge {{from}} with {{to}}. Are you sure you want to do this?"
         sidebar_confirm: "You have removed the tag '{{tag}}' from your sidebar. Do you want to remove it from your My Tags page?"
+        context_menu_rename: "Enter your new name for the tag:"
+        context_menu_unsubscribe: "Do you really want to unsubscribe from this tag?"
+        context_menu_unsubscribe_not_public_tag: "This tag is no longer available in the Public Tags page. If you unsubscribe you will not be able to subscribe again."
       main:
         item_title_tooltip: "Open or close this item"
         open_original_feed_item: "See the original item in a new window"
@@ -257,13 +266,14 @@ en:
         globally_excluded: "Blocked"
         globally_excluded_tooltip: "You have blocked from view all items found by this tag"
         subscribed: "Subscribed"
-        subscribed_tooltip: "You are subscribed to this public tag"
+        subscribed_tooltip: "You are subscribed to this tag"
         public: "Public"
         public_tooltip: "You made this tag public so that others can subscribe to it"
       attributes:
         name: "Name"
-        subscribed_name_tooltip: "You are subscribed to this public tag"
+        subscribed_name_tooltip: "You are subscribed to this tag"
         user_name_tooltip: "winnowTag user '{{user_name}}' created this tag"
+        archive_user_tooltip: "The original creator of this tag deleted it, so your subscription was moved to this archived copy"
         state: "Subscribed / Blocked"
         comments: "Comments"
         comments_tooltip: "Number of comments on this tag"
@@ -291,8 +301,11 @@ en:
         blank_description: "add a description"
         click_to_edit_description: "Add or edit a description of this tag"
         destroy_confirm: "Do you really want to permanently delete tag '{{tag}}'?\n\nThis can't be undone."
+        unsubscribe_not_public_tag_confirm: "'{{tag}}' is no longer available in the Public Tags page. If you unsubscribe you will not be able to resubscribe to '{{tag}}'.\n\nDo you really want to permanently unsubscribe from '{{tag}}'?\n\nThis can't be undone."
+        unsubscribe_confirm: "Do you really want to unsubscribe from '{{tag}}'?"
+        tag_with_subscriptions_destroy_confirm: "If you delete tag '{{tag}}', winnowTag will archive a copy for existing subscribers to use.\n\nDo you really want to permanently delete tag '{{tag}}'?\n\nThis can't be undone."
         add_a_comment: "Add a comment"
-        apply_to: "Adjust # of items <span class='name'>{{tag}}</span> will find:"
+        apply_to: "Number of items <span class='name'>{{tag}}</span> will find:"
         fewer_items: "Fewer Items"
         fewer_items_tooltip: "Set the slider to this end for the fewest number of items found by this tag"
         more_items: "More Items"
@@ -305,7 +318,9 @@ en:
         training_feed: "Download tag as Atom file"
         training_feed_tooltip: "Download an Atom file defining this tag and its positive and negative examples. You may need to right click and choose 'Save Target as...'."
         subscribe: "Subscribe"
+        unsubscribe: "Unsubscribe"
         subscribe_tooltip: "Subscribe to this public tag to use it to find items"
+        unsubscribe_tooltip: "Unsubscribe from tag to remove it from your My Tags page and the tags list in the sidebar of the Items page"
         items_tagged_with: "Show items tagged with <span class='name'>'{{tag}}'</span>"
         items_tagged_with_tooltip: "View all items found by this tag"
         items_trained_with: "Show example items for <span class='name'>'{{tag}}'</span>"
@@ -342,9 +357,9 @@ en:
         add_feed_tooltip: ""
         upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to winnowTag."
         upload_button: "Upload"
-        upload_tooltip: "Use the 'Choose File' button to choose your OPML file and then click the Upload button"
+        upload_tooltip: "Browse to choose your OPML file on your local computer, then click the Upload button"
         add_to_winnow_bookmarklet: "Add to winnowTag"
-        bookmarklet_description: "You can add a bookmarklet to you browser to make it quick and easy to add sites to winnowTag. Once installed, simply click the bookmarklet to add the site you are currently viewing to winnowTag."
+        bookmarklet_description: "You can add a bookmarklet to your browser to make it quick and easy to add sites to winnowTag. Once installed, simply click the bookmarklet to add the site you are currently viewing to winnowTag."
         bookmarklet_installation_instructions:
           safari:  "To install the bookmarklet, drag this button to your bookmarks bar."
           chrome:  "To install the bookmarklet, drag this button to your bookmarks bar."

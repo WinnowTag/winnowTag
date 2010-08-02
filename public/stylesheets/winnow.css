@@ -234,9 +234,13 @@ textarea.content {
   color: #fff;
 }
 
-#messages.notice {
+#messages span.name {
+  color: orange;
+}
+
+#messages.notice, #messages.stay_notice {
   background-image: url(../images/notice.png);
-  color: #537713;
+  color: #77FF77; /* #537713; */
 }
 
 #messages.warning {
@@ -1170,6 +1174,10 @@ body#item_caches .item_cache {
   background-position: 0.5em 0.6em;
 }
 
+.tag .extended .hidden {
+  display: none;
+}
+
 .tag.published .summary {
   background-image: url(../images/public.png);
   background-color: #CCDDFF;
@@ -1359,14 +1367,6 @@ body#item_caches .item_cache {
   vertical-align: middle;
 }
 
-.tag .extended .sidebar .stats {
-  display: none;
-}
-
-.tag.public .extended .sidebar .stats {
-  display: block;
-}
-
 .tag ul.controls {
   margin: 0;
   padding: 0;
@@ -1386,6 +1386,11 @@ body#item_caches .item_cache {
   padding-left: 1.75em;
   background-position: left center;
   background-repeat: no-repeat;
+}
+
+.tag ul.controls .subscribe,
+.tag ul.controls .unsubscribe {
+  background-image: url(../images/subscribed.png);
 }
 
 .tag ul.controls .tagged,
@@ -1416,8 +1421,12 @@ body#item_caches .item_cache {
   font-weight: normal;
 }
 
-.tag ul.controls .slider_control h4 span {
+.tag ul.controls span.name {
   font-weight: bold;
+}
+
+.tag ul.controls li.warning {
+  color: red;
 }
 
 .tag ul.controls .slider_control .slider {

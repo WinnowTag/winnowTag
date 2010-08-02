@@ -11,8 +11,8 @@
             <span class="fewer" title="<%= t('winnow.tags.main.fewer_items_tooltip') %>"><%= t("winnow.tags.main.fewer_items") %></span> <%= bias_slider_html(tag) %> <span class="more" title="<%= t('winnow.tags.main.more_items_tooltip') %>"><%= t("winnow.tags.main.more_items") %></span>
           </li>
           <% if tag.user_id != current_user.id -%>
-            <li class="subscribe">
-              <%= subscribe_check_box(tag) %> <label title="<%= t("winnow.tags.main.subscribe_tooltip") %>" for="<%= dom_id(tag, 'subscribe') %>"><%= t("winnow.tags.main.subscribe") %></label>
+            <li>
+              <%= subscribe_link(tag) %> <%= unsubscribe_link(tag) %>
             </li>
           <% end %>
           <% if tag.user_id == current_user.id -%>
@@ -22,7 +22,11 @@
           <% end -%>
           <li><%= link_to_remote t("winnow.tags.main.copy"), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", #{tag.name.to_json} + " - copy")|, :html => { :class => "copy", :title => t("winnow.tags.main.copy_tooltip") } %></li>
           <% if tag.user_id == current_user.id -%>
-            <li><%= link_to_remote t("winnow.general.destroy"), :url => tag_path(tag), :method => 'delete', :confirm => t("winnow.tags.main.destroy_confirm", :tag => tag.name), :html => { :title => t("winnow.tags.main.destroy_tooltip", :tag => tag.name), :class => "destroy", :id => dom_id(tag, 'destroy') } %></li>
+            <% if tag.tag_subscriptions.empty? || current_user.login != "archive" -%>
+              <li><%= link_to_remote t("winnow.general.destroy"), :url => tag_path(tag), :method => 'delete', :confirm => t(!tag.tag_subscriptions.empty? ? "winnow.tags.main.tag_with_subscriptions_destroy_confirm" : "winnow.tags.main.destroy_confirm", :tag => tag.name), :html => { :title => t("winnow.tags.main.destroy_tooltip", :tag => tag.name), :class => "destroy", :id => dom_id(tag, 'destroy') } %></li>
+            <% elsif current_user.login == "archive" -%>
+              <li><%= t("winnow.archive.no_deleting_tags_with_subscribers") %></li>
+            <% end -%>
           <% end -%>
           <% if tag.user_id != current_user.id -%>
             <li><%= link_to t("winnow.tags.main.items_tagged_with", :tag => h(tag.name)), subscribe_tag_path(tag, :subscribe => true, :redirect_to => feed_items_path(:anchor => "tag_ids=#{tag.id}")), :method => :put, :class => 'tagged', :title => t("winnow.tags.main.items_tagged_with_tooltip") %></li>

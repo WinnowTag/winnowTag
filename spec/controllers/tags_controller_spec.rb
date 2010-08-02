@@ -76,7 +76,7 @@ describe TagsController do
       assert_difference("@user.tags.count") do
         post :create, :copy => @tag.id, :name => "tag - copy"
         assert_response :success
-        assert_equal("#{@tag.name} successfully copied to tag - copy", flash[:notice])
+        assert_equal("<span class='name'>#{@tag.name}</span> successfully copied to <span class='name'>tag - copy</span>", flash[:notice])
       end
       assert @user.tags.find(:first, :conditions => ['tags.name = ?', 'tag - copy'])
       assert_equal(2, @user.taggings.size)
@@ -105,7 +105,7 @@ describe TagsController do
       assert_difference("@user.tags.count", 0) do
         post :create, :copy => @tag.id, :name => tag2.name, :overwrite => "true"
         assert_response :success
-        assert_equal("#{@tag.name} successfully copied to #{tag2.name}", flash[:notice])
+        assert_equal("<span class='name'>#{@tag.name}</span> successfully copied to <span class='name'>#{tag2.name}</span>", flash[:notice])
       end
 
       assert_equal [@feed_item], tag2.taggings(:reload).map(&:feed_item)
@@ -395,6 +395,20 @@ describe TagsController do
       response.should_not be_success
       lambda { tag.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it "should archive the tag if there are subscriptions" do
+      public_tag = Generate.tag!(:user => @user, :name => "public_tag", :public => true)
+      user2 = Generate.user!
+      archive = Generate.user!(:login => "archive")
+      TagSubscription.create! :tag_id => public_tag.id, :user_id => user2.id
+      delete :destroy, :id => public_tag.id
+      response.should be_success
+      lambda {
+        public_tag.reload
+      }.should raise_error(ActiveRecord::RecordNotFound)
+      assert archive.tags.find_by_name("public_tag")
+      assert TagSubscription.find_all_by_tag_id(archive.tags.find_by_name("public_tag").id).count == 1
+    end
   end
   
   describe 'PUT subscribe' do
@@ -420,26 +434,14 @@ describe TagsController do
       assert_response :success
     end
 
-    # SG: This ensures that only public tags can be subscribed to.
-    it "cant_subscribe_to_other_users_non_public_tags" do
-      user2 = Generate.user!
-      tag = Generate.tag!(:user => user2, :public => false)
-
-      assert_no_difference("TagSubscription.count") do
-        put :subscribe, :id => tag, :subscribe => "true", :format => "js"
-      end
-    
-      assert_response :success 
-    end
-  
-    # Test how unsubscribing as implemented on the "Public Tags" page
+    # Test unsubscribing as implemented on the "Public Tags" page
     it "unsubscribe_from_public_tag_via_subscribe_action" do
       user2 = Generate.user!
       tag = Generate.tag!(:user => user2, :public => true)
 
     
       TagSubscription.should_receive(:delete_all).with(:tag_id => tag.id, :user_id => @user.id)
-      put :subscribe, :id => tag, :subscribe => "false", :format => "js"
+      put :unsubscribe, :id => tag, :format => "js"
       assert_response :success
     end
 
@@ -483,7 +485,7 @@ describe TagsController do
     
       put :merge, :id => tag1, :tag => { :name => tag2.name }, :merge => "true"
       assert_redirected_to tags_path
-      assert_equal("#{tag1.name} merged with #{tag2.name}", flash[:notice])
+      assert_equal("<span class='name'>#{tag1.name}</span> successfully merged with <span class='name'>#{tag2.name}</span>", flash[:notice])
     end
   
     it "renaming_when_merge_will_happen" do

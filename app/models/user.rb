@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
                   '(SELECT COUNT(*) FROM taggings WHERE taggings.tag_id = tags.id AND taggings.classifier_tagging = 0 AND taggings.strength = 0) AS negative_count', 
                   '(SELECT COUNT(DISTINCT(feed_item_id)) FROM taggings WHERE taggings.tag_id = tags.id) AS feed_items_count'
                  ].join(","),
-      :conditions => ["tags.id IN (?) OR (tags.id IN(?) AND (tags.public = ? OR tags.user_id = ?))", 
+      :conditions => ["tags.id IN (?) OR (tags.id IN(?) AND (tags.public = ? OR tags.user_id = ?))",
                      tag_ids + subscribed_tag_ids - excluded_tag_ids, tag_ids.to_s.split(","), true, self],
       :order => "tags.sort_name"
   end
@@ -172,7 +172,12 @@ class User < ActiveRecord::Base
       prototype.tag_subscriptions.each do |tag_subscription| 
         user.tag_subscriptions.create! :tag_id => tag_subscription.tag_id
       end
-      
+
+      # TODO: create_from_prototype should only copy subscriptions from the prototype.
+      # Currently it also copies private tags and tagging, a facility that is currently
+      # unused. Copying private tags and taggings should be removed since
+      # there's duplicated code. It doesn't use Tag.copy(to), which perhaps it
+      # should. This is only an issue of future-proofing / eliminating unused code.
       prototype.tags.each do |tag|
         new_tag = user.tags.create! :name => tag.name, :public => tag.public, :bias => tag.bias, :description => tag.description
 

@@ -1,7 +1,13 @@
 page << "if($(#{dom_id(@tag).to_json}).down('.summary .state')) {"
   page[@tag].down('.summary .state').update tag_state(@tag)
   page[@tag].down('.summary .state')[:title] = tag_state_tooltip(@tag)
+  page[@tag].remove_class_name("public")
   page[@tag].remove_class_name("globally_excluded")
   page[@tag].remove_class_name("subscribed")
+  page[@tag].remove_class_name("published")
   page[@tag].add_class_name tag_classes(@tag)
+  page[@tag].down('.unsubscribe').remove_class_name("hidden")
+  page[@tag].down('.subscribe').add_class_name("hidden")
 page << "}"
+
+page << "Message.add('notice', #{t('winnow.notifications.tags_subscribe', :tag => h(@tag.name)).to_json});"

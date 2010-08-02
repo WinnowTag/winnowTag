@@ -50,7 +50,11 @@ class Tag < ActiveRecord::Base
 
   # See the definition of this method below to learn about this callbacks
   before_save :set_sort_name
-  before_save :clear_subscriptions_unless_public
+
+  # See long comment at definition of notify_subscriptions_of_name_change, below.
+  # before_save :clear_subscriptions_unless_public
+
+  before_save :notify_subscriptions_of_name_change
 
   # Reads the cached attribute or does a query to find the result. The cached attribute is set in the +search+ finder method.
   def positive_count
@@ -103,12 +107,13 @@ class Tag < ActiveRecord::Base
     end
     
     Tagging.connection.execute(%Q|
-      INSERT INTO taggings(feed_item_id, strength, classifier_tagging, tag_id, user_id) 
-      (SELECT feed_item_id, strength, classifier_tagging, #{to.id}, #{to.user_id} FROM taggings WHERE tag_id = #{self.id})
+      INSERT INTO taggings(feed_item_id, strength, classifier_tagging, created_on, tag_id, user_id)
+      (SELECT feed_item_id, strength, classifier_tagging, created_on, #{to.id}, #{to.user_id} FROM taggings WHERE tag_id = #{self.id})
     |)
     
     to.bias = self.bias    
     to.description = self.description
+    to.last_classified_at = self.last_classified_at
     to.save!
   end
   
@@ -131,6 +136,41 @@ class Tag < ActiveRecord::Base
   def overwrite(to)
     to.taggings.clear
     self.copy(to)
+  end
+
+  def copy_to_archive
+    # Make the tag and the subscriptions to it have the user_id of the "archive" account.
+    # If the "archive" account already has a tag  or subscription with that name, use the
+    # first available <from_name>_N where N starts with 2. Thus the first tag named "foo"
+    # is archived as "foo", the second "foo_2", the third "foo_3", etc.
+
+    archive_user = User.find_by_login("archive");
+    archive_name = name
+    if Tag.find_by_user_id_and_name(archive_user.id, archive_name)
+      archive_name = name.gsub(/_\d*$/, '');
+      i = 1;
+      while Tag.find_by_user_id_and_name(archive_user.id, archive_name)
+        i += 1;
+        archive_name = name + '_' + i.to_s;
+      end
+    end
+
+    to = Tag(archive_user, archive_name);
+
+    copy(to);
+
+    # TODO: Make this efficient for the case of a huge number of subscribers.
+    TagSubscription.find_all_by_tag_id(id).each do |tag_subscription|
+      if tag_subscription.user_id == archive_user.id
+        tag_subscription.destroy
+      else
+        tag_subscription.update_attribute(:tag_id, to.id);
+        tag_subscription.tag_archived(user.login);
+        unless name == archive_name
+          tag_subscription.tag_renamed(name, archive_name)
+        end
+      end
+    end
   end
   
   def delete_classifier_taggings!
@@ -344,9 +384,29 @@ private
     self.sort_name = name.to_s.downcase.gsub(/^(a|an|the) /, '').gsub(/[^a-zA-Z0-9]/, '')
   end
 
-  def clear_subscriptions_unless_public
-    self.tag_subscriptions.clear unless public?
+  def notify_subscriptions_of_name_change
+    if name_change
+      self.tag_subscriptions.each do |tag_subscription|
+        tag_subscription.tag_renamed(self.name_was, name)
+      end
+    end
   end
+
+  # It used to be that when a public tag was made private all subscribers would lose access to it,
+  # without notification. With the creation of the public tag archive account which receives
+  # a copy of a deleted tag and moves existing subscriptions to that copy, the behavior of deleting existing
+  # subscriptions when a public tag is made private is removed, as otherwise subscribers may become
+  # distributed among multiple copies of the tag that are created in the archive account. There is a potential
+  # privacy concern here, but since the tag was made public, anyone could have created a copy or exported it,
+  # and our implementation of handling publication is necessarily imperfect unless we were to handle
+  # publication by issuing successive static copies, preserving the historic relation of those copies, and
+  # creating mechanisms by which users could rate versions and control which version they're using. Doing that is
+  # beyond the present scope of this project and it is not not clear how easy it would be to create a UI that
+  # a sufficient percentage of users would understand and utilize.
+  #
+  # def clear_subscriptions_unless_public
+  #   self.tag_subscriptions.clear unless public?
+  # end
   
   # Adds taggings for this tag from the taggings defined in the atom document.
   #
