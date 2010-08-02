@@ -407,7 +407,7 @@ describe TagsController do
         public_tag.reload
       }.should raise_error(ActiveRecord::RecordNotFound)
       assert archive.tags.find_by_name("public_tag")
-      assert TagSubscription.find_all_by_tag_id(archive.tags.find_by_name("public_tag").id).count == 1
+      assert archive.tags.find_by_name("public_tag").tag_subscriptions.size == 1
     end
   end
   
