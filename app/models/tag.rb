@@ -166,9 +166,15 @@ class Tag < ActiveRecord::Base
       else
         tag_subscription.update_attribute(:tag_id, to.id);
         tag_subscription.tag_archived(user.login);
-        unless name == archive_name
-          tag_subscription.tag_renamed(name, archive_name)
-        end
+
+        # The following lines would notify subscribers in the case that
+        # "_<number>" was added to make the name unique when archiving. But
+        # there's not much need for that notice, and providing it along
+        # with the necessary message about archiving tends to be confusing.
+        #
+        # unless name == archive_name
+        #   tag_subscription.tag_renamed(name, archive_name)
+        # end
       end
     end
   end
