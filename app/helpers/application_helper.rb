@@ -106,7 +106,7 @@ module ApplicationHelper
       :html => {
         :title => t("winnow.tags.main.globally_exclude_tag_tooltip", :tag => tag.name),
         :class => "globally_exclude_tag" + whether_hidden,
-        :id => dom_id(tag, 'globally_exclude_tag')
+        :id => dom_id(tag, 'globally_exclude')
       }
   end
 
@@ -120,7 +120,7 @@ module ApplicationHelper
       :html => {
         :title => t("winnow.tags.main.unglobally_exclude_tag_tooltip", :tag => tag.name),
         :class => "unglobally_exclude_tag" + whether_hidden,
-        :id => dom_id(tag, 'unglobally_exclude_tag')
+        :id => dom_id(tag, 'unglobally_exclude')
       }
   end
 

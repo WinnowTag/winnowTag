@@ -53,12 +53,6 @@ describe "TagsPublicTest" do
     page.wait_for :wait_for => :ajax
 
     dont_see_element "#tag_#{@tag.id}.globally_excluded"
-    see_element "#tag_#{@tag.id}.subscribed"
-    page.click "unsubscribe_tag_#{@tag.id}"
-
-    page.wait_for :wait_for => :ajax
-
-    dont_see_element "#tag_#{@tag.id}.subscribed"
   end
 
   it "viewing items tagged with a specific tag also subscribes the user to that tag" do
