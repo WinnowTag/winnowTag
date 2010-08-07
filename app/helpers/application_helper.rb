@@ -97,16 +97,37 @@ module ApplicationHelper
     javascript_tag(function)
   end
 
-  # Generates the control to mark a tag a globally excluded/not globally excluded.
-  def globally_exclude_tag_check_box(tag)
-    url = globally_exclude_tag_path(tag)
-    
-    check_box_tag dom_id(tag, "globally_exclude"), "1", current_user.globally_excluded?(tag),
-      :id => dom_id(tag, 'globally_exclude'), :onclick => remote_function(:url => url, :with => "{globally_exclude: this.checked}"),
-      :title => t("winnow.general.globally_exclude_tag_tooltip")
+  # Generates the control to block a tag
+  def globally_exclude_tag_link(tag)
+    whether_hidden = current_user.globally_excluded?(tag) ? " hidden" : "";
+    link_to_remote t("winnow.tags.main.globally_exclude_tag"),
+      :url => globally_exclude_tag_path(tag),
+      :method => 'put',
+      :html => {
+        :title => t("winnow.tags.main.globally_exclude_tag_tooltip", :tag => tag.name),
+        :class => "globally_exclude_tag" + whether_hidden,
+        :id => dom_id(tag, 'globally_exclude_tag')
+      }
+  end
+
+  # Generates the control to unblock a tag
+  def unglobally_exclude_tag_link(tag)
+    whether_hidden = !current_user.globally_excluded?(tag) ? " hidden" : "";
+    link_to_remote t("winnow.tags.main.unglobally_exclude_tag"),
+      :url => unglobally_exclude_tag_path(tag),
+      :method => 'put',
+      :confirm => t("winnow.tags.main.unglobally_exclude_tag_confirm", :tag => tag.name),
+      :html => {
+        :title => t("winnow.tags.main.unglobally_exclude_tag_tooltip", :tag => tag.name),
+        :class => "unglobally_exclude_tag" + whether_hidden,
+        :id => dom_id(tag, 'unglobally_exclude_tag')
+      }
   end
 
   # Generates the control to mark a feed a globally excluded/not globally excluded.
+  #
+  # TODO: This should be made consistent with subscription and blocking which
+  # now use swapping action/unaction links rather than checkboxes.
   def globally_exclude_feed_check_box(feed)
     url = if feed.is_a?(Feed)
       globally_exclude_feed_path(feed)

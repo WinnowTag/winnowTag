@@ -52,7 +52,8 @@ ActionController::Routing::Routes.draw do |map|
                   :upload => :post
                 },
                 :member => { 
-                  :globally_exclude => :post,
+                  :globally_exclude => :put,
+                  :unglobally_exclude => :put,
                   :publicize => :put, 
                   :subscribe => :put,
                   :unsubscribe => :put,

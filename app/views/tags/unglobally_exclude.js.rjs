@@ -5,10 +5,5 @@ page[@tag].remove_class_name("globally_excluded")
 page[@tag].remove_class_name("subscribed")
 page[@tag].remove_class_name("published")
 page[@tag].add_class_name tag_classes(@tag)
-page[@tag].down('.unglobally_exclude_tag').remove_class_name("hidden")
-page[@tag].down('.globally_exclude_tag').add_class_name("hidden")
-
-page << "if($(#{dom_id(@tag).to_json}).down('.subscribe')) {"
-  page[@tag].down('.unsubscribe').remove_class_name("hidden")
-  page[@tag].down('.subscribe').add_class_name("hidden")
-page << "}"
+page[@tag].down('.globally_exclude_tag').remove_class_name("hidden")
+page[@tag].down('.unglobally_exclude_tag').add_class_name("hidden")

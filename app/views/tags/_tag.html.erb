@@ -38,8 +38,8 @@
           <div class="feed_links">
             <%= render :partial => "feed_links.html.erb", :locals => { :tag => tag } %>
           </div>
-          <li class="globally_exclude">
-            <label title="<%= t('winnow.general.globally_exclude_tag_tooltip') %>" for="<%= dom_id(tag, 'globally_exclude') %>"><%= globally_exclude_tag_check_box(tag) %> <%= t("winnow.general.globally_exclude") %></label>
+          <li>
+              <%= globally_exclude_tag_link(tag) %> <%= unglobally_exclude_tag_link(tag) %>
           </li>
         </ul>
       </div>

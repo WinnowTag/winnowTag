@@ -401,6 +401,7 @@ describe TagsController do
       user2 = Generate.user!
       archive = Generate.user!(:login => "archive")
       TagSubscription.create! :tag_id => public_tag.id, :user_id => user2.id
+      TagExclusion.create! :tag_id => public_tag.id, :user_id => user2.id
       delete :destroy, :id => public_tag.id
       response.should be_success
       lambda {
@@ -408,6 +409,7 @@ describe TagsController do
       }.should raise_error(ActiveRecord::RecordNotFound)
       assert archive.tags.find_by_name("public_tag")
       assert archive.tags.find_by_name("public_tag").tag_subscriptions.size == 1
+      assert archive.tags.find_by_name("public_tag").tag_exclusions.size == 1
     end
   end
   
@@ -485,7 +487,7 @@ describe TagsController do
     
       put :merge, :id => tag1, :tag => { :name => tag2.name }, :merge => "true"
       assert_redirected_to tags_path
-      assert_equal("<span class='name'>#{tag1.name}</span> successfully merged with <span class='name'>#{tag2.name}</span>", flash[:notice])
+      assert_equal("Examples of <span class='name'>#{tag1.name}</span> successfully merged into <span class='name'>#{tag2.name}</span>", flash[:notice])
     end
   
     it "renaming_when_merge_will_happen" do

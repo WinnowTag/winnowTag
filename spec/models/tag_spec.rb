@@ -804,7 +804,6 @@ describe Tag do
     
       old_tag.merge(new_tag)
     
-      assert_equal([], old_tag.taggings)
       assert_equal([feed_item1.id, feed_item2.id], new_tag.taggings.map(&:feed_item_id).sort)
     end
   
@@ -818,7 +817,6 @@ describe Tag do
     
       old_tag.merge(new_tag)
     
-      assert_equal([], old_tag.taggings.map(&:feed_item))
       assert_equal([feed_item], new_tag.taggings.map(&:feed_item))    
     end
   

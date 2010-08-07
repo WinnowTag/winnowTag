@@ -185,8 +185,9 @@ class TagsController < ApplicationController
     end
   end
 
-  # The +destroy+ action will destroy a tag as well as all subscriptions to that tag,
-  # unless it is a tag in the archive account that has subscriptions.
+  # The +destroy+ action will destroy a tag unless it is a tag in the archive
+  # account that has subscriptions. If the tag has subscribers, subscriptions and
+  # and any blocks are moved to an archive copy.
   def destroy
     if !@tag.tag_subscriptions.empty? && @tag.user.login == "archive"
         render :nothing => true
@@ -194,6 +195,7 @@ class TagsController < ApplicationController
       @tag.copy_to_archive unless @tag.tag_subscriptions.empty?
       @tag.destroy
       TagSubscription.delete_all(:tag_id => @tag)
+      TagExclusion.delete_all(:tag_id => @tag)
       respond_to :js
     end
   end
@@ -239,18 +241,24 @@ class TagsController < ApplicationController
     respond_to :js
   end
   
-  # The +globally_exclude+ action is used to add/remove a tag from a users
-  # list of tag exlucsions.
+  # The +globally_exclude+ action blocks a tag for a user.
   def globally_exclude
     @tag = Tag.find(params[:id])
-    if params[:globally_exclude] =~ /true/i
-      current_user.tag_exclusions.create! :tag_id => @tag.id
-    else
-      TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
-    end
+    current_user.tag_exclusions.create! :tag_id => @tag.id unless current_user.globally_excluded?(@tag)
+    # Ensure subscription to any tag that is excluded. That way exclusions of
+    # a deleted tag can be mostly be handled by way of the subscription to the deleted
+    # tag (by tag archive).
+    TagSubscription.create! :tag_id => @tag.id, :user_id => current_user.id unless current_user.subscribed?(@tag) || current_user == @tag.user
     respond_to :js
   end
   
+  # The +unglobally_exclude+ action unblocks a tag for a user.
+  def unglobally_exclude
+    @tag = Tag.find(params[:id])
+    TagExclusion.delete_all :tag_id => @tag.id, :user_id => current_user.id
+    respond_to :js
+  end
+
   # The +subscribe+ action is used to add a tag to a users list of
   # tag subscriptions.
   def subscribe
@@ -269,6 +277,7 @@ class TagsController < ApplicationController
   def unsubscribe
     if @tag = Tag.find_by_id(params[:id])
       TagSubscription.delete_all :tag_id => @tag.id, :user_id => current_user.id
+      TagExclusion.delete_all  :tag_id => @tag.id, :user_id => current_user.id
     end
     respond_to do |format|
       format.html { redirect_to :back }

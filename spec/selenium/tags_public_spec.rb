@@ -37,20 +37,22 @@ describe "TagsPublicTest" do
   
   it "globally excludes a public tag" do
     dont_see_element "#tag_#{@tag.id}.globally_excluded"
-    assert !page.is_checked("globally_exclude_tag_#{@tag.id}")
     page.click "globally_exclude_tag_#{@tag.id}"
     
     page.wait_for :wait_for => :ajax 
 
     see_element "#tag_#{@tag.id}.globally_excluded"
-    assert page.is_checked("globally_exclude_tag_#{@tag.id}")
     
     page.refresh
     page.wait_for :wait_for => :page
     page.wait_for :wait_for => :ajax
     
     see_element "#tag_#{@tag.id}.globally_excluded"
-    assert page.is_checked("globally_exclude_tag_#{@tag.id}")
+    page.click "unglobally_exclude_tag_#{@tag.id}"
+
+    page.wait_for :wait_for => :ajax
+
+    dont_see_element "#tag_#{@tag.id}.globally_excluded"
   end
 
   it "viewing items tagged with a specific tag also subscribes the user to that tag" do

@@ -39,6 +39,7 @@ class Tag < ActiveRecord::Base
             :dependent => :delete_all
   has_many :feed_items, :through => :taggings
   has_many :tag_subscriptions
+  has_many :tag_exclusions
   has_many :comments
   has_many :usages, :class_name => "TagUsage"
   belongs_to :user
@@ -128,8 +129,14 @@ class Tag < ActiveRecord::Base
         to.user.taggings.create!(:tag => to, :feed_item_id => tagging.feed_item_id, :strength => tagging.strength)
       end
     end
-    
-    destroy
+    # Used to be we would destroy the "from" tag (self). This is no longer done
+    # because the from tag may have subscribers and would need to be archived.
+
+    # TODO: Make merge its own separate command (like copy) rather than a side
+    # effect of rename. (If it's going to be a side effect it would make more
+    # sense as copy than as the present rename, anyhow, because currently you
+    # cannot have the "from" tag of your merge be a subscribed tag, because you can't
+    # "rename" someone else's tag.)
   end
   
   # Copys a tag to another tag, clearing the other tag's taggings first. See +Tag#copy+.
@@ -161,9 +168,7 @@ class Tag < ActiveRecord::Base
 
     # TODO: Make this efficient for the case of a huge number of subscribers.
     TagSubscription.find_all_by_tag_id(id).each do |tag_subscription|
-      if tag_subscription.user_id == archive_user.id
-        tag_subscription.destroy
-      else
+      unless tag_subscription.user_id == archive_user.id
         tag_subscription.update_attribute(:tag_id, to.id);
         tag_subscription.tag_archived(user.login);
 
@@ -175,6 +180,11 @@ class Tag < ActiveRecord::Base
         # unless name == archive_name
         #   tag_subscription.tag_renamed(name, archive_name)
         # end
+      end
+    end
+    TagExclusion.find_all_by_tag_id(id).each do |tag_exclusion|
+      unless tag_exclusion.user_id == archive_user.id || tag_exclusion.user_id == user_id
+        tag_exclusion.update_attribute(:tag_id, to.id);
       end
     end
   end

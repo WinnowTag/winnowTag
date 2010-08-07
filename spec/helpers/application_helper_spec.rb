@@ -19,11 +19,6 @@ describe ApplicationHelper do
       current_user.stub!(:globally_excluded?).and_return(false)
     end
     
-    it "should handle Tag" do
-      tag = mock_model(Tag)
-      globally_exclude_tag_check_box(tag).should have_tag("input[type=checkbox][onclick=?]", /.*\/tags\/#{tag.id}.*/)
-    end
-    
     it "should handle Feed" do
       feed = mock_model(Feed)
       globally_exclude_feed_check_box(feed).should have_tag("input[type=checkbox][onclick=?]", /.*\/feeds\/#{feed.id}.*/)
@@ -36,14 +31,14 @@ describe ApplicationHelper do
     
     it "is sets the checked status to true when already globally excluded" do
       current_user.stub!(:globally_excluded?).and_return(true)
-      tag = mock_model(Tag)
-      globally_exclude_tag_check_box(tag).should have_tag("input[checked=checked]")
+      feed = mock_model(Feed)
+      globally_exclude_feed_check_box(feed).should have_tag("input[checked=checked]")
     end
     
     it "is sets the checked status to false when not already globally excluded" do
       current_user.stub!(:globally_excluded?).and_return(false)
-      tag = mock_model(Tag)
-      globally_exclude_tag_check_box(tag).should_not have_tag("input[checked=checked]")
+      feed = mock_model(Feed)
+      globally_exclude_feed_check_box(feed).should_not have_tag("input[checked=checked]")
     end
   end
     

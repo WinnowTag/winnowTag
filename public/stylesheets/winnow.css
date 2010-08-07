@@ -1207,6 +1207,7 @@ body#item_caches .item_cache {
 }
 
 .tag.globally_excluded .summary {
+  background-image: url(../images/subscribed.png);
   border-color: #E7ACAD;
   background-color: #F6E0E0;
 }
@@ -1391,6 +1392,11 @@ body#item_caches .item_cache {
 .tag ul.controls .subscribe,
 .tag ul.controls .unsubscribe {
   background-image: url(../images/subscribed.png);
+}
+
+.tag ul.controls .globally_exclude_tag,
+.tag ul.controls .unglobally_exclude_tag {
+  background-image: url(../images/no_symbol.png);
 }
 
 .tag ul.controls .tagged,

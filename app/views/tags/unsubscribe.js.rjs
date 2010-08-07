@@ -9,7 +9,8 @@ page << "if($(#{dom_id(@tag).to_json}).down('.summary .state')) {"
     page[@tag].add_class_name tag_classes(@tag)
     page[@tag].down('.unsubscribe').add_class_name("hidden")
     page[@tag].down('.subscribe').remove_class_name("hidden")
-    page
+    page[@tag].down('.globally_exclude_tag').remove_class_name("hidden")
+    page[@tag].down('.unglobally_exclude_tag').add_class_name("hidden")
   else
     page[@tag].remove
   end
