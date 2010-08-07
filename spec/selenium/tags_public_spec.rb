@@ -49,11 +49,16 @@ describe "TagsPublicTest" do
     
     see_element "#tag_#{@tag.id}.globally_excluded"
     page.click "unglobally_exclude_tag_#{@tag.id}"
-    page.should be_confirmation
-    page.confirmation
+
     page.wait_for :wait_for => :ajax
 
     dont_see_element "#tag_#{@tag.id}.globally_excluded"
+    see_element "#tag_#{@tag.id}.subscribed"
+    page.click "unsubscribe_tag_#{@tag.id}"
+
+    page.wait_for :wait_for => :ajax
+
+    dont_see_element "#tag_#{@tag.id}.subscribed"
   end
 
   it "viewing items tagged with a specific tag also subscribes the user to that tag" do
