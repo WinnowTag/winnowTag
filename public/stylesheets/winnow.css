@@ -234,6 +234,11 @@ textarea.content {
   color: #fff;
 }
 
+#messages a {
+  color: lightskyblue;
+  text-decoration: underline;
+}
+
 #messages span.name {
   color: orange;
 }
@@ -250,7 +255,7 @@ textarea.content {
 
 #messages.error {
   background-image: url(../images/error.png);
-  color: #C43212;
+  color: #FF5555;
 }
 
 #messages .close {

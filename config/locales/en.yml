@@ -124,7 +124,7 @@ en:
       classifier:
         timeout_contacting: "Communication with winnowTagger failed. It's OK to click 'Run winnowTagger' again at any time."
         could_not_be_started: "winnowTagger could not be started. It's OK to click 'Run winnowTagger' again at any time."
-        already_running: "winnowTagger is already running. You can keep using winnowTag — it will let you know when winnowTagger is finished."
+        already_running: "winnowTagger is already running. (The progress indicator doesn't show after this page is reloaded.)"
         not_running: "winnowTagger is not running."
         tags_not_changed: "There are no changes to your tags."
         confirm_few_positives:
@@ -533,7 +533,8 @@ en:
     javascript:
       errors:
         classifier:
-          timeout: "Timed out communicating with winnowTagger. Usually you can ignore this."
+          timeout: "Communication with winnowTagger is timing out."
+          winnowtag_communication_slow: "Communication with winnowTag.org is slow."
       classifier:
         progress_bar:
           start:   "Running winnowTagger"

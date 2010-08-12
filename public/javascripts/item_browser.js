@@ -53,12 +53,14 @@ var ItemBrowser = Class.create({
       method: 'get', requestHeaders: { Accept: 'application/json' },
       onComplete: function(response) {
         var data = response.responseJSON;
-        if(data.full) {
-          this.full = true;
+        if (data) {
+          if(data.full) {
+            this.full = true;
+          }
+          data.items.each(function(item) {
+            this.insertItem(item.id, item.content);
+          }.bind(this));
         }
-        data.items.each(function(item) {
-          this.insertItem(item.id, item.content);
-        }.bind(this));
         
         this.updateEmptyMessage();
         this.hideLoadingIndicator();

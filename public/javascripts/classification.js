@@ -68,15 +68,17 @@ var Classification = Class.create({
           if (tagIDNumber != 0) { // Skip the request for tag list control "See All Tags"
             new Ajax.Request("/tags/" + tagIDNumber + "/information.json", { method: 'get',
                 onComplete: function(response) {
-                  if (response.status == 200) {
-                    tag.title = response.responseJSON.tooltip;
-                    tag.setAttribute("item_count", response.responseJSON.item_count);
-                    tag.setAttribute("pos_count", response.responseJSON.positive_count);
-                    tag.setAttribute("neg_count", response.responseJSON.negative_count);
+                  try {
+                    if (response.status == 200) {
+                      tag.title = response.responseJSON.tooltip;
+                      tag.setAttribute("item_count", response.responseJSON.item_count);
+                      tag.setAttribute("pos_count", response.responseJSON.positive_count);
+                      tag.setAttribute("neg_count", response.responseJSON.negative_count);
 
-                    if (tagIDNumber == $A(itemBrowser.filters.tag_ids.split(",")).first())
-                      itemBrowser.showDemoTagInfo();
-                  }
+                      if (tagIDNumber == $A(itemBrowser.filters.tag_ids.split(",")).first())
+                        itemBrowser.showDemoTagInfo();
+                    }
+                  } catch(e) {}
                 }
             });
           }
@@ -170,9 +172,7 @@ var Classification = Class.create({
             Message.add('error', transport.responseJSON);
           }.bind(this),
           onTimeout: function() {
-            executer.stop();
-            this.notify("Reset");
-            Message.add('error', I18n.t("winnow.javascript.errors.classifier.timeout"));
+            Message.add('warning', I18n.t("winnow.javascript.errors.classifier.winnowtag_communication_slow"));
           }.bind(this)
         });
       }
