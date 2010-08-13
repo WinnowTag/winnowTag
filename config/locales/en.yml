@@ -316,7 +316,7 @@ en:
         feed: "Feed of items found by this tag"
         feed_tooltip: "Open a feed in Atom format containing recent items in winnowTag that have been found with this tag"
         training_feed: "Download tag as Atom file"
-        training_feed_tooltip: "Download an Atom file defining this tag and its positive and negative examples. You may need to right click and choose 'Save Target as...'."
+        training_feed_tooltip: "Download an Atom file defining this tag and its positive and negative examples. You may need to right click and choose 'Save Target As...' or 'Save Link As...'."
         subscribe: "Subscribe"
         unsubscribe: "Unsubscribe"
         subscribe_tooltip: "Subscribe to this public tag to use it to find items"
