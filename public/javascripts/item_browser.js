@@ -218,7 +218,9 @@ var ItemBrowser = Class.create({
     var filters_to_save = $H(this.filters);
     filters_to_save.unset("text_filter");
     
-    Cookie.set(this.name + "_filters", filters_to_save.toQueryString(), 365);
+    // Trac ticket #1182 explains why cookie name "tags_filters" is no longer used.
+    var cookie_name = this.name == "tags" ? "tags_np" : this.name;
+    Cookie.set(cookie_name + "_filters", filters_to_save.toQueryString(), 365);
   },
   
   // Marks the appropriate mode filter (all, trained) for items as selected.
@@ -329,8 +331,10 @@ var ItemBrowser = Class.create({
     
     this.filters = { order: this.defaultOrder(), direction: this.defaultDirection(), mode: this.defaultMode() };
     
-    if(decodeURIComponent(location.hash).gsub('#', '').blank() && Cookie.get(this.name + "_filters")) {
-      this.setFilters(Cookie.get(this.name + "_filters").toQueryParams());
+    // Trac ticket #1182 explains why cookie name "tags_filters" is no longer used.
+    var cookie_name = this.name == "tags" ? "tags_np" : this.name;
+    if(decodeURIComponent(location.hash).gsub('#', '').blank() && Cookie.get(cookie_name + "_filters")) {
+      this.setFilters(Cookie.get(cookie_name + "_filters").toQueryParams());
     } else {
       this.setFilters(decodeURIComponent(location.hash).gsub('#', '').toQueryParams());
     }

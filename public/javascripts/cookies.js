@@ -11,7 +11,8 @@ var Cookie = {
       d.setTime(d.getTime() + (86400000 * parseFloat(daysToExpire)));
       expire = '; expires=' + d.toGMTString();
     }
-    return (document.cookie = escape(name) + '=' + escape(value || '') + expire);
+    var the_cookie = escape(name) + '=' + escape(value || '') + expire + '; path=/';
+    return (document.cookie = the_cookie);
   },
   get: function(name) {
     var cookie = document.cookie.match(new RegExp('(^|;)\\s*' + escape(name) + '=([^;\\s]*)'));
