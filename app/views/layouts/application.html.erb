@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-  <title>winnowTag</title>
+  <title><%= t("winnow.general.app_name") %></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <%= stylesheet_link_tag :winnow, :cache => true %>
   <!--[if gte IE 7]>
@@ -32,7 +32,7 @@
   </noscript>
 
   <div id="title">
-    <h1 id="header"><%= t("winnow.general.app_name") %></h1>
+    <h1 id="header"><a href="<%= feed_items_path %>"><%= t("winnow.general.app_name") %></a></h1>
     <h2 id="subheader"><%= t("winnow.general.powered_by") %></h2>
   </div>
 

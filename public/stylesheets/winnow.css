@@ -93,7 +93,14 @@ body {
 #title {
   float: left;
   position: absolute;
-  z-index: -100;
+}
+
+#header a {
+  color: inherit;
+}
+
+#header a:hover {
+  text-decoration: none;
 }
 
 #header {

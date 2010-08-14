@@ -31,6 +31,14 @@
 body {
 }
 
+/*
+ * =links
+ */
+a:hover {text-decoration: underline;}
+a.disabled {color: #888; cursor: default;}
+a.disabled:hover {text-decoration: none;}
+a img {border: 0; vertical-align: baseline;}
+
 #navigation {
   min-height: 68px;
   padding: 0 15px;
@@ -60,7 +68,14 @@ body {
 #demo_title {
   float: left;
   position: absolute;
-  z-index: -100;
+}
+
+#demo_header a {
+  color: inherit;
+}
+
+#demo_header a:hover {
+  text-decoration: none;
 }
 
 #demo_header {
