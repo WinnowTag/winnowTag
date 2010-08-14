@@ -11,7 +11,7 @@ describe Invite do
       invite = Generate.invite(:email => nil)
 
       invite.should_not be_valid
-      invite.should have(1).errors_on(:email)
+      invite.should have(2).errors_on(:email)
     end
   end
   
