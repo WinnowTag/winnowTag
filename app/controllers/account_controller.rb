@@ -29,8 +29,8 @@ class AccountController < ApplicationController
     if request.post?
       if current_user.update_attributes(params[:current_user].merge(:crypted_password => nil))
         session[:user_must_update_password] = false
-        flash[:notice] = t("winnow.notifications.profile_updated")
-        redirect_to :back
+        flash[:notice] = t("winnow.notifications.password_changed")
+        redirect_to feed_items_path
       end
     end
   end
