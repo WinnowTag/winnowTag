@@ -78,12 +78,11 @@ class AccountController < ApplicationController
         redirect_to edit_password_path
       else
         flash[:error] = t("winnow.notifications.reminder_code_invalid")
-        redirect_to feed_items_path(:code => nil)
       end
     elsif params[:invite]
       @invite = Invite.active(params[:invite])
       if @invite.blank? || @invite.code.blank?
-        flash[:warning] = t("winnow.notifications.invitation_code_invalid")
+        flash[:error] = t("winnow.notifications.invitation_code_invalid")
       end
     end
   end
