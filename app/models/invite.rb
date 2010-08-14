@@ -10,6 +10,10 @@ class Invite < ActiveRecord::Base
   
   validates_presence_of :email
 
+  # for email address regex, see: http://www.regular-expressions.info/email.html
+  validates_format_of :email, :with => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+
+
   def initialize(*args, &block)
     super(*args, &block)
     self.subject ||= I18n.t("winnow.invites.edit.default_accepted_subject")
