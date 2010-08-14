@@ -92,7 +92,7 @@ en:
         {{url}}
       account_activation_body: "{{user}}, we've activated your account.  Please click {{url}} to use winnowTag."
       reminder_subject: "Password Reset"
-      reminder_body: "To change your password, visit {{url}}"
+      reminder_body: "To change your password, click this link:\n\n{{url}}"
       signup_notification_body: |-
         Welcome to winnowTag, {{user}}.
 
