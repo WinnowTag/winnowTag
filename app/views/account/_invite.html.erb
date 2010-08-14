@@ -11,9 +11,9 @@
 
       <div class="email">
         <%= f.label :email, t("winnow.general.email") %>
-        <%= f.text_field :email, :title => t("winnow.login.email_tooltip") %>
+        <%= f.text_field :email, :tabindex => 1, :title => t("winnow.login.email_tooltip") %>
         <p class="description email_promise"><%= t("winnow.general.email_address_promise") %></p><p></p>
-        <%= recaptcha_tags :display => {:theme => "white", :tabindex => 0} %><p></p>
+        <%= recaptcha_tags :display => {:theme => "white", :tabindex => 2} %><p></p>
         <%= submit_tag t("winnow.login.request_account_button") %> <%= link_to t("winnow.general.cancel"), logout_path %>
       </div>
 
