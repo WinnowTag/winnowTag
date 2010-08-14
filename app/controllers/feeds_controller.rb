@@ -6,6 +6,7 @@
 
 # The +FeedsController+ is used to manage the viewing and creation of feeds.
 class FeedsController < ApplicationController
+
   # See FeedItemsController#index for an explanation of the html/json requests.
   def index
     respond_to do |format|
@@ -53,15 +54,29 @@ class FeedsController < ApplicationController
   # imported feeds.
   # 
   # A FeedSubscription is created for each Feed and the logged in user.
+  MAX_IMPORT_FEEDS = 100
   def import
-    @feeds = Remote::Feed.import_opml(params[:opml].read)
-    @feeds.each do |feed|
-      feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
+    the_opml = params[:opml].read
+    begin
+      feed_count = Opml.parse(the_opml).feeds.size
+    rescue
+      flash[:error] = t("winnow.notifications.bad_OPML_file")
+    else
+      if current_user.has_role?('admin') || feed_count <= MAX_IMPORT_FEEDS
+        @feeds = Remote::Feed.import_opml(the_opml)
+
+        @feeds.each do |feed|
+          feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
+        end
+
+        flash[:notice] = t("winnow.notifications.feeds_imported", :count => @feeds.size)
+      else
+        flash[:error] = t("winnow.notifications.too_many_feeds_to_import", :count => feed_count, :maximum => MAX_IMPORT_FEEDS)
+      end
     end
-    flash[:notice] = t("winnow.notifications.feeds_imported", :count => @feeds.size)
     redirect_to feeds_url
   end
-  
+
   # The +globally_exclude+ action is used to add/remove a feed from a users
   # list of feed exlucsions.
   def globally_exclude

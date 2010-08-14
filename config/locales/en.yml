@@ -117,6 +117,8 @@ en:
       feeds_imported:
         one:   "Imported 1 feed from your OPML file"
         other: "Imported {{count}} feeds from your OPML file"
+      too_many_feeds_to_import: "No feeds were imported because your file contains {{count}} feeds when the maximum is {{maximum}}"
+      bad_OPML_file: Apparently that file is not in OPML format
       message_created: "Message was successfully created"
       message_updated: "Message was successfully updated"
       tag_copied: "<span class='name'>{{from}}</span> successfully copied to <span class='name'>{{to}}</span>"
@@ -359,7 +361,7 @@ en:
         add_feed_button: "Add Feed"
         add_feed_button_disabled: "Adding..."
         add_feed_tooltip: ""
-        upload_opml_description: "You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to winnowTag."
+        upload_opml_description: You can upload an OPML file containing a list of feeds. Most feed readers support exporting subscription lists in OPML format so you can easily add your feeds to winnowTag. To import more than 100 feeds, please <a href="http://doc.winnowtag.org/contact" target="_blank">contact us</a>.
         upload_button: "Upload"
         upload_tooltip: "Browse to choose your OPML file on your local computer, then click the Upload button"
         add_to_winnow_bookmarklet: "Add to winnowTag"
