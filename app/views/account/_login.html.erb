@@ -8,24 +8,24 @@
       <div class="clearfix">
       	<div class="login">
       	  <label for="login"><%= t("winnow.general.login") %></label>
-      	  <%= text_field_tag :login %>
+      	  <%= text_field_tag :login, nil, :tabindex => 1 %>
     	  <%= link_to t("winnow.login.need_login"), get_signup_link_path, :class => "login_form_link", :title => t("winnow.login.need_login_tooltip") %>
       	</div>
 
       	<div class="password">
       	  <label for="password"><%= t("winnow.general.password") %></label>
-      	  <%= password_field_tag :password %>
+      	  <%= password_field_tag :password, nil, :tabindex => 2 %>
     	  <%= link_to_function t("winnow.login.forgot_password"), "", :class => "forgot_password_link login_form_link", :title => t("winnow.login.forgot_password_tooltip") %>
       	</div>
       </div>
   
     	<div class="submit">
-    	  <%= submit_tag t("winnow.general.login") %>
+    	  <%= submit_tag t("winnow.general.login"), :tabindex => 3 %>
            <%= link_to t("winnow.general.cancel"), logout_path %>
     	</div>
 
         <div class="remember">
-    	  <label for="remember_me" class="inline" title="<%= t('winnow.login.remember_me_tooltip') %>"><%= check_box_tag :remember_me %> <%= t("winnow.login.remember_me") %></label>
+    	  <label for="remember_me" class="inline" title="<%= t('winnow.login.remember_me_tooltip') %>"><%= check_box_tag :remember_me, 1, false, :tabindex => 4 %> <%= t("winnow.login.remember_me") %></label>
     	</div>
 
   	</div>
