@@ -1,5 +1,6 @@
 <div id="login_form" class="form clearfix">
-  <% form_tag login_path do -%> 
+  <% form_tag login_path do -%>
+    <div id="logout_box"><a href="<%= logout_path %>">X</a></div>
     <div class="title">
       <span class="login"><%= t("winnow.login.login") %></span>
     </div>

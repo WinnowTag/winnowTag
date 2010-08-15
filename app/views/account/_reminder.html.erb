@@ -1,6 +1,6 @@
 <div id="reminder_form" class="form clearfix" style="display: none;">
   <% form_remote_tag :url => reminder_path do -%>
-
+    <div id="logout_box"><a href="<%= logout_path %>">X</a></div>
     <div class="title">
       <span class="reminder"><%= t("winnow.login.reminder_header") %></span>
     </div>

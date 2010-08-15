@@ -1,5 +1,6 @@
 <div id="signup_form" class="form">
 <% form_for :user, :url => signup_path do |f| -%>
+  <div id="logout_box"><a href="<%= logout_path %>">X</a></div>
   <div class="title">
     <span class="signup"><%= t("winnow.login.create_my_account") %></span>
   </div>
