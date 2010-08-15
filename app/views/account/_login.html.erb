@@ -26,7 +26,7 @@
     	</div>
 
         <div class="remember">
-    	  <label for="remember_me" class="inline" title="<%= t('winnow.login.remember_me_tooltip') %>"><%= check_box_tag :remember_me, 1, false, :tabindex => 4 %> <%= t("winnow.login.remember_me") %></label>
+    	  <label for="remember_me" class="inline" title="<%= t('winnow.login.remember_me_tooltip') %>"><%= check_box_tag :remember_me, 1, stay_signed_in_cookie, :tabindex => 4 %> <%= t("winnow.login.remember_me") %></label>
     	</div>
 
   	</div>

@@ -499,7 +499,7 @@ en:
       sign_up_tooltip: ""
       create_my_account: "Create my account"
       request_account_button: "Send me a 'Sign up' link"
-      remember_me: "Remember Me"
+      remember_me: "Stay signed in"
       remember_me_tooltip: ""
       forgot_password: "I forgot my password"
       forgot_password_tooltip: ""

@@ -64,6 +64,9 @@ class AccountController < ApplicationController
         if params[:remember_me] == "1"
           self.current_user.remember_me
           cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+          cookies[:stay_signed_in] = { :value => true, :expires => 2.weeks.from_now.utc }
+        else
+          cookies.delete :stay_signed_in
         end
         redirect_back_or_default feed_items_path
       else
