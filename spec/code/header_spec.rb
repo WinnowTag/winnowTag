@@ -24,7 +24,7 @@ describe "kaphan foundation header" do
     vendor = %w[
       public/javascripts/controls.js public/javascripts/dragdrop.js public/javascripts/effects.js public/javascripts/prototype.js
       public/javascripts/slider.js public/javascripts/unittest.js public/javascripts/all.js public/javascripts/locales.js
-      public/javascripts/placeholder.js
+      public/javascripts/placeholder.js public/javascripts/google_analytics_proxy.js
     ]
     
     (Dir["public/javascripts/**/*.js"] - vendor).each do |filename|
