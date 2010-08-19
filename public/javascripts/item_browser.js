@@ -45,6 +45,10 @@ var ItemBrowser = Class.create({
       return !element.match(".indicator") && !element.match(".empty");
     });
   },
+
+  googleAnalytics: function(item_count) {
+    _gap._trackEvent(this.options.url, this.filters.order, this.filters.text_filter, item_count);
+  },
     
   doUpdate: function(options) {
     this.showLoadingIndicator();
@@ -60,6 +64,7 @@ var ItemBrowser = Class.create({
           data.items.each(function(item) {
             this.insertItem(item.id, item.content);
           }.bind(this));
+          this.googleAnalytics(data.items.size());
         }
         
         this.updateEmptyMessage();

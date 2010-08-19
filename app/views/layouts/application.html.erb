@@ -17,6 +17,9 @@
     document.observe('dom:loaded', Content.setup);
   <% end -%>
   <%= yield(:head) %>
+
+  <%= render :partial => "shared/google_analytics" %>
+
 </head>
 <body id="<%= yield(:body) %>">
 	<% if context_menu = yield(:context_menu) %>
@@ -69,5 +72,6 @@
   </div>
 
   <%= show_flash_messages %>
+
 </body>
 </html>

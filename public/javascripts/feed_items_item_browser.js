@@ -65,6 +65,10 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
   },
 
+  googleAnalytics: function(item_count) {
+    _gap._trackEvent(this.options.url, this.filters.tag_ids, this.filters.text_filter, item_count);
+  },
+
   selectedItem: function() {
     return $$(".feed_item.selected").first();
   },

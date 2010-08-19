@@ -31,3 +31,5 @@ config.action_view.cache_template_loading            = true
 ENV['RECAPTCHA_PUBLIC_KEY'] = '6LfRm7sSAAAAAOCT7-WpEnkbPhm8Q4JJjt0ro7WA'
 ENV['RECAPTCHA_PRIVATE_KEY'] = '6LfRm7sSAAAAANfLbnSxlCKqECmUuwlcPUN1yPEt'
 
+# This is the Google Analytics account for production use on winnowtag.org
+ENV['GOOGLE_ANALYTICS_UA'] = 'UA-18062643-1'
