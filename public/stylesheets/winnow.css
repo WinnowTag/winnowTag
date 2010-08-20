@@ -96,7 +96,7 @@ body {
 }
 
 #header a {
-  color: inherit;
+  color: #936301;
 }
 
 #header a:hover {
@@ -104,7 +104,6 @@ body {
 }
 
 #header {
-  color: #936301;
   margin: 10px 0px 0px 20px;
   font-size: 30px;
   font-weight: bold;

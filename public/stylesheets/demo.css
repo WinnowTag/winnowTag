@@ -71,7 +71,7 @@ a img {border: 0; vertical-align: baseline;}
 }
 
 #demo_header a {
-  color: inherit;
+  color: #936301;
 }
 
 #demo_header a:hover {
@@ -79,7 +79,6 @@ a img {border: 0; vertical-align: baseline;}
 }
 
 #demo_header {
-  color: #936301;
   margin: 10px 0px 0px 20px;
   font-size: 30px;
   font-weight: bold;
