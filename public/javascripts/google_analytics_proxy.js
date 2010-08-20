@@ -38,7 +38,9 @@ GoogleAnalyticsProxy.prototype = {
   },
 
   log: function(message) {
-    console.log('[GoogleAnalyticsProxy] ' + message + ' was triggered');
+    try {
+      console.log('[GoogleAnalyticsProxy] ' + message + ' was triggered');
+    } catch(e) {}
   },
 
   // Proxy for pageTracker, which is defined in the provided Google Analytics snippet
