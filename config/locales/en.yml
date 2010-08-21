@@ -223,6 +223,10 @@ en:
         merge_confirm: "This will copy the examples of tag '{{from}}', adding them to the existing examples of tag '{{to}}'. Are you sure you want to do this?"
         sidebar_confirm: "You have removed tag '{{tag}}' from your sidebar. Do you want to remove it from your My Tags page?"
         context_menu_rename: "Enter your new name for the tag:"
+        use_my_tags_to_rename_tag: |-
+          In Internet Explorer, Rename is disabled in the Items page sidebar. It works in Firefox, Chrome and Safari.
+
+          To rename your tag, please scroll to this tag in the My Tags page and click the tag name.
         context_menu_unsubscribe: "Do you really want to unsubscribe from this tag?"
         context_menu_unsubscribe_not_public_tag: "This tag is no longer available in the Public Tags page. If you unsubscribe you will not be able to subscribe again."
       main:

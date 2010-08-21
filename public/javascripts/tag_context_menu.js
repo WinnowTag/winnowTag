@@ -111,6 +111,17 @@ var TagContextMenu = Class.create({
   },
   
   rename: function(event) {
+    /* IE7 & IE8 handling of javascript "prompt" is so horrible, it's better to
+     * ask IE users to go to their My Tags page to rename a tag. Depending upon
+     * winnowTag's percentage of IE users revealed by by web analytics, later on 
+     * we can put in an in-ploace editor or use a javascript/CSS replacement for
+     * javascript alert/prompt/confirm. But those approaches are overkill just
+     * to fix the single occurrence of this IE problem, at this time. */
+    if (/MSIE/.test(navigator.userAgent)) {
+      alert(I18n.t("winnow.items.sidebar.use_my_tags_to_rename_tag"));
+      return;
+    }
+
     if (!this.isSubscribedTag()) {
       var newName = prompt(I18n.t("winnow.items.sidebar.context_menu_rename"), this.getName());
       if (newName && newName != this.getName()) {
