@@ -1194,7 +1194,6 @@ body#item_caches .item_cache {
  */
 .tag .summary {
   cursor: pointer;
-  background-image: url(../images/tag.png);
   background-position: 0.5em 0.5em;
   background-repeat: no-repeat;
   padding-left: 2em;
