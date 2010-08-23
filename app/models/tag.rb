@@ -357,7 +357,11 @@ class Tag < ActiveRecord::Base
     }
     directions.default = "ASC"
     
-    { :joins => :user, :order => [orders[order.to_s], directions[direction.to_s]].join(" ") }
+    multi_order = [orders[order.to_s], directions[direction.to_s]].join(" ")
+    multi_order << ", public #{directions[direction.to_s] == "ASC" ? "DESC" : "ASC"}" if order == "state"
+    multi_order << ", tags.sort_name ASC" unless order == "name"
+
+    { :joins => :user, :order => multi_order }
   }
 
   # The +search+ method adds a number of custom attributes to the SELECT

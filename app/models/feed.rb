@@ -42,8 +42,11 @@ class Feed < ActiveRecord::Base
       "desc" => "DESC"
     }
     directions.default = "ASC"
+
+    multi_order = [orders[order], directions[direction]].join(" ")
+    multi_order << ", feeds.sort_title ASC" if order == "globally_exclude"
     
-    { :order => [orders[order], directions[direction]].join(" ") }
+    { :order => multi_order }
   }
   
   def self.search(options = {})

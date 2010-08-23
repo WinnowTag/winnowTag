@@ -3,8 +3,8 @@
     var itemBrowser;
     document.observe('dom:loaded', function() {
       itemBrowser = new ItemBrowser('users', 'content', { orders: {
-        asc:       ["login", "name", "email", "tag_count"],
-        desc:      ["logged_in_at", "last_accessed_at", "last_tagging_on"],
+        asc:       ["login", "name", "email"],
+        desc:      ["tag_count", "logged_in_at", "last_accessed_at", "last_tagging_on"],
         "default": "login"
       }});
     });
