@@ -62,16 +62,20 @@ class FeedsController < ApplicationController
     rescue
       flash[:error] = t("winnow.notifications.bad_OPML_file")
     else
-      if current_user.has_role?('admin') || feed_count <= MAX_IMPORT_FEEDS
-        @feeds = Remote::Feed.import_opml(the_opml)
-
-        @feeds.each do |feed|
-          feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
-        end
-
-        flash[:notice] = t("winnow.notifications.feeds_imported", :count => @feeds.size)
+      if feed_count == 0
+        flash[:error] = t("winnow.notifications.no_feeds_to_import")
       else
-        flash[:error] = t("winnow.notifications.too_many_feeds_to_import", :count => feed_count, :maximum => MAX_IMPORT_FEEDS)
+        if current_user.has_role?('admin') || feed_count <= MAX_IMPORT_FEEDS
+          @feeds = Remote::Feed.import_opml(the_opml)
+
+          @feeds.each do |feed|
+            feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))
+          end
+
+          flash[:stay_notice] = t("winnow.notifications.feeds_imported", :count => @feeds.size)
+        else
+          flash[:error] = t("winnow.notifications.too_many_feeds_to_import", :count => feed_count, :maximum => MAX_IMPORT_FEEDS)
+        end
       end
     end
     redirect_to feeds_url

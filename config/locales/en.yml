@@ -121,7 +121,8 @@ en:
         one:   "Imported 1 feed from your OPML file"
         other: "Imported {{count}} feeds from your OPML file"
       too_many_feeds_to_import: "No feeds were imported because your file contains {{count}} feeds when the maximum is {{maximum}}"
-      bad_OPML_file: Apparently that file is not in OPML format
+      no_feeds_to_import: winnowTag doesn't see any feeds in your OPML file. Would you give us a copy of the file so we can improve our OPML import? You can <a href="http://doc.winnowtag.org/contact" target="_blank">contact us here</a>.
+      bad_OPML_file: Apparently that file is not in valid OPML format
       message_created: "Message was successfully created"
       message_updated: "Message was successfully updated"
       tag_copied: "<span class='name'>{{from}}</span> successfully copied to <span class='name'>{{to}}</span>"

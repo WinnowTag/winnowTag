@@ -43,7 +43,7 @@ describe FeedsController do
                    and_return([mock_feed1, mock_feed2])
       post :import, :opml => fixture_file_upload("example.opml")
       response.should redirect_to(feeds_path)
-      flash[:notice].should == "Imported 2 feeds from your OPML file"
+      flash[:stay_notice].should == "Imported 2 feeds from your OPML file"
     end
   end
 end
