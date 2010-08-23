@@ -296,7 +296,7 @@ class TagsController < ApplicationController
         :positive_count => @tag.positive_count,
         :negative_count => @tag.negative_count,
         :tooltip => @template.tag_tooltip(@tag),
-        :tag_subscriptions_count => @tag.tag_subscriptions.count
+        :tag_subscriptions_count => @tag.subscriptions_count
       } }
     end
   end
