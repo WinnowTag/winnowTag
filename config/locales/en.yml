@@ -228,7 +228,7 @@ en:
           In Internet Explorer, Rename is disabled in the Items page sidebar. It works in Firefox, Chrome and Safari.
 
           To rename your tag, please scroll to this tag in the My Tags page and click the tag name.
-        context_menu_unsubscribe: "Do you really want to unsubscribe from this tag?"
+        context_menu_unsubscribe: "Unsubscribe from this tag?"
         context_menu_unsubscribe_not_public_tag: "This tag is no longer available in the Public Tags page. If you unsubscribe you will not be able to subscribe again."
       main:
         item_title_tooltip: "Open or close this item"
@@ -313,11 +313,11 @@ en:
         click_to_edit_name: "Change the name of this tag. (Renaming a tag won't affect how the tag works.)"
         blank_description: "add a description"
         click_to_edit_description: "Add or edit a description of this tag"
-        destroy_confirm: "Do you really want to permanently delete tag '{{tag}}'?\n\nThis can't be undone."
-        unsubscribe_not_public_tag_confirm: "Tag '{{tag}}' is no longer available in the Public Tags page. If you unsubscribe you will not be able to resubscribe to '{{tag}}'.\n\nDo you really want to permanently unsubscribe from '{{tag}}'?\n\nThis can't be undone."
-        unsubscribe_confirm: "Do you really want to unsubscribe from tag '{{tag}}'?"
-        unglobally_exclude_tag_confirm: "Do you really want to stop blocking all items found by tag '{{tag}}' from your view?"
-        tag_with_subscriptions_destroy_confirm: "If you delete tag '{{tag}}', winnowTag will archive a copy for existing subscribers to use.\n\nDo you really want to permanently delete tag '{{tag}}'?\n\nThis can't be undone."
+        destroy_confirm: "Permanently delete tag '{{tag}}'?\n\nThis can't be undone."
+        unsubscribe_not_public_tag_confirm: "Tag '{{tag}}' is no longer available in the Public Tags page. If you unsubscribe you will not be able to resubscribe to '{{tag}}'.\n\nPermanently unsubscribe from '{{tag}}'?\n\nThis can't be undone."
+        unsubscribe_confirm: "Unsubscribe from tag '{{tag}}'?"
+        unglobally_exclude_tag_confirm: "Stop blocking all items found by tag '{{tag}}' from your view?"
+        tag_with_subscriptions_destroy_confirm: "If you delete tag '{{tag}}', winnowTag will archive a copy for existing subscribers to use.\n\nPermanently delete tag '{{tag}}'?\n\nThis can't be undone."
         add_a_comment: "Add a comment"
         apply_to: "Number of items <span class='name'>{{tag}}</span> will find:"
         fewer_items: "Fewer Items"
@@ -433,7 +433,7 @@ en:
           This will log you in as {{login}}. You will need to log out and login as yourself to use your own account again.
 
           Are you sure you want to continue?
-        destroy_confirm: "Really delete {{login}}?"
+        destroy_confirm: "Delete user {{login}}?\n\nThis can't be undone."
         make_prototype_tooltip: ""
         make_prototype_confirm: "Are you sure you want to make {{login}} the prototype?"
     invites:
