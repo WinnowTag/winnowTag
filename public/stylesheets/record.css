@@ -17,10 +17,6 @@
   background: #FAFAFA;
 }
 
-.record .summary:hover {
-  background-color: #FEF3BB;
-}
-
 .record .extended {
   border-left: 1px solid #DECBA3;
   border-right: 1px solid #DECBA3;

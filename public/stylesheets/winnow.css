@@ -708,9 +708,13 @@ ul.filter_list li .remove {
   background-image: url(../images/destroy.png);
 }
 
-ul.filter_list li.selected, ul.filter_list li.tag.selected:hover,
-ul.filter_list li.tag:hover, ul.filter_list li.tag.menu-up {
+ul.filter_list li.selected, ul.filter_list li.tag.selected:hover, 
+ul.filter_list li.tag.menu-up {
   background-color: #FEF3BB;
+}
+
+ul.filter_list li.tag:hover {
+  background-color: #EEEEFF;
 }
 
 ul.filter_list li .multidragcount {
@@ -1133,10 +1137,6 @@ ul.tag_list li.public .name {
   background-color: #F6E0E0;
 }
 
-.feed.globally_excluded .summary:hover, .feed.inactive .summary:hover {
-  background-color: #FEF3BB; /* background-color: #F6d0d0; */
-}
-
 .feed .summary .info .details input {
   margin-top: 0;
   vertical-align: middle;
@@ -1213,18 +1213,10 @@ body#item_caches .item_cache {
   background-color: #CCDDFF;
 }
 
-.tag.published .summary:hover {
-  background-color: #FEF3BB; /* #ccf28f; */
-}
-
 .tag.subscribed .summary {
   background-image: url(../images/subscribed.png);
   border-color: #9DC482;
   background-color: #EBFBFF; /* #D7F3A9; */
-}
-
-.tag.subscribed .summary:hover {
-  background-color: #FEF3BB; /* #ccf28f; */
 }
 
 .tag .summary .description.empty span {
@@ -1240,10 +1232,6 @@ body#item_caches .item_cache {
   background-image: url(../images/subscribed.png);
   border-color: #E7ACAD;
   background-color: #F6E0E0;
-}
-
-.tag.globally_excluded .summary:hover {
-  background-color: #FEF3BB; /* background-color: #F6d0d0; */
 }
 
 .tag.subscribed .summary .state {
