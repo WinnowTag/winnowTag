@@ -221,7 +221,14 @@ en:
         subscribed_tag_tooltip: "You're subscribed to '{{name}}' by {{login}}. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         archived_tag_tooltip: "You're subscribed to '{{name}}'. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         published_tag_tooltip: "You made '{{name}}' public so others can subscribe to it. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
-        merge_confirm: "This will copy the examples of tag '{{from}}', adding them to the existing examples of tag '{{to}}'. Are you sure you want to do this?"
+        merge_confirm: |-
+          You typed '{{to}}'. Normally this would change the name of this tag from '{{from}}' to '{{to}}'. But because a tag named '{{to}}' already exists, the examples of tag '{{from}}' will be instead be added to the existing examples of tag '{{to}}'.
+
+          Doing this will change the set of items found by tag '{{to}}'. Tag '{{from}}' will remain unchanged.
+
+          This can't be undone.
+
+          Add the examples of tag '{{from}}' to tag '{{to}}'?
         sidebar_confirm: "You have removed tag '{{tag}}' from your sidebar. Do you want to remove it from your My Tags page?"
         context_menu_rename: "Enter your new name for the tag:"
         use_my_tags_to_rename_tag: |-

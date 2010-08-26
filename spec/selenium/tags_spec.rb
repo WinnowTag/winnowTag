@@ -101,7 +101,9 @@ describe 'merging' do
     page.wait_for :wait_for => :ajax
   end
 
-  # TODO: This is only disabled because the test is temperamental and frequently fails.
+  # TODO: This was disabled because the test is temperamental and frequently fails. Since
+  # then merge has been changed to NOT delete the "from" tag. So if this test is enabled
+  # it will need to be updated.
   xit "can merge two tags by changing their names" do
     page.click "name_tag_#{@other.id}"
     
