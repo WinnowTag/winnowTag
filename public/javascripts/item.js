@@ -352,14 +352,14 @@ var Item = Class.create({
   },
 
   addTrainingControl: function(tag_name, sort_name) {
-    var training_control = '<div class="tag" style="display:none">' + 
+    var training_control = '<div class="tag">' + 
       '<a href="#" onclick="return false;" class="name" data-sort="' + sort_name.escapeHTML() + '">' + tag_name.escapeHTML() + '</a>' + 
     '</div> ';
     this.training_controls.insertInOrder(".name@data-sort", training_control, sort_name);
   
     var training_control = this.findTagElement(this.training_controls, ".tag", tag_name);
     this.initializeTrainingControl(training_control);
-    training_control.appear();
+    training_control.highlight();
   },
   
   load: function(target, onComplete, forceLoad) {

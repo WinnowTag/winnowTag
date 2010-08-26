@@ -17,7 +17,7 @@ var Sidebar = Class.create({
     
     if (Cookie.get("training_mode") == "on") {
       this.togglePanel();
-    }
+    } this.scrollSelectedTagIntoView.defer();
     
     $("sidebar_edit_toggle").observe("click", this.toggleEdit.bind(this));
   },
@@ -39,6 +39,13 @@ var Sidebar = Class.create({
       this.toggleCookies();
     }.bind(this));
   },
+
+  scrollSelectedTagIntoView: function() {
+    var current_tag = 'tag_' + $A(itemBrowser.filters.tag_ids.split(",")).first();
+    if (current_tag != "0" && $(current_tag)) {
+      new Effect.ScrollToInDiv($('tag_container'), $(current_tag), 12);
+    }
+  },
   
   togglePanel: function(afterFinish) {
     Effect.toggle("sidebar_edit", "slide", {
@@ -56,6 +63,8 @@ var Sidebar = Class.create({
         if (afterFinish) {
           afterFinish();
         }
+
+        this.scrollSelectedTagIntoView();
       }.bind(this),
       duration: 0.3,
       queue: {
