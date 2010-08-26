@@ -1375,8 +1375,7 @@ body#item_caches .item_cache {
   padding: 1em 1em 0.4em;
 }
 
-.tag .extended .sidebar .actions, 
-.tag .extended .sidebar .stats {
+.tag .extended .sidebar .actions {
   background-color: #F2F2F2;
   border-top: 1px solid #ccc;
 }

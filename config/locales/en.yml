@@ -354,7 +354,6 @@ en:
         copy_tooltip: "Create a copy of this tag to experiment with or adapt. You can rename the copy any time. It will appear on your My Tags page and in the Items page sidebar, and will remain an exact copy of the original until you change it."
         stats: "Stats"
         subscribers: "Subscribers"
-        usage: "Usage"
         slider_tooltips:
           handle: "Drag the slider to make this tag find fewer or more items. Then go to the Items page, open 'Create Tags' controls and click the 'Run winnowTagger' button."
           first_marker: "Set the slider here for the fewest number of items found by this tag"
