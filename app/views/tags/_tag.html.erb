@@ -20,7 +20,7 @@
               <%= check_box_tag dom_id(tag, "public"), "1", tag.public?, :title => t("winnow.tags.main.public_tooltip"), :onclick => remote_function(:url => publicize_tag_path(tag), :method => 'put', :with => "{ public: this.checked }") %> <label title="<%= t("winnow.tags.main.public_tooltip") %>" for="<%= dom_id(tag, "public") %>"><%= t("winnow.tags.main.public") %></label>
             </li>
           <% end -%>
-          <li><%= link_to_remote t("winnow.tags.main.copy"), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = prompt("Name:", #{tag.name.to_json} + " - copy")|, :html => { :class => "copy", :title => t("winnow.tags.main.copy_tooltip") } %></li>
+          <li><%= link_to_remote t("winnow.tags.main.copy"), :url => tags_path(:copy => tag), :with => "{name: name}", :condition => %W|name = /MSIE/.test(navigator.userAgent) ? #{tag.name.to_json} + " - copy" : prompt("Name:", #{tag.name.to_json} + " - copy")|, :html => { :class => "copy", :title => t("winnow.tags.main.copy_tooltip") } %></li>
           <% if tag.user_id == current_user.id -%>
             <% if tag.tag_subscriptions.empty? || current_user.login != "archive" -%>
               <li><%= link_to_remote t("winnow.general.destroy"), :url => tag_path(tag), :method => 'delete', :confirm => t(!tag.tag_subscriptions.empty? ? "winnow.tags.main.tag_with_subscriptions_destroy_confirm" : "winnow.tags.main.destroy_confirm", :tag => tag.name), :html => { :title => t("winnow.tags.main.destroy_tooltip", :tag => tag.name), :class => "destroy", :id => dom_id(tag, 'destroy') } %></li>
