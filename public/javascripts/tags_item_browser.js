@@ -41,7 +41,6 @@ var TagsItemBrowser = Class.create(ItemBrowser, {
               var data = response.responseJSON;
               tag.select('.name').invoke('update', data.name);
               tag.down(".feed_links").update(data.feed_links_content);
-              tag.up().insertInOrder('.name', tag, data.name);
             }.bind(this)
           },
           paramName: 'tag[name]',
