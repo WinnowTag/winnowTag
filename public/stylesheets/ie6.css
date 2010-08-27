@@ -43,6 +43,8 @@ body.ie6 .content h3 {
   font-size: 1.375em;
   font-weight: bold;
   line-height: 2em;
+  text-align: center;
+  color: #222;
 }
 
 body.ie6 .content h3.minor {
