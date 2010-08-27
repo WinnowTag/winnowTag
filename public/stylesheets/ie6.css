@@ -12,8 +12,6 @@ body.ie6 .container {
   width: 700px;
   margin: 6em auto;
   background-color: #fff;  
-  -webkit-box-shadow: 0 0 5em #333;
-  -moz-box-shadow: #333 0 0 5em;  
 }
 
 body.ie6 .header {
@@ -26,7 +24,6 @@ body.ie6 .header {
 body.ie6 .header h2 {
   margin: 0;
   padding: 0.25em 0 0.25em 4em;
-  line-height: 2.67em;
   font-size: 1.5em;
   font-weight: bold;
   text-shadow: 1px 1px 2px #829AB3;  
@@ -53,11 +50,13 @@ body.ie6 .content .browsers {
   text-align: center;  
 }
 
-body.ie6 .content .browsers .internet_explorer7,
+
+body.ie6 .content .browsers .chrome,
+body.ie6 .content .browsers .internet_explorer8,
 body.ie6 .content .browsers .safari,
 body.ie6 .content .browsers .firefox {
   float: left;
-  width: 30%;
+  width: 23%;
   padding: 1.5em 0 0.25em;
   border: 1px solid #dedede;
   background-image: url(../images/browser_bg.png);
@@ -65,9 +64,10 @@ body.ie6 .content .browsers .firefox {
   background-position: 1px left; 
 }
 
+body.ie6 .content .browsers .chrome,
 body.ie6 .content .browsers .safari,
 body.ie6 .content .browsers .firefox {
-  margin-right: 4.5%;
+  margin-right: 2%;
 }
 
 body.ie6 .content .browsers img {

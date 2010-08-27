@@ -10,7 +10,7 @@ class PublicController < ApplicationController
   skip_before_filter :login_required
 
   # The +ie6+ action is used to display a message to users who
-  # are trying to access Winnow using the unsupported IE6 browser.
+  # are trying to access Winnow using the unsupported IE6 or IE7 browsers.
   def ie6
     render :layout => "ie6"
   end
