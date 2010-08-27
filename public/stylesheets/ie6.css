@@ -10,8 +10,9 @@ body.ie6 {
 
 body.ie6 .container {
   width: 700px;
+  height: 250px;
+  background-color: #ddd;
   margin: 6em auto;
-  background-color: #fff;  
 }
 
 body.ie6 .header {
@@ -30,18 +31,22 @@ body.ie6 .header h2 {
   color: #fff;
   background-image: url(../images/dialog_info.png);
   background-repeat: no-repeat;
-  background-position: 0.67em center;  
+  background-position: 0.67em;
+  line-height: 2.5em;
 }
 
 body.ie6 .content {
   padding: 1.25em 1.5em 1.5em 1.5em;
-  background-image: url(../images/panel_grad_bg.png);
-  background-repeat: repeat-x;
-  background-position: bottom left;
 }
 
 body.ie6 .content h3 {
   font-size: 1.375em;
+  font-weight: bold;
+  line-height: 2em;
+}
+
+body.ie6 .content h3.minor {
+  font-size: 1.2em;
   font-weight: bold;
 }
 
@@ -58,10 +63,10 @@ body.ie6 .content .browsers .firefox {
   float: left;
   width: 23%;
   padding: 1.5em 0 0.25em;
-  border: 1px solid #dedede;
+  border: 1px solid #bbb;
   background-image: url(../images/browser_bg.png);
   background-repeat: repeat-x;
-  background-position: 1px left; 
+  background-position: 1px; 
 }
 
 body.ie6 .content .browsers .chrome,
