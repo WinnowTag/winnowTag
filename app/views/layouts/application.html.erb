@@ -4,9 +4,6 @@
   <title><%= t("winnow.general.app_name") %></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <%= stylesheet_link_tag :winnow, :cache => true %>
-  <!--[if lte IE 7]>
-    <%= javascript_include_tag "ie6" %>
-  <![endif]-->
 
   <%= javascript_include_tag :defaults, :winnow, "locales", :cache => true %>
   <% javascript_tag do -%>
