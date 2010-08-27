@@ -18,12 +18,14 @@ var Content = Class.create({
     this.content         = $("content");
     this.footer          = $("footer");
     this.messages        = $("messages");
+    this.queuedScroll    = 0;
     
-    Event.observe(window, 'resize', this.resize.bind(this));
+    Event.observe(window, 'resize', this.resizeEventHandler.bind(this));
     setInterval(this.checkFontSize.bind(this), 500);
     this.resize();
+    this.scrollSelectedTagIntoView.defer();
   },
-  
+
   checkFontSize: function() {
     if(/MSIE/.test(navigator.userAgent)) {
       // TODO: Figure out an IE solution
@@ -36,6 +38,17 @@ var Content = Class.create({
     }
   },
   
+  scrollSelectedTagIntoView: function() {
+    if (typeof itemBrowser != 'undefined')
+      itemBrowser.scrollSelectedTagIntoView();
+  },
+
+  resizeEventHandler: function() {
+    this.resize();
+    window.clearTimeout(this.queuedScroll);
+    this.queuedScroll = this.scrollSelectedTagIntoView.delay(1);
+  },
+
   resize: function() {
     var newHeight = this.containerHeight();
     // IE does some stupid things in the middle of resize events,

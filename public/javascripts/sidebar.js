@@ -41,12 +41,10 @@ var Sidebar = Class.create({
   },
 
   scrollSelectedTagIntoView: function() {
-    var current_tag = 'tag_' + $A(itemBrowser.filters.tag_ids.split(",")).first();
-    if (current_tag != "0" && $(current_tag)) {
-      new Effect.ScrollToInDiv($('tag_container'), $(current_tag), 12);
-    }
+    if (typeof itemBrowser != 'undefined')
+      itemBrowser.scrollSelectedTagIntoView();
   },
-  
+
   togglePanel: function(afterFinish) {
     Effect.toggle("sidebar_edit", "slide", {
       afterUpdate: function(effect) {

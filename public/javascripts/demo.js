@@ -11,12 +11,25 @@ var Demo = Class.create({
     this.footer          = $("footer");
     this.header          = $("demo_header");
     this.topContent      = $("topDemoContent");
+    this.queuedScroll    = 0;
     
-    Event.observe(window, 'resize', this.resize.bind(this));
+    Event.observe(window, 'resize', this.resizeEventHandler.bind(this));
     setInterval(this.checkFontSize.bind(this), 500);
     this.resize();
+    this.scrollSelectedTagIntoView.defer();
   },
   
+  scrollSelectedTagIntoView: function() {
+    if (typeof itemBrowser != 'undefined')
+      itemBrowser.scrollSelectedTagIntoView();
+  },
+
+  resizeEventHandler: function() {
+    this.resize();
+    window.clearTimeout(this.queuedScroll);
+    this.queuedScroll = this.scrollSelectedTagIntoView.delay(1);
+  },
+
   resize: function() {
      var height = this.viewportHeight() - this.footerHeight() - this.headerHeight() - 1;
      this.container.style.height = "" + height + "px";

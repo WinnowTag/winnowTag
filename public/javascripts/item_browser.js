@@ -31,6 +31,15 @@ var ItemBrowser = Class.create({
     this.initializeFilters();
   },
 
+  scrollSelectedTagIntoView: function() {
+    var current_tag = 'tag_' + $A(this.filters.tag_ids.split(",")).first();
+    if (current_tag != "0" && $(current_tag)) {
+      var tag_container = $('tag_container');
+      if (!tag_container) tag_container = $('sidebar'); // When not logged in
+      new Effect.ScrollToInDiv(tag_container, $(current_tag), 12);
+    }
+  },
+
   updateItems: function() {
     if(this.full || this.loading) { return; }    
     var scroll_bottom = this.container.scrollHeight - this.container.scrollTop - this.container.getHeight();
