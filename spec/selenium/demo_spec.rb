@@ -66,6 +66,6 @@ describe "Demo" do
     page.click("css=#feed_item_#{@items.first.id} .closed")
     page.wait_for :wait_for => :ajax
     assert_visible "css=#feed_item_#{@items.first.id} .body"
-    page.get_text("css=#feed_item_#{@items.first.id} .body").should == "Example Content"
+    page.get_text("css=#feed_item_#{@items.first.id} .body").should == "Author 25 \n Example Content"
   end
 end
