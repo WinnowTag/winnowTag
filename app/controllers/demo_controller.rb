@@ -16,7 +16,7 @@ class DemoController < ActionController::Base
       format.json do
         @feed_items = FeedItem.find_with_filters(
                               :user => @user, 
-                              :limit => 40, 
+                              :limit => 60,
                               :offset => params[:offset],
                               :tag_ids => params[:tag_ids])
       end
