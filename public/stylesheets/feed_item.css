@@ -12,13 +12,13 @@
 }
 
 .feed_item.selected {
-  border: 2px solid #936301;
+  border-top: 1px solid #936301;
+  border-bottom: 1px solid #936301;
 }
 
 .feed_item .closed {
-  padding: 2px;
   cursor: pointer;
-  padding: 5px 5px 4px 5px;
+  padding: 0 .2em 0 0;
 }
 
 .feed_item.read .closed {
@@ -35,46 +35,61 @@
 
 
 .feed_item.selected .closed {
-  padding: 3px 3px 3px 3px;
+  /* padding: .2em .2em .2em 0; */
 }
 
 .feed_item .closed .title {
-  font-weight: bold;
+  font-size: 1em;
   color: #000;
   text-decoration: none;
+  white-space: nowrap;
+  margin-left: .3em;
 }
 
 .feed_item.read .closed .title {
-  color: #666;
-}
-
-.feed_item .closed a.selected {
   color: #333;
-  border: 1px solid #DECBA3;
-  background-color: #F2F2F2;
-  -moz-border-radius: 0.4em;
-  -webkit-border-radius: 0.4em;
 }
 
 .feed_item .closed .feed_title {
-  padding: 3px 4px;
-  white-space: nowrap;
   cursor: pointer;
+}
+
+.feed_item .feed_title {
+  padding: 0 .5em 0 .5em;
+  margin-left: 2em;
+  float: right;
+  color: #888;
+}
+
+.feed_item .feed_title.selected {
+  background-color: #D3BE96;
+  -moz-border-radius: .5em .5em 0 0;
+  -webkit-border-radius: .5em .5em 0 0;
+  color: inherit;
 }
 
 .feed_item .feed_title.selected {
 }
 
 .feed_item .closed .date {
-  float: right;
-  width: 6em;
+  margin-left: .5em;
+  width: 5em;
   text-align: right;
-  color: #666;
+  float: right;
+  color: #888;
 }
 
 .feed_item .closed .train {
   float: right;
   margin: 0 0 0 1em;
+}
+
+.feed_item .external {
+  display: none;
+}
+
+.feed_item.open .external {
+  display: inline;
 }
 
 .feed_item .closed .train.selected {
@@ -84,19 +99,21 @@
 
 .feed_item .body {
   display: none;
-  padding: 8px 8px 8px 25px;
+  font-size: 1em;
+  color: black;
 }
 
 .feed_item.open .body {
+  padding: 1em;
   display: block;
 }
 
 .feed_item.selected .body {
-  padding: 8px 6px 7px 23px;
+  padding: 1em .9em 1em .9em;
 }
 
 .feed_item.selected .closed {
-  border-bottom: 1px solid #E4E4E4;
+  border-bottom: 1px solid #D3BE96;
 }
 
 .feed_item .moderation_panel {
@@ -124,14 +141,12 @@
 
 .training_controls .tag {
   float: left;
-  margin: 0 0.5em 0.25em 0;
-  padding: 0 0.5em;
+  margin-right: 1em;
   white-space: nowrap;
 }
 
 .training_controls .tag .name {
-  color: #797979;
-  font-weight: bold;
+  color: #888;
 }
 
 .training_controls .tag.classifier .name {
@@ -148,8 +163,9 @@
 
 .feed_item .feed_information {
   display: none;
-  border: 2px solid #DECBA3;
-  border-width: 2px 0 0 0;
+  /* border-top: 1px solid #DECBA3;
+  border-bottom: 1px solid #DECBA3;
+  border-width: 2px 0 0 0; */
   background-color: #FBFBFB;
   /* This is a work around for a bug in IE 7. Without setting this
    * the content of the feed information div doesn't appear until
@@ -158,8 +174,12 @@
   min-width: 0;
 }
 
+.feed .feed_filter_link {
+  font-weight: normal;
+}
+
 .feed_item.open .feed_information {
-  border-width: 2px 0;
+  border-width: 1px 0;
 }
 
 .feed_item .feed_information.selected {
@@ -168,10 +188,19 @@
 
 .feed_item .feed_information .summary {
   background-color: #FBFBFB;
+  border-width: 0 0 1px 0;
+  border-color: #D3BE96;
 }
 
 .notitle {
   font-style: italic;
   font-weight: normal;
   color: #666;
+}
+
+.body .body_header .author {
+  font-style: italic;
+  font-family: sans-serif;
+  font-size: .8em;
+  color: #888;
 }

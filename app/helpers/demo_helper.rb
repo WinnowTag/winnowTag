@@ -8,11 +8,7 @@ module DemoHelper
   # The +feed_control_for+ generates the control to show/hide the feed information on a feed item/
   # This is displayed in the collapsed view of a feed item.
   def feed_title_for(feed_item)
-    if feed_item.author.blank?
-      t("winnow.items.main.feed_metadata", :feed_title => content_tag(:span, h(feed_item.feed_title), :class => "feed_title"))
-    else
-      t("winnow.items.main.metadata", :feed_title => content_tag(:span, h(feed_item.feed_title), :class => "feed_title"), :author => h(feed_item.author))
-    end
+    t("winnow.items.main.feed_metadata", :feed_title => content_tag(:span, h(feed_item.feed_title), :class => "feed_title"))
   end
   
   def demo_tag_controls 

@@ -64,11 +64,7 @@ module FeedItemsHelper
   # The +feed_control_for+ generates the control to show/hide the feed information on a feed item/
   # This is displayed in the collapsed view of a feed item.
   def feed_control_for(feed_item)
-    if feed_item.author.blank?
-      t("winnow.items.main.feed_metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :title => t("winnow.items.main.feed_info_control_tooltip"), :class => "feed_title stop"))
-    else
-      t("winnow.items.main.metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :title => t("winnow.items.main.feed_info_control_tooltip"), :class => "feed_title stop"), :author => h(feed_item.author))
-    end
+    t("winnow.items.main.feed_metadata", :feed_title => content_tag(:a, h(feed_item.feed_title), :title => t("winnow.items.main.feed_info_control_tooltip"), :class => "feed_title stop"))
   end
   
   # Formats a classifier tagging strength as a percentage.

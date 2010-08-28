@@ -17,7 +17,7 @@ module FeedsHelper
     feed_page_link = if params[:controller] == "feed_items"
       link_to_function(h(feed.title), "itemBrowser.addFilters({feed_ids: '#{feed.id}', feed_title: '#{feed.title}'})", :title => t("winnow.items.main.feed_info_only_items_tooltip"), :class => 'feed_filter_link')
     else
-      link_to(h(feed.title), feed_items_path(:anchor => "feed_ids=#{feed.id}&feed_title=#{feed.title}"), :title => t("winnow.items.main.feed_info_only_items_tooltip"))
+      link_to(h(feed.title), feed_items_path(:anchor => "feed_ids=#{feed.id}&feed_title=#{feed.title}"), :title => t("winnow.items.main.feed_info_only_items_tooltip"), :class => 'feed_filter_link')
     end
     
     feed_link + ' ' + feed_home_link + ' ' + feed_page_link

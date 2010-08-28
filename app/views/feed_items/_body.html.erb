@@ -1,3 +1,8 @@
 <% cache(:action => 'index', :action_suffix => dom_id(feed_item, 'body')) do -%>
+        <div class="body_header">
+          <div class="author">
+            <%= t("winnow.items.main.feed_author", :author => h(feed_item.author)) unless feed_item.author.blank? %>
+          </div>
+        </dvi>
 	<%=sh feed_item.content.content %>
 <% end -%>

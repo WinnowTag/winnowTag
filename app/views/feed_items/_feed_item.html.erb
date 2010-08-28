@@ -1,10 +1,9 @@
 <div id="<%= dom_id(feed_item) %>" class="record feed_item<%= ' read' if feed_item.read_by_current_user? %> <%= current_tag_training(feed_item) %>">
   <div class="closed clearfix">
-    <div class="date"><%= format_date(feed_item.updated) %></div>
-  	<%= link_to_function feed_item_title(feed_item), "", :title => t("winnow.items.main.item_title_tooltip"), :class => "title" %>
+    <%= link_to_function feed_item_title(feed_item), "", :title => t("winnow.items.main.item_title_tooltip"), :class => "title" %>
+    <%= link_to(image_tag("external.gif", :title => t("winnow.items.main.open_original_feed_item")), feed_item.link, :target => "_blank", :title => t("winnow.items.main.open_original_feed_item"), :class => "external stop") %>
     <%# title attribute is in image_tag for IE7 which otherwise uses alt. Left same title in link_to for slightly larger mouse float target in other browsers. %>
-    <%= link_to(image_tag("external.gif", :title => t("winnow.items.main.open_original_feed_item")), feed_item.link, :target => "_blank", :title => t("winnow.items.main.open_original_feed_item"), :class => "stop") %>
-    <%= feed_control_for(feed_item) %>
+    <div class="date"><%= format_date(feed_item.updated) %></div><%= feed_control_for(feed_item) %>
   </div>
   <div class="moderation_panel clearfix" url="<%= moderation_panel_feed_item_path(feed_item) %>"></div>
 	<div class="feed_information" url="<%= feed_information_feed_item_path(feed_item) %>"></div>
