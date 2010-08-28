@@ -16,9 +16,13 @@
   border-bottom: 1px solid #936301;
 }
 
-.feed_item .closed {
+.feed_item .open {
   cursor: pointer;
   padding: 0 .2em 0 0;
+}
+
+.feed_item.open .closed {
+  /* border-bottom: 1px solid #e8e8e8; */
 }
 
 .feed_item.read .closed {
@@ -72,7 +76,7 @@
 }
 
 .feed_item .closed .date {
-  margin-left: .5em;
+  margin: 0 .5em;
   width: 5em;
   text-align: right;
   float: right;
@@ -113,7 +117,7 @@
 }
 
 .feed_item.selected .closed {
-  border-bottom: 1px solid #D3BE96;
+  /* border-bottom: 1px solid #D3BE96; */
 }
 
 .feed_item .moderation_panel {
@@ -188,7 +192,7 @@
 
 .feed_item .feed_information .summary {
   background-color: #FBFBFB;
-  border-width: 0 0 1px 0;
+  border-width: 1px 0;
   border-color: #D3BE96;
 }
 

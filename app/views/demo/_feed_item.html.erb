@@ -3,7 +3,7 @@
     <div class="date"><%= format_date(feed_item.updated) %></div>
   	<%= link_to_function feed_item_title(feed_item), "", :class => "title" %>
     <%# title attribute is in image_tag for IE7 which otherwise uses alt. Left same title in link_to for slightly larger mouse float target in other browsers. %>
-    <%= link_to(image_tag("external.gif", :title => t("winnow.items.main.open_original_feed_item")), feed_item.link, :target => "_blank", :title => t("winnow.items.main.open_original_feed_item"), :class => "stop") %>
+    <%= link_to(image_tag("external.gif", :title => t("winnow.items.main.open_original_feed_item")), feed_item.link, :target => "_blank", :title => t("winnow.items.main.open_original_feed_item"), :class => "external stop") %>
 		<%= feed_title_for(feed_item) %>
   </div>
   <div class="body clearfix" url="<%= body_feed_item_path(feed_item) %>"></div>
