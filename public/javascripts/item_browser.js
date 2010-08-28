@@ -32,12 +32,6 @@ var ItemBrowser = Class.create({
   },
 
   scrollSelectedTagIntoView: function() {
-    var current_tag = 'tag_' + $A(this.filters.tag_ids.split(",")).first();
-    if (current_tag != "0" && $(current_tag)) {
-      var tag_container = $('tag_container');
-      if (!tag_container) tag_container = $('sidebar'); // When not logged in
-      new Effect.ScrollToInDiv(tag_container, $(current_tag), 12);
-    }
   },
 
   updateItems: function() {
