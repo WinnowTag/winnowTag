@@ -211,12 +211,12 @@ ul.tags li.selected {
   background-color: #FEF3BB;
 }
 
-.feed_item a {
-  text-decoration: none;
+ul.filter_list li:hover {
+  background-color: #EEEEFF;
 }
 
-.feed_item.selected {
-  border: 2px solid #DECBA3 !important;
+.feed_item .closed .feed_title {
+  cursor: auto;
 }
 
 #content > .indicator {

@@ -207,10 +207,6 @@ textarea.content {
  */
 #sidebar_header {
   color: #666;
-/*  position: absolute;
-  bottom: 0;
-  left: 0;
-  padding-left: 15px; */
   padding-top: 1px;
   float: left;
   font-size: 1.1em;
@@ -251,7 +247,7 @@ textarea.content {
 
 #messages.notice, #messages.stay_notice {
   background-image: url(../images/notice.png);
-  color: #77FF77; /* #537713; */
+  color: #77FF77;
 }
 
 #messages.warning {
@@ -328,7 +324,6 @@ body#login .container .form .title {
 
 body#login .container .form .title span {
   background-color: #fff;
-  /* padding: 0.33em 0.5em 0.5em 0; */
   color: #666;
 }
 
@@ -351,7 +346,6 @@ body#login .container .form .content {
 body#login .container .form .content h4 {
   border-bottom: 1px solid #D7C0AE;
   padding: 0.25em 0;
-/*  margin-bottom: 1em;*/
 }
 
 body#login .container .form .content .description {
@@ -678,11 +672,6 @@ ul.filter_list li .actions {
 ul.filter_list li {
   cursor: pointer !important;
   color: black;
-}
-
-ul.filter_list li .name:hover {
-  text-decoration: underline;
-  color: #000;
 }
 
 ul.filter_list li.all_tags {
@@ -1216,7 +1205,7 @@ body#item_caches .item_cache {
 .tag.subscribed .summary {
   background-image: url(../images/subscribed.png);
   border-color: #9DC482;
-  background-color: #EBFBFF; /* #D7F3A9; */
+  background-color: #EBFBFF;
 }
 
 .tag .summary .description.empty span {
@@ -1235,7 +1224,7 @@ body#item_caches .item_cache {
 }
 
 .tag.subscribed .summary .state {
-  color: #555; /* #537713; */
+  color: #555;
 }
 
 .tag.globally_excluded .summary .state {

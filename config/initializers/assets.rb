@@ -13,5 +13,5 @@ ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :winnow => [
 ]
 
 ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion :demo => [
-  "defaults", "button", "demo", "tables", "slider", "scaffold", "record", "feed_item"
+  "defaults", "button", "tables", "slider", "scaffold", "record", "feed_item", "demo"
 ]

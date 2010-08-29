@@ -14,15 +14,12 @@
 .feed_item.selected {
   border-top: 1px solid #936301;
   border-bottom: 1px solid #936301;
+  margin-top: -1px;
 }
 
 .feed_item .open {
   cursor: pointer;
   padding: 0 .2em 0 0;
-}
-
-.feed_item.open .closed {
-  /* border-bottom: 1px solid #e8e8e8; */
 }
 
 .feed_item.read .closed {
@@ -38,14 +35,9 @@
 }
 
 
-.feed_item.selected .closed {
-  /* padding: .2em .2em .2em 0; */
-}
-
 .feed_item .closed .title {
   font-size: 1em;
   color: #000;
-  text-decoration: none;
   white-space: nowrap;
   margin-left: .3em;
 }
@@ -112,14 +104,6 @@
   display: block;
 }
 
-.feed_item.selected .body {
-  padding: 1em .9em 1em .9em;
-}
-
-.feed_item.selected .closed {
-  /* border-bottom: 1px solid #D3BE96; */
-}
-
 .feed_item .moderation_panel {
   border-bottom: 1px solid #E4E4E4;
   display: none;
@@ -167,15 +151,7 @@
 
 .feed_item .feed_information {
   display: none;
-  /* border-top: 1px solid #DECBA3;
-  border-bottom: 1px solid #DECBA3;
-  border-width: 2px 0 0 0; */
   background-color: #FBFBFB;
-  /* This is a work around for a bug in IE 7. Without setting this
-   * the content of the feed information div doesn't appear until
-   * the page is scrolled or resized.
-   */
-  min-width: 0;
 }
 
 .feed .feed_filter_link {
