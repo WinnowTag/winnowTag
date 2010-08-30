@@ -134,6 +134,7 @@ en:
       message_created: "Message was successfully created"
       message_updated: "Message was successfully updated"
       tag_copied: "<span class='name'>{{from}}</span> successfully copied to <span class='name'>{{to}}</span>"
+      tag_already_exists: "You already have a tag <span class='name'>{{tag}}</span>"
       tag_merged: "Examples of <span class='name'>{{from}}</span> successfully merged into <span class='name'>{{to}}</span>"
       classifier:
         timeout_contacting: "Communication with winnowTagger failed. It's OK to click 'Run winnowTagger' again at any time."

@@ -117,13 +117,10 @@ class TagsController < ApplicationController
             page.redirect_to tags_path
           end
         else
+          # TODO: Do not redisplay page.
+          flash[:error] = t("winnow.notifications.tag_already_exists", :tag => h(to.name))
           render :update do |page|
-            # TODO: broken?
-            page << <<-EOJS
-              if(confirm(#{t('winnow.tags.main.replace', :to => h(params[:name]), :from => h(from.name)).to_json}) {
-                #{remote_function(:url => hash_for_tags_path(:copy => from, :name => params[:name], :overwrite => true))};
-              }
-            EOJS
+            page.redirect_to tags_path
           end
         end
       else
@@ -137,8 +134,12 @@ class TagsController < ApplicationController
         end
       end
     elsif params[:name]
-      @tag = Tag.create! :name => params[:name], :user => current_user
-      respond_to :js
+      begin
+        @tag = Tag.create! :name => params[:name], :user => current_user
+        respond_to :js
+      rescue
+        @existing_tag = Tag.find_by_user_id_and_name(current_user.id, params[:name])
+      end
     else
       render :nothing => true
     end

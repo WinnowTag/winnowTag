@@ -82,15 +82,6 @@ describe TagsController do
       assert_equal(2, @user.taggings.size)
     end
   
-    it "prompts the user to overwrite when copying to an existing tag" do
-      tag2 = Generate.tag!(:user => @user)
-    
-      post :create, :copy => @tag.id, :name => tag2.name
-      assert_response :success
-    
-      assert_match /confirm/, response.body
-    end
-  
     it "overwrites an existing tag when overwrite is set to true" do
       tag2 = Generate.tag!(:user => @user)
     
