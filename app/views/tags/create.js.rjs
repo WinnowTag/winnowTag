@@ -12,6 +12,6 @@ page << "new Effect.ScrollToInDiv('tag_container', '#{dom_id(@tag)}');"
 page << "if (!(/MSIE/.test(navigator.userAgent))) new Effect.Highlight('#{dom_id(@tag)}', {queue: 'end', endcolor: '#FEF3BB', restorecolor: null});"
 page << "$('name').value = '';"
 page << "if (itemBrowser.selectedItem() && itemBrowser.selectedItem()._item.isOpen()) {"
-page << "  itemBrowser.selectedItem()._item.addTrainingControl('#{@tag.name}', '#{@tag.sort_name}');"
+page << "  itemBrowser.selectedItem()._item.addTrainingControl('#{escape_javascript(@tag.name)}', '#{@tag.sort_name}');"
 page << "}"
 end
