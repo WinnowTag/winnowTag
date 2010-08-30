@@ -2,23 +2,21 @@
   <div class="summary clearfix">        
     <div class="info">
       <div class="details">
-        <p>&nbsp;</p>
-        <label title="<%= t('winnow.general.globally_exclude_feed_tooltip') %>"><%= globally_exclude_feed_check_box(feed) %> <%= t("winnow.general.globally_exclude") %></label>
+        <label title="<%= t('winnow.general.globally_exclude_feed_tooltip') %>">
+          <%= globally_exclude_feed_check_box(feed) %> <%= t("winnow.general.globally_exclude") %>
+        </label>
       </div>
       <div class="count" title="<%= t('winnow.items.main.feed_info_item_count_tooltip') %>">
-        <p>Items</p>
-        <strong><%= feed.feed_items_count %></strong>
+        <%= t("winnow.general.feed_items_count", :count => feed.feed_items_count) %>
       </div>
       <div class="date" title="<%= t('winnow.items.main.feed_info_added_date_tooltip') %>">
-         <p><%= t("winnow.general.created") %></p> 
-         <strong><%= format_date(feed.created_on) %></strong>
+         <%= t("winnow.general.feed_created", :date => format_date(feed.created_on)) %>
       </div>
-      <div class="date" title="<%= t('winnow.items.main.feed_info_updated_date_tooltip') %>">
-         <p><%= t("winnow.general.last_updated") %></p> 
-         <strong><%= format_date(feed.updated_on) %></strong>
+      <div class="updated" "title="<%= t('winnow.items.main.feed_info_updated_date_tooltip') %>">
+         <%= t("winnow.general.feed_last_updated", :date => format_date(feed.updated_on)) %>
       </div>
     </div>    
     
-    <h4 class="clearfix"><%= feed_link(feed) %></h4>  
+    <div class="left clearfix"><%= feed_link(feed) %></div>
   </div>
 </div>

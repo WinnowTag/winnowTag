@@ -158,6 +158,7 @@ input, select, textarea {
 /*
  * =links
  */
+a:focus {outline: none;}
 a:hover {text-decoration: underline;}
 a.disabled {color: #888; cursor: default;}
 a.disabled:hover {text-decoration: none;}
@@ -894,7 +895,7 @@ a.bookmarklet:hover {
   text-decoration: none;
 }
 
-.feed .summary h4 .blank, .feed .summary h4 .home, .feed .summary h4 .feed {
+.feed .summary .blank, .feed .summary .home, .feed .summary .feed {
   float: left;
   width: 16px;
   height: 16px;
@@ -905,11 +906,11 @@ a.bookmarklet:hover {
   overflow: hidden;
 }
 
-.feed .summary h4 .home {
+.feed .summary .home {
   background-image: url(../images/home.png);
 }
 
-.feed .summary h4 .feed {
+.feed .summary .feed {
   background-image: url(../images/feed.png);
 }
 
@@ -1136,7 +1137,7 @@ ul.tag_list li.public .name {
 }
 
 .feed .summary .info .count {
-  width: 5em;
+  width: 8em;
 }
 
 .feed .summary .info .date {

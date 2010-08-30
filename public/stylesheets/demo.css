@@ -34,6 +34,7 @@ body {
 /*
  * =links
  */
+a:focus {outline: none;}
 a:hover {text-decoration: underline;}
 a.disabled {color: #888; cursor: default;}
 a.disabled:hover {text-decoration: none;}

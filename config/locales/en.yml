@@ -15,6 +15,7 @@ en:
       submit: "Submit"
       create: "Create"
       created: "Added"
+      items: "Items"
       save: "Save"
       destroy: "Delete"
       destroy_tooltip: ""
@@ -40,6 +41,9 @@ en:
       email_address_promise: "We won't give out your email address."
       no_script_message: "You need to change a setting in your web browser"
       last_updated: "Updated"
+      feed_last_updated: <span class="label">Updated:</span> {{date}}
+      feed_created: <span class="label">Created:</span> {{date}}
+      feed_items_count: <span class="label">Items:</span> {{count}}
       prototype: "{{login}} is the prototype"
       make_prototype: "Make prototype"
       search_clear_icon_tooltip: "Clear any existing search"

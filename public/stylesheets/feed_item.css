@@ -58,10 +58,13 @@
 }
 
 .feed_item .feed_title.selected {
-  background-color: #D3BE96;
+  background-color: #EEEEDD;
   -moz-border-radius: .5em .5em 0 0;
   -webkit-border-radius: .5em .5em 0 0;
+  border: 1px solid #DECBA3;
+  border-bottom: 0;
   color: inherit;
+  margin-bottom: -1px;
 }
 
 .feed_item .feed_title.selected {
@@ -154,6 +157,34 @@
   background-color: #FBFBFB;
 }
 
+.feed_item .feed_information div.summary {
+  padding: 0 0.4em 0 0.3em;
+  background-color: #EEEEDD;
+  border: 1px solid #DECBA3;
+}
+
+.feed_item .feed_information .summary div.left {
+  padding-top: .2em;
+}
+
+.feed_item .feed_information .summary .info {
+  color: black;
+}
+
+.feed_item .feed_information .summary .info .label {
+  text-transform: uppercase;
+  font-size: .8em;
+  font-weight: bold;
+  color: #888;
+}
+
+.feed_item .feed_information .summary .info div {
+  padding: .2em 0 0 1em;
+  margin-left: 1em;
+  border: 0;
+  width: auto;
+}
+
 .feed .feed_filter_link {
   font-weight: normal;
 }
@@ -166,11 +197,13 @@
   display: block;
 }
 
+/*
 .feed_item .feed_information .summary {
   background-color: #FBFBFB;
   border-width: 1px 0;
-  border-color: #D3BE96;
+  border-color: #FFF2DA;
 }
+*/
 
 .notitle {
   font-style: italic;
