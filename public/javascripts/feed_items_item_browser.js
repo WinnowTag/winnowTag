@@ -237,7 +237,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       parameters.tag_ids = SEE_ALL_TAGS_ID;
     }
     
-    if (parameters.feed_ids) {
+    if (parameters.feed_ids && parameters.feed_title) {
       parameters.tag_ids = SEE_ALL_TAGS_ID;
       parameters.text_filter = "";
       
@@ -259,6 +259,7 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
         $("search_detail_updating").show();
       }
       parameters.feed_ids = null;
+      parameters.feed_title = null;
     }
     
     $super(parameters);
