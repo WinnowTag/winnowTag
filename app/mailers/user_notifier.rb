@@ -27,7 +27,7 @@ class UserNotifier < ActionMailer::Base
 protected
   def setup_email(email, options = {})
     recipients  email
-    from        "winnowadmin@mindloom.org"
+    from        "dontreply@winnowtag.org"
     subject     "#{I18n.t('winnow.email.subject_prefix')} #{options[:subject]}"
   end
 end

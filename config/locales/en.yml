@@ -94,9 +94,11 @@ en:
         {{invite}}To create your winnowTag account, click this link:
 
         {{url}}
+
+        If there's a problem you can contact us <a href="http://doc.winnowtag.org/contact">here</a>.
       account_activation_body: "{{user}}, we've activated your account.  Please click {{url}} to use winnowTag."
       reminder_subject: "Password Reset"
-      reminder_body: "To change your password, click this link:\n\n{{url}}"
+      reminder_body: To change your password, click this link:\n\n{{url}}\n\nIf there's a problem you can contact us <a href="http://doc.winnowtag.org/contact">here</a>.
       signup_notification_body: |-
         Welcome to winnowTag, {{user}}.
 
@@ -105,6 +107,8 @@ en:
         <a href="{{registration_url}}">Click me!</a>
 
         {{winnow_url}}
+
+        If there's a problem you can contact us <a href="http://doc.winnowtag.org/contact">here</a>.
     notifications:
       feed_items_search_too_short: "Search requires a word with at least 4 characters"
       server_slow_responding: "The server is taking a while to respond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."

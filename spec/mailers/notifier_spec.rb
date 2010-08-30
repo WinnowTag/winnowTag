@@ -11,12 +11,12 @@ describe Notifier do
       @email = Notifier.create_deployed("mh", "the beast", "666", "mark", "go team")
     end
 
-    it "is sent to winnowadmin" do
-      @email.to.should == ["winnowadmin@mindloom.org"]
+    it "is sent to winnowtag_admin" do
+      @email.to.should == ["winnowtag_admin@winnowtag.org"]
     end
 
-    it "is sent from winnowadmin" do
-      @email.from.should == ["winnowadmin@mindloom.org"]
+    it "is sent from winnowtag_admin" do
+      @email.from.should == ["winnowtag_admin@winnowtag.org"]
     end
 
     it "has a subect with revision info" do
@@ -50,12 +50,12 @@ describe Notifier do
       @email = Notifier.create_invite_requested(@invite)
     end
 
-    it "is sent to winnowadmin" do
-      @email.to.should == ["winnowadmin@mindloom.org"]
+    it "is sent to winnowtag_admin" do
+      @email.to.should == ["winnowtag_admin@winnowtag.org"]
     end
 
-    it "is sent from winnowadmin" do
-      @email.from.should == ["winnowadmin@mindloom.org"]
+    it "is sent from dontreply" do
+      @email.from.should == ["dontreply@winnowtag.org"]
     end
     
     it "contains the invite email in the email body" do

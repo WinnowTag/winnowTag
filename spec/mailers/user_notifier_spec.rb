@@ -14,8 +14,8 @@ describe UserNotifier, "#reminder" do
     @email = UserNotifier.create_reminder(@user, @url)
   end
   
-  it "addresses the email from the admin address" do
-    @email.from.should == ["winnowadmin@mindloom.org"]
+  it "addresses the email from the dontreply address" do
+    @email.from.should == ["dontreply@winnowtag.org"]
   end
   
   it "addresses the email to the user" do
@@ -41,8 +41,8 @@ describe UserNotifier, "#invite_requested" do
     @email = UserNotifier.create_invite_requested(@invite)
   end
   
-  it "addresses the email from the admin address" do
-    @email.from.should == ["winnowadmin@mindloom.org"]
+  it "addresses the email from the dontreply address" do
+    @email.from.should == ["dontreply@winnowtag.org"]
   end
   
   it "addresses the email to the invite email address" do
@@ -67,8 +67,8 @@ describe UserNotifier, "#invite_accepted" do
     @email = UserNotifier.create_invite_accepted(@invite, @url)
   end
   
-  it "addresses the email from the admin address" do
-    @email.from.should == ["winnowadmin@mindloom.org"]
+  it "addresses the email from the dontreply address" do
+    @email.from.should == ["dontreply@winnowtag.org"]
   end
   
   it "addresses the email to the invite email address" do
