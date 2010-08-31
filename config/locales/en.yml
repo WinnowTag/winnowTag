@@ -232,9 +232,9 @@ en:
         archived_tag_tooltip: "You're subscribed to '{{name}}'. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         published_tag_tooltip: "You made '{{name}}' public so others can subscribe to it. '{{name}}' finds {{automatic}} items using {{positive}} positive examples and {{negative}} negative examples."
         merge_confirm: |-
-          You typed '{{to}}'. Normally this would change the name of this tag from '{{from}}' to '{{to}}'. But because a tag named '{{to}}' already exists, the examples of tag '{{from}}' will be instead be added to the existing examples of tag '{{to}}'.
+          You already have a tag '{{to}}'. Therefore instead of renaming tag '{{from}}', you are about to add the examples of tag '{{from}}' to the examples of tag '{{to}}'.
 
-          Doing this will change the set of items found by tag '{{to}}'. Tag '{{from}}' will remain unchanged.
+          This will change the items found by tag '{{to}}'. Tag '{{from}}' will remain unchanged.
 
           This can't be undone.
 
