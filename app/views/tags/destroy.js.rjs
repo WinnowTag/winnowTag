@@ -1,2 +1,2 @@
 page.select(".#{dom_id(@tag)}").invoke("remove")
-page << "Message.add('notice', 'Deleted ' + #{h(@tag.name).to_json});"
+page << "Message.add('notice', #{t('winnow.notifications.tag_deleted', :tag => h(@tag.name)).to_json});"

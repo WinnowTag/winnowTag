@@ -136,6 +136,7 @@ en:
       tag_copied: "<span class='name'>{{from}}</span> successfully copied to <span class='name'>{{to}}</span>"
       tag_already_exists: "You already have a tag <span class='name'>{{tag}}</span>"
       tag_merged: "Examples of <span class='name'>{{from}}</span> successfully merged into <span class='name'>{{to}}</span>"
+      tag_deleted: "Deleted tag <span class='name'>{{tag}}</span>"
       classifier:
         timeout_contacting: "Communication with winnowTagger failed. It's OK to click 'Run winnowTagger' again at any time."
         could_not_be_started: "winnowTagger could not be started. It's OK to click 'Run winnowTagger' again at any time."
