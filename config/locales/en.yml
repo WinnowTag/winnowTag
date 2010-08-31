@@ -42,7 +42,7 @@ en:
       no_script_message: "You need to change a setting in your web browser"
       last_updated: "Updated"
       feed_last_updated: <span class="label">Updated:</span> {{date}}
-      feed_created: <span class="label">Created:</span> {{date}}
+      feed_created: <span class="label">Added:</span> {{date}}
       feed_items_count: <span class="label">Items:</span> {{count}}
       prototype: "{{login}} is the prototype"
       make_prototype: "Make prototype"
