@@ -228,9 +228,9 @@ ul.filter_list li:hover {
 }
 
 .loading {
-  background-image: url(../images/indicator_medium.gif);
+  background-image: url(../images/indicator.gif);
   background-position: center center;
   background-repeat: no-repeat;
-  min-height: 32px;
-  min-width: 32px;
+  min-height: 16px;
+  min-width: 16px;
 }
