@@ -25,7 +25,7 @@
   <%= rounded_button_function t("winnow.tags.header.upload"), "$('upload_tag').toggle()", :icon => "add", :title => t("winnow.tags.header.upload_tooltip") %>
 </div>
 
-<div id="upload_tag" style="clear:both;<%= flash[:error] ? '' : 'display:none' %>">
+<div id="upload_tag" style="display:none">
   <fieldset class="full">
     <legend><%= t("winnow.tags.header.upload") %></legend>
 
