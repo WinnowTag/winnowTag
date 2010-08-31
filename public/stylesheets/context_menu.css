@@ -37,8 +37,19 @@ div.context_menu ul li:hover {
 }
 
 div.context_menu.subscribed li.onlymine {
-  color: #ccc;
-  cursor: default;
+  display: none;
+}
+
+div.context_menu .unsubscribe {
+  display: none;
+}
+
+div.context_menu.subscribed .unsubscribe {
+  display: inherit;
+}
+
+div.context_menu.subscribed .delete {
+  display: none;
 }
 
 div.context_menu.archived_tag_in_archive_account #delete_menu_item {
