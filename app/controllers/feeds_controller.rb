@@ -66,7 +66,7 @@ class FeedsController < ApplicationController
         flash[:error] = t("winnow.notifications.no_feeds_to_import")
       else
         if current_user.has_role?('admin') || feed_count <= MAX_IMPORT_FEEDS
-          @feeds = Remote::Feed.import_opml(the_opml)
+          @feeds = Remote::Feed.import_opml(the_opml, current_user.login)
 
           @feeds.each do |feed|
             feed.collect(:created_by => current_user.login, :callback_url => collection_job_results_url(current_user))

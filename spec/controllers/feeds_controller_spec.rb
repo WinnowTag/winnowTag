@@ -39,7 +39,7 @@ describe FeedsController do
       mock_feed2.should_receive(:collect)
     
       Remote::Feed.should_receive(:import_opml).
-                   with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml"))).
+                   with(File.read(File.join(RAILS_ROOT, "spec", "fixtures", "example.opml")), @user.login).
                    and_return([mock_feed1, mock_feed2])
       post :import, :opml => fixture_file_upload("example.opml")
       response.should redirect_to(feeds_path)

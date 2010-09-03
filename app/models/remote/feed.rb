@@ -19,8 +19,13 @@ module Remote
     end
     
     # Request the Collector to import the requested OPML data.
-    def self.import_opml(opml)
-      response = connection.post(custom_method_collection_url(:import_opml), opml, 'Content-Type' => 'text/x-opml')
+    def self.import_opml(opml, created_by = nil)
+      if created_by
+        options = {:created_by => created_by}
+      else
+        options = {}
+      end
+      response = connection.post(custom_method_collection_url(:import_opml, options), opml, 'Content-Type' => 'text/x-opml')
       format.decode(response.body).map do |attributes|
         new(attributes)
       end
