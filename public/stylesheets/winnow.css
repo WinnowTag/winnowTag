@@ -150,9 +150,11 @@ input, select, textarea {
 
 #content > .indicator {
   position: absolute;
-  background: url(../images/indicator_medium.gif) 1em center no-repeat;
+  background-image: url(../images/indicator_medium.gif);
+  background-position: center left;
+  background-repeat: no-repeat;
   font-size: 2em;
-  padding: 1em 1em 1em 2.5em;
+  padding: 1em 1em 1em 1.7em;
 }
 
 /*

@@ -116,7 +116,7 @@ var ItemBrowser = Class.create({
       var indicator_padding = parseInt(indicator.getStyle("padding-top")) + parseInt(indicator.getStyle("padding-bottom"));
       var footer_height = $('footer') ? $('footer').getHeight() : 0;
       var top = (this.container.getHeight() - indicator.getHeight() - indicator_padding) / 2;
-      indicator.style.top = top + "px";
+      indicator.style.top = Math.max(top, 0) + "px"; // max() because IE8 often doesn't calculate getHeight() correctly
     }
   
     var left = (this.container.getWidth() - indicator.getWidth()) / 2;
