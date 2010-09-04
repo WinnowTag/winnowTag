@@ -20,7 +20,7 @@ class Opml
   end
   
   def feeds
-    @document.find("/opml/body/outline[@xmlUrl]").map do |e|
+    @document.find("/opml/body//outline[@xmlUrl]").map do |e|
       Feed.new(e)
     end
   end
