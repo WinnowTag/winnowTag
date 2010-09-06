@@ -21,7 +21,7 @@
       <%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones, :model => ActiveSupport::TimeZone, :include_blank => true %>
   	</p>
   	<p>
-  	  <%= submit_tag t("winnow.general.save") %>
+  	  <%= submit_tag t("winnow.general.save") %> <%= link_to t("winnow.general.cancel"), feed_items_path %>
   	</p>
   </fieldset>
 <% end %>
@@ -43,7 +43,7 @@
   	  <%= f.password_field :password_confirmation %>
   	</p>
   	<p>
-  	  <%= submit_tag t("winnow.general.save") %>
+  	  <%= submit_tag t("winnow.general.save") %>  <%= link_to t("winnow.general.cancel"), feed_items_path %>
   	</p>
   </fieldset>
 <% end %>
