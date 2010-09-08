@@ -296,7 +296,8 @@ body#login #content {
   background-color: #f5f5f5;
 } 
 
-body#login #content a {
+body#login #content a,
+fieldset.profile a {
   font-weight: bold;
 }
 
