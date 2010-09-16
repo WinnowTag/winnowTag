@@ -2,6 +2,8 @@ en:
   winnow:
     general:
       app_name: winnowTag
+      app_title: winnowTag - smart tags find info on your topics in real time
+      meta_description: winnowTag finds info on specific topics in real time. Your smart tags select blog posts and news items from the ongoing flood of information. A next generation feed reader based on Ruby & Rails. Content recommendation by open source Winnow, a high performance Bayesian filtering classifier in C++.
       powered_by: powered by <a href="http://doc.winnowtag.org/open-source" target="_blank">open source Winnow</a>
       never: "Never"
       loading: "Loading Items..."
