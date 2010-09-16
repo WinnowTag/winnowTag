@@ -3,6 +3,13 @@
 
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', '<%= ENV['GOOGLE_ANALYTICS_UA'] %>' ]);
+
+    <% if RAILS_ENV == 'production' -%>
+      <%# Track doc.winnowtag.org and winnowtag.org in a single GA profile. %>
+      _gaq.push(['_setDomainName', '.winnowtag.org']);
+      _gaq.push(['_setAllowHash', false]);
+    <% end -%>
+
     _gaq.push(['_trackPageview']);
 
     (function() {
