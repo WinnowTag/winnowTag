@@ -19,8 +19,8 @@ class Notifier < ActionMailer::Base
   end
 
   # This email is sent when the number of signups reaches the daily limit
-  def signups_requested_today(signups_today, daily_signup_limit)
-    setup_email :subject => "#{I18n.t('winnow.email.subject_prefix')} #{I18n.t('winnow.email.signups_requested_today_subject')}", :from => "dontreply@winnowtag.org"
+  def signups_requested_today(subject, signups_today, daily_signup_limit)
+    setup_email :subject => "#{I18n.t('winnow.email.subject_prefix')} #{subject}", :from => "dontreply@winnowtag.org"
     body        :signups_today => signups_today, :daily_signup_limit => daily_signup_limit
   end
     

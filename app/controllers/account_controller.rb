@@ -14,9 +14,15 @@ class AccountController < ApplicationController
   skip_before_filter :login_required, :except => [:edit, :edit_password]
   skip_before_filter :check_if_user_must_update_password, :only => [:edit_password, :logout]
 
+  def AccountController.signups_email(subject)
+    Notifier.deliver_signups_requested_today(subject, Settings['signups.requested_today'], Settings['signups.daily_limit'])
+  end
+
   def AccountController.clear_signups_requested_today
-    Notifier.deliver_signups_requested_today(Settings['signups.requested_today'], Settings['signups.daily_limit'])
+    # Notifier.deliver_signups_requested_today(subject, Settings['signups.requested_today'], Settings['signups.daily_limit'])
+    AccountController.signups_email(I18n.t('winnow.email.signup_links_requested_today_subject'))
     Settings['signups.requested_today'] = 0;
+    Settings.defaults['signups.daily_limit_reached'] = false;
   end
   
   # The +edit+ action is used to edit the logged in users profile.
@@ -119,6 +125,7 @@ class AccountController < ApplicationController
     if verify_recaptcha(:model => @invite, :message => t("winnow.general.recaptcha_failed")) and @invite.save
       # UserNotifier.deliver_invite_requested(@invite)
       Settings['signups.requested_today'] += 1
+      AccountController.signups_email(t("winnow.email.signups_limit_reached_subject")) if Settings['signups.requested_today'] >= Settings['signups.daily_limit']
       Notifier.deliver_invite_requested(@invite)
       flash[:notice] = t("winnow.notifications.sign_up_link_sent")
       @invite.activate!

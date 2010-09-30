@@ -112,9 +112,10 @@ en:
         {{winnow_url}}
 
         If there's a problem you can contact us here: http://doc.winnowtag.org/contact
-      signups_requested_today_subject: Signup links requested today
+      signup_links_requested_today_subject: "Signup links requested today"
       signups_requested_today_body: |-
         Signup links emailed today: {{signups_today}} of the current limit of {{daily_signup_limit}} per day
+      signups_limit_reached_subject: "Signup limit reached!"
     notifications:
       feed_items_search_too_short: "Search requires a word with at least 4 characters"
       server_slow_responding: "The server is taking a while to respond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
