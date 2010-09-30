@@ -1,0 +1,15 @@
+<div id="invite_form" class="form">
+  <% form_tag login_path do -%>
+    <div id="logout_box"><a href="<%= logout_path %>">X</a></div>
+    <div class="title">
+      <span class="login"><%= t("winnow.login.too_many_signups") %></span>
+    </div>
+
+    <div class="content">
+      <p><%= t("winnow.login.too_many_signups_explanation") %></p>
+      <div class="submit">
+        <%= rounded_button_link t("winnow.general.OK"), logout_path %>
+      </div>
+    </div>
+  <% end -%>
+</div>

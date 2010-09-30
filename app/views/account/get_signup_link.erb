@@ -1,5 +1,9 @@
 <% content_for :body, "login" %>
 
 <div class="container">
-  <%= render :partial => "invite" %>
+  <% if (Settings['signups.requested_today'] < Settings['signups.daily_limit']) -%>
+    <%= render :partial => "invite" %>
+  <% else -%>
+    <%= render :partial => "too_many_signups" %>
+  <% end -%>
 </div>

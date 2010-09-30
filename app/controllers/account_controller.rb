@@ -13,6 +13,11 @@
 class AccountController < ApplicationController
   skip_before_filter :login_required, :except => [:edit, :edit_password]
   skip_before_filter :check_if_user_must_update_password, :only => [:edit_password, :logout]
+
+  def AccountController.clear_signups_requested_today
+    Notifier.deliver_signups_requested_today(Settings['signups.requested_today'], Settings['signups.daily_limit'])
+    Settings['signups.requested_today'] = 0;
+  end
   
   # The +edit+ action is used to edit the logged in users profile.
   def edit
@@ -113,6 +118,7 @@ class AccountController < ApplicationController
     @invite = Invite.new(params[:invite])
     if verify_recaptcha(:model => @invite, :message => t("winnow.general.recaptcha_failed")) and @invite.save
       # UserNotifier.deliver_invite_requested(@invite)
+      Settings['signups.requested_today'] += 1
       Notifier.deliver_invite_requested(@invite)
       flash[:notice] = t("winnow.notifications.sign_up_link_sent")
       @invite.activate!

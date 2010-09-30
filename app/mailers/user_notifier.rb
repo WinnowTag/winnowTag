@@ -6,19 +6,19 @@
 
 # The +UserNotifier+ mailer is used to send emails to Winnow users.
 class UserNotifier < ActionMailer::Base
-  # This email is send when a user makes a forgot password request.
+  # This email is sent when a user makes a forgot password request.
   def reminder(user, url)
     setup_email user.email_address_with_name, :subject => I18n.t("winnow.email.reminder_subject")
     body        :user => user, :url => url
   end
   
-  # This email is send when a user sumits and invitation request.
+  # This email is sent when a user submits an invitation request.
   def invite_requested(invite)
     setup_email invite.email, :subject => I18n.t("winnow.email.invite_requested_subject")
     body        :invite => invite
   end
 
-  # This email is send when a user's invitation requst is accepted.  
+  # This email is sent when a user's invitation request is accepted.
   def invite_accepted(invite, url)
     setup_email invite.email, :subject => invite.subject
     body        :url => url, :invite => invite

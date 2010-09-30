@@ -24,6 +24,7 @@ en:
       edit: "Edit"
       edit_tooltip: ""
       cancel: "Cancel"
+      OK: "OK"
       back_to_login: "Back to Log in"
       back: "Back"
       back_tooltip: ""
@@ -111,6 +112,9 @@ en:
         {{winnow_url}}
 
         If there's a problem you can contact us here: http://doc.winnowtag.org/contact
+      signups_requested_today_subject: Signup links requested today
+      signups_requested_today_body: |-
+        Signup links emailed today: {{signups_today}} of the current limit of {{daily_signup_limit}} per day
     notifications:
       feed_items_search_too_short: "Search requires a word with at least 4 characters"
       server_slow_responding: "The server is taking a while to respond. We'll keep trying but you can {{cancel_link_start}}cancel{{cancel_link_end}} if you like."
@@ -540,6 +544,8 @@ en:
       back: "Back to login"
       back_tooltip: ""
       signup_submit: "Create my account"
+      too_many_signups: "Signups will be available again tomorrow PST"
+      too_many_signups_explanation: "We limit the number of signups per day so our servers aren't overwhelmed. Signups will again be available after midnight Pacific Standard Time. We hope you'll check back early tomorrow!"
     about:
       build: "This is build {{build}} of winnowTag."
       classifier_info: "Using Winnow {{version}} at build {{build}}."
