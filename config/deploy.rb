@@ -32,6 +32,7 @@ set :group, "mongrels"
 task :beta do
   set :deploy_to, "/home/peerworks/winnow.deploy"
   set :user, 'peerworks'
+  set :domain, 'winnowtag.org'
   set :branch, "beta" unless exists?(:branch)
   set :rails_env, "production"
 
