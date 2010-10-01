@@ -264,7 +264,6 @@ en:
         feed_info_item_count_tooltip: "Number of items from this feed currently in winnowTag"
         feed_info_added_date_tooltip: "Date this feed was added to winnowTag"
         feed_info_updated_date_tooltip: "Date winnowTag last collected items from this feed"
-        item_tag_strength_tooltip: "winnowTag thinks this item is a {{strength}} match for tag '{{tag_name}}'"
         moderation_panel_classifier_tag_tooltip: "winnowTag thinks this item is a {{strength}} match for tag '{{tag_name}}'. Clicking will make this item a positive (green) or negative (red) example for '{{tag_name}}'."
         moderation_panel_positive_tag_tooltip: "You identified this item as a positive (green) example for tag '{{tag_name}}'. You can click to change."
         moderation_panel_negative_tag_tooltip: "You identified this item as a negative (red) example for tag '{{tag_name}}'. You can click to change."

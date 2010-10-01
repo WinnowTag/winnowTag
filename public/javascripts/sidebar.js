@@ -56,9 +56,6 @@ var Sidebar = Class.create({
         
         if (!this.isEditing()) {
           this.sidebar_normal.style.top = "25px";
-          $(document.body).removeClassName("create_tags_open")
-        } else {
-          $(document.body).addClassName("create_tags_open")
         }
         
         if (afterFinish) {
