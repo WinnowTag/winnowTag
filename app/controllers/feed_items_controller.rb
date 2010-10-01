@@ -25,6 +25,7 @@ class FeedItemsController < ApplicationController
         params[:tag_ids].to_s.split(",").each do |tag_id|
           if tag = Tag.find_by_id(tag_id)
             TagUsage.create!(:tag => tag, :user => current_user)
+            @tag = tag; # Make the currently selected tag available to the view
           end
         end
 

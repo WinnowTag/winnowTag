@@ -78,6 +78,67 @@
   color: #888;
 }
 
+body#feed_items.create_tags_open .date {
+  width: 8.5em;
+}
+
+body#feed_items .tag_strength {
+    display: none;
+}
+
+body#feed_items.create_tags_open .tag_strength {
+    display: block;
+}
+
+.feed_item .closed .tag_strength {
+  width: 3.5em;
+  float: right;
+}
+
+.tag_strength.level_0 {
+  color: #DCDCDC
+}
+
+.tag_strength.level_1 {
+  color: #C6C6C6
+}
+
+.tag_strength.level_2 {
+  color: #B0B0B0
+}
+
+.tag_strength.level_3 {
+  color: #9A9A9A
+}
+
+.tag_strength.level_4 {
+  color: #848484
+}
+
+.tag_strength.level_5 {
+  color: #6E6E6E
+}
+
+.tag_strength.level_6 {
+  color: #585858
+}
+
+.tag_strength.level_7 {
+  color: #424242
+}
+
+.tag_strength.level_8 {
+  color: #2C2C2C
+}
+
+.tag_strength.level_9 {
+  color: #161616
+}
+
+.tag_strength.level_10 {
+  color: #000000
+}
+
 .feed_item .closed .train {
   float: right;
   margin: 0 0 0 1em;
