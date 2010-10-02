@@ -79,7 +79,7 @@
 }
 
 body#feed_items.create_tags_open .date {
-  width: 8.5em;
+  width: 5em;
 }
 
 body#feed_items .tag_strength {
@@ -91,8 +91,12 @@ body#feed_items.create_tags_open .tag_strength {
 }
 
 .feed_item .closed .tag_strength {
-  width: 3.5em;
-  float: right;
+  width: 2.1em;
+  float: left;
+  text-align: right;
+  margin-right: 1em;
+  font-size: .8em;
+  margin-top: .3em;
 }
 
 .tag_strength.level_0 {

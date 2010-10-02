@@ -261,8 +261,14 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
       parameters.feed_ids = null;
       parameters.feed_title = null;
     }
-    
-    $super(parameters);
+
+    if (parameters.tag_ids == SEE_ALL_TAGS_ID) {
+          $(document.body).removeClassName("create_tags_open")
+    } else {
+      $(document.body).addClassName("create_tags_open")
+    }
+
+$super(parameters);
   },
 
   toggleSetFilters: function(parameters, event) {
