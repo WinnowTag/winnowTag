@@ -14,6 +14,12 @@ class DemoController < ActionController::Base
     respond_to do |format|
       format.html
       format.json do
+        params[:tag_ids].to_s.split(",").each do |tag_id|
+          if tag = Tag.find_by_id(tag_id)
+            @tag = tag; # Make the currently selected tag available to the view
+          end
+        end
+
         @feed_items = FeedItem.find_with_filters(
                               :user => @user, 
                               :limit => 60,
