@@ -235,6 +235,10 @@ ul.filter_list li:hover {
   min-width: 16px;
 }
 
-.feed_item.negative .closed {
-    display: none;
+.feed_item.negative {
+  display: none;
+}
+
+.record.feed_item.positive .closed {
+  background-color: inherit;
 }
