@@ -29,7 +29,7 @@ Rails::Initializer.run do |config|
   config.gem "hpricot"
   config.gem "ratom",          :lib => "atom"
   config.gem "RedCloth"
-  config.gem "ci_reporter"
+  #config.gem "ci_reporter"
 
   # Must be compiled/installed on the target system
   config.gem "mysql", :version => "2.8.1"
