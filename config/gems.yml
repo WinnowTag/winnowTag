@@ -1,0 +1,6 @@
+--- 
+- :name: ci_reporter
+- :version: = 2.8.1
+  :name: mysql
+- :version: 2.3.5
+  :name: rails
