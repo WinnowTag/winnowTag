@@ -21,7 +21,7 @@
 :deploy_to: /srv/winnowTag
 
 # Primary domain application will be accessed as 
-:domain: yourapp.com
+:domain: columbia.stonecutter.com
 
 # Domain aliases for application. One common use of this is for asset hosts.
 #:domain_aliases:
