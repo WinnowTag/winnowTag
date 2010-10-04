@@ -33,3 +33,6 @@ ENV['RECAPTCHA_PRIVATE_KEY'] = '6LfRm7sSAAAAANfLbnSxlCKqECmUuwlcPUN1yPEt'
 
 # This is the Google Analytics account for production use on winnowtag.org
 ENV['GOOGLE_ANALYTICS_UA'] = 'UA-18062643-1'
+
+# Use postfix for mail delivery 
+ActionMailer::Base.delivery_method = :sendmail 

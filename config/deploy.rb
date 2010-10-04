@@ -55,6 +55,18 @@ task :trunk do
   role :db,  domain, :primary => true
 end
 
+task :columbia do
+  set :deploy_to, "/home/rails/winnowTag.deploy"
+  set :user, 'rails'
+  set :domain, 'columbia'
+  set :branch, "moonshine" unless exists?(:branch)
+  set :rails_env, "trunk"
+
+  role :web, domain
+  role :app, domain
+  role :db,  domain, :primary => true
+end
+
 # =============================================================================
 # OPTIONAL VARIABLES
 # =============================================================================
