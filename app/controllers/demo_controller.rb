@@ -22,7 +22,7 @@ class DemoController < ActionController::Base
 
         @feed_items = FeedItem.find_with_filters(
                               :user => @user, 
-                              :limit => 60,
+                              :limit => 80,
                               :offset => params[:offset],
                               :tag_ids => params[:tag_ids])
       end

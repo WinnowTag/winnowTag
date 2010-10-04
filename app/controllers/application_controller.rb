@@ -35,7 +35,7 @@ protected
   # limit of 40, and if a limit is request, it will ensure that it 
   # is more that the maximum limit of 100.
   def limit
-    default_limit = 60
+    default_limit = 80
     max_limit = 100
     (params[:limit] ? [params[:limit].to_i, max_limit].min : default_limit)
   end
