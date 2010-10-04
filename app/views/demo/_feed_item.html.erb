@@ -1,4 +1,4 @@
-<div id="<%= dom_id(feed_item) %>" class="record feed_item">
+<div id="<%= dom_id(feed_item) %>" class="record feed_item <%= current_tag_training(feed_item) %>">
   <div class="closed clearfix">
     <% unless @tag.nil? -%>
       <% tagging = feed_item.taggings.find(:first, :conditions => { :feed_item_id => feed_item.id, :tag_id => @tag.id }) -%>

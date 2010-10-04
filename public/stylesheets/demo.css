@@ -234,3 +234,7 @@ ul.filter_list li:hover {
   min-height: 16px;
   min-width: 16px;
 }
+
+.feed_item.negative .closed {
+    display: none;
+}

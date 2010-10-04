@@ -78,16 +78,20 @@
   color: #888;
 }
 
-body#feed_items.create_tags_open .date {
-  width: 5em;
-}
-
-body#feed_items .tag_strength {
+body#feed_items .negative {
     display: none;
 }
 
-body#feed_items.create_tags_open .tag_strength {
+body.create_tags_open#feed_items .negative {
     display: block;
+}
+
+body#feed_items .tag_strength {
+    display: block;
+}
+
+body.see_all_tags#feed_items .tag_strength {
+    display: none;
 }
 
 .feed_item .closed .tag_strength {

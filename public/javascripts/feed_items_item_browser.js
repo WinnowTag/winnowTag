@@ -263,9 +263,9 @@ var FeedItemsItemBrowser = Class.create(ItemBrowser, {
     }
 
     if (parameters.tag_ids == SEE_ALL_TAGS_ID) {
-          $(document.body).removeClassName("create_tags_open")
+          $(document.body).addClassName("see_all_tags")
     } else {
-      $(document.body).addClassName("create_tags_open")
+      $(document.body).removeClassName("see_all_tags")
     }
 
 $super(parameters);

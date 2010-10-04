@@ -11,6 +11,18 @@ module DemoHelper
     t("winnow.items.main.feed_metadata", :feed_title => content_tag(:span, h(feed_item.feed_title), :class => "feed_title"))
   end
   
+  def current_tag_training(feed_item)
+    if feed_item.tagged_type.nil?
+      ""
+    elsif feed_item.tagged_type.to_i == 1
+      "positive"
+    elsif feed_item.tagged_type.to_i == 0
+      "negative"
+    else
+      ""
+    end
+  end
+
   def demo_tag_controls 
     @user.tags_for_sidebar.map do |tag|
       content_tag("li", tag.name, :id => dom_id(tag), 
