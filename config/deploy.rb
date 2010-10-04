@@ -59,7 +59,7 @@ task :columbia do
   set :deploy_to, "/home/rails/winnowTag.deploy"
   set :user, 'rails'
   set :domain, 'columbia.stonecutter.com'
-  set :branch, "moonshine" unless exists?(:branch)
+  set :branch, "columbia" unless exists?(:branch)
   set :rails_env, "trunk"
 
   role :web, domain
