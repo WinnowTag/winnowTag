@@ -37,31 +37,31 @@ describe DemoController do
     end
     
     it "should be successful" do
-      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 60, :tag_ids => nil).and_return([])
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 80, :tag_ids => nil).and_return([])
       get 'index', :format => 'json'
       response.should be_success
     end
     
     it "should pass offset through to find" do
-      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => "40", :limit => 60, :tag_ids => nil).and_return([])
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => "40", :limit => 80, :tag_ids => nil).and_return([])
       get 'index', :format => 'json', :offset => "40"
       response.should be_success
     end
     
     it "should not pass limit through to find" do
-      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 60, :tag_ids => nil).and_return([])
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 80, :tag_ids => nil).and_return([])
       get 'index', :format => 'json', :limit => "100"
       response.should be_success
     end
     
     it "should pass tag ids through to find" do
-      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 60, :tag_ids => "23").and_return([])
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 80, :tag_ids => "23").and_return([])
       get 'index', :format => 'json', :tag_ids => "23"
       response.should be_success  
     end
     
     it "should not pass feed ids through to find" do
-      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 60, :tag_ids => nil).and_return([])
+      FeedItem.should_receive(:find_with_filters).with(:user => @user, :offset => nil, :limit => 80, :tag_ids => nil).and_return([])
       get 'index', :format => 'json', :feed_ids => "23"
       response.should be_success
     end
