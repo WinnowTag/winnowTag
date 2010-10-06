@@ -1753,3 +1753,13 @@ body#item_caches .item_cache {
   border: 1px solid #eee;
   color: #ddd;
 }
+
+/*
+ * AddToAny
+ */
+
+.a2a_dd {
+  position: absolute;
+  top: .4em;
+  right: .5em;
+}
