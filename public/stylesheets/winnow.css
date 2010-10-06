@@ -484,7 +484,7 @@ body#login .container .form .content #invite_use {
 .navigation .extra {
   float: right;
   padding: 0;
-  margin: 0 0 5px 0;
+  margin: 0 3em 5px 0;
   list-style: none;
 }
 
@@ -499,8 +499,8 @@ body#login .container .form .content #invite_use {
 
 /* Don't use :last-child here, IE7 doesn't support it so an extra "pipe" would show at right. */
 .navigation .extra li.last-child {
-  padding-right: 0;
-  border: 0;
+  /* padding-right: 0; */
+  /* border: 0; */
 }
 
 /*
@@ -1758,8 +1758,9 @@ body#item_caches .item_cache {
  * AddToAny
  */
 
-.a2a_dd {
+.addtoany {
   position: absolute;
-  top: .4em;
+  top: 0em;
   right: .5em;
+  font-size: 1.2em;
 }

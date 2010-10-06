@@ -48,7 +48,7 @@ a img {border: 0; vertical-align: baseline;}
 .navigation .extra {
   float: right;
   padding: 0;
-  margin: 0 0 5px 0;
+  margin: 0 3em 5px 0;
   list-style: none;
 }
 
@@ -61,10 +61,12 @@ a img {border: 0; vertical-align: baseline;}
   color: #444;
 }
 
+/*
 .navigation .extra li.last-child {
   padding-right: 0;
   border: 0;
 }
+*/
 
 #demo_title {
   float: left;
@@ -247,8 +249,9 @@ ul.filter_list li:hover {
  * AddToAny
  */
 
-.a2a_dd {
+.addtoany {
   position: absolute;
-  top: .4em;
+  top: 0em;
   right: .5em;
+  font-size: 1.2em;
 }
