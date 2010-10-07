@@ -114,6 +114,7 @@ task :copy_config do
   run "ln -s #{shared_path}/collector.conf #{release_path}/config/collector.conf"
   run "ln -s #{shared_path}/classifier-client.conf #{release_path}/config/classifier-client.conf"
   run "ln -s #{shared_path}/hmac_credentials.yml #{release_path}/config/hmac_credentials.yml"
+  run "ln -s #{shared_path}/robots.txt #{release_path}/public/robots.txt"
 end
 
 
