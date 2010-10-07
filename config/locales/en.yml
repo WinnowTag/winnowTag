@@ -10,18 +10,6 @@ en:
         publish tags as feeds. Free. Content recommendation by open source Winnow,
         a high performance Bayesian filtering classifier.
       powered_by: powered by <a href="http://doc.winnowtag.org/open-source" target="_blank">open source Winnow</a>
-      addtoany: |-
-        <div class="addtoany">
-        <!-- AddToAny BEGIN -->
-        <a class="a2a_dd" href="http://www.addtoany.com/share_save?linkurl=http%3A%2F%2Fwinnowtag.org&amp;linkname=winnowTag">Share</a>
-        <script type="text/javascript">
-        var a2a_config = a2a_config || {};
-        a2a_config.linkname = "winnowTag";
-        a2a_config.linkurl = "http://winnowtag.org";
-        </script>
-        <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
-        <!-- AddToAny END -->
-        </div>
       never: "Never"
       loading: "Loading Items..."
       empty: "No items matched your search criteria."
@@ -72,6 +60,15 @@ en:
         	powered by <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> &bull;
           Mindloom &copy; 2010 &bull;
         	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
+          <!-- AddToAny BEGIN -->
+          <a class="a2a_dd" href="http://www.addtoany.com/share_save?linkurl=http%3A%2F%2FwinnowTag.org&amp;linkname=winnowTag"><img src="http://static.addtoany.com/buttons/share_save_171_16.png" width="171" height="16" border="0" alt="Share"/></a>
+          <script type="text/javascript">
+          var a2a_config = a2a_config || {};
+          a2a_config.linkname = "winnowTag";
+          a2a_config.linkurl = "http://winnowTag.org";
+          </script>
+          <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+          <!-- AddToAny END -->
         </div>
       tag_rename_notice: "{{user}}, the creator of tag <span class='name'>{{original_name}}</span>, renamed it <span class='name'>{{new_name}}</span>.<br>"
       tag_archive_notice: "Tag <span class='name'>{{tag_name}}</span> was deleted by its original creator ({{original_creator}}) so your subscription has been moved to an archived copy.<br>"
@@ -613,6 +610,16 @@ en:
         	powered by <a href="http://doc.winnowtag.org/open-source">open source Winnow</a> &bull;
           Mindloom &copy; 2010 &bull;
         	<a href="http://doc.winnowtag.org/blog">winnowTag blog</a>
+          <!-- AddToAny BEGIN -->
+          <a class="a2a_dd" href="http://www.addtoany.com/share_save?linkurl=http%3A%2F%2FwinnowTag.org&amp;linkname=winnowTag"><img src="http://static.addtoany.com/buttons/share_save_171_16.png" width="171" height="16" border="0" alt="Share"/></a>
+          <script type="text/javascript">
+          var a2a_config = a2a_config || {};
+          a2a_config.linkname = "winnowTag";
+          a2a_config.linkurl = "http://winnowTag.org";
+          </script>
+          <script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
+          <!-- AddToAny END -->
+
         </div>
       explanatory_text:
         top_describe: "Click a winnowTag (at left) to find items on that topic."
