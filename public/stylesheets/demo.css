@@ -242,13 +242,3 @@ ul.filter_list li:hover {
 .record.feed_item.positive .closed {
   background-color: inherit;
 }
-
-/*
- * AddToAny
- */
-
-.a2a_dd {
-  position: absolute;
-  top: .4em;
-  right: .5em;
-}
