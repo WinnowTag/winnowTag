@@ -4,11 +4,11 @@ en:
       app_name: winnowTag
       app_title: winnowTag - smart tags find info on your topics in real time
       meta_description: |-
-        winnowTag.org uses smart tags to continuously find info on your topics
-        from many more blogs and news sources than you can follow with
-        traditional feed readers. Use public tags or create your own. Add your
-        feeds, and publish any tag as a feed. Content recommendation by open
-        source Winnow, a high performance Bayesian filtering classifier.
+        Innovative web feed reader uses smart tags that learn and find the content
+        you want to see, from more sources than you can follow with traditional feed
+        readers. Subscribe, create, and share tags. Add feeds, import feed lists,
+        publish tags as feeds. Free. Content recommendation by open source Winnow,
+        a high performance Bayesian filtering classifier.
       powered_by: powered by <a href="http://doc.winnowtag.org/open-source" target="_blank">open source Winnow</a>
       addtoany: |-
         <div class="addtoany">
