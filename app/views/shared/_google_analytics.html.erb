@@ -24,3 +24,7 @@
 <script type="text/javascript">
   var _gap = new GoogleAnalyticsProxy();
 </script>
+
+<% if current_user -%>
+  <%= javascript_tag "_gap._setCustomVar(1, 'user_login', '#{current_user.login}', 1)" %>
+<% end %>

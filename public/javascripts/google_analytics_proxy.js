@@ -66,5 +66,15 @@ GoogleAnalyticsProxy.prototype = {
     } else {
       this.log('_trackEvent(' + category + ', ' + action + ', ' + opt_label + ', ' + opt_value + ')');
     }
+  },
+
+  // _setCustomVar()
+  //  API: http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEventTracking.html#_gat.GA_EventTracker_._trackEve
+  _setCustomVar: function(index, name, value, opt_scope) {
+    if (this.googleAnalyticsEnabled) {
+      this.pageTracker().push(['_setCustomVar', index, name, value, opt_scope]);
+    } else {
+      this.log('_setCustomVar(' + index + ', ' + name + ', ' + value + ', ' + opt_scope + ')');
+    }
   }
 };
