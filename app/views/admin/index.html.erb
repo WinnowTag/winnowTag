@@ -1,3 +1,7 @@
+<% javascript_tag do -%>
+  document.observe('dom:loaded', Content.setup);
+<% end -%>
+
 <h4><%= link_to t("winnow.admin.users_link"), users_path, :title => t("winnow.admin.users_tooltip") %></h4>
 <p><%= t("winnow.admin.users_description") %></p>
 

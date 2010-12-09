@@ -2,6 +2,7 @@
   <% javascript_tag do -%>
     var itemBrowser;
     document.observe('dom:loaded', function() {
+      Content.setup();
       itemBrowser = new ItemBrowser('invites', 'content', { orders: {
         asc:       ["email", "status"],
         desc:      ["created"],

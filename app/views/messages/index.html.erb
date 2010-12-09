@@ -1,3 +1,7 @@
+<% javascript_tag do -%>
+  document.observe('dom:loaded', Content.setup);
+<% end -%>
+
 <% content_for :header_controls do -%>
   <%= render :partial => "header_controls" %>
 <% end -%>

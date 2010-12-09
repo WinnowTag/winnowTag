@@ -10,9 +10,6 @@
   <![endif]-->
 
   <%= javascript_include_tag :defaults, :winnow, "locales", :cache => true %>
-  <% javascript_tag do -%>
-    document.observe('dom:loaded', Content.setup);
-  <% end -%>
   <%= yield(:head) %>
 
   <%= render :partial => "shared/google_analytics" %>

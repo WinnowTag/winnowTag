@@ -1,3 +1,7 @@
+<% javascript_tag do -%>
+  document.observe('dom:loaded', Content.setup);
+<% end -%>
+
 <p><%= t("winnow.about.build", :build => @revision) %></p>
 
 <p><%= classifier_info(@classifier_info) %></p>

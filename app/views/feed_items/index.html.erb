@@ -4,7 +4,8 @@
 	<% javascript_tag do -%>
 		var itemBrowser;
 		var sidebar;
-		Event.observe(window, 'load', function() {
+		document.observe('dom:loaded', function() {
+                  Content.setup();
 			try {
 				sidebar = new Sidebar();
 				itemBrowser = new FeedItemsItemBrowser('feed_items', 'content', { 

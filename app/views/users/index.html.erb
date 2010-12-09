@@ -2,6 +2,7 @@
   <% javascript_tag do -%>
     var itemBrowser;
     document.observe('dom:loaded', function() {
+      Content.setup();
       itemBrowser = new ItemBrowser('users', 'content', { orders: {
         asc:       ["login", "name", "email"],
         desc:      ["tag_count", "logged_in_at", "last_accessed_at", "last_tagging_on"],

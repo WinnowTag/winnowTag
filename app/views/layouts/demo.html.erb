@@ -13,10 +13,10 @@
 
   <%= javascript_include_tag :defaults, :demo, "locales", :cache => "all_demo" %>
   <% javascript_tag do -%>
-    document.observe('dom:loaded', Demo.setup);
 		var itemBrowser;
 		
 		document.observe('dom:loaded', function() {
+                  Demo.setup();
 			 try {
 				itemBrowser = new FeedItemsItemBrowser('demo', 'content', { });
 			} catch (e) {
