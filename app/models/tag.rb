@@ -220,7 +220,7 @@ class Tag < ActiveRecord::Base
     Atom::Feed.new do |feed|
       feed.title = "#{self.user.login}:#{self.name}"
       feed.id = "#{options[:base_uri]}/#{user.login}/tags/#{self.name}"
-      feed.updated = self.updated_on
+      feed.updated = self.updated_on.utc
       feed[CLASSIFIER_NAMESPACE, 'classified'] << self.last_classified_at.xmlschema if self.last_classified_at
       feed[CLASSIFIER_NAMESPACE, 'bias'] << self.bias.to_s
       feed.categories << Atom::Category.new(:term => self.name, :scheme => "#{options[:base_uri]}/#{user.login}/tags/")
