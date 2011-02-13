@@ -109,6 +109,8 @@ class AuthHMAC
         # Try unparsed_uri in case it is a Webrick request
         path = if request.respond_to?(:unparsed_uri)
           request.unparsed_uri
+        elsif request.path =~ / /
+          URI.encode(request.path)
         else
           request.path
         end
