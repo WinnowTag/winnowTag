@@ -11,6 +11,7 @@ require "optparse"
 require "fileutils"
 require "cgi"
 require 'addressable/uri'
+require 'yaml'
 
 include Grit
 
